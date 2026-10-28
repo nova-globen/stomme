@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <RootNamespace>Stomme</RootNamespace>
+    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+    <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+    <PackageReference Include="Microsoft.Extensions.Localization" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <!-- Transport (brief 04 / D10): opt-in gRPC-Web client (over the browser fetch stack) + SignalR client. -->
+    <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Grpc.Net.Client.Web" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" />
+    <PackageReference Include="Z.Blazor.Diagrams" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stomme.Shared\Stomme.Shared.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PublishTrimmed>false</PublishTrimmed>
+    <BlazorEnableCompression>false</BlazorEnableCompression>
+  </PropertyGroup>
+
+  <!-- BL-201: the PACKAGE carries no WebAssembly boot script. Packed, this project's static web assets were one file,
+       _framework/blazor.webassembly.js - not the runtime - so an app on the packages could not serve one (dotnet.js 404),
+       and an app whose own client is a WebAssembly app (as it must be, to have a runtime at all) collided with it on that
+       path (BL-186). The app's client builds the runtime and its own boot script; this host's ProjectReference is
+       unaffected, the exclusion is from the pack only. -->
+  <Target Name="KeepTheBootScriptOutOfThePackage" BeforeTargets="GenerateStaticWebAssetsPackFiles">
+    <ItemGroup>
+      <_StaticWebAssetExcludedFromPack Include="@(StaticWebAsset)" Condition="$([System.String]::Copy('%(RelativePath)').StartsWith('_framework/blazor.webassembly'))" />
+    </ItemGroup>
+  </Target>
+
+</Project>

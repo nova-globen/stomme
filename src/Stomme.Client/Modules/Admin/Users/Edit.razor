@@ -1,0 +1,521 @@
+﻿@namespace Stomme.Modules.Admin.Users
+@using System.Text.RegularExpressions;
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject IProfileService ProfileService
+@inject ISettingService SettingService
+@inject IFileService FileService
+@inject ITimeZoneService TimeZoneService
+@inject ILanguageService LanguageService
+@inject IServiceProvider ServiceProvider
+@inject IStringLocalizer<Edit> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_initialized)
+{
+    <TabStrip>
+        <TabPanel Name="Identity" Heading="Identity" ResourceKey="Identity">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="username" HelpText="The unique username for a user. Note that this field can not be modified." ResourceKey="Username">Username:</Label>
+                    <div class="db-field-control">
+                        <input id="username" class="db-input" @bind="@_username" readonly />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="email" HelpText="The email address where the user will receive notifications" ResourceKey="Email">Email:</Label>
+                    <div class="db-field-control">
+                        <input id="email" class="db-input" @bind="@_email" />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="confirmed" HelpText="Indicates if the user's email is verified" ResourceKey="Confirmed">Verified?</Label>
+                    <div class="db-field-control">
+                        <select id="confirmed" class="db-select" @bind="@_confirmed">
+                            <option value="True">@SharedLocalizer["Yes"]</option>
+                            <option value="False">@SharedLocalizer["No"]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="displayname" HelpText="The full name of the user" ResourceKey="DisplayName">Full Name:</Label>
+                    <div class="db-field-control">
+                        <input id="displayname" class="db-input" @bind="@_displayname" />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time Zone:</Label>
+                    <div class="db-field-control">
+                        <select id="timezone" class="db-select" @bind="@_timezoneid">
+                            <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                            @foreach (var timezone in _timezones)
+                            {
+                                <option value="@timezone.Id">@timezone.DisplayName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="culture" HelpText="The user's preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language:</Label>
+                    <div class="db-field-control">
+                        <select id="culture" class="db-select" @bind="@_culturecode">
+                            <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                            @foreach (var language in _languages)
+                            {
+                                <option value="@language.Code">@language.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                {
+                    <div class="db-field">
+                        <Label For="isdeleted" HelpText="Indicate if the user is active" ResourceKey="IsDeleted">Deleted?</Label>
+                        <div class="db-field-control">
+                            <select id="isdeleted" class="db-select" @bind="@_isdeleted">
+                                <option value="True">@SharedLocalizer["Yes"]</option>
+                                <option value="False">@SharedLocalizer["No"]</option>
+                            </select>
+                        </div>
+                    </div>
+                }
+                <div class="db-field">
+                    <Label For="lastlogin" HelpText="The date and time when the user last signed in" ResourceKey="LastLogin">Last Login:</Label>
+                    <div class="db-field-control">
+                        <input id="lastlogin" class="db-input" @bind="@_lastlogin" readonly />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="lastipaddress" HelpText="The IP Address of the user recorded during their last login" ResourceKey="LastIPAddress">Last IP Address:</Label>
+                    <div class="db-field-control">
+                        <input id="lastipaddress" class="db-input" @bind="@_lastipaddress" readonly />
+                    </div>
+                </div>
+            </div>
+        </TabPanel>
+        <TabPanel Name="Security" Heading="Security" ResourceKey="Security">
+            <ModuleMessage Message="@_passwordrequirements" Type="MessageType.Info" />
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="password" HelpText="The user's password. Please choose a password which is sufficiently secure." ResourceKey="Password">Password:</Label>
+                    <div class="db-field-control">
+                        <div class="db-input-group">
+                            <input id="password" type="@_passwordtype" class="db-input" @bind="@_password" autocomplete="new-password" />
+                            <button type="button" class="db-btn db-btn-neutral" @onclick="@TogglePassword" tabindex="-1">@_togglepassword</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="confirm" HelpText="Please enter the password again to confirm it matches with the value above" ResourceKey="Confirm">Confirm Password:</Label>
+                    <div class="db-field-control">
+                        <div class="db-input-group">
+                            <input id="confirm" type="@_passwordtype" class="db-input" @bind="@_confirm" autocomplete="new-password" />
+                            <button type="button" class="db-btn db-btn-neutral" @onclick="@TogglePassword" tabindex="-1">@_togglepassword</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br /><br />
+            @if (_allowpasskeys)
+            {
+                <Section Name="Passkeys" Heading="Passkeys" ResourceKey="Passkeys" Expanded="@((_passkeys.Count > 0).ToString())">
+                    @if (_passkeys.Count > 0)
+                    {
+                        <Pager Items="@_passkeys">
+                            <Header>
+                            <th style="width: 1px;">&nbsp;</th>
+                            <th>@Localizer["Passkey"]</th>
+                            </Header>
+                            <Row>
+                                <td><ActionDialog Action="Delete" OnClick="@(async () => await DeletePasskey(context))" ResourceKey="DeletePasskey" Class="db-btn db-btn-danger" Header="Delete Passkey" Message="@string.Format(Localizer["Confirm.Passkey.Delete", context.Name])" /></td>
+                                <td>@context.Name</td>
+                            </Row>
+                        </Pager>
+                    }
+                    else
+                    {
+                        <div class="db-empty">@Localizer["Message.Passkeys.None"]</div>
+                    }
+                </Section>
+                <br />
+            }
+            @if (_allowexternallogin)
+            {
+                <Section Name="Logins" Heading="Logins" ResourceKey="Logins" Expanded="@((_logins.Count > 0).ToString())">
+                    @if (_logins.Count > 0)
+                    {
+                        <Pager Items="@_logins">
+                            <Header>
+                            <th style="width: 1px;">&nbsp;</th>
+                            <th>@Localizer["Login"]</th>
+                            </Header>
+                            <Row>
+                                <td><ActionDialog Action="Delete" OnClick="@(async () => await DeleteLogin(context))" ResourceKey="DeleteLogin" Class="db-btn db-btn-danger" Header="Delete Login" Message="@string.Format(Localizer["Confirm.Login.Delete", context.Name])" /></td>
+                                <td>@context.Name</td>
+                            </Row>
+                        </Pager>
+                    }
+                    else
+                    {
+                        <div class="db-empty">@Localizer["Message.Logins.None"]</div>
+                    }
+                </Section>
+                <br />
+            }
+        </TabPanel>
+        <TabPanel Name="Profile" Heading="Profile" ResourceKey="Profile">
+            <div class="db-fields">
+                <div class="db-field">
+                    @foreach (Profile profile in _profiles)
+                    {
+                        var p = profile;
+                        if (p.Category != _category)
+                        {
+                            <div class="db-field-category">
+                                <strong>@p.Category</strong>
+                            </div>
+                            _category = p.Category;
+                        }
+                        <div class="db-field">
+                            <Label For="@p.Name" HelpText="@p.Description">@p.Title</Label>
+                            <div class="db-field-control">
+                                @if (!string.IsNullOrEmpty(p.Options))
+                                {
+                                    <select id="@p.Name" class="db-select" @onchange="@(e => ProfileChanged(e, p.Name))">
+                                        @foreach (var option in p.Options.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                        {
+                                            var values = option.Split(':');
+                                            var name = values[0];
+                                            var value = values.Length > 1 ? values[1] : values[0];
+                                            @if (GetProfileValue(p.Name, "") == name || (GetProfileValue(p.Name, "") == "" && p.DefaultValue == name))
+                                            {
+                                                <option value="@name" selected>@value</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@name">@value</option>
+                                            }
+                                        }
+                                    </select>
+                                }
+                                else
+                                {
+                                    @if (p.Rows == 1)
+                                    {
+                                        <input id="@p.Name" class="db-input" value="@GetProfileValue(p.Name, p.DefaultValue)" @onchange="@(e => ProfileChanged(e, p.Name))" @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)" />
+                                    }
+                                    else
+                                    {
+                                        <textarea id="@p.Name" class="db-input" rows="@p.Rows" value="@GetProfileValue(p.Name, p.DefaultValue)" @onchange="@(e => ProfileChanged(e, p.Name))" @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)"></textarea>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </TabPanel>
+    </TabStrip>
+    <br />
+    <button type="button" class="db-btn" @onclick="SaveUser">@SharedLocalizer["Save"]</button>
+    <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+    @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin) && PageState.Runtime != Shared.Runtime.Hybrid && !_ishost && _isdeleted != "True")
+    {
+        <button type="button" class="db-btn" @onclick="ImpersonateUser">@Localizer["Impersonate"]</button>
+    }
+    @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host) && _candelete)
+    {
+        <ActionDialog Header="Delete User" Message="Are You Sure You Wish To Permanently Delete This User?" Action="Delete" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUser())" ResourceKey="DeleteUser" />
+    }
+    <br /><br />
+    <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon" DeletedBy="@_deletedby" DeletedOn="@_deletedon"></AuditInfo>
+}
+
+@code {
+    private bool _initialized = false;
+    private bool _allowpasskeys = false;
+    private bool _allowexternallogin = false;
+
+    private List<Models.TimeZone> _timezones;
+    private IEnumerable<Language> _languages;
+
+    private int _userid;
+    private string _username = string.Empty;
+    private string _email = string.Empty;
+    private string _confirmed = string.Empty;
+    private string _displayname = string.Empty;
+    private string _timezoneid = string.Empty;
+    private string _culturecode = string.Empty;
+    private string _isdeleted;
+    private string _lastlogin;
+    private string _lastipaddress;
+    private bool _ishost = false;
+    private bool _candelete = false;
+
+    private string _passwordrequirements;
+    private string _password = string.Empty;
+    private string _passwordtype = "password";
+    private string _togglepassword = string.Empty;
+    private string _confirm = string.Empty;
+    private List<UserPasskey> _passkeys;
+    private List<UserLogin> _logins;
+
+    private List<Profile> _profiles;
+    private Dictionary<string, string> _settings;
+    private string _category = string.Empty;
+
+    private string _createdby;
+    private DateTime _createdon;
+    private string _modifiedby;
+    private DateTime _modifiedon;
+    private string _deletedby;
+    private DateTime? _deletedon;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _allowpasskeys = (SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:Passkeys", "false") == "true");
+            _allowexternallogin = (SettingService.GetSetting(PageState.Site.Settings, "ExternalLogin:ProviderType", "") != "") ? true : false;
+
+            if (PageState.QueryString.ContainsKey("id") && int.TryParse(PageState.QueryString["id"], out int UserId))
+            {
+                _userid = UserId;
+                var user = await UserService.GetUserAsync(_userid, PageState.Site.SiteId);
+                if (user != null)
+                {
+                    _timezones = TimeZoneService.GetTimeZones();
+                    _languages = await LanguageService.GetLanguagesAsync(PageState.Site.SiteId);
+
+                    _username = user.Username;
+                    _email = user.Email;
+                    _confirmed = user.EmailConfirmed.ToString();
+                    _displayname = user.DisplayName;
+                    _timezoneid = PageState.User.TimeZoneId;
+                    _culturecode = PageState.User.CultureCode;
+                    _isdeleted = user.IsDeleted.ToString();
+                    _candelete = user.IsDeleted;
+                    _lastlogin = string.Format("{0:MMM dd yyyy HH:mm:ss}", UtcToLocal(user.LastLoginOn));
+                    _lastipaddress = user.LastIPAddress;
+                    _ishost = UserSecurity.ContainsRole(user.Roles, RoleNames.Host);
+
+                    _passwordrequirements = await UserService.GetPasswordRequirementsAsync(PageState.Site.SiteId);
+                    _togglepassword = SharedLocalizer["ShowPassword"];
+                    await GetPasskeys();
+                    await GetLogins();
+
+                    _profiles = await ProfileService.GetProfilesAsync(PageState.Site.SiteId);
+                    foreach (var profile in _profiles)
+                    {
+                        if (profile.Options.ToLower().StartsWith("entityname:"))
+                        {
+                            var options = await SettingService.GetSettingsAsync(profile.Options.Substring(11), -1);
+                            options.Add("", $"<{SharedLocalizer["Not Specified"]}>");
+                            profile.Options = string.Join(",", options.OrderBy(item => item.Value).Select(kvp => $"{kvp.Key}:{kvp.Value}"));
+                        }
+                    }
+                   _settings = user.Settings;
+
+                    _createdby = user.CreatedBy;
+                    _createdon = user.CreatedOn;
+                    _modifiedby = user.ModifiedBy;
+                    _modifiedon = user.ModifiedOn;
+                    _deletedby = user.DeletedBy;
+                    _deletedon = user.DeletedOn;
+                }
+            }
+
+            _initialized = true;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading User {UserId} {Error}", _userid, ex.Message);
+            AddModuleMessage(Localizer["Error.User.Load"], MessageType.Error);
+        }
+    }
+
+    private string GetProfileValue(string SettingName, string DefaultValue)
+    {
+        string value = SettingService.GetSetting(_settings, SettingName, DefaultValue);
+        if (value.Contains("]"))
+        {
+            value = value.Substring(value.IndexOf("]") + 1);
+        }
+        return value;
+    }
+
+    private async Task SaveUser()
+    {
+        try
+        {
+            if (_username != string.Empty && _email != string.Empty)
+            {
+                if (_password == _confirm)
+                {
+                    if (ValidateProfiles())
+                    {
+                        var user = await UserService.GetUserAsync(_userid, PageState.Site.SiteId);
+                        user.SiteId = PageState.Site.SiteId;
+                        user.Username = _username;
+                        user.Password = _password;
+                        user.Email = _email;
+                        user.EmailConfirmed = bool.Parse(_confirmed);
+                        user.DisplayName = string.IsNullOrWhiteSpace(_displayname) ? _username : _displayname;
+                        user.TimeZoneId = _timezoneid;
+                        user.CultureCode = _culturecode;
+                        if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                        {
+                            user.IsDeleted = (_isdeleted == null ? true : Boolean.Parse(_isdeleted));
+                        }
+
+                        user = await UserService.UpdateUserAsync(user);
+                        if (user != null)
+                        {
+                            await SettingService.UpdateUserSettingsAsync(_settings, user.UserId);
+                            await logger.LogInformation("User Saved {User}", user);
+                            NavigationManager.NavigateTo(NavigateUrl());
+                        }
+                        else
+                        {
+                            AddModuleMessage(Localizer["Message.Password.Complexity"], MessageType.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.Password.NoMatch"], MessageType.Warning);
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.ProfileInfo"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving User {Username} {Email} {Error}", _username, _email, ex.Message);
+            AddModuleMessage(Localizer["Error.User.Save"], MessageType.Error);
+        }
+    }
+
+    private async Task ImpersonateUser()
+    {
+        try
+        {
+            await logger.LogInformation(LogFunction.Security, "User {Username} Impersonated By Administrator {Administrator}", _username, PageState.User.Username);
+
+            // post back to the server so that the cookies are set correctly
+            var interop = new Interop(JSRuntime);
+            var fields = new { __RequestVerificationToken = SiteState.AntiForgeryToken, username = _username, returnurl = PageState.Alias.Path };
+            string url = Utilities.TenantUrl(PageState.Alias, "/pages/impersonate/");
+            await interop.SubmitForm(url, fields);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Impersonating User {Username} {Error}", _username, ex.Message);
+            AddModuleMessage(Localizer["Error.User.Impersonate"], MessageType.Error);
+        }
+    }
+
+    private async Task DeleteUser()
+    {
+        try
+        {
+            if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host) && _userid != PageState.User.UserId)
+            {
+                var user = await UserService.GetUserAsync(_userid, PageState.Site.SiteId);
+                await UserService.DeleteUserAsync(user.UserId, PageState.Site.SiteId);
+                await logger.LogInformation("User Permanently Deleted {User}", user);
+                NavigationManager.NavigateTo(NavigateUrl());
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Permanently Deleting User {UserId} {Error}", _userid, ex.Message);
+            AddModuleMessage(Localizer["Error.DeleteUser"], MessageType.Error);
+        }
+    }
+
+    private async Task GetPasskeys()
+    {
+        if (_allowpasskeys)
+        {
+            _passkeys = await UserService.GetPasskeysAsync(_userid);
+        }
+    }
+    private async Task DeletePasskey(UserPasskey passkey)
+    {
+        await UserService.DeletePasskeyAsync(_userid, passkey.CredentialId);
+        await GetPasskeys();
+        StateHasChanged();
+    }
+    
+    private async Task GetLogins()
+    {
+        if (_allowexternallogin)
+        {
+            _logins = await UserService.GetLoginsAsync(_userid);
+        }
+    }
+
+    private async Task DeleteLogin(UserLogin login)
+    {
+        await UserService.DeleteLoginAsync(_userid, login.Provider, login.Key);
+        await GetLogins();
+        StateHasChanged();
+    }
+    
+    private bool ValidateProfiles()
+    {
+        foreach (Profile profile in _profiles)
+        {
+            var value = GetProfileValue(profile.Name, string.Empty);
+            if (string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(profile.DefaultValue))
+            {
+                _settings = SettingService.SetSetting(_settings, profile.Name, profile.DefaultValue);
+            }
+            if (!profile.IsPrivate || UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
+            {
+                if (profile.IsRequired && string.IsNullOrEmpty(value))
+                {
+                    AddModuleMessage(string.Format(SharedLocalizer["ProfileRequired"], profile.Title), MessageType.Warning);
+                    return false;
+                }
+                if (!string.IsNullOrEmpty(profile.Validation))
+                {
+                    Regex regex = new Regex(profile.Validation);
+                    bool valid = regex.Match(value).Success;
+                    if (!valid)
+                    {
+                        AddModuleMessage(string.Format(SharedLocalizer["ProfileInvalid"], profile.Title), MessageType.Warning);
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private void ProfileChanged(ChangeEventArgs e, string SettingName)
+    {
+        var value = (string)e.Value;
+        _settings = SettingService.SetSetting(_settings, SettingName, value);
+    }
+
+    private void TogglePassword()
+	{
+		if (_passwordtype == "password")
+		{
+			_passwordtype = "text";
+			_togglepassword = SharedLocalizer["HidePassword"];
+		}
+		else
+		{
+			_passwordtype = "password";
+			_togglepassword = SharedLocalizer["ShowPassword"];
+		}
+	}
+}

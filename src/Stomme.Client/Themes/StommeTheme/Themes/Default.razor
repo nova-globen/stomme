@@ -1,0 +1,98 @@
+@namespace Stomme.Themes.StommeTheme
+@inherits ThemeBase
+@inject ISettingService SettingService
+
+@* The Stomme theme defines no colour of its own, so its buttons - Stomme's and FluentUI's - take app.css's default,
+   the signature amber (BL-192). FluentUI's providers are rendered once for every theme by ThemeBuilder. *@
+
+<div class="db-shell">
+    <header class="db-header">
+        <span class="app-logo"><Logo UseSiteNameAsFallback="true" /></span>
+        <nav class="db-header-nav">
+            <Menu MenuType="Stomme.Themes.Controls.MenuHorizontal, Stomme.Client" />
+        </nav>
+        <div class="db-header-actions">
+            <span class="app-search"><Search /></span>
+            <UserProfile ShowRegister="@_register" />
+            <Login ShowLogin="@_login" />
+            <ControlPanel LanguageDropdownAlignment="right" />
+            <button type="button" class="db-icon-btn db-theme-toggle" onclick="stommeTheme.toggle()" title="Toggle light / dark theme" aria-label="Toggle theme">◐</button>
+        </div>
+    </header>
+
+    @* The pane grid is CSS Grid on --db-* rather than Bootstrap's .row/.col-md-* scaffold (D11).
+       `.db-panes` is a 12-column grid that collapses to a single column below the md breakpoint,
+       which is what col-md-* did; `.db-pane-N` spans N columns. Empty panes collapse away, so a
+       row with nothing in it takes no space. *@
+    <main role="main" class="db-body">
+        <div class="db-page">
+            <div class="db-panes">
+                <div class="db-pane-12"><Pane Name="@PaneNames.Default" /></div>
+            </div>
+            <Pane Name="Top Full Width" />
+            <div class="db-panes">
+                <div class="db-pane-12"><Pane Name="Top 100%" /></div>
+            </div>
+            <div class="db-panes">
+                <div class="db-pane-6"><Pane Name="Left 50%" /></div>
+                <div class="db-pane-6"><Pane Name="Right 50%" /></div>
+            </div>
+            <div class="db-panes">
+                <div class="db-pane-4"><Pane Name="Left 33%" /></div>
+                <div class="db-pane-4"><Pane Name="Center 33%" /></div>
+                <div class="db-pane-4"><Pane Name="Right 33%" /></div>
+            </div>
+            <div class="db-panes">
+                <div class="db-pane-3"><Pane Name="Left Outer 25%" /></div>
+                <div class="db-pane-3"><Pane Name="Left Inner 25%" /></div>
+                <div class="db-pane-3"><Pane Name="Right Inner 25%" /></div>
+                <div class="db-pane-3"><Pane Name="Right Outer 25%" /></div>
+            </div>
+            <div class="db-panes">
+                <div class="db-pane-3"><Pane Name="Left 25%" /></div>
+                <div class="db-pane-6"><Pane Name="Center 50%" /></div>
+                <div class="db-pane-3"><Pane Name="Right 25%" /></div>
+            </div>
+            <div class="db-panes">
+                <div class="db-pane-8"><Pane Name="Left Sidebar 66%" /></div>
+                <div class="db-pane-4"><Pane Name="Right Sidebar 33%" /></div>
+            </div>
+            <div class="db-panes">
+                <div class="db-pane-4"><Pane Name="Left Sidebar 33%" /></div>
+                <div class="db-pane-8"><Pane Name="Right Sidebar 66%" /></div>
+            </div>
+            <div class="db-panes">
+                <div class="db-pane-12"><Pane Name="Bottom 100%" /></div>
+            </div>
+            <Pane Name="Bottom Full Width" />
+        </div>
+    </main>
+
+    <footer class="db-footer">
+        <Pane Name="Footer" />
+    </footer>
+    <CookieConsent />
+</div>
+
+@code {
+    public override string Name => "Default Theme";
+
+    public override string Panes => PaneNames.Default + ",Top Full Width,Top 100%,Left 50%,Right 50%,Left 33%,Center 33%,Right 33%,Left Outer 25%,Left Inner 25%,Right Inner 25%,Right Outer 25%,Left 25%,Center 50%,Right 25%,Left Sidebar 66%,Right Sidebar 33%,Left Sidebar 33%,Right Sidebar 66%,Bottom 100%,Bottom Full Width,Footer";
+
+    private bool _login = true;
+    private bool _register = true;
+
+    protected override void OnParametersSet()
+    {
+        try
+        {
+            var settings = SettingService.MergeSettings(PageState.Site.Settings, PageState.Page.Settings);
+            _login = bool.Parse(SettingService.GetSetting(settings, GetType().Namespace + ":Login", "true"));
+            _register = bool.Parse(SettingService.GetSetting(settings, GetType().Namespace + ":Register", "true"));
+        }
+        catch
+        {
+            // error loading theme settings
+        }
+    }
+}

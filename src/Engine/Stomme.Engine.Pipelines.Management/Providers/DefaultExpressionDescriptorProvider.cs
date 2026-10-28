@@ -1,0 +1,135 @@
+using System.Text.Json;
+using Stomme.Engine.Expressions;
+using Stomme.Engine.Expressions.Contracts;
+using Stomme.Engine.Expressions.Models;
+using Stomme.Engine.Extensions;
+using Stomme.Engine.Pipelines.Expressions;
+using Stomme.Engine.Pipelines.Memory;
+using Stomme.Engine.Pipelines.Models;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Stomme.Engine.Pipelines.Management.Providers;
+
+/// <inheritdoc />
+public class DefaultExpressionDescriptorProvider : IExpressionDescriptorProvider
+{
+    /// <inheritdoc />
+    public IEnumerable<ExpressionDescriptor> GetDescriptors()
+    {
+        yield return CreateLiteralDescriptor();
+        yield return CreateObjectDescriptor();
+        yield return CreateJsonDescriptor();
+        yield return CreateDelegateDescriptor();
+        yield return CreateVariableDescriptor();
+        yield return CreateInputDescriptor();
+    }
+
+    private ExpressionDescriptor CreateLiteralDescriptor()
+    {
+        return CreateDescriptor<LiteralExpressionHandler>(
+            "Literal",
+            "Literal",
+            isBrowsable: false,
+            memoryBlockReferenceFactory: () => new Literal(),
+            deserialize: context =>
+            {
+                var elementValue = context.JsonElement.TryGetProperty("value", out var v) ? v : default;
+                var value = elementValue.GetValue();
+                return new Expression("Literal", value);
+            });
+    }
+
+    private ExpressionDescriptor CreateObjectDescriptor() => CreateDescriptor<ObjectExpressionHandler>("Object", "Object", monacoLanguage: "json", isBrowsable: false);
+
+    [Obsolete("Use Object instead.")]
+    private ExpressionDescriptor CreateJsonDescriptor() => CreateDescriptor<ObjectExpressionHandler>("Json", "Json", monacoLanguage: "json", isBrowsable: false);
+
+    private ExpressionDescriptor CreateDelegateDescriptor() => CreateDescriptor<DelegateExpressionHandler>("Delegate", "Delegate", false, false);
+
+    private ExpressionDescriptor CreateVariableDescriptor()
+    {
+        return CreateDescriptor<VariableExpressionHandler>(
+            "Variable",
+            "Variable",
+            isBrowsable: true,
+            memoryBlockReferenceFactory: () => new Variable(),
+            deserialize: context =>
+            {
+                var valueElement = context.JsonElement.TryGetProperty("value", out var v) ? v : default;
+                var valueString = valueElement.GetValue()?.ToString();
+
+                if (string.IsNullOrWhiteSpace(valueString))
+                    return new Expression("Variable", null);
+
+                try
+                {
+                    var value = JsonSerializer.Deserialize(valueString, context.MemoryBlockType, context.Options);
+                    return new Expression("Variable", value);
+                }
+                catch (Exception)
+                {
+                    return new Expression("Variable", null);
+                }
+            }
+        );
+    }
+
+    private ExpressionDescriptor CreateInputDescriptor()
+    {
+        return CreateDescriptor<InputExpressionHandler>(
+            "Input",
+            "Input", // Displayed text in UI (input selection dropdown)
+            isBrowsable: true,
+            deserialize: context =>
+            {
+                var valueElement = context.JsonElement.TryGetProperty("value", out var v) ? v : default;
+                var valueString = valueElement.GetValue()?.ToString();
+
+                if (string.IsNullOrWhiteSpace(valueString)) return new Expression("Input", null);
+
+                try
+                {
+                    var value = JsonSerializer.Deserialize(valueString, typeof(InputDefinition), context.Options);
+
+                    return new Expression("Input", value);
+                }
+                catch (Exception)
+                {
+                    return new Expression("Input", null);
+                }
+            }
+        );
+    }
+
+    private static ExpressionDescriptor CreateDescriptor<THandler>(
+        string expressionType,
+        string displayName,
+        bool isSerializable = true,
+        bool isBrowsable = true,
+        string? monacoLanguage = null,
+        Func<MemoryBlockReference>? memoryBlockReferenceFactory = default,
+        Func<ExpressionSerializationContext, Expression>? deserialize = default)
+        where THandler : IExpressionHandler
+    {
+        var descriptor = new ExpressionDescriptor
+        {
+            Type = expressionType,
+            DisplayName = displayName,
+            IsSerializable = isSerializable,
+            IsBrowsable = isBrowsable,
+            HandlerFactory = sp => ActivatorUtilities.GetServiceOrCreateInstance<THandler>(sp),
+            MemoryBlockReferenceFactory = memoryBlockReferenceFactory ?? (() => new MemoryBlockReference())
+        };
+
+        if (deserialize != null)
+            descriptor.Deserialize = deserialize;
+
+        if (monacoLanguage != null)
+            descriptor.Properties = new
+            {
+                MonacoLanguage = monacoLanguage
+            }.ToDictionary();
+
+        return descriptor;
+    }
+}

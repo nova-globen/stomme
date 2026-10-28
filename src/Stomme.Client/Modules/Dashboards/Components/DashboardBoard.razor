@@ -1,0 +1,75 @@
+@namespace Stomme.Modules.Dashboards.Components
+@using Stomme.Dashboards
+@using Stomme.Modules.Dashboards.Services
+
+@*
+    A READ-ONLY board (BL-98 increment 2): the grid and every widget's body, no builder, no refresh, no live connection, so
+    it renders statically - the landing page shows a dashboard with it and opens no circuit. Its charts are drawn in the
+    browser by stommeCharts.renderAll from what each chart element carries (the page that shows the board loads that
+    runtime). The data is the viewer's: LoadAsync reads it through the Dashboards service, whose requests decide
+    dashboards:view again, and a widget that cannot be read says why in its cell.
+*@
+
+<div class="db-dash-board" data-dashboard-id="@Board.Id">
+    @if (Board.Widgets.Count == 0)
+    {
+        <p id="dashboard-no-widgets" style="margin:0;color:var(--db-text-2);">This dashboard has no widgets yet.</p>
+    }
+    else
+    {
+        <div class="db-dash-grid" style="@($"--db-dash-cols: {Board.Columns}; --db-dash-row-h: {Board.RowHeightPx}px;")">
+            @foreach (var widget in Board.Widgets)
+            {
+                <div class="db-widget" id="widget-@widget.Id" style="@($"grid-column: {widget.Column + 1} / span {widget.ColumnSpan}; grid-row: {widget.Row + 1} / span {widget.RowSpan};")" role="region" aria-label="@widget.Title">
+                    <div class="db-widget-head">
+                        <div class="db-widget-titles">
+                            <strong class="db-widget-title">@widget.Title</strong>
+                        </div>
+                    </div>
+                    <div class="db-widget-body">
+                        <DashboardWidgetBody Widget="widget" Data="@(Data.TryGetValue(widget.Id, out var data) ? data : null)" Error="@(Errors.TryGetValue(widget.Id, out var error) ? error : null)" StaticChart="true" />
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public DashboardView Board { get; set; }
+
+    [Parameter]
+    public IReadOnlyDictionary<Guid, WidgetDataView> Data { get; set; } = new Dictionary<Guid, WidgetDataView>();
+
+    [Parameter]
+    public IReadOnlyDictionary<Guid, string> Errors { get; set; } = new Dictionary<Guid, string>();
+
+    /// <summary>The reason a static board shows in a widget it could not read - fixed, because the board may be public.</summary>
+    public const string Unavailable = "This widget's data is unavailable.";
+
+    /// <summary>
+    /// Reads every widget's data for <paramref name="board"/> as the current viewer. A widget whose data cannot be read shows
+    /// <see cref="Unavailable"/> - never the exception's words, which a public page must not carry - and one widget never
+    /// takes the board down; <paramref name="failed"/> hears each failure, for the caller's log.
+    /// </summary>
+    public static async Task<(Dictionary<Guid, WidgetDataView> Data, Dictionary<Guid, string> Errors)> LoadAsync(IDashboardsService dashboards, DashboardView board, Func<WidgetView, Exception, Task> failed)
+    {
+        var data = new Dictionary<Guid, WidgetDataView>();
+        var errors = new Dictionary<Guid, string>();
+        foreach (var widget in board.Widgets)
+        {
+            try
+            {
+                data[widget.Id] = await dashboards.GetWidgetDataAsync(board.Id, widget.Id);
+            }
+            catch (Exception ex)
+            {
+                errors[widget.Id] = Unavailable;
+                await failed(widget, ex);
+            }
+        }
+
+        return (data, errors);
+    }
+}

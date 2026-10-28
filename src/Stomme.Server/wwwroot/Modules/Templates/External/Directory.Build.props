@@ -1,0 +1,4 @@
+<Project>
+  <!-- Deliberately empty: it stops MSBuild from importing an enclosing repository's Directory.Build.props, so the module
+       builds the same wherever it is generated. -->
+</Project>

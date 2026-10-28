@@ -1,0 +1,160 @@
+---
+name: stomme-oidc-provider
+description: Use when a Nova Globen Stomme installation must act as an OpenID Connect / OAuth 2.0 provider - single sign-on for other applications, access tokens for calling the site's API from a script, a service or a mobile app, client-credentials service accounts, registering client applications, or setting the signing certificate - or when tokens stop working after a restart, are rejected as ID2088, or a discovery document answers 404.
+---
+
+# Run the OpenID Connect provider
+
+You will have an installation that issues OpenID Connect tokens per tenant host name: other applications sign people in
+with their Stomme account (authorization code with PKCE), and a script or service calls the site's `/api/...` with an
+access token. Read [authentication-options.md](../../../docs/security/authentication-options.md) first - it explains the
+per-host issuer, the endpoints and every key.
+
+## Steps
+
+1. **Give each tenant that must issue tokens its own host name.** The endpoints live at the root of the host; a site
+   reachable only at `example.com/folder` has no provider. Add the alias in **Admin > Site Management**.
+
+2. **Make a signing certificate and an encryption certificate** (a self-signed RSA certificate is enough; the public
+   key is published in the JWKS). Example with OpenSSL, run where the app's data lives:
+
+   ```
+   openssl req -x509 -newkey rsa:3072 -sha256 -days 730 -nodes -subj "/CN=app.example.com token signing" -keyout signing.key -out signing.crt
+   openssl req -x509 -newkey rsa:3072 -sha256 -days 730 -nodes -subj "/CN=app.example.com token encryption" -keyout encryption.key -out encryption.crt
+   ```
+
+   Keep the files out of the repository, on storage that survives a redeploy, readable only by the app. (In Git Bash
+   on Windows, prefix each command with `MSYS_NO_PATHCONV=1`, or `/CN=...` is rewritten into a file path; PowerShell
+   and Linux shells need nothing.)
+
+3. **Switch the provider on and point it at the certificates.** Environment variables (or the installation's
+   `appsettings.override.json`; never the committed `appsettings.json` for paths and passwords):
+
+   ```
+   OpenIddict__Enabled=true
+   OpenIddict__SigningCertificatePemPath=/data/oidc/signing.crt
+   OpenIddict__SigningCertificateKeyPath=/data/oidc/signing.key
+   OpenIddict__EncryptionCertificatePemPath=/data/oidc/encryption.crt
+   OpenIddict__EncryptionCertificateKeyPath=/data/oidc/encryption.key
+   ```
+
+   The same keys as JSON in the installation's `appsettings.override.json` work too:
+   `"OpenIddict": { "Enabled": true, "SigningCertificatePemPath": "...", ... }`. A `.pfx` works too:
+   `OpenIddict__SigningCertificatePath` and `OpenIddict__SigningCertificatePassword` (and the `Encryption...` pair). A
+   configured path that does not exist stops the app at startup with the key's name.
+
+4. **Restart the app.** The switch is read at startup. **Admin > Identity Provider** (`/admin/openiddict`, Host only)
+   appears.
+
+5. **Register a client application**, either in **Admin > Identity Provider** (the secret is shown once, in the answer
+   to the create; it is hashed at rest), or declaratively, created or updated per tenant on the tenant's first request
+   after each start, and never deleted:
+
+   ```json
+   "OpenIddict": {
+     "Applications": [
+       {
+         "ClientId": "reports",
+         "ClientSecretEnv": "REPORTS_CLIENT_SECRET",
+         "DisplayName": "Reports",
+         "Type": "confidential",
+         "GrantTypes": [ "authorization_code", "refresh_token" ],
+         "Scopes": [ "openid", "profile", "email", "offline_access", "api" ],
+         "RedirectUris": [ "https://reports.example.com/signin-oidc" ],
+         "PostLogoutRedirectUris": [ "https://reports.example.com/signout-callback-oidc" ]
+       }
+     ]
+   }
+   ```
+
+   `ClientSecretEnv` names an environment variable holding the secret, so the secret never enters a file; the variable
+   must be set in the app's own environment. A browser or mobile app is `"Type": "public"` with no secret. PKCE is
+   required for every authorization-code request, confidential clients included (a request without `code_challenge`
+   is refused with "The mandatory 'code_challenge' parameter is missing."). A client gets only the endpoints, grants
+   and scopes listed. Include `api` in `Scopes` for a client that calls the site's API. A changed item (a new redirect
+   URI, for example) is applied at the next start.
+
+6. **Point the other application at the authority** `https://{tenant host}`: it reads
+   `https://{tenant host}/.well-known/openid-configuration`. Use authorization code with PKCE. The ID token carries
+   `sub`, `name`, `preferred_username` and `email`; roles are not in the token.
+
+7. **Call the site's API with a token** (for a person, from step 6; the token must carry the `api` scope):
+
+   ```
+   GET https://{tenant host}/api/{Controller}/...
+   Authorization: Bearer {access token}
+   ```
+
+   The request runs as that person on the REQUEST's site, with their roles and permission keys read per request. No
+   antiforgery header is needed with a bearer token.
+
+8. **A service with no person behind it** (client credentials): register a confidential client with
+   `"GrantTypes": [ "client_credentials" ]` and `"Scopes": [ "api" ]`, set `OpenIddict__ServiceAccounts__Enabled=true`,
+   restart, and create the client's service account from its page in **Admin > Identity Provider** (or
+   `POST api/OpenIddict/applications/{clientId}/service-account` as the Host). The account is created on the site you
+   are on, already in `Registered Users`; grant it further roles in **Admin > User Management** as for a person.
+   Without a service account a client-credentials token signs nobody in on `/api/...`.
+
+## Verify
+
+Everything below was driven on a local install (SQLite, Development, plain HTTP on loopback host names); in
+production use `https://`.
+
+1. `GET https://{tenant host}/.well-known/openid-configuration` answers JSON whose `issuer` is `https://{tenant host}/`
+   and whose `jwks_uri` is `/.well-known/jwks`; the same request on another host name of the installation shows that
+   host as the issuer. `GET /.well-known/jwks` lists one `RSA` key with `use: sig`.
+2. Client credentials, from a shell (`nightly-sync` being a client registered with the `client_credentials` grant and
+   the `api` scope, as in step 8):
+
+   ```
+   curl -s -X POST https://{tenant host}/connect/token -d grant_type=client_credentials -d client_id=nightly-sync -d client_secret=... -d scope=api
+   ```
+
+   answers an `access_token` (`token_type` `Bearer`, `expires_in` 3599) whose payload has `aud` `stomme-api`,
+   `scope` `api` and `sub` = the client id. A wrong secret answers 401 `invalid_client`. `GET /connect/whoami` with the
+   token answers `{"subject":"nightly-sync","scopes":["api"]}`; `GET /connect/userinfo` answers 401 (there is no
+   person). With the service account of step 8, `GET /api/{Controller}` answers 200, and a `POST` works without an
+   antiforgery header.
+3. Authorization code: `GET /connect/authorize?client_id=...&redirect_uri=...&response_type=code&scope=openid profile email api offline_access&code_challenge=...&code_challenge_method=S256&state=...&nonce=...`
+   - not signed in: 302 to `/login?returnurl=/connect/authorize...`;
+   - signed in: 302 to the redirect URI with `code`, `state` and `iss` (or a self-posting form with
+     `response_mode=form_post`).
+   Exchanging the code (with `code_verifier`) at `/connect/token` answers `access_token`, `id_token` and, with
+   `offline_access`, `refresh_token`. The ID token carries `sub` (the user's identity id), `name`,
+   `preferred_username` and `email`, no roles. `/connect/userinfo` with the access token answers the same claims.
+   The refresh token gets new tokens. `GET /connect/endsession?id_token_hint=...&post_logout_redirect_uri=...`
+   answers 302 to the registered post-logout URI, and the next authorize request asks for the login again.
+4. Sign in to the other application through Stomme (another Stomme site can be that application - the
+   [stomme-add-external-login](../stomme-add-external-login/SKILL.md) skill): the Stomme login page appears, then
+   the application receives the user.
+5. `GET /api/...` with the person's access token answers what that person may see; with no token the same call is
+   anonymous; with a token from another host name it is anonymous (the token is rejected; a call that needs a
+   permission answers 403).
+6. Restart the app: the token from step 2 still works and the JWKS `kid` is unchanged (a certificate is configured).
+   Delete the client in **Admin > Identity Provider** (or `DELETE api/OpenIddict/applications/{clientId}`) and call
+   `/api/...` with its old token: it is anonymous at once (`/connect/whoami` answers 401). A client declared in
+   `OpenIddict:Applications` comes back at the next start.
+
+## Common mistakes
+
+- **Every restart invalidates every token, and the JWKS changes.** No signing certificate is configured: the provider
+  fell back to an ephemeral key. Step 2 and 3.
+- **Discovery answers 404.** `OpenIddict:Enabled` is not `true` in the configuration the host runs on, the app was not
+  restarted, or the site is reachable only at a virtual-folder alias.
+- **The provider refuses plain HTTP outside Development** - every endpoint, discovery included, answers 400
+  "This server only accepts HTTPS requests.". Serve HTTPS, or have the reverse proxy send `X-Forwarded-Proto: https`.
+  The host believes that header only from a proxy on loopback or a private network, or one named in
+  `ForwardedHeaders:KnownProxies` (see [security-posture.md](../../../docs/security/security-posture.md)); a proxy
+  elsewhere must be named, or the provider sees plain HTTP.
+- **"The mandatory 'code_challenge' parameter is missing."** The client does not send PKCE; every authorization-code
+  request needs it, a confidential client's too.
+- **A token works on one host name and not on another.** By design: the issuer is the host name. Use the host name the
+  token was issued at.
+- **The API ignores the token.** It lacks the `api` scope (the client was not registered with it, or did not request
+  it), or it is a client-credentials token and no service account exists.
+- **`invalid_client` for a configured client.** It is confidential and its secret resolved to nothing - the variable
+  named by `ClientSecretEnv` is not set in the app's environment.
+- **A consent screen was expected.** There is none; `ConsentType = explicit` is stored but not shown. Register only
+  clients you trust.
+- **Several instances disagree about tokens.** Every instance needs the same certificates (and the same Data Protection
+  key ring - see [security-posture.md](../../../docs/security/security-posture.md)).

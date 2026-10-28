@@ -1,0 +1,225 @@
+@namespace Stomme.Modules.Admin.OpenIddict
+@inherits ModuleBase
+@inject IOpenIddictService OpenIddictService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_status == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else if (!_status.Enabled)
+{
+    @* The authority is opt-in (OpenIddict:Enabled) so a stock install is byte-for-byte unaffected. Say so
+       plainly rather than rendering empty tables, which read as "no clients registered". *@
+    <div class="db-note db-note-warn">
+        <strong>@Localizer["Disabled.Heading"]</strong>
+        <p>@Localizer["Disabled.Text"]</p>
+        <pre class="db-mono">"OpenIddict": {
+  "Enabled": true
+}</pre>
+    </div>
+}
+else
+{
+    <TabStrip>
+        <TabPanel Name="Applications" Heading="Applications" ResourceKey="Applications">
+            <div class="db-page-head">
+                <ActionLink Action="Add" Text="Add Client" Security="SecurityAccessLevel.Host" ResourceKey="AddClient" />
+            </div>
+
+            @if (_applications == null || _applications.Count == 0)
+            {
+                <p><em>@Localizer["NoClients"]</em></p>
+            }
+            else
+            {
+                <Pager Items="@_applications" SearchProperties="ClientId,DisplayName">
+                    <Header>
+                        <th style="width: 1px;">&nbsp;</th>
+                        <th style="width: 1px;">&nbsp;</th>
+                        <th>@Localizer["ClientId"]</th>
+                        <th>@SharedLocalizer["Name"]</th>
+                        <th>@Localizer["ClientType"]</th>
+                        <th>@Localizer["GrantTypes"]</th>
+                        <th>@Localizer["Scopes"]</th>
+                        <th>@Localizer["RedirectUris"]</th>
+                    </Header>
+                    <Row>
+                        <td><ActionLink Action="Edit" Text="Edit" Security="SecurityAccessLevel.Host" Parameters="@($"clientid={Uri.EscapeDataString(context.ClientId)}")" ResourceKey="EditClient" /></td>
+                        <td>
+                            <ActionDialog Header="Delete Client" Message="@string.Format(Localizer["Confirm.DeleteClient"], context.ClientId)" Action="Delete"
+                                          Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger"
+                                          OnClick="@(async () => await DeleteApplication(context))" ResourceKey="DeleteClient" />
+                        </td>
+                        <td>@context.ClientId</td>
+                        <td>@context.DisplayName</td>
+                        <td>
+                            @context.ClientType
+                            @if (context.RequirePkce)
+                            {
+                                <span class="db-status-pill muted">PKCE</span>
+                            }
+                        </td>
+                        <td>@string.Join(", ", context.GrantTypes)</td>
+                        <td>@string.Join(", ", context.Scopes)</td>
+                        <td>@((MarkupString)string.Join("<br />", context.RedirectUris))</td>
+                    </Row>
+                </Pager>
+            }
+        </TabPanel>
+
+        <TabPanel Name="Scopes" Heading="Scopes" ResourceKey="Scopes">
+            <div class="db-page-head">
+                <ActionLink Action="Scope" Text="Add Scope" Security="SecurityAccessLevel.Host" ResourceKey="AddScope" />
+            </div>
+
+            @if (_scopes == null || _scopes.Count == 0)
+            {
+                <p><em>@Localizer["NoScopes"]</em></p>
+            }
+            else
+            {
+                <Pager Items="@_scopes" SearchProperties="Name,DisplayName">
+                    <Header>
+                        <th style="width: 1px;">&nbsp;</th>
+                        <th style="width: 1px;">&nbsp;</th>
+                        <th>@SharedLocalizer["Name"]</th>
+                        <th>@Localizer["DisplayName"]</th>
+                        <th>@Localizer["Description"]</th>
+                        <th>@Localizer["Resources"]</th>
+                    </Header>
+                    <Row>
+                        <td><ActionLink Action="Scope" Text="Edit" Security="SecurityAccessLevel.Host" Parameters="@($"name={Uri.EscapeDataString(context.Name)}")" ResourceKey="EditScope" /></td>
+                        <td>
+                            <ActionDialog Header="Delete Scope" Message="@string.Format(Localizer["Confirm.DeleteScope"], context.Name)" Action="Delete"
+                                          Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger"
+                                          OnClick="@(async () => await DeleteScope(context))" ResourceKey="DeleteScope" />
+                        </td>
+                        <td>@context.Name</td>
+                        <td>@context.DisplayName</td>
+                        <td>@context.Description</td>
+                        <td>@string.Join(", ", context.Resources)</td>
+                    </Row>
+                </Pager>
+            }
+        </TabPanel>
+
+        <TabPanel Name="Endpoints" Heading="Endpoints" ResourceKey="Endpoints">
+            @* The issuer is INFERRED from the request host (D61 deliberately never calls SetIssuer), so these
+               values belong to THIS alias — a second tenant sees its own. They are what a relying party needs. *@
+            <div class="db-card">
+                <div class="db-fields">
+                    <div class="db-field">
+                        <Label HelpText="The issuer this tenant's tokens carry. It is inferred from the request host, so every alias is its own issuer." ResourceKey="Issuer">Issuer:</Label>
+                        <div class="db-field-control"><input class="db-input" readonly value="@_status.Issuer" /></div>
+                    </div>
+                    <div class="db-field">
+                        <Label HelpText="The OpenID Connect discovery document a relying party reads to configure itself" ResourceKey="Discovery">Discovery:</Label>
+                        <div class="db-field-control"><input class="db-input" readonly value="@_status.DiscoveryEndpoint" /></div>
+                    </div>
+                    <div class="db-field">
+                        <Label HelpText="The authorization endpoint (interactive browser login)" ResourceKey="Authorization">Authorization:</Label>
+                        <div class="db-field-control"><input class="db-input" readonly value="@_status.AuthorizationEndpoint" /></div>
+                    </div>
+                    <div class="db-field">
+                        <Label HelpText="The token endpoint" ResourceKey="Token">Token:</Label>
+                        <div class="db-field-control"><input class="db-input" readonly value="@_status.TokenEndpoint" /></div>
+                    </div>
+                    <div class="db-field">
+                        <Label HelpText="The userinfo endpoint" ResourceKey="UserInfo">UserInfo:</Label>
+                        <div class="db-field-control"><input class="db-input" readonly value="@_status.UserInfoEndpoint" /></div>
+                    </div>
+                    <div class="db-field">
+                        <Label HelpText="The RP-initiated logout (end session) endpoint" ResourceKey="EndSession">End Session:</Label>
+                        <div class="db-field-control"><input class="db-input" readonly value="@_status.EndSessionEndpoint" /></div>
+                    </div>
+                    <div class="db-field">
+                        <Label HelpText="The JSON Web Key Set a relying party uses to validate token signatures" ResourceKey="Jwks">JWKS:</Label>
+                        <div class="db-field-control"><input class="db-input" readonly value="@_status.JsonWebKeySetEndpoint" /></div>
+                    </div>
+                    <div class="db-field">
+                        <Label HelpText="Whether a persistent signing certificate is configured. Without one the key is ephemeral and regenerates on every restart, invalidating outstanding tokens." ResourceKey="SigningKey">Signing Key:</Label>
+                        <div class="db-field-control">
+                            @if (_status.HasPersistentSigningKey)
+                            {
+                                <span class="db-status-pill online">@Localizer["SigningKey.Persistent"]</span>
+                            }
+                            else
+                            {
+                                <span class="db-status-pill warning">@Localizer["SigningKey.Ephemeral"]</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanel>
+    </TabStrip>
+}
+
+@code {
+    private OpenIddictStatus _status;
+    private List<OpenIddictApplicationSummary> _applications;
+    private List<OpenIddictScopeSeed> _scopes;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    public override string Title => "Identity Provider";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Refresh();
+    }
+
+    private async Task Refresh()
+    {
+        try
+        {
+            _status = await OpenIddictService.GetStatusAsync();
+            if (_status != null && _status.Enabled)
+            {
+                _applications = await OpenIddictService.GetApplicationsAsync() ?? new List<OpenIddictApplicationSummary>();
+                _scopes = await OpenIddictService.GetScopesAsync() ?? new List<OpenIddictScopeSeed>();
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading OpenIddict Configuration {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Load"], MessageType.Error);
+        }
+    }
+
+    private async Task DeleteApplication(OpenIddictApplicationSummary application)
+    {
+        try
+        {
+            await OpenIddictService.DeleteApplicationAsync(application.ClientId);
+            await logger.LogInformation("OpenIddict Client Deleted {ClientId}", application.ClientId);
+            await Refresh();
+            AddModuleMessage(string.Format(Localizer["Success.DeleteClient"], application.ClientId), MessageType.Success);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting OpenIddict Client {ClientId} {Error}", application.ClientId, ex.Message);
+            AddModuleMessage(Localizer["Error.DeleteClient"], MessageType.Error);
+        }
+    }
+
+    private async Task DeleteScope(OpenIddictScopeSeed scope)
+    {
+        try
+        {
+            await OpenIddictService.DeleteScopeAsync(scope.Name);
+            await logger.LogInformation("OpenIddict Scope Deleted {Scope}", scope.Name);
+            await Refresh();
+            AddModuleMessage(string.Format(Localizer["Success.DeleteScope"], scope.Name), MessageType.Success);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting OpenIddict Scope {Scope} {Error}", scope.Name, ex.Message);
+            AddModuleMessage(Localizer["Error.DeleteScope"], MessageType.Error);
+        }
+    }
+}

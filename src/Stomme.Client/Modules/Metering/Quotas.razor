@@ -1,0 +1,180 @@
+@namespace Stomme.Modules.Metering
+@inherits ModuleBase
+@inject IMeteringService MeteringService
+
+@*
+    The site's quotas (D102 items 8 and 11). Reading needs metering:view; every write needs metering:manage and the
+    write buttons are not rendered without it - and the server decides again, by the action's key AND the request's.
+    No control here can name a site or a tenant: the server resolves both from the request's own alias, which is why
+    the predecessor platform's override command taking a tenant from the body has no counterpart.
+*@
+
+<PageTitle>Quotas</PageTitle>
+
+@if (!IsAuthorizedPermission(MeteringPermissions.View))
+{
+    <p class="db-metering-denied" style="color:var(--db-text-2);">You do not have access to the quotas of this site.</p>
+}
+else
+{
+    <div class="db-metering-quotas" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">Quotas</h3>
+            <button id="metering-quotas-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+
+        @if (_quotas.Count == 0)
+        {
+            <p class="db-metering-empty" style="color:var(--db-text-2);">This site has no quotas. A stock install defines none.</p>
+        }
+        else
+        {
+            <table class="table db-metering-quota-table">
+                <thead>
+                    <tr><th>Metric</th><th>Window</th><th>Consumed</th><th>Limit</th><th>Status</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var quota in _quotas)
+                    {
+                        <tr>
+                            <td>@quota.Metric</td>
+                            <td>@quota.Period</td>
+                            <td>@quota.Consumed</td>
+                            <td>@(quota.Unlimited ? "Unlimited" : quota.Limit.ToString())</td>
+                            <td>@quota.Status</td>
+                            <td>
+                                @if (IsAuthorizedPermission(MeteringPermissions.Manage))
+                                {
+                                    <button type="button" class="db-btn" @onclick="@(() => ResetAsync(quota.QuotaId))" disabled="@_busy">Reset</button>
+                                    <button type="button" class="db-btn" @onclick="@(() => ToggleAsync(quota))" disabled="@_busy">
+                                        @(quota.Status == "Suspended" ? "Resume" : "Suspend")
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (IsAuthorizedPermission(MeteringPermissions.Manage))
+        {
+            <section class="db-card" style="padding:0.75rem 1rem;">
+                <h4 style="margin:0 0 0.5rem;">Define a quota</h4>
+                <div class="db-field">
+                    <label class="db-field-label" for="metering-metric">Metric</label>
+                    <div class="db-field-control">
+                        <input id="metering-metric" class="form-control" @bind="_definition.Metric" />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <label class="db-field-label" for="metering-period">Window</label>
+                    <div class="db-field-control">
+                        <select id="metering-period" class="form-select" @bind="_definition.Period">
+                            <option value="Monthly">Monthly</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Total">Total</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <label class="db-field-label" for="metering-limit">Limit (-1 for unlimited)</label>
+                    <div class="db-field-control">
+                        <input id="metering-limit" type="number" class="form-control" @bind="_definition.Limit" />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <label class="db-field-label" for="metering-warn">Warn at %</label>
+                    <div class="db-field-control">
+                        <input id="metering-warn" type="number" class="form-control" @bind="_definition.WarnAtPercent" />
+                    </div>
+                </div>
+                <button id="metering-define" type="button" class="db-btn" @onclick="DefineAsync" disabled="@_busy">Save</button>
+            </section>
+        }
+    </div>
+}
+
+@code {
+    private List<QuotaView> _quotas = new();
+    private QuotaDefinition _definition = new();
+    private string _error = "";
+    private bool _busy;
+
+    public override string Title => "Quotas";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(MeteringPermissions.View))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            _quotas = await MeteringService.GetQuotasAsync() ?? new List<QuotaView>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Quotas {Error}", ex.Message);
+            _error = "The quotas could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task DefineAsync()
+    {
+        try
+        {
+            await MeteringService.DefineQuotaAsync(_definition);
+            _definition = new QuotaDefinition();
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Defining Quota {Error}", ex.Message);
+            _error = "The quota was refused: check the metric key and the limit.";
+        }
+    }
+
+    private async Task ResetAsync(Guid quotaId)
+    {
+        try
+        {
+            await MeteringService.ResetQuotaAsync(quotaId);
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Resetting Quota {Error}", ex.Message);
+            _error = "The quota could not be reset.";
+        }
+    }
+
+    private async Task ToggleAsync(QuotaView quota)
+    {
+        try
+        {
+            await MeteringService.SetEnforcementAsync(quota.QuotaId, quota.Status == "Suspended");
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Changing Quota Enforcement {Error}", ex.Message);
+            _error = "The quota's enforcement could not be changed.";
+        }
+    }
+}

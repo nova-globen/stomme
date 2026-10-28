@@ -1,0 +1,118 @@
+@namespace Stomme.Modules.Guestbook
+@inherits ModuleBase
+@using Stomme.Modules.Guestbook.Models
+@using Stomme.Modules.Guestbook.Services
+@inject IGuestbookService GuestbookService
+
+<div class="db-guestbook">
+    <h3 style="margin:0 0 0.25rem;">Guestbook</h3>
+    <p style="margin:0 0 1rem;color:var(--db-text-2);">
+        A CQRS + DDD sample module. Sign the guestbook below &mdash; your signature round-trips through the
+        Stomme mediator (a validated command), and the list is a mediator query.
+    </p>
+
+    <div class="db-guestbook-form" style="display:flex;flex-direction:column;gap:0.5rem;max-width:520px;margin-bottom:1.25rem;">
+        <input class="db-input" placeholder="Your name" maxlength="60" @bind="_author" @bind:event="oninput" />
+        <textarea class="db-input" placeholder="Your message" rows="3" maxlength="2000" @bind="_message" @bind:event="oninput"></textarea>
+        <div>
+            <button class="db-btn" @onclick="Sign" disabled="@_busy">Sign the guestbook</button>
+        </div>
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+    </div>
+
+    @if (_entries.Count == 0)
+    {
+        <p style="color:var(--db-text-2);">Be the first to sign the guestbook.</p>
+    }
+    else
+    {
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.75rem;">
+            @foreach (var entry in _entries)
+            {
+                <li class="db-card" style="padding:0.75rem 1rem;">
+                    <div style="font-weight:600;">@entry.Author</div>
+                    <div style="white-space:pre-wrap;">@entry.Message</div>
+                    <div style="font-size:0.8rem;color:var(--db-text-2);margin-top:0.25rem;">@entry.SignedOnUtc.ToString("u")</div>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private List<GuestbookEntry> _entries = new();
+    private string _author = "";
+    private string _message = "";
+    private string _error = "";
+    private bool _busy;
+
+    // Prerender the module so its list + form appear in the server-rendered HTML (they otherwise only
+    // materialize after the interactive circuit connects). Safe against the D29 renderer-deadlock class:
+    // the module's data path is its own SQLite store, whose async surface completes synchronously.
+    public override bool? Prerender => true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null)
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _entries = await GuestbookService.ListEntriesAsync(ModuleState.ModuleId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error loading guestbook {Error}", ex.Message);
+        }
+    }
+
+    private async Task Sign()
+    {
+        _error = "";
+        if (string.IsNullOrWhiteSpace(_author) || string.IsNullOrWhiteSpace(_message))
+        {
+            _error = "Please enter your name and a message.";
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var signed = await GuestbookService.SignAsync(new GuestbookEntry
+            {
+                ModuleId = ModuleState.ModuleId,
+                Author = _author,
+                Message = _message
+            });
+
+            if (signed != null)
+            {
+                _author = "";
+                _message = "";
+                await LoadAsync();
+            }
+            else
+            {
+                // The mediator's ValidationBehavior rejected the command (HTTP 400) or the call failed.
+                _error = "Your signature could not be saved. Please check your entry and try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error signing guestbook {Error}", ex.Message);
+            _error = "Your signature could not be saved.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

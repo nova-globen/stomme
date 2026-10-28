@@ -1,0 +1,20 @@
+@namespace Stomme.Themes.Aurora
+@inherits ContainerBase
+
+<div class="aurora-module">
+    @if (ModuleState.Title != "-")
+    {
+        <div class="aurora-module-head">
+            <ModuleActions /><h2><ModuleTitle /></h2>
+        </div>
+    }
+    else
+    {
+        <ModuleActions />
+    }
+    <ModuleInstance />
+</div>
+
+@code {
+    public override string Name => "Aurora Container";
+}

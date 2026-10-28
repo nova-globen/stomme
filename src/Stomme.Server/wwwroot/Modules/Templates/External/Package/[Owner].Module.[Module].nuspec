@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>[Owner].Module.[Module]</id>
+        <version>1.0.0</version>
+        <authors>[Owner]</authors>
+        <owners>[Owner]</owners>
+        <title>[Module]</title>
+        <description>[Description]</description>
+        <copyright>[Owner]</copyright>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <license type="expression">MIT</license>
+        <icon>icon.png</icon>
+        <tags>stomme module</tags>
+        <!-- The Stomme.Framework package type, with the minimum framework version, is how the host's InstallationManager
+             recognises a module package and refuses one built for a newer framework than it runs. -->
+        <packageTypes>
+            <packageType name="Dependency" />
+            <packageType name="Stomme.Framework" version="[FrameworkRelease]" />
+        </packageTypes>
+    </metadata>
+    <files>
+        <!-- The three .Stomme assemblies under lib/net10.0, which the InstallationManager extracts into the host's /bin.
+             No framework assembly ships: they are the host's own. -->
+        <file src="..\Client\bin\$configuration$\net10.0\[Owner].Module.[Module].Client.Stomme.dll" target="lib\net10.0" />
+        <file src="..\Client\bin\$configuration$\net10.0\[Owner].Module.[Module].Client.Stomme.pdb" target="lib\net10.0" />
+        <file src="..\Server\bin\$configuration$\net10.0\[Owner].Module.[Module].Server.Stomme.dll" target="lib\net10.0" />
+        <file src="..\Server\bin\$configuration$\net10.0\[Owner].Module.[Module].Server.Stomme.pdb" target="lib\net10.0" />
+        <file src="..\Shared\bin\$configuration$\net10.0\[Owner].Module.[Module].Shared.Stomme.dll" target="lib\net10.0" />
+        <file src="..\Shared\bin\$configuration$\net10.0\[Owner].Module.[Module].Shared.Stomme.pdb" target="lib\net10.0" />
+        <file src="icon.png" target="" />
+    </files>
+</package>

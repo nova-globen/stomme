@@ -1,0 +1,406 @@
+@namespace Stomme.Modules.Landing
+@inherits ModuleBase
+@using Stomme.Dashboards
+@using Stomme.Modules.Dashboards.Services
+@inject ILandingService LandingService
+@inject IDashboardsService DashboardsService
+
+@*
+    The Landing module's EDIT ACTION (BL-98), reached from the home page through EditUrl("Edit"): the chooser when the site
+    has no landing page, the editor, the dashboard picker (increment 2), and the controls to publish, hide or forget it. It
+    is interactive; the home page's own
+    component is STATIC, so a visitor's view of the home page never opens a circuit (the Help suite's "no marker" oracle
+    caught the first version, which put these controls on the home page itself). api/Landing decides every permission again.
+*@
+
+@if (!_canManage)
+{
+    <p id="landing-denied" style="color:var(--db-text-2);">You cannot manage this site's landing page.</p>
+}
+else
+{
+    <div class="db-landing-edit" style="display:flex;flex-direction:column;gap:1rem;">
+        @if (_editing is not null)
+        {
+            <form id="landing-editor" style="display:flex;flex-direction:column;gap:0.75rem;" @onsubmit="SaveAsync" @onsubmit:preventDefault>
+                <label>Headline <input id="landing-headline" type="text" style="width:100%;" maxlength="150" @bind="_editing.Headline" @bind:event="oninput" /></label>
+                <label>Introduction <textarea id="landing-introduction" rows="3" style="width:100%;" maxlength="2000" @bind="_editing.Introduction" @bind:event="oninput"></textarea></label>
+                @for (var index = 0; index < _editing.Sections.Count; index++)
+                {
+                    var section = _editing.Sections[index];
+                    var position = index;
+                    <fieldset style="display:flex;flex-direction:column;gap:0.5rem;border:1px solid var(--db-border);padding:0.75rem;">
+                        <legend>Section @(position + 1)</legend>
+                        <label>Title <input type="text" style="width:100%;" maxlength="80" @bind="section.Title" @bind:event="oninput" /></label>
+                        <label>Text <textarea rows="2" style="width:100%;" maxlength="500" @bind="section.Text" @bind:event="oninput"></textarea></label>
+                        <label>Link text <input type="text" maxlength="60" @bind="section.LinkText" @bind:event="oninput" /></label>
+                        <label>Link (a site path such as /about, or an http(s) address) <input type="text" style="width:100%;" maxlength="500" @bind="section.LinkUrl" @bind:event="oninput" /></label>
+                        <button type="button" class="db-btn" @onclick="() => RemoveSection(position)">Remove this section</button>
+                    </fieldset>
+                }
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    @if (_editing.Sections.Count < 6)
+                    {
+                        <button id="landing-add-section" type="button" class="db-btn" @onclick="AddSection">Add a section</button>
+                    }
+                    <button id="landing-save" type="submit" class="db-btn" disabled="@(_busy || string.IsNullOrWhiteSpace(_editing.Headline))">Save</button>
+                    <button id="landing-cancel" type="button" class="db-btn" @onclick="CancelEdit" disabled="@_busy">Cancel</button>
+                </div>
+            </form>
+        }
+        else if (_design is not null)
+        {
+            @* The AI mode and the edit mode (increments 3-4): the assistant PROPOSES - a page from a brief, or the page with one
+               section revised - shown in the same sandboxed frame the home page uses; nothing is stored until Use this page. *@
+            <div id="landing-design" style="display:flex;flex-direction:column;gap:0.75rem;">
+                @if (_design.Section is null)
+                {
+                    <label>Describe the landing page: who the site is for, what it offers, where a visitor should go next, the tone and colours you want.
+                        <textarea id="landing-brief" rows="5" style="width:100%;" maxlength="4000" @bind="_design.Brief" @bind:event="oninput"></textarea>
+                    </label>
+                    <button id="landing-generate" type="button" class="db-btn" @onclick="GenerateAsync" disabled="@(_busy || string.IsNullOrWhiteSpace(_design.Brief))">@(_busy ? "Designing..." : "Design it")</button>
+                }
+                else
+                {
+                    <label>Section
+                        <select id="landing-section" @bind="_design.Section">
+                            @foreach (var name in _page?.Sections ?? Array.Empty<string>())
+                            {
+                                <option value="@name">@name</option>
+                            }
+                        </select>
+                    </label>
+                    <label>What should change in it?
+                        <textarea id="landing-instruction" rows="3" style="width:100%;" maxlength="2000" @bind="_design.Instruction" @bind:event="oninput"></textarea>
+                    </label>
+                    <button id="landing-propose" type="button" class="db-btn" @onclick="ProposeSectionAsync" disabled="@(_busy || string.IsNullOrWhiteSpace(_design.Instruction))">@(_busy ? "Revising..." : "Revise this section")</button>
+                }
+                @if (_design.Draft is { Succeeded: false } failed)
+                {
+                    <div id="landing-design-problems" role="status">
+                        <p style="margin:0;">The assistant's design was not accepted:</p>
+                        <ul style="margin:0;">
+                            @foreach (var problem in failed.Problems)
+                            {
+                                <li>@problem</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                @if (_design.Draft is { Succeeded: true } draft)
+                {
+                    <p style="margin:0;color:var(--db-text-2);">The proposal, as visitors would see it - nothing is saved until you use it.</p>
+                    <iframe id="landing-preview" title="The proposed landing page" srcdoc="@LandingFrame.Srcdoc(draft.Html)" sandbox="" referrerpolicy="no-referrer" style="width:100%;min-height:60vh;border:1px solid var(--db-border);"></iframe>
+                    <button id="landing-use-design" type="button" class="db-btn" @onclick="UseDesignAsync" disabled="@_busy">Use this page</button>
+                }
+                <button id="landing-cancel-design" type="button" class="db-btn" @onclick="() => _design = null" disabled="@_busy">Cancel</button>
+            </div>
+        }
+        else if (_dashboards is not null)
+        {
+            <div id="landing-dashboard-picker" style="display:flex;flex-direction:column;gap:0.75rem;">
+                @if (_dashboards.Count == 0)
+                {
+                    <p style="margin:0;color:var(--db-text-2);">This site has no published dashboard. Publish one on the Dashboards page first.</p>
+                }
+                else
+                {
+                    <label>Dashboard
+                        <select id="landing-dashboard-select" @bind="_dashboardId">
+                            @foreach (var dashboard in _dashboards)
+                            {
+                                <option value="@dashboard.Id">@dashboard.Name</option>
+                            }
+                        </select>
+                    </label>
+                }
+                <p style="margin:0;color:var(--db-text-2);">Visitors see a dashboard only if they may read dashboards: grant dashboards:view to the roles who should see it - by default only administrators may.</p>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    @if (_dashboards.Count > 0)
+                    {
+                        <button id="landing-use-dashboard" type="button" class="db-btn" @onclick="UseDashboardAsync" disabled="@(_busy || !Guid.TryParse(_dashboardId, out _))">Use this dashboard</button>
+                    }
+                    <button id="landing-cancel-dashboard" type="button" class="db-btn" @onclick="CancelDashboard" disabled="@_busy">Cancel</button>
+                </div>
+            </div>
+        }
+        else if (!_loaded)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading...</p>
+        }
+        else if (_page is null)
+        {
+            <div id="landing-chooser" style="display:flex;flex-direction:column;gap:0.5rem;padding:1rem;border:1px dashed var(--db-border);border-radius:0.5rem;">
+                <h3 style="margin:0;">This site has no landing page yet</h3>
+                <p style="margin:0;color:var(--db-text-2);">Make one and it takes the top of the home page for every visitor once you publish it. Until then only administrators see it.</p>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <button id="landing-start-template" type="button" class="db-btn" @onclick="StartFromTemplateAsync" disabled="@_busy">Start from a template</button>
+                    <button id="landing-start-dashboard" type="button" class="db-btn" @onclick="ChooseDashboardAsync" disabled="@_busy">Show a dashboard</button>
+                    <button id="landing-start-ai" type="button" class="db-btn" @onclick="StartDesign" disabled="@_busy">Describe it to the AI assistant</button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p id="landing-state" role="status" style="margin:0;">
+                @(_page.Source == LandingSource.Dashboard ? "A dashboard. " : _page.Source == LandingSource.GeneratedHtml ? "Designed with the AI assistant. " : string.Empty)@(_page.Status == LandingStatus.Published
+                    ? "Published - every visitor of the home page sees it."
+                    : "Draft - only administrators see it until it is published.")
+            </p>
+            <div id="landing-controls" style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:baseline;">
+                @if (_page.Predefined is not null)
+                {
+                    <button id="landing-edit" type="button" class="db-btn" @onclick="StartEditing" disabled="@_busy">Edit</button>
+                }
+                @if (_page.Source == LandingSource.GeneratedHtml && _page.Sections is { Count: > 0 })
+                {
+                    <button id="landing-edit-section" type="button" class="db-btn" @onclick="StartSectionEdit" disabled="@_busy">Revise a section</button>
+                }
+                <button id="landing-design-again" type="button" class="db-btn" @onclick="StartDesign" disabled="@_busy">@(_page.Source == LandingSource.GeneratedHtml ? "Design it again" : "Describe it to the AI assistant")</button>
+                <button id="landing-change-dashboard" type="button" class="db-btn" @onclick="ChooseDashboardAsync" disabled="@_busy">@(_page.Source == LandingSource.Dashboard ? "Choose another dashboard" : "Show a dashboard instead")</button>
+                @if (_page.Status == LandingStatus.Draft)
+                {
+                    <button id="landing-publish" type="button" class="db-btn" @onclick="PublishAsync" disabled="@_busy">Publish</button>
+                }
+                else
+                {
+                    <button id="landing-unpublish" type="button" class="db-btn" @onclick="UnpublishAsync" disabled="@_busy">Hide from visitors</button>
+                }
+                <button id="landing-reset" type="button" class="db-btn" @onclick="ResetAsync" disabled="@_busy">Remove the landing page</button>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="landing-message" role="status" style="margin:0;">@_message</p>
+        }
+
+        <a id="landing-back" href="@NavigateUrl()">Back to the home page</a>
+    </div>
+}
+
+@code {
+    private LandingPageView _page;
+    private EditableContent _editing;
+    private List<DashboardView> _dashboards;
+    private DesignState _design;
+    private string _dashboardId = string.Empty;
+    private bool _canManage;
+    private bool _loaded;
+    private bool _busy;
+    private string _message = string.Empty;
+
+    public override string Actions => "Edit";
+
+    public override string Title => "Landing page";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _canManage = IsAuthorizedPermission(LandingPermissions.Manage);
+        if (!_canManage)
+        {
+            return;
+        }
+
+        try
+        {
+            _page = await LandingService.GetAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the landing page.");
+            _message = "The landing page could not be loaded.";
+        }
+        finally
+        {
+            _loaded = true;
+        }
+    }
+
+    private async Task StartFromTemplateAsync()
+    {
+        _busy = true;
+        try
+        {
+            _editing = EditableContent.From(await LandingService.GetTemplateAsync());
+            _message = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the landing page template.");
+            _message = "The template could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private void StartEditing()
+    {
+        if (_page?.Predefined is { } content)
+        {
+            _editing = EditableContent.From(content);
+            _message = string.Empty;
+        }
+    }
+
+    private void CancelEdit() => _editing = null;
+
+    // The site's PUBLISHED dashboards; the server checks it again - a draft or another site's is refused.
+    private async Task ChooseDashboardAsync()
+    {
+        _busy = true;
+        try
+        {
+            _dashboards = (await DashboardsService.ListAsync()).Where(dashboard => dashboard.Status == DashboardStatus.Published).OrderBy(dashboard => dashboard.Name).ToList();
+            _dashboardId = (_dashboards.FirstOrDefault(dashboard => dashboard.Id == _page?.DashboardId) ?? _dashboards.FirstOrDefault())?.Id.ToString() ?? string.Empty;
+            _message = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not list the site's dashboards.");
+            _message = "The site's dashboards could not be listed - reading them needs dashboards:view.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private void CancelDashboard() => _dashboards = null;
+
+    private void StartDesign()
+    {
+        _design = new DesignState();
+        _message = string.Empty;
+    }
+
+    private void StartSectionEdit()
+    {
+        _design = new DesignState { Section = _page?.Sections?.FirstOrDefault() ?? string.Empty };
+        _message = string.Empty;
+    }
+
+    // A proposal from the site's model, metered and quota-gated; a refusal (the assistant off, not configured, the quota spent) says why.
+    private async Task GenerateAsync() => await ActAsync(async () =>
+    {
+        _design.Draft = await LandingService.GenerateAsync(new GenerateLandingRequest { Brief = _design.Brief });
+        return _design.Draft.Succeeded ? "Here is the proposal. Use it, or change the description and design it again." : "The assistant could not produce a page that passes the sanitizer.";
+    });
+
+    private async Task ProposeSectionAsync() => await ActAsync(async () =>
+    {
+        _design.Draft = await LandingService.ProposeSectionAsync(new ProposeLandingSectionRequest { Section = _design.Section, Instruction = _design.Instruction });
+        return _design.Draft.Succeeded ? $"Here is the page with '{_design.Section}' revised. Use it, or change the instruction." : "The assistant could not revise the section.";
+    });
+
+    private async Task UseDesignAsync() => await ActAsync(async () =>
+    {
+        _page = await LandingService.ConfigureGeneratedAsync(new ConfigureGeneratedLandingRequest { Html = _design.Draft.Html });
+        _design = null;
+        return _page.Status == LandingStatus.Published ? "Saved - visitors see it now." : "Saved as a draft. Publish it when it is ready.";
+    });
+
+    private async Task UseDashboardAsync() => await ActAsync(async () =>
+    {
+        _page = await LandingService.ConfigureDashboardAsync(new ConfigureDashboardLandingRequest { DashboardId = Guid.Parse(_dashboardId) });
+        _dashboards = null;
+        return _page.Status == LandingStatus.Published ? "Saved - visitors who may read dashboards see it now." : "Saved as a draft. Publish it when it is ready.";
+    });
+
+    private void AddSection() => _editing?.Sections.Add(new EditableSection { Title = "New section" });
+
+    private void RemoveSection(int index) => _editing?.Sections.RemoveAt(index);
+
+    private async Task SaveAsync() => await ActAsync(async () =>
+    {
+        _page = await LandingService.ConfigurePredefinedAsync(_editing.ToRequest());
+        _editing = null;
+        _dashboards = null;
+        return _page.Status == LandingStatus.Published ? "Saved - visitors see it now." : "Saved as a draft. Publish it when it is ready.";
+    });
+
+    private async Task PublishAsync() => await ActAsync(async () =>
+    {
+        _page = await LandingService.PublishAsync();
+        return "Published - every visitor of the home page sees it now.";
+    });
+
+    private async Task UnpublishAsync() => await ActAsync(async () =>
+    {
+        _page = await LandingService.UnpublishAsync();
+        return "Hidden from visitors. It is kept as a draft.";
+    });
+
+    private async Task ResetAsync() => await ActAsync(async () =>
+    {
+        await LandingService.ResetAsync();
+        _page = null;
+        return "The landing page was removed.";
+    });
+
+    private async Task ActAsync(Func<Task<string>> action)
+    {
+        _busy = true;
+        try
+        {
+            _message = await action();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "A landing page action failed.");
+            _message = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private sealed class DesignState
+    {
+        public string Brief { get; set; } = string.Empty;
+
+        /// <summary>The section being revised; null in the AI mode, which designs the whole page.</summary>
+        public string Section { get; set; }
+
+        public string Instruction { get; set; } = string.Empty;
+
+        public LandingDraftView Draft { get; set; }
+    }
+
+    private sealed class EditableContent
+    {
+        public string Headline { get; set; } = string.Empty;
+
+        public string Introduction { get; set; } = string.Empty;
+
+        public List<EditableSection> Sections { get; } = new();
+
+        public static EditableContent From(PredefinedLandingContent content)
+        {
+            var editable = new EditableContent { Headline = content.Headline, Introduction = content.Introduction };
+            editable.Sections.AddRange(content.Sections.Select(section => new EditableSection { Title = section.Title, Text = section.Text, LinkText = section.LinkText, LinkUrl = section.LinkUrl }));
+            return editable;
+        }
+
+        public ConfigurePredefinedLandingRequest ToRequest() => new()
+        {
+            Headline = Headline,
+            Introduction = Introduction,
+            Sections = Sections.Select(section => new LandingSectionView(section.Title, section.Text ?? string.Empty, section.LinkText, section.LinkUrl)).ToList(),
+        };
+    }
+
+    private sealed class EditableSection
+    {
+        public string Title { get; set; } = string.Empty;
+
+        public string Text { get; set; } = string.Empty;
+
+        public string LinkText { get; set; }
+
+        public string LinkUrl { get; set; }
+    }
+}

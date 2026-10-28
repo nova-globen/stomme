@@ -1,0 +1,13 @@
+{
+  "//": "Feature flags from configuration, and the enablement switch of a bundled module. Keys live under the",
+  "//2": "'FeatureManagement' section (Microsoft.FeatureManagement's default), so Azure App Configuration can",
+  "//3": "feed the same shape later with no code change. Precedence: config -> DB/admin toggle -> catalog default.",
+  "//4": "For a module bundled by build-time PackageReference (see Stomme.Application.Server.csproj), the key",
+  "//5": "'module.<id>.enabled' decides whether it is SEEDED onto a page at install (and thus renders). <id> is",
+  "//6": "the module's display name lower-cased, whitespace removed (e.g. 'Blogs' -> module.blogs.enabled). A",
+  "//7": "value of false suppresses seeding even though the assembly is present; true or ABSENT seeds as normal,",
+  "//8": "so a stock app that ships this file with no module keys behaves exactly as before.",
+  "FeatureManagement": {
+    "module.blogs.enabled": true
+  }
+}

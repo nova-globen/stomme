@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>
+            Provides multitenancy services.
+        </Description>
+        <PackageTags>stomme module multitenancy</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Stomme.Engine.Features\Stomme.Engine.Features.csproj" />
+        <ProjectReference Include="..\Stomme.Engine.Common\Stomme.Engine.Common.csproj" />
+    </ItemGroup>
+
+</Project>

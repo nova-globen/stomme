@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!--
+    BL-86: the CLIENT layer of the exemplar - its pages (components inheriting ModuleBase), its ModuleInfo (the module
+    definition, its permission keys and its page templates) and the HTTP service the browser uses. On a WebAssembly site
+    this assembly and the Shared one stream to the browser, so it references NO server-only assembly.
+    The RootNamespace is the module's (not ".Client"): the host derives ModuleDefinitionName from ModuleInfo's namespace
+    plus this assembly, and resolves a page's component as {namespace}.{action} in this assembly.
+    INDEPENDENT (D81/D82): Stomme arrives only through the slim SDK meta-package from examples/local-feed.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>NovaGloben.Module.KnowledgeBase.Client.Stomme</AssemblyName>
+    <RootNamespace>NovaGloben.Module.KnowledgeBase</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>Nova Globen AB</Authors>
+    <Company>Nova Globen AB</Company>
+    <Product>NovaGloben.Module.KnowledgeBase</Product>
+    <Description>Pages, module definition and HTTP service of the KnowledgeBase exemplar module.</Description>
+    <Copyright>Nova Globen AB</Copyright>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stomme.Sdk.Slim" Version="10.73.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NovaGloben.Module.KnowledgeBase.Shared\NovaGloben.Module.KnowledgeBase.Shared.csproj" />
+  </ItemGroup>
+
+  <!-- WASM-safety (BL-13): see the Shared project - a browser-bound assembly drops the OpenApi source generator. -->
+  <Target Name="RemoveOpenApiSourceGenerator" AfterTargets="ResolveReferences" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" Condition="$([System.String]::Copy('%(Analyzer.Identity)').Contains('Microsoft.AspNetCore.OpenApi.SourceGenerators'))" />
+    </ItemGroup>
+  </Target>
+
+</Project>

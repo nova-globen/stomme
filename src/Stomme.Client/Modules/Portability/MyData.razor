@@ -1,0 +1,103 @@
+@namespace Stomme.Modules.Portability
+@inject IPortabilityService PortabilityService
+
+@*
+    A person's own data package (BL-82, portability:export-own), on their profile: ask for a copy of what this site holds
+    about them, and download it when it is ready. Renders nothing while portability is switched off - the site says so
+    (BL-212) and nothing is asked; a server that does not say answers 404 and the list comes back empty.
+*@
+
+@if (_enabled)
+{
+    <Section Name="MyData" Heading="My Data" ResourceKey="MyData">
+    <div class="db-my-data" style="display:flex;flex-direction:column;gap:0.5rem;">
+        <div><button id="my-data-request" type="button" class="db-btn" @onclick="RequestAsync" disabled="@_busy">Request a copy of my data</button></div>
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p style="margin:0;color:var(--db-text-2);">@_message</p>
+        }
+        @foreach (var package in _mine)
+        {
+            <div style="display:flex;gap:0.75rem;align-items:baseline;flex-wrap:wrap;">
+                <span>@package.CreatedOnUtc.ToString("u")</span>
+                <span style="color:var(--db-text-2);">@package.Status</span>
+                @if (package.CanDownload)
+                {
+                    <a class="db-btn" href="@Url(package)" download>Download</a>
+                }
+            </div>
+        }
+    </div>
+    </Section>
+    <br />
+}
+
+@code {
+    [Parameter]
+    public Alias Alias { get; set; }
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    [CascadingParameter]
+    public PageState PageState { get; set; }
+
+    private List<PortabilityPackageView> _mine = new();
+    private bool _enabled;
+    private bool _busy;
+    private string _message = string.Empty;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private string Url(PortabilityPackageView package) => Utilities.TenantUrl(Alias, $"/api/Portability/{package.Id}/download");
+
+    private async Task LoadAsync()
+    {
+        // BL-212: the site says whether portability is on; asking a switched-off API logged a 404 on every profile view.
+        if (HostSwitches.IsOff(PageState?.Site, HostSwitches.Portability))
+        {
+            _enabled = false;
+            return;
+        }
+
+        try
+        {
+            _enabled = await PortabilityService.IsEnabledAsync();
+            if (!_enabled)
+            {
+                return;
+            }
+
+            var all = await PortabilityService.ListAsync();
+            _mine = all.Where(package => package.Kind == "SubjectData" && package.SubjectUserId == UserId).ToList();
+        }
+        catch (Exception)
+        {
+            _enabled = false;
+        }
+    }
+
+    private async Task RequestAsync()
+    {
+        _busy = true;
+        try
+        {
+            await PortabilityService.RequestMineAsync();
+            _message = "Your copy is being prepared; it appears here within a minute.";
+        }
+        catch (PortabilityRequestRejectedException refused)
+        {
+            _message = "The request was refused: " + refused.Message;
+        }
+        catch (Exception)
+        {
+            _message = "The request was refused.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+}

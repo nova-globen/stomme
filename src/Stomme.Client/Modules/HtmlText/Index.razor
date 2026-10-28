@@ -1,0 +1,57 @@
+@using Stomme.Modules.HtmlText.Services
+@namespace Stomme.Modules.HtmlText
+@inherits ModuleBase
+@inject IHtmlTextService HtmlTextService
+@inject ISettingService SettingService
+@inject IStringLocalizer<Index> Localizer
+
+@if (PageState.EditMode)
+{
+    <div class="db-row-center db-htmltext-action">
+        <ActionLink Action="Edit" EditMode="true" ResourceKey="Edit" />
+    </div>
+}
+
+@((MarkupString)content)
+
+@if (PageState.EditMode && content.Length > 3000)
+{
+    <div class="db-row-center db-htmltext-action">
+        <ActionLink Action="Edit" EditMode="true" ResourceKey="Edit" />
+    </div>
+}
+
+@code {
+    private string content = "";
+
+    public override string RenderMode => RenderModes.Static;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            if (ShouldRender())
+            {
+                var htmltext = await HtmlTextService.GetHtmlTextAsync(ModuleState.ModuleId);
+                if (htmltext != null)
+                {
+                    content = htmltext.Content;
+                    content = Utilities.FormatContent(content, PageState.Alias, "render");
+                    if (bool.Parse(SettingService.GetSetting(ModuleState.Settings, "DynamicTokens", "false")))
+                    {
+                        content = ReplaceTokens(content);
+                    }
+                }
+                else
+                {
+                    content = "";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+			await logger.LogError(ex, "Error Loading Content {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Content.Load"], MessageType.Error);
+        }
+    }
+}

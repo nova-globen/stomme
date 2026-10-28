@@ -1,0 +1,1207 @@
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+/* ==========================================================================
+   THE `--db-*` DESIGN SYSTEM (D11 / D18 / D27 / D31)
+   --------------------------------------------------------------------------
+   Tokens + base + the shared COMPONENT layer. Global on purpose: this is a FRAMEWORK design
+   system, not a theme's.
+
+   D27 established the rule and hoisted the shared-control chrome (nav, drawer, dropdown — further
+   down this file). It left the component layer (`db-btn`, `db-input`, `db-table`, `db-dialog`,
+   `db-tabs`, …) behind in `StommeTheme/Theme.css` and recorded the consequence: the migrated
+   admin modules rendered UNSTYLED under BlazorTheme, because a theme stylesheet is only loaded
+   while that theme is active. D31 finishes the job — this block is that component layer.
+
+   Two things it unblocks:
+     - Admin chrome no longer depends on which theme a site happens to run.
+     - The INSTALLER, which renders before any site or theme exists and so never receives a
+       Theme.css, can finally emit `db-*` directly. That retired the last Bootstrap class names in
+       the client and let `css/bootstrap-compat.css` be deleted outright.
+
+   A theme's Theme.css is linked AFTER this file, so a theme can still override any of it — that is
+   what a theme is for. Skin belongs to the theme; the controls belong to the framework.
+   ========================================================================== */
+
+/* ============================== Tokens ============================== */
+/* BL-198: the framework's tokens - the dark defaults here and the light block below - weigh NOTHING (:where), so a theme's
+   own :root decides its surfaces in BOTH modes; before, the light block outranked a theme's :root and the theme lost its
+   surfaces in light mode. A theme keying its light values on html[data-theme="light"] (Graphite) still wins there. */
+:where(:root) {
+    --db-accent:    #FFC418;  /* signature amber */
+    --db-accent-2:  color-mix(in oklab, var(--db-accent) 75%, white);  /* hover/light tint - follows the accent in force */
+    --db-accent-3:  color-mix(in oklab, var(--db-accent) 85%, black);  /* pressed - follows the accent in force */
+    --db-on-accent: #15161A;  /* text on amber */
+
+    --db-ok:   #34C759;
+    --db-warn: #FF9F0A;
+    --db-bad:  #FF453A;
+    --db-info: #5BB6FF;
+
+    --db-mono: ui-monospace, "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --db-sans: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui, sans-serif;
+
+    --db-radius:    12px;
+    --db-radius-sm: 8px;
+    --db-radius-xs: 4px;
+
+    /* Dark palette (default) */
+    --db-bg:        #0F1014;
+    --db-bg-elev:   #15171C;
+    --db-bg-elev-2: #1B1E25;
+    --db-bg-elev-3: #232730;
+    --db-border:    #262A33;
+    --db-border-strong: #353A47;
+    --db-text:      #F2F4F8;
+    --db-text-2:    #C7CCD6;
+    --db-muted:     #8A93A6;
+    --db-shadow:    0 1px 0 rgba(0,0,0,.4), 0 16px 40px rgba(0,0,0,.40);
+    --db-shadow-2:  0 4px 8px rgba(0,0,0,.28), 0 2px 4px rgba(0,0,0,.22);
+    --db-shadow-3:  0 12px 28px rgba(0,0,0,.40), 0 4px 8px rgba(0,0,0,.30);
+    --db-z-dropdown: 1000;
+    --db-z-sticky:   1020;
+    --db-z-overlay:  1030;
+    --db-z-modal:    1040;
+    --db-z-toast:    1060;
+    --db-appbar-h:   64px;
+}
+
+:where(html[data-theme="light"], body[mode="light"]) {
+    --db-bg:        #F4F5F7;
+    --db-bg-elev:   #FFFFFF;
+    --db-bg-elev-2: #F7F8FA;
+    --db-bg-elev-3: #EEF1F5;
+    --db-border:    #E4E7EC;
+    --db-border-strong: #CDD2DA;
+    --db-text:      #15161A;
+    --db-text-2:    #2E323B;
+    --db-muted:     #6B7280;
+    --db-shadow:    0 1px 2px rgba(15, 23, 42, .04), 0 12px 28px rgba(15, 23, 42, .06);
+}
+/* The browser's own widgets follow the page's mode (BL-198): scrollbars, form controls, select popups, media controls,
+   autofill. App.razor's script sets it too; this covers a page whose theme fixes its mode before any script runs. */
+:where(html[data-theme="dark"]) { color-scheme: dark; }
+:where(html[data-theme="light"]) { color-scheme: light; }
+/* A theme's fixed colour mode leaves the visitor nothing to toggle (BL-198). */
+html[data-theme-fixed] .db-theme-toggle { display: none; }
+/* ============================== Base ============================== */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100%; background: var(--db-bg); }
+body {
+    font-family: var(--db-sans);
+    color: var(--db-text);
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+/* The document scrolls (BL-207). FluentUI 5 adopts a stylesheet of its own whose `body` rule is the reset of an app laid out
+   with FluentLayout, which scrolls INSIDE: `height: 100dvh; overflow: hidden`, and FluentUI's font. Adopted sheets come after
+   this file, so it locked every Stomme page at the window's height - found on UAT and production on 10.5.x, 2026-10-02.
+   `html body` outranks FluentUI's bare `body`; FluentUI's scroll lock while one of its dialogs is open,
+   `body:has(.prevent-scroll)`, still outranks this. */
+html body {
+    height: auto;
+    overflow: visible;
+    font-family: var(--db-sans);
+    font-size: 14px;
+    line-height: 1.55;
+}
+h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; color: var(--db-text); margin: 0; }
+h1 { font-size: clamp(1.85rem, 2.4vw, 2.5rem); font-weight: 800; line-height: 1.15; }
+h2 { font-size: 1.35rem; font-weight: 800; line-height: 1.15; }
+h3 { font-size: 1.05rem; font-weight: 700; line-height: 1.15; }
+h4 { font-size: 1.125rem; font-weight: 800; line-height: 1.15; }
+h5 { font-size: 1rem; font-weight: 700; line-height: 1.35; }
+h6 { font-size: 0.875rem; font-weight: 700; line-height: 1.4; }
+p  { margin: 0 0 0.6rem; }
+code, pre { font-family: var(--db-mono); }
+a { color: var(--db-text); text-decoration: none; }
+a:hover { color: var(--db-accent); }
+
+.db-muted { color: var(--db-muted); font-size: 12.5px; }
+.db-mono { font-family: var(--db-mono); }
+.db-eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; font-weight: 700; color: var(--db-accent-3); }
+.db-brand { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 800; font-size: 1.05rem; color: var(--db-text); }
+.db-brand:hover { color: var(--db-text); }
+.db-brand-mark { color: var(--db-accent); font-size: 1.1rem; line-height: 0; }
+.db-brand-text strong { font-weight: 900; letter-spacing: 0.06em; font-size: 1.1rem; }
+.db-brand img { max-height: 40px; }
+.db-icon-btn {
+    width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; color: var(--db-text); border: 1px solid transparent;
+    border-radius: 10px; cursor: pointer; font-size: 18px; line-height: 0;
+    transition: background .12s ease, border-color .12s ease;
+}
+.db-icon-btn:hover { background: var(--db-bg-elev-2); border-color: var(--db-border); }
+.db-icon-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+
+.db-text-btn {
+    height: 40px; display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 0.75rem; background: transparent; color: var(--db-text); border: 1px solid transparent;
+    border-radius: 10px; cursor: pointer; font-size: 0.9rem; text-decoration: none;
+    transition: background .12s ease, border-color .12s ease;
+}
+.db-text-btn:hover { background: var(--db-bg-elev-2); border-color: var(--db-border); }
+.db-text-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+/* ============================== Buttons ============================== */
+.db-btn, .db-btn-neutral, .db-btn-danger, .db-btn-warn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    padding: 0.5rem 0.9rem; border-radius: var(--db-radius-sm);
+    font-weight: 700; font-size: 13px; line-height: 1.1; cursor: pointer; text-decoration: none;
+    border: 1px solid transparent;
+    transition: background .12s ease, border-color .12s ease, color .12s ease, opacity .12s ease;
+}
+.db-btn { background: var(--db-accent); color: var(--db-on-accent); }
+.db-btn:hover { background: var(--db-accent-2); color: var(--db-on-accent); }
+.db-btn-neutral { background: var(--db-bg-elev-2); color: var(--db-text); border-color: var(--db-border); }
+.db-btn-neutral:hover { background: var(--db-bg-elev-3); border-color: var(--db-border-strong); }
+.db-btn-danger { background: color-mix(in oklab, var(--db-bad) 16%, transparent); color: var(--db-bad); border-color: color-mix(in oklab, var(--db-bad) 35%, transparent); }
+.db-btn-danger:hover { background: color-mix(in oklab, var(--db-bad) 26%, transparent); }
+/* Developer-facing warning state (ActionLink: action with no corresponding module control). */
+.db-btn-warn { background: color-mix(in oklab, var(--db-warn) 16%, transparent); color: var(--db-warn); border-color: color-mix(in oklab, var(--db-warn) 35%, transparent); }
+.db-btn-warn:hover { background: color-mix(in oklab, var(--db-warn) 26%, transparent); }
+.db-btn:disabled, .db-btn-neutral:disabled, .db-btn-danger:disabled, .db-btn-warn:disabled,
+.db-btn[disabled], .db-btn-neutral[disabled], .db-btn-danger[disabled], .db-btn-warn[disabled] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.db-btn:focus-visible, .db-btn-neutral:focus-visible, .db-btn-danger:focus-visible, .db-btn-warn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+
+:focus-visible { outline: 2px solid var(--db-accent); outline-offset: 2px; }
+
+.db-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem;
+    padding: 2.5rem 1.5rem; text-align: center; color: var(--db-text-2);
+    background: var(--db-bg-elev); border: 1px dashed var(--db-border-strong); border-radius: var(--db-radius);
+}
+.db-empty-title { font-weight: 800; color: var(--db-text); font-size: 1.05rem; }
+/* ============================== Card ============================== */
+.db-card {
+    padding: 1.1rem; display: flex; flex-direction: column; gap: 0.55rem;
+    border-radius: var(--db-radius); background: var(--db-bg-elev);
+    border: 1px solid var(--db-border); box-shadow: var(--db-shadow);
+}
+.db-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 0.9rem; }
+/* ============================== Table ============================== */
+.db-table-wrap { width: 100%; min-width: 0; overflow-x: auto; }
+.db-table { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--db-bg-elev); border: 1px solid var(--db-border); border-radius: var(--db-radius); overflow: hidden; }
+.db-table th, .db-table td { padding: 0.7rem 0.85rem; border-bottom: 1px solid var(--db-border); text-align: left; vertical-align: top; }
+.db-table thead th { color: var(--db-muted); text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; font-weight: 700; background: var(--db-bg-elev-2); }
+.db-table tbody tr:last-child td { border-bottom: 0; }
+.db-table tbody tr:hover { background: var(--db-bg-elev-2); }
+.db-table .db-muted { margin-top: 0.15rem; }
+.db-col-action { text-align: right; white-space: nowrap; }
+.db-actions { display: flex; gap: 0.4rem; align-items: center; justify-content: flex-end; flex-wrap: wrap; }
+.db-table .db-actions { flex-wrap: nowrap; }
+.db-input { padding: 0.45rem 0.6rem; border: 1px solid var(--db-border); border-radius: 6px; background: var(--db-bg-elev-2); color: var(--db-text); font-size: 13px; max-width: 100%; box-sizing: border-box; }
+.db-input:focus-visible { outline: none; border-color: var(--db-accent); box-shadow: 0 0 0 2px color-mix(in oklab, var(--db-accent) 40%, transparent); }
+.db-input[readonly] { background: var(--db-bg-elev); color: var(--db-text-2); }
+
+/* Native <select> counterpart to .db-input, for the admin pages that bind a plain <select>. */
+.db-select {
+    padding: 0.45rem 0.6rem; border: 1px solid var(--db-border); border-radius: 6px;
+    background: var(--db-bg-elev-2); color: var(--db-text); font-size: 13px;
+    max-width: 100%; box-sizing: border-box;
+}
+.db-select:focus-visible { outline: none; border-color: var(--db-accent); box-shadow: 0 0 0 2px color-mix(in oklab, var(--db-accent) 40%, transparent); }
+
+/* A plain wrapper for a stack of .db-field rows (supersedes Bootstrap's .container). */
+.db-fields { width: 100%; }
+
+/* A row of side-by-side filter controls (supersedes the .row + .col-sm-N filter bars). */
+.db-filters { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: flex-end; padding: 0.35rem 0; }
+.db-filter { display: flex; flex-direction: column; gap: 0.3rem; flex: 1 1 12rem; min-width: 0; }
+.db-filter > .db-select, .db-filter > .db-input { width: 100%; }
+.db-filter-auto { flex: 0 0 auto; }
+.db-filter-end { margin-left: auto; align-items: flex-end; }
+
+/* An input paired with an adjacent affix/button (supersedes Bootstrap's .input-group). */
+.db-input-group { display: flex; align-items: stretch; gap: 0.35rem; width: 100%; }
+.db-input-group > .db-input, .db-input-group > .db-select { flex: 1 1 auto; min-width: 0; }
+.db-input-group-text {
+    display: inline-flex; align-items: center; padding: 0.45rem 0.6rem; white-space: nowrap;
+    border: 1px solid var(--db-border); border-radius: 6px;
+    background: var(--db-bg-elev); color: var(--db-text-2); font-size: 13px;
+}
+/* Native controls stretch to fill the field's control cell. */
+.db-field-control > .db-input,
+.db-field-control > .db-select,
+.db-field-control > textarea.db-input { width: 100%; }
+
+/* ============================== Status pill ============================== */
+.db-status-pill { display: inline-block; padding: 0.18rem 0.5rem; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.db-status-pill.online  { background: color-mix(in oklab, var(--db-ok) 18%, transparent); color: var(--db-ok); }
+.db-status-pill.standby { background: color-mix(in oklab, var(--db-info) 18%, transparent); color: var(--db-info); }
+.db-status-pill.warning { background: color-mix(in oklab, var(--db-warn) 22%, transparent); color: var(--db-warn); }
+.db-status-pill.offline { background: color-mix(in oklab, var(--db-bad) 18%, transparent); color: var(--db-bad); }
+.db-status-pill.muted   { background: var(--db-bg-elev-2); color: var(--db-muted); }
+
+/* ============================== Banner / misc ============================== */
+.db-banner {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.75rem 1rem; margin-bottom: 1.25rem;
+    background: color-mix(in oklab, var(--db-accent) 12%, transparent);
+    border: 1px solid color-mix(in oklab, var(--db-accent) 35%, transparent);
+    border-radius: var(--db-radius-sm); color: var(--db-text);
+}
+.db-banner-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--db-accent); flex: 0 0 10px; }
+.db-section { margin: 1.75rem 0 0.5rem; }
+
+/* Collapsible Section (D18: Stomme owns the chrome Bootstrap's JS used to provide).
+   The header is a real <button> when interactive and a <summary> when statically rendered. */
+.db-section-head {
+    display: flex; align-items: center; gap: 0.5rem; width: 100%;
+    padding: 0.25rem 0; background: none; border: 0; cursor: pointer;
+    color: var(--db-text); text-align: left; font: inherit;
+}
+.db-section-head::-webkit-details-marker { display: none; }
+.db-section-head::marker { content: ""; }
+.db-section-head:hover .db-section-title { color: var(--db-accent); }
+.db-section-head:focus-visible { outline: 2px solid var(--db-accent); outline-offset: 2px; border-radius: var(--db-radius-sm); }
+.db-section-title { margin: 0; font-size: 15px; font-weight: 700; color: var(--db-text); }
+.db-section-chevron { font-size: 10px; color: var(--db-muted); flex: 0 0 auto; }
+.db-section-rule { margin: 0.35rem 0 0.75rem; border: 0; border-top: 1px solid var(--db-border); }
+/* Content stays in the DOM when collapsed -- hidden, not removed. */
+.db-section-body { display: none; }
+.db-section-body.open { display: block; }
+
+/* ============================== Breadcrumbs (BL-49) ==============================
+   The Breadcrumbs theme control emits THREE spellings and every one of them was
+   undefined in every stylesheet in the repo (verified both directions 2026-08-03):
+   `app-breadcrumbs` + Bootstrap's `breadcrumb`/`breadcrumb-item` from
+   Themes/Controls/Theme/Breadcrumbs.razor, and a bare `breadcrumbs` from
+   BlazorTheme's Default.razor. Bootstrap's own CSS left with the CDN (D31), so the
+   trail rendered as an unstyled bullet list. All three are styled here, in the
+   global token layer, so every theme inherits them. */
+.app-breadcrumbs, .breadcrumbs { display: block; margin: 0 0 0.75rem; font-size: 13px; }
+.app-breadcrumbs .breadcrumb, .breadcrumbs .breadcrumb, ol.breadcrumb {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.15rem;
+    margin: 0; padding: 0; list-style: none;
+}
+.breadcrumb-item { display: inline-flex; align-items: center; color: var(--db-muted); }
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "/"; margin: 0 0.45rem; color: var(--db-border-strong, var(--db-border));
+}
+.breadcrumb-item a { color: var(--db-text-2); text-decoration: none; }
+.breadcrumb-item a:hover { color: var(--db-accent); text-decoration: underline; }
+/* The current page: present but not competing with the page heading. */
+.breadcrumb-item.active { color: var(--db-text); font-weight: 600; }
+.breadcrumb-item.active a { color: inherit; cursor: default; }
+.breadcrumb-item.active a:hover { text-decoration: none; }
+
+.db-note {
+    padding: 0.6rem 0.85rem; margin: 0 0 1rem; border-radius: var(--db-radius-sm);
+    background: var(--db-bg-elev-2); border: 1px solid var(--db-border); color: var(--db-text); font-size: 13.5px;
+}
+.db-note-warn {
+    background: color-mix(in oklab, var(--db-warn) 14%, transparent);
+    border-color: color-mix(in oklab, var(--db-warn) 38%, transparent);
+}
+
+/* ============================== Module messages ============================== */
+/* Native --db-* replacement for the Bootstrap .alert used by ModuleMessage. */
+.db-message {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    padding: 0.7rem 0.9rem; margin: 0 0 1rem; border-radius: var(--db-radius-sm);
+    background: var(--db-bg-elev-2); border: 1px solid var(--db-border);
+    color: var(--db-text); font-size: 14px;
+}
+.db-message-body { flex: 1 1 auto; min-width: 0; }
+.db-message-ok   { background: color-mix(in oklab, var(--db-ok) 14%, transparent);   border-color: color-mix(in oklab, var(--db-ok) 38%, transparent); }
+.db-message-info { background: color-mix(in oklab, var(--db-info) 14%, transparent); border-color: color-mix(in oklab, var(--db-info) 38%, transparent); }
+.db-message-warn { background: color-mix(in oklab, var(--db-warn) 14%, transparent); border-color: color-mix(in oklab, var(--db-warn) 38%, transparent); }
+.db-message-bad  { background: color-mix(in oklab, var(--db-bad) 14%, transparent);  border-color: color-mix(in oklab, var(--db-bad) 38%, transparent); }
+.db-message-close {
+    flex: 0 0 auto; appearance: none; background: transparent; border: 0; cursor: pointer;
+    color: var(--db-text-2); font-size: 18px; line-height: 1; padding: 0 0.2rem;
+    border-radius: var(--db-radius-xs);
+}
+.db-message-close:hover { color: var(--db-text); background: var(--db-bg-elev-3); }
+.db-message-close:focus-visible { outline: 2px solid var(--db-accent); outline-offset: 2px; }
+
+/* Toast placement for MessageStyle.Toast */
+.db-message-toast { position: fixed; right: 1rem; bottom: 1rem; z-index: var(--db-z-toast, 1080); max-width: min(420px, calc(100vw - 2rem)); }
+
+/* ============================== Admin container (Themes/AdminContainer.razor) ==============================
+   Hosts every admin Add/Edit page. Replaces the Bootstrap .modal chrome (which only rendered at all
+   because app.css force-set display:block on it) with an owned --db-* surface. */
+.db-admin-modal { position: fixed; inset: 0; z-index: 9999; overflow: auto; background: rgba(0, 0, 0, 0.45); }
+.db-admin-modal-dialog { width: 100%; max-width: 960px; margin: 4vh auto; padding: 0 1rem; }
+.db-admin-modal-content {
+    display: flex; flex-direction: column;
+    background: var(--db-bg-elev); border: 1px solid var(--db-border);
+    border-radius: var(--db-radius); box-shadow: var(--db-shadow-3);
+}
+.db-admin-modal-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    padding: 0.9rem 1.15rem; border-bottom: 1px solid var(--db-border);
+}
+.db-admin-modal-title { margin: 0; font-size: 1rem; font-weight: 700; color: var(--db-text); }
+.db-admin-modal-body { padding: 1.15rem; }
+.db-admin-modal-foot {
+    display: flex; justify-content: flex-end; gap: 0.5rem;
+    padding: 0.9rem 1.15rem; border-top: 1px solid var(--db-border);
+}
+
+/* ============================== Tabs (Modules/Controls/TabStrip.razor) ==============================
+   .tab-pane / .nav-tabs were never covered by bootstrap-compat.css, so after the CDN was dropped
+   every panel rendered stacked and nothing could switch. These own the behaviour outright. */
+.db-tabs { margin-bottom: 1rem; }
+.db-tablist {
+    display: flex; align-items: stretch; gap: 0.15rem; flex-wrap: wrap;
+    list-style: none; margin: 0 0 1rem; padding: 0 0 0 0;
+    border-bottom: 1px solid var(--db-border);
+}
+.db-tab-item { display: inline-flex; }
+/* Interactive tabs render as <button>, static tabs as <a> -- style both identically. */
+.db-tab {
+    display: inline-flex; align-items: center; padding: 0.55rem 0.95rem;
+    color: var(--db-text-2); text-decoration: none; cursor: pointer;
+    font-size: 14px; font-weight: 500; white-space: nowrap;
+    font-family: inherit; background: transparent; appearance: none;
+    border: 1px solid transparent; border-bottom: 2px solid transparent;
+    border-radius: var(--db-radius-sm) var(--db-radius-sm) 0 0;
+    margin-bottom: -1px;
+}
+.db-tab:hover { color: var(--db-text); background: var(--db-bg-elev-2); }
+.db-tab.active { color: var(--db-text); border-bottom-color: var(--db-accent); font-weight: 600; }
+.db-tab:focus-visible { outline: 2px solid var(--db-accent); outline-offset: -2px; }
+
+/* Only the active panel is shown (replaces Bootstrap .tab-pane/.fade/.show). */
+.db-tab-pane { display: none; }
+.db-tab-pane.active { display: block; }
+
+/* ============================== Pager (Modules/Controls/Pager.razor) ==============================
+   Shared control behind most admin list pages. Neither .pagination nor the search .input-group was
+   ever covered by bootstrap-compat.css, so both rendered unstyled once the CDN was dropped. */
+.db-pager-search { display: flex; align-items: center; gap: 0.5rem; margin: 0.9rem 0; flex-wrap: wrap; }
+.db-pager-search-field { flex: 1 1 260px; min-width: 0; }
+
+.db-pagination {
+    display: flex; align-items: center; gap: 0.25rem; flex-wrap: wrap;
+    list-style: none; margin: 0.75rem 0; padding: 0;
+}
+.db-pagination-start  { justify-content: flex-start; }
+.db-pagination-center { justify-content: center; }
+.db-pagination-end    { justify-content: flex-end; }
+
+.db-page-item { display: inline-flex; }
+.db-page-link {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 34px; height: 34px; padding: 0 0.55rem;
+    border: 1px solid var(--db-border); border-radius: var(--db-radius-sm);
+    background: var(--db-bg-elev); color: var(--db-text-2);
+    font-size: 13.5px; text-decoration: none; cursor: pointer; user-select: none;
+}
+.db-page-link:hover { background: var(--db-bg-elev-2); color: var(--db-text); border-color: var(--db-border-strong); }
+.db-page-item.active .db-page-link {
+    background: var(--db-accent); border-color: var(--db-accent); color: #101013; font-weight: 600;
+}
+.db-page-item.disabled .db-page-link { opacity: 0.45; pointer-events: none; }
+.db-page-link:focus-visible { outline: 2px solid var(--db-accent); outline-offset: 2px; }
+
+/* ============================== Form rows ============================== */
+/* Label-left / control-right field rows used by migrated admin forms. Stacks on narrow viewports. */
+.db-field { display: grid; grid-template-columns: minmax(180px, 240px) 1fr; align-items: center; gap: 0.5rem 1rem; padding: 0.35rem 0; }
+.db-field > label, .db-field > .db-field-label { font-size: 13px; font-weight: 600; color: var(--db-text-2); margin: 0; }
+.db-field-control { width: 100%; max-width: 32rem; }
+/* A Label is not always inside a .db-field (filter bars render one in a .db-filter), so the hook
+   also has a standalone rule. Inherited from bootstrap-compat.css when that file was deleted;
+   the .db-field > ... rules above are more specific and still win inside a field row. */
+.db-field-label { display: inline-block; margin-bottom: .25rem; font-size: 13px; font-weight: 600; color: var(--db-text-2); }
+.db-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 1rem; }
+/* Several buttons sitting together inside a field cell (supersedes the margin spacing utilities). */
+.db-btn-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+/* A category heading breaking up a run of profile fields. */
+.db-field-category { padding: 0.75rem 0 0.35rem; text-align: center; font-weight: 700; color: var(--db-text-2); }
+
+/* ============================== Generic layout ==============================
+   A minimal flex vocabulary superseding the Bootstrap .row/.col grid on the pages whose layout was
+   never really a 12-column grid -- just a row of things. */
+.db-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.db-row-center { justify-content: center; }
+.db-col { flex: 1 1 0; min-width: 0; }
+.db-col-auto { flex: 0 0 auto; }
+.db-center { text-align: center; }
+/* Pager's non-table ("Grid") format wrapper. */
+.db-grid-wrap { width: 100%; }
+/* The package-gallery card grid on the Install Module / Install Theme pages. */
+.db-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 0.75rem; }
+.db-card-cell { min-width: 0; }
+.db-card-tile { display: flex; justify-content: center; padding: 0.75rem; height: 100%; }
+/* Live icon preview beside the icon picker on the Page Add/Edit forms. */
+.db-icon-preview { display: inline-flex; align-items: center; padding-left: 0.5rem; color: var(--db-text-2); }
+/* User profile photo. */
+.db-avatar { display: block; margin: 0 auto; border-radius: 50%; max-width: 100%; height: auto; }
+
+/* ============================== Login ==============================
+   A single centred column: the Bootstrap .form-group/.col-12/.btn-group scaffolding here was only
+   ever stacking fields and stretching buttons to full width. */
+.db-login-field { display: flex; flex-direction: column; align-items: stretch; gap: 0.35rem; margin-top: 0.75rem; }
+.db-login-field > .db-input, .db-login-field > .db-input-group { width: 100%; }
+.db-btn-block { width: 100%; margin-top: 0.75rem; }
+.db-btn-split { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+.db-btn-split > .db-btn { flex: 1 1 0; }
+.db-login-rule { margin: 1rem 0 0.5rem; border: 0; border-top: 1px solid var(--db-border); }
+.db-login-register { text-align: center; margin-top: 0.5rem; }
+
+/* ============================== Search results ============================== */
+.db-search-bar { margin-bottom: 1rem; }
+.db-search-results { width: 100%; margin-bottom: 1rem; }
+.db-search-item { margin-bottom: 0.75rem; }
+.db-search-title { margin: 0 0 0.25rem; font-size: 16px; font-weight: 700; }
+.db-search-title a { color: var(--db-accent); text-decoration: none; }
+.db-search-title a:hover { text-decoration: underline; }
+.db-search-snippet { margin: 0; color: var(--db-text-2); font-size: 13.5px; }
+
+/* Inline radio / checkbox pairs (supersedes .form-check + .form-check-inline). */
+.db-radio-group { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.db-radio { display: inline-flex; align-items: center; gap: 0.35rem; }
+.db-radio-label { margin: 0; font-size: 13px; color: var(--db-text); cursor: pointer; }
+
+/* ============================== FileManager ============================== */
+.db-filemanager { display: flex; align-items: flex-start; gap: 1rem; width: 100%; }
+.db-filemanager-controls { display: flex; flex-direction: column; gap: 0.5rem; flex: 1 1 auto; min-width: 0; }
+.db-filemanager-controls > .db-select, .db-filemanager-controls > .db-input { width: 100%; }
+.db-filemanager-upload { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.5rem; }
+.db-filemanager-input { display: flex; flex-direction: column; gap: 0.25rem; flex: 1 1 14rem; min-width: 0; }
+.db-filemanager-progress { display: flex; align-items: center; gap: 0.75rem; }
+.db-filemanager-preview { flex: 0 0 auto; }
+.db-filemanager-preview img { max-width: 120px; height: auto; border-radius: var(--db-radius-sm); }
+
+/* Holds the sort-icon column's width when a column is not the active sort. */
+.db-sort-spacer { padding-right: 1rem; }
+
+/* ============================== ActionDialog ============================== */
+/* Supersedes the Bootstrap .modal chrome. Stomme drives visibility in Blazor (the dialog is only
+   rendered when open), so there is no .show/JS toggling here -- see D18. */
+.db-dialog {
+    position: fixed; inset: 0; z-index: var(--db-z-modal, 9999);
+    display: block; width: 100%; height: 100%; overflow: auto;
+    background: rgba(0, 0, 0, 0.5);
+}
+.db-dialog-panel { width: 100%; max-width: none; }
+.db-dialog-content {
+    margin: 10vh auto; width: min(40rem, 92vw);
+    display: flex; flex-direction: column;
+    background: var(--db-bg-elev); border: 1px solid var(--db-border);
+    border-radius: var(--db-radius); box-shadow: var(--db-shadow-3);
+}
+.db-dialog-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--db-border);
+}
+.db-dialog-title { margin: 0; font-size: 15px; font-weight: 700; color: var(--db-text); }
+.db-dialog-close {
+    background: none; border: 0; cursor: pointer; color: var(--db-muted);
+    font-size: 18px; line-height: 1; padding: 0.2rem 0.35rem; border-radius: var(--db-radius-sm);
+}
+.db-dialog-close::before { content: "\00d7"; }
+.db-dialog-close:hover { color: var(--db-text); background: var(--db-bg-elev-2); }
+.db-dialog-close:focus-visible { outline: 2px solid var(--db-accent); outline-offset: 1px; }
+.db-dialog-body { padding: 1.1rem; color: var(--db-text); }
+.db-dialog-foot {
+    display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem;
+    padding: 0.9rem 1.1rem; border-top: 1px solid var(--db-border);
+}
+
+/* ============================== PermissionGrid ============================== */
+.db-permissions { display: flex; flex-direction: column; gap: 1rem; width: 100%; }
+.db-permission-table th, .db-permission-table td { vertical-align: middle; }
+.db-permission-col { text-align: center; width: 1px; white-space: nowrap; }
+.db-permission-cell { text-align: center; width: 1px; }
+.db-permission-adduser { display: flex; align-items: flex-start; gap: 0.5rem; }
+.db-permission-adduser > :first-child { flex: 1 1 auto; min-width: 0; }
+@media (max-width: 640px) {
+    .db-field { grid-template-columns: 1fr; gap: 0.25rem; }
+    /* The installer centres everything (logo, headings, buttons) and so centres a stacked label - but a field is capped
+       at 32rem and sat LEFT-aligned under it (reported by the owner, 2026-09-23). Centre the capped field under its label. */
+    .db-installer .db-field { justify-items: center; }
+}
+
+/* Respect reduced-motion (a11y). */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important; scroll-behavior: auto !important;
+    }
+}
+/* Admin container (Themes/AdminContainer.razor). */
+.db-admin-container { }
+
+/* Admin dashboard tile grid (Modules/Admin/Dashboard) — migrated off Bootstrap to the db card system. */
+.db-dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin: 0.5rem 0; }
+.db-dash-tile {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem;
+    padding: 1.5rem 1rem; text-align: center; min-height: 130px;
+    background: var(--db-bg-elev); border: 1px solid var(--db-border); border-radius: var(--db-radius);
+    color: var(--db-text-2); text-decoration: none; box-shadow: var(--db-shadow);
+    transition: border-color .12s ease, color .12s ease, transform .12s ease, background .12s ease;
+}
+.db-dash-tile:hover { border-color: var(--db-accent); color: var(--db-text); transform: translateY(-2px); background: var(--db-bg-elev-2); }
+.db-dash-tile:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+.db-dash-tile-icon { font-size: 1.9rem; color: var(--db-accent); line-height: 1; }
+.db-dash-tile-label { font-weight: 700; font-size: 0.95rem; color: inherit; }
+/* BL-204: the dashboard's search, filtered by its page script (Modules/Stomme.Modules.Admin.Dashboard/dashboard.js). A tile
+   sets its own display, so a hidden one has to be said. */
+.db-dash { display: block; }
+.db-dash-search { max-width: 28rem; margin: 0.5rem 0 1rem; }
+.db-dash-search .db-input { width: 100%; font-size: 0.95rem; }
+.db-dash-empty { color: var(--db-muted); margin: 0.5rem 0; }
+.db-dash-tile[hidden], .db-dash-empty[hidden] { display: none; }
+
+/* ============================== Text editor (QuillJS) / HtmlText ============================== */
+/* The editor's own chrome is Quill's (.ql-*); only its Stomme scaffolding is ours. */
+.db-editor-surface { width: 100%; min-width: 0; }
+.db-editor-actions { justify-content: center; margin-bottom: 0.5rem; }
+.db-editor-actions:empty { display: none; }
+/* The settings tab's Save button sits under the control column, with no label beside it. */
+.db-field-control-offset { grid-column: 2; }
+.db-htmltext-action { margin: 0.5rem 0; }
+
+/* ============================== Installer ==============================
+   First run: there is no site and no theme yet, so the installer never receives a Theme.css and
+   the globally-loaded sheet is ALL it has. That is why it can only emit db-* now that the
+   component layer above is global (D31) -- before the hoist, renaming its Bootstrap class names
+   would have left it with no stylesheet at all. Its page frame is the one thing it cannot borrow
+   from a theme (.db-page belongs to the theme's shell), so it owns this rule. */
+.db-installer { width: 100%; max-width: 1320px; margin: 0 auto; padding: 1.75rem 1rem 3rem; }
+/* The installer is ONE centred column at every width (reported by the owner, 2026-09-23; measured at 1280px: logo and
+   headings centred on 640 while the form hugged the left edge, labels 16-256 and fields 272-784, Next at x = 16). The
+   form is held to the width a two-column form needs, desktop labels sit right against their fields, and the step tabs
+   and the Back/Next row are centred. The <=640px stacked state centres each field under its label (below). */
+.db-installer .db-fields { max-width: 50rem; margin-left: auto; margin-right: auto; }
+.db-installer .db-field > .db-field-label { text-align: right; }
+.db-installer .db-row-center > .db-col > .db-input-group { justify-content: center; }
+
+
+/* ============================== FluentUI follows the theme (BL-192) ============================== */
+/* The owner's rule (2026-10-02): a button takes the colours its theme defines and nothing overrides them; a theme that defines
+   none gets the defaults above. FluentUI 5 puts its own palette on <html>; these point its brand tokens at the theme's --db-*
+   tokens on <body>, which every control inherits from first - so a FluentUI button and a .db-btn are one colour, the theme's. */
+body {
+    --colorBrandBackground: var(--db-accent);
+    --colorBrandBackgroundHover: var(--db-accent-2);
+    --colorBrandBackgroundPressed: var(--db-accent-3);
+    --colorBrandBackgroundSelected: var(--db-accent-2);
+    --colorBrandBackground2: color-mix(in oklab, var(--db-accent) 14%, transparent);
+    --colorNeutralForegroundOnBrand: var(--db-on-accent);
+    --colorBrandForeground1: var(--db-accent);
+    --colorBrandForeground2: var(--db-accent-3);
+    --colorBrandForegroundLink: var(--db-accent);
+    --colorBrandForegroundLinkHover: var(--db-accent-3);
+    --colorBrandForegroundLinkPressed: var(--db-accent-3);
+    --colorBrandStroke1: var(--db-accent);
+    --colorBrandStroke2: color-mix(in oklab, var(--db-accent) 40%, transparent);
+    --colorCompoundBrandBackground: var(--db-accent);
+    --colorCompoundBrandBackgroundHover: var(--db-accent-2);
+    --colorCompoundBrandBackgroundPressed: var(--db-accent-3);
+    --colorCompoundBrandForeground1: var(--db-accent);
+    --colorCompoundBrandForeground1Hover: var(--db-accent-2);
+    --colorCompoundBrandForeground1Pressed: var(--db-accent-3);
+    --colorCompoundBrandStroke: var(--db-accent);
+    --colorCompoundBrandStrokeHover: var(--db-accent-2);
+    --colorCompoundBrandStrokePressed: var(--db-accent-3);
+}
+
+/* ==========================================================================
+   Shared control chrome on the --db-* tokens (D11 / D18 / D27)
+   --------------------------------------------------------------------------
+   Menu and ControlPanel are SHARED controls: every theme renders them, not just the default one.
+   So their chrome has to be global. It cannot live in StommeTheme/Theme.css, which is only
+   loaded when that theme is active.
+
+   This is not theoretical. Moving the ControlPanel drawer off Bootstrap's .offcanvas and into
+   .db-drawer inside the theme stylesheet broke the drawer under BlazorTheme -- caught by driving
+   /private (which renders on BlazorTheme): position:static, visibility:visible, rect
+   [777,-197,639,490]. That is defect #1 ("the drawer lays out over the page and eats clicks")
+   resurrected for the other theme. These rules are global so that any theme, including a
+   Bootstrap one that brings its own CDN Bootstrap, gets working shared chrome.
+
+   The --db-* tokens themselves are global at the top of this file.
+   See D27 for the wider point: the --db-* system is a framework concern, not a theme's.
+   ========================================================================== */
+
+/* -------------------- Site menu (Menu/MenuHorizontal/MenuVertical) -------------------- */
+.db-nav { display: flex; align-items: center; min-width: 0; }
+
+/* Scriptless fallback for statically-rendered themes; see MenuBase. */
+.db-nav-checkbox { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }
+
+.db-nav-toggle {
+    display: none; /* revealed only below the breakpoint */
+    flex: 0 0 auto;  /* the toggler must never be shrunk away */
+    width: 40px; height: 40px; align-items: center; justify-content: center;
+    background: transparent; color: var(--db-text); border: 1px solid transparent;
+    border-radius: 10px; cursor: pointer;
+}
+.db-nav-toggle:hover { background: var(--db-bg-elev-2); border-color: var(--db-border); }
+.db-nav-toggle:focus-visible,
+.db-nav-checkbox:focus-visible + .db-nav-toggle { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+
+/* Hamburger drawn in CSS, so the menu does not depend on an icon font being loaded. */
+.db-nav-toggle-icon { position: relative; }
+.db-nav-toggle-icon, .db-nav-toggle-icon::before, .db-nav-toggle-icon::after {
+    display: block; width: 18px; height: 2px; background: currentColor; border-radius: 2px;
+}
+.db-nav-toggle-icon::before, .db-nav-toggle-icon::after { position: absolute; content: ""; }
+.db-nav-toggle-icon::before { top: -6px; }
+.db-nav-toggle-icon::after { top: 6px; }
+
+.db-nav-items { display: flex; align-items: center; min-width: 0; }
+.db-nav-list { display: flex; align-items: center; gap: 0.1rem; list-style: none; margin: 0; padding: 0; }
+.db-nav-list-vertical { flex-direction: column; align-items: stretch; }
+.db-nav-item { list-style: none; position: relative; }
+
+.db-nav-link {
+    display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap;
+    padding: 0.5rem 0.75rem; border-radius: 10px;
+    color: var(--db-text-2); text-decoration: none; font-size: 0.9rem;
+    transition: background .12s ease, color .12s ease;
+}
+.db-nav-link:hover { color: var(--db-text); background: var(--db-bg-elev-2); }
+.db-nav-link.active { color: var(--db-accent); }
+.db-nav-link:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+
+.db-nav-caret { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid currentColor; margin-left: 0.15rem; }
+
+/* Submenu: hover/focus-within rather than Bootstrap's dropdown JS (which no longer exists). */
+.db-nav-sub {
+    display: none; position: absolute; top: 100%; left: 0; z-index: var(--db-z-dropdown, 1000);
+    min-width: 11rem; padding: 0.35rem;
+    background: var(--db-bg-elev); border: 1px solid var(--db-border);
+    border-radius: var(--db-radius-sm); box-shadow: var(--db-shadow);
+}
+.db-nav-has-sub:hover > .db-nav-sub, .db-nav-has-sub:focus-within > .db-nav-sub { display: block; }
+.db-nav-sub-link {
+    display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem;
+    border-radius: var(--db-radius-xs); color: var(--db-text-2); text-decoration: none; font-size: 0.9rem;
+}
+.db-nav-sub-link:hover { background: var(--db-bg-elev-2); color: var(--db-text); }
+.db-nav-sub-link.active { color: var(--db-accent); }
+.db-nav-sub-link:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+
+.db-visually-hidden {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+@media (max-width: 767.98px) {
+    .db-nav-toggle { display: inline-flex; }
+
+    /* Closed -- zero geometry, unhittable. The Bootstrap-era markup laid a ~300px
+       .navbar-collapse out over the page and swallowed every click in its column. */
+    .db-nav-items { display: none; }
+
+    /* Open -- a panel under the header, out of flow. Both shapes (Blazor `.open` and the
+       scriptless `:checked`) resolve to the same surface. */
+    .db-nav-items.open,
+    .db-nav-checkbox:checked ~ .db-nav-items {
+        display: flex; flex-direction: column; align-items: stretch;
+        position: absolute; top: var(--db-appbar-h, 64px); left: 0; right: 0;
+        z-index: var(--db-z-sticky, 1020);
+        padding: 0.5rem; gap: 0.15rem;
+        background: var(--db-bg-elev); border-bottom: 1px solid var(--db-border);
+        box-shadow: var(--db-shadow);
+        max-height: calc(100vh - var(--db-appbar-h, 64px)); overflow-y: auto;
+    }
+    .db-nav-items.open .db-nav-list,
+    .db-nav-checkbox:checked ~ .db-nav-items .db-nav-list { flex-direction: column; align-items: stretch; width: 100%; }
+    .db-nav-items.open .db-nav-link,
+    .db-nav-checkbox:checked ~ .db-nav-items .db-nav-link { width: 100%; }
+
+    /* Nested pages: inline within the panel rather than a floating dropdown. */
+    .db-nav-items.open .db-nav-sub,
+    .db-nav-checkbox:checked ~ .db-nav-items .db-nav-sub {
+        display: block; position: static; border: none; box-shadow: none;
+        background: transparent; padding: 0 0 0 1rem; min-width: 0;
+    }
+    .db-nav-items.open .db-nav-caret,
+    .db-nav-checkbox:checked ~ .db-nav-items .db-nav-caret { display: none; }
+}
+
+/* -------------------- Dropdown (LanguageSwitcher, ModuleActions) --------------------
+   Bootstrap's dropdown JS went away with the CDN (D18), and three separate `data-bs-toggle="dropdown"`
+   triggers were left inert: the site menu's submenu, the LanguageSwitcher, and the module-actions
+   menu. These open on :hover AND on :focus-within — clicking the trigger focuses it, which opens the
+   menu; moving focus away closes it. No script, so it behaves identically statically and
+   interactively, and it is keyboard-reachable. */
+.db-dropdown { position: relative; display: inline-flex; }
+.db-dropdown-menu {
+    display: none; position: absolute; top: 100%; left: 0; z-index: var(--db-z-dropdown, 1000);
+    min-width: 10rem; padding: 0.35rem; margin: 0.15rem 0 0;
+    background: var(--db-bg-elev); border: 1px solid var(--db-border);
+    border-radius: var(--db-radius-sm); box-shadow: var(--db-shadow);
+    list-style: none; text-align: left;
+}
+.db-dropdown-end { left: auto; right: 0; }
+.db-dropdown:hover > .db-dropdown-menu,
+.db-dropdown:focus-within > .db-dropdown-menu { display: block; }
+.db-dropdown-item {
+    display: flex; align-items: center; gap: 0.4rem; width: 100%;
+    padding: 0.4rem 0.6rem; border-radius: var(--db-radius-xs);
+    color: var(--db-text-2); text-decoration: none; background: transparent; border: none;
+    text-align: left; cursor: pointer; font-size: 0.9rem;
+}
+.db-dropdown-item:hover { background: var(--db-bg-elev-2); color: var(--db-text); }
+.db-dropdown-item.active { color: var(--db-accent); }
+.db-dropdown-divider { height: 0; margin: 0.35rem 0; border-top: 1px solid var(--db-border); list-style: none; }
+
+/* Module actions (container chrome, edit mode). The Bootstrap trigger was an EMPTY
+   <a class="dropdown-toggle">: its only visible part was Bootstrap's ::after caret, which the
+   supersede layer never drew -- so the trigger was invisible as well as inert. It is an explicit
+   button with an explicit caret now. */
+.db-moduleactions { display: inline-flex; padding: 0.25rem 0.5rem; }
+.db-moduleactions-toggle {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem;
+    min-width: 28px; height: 28px; padding: 0 0.35rem; cursor: pointer;
+    background: transparent; color: var(--db-text-2);
+    border: 1px solid transparent; border-radius: var(--db-radius-xs);
+}
+.db-moduleactions-toggle:hover { background: var(--db-bg-elev-2); color: var(--db-text); border-color: var(--db-border); }
+.db-moduleactions-toggle:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+.db-dropdown-sub { position: relative; list-style: none; }
+.db-dropdown-sub > .db-dropdown-menu { top: 0; left: 100%; margin: 0; }
+.db-dropdown-sub:hover > .db-dropdown-menu,
+.db-dropdown-sub:focus-within > .db-dropdown-menu { display: block; }
+
+/* -------------------- Drawer (ControlPanel) --------------------
+   Was Bootstrap's .offcanvas, re-implemented in the supersede layer. It is Stomme's own chrome
+   now; ControlPanelInteractive toggles .show from Blazor state.
+
+   Hidden state uses `visibility: hidden` *and* a transform, so a closed drawer cannot be clicked
+   through to -- the original bug here was a `position: static` drawer swallowing every click in
+   its column. */
+.db-drawer {
+    position: fixed; z-index: var(--db-z-modal, 1040); display: flex; flex-direction: column;
+    max-width: 100%; visibility: hidden;
+    background: var(--db-bg-elev); color: var(--db-text);
+    box-shadow: var(--db-shadow-3);
+    transition: transform .25s ease-in-out, visibility .25s;
+}
+.db-drawer-end { top: 0; right: 0; bottom: 0; width: 400px; border-left: 1px solid var(--db-border); transform: translateX(100%); }
+.db-drawer-start { top: 0; left: 0; bottom: 0; width: 400px; border-right: 1px solid var(--db-border); transform: translateX(-100%); }
+.db-drawer.show { visibility: visible; transform: none; }
+.db-drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--db-border); }
+.db-drawer-title { margin: 0; font-size: 1rem; font-weight: 700; }
+.db-drawer-body { flex: 1 1 auto; padding: 1rem 1.25rem; overflow-y: auto; }
+.db-drawer-backdrop { position: fixed; inset: 0; z-index: var(--db-z-overlay, 1030); background: rgba(0, 0, 0, .5); border: 0; padding: 0; }
+
+/* The drawer is a narrow column, so its fields stack (label above control) rather than using the
+   two-column .db-field grid the wide admin forms use. */
+.db-drawer-stack { display: flex; flex-direction: column; gap: 0.5rem; }
+.db-drawer-field { display: flex; flex-direction: column; gap: 0.25rem; }
+.db-drawer-field > .db-select, .db-drawer-field > .db-input { width: 100%; }
+.db-drawer-field > .db-select + .db-select { margin-top: 0.25rem; }
+.db-drawer-label { text-align: center; font-size: 13px; font-weight: 700; color: var(--db-text-2); }
+.db-drawer-rule { border: none; border-top: 1px solid var(--db-border); margin: 0.5rem 0; }
+.db-drawer-message { margin-top: 0.5rem; text-align: center; }
+.db-btn-row-fill > .db-btn, .db-btn-row-fill > .db-btn-neutral, .db-btn-row-fill > .db-btn-danger { flex: 1 1 0; }
+
+@media (prefers-reduced-motion: reduce) {
+    .db-drawer { transition: none; }
+}
+
+/* -------------------- Contextual help (BL-84) --------------------
+   On a STATIC page the launcher is a native <details> disclosure - it opens with no script and no circuit, the same
+   reasoning as .db-dropdown above. On an interactive page the topics sit in the .db-drawer. The topic body is
+   server-rendered, allowlisted HTML; these rules only give it the drawer's rhythm. */
+.db-help { position: relative; display: inline-flex; }
+.db-help > summary { list-style: none; cursor: pointer; }
+.db-help > summary::-webkit-details-marker { display: none; }
+.db-help-panel {
+    position: absolute; top: 100%; right: 0; z-index: var(--db-z-dropdown, 1000);
+    width: min(400px, 90vw); max-height: 70vh; overflow-y: auto; margin: 0.15rem 0 0; padding: 1rem 1.25rem;
+    background: var(--db-bg-elev); color: var(--db-text); border: 1px solid var(--db-border);
+    border-radius: var(--db-radius-sm); box-shadow: var(--db-shadow); text-align: left;
+}
+/* A LABEL's disclosure sits near the left edge, so it opens rightwards; the header launcher sits at the right edge and
+   opens leftwards (right: 0 above). Found by driving: anchored right, a label's panel opened 273px off-screen. */
+.db-help-inline .db-help-panel { left: 0; right: auto; width: min(400px, calc(100vw - 2rem)); }
+.db-help-topic + .db-help-topic { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--db-border); }
+.db-help-title { margin: 0 0 0.5rem; font-size: 0.95rem; font-weight: 700; }
+.db-help-topic table { border-collapse: collapse; }
+.db-help-topic th, .db-help-topic td { padding: 0.2rem 0.5rem; border: 1px solid var(--db-border); }
+.db-help-trigger { cursor: pointer; }
+
+app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Admin Modal */
+/* (The .app-admin-modal rules that used to live here are gone: AdminContainer renders
+   .db-admin-modal on the --db-* tokens now, and nothing emits .app-admin-modal any more.) */
+
+/* Action Dialog */
+/* The dialog chrome itself now lives on the --db-* tokens (.db-dialog* in the theme, D11). These
+   rules used to force Bootstrap's display:none .modal back to visible; the dialog is rendered only
+   when open, so nothing needs forcing. */
+.app-actiondialog{
+    position: absolute;
+}
+
+/* Admin Pane */
+.app-pane-admin-border {
+    width: 100%;
+    border-width: 1px;
+    border-style: dashed;
+    border-color: gray;
+}
+
+.app-pane-admin-title {
+    width: 100%;
+    text-align: center;
+    color: gray;
+}
+
+/* ModuleActions renders .db-dropdown/.db-dropdown-sub now; the Bootstrap .dropdown-menu overrides
+   that used to live here are gone with it. */
+.app-moduleactions .db-dropdown-menu { z-index: 9999; }
+
+/* The busy overlay (installer, render-mode boundary, file manager, search). It was a legacy loading.gif - grey dots and a
+   "LOADING" label drawn for a LIGHT page - over a 20% black veil, so on the dark theme it was all but invisible and could
+   not follow the theme at all (reported by the owner, 2026-09-23). It is a CSS ring drawn from the theme's own tokens now:
+   the accent on a border-coloured track, over a veil of the page's own background. The ring is centred without relying
+   on the overlay's display, because the installer toggles that inline. */
+.app-progress-indicator {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999; /* Sit on top */
+    background: color-mix(in srgb, var(--db-bg) 55%, transparent);
+}
+.app-progress-indicator::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    border-radius: 50%;
+    border: 4px solid var(--db-border);
+    border-top-color: var(--db-accent);
+    animation: app-progress-spin 0.8s linear infinite;
+}
+@keyframes app-progress-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+    .app-progress-indicator::after, .db-boot::before { animation-duration: 2.4s; }
+}
+
+/* BL-206: a WebAssembly site that is not prerendered sends a body holding one root component and nothing else, so it showed
+   a blank page until the client had started. App.razor puts this status before the root component; the same ring as the busy
+   overlay, with the download's percentage blazor.web.js sets on <html>. It is hidden once Routes has rendered its wrapper -
+   not when the runtime starts, which Blazor reports before Stomme's Main has streamed the module assemblies. */
+.db-boot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-height: 60vh;
+    color: var(--db-muted);
+}
+.db-boot::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 4px solid var(--db-border);
+    border-top-color: var(--db-accent);
+    animation: app-progress-spin 0.8s linear infinite;
+}
+.db-boot-text::after { content: " " var(--blazor-load-percentage-text, ""); }
+body:has(.db-app) #db-boot { display: none; }
+
+.app-rule {
+    width: 100%;
+    color: gray;
+    height: 1px;
+    background-color: gray;
+    margin: 0.5rem;
+}
+
+.app-link-unstyled, .app-link-unstyled:visited, .app-link-unstyled:hover, .app-link-unstyled:active, .app-link-unstyled:focus, .app-link-unstyled:active:hover {
+    font-style: inherit;
+    color: inherit;
+    background-color: transparent;
+    font-size: inherit;
+    text-decoration: none;
+    font-variant: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    border-radius: inherit;
+    border: inherit;
+    outline: inherit;
+    box-shadow: inherit;
+    padding: inherit;
+    vertical-align: inherit;
+}
+
+.app-alert {
+    padding: 20px;
+    background-color: #f44336; /* red */
+    color: white;
+    margin-bottom: 15px;
+}
+
+.app-moduletitle a {
+    scroll-margin-top: 7rem;
+}
+
+/* Tooltips */
+.app-tooltip {
+    cursor: help;
+    position: relative;
+}
+
+    .app-tooltip::before,
+    .app-tooltip::after {
+        left: 25%;
+        opacity: 0;
+        position: absolute;
+        z-index: -100;
+    }
+
+    .app-tooltip:hover::before,
+    .app-tooltip:focus::before,
+    .app-tooltip:hover::after,
+    .app-tooltip:focus::after {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        z-index: 100;
+    }
+
+    .app-tooltip::before {
+        border-style: solid;
+        border-width: 1em 0.75em 0 0.75em;
+        border-color: #3E474F transparent transparent transparent;
+        bottom: 100%;
+        content: "";
+        margin-left: -0.5em;
+        transition: all .65s cubic-bezier(.84,-0.18,.31,1.26), opacity .65s .5s;
+        transform: scale(.6) translateY(-90%);
+    }
+
+    .app-tooltip:hover::before,
+    .app-tooltip:focus::before {
+        transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+    }
+
+    .app-tooltip::after {
+        background: #3E474F;
+        border-radius: .25em;
+        bottom: 140%;
+        color: #EDEFF0;
+        content: attr(data-tip);
+        margin-left: -8.75em;
+        padding: 1em;
+        transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+        transform: scale(.6) translateY(50%);
+        width: 17.5em;
+    }
+
+    .app-tooltip:hover::after,
+    .app-tooltip:focus::after {
+        transition: all .65s cubic-bezier(.84,-0.18,.31,1.26);
+    }
+
+@media (max-width: 760px) {
+    .app-tooltip::after {
+        font-size: .75em;
+        margin-left: -5em;
+        width: 10em;
+    }
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+/* Stomme Control Styles */
+
+/* Pager */
+.app-pager-pointer {
+    cursor: pointer;
+}
+
+.app-sort-th {
+    cursor: pointer;
+}
+
+.app-fas {
+    margin-left: 5px;
+}
+
+.app-form-inline {
+    display: inline;
+}
+
+/* Search (shared control) — on the --db-* tokens (D11/D27). */
+.app-search, .app-search-noinput { display: inline-block; position: relative; }
+.db-search-input { padding-right: 2.25rem; }
+.db-search-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; padding: 0; cursor: pointer;
+    background: none; border: none; color: var(--db-text-2);
+    border-radius: var(--db-radius-xs);
+}
+.db-search-btn:hover { color: var(--db-text); background: var(--db-bg-elev-2); }
+.db-search-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+/* When there is a text input, the button overlays its trailing edge. */
+.app-search .db-search-input + .db-search-btn { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+
+/* Edit-mode toggle (ControlPanel) — pressed state on the accent. */
+.db-icon-btn.active { color: var(--db-accent); background: var(--db-bg-elev-2); border-color: var(--db-border); }
+
+/* Logo (shared control). `img-fluid` was a Bootstrap class the supersede layer never defined. */
+.db-logo { display: inline-flex; align-items: center; }
+.db-logo img { max-width: 100%; height: auto; }
+
+/* Default module container. */
+.db-container { width: 100%; min-width: 0; }
+
+/* Text Editor */
+.text-area-editor > textarea {
+    width: 100%;
+    min-height: 250px;
+}
+
+.app-editor-resizable {
+    resize: vertical;
+    overflow: auto;
+}
+
+.app-logo .db-brand {
+    padding: 5px 20px 5px 20px;
+}
+
+/* -------------------- Cookie consent (shared control, D11/D27) -------------------- */
+.db-consent {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--db-z-sticky, 1020);
+    background: var(--db-bg-elev); color: var(--db-text);
+    border-top: 1px solid var(--db-border); box-shadow: var(--db-shadow);
+}
+.db-consent.open { padding: 0.9rem 3rem 0.9rem 1rem; }
+.db-consent.collapsed { padding: 0; }
+.db-consent-body { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.db-consent-notice { display: flex; align-items: center; gap: 0.5rem; flex: 1 1 320px; min-width: 0; font-size: 0.9rem; color: var(--db-text-2); cursor: pointer; }
+.db-consent-notice a { color: var(--db-accent); }
+.db-consent-check { width: 1rem; height: 1rem; accent-color: var(--db-accent); cursor: pointer; flex: 0 0 auto; }
+.db-consent-actions { display: flex; align-items: center; gap: 0.5rem; flex: 0 0 auto; }
+.db-consent-toggle {
+    position: absolute; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; padding: 0; cursor: pointer;
+    background: var(--db-bg-elev-2); color: var(--db-text);
+    border: 1px solid var(--db-border); border-radius: var(--db-radius-xs);
+}
+.db-consent-toggle:hover { background: var(--db-bg-elev-3); }
+.db-consent-toggle:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
+.db-consent-hide { top: 0.5rem; right: 0.5rem; }
+.db-consent-show { bottom: 0; left: 0.5rem; }
+
+.app-modulemessage-toast {
+    position: fixed;
+    width: 350px;
+    z-index: 1000;
+    animation: slide-in 0.5s ease-out, slide-out 0.5s ease-in 5s forwards;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-out {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+
+/* ===================== Admin page chrome (BL-22) =====================
+   Classes the admin modules already USED but that no always-loaded sheet DEFINED, so they rendered
+   unstyled on every theme except BlazorTheme (which happens to load Bootstrap from the CDN). Found by
+   scripts/scan-unstyled-classes.ps1 and pinned by AdminMarkupIsStyledTests. Kept deliberately plain: this
+   restores the structure the markup asks for, it does not introduce a new visual language. */
+
+/* Page header row: title on the left, action cluster on the right, wrapping on narrow viewports. */
+.db-page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-bottom: 1rem;
+}
+
+.db-page-head-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+/* Sortable table headers read as links; they used to borrow Bootstrap's link-primary +
+   text-decoration-underline, which are absent on every non-Bootstrap theme. The second selector is
+   load-bearing: every sortable header sits inside a .db-table, whose `.db-table thead th` rule
+   (higher specificity) silently won the color otherwise — measured on admin/users, where the
+   header rendered muted instead of accent (BL-22 visual pass, 2026-08-08). */
+.app-sort-th,
+.db-table thead th.app-sort-th {
+    color: var(--db-accent);
+    text-decoration: underline;
+}
+
+/* Responsive image primitive (was Bootstrap's img-fluid). */
+.db-img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Empty-state copy, e.g. "no notifications". */
+.no-notifications-text {
+    color: var(--db-muted);
+    padding: .75rem 0;
+}
+
+.search-result-container {
+    display: block;
+    margin-top: 1rem;
+}
+
+/* Float clear (was Bootstrap's clearfix). */
+.clearfix::after {
+    content: "";
+    display: block;
+    clear: both;
+}

@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!--
+    The CLIENT layer: the page (a component inheriting ModuleBase), ModuleInfo (the module definition and its keys) and the
+    HTTP service the browser uses. On a WebAssembly site this assembly and the Shared one stream to the browser, so it
+    references NO server-only assembly. The RootNamespace is the module's: the host derives the module definition's name
+    from ModuleInfo's namespace plus this assembly, and resolves a page's component as {namespace}.{action} in it.
+    INDEPENDENT (D81/D82): Stomme arrives only through the Stomme.Sdk.Slim package - no source or project reference.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>[Owner].Module.[Module].Client.Stomme</AssemblyName>
+    <RootNamespace>[Owner].Module.[Module]</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>[Owner]</Authors>
+    <Company>[Owner]</Company>
+    <Product>[Owner].Module.[Module]</Product>
+    <Description>[Description]</Description>
+    <Copyright>[Owner]</Copyright>
+    <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stomme.Sdk.Slim" Version="[FrameworkVersion]" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\[Owner].Module.[Module].Shared.csproj" />
+  </ItemGroup>
+
+  <!-- WASM safety (BL-13): see the Shared project - a browser-bound assembly drops the OpenApi source generator. -->
+  <Target Name="RemoveOpenApiSourceGenerator" AfterTargets="ResolveReferences" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" Condition="$([System.String]::Copy('%(Analyzer.Identity)').Contains('Microsoft.AspNetCore.OpenApi.SourceGenerators'))" />
+    </ItemGroup>
+  </Target>
+
+</Project>

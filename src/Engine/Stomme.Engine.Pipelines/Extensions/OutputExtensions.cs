@@ -1,0 +1,78 @@
+using System.Runtime.CompilerServices;
+using Stomme.Engine.Expressions.Helpers;
+using Stomme.Engine.Expressions.Models;
+using Stomme.Engine.Pipelines;
+using Stomme.Engine.Pipelines.Memory;
+using Stomme.Engine.Pipelines.Models;
+
+// ReSharper disable once CheckNamespace
+namespace Stomme.Engine.Extensions;
+
+/// <summary>
+/// Provides a set of helper extensions to <see cref="Output{T}"/>.
+/// </summary>
+public static class OutputExtensions
+{
+    /// <summary>
+    /// Creates an input that references the specified output's value.
+    /// </summary>
+    public static Input<T> CreateInput<T>(this Output output) => new(output);
+    
+    extension<T>(Output<T>? output)
+    {
+        /// <summary>
+        /// Sets the output to the specified value.
+        /// </summary>
+        public void Set(StepExecutionContext context, T? value, [CallerArgumentExpression("output")] string? outputName = null) => context.Set(output, value, outputName);
+
+        /// <summary>
+        /// Sets the output to the specified value.
+        /// </summary>
+        public void Set(ExpressionExecutionContext context, T? value) => context.Set(output, value);
+
+        /// <summary>
+        /// Sets the output to the specified value.
+        /// </summary>
+        public void Set(StepExecutionContext context, Variable<T> value) => context.Set(output, value.Get(context));
+
+        /// <summary>
+        /// Sets the output to the specified value.
+        /// </summary>
+        public void Set(ExpressionExecutionContext context, Variable<T> value) => context.Set(output, value.Get(context));
+    }
+
+    extension(Output? output)
+    {
+        /// <summary>
+        /// Gets the target type of the specified variable type, if any, linked to the output.
+        /// </summary>
+        public Type? GetTargetType(StepExecutionContext context)
+        {
+            var memoryBlockReference = output?.MemoryBlockReference();
+        
+            if (memoryBlockReference is null)
+                return null;
+
+            if(!context.ExpressionExecutionContext.TryGetBlock(memoryBlockReference, out var memoryBlock))
+                return null;
+        
+            var parsedContentVariableType = (memoryBlock.Metadata as VariableBlockMetadata)?.Variable.GetType();
+            return parsedContentVariableType?.GenericTypeArguments.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether the output has a target.
+        /// </summary>
+        public bool HasTarget(StepExecutionContext context)
+        {
+            var memoryBlockReference = output?.MemoryBlockReference();
+            return memoryBlockReference is not null && context.ExpressionExecutionContext.TryGetBlock(memoryBlockReference, out _);
+        }
+    }
+
+    public static object? ParseValue(this Output output, object? value)
+    {
+        var genericType = output.GetType();
+        return VariableExtensions.ParseValue(genericType, value);
+    }
+}

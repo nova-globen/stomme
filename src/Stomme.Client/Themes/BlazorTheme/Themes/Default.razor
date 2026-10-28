@@ -1,0 +1,44 @@
+@namespace Stomme.Themes.BlazorTheme
+@inherits ThemeBase
+
+<div class="row flex-xl-nowrap gx-0">
+    <div class="sidebar">
+        <nav class="navbar">
+            <Logo UseSiteNameAsFallback="true" />
+            <Menu Orientation="Vertical" />
+        </nav>
+    </div>
+
+    <div class="main g-0">
+        <div class="top-row px-4">
+            <div class="ms-auto">
+                <Search CssClass="me-3 text-center d-inline-block" />
+                <UserProfile />
+                <Login />
+                <ControlPanel LanguageDropdownAlignment="right" />
+            </div>
+            <div class="breadcrumbs">
+                <Breadcrumbs />
+            </div>
+        </div>
+        <div class="container">
+            <div class="row px-4">
+                <Pane Name="@PaneNames.Admin" />
+                <CookieConsent />
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+@code {
+    public override string Panes => PaneNames.Admin;
+
+    public override List<Resource> Resources => new List<Resource>()
+    {
+		// obtained from https://cdnjs.com/libraries
+        new Stylesheet(Constants.BootstrapStylesheetUrl, Constants.BootstrapStylesheetIntegrity, "anonymous"),
+        new Stylesheet(ThemePath() + "Theme.css"),
+        new Script(Constants.BootstrapScriptUrl, Constants.BootstrapScriptIntegrity, "anonymous")
+    };
+}

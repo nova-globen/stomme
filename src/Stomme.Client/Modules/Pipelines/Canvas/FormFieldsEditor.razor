@@ -1,0 +1,107 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+
+@*
+    A form's fields (BL-229, n8n's Form trigger): each one's label, kind, whether it must be answered, the key its answer is
+    kept under and, for a dropdown, its choices (one per line); a hidden field, the value it carries when the address gives none. The editor owns the list; every change is made on it and then
+    announced, so the editor records it as one step of undo.
+*@
+
+<div id="@IdPrefix" class="db-pipeline-editor__form-fields">
+    @for (var index = 0; index < Fields.Count; index++)
+    {
+        var at = index;
+        var field = Fields[at];
+        <fieldset class="db-pipeline-editor__form-field">
+            <legend>Field @(at + 1)@(string.IsNullOrWhiteSpace(field.Label) ? "" : ": " + field.Label)</legend>
+            <label for="@($"{IdPrefix}-label-{at}")">Label</label>
+            <input id="@($"{IdPrefix}-label-{at}")" class="db-input" value="@field.Label" @oninput="e => ChangeAsync(_ => field.Label = e.Value?.ToString() ?? string.Empty)" disabled="@Disabled" />
+            <label for="@($"{IdPrefix}-type-{at}")">Kind</label>
+            <select id="@($"{IdPrefix}-type-{at}")" class="db-input" value="@field.Type" @onchange="e => ChangeAsync(_ => field.Type = e.Value?.ToString() ?? PipelineFormFieldTypes.Text)" disabled="@Disabled">
+                @foreach (var type in PipelineFormFieldTypes.All)
+                {
+                    <option value="@type">@type</option>
+                }
+            </select>
+            @if (field.Type != PipelineFormFieldTypes.Hidden)
+            {
+                <span class="db-pipeline-editor__form-field-required">
+                    <input id="@($"{IdPrefix}-required-{at}")" type="checkbox" checked="@field.Required" @onchange="e => ChangeAsync(_ => field.Required = e.Value is true)" disabled="@Disabled" />
+                    <label for="@($"{IdPrefix}-required-{at}")">required</label>
+                </span>
+            }
+            @if (field.Type == PipelineFormFieldTypes.Hidden)
+            {
+                @* BL-229: n8n's Hidden Field - nobody sees it; the form's address gives it (?key=value), else this value. *@
+                <label for="@($"{IdPrefix}-value-{at}")">Value when the address gives none</label>
+                <input id="@($"{IdPrefix}-value-{at}")" class="db-input" value="@field.Value" title="The form's address can give it instead: ?key=value - and whoever sends the form can change it" @onchange="e => ChangeAsync(_ => field.Value = Blank(e.Value?.ToString()))" disabled="@Disabled" />
+            }
+            else if (field.Type == PipelineFormFieldTypes.Dropdown)
+            {
+                <label for="@($"{IdPrefix}-options-{at}")">Choices, one per line</label>
+                <textarea id="@($"{IdPrefix}-options-{at}")" class="db-input" rows="3" value="@string.Join("\n", field.Options ?? new List<string>())" @onchange="e => ChangeAsync(_ => field.Options = Lines(e.Value?.ToString()))" disabled="@Disabled"></textarea>
+            }
+            else if (field.Type == PipelineFormFieldTypes.File)
+            {
+                @* BL-229: n8n's File field - what kinds of file it takes; the file is kept in the site's pipeline folder. *@
+                <label for="@($"{IdPrefix}-accept-{at}")">Kinds of file, e.g. .pdf, .png (empty: any)</label>
+                <input id="@($"{IdPrefix}-accept-{at}")" class="db-input" value="@string.Join(", ", field.Accept ?? new List<string>())" title="The file is kept in the site's pipeline folder, its path in the answer" @onchange="e => ChangeAsync(_ => field.Accept = Kinds(e.Value?.ToString()))" disabled="@Disabled" />
+            }
+            else if (field.Type != PipelineFormFieldTypes.Checkbox)
+            {
+                <label for="@($"{IdPrefix}-placeholder-{at}")">Hint inside the field</label>
+                <input id="@($"{IdPrefix}-placeholder-{at}")" class="db-input" value="@field.Placeholder" @onchange="e => ChangeAsync(_ => field.Placeholder = Blank(e.Value?.ToString()))" disabled="@Disabled" />
+            }
+            <label for="@($"{IdPrefix}-name-{at}")">Kept as</label>
+            <input id="@($"{IdPrefix}-name-{at}")" class="db-input" placeholder="@PipelineForms.KeyOf(new PipelineFormField { Label = field.Label })" title="The key the answer is kept under in the run's result; empty: made from the label" value="@field.Name" @onchange="e => ChangeAsync(_ => field.Name = Blank(e.Value?.ToString()))" disabled="@Disabled" />
+            @if (!Disabled)
+            {
+                <div class="db-pipeline-editor__form-field-actions">
+                    @if (at > 0)
+                    {
+                        <button id="@($"{IdPrefix}-up-{at}")" type="button" class="db-btn" title="Move this field up" @onclick="() => ChangeAsync(fields => { fields.RemoveAt(at); fields.Insert(at - 1, field); })">Up</button>
+                    }
+                    <button id="@($"{IdPrefix}-remove-{at}")" type="button" class="db-btn" title="Remove this field" @onclick="() => ChangeAsync(fields => fields.RemoveAt(at))">Remove</button>
+                </div>
+            }
+        </fieldset>
+    }
+    @if (!Disabled && Fields.Count < PipelineForms.MaxFields)
+    {
+        <button id="@(IdPrefix + "-add")" type="button" class="db-btn" @onclick="AddFieldAsync">Add field</button>
+    }
+</div>
+
+@code {
+    /// <summary>The prefix of every id inside, e.g. <c>pipelines-editor-form-fields-Fields</c>.</summary>
+    [Parameter, EditorRequired] public string IdPrefix { get; set; }
+
+    [Parameter, EditorRequired] public List<PipelineFormField> Fields { get; set; }
+
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>Called after each change, the list changed in place.</summary>
+    [Parameter] public EventCallback Changed { get; set; }
+
+    private static List<string> Lines(string text) =>
+        (text ?? "").Split('\n').Select(line => line.Trim()).Where(line => line.Length > 0).ToList();
+
+    // A first field is most often the person's name; later ones start empty.
+    private Task AddFieldAsync() => ChangeAsync(fields => fields.Add(new PipelineFormField { Label = fields.Count == 0 ? "Name" : "" }));
+
+    // Kinds of file as typed - ".pdf, png" - each with its dot, in lower case.
+    private static List<string> Kinds(string text) =>
+        (text ?? "").Split(new[] { ',', ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(kind => (kind.StartsWith('.') ? kind : "." + kind).ToLowerInvariant()).Distinct().ToList();
+
+    private static string Blank(string text) => string.IsNullOrWhiteSpace(text) ? null : text.Trim();
+
+    private async Task ChangeAsync(Action<List<PipelineFormField>> change)
+    {
+        if (Disabled)
+        {
+            return;
+        }
+
+        change(Fields);
+        await Changed.InvokeAsync();
+    }
+}

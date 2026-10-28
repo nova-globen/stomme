@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!--
+    D87. An INDEPENDENT, packages-only external THEME for Stomme — the admin theme (Slate),
+    the sibling of the Slate admin theme. Same shape as examples/Modules/Blogs (D82): references Stomme ONLY through
+    the Stomme.Sdk meta-package from the local feed (examples/local-feed), ZERO project/source references.
+    The assembly name MUST contain "Stomme" or the convention loader never loads it. Ships its Theme.css as a
+    static web asset (wwwroot/Theme.css) which InstallationManager extracts to _content/<id>/ at install time.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>Stomme.Theme.Slate.Stomme</AssemblyName>
+    <!-- D92: align the build-pipeline asset base path with the PACKAGE id (the InstallationManager
+         extraction path and the ThemeInfo stylesheet URL) instead of the .Stomme assembly name -->
+    <StaticWebAssetBasePath>_content/Stomme.Theme.Slate</StaticWebAssetBasePath>
+    <RootNamespace>Stomme.Themes.Slate</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>Nova Globen AB</Authors>
+    <Company>Nova Globen AB</Company>
+    <Product>Stomme.Theme.Slate</Product>
+    <Description>An independent admin theme for Stomme.</Description>
+    <Copyright>Nova Globen AB</Copyright>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- BL-70: Stomme.Client, NOT the Stomme.Sdk meta — the meta's Stomme.Server depends on the
+         theme packages (D92), which poisoned the theme's own pack props with a stale self-asset. See the
+         Aurora csproj for the full mechanism. Packages-only still holds (D81). -->
+    <ProjectReference Include="..\..\..\..\src\Stomme.Client\Stomme.Client.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,55 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+@using Blazor.Diagrams
+@implements IDisposable
+
+@* BL-229 - n8n's zoom buttons, in the canvas's corner: out, the zoom (pressed, back to 100 %), in, fit. The zoom shown follows the
+   wheel too - this component redraws itself on the diagram's zoom, never the whole editor. *@
+<div class="db-pipeline-editor__zoom" role="toolbar" aria-label="Zoom">
+    <button id="pipelines-editor-zoom-out" type="button" class="db-pipeline-editor__zoom-button" title="Zoom out (-)" aria-label="Zoom out" @onclick="() => ZoomTo(Diagram.Zoom / 1.2)">−</button>
+    <button id="pipelines-editor-zoom-reset" type="button" class="db-pipeline-editor__zoom-button db-pipeline-editor__zoom-level" title="Zoom to 100 % (0)" aria-label="@($"Zoom {Percent}, to 100 %")" @onclick="() => ZoomTo(1)">@Percent</button>
+    <button id="pipelines-editor-zoom-in" type="button" class="db-pipeline-editor__zoom-button" title="Zoom in (+)" aria-label="Zoom in" @onclick="() => ZoomTo(Diagram.Zoom * 1.2)">+</button>
+    <button id="pipelines-editor-zoom-fit" type="button" class="db-pipeline-editor__zoom-button" title="Fit the pipeline to the canvas (1)" aria-label="Fit to the canvas" @onclick="() => Fit?.Invoke()">⤢</button>
+</div>
+
+@code {
+    [Parameter]
+    public BlazorDiagram Diagram { get; set; }
+
+    /// <summary>The editor's zoom about the middle of the canvas (its 0, + and - keys').</summary>
+    [Parameter]
+    public Action<double> ZoomTo { get; set; }
+
+    [Parameter]
+    public Action Fit { get; set; }
+
+    private BlazorDiagram _watched;
+
+    private string Percent => FormattableString.Invariant($"{Math.Round((Diagram?.Zoom ?? 1) * 100):0} %");
+
+    protected override void OnParametersSet()
+    {
+        if (!ReferenceEquals(_watched, Diagram))
+        {
+            if (_watched is not null)
+            {
+                _watched.ZoomChanged -= OnZoomChanged;
+            }
+
+            _watched = Diagram;
+            if (_watched is not null)
+            {
+                _watched.ZoomChanged += OnZoomChanged;
+            }
+        }
+    }
+
+    private void OnZoomChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        if (_watched is not null)
+        {
+            _watched.ZoomChanged -= OnZoomChanged;
+        }
+    }
+}

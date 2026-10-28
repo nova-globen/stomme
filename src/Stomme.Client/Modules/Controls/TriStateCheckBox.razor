@@ -1,0 +1,77 @@
+@namespace Stomme.Modules.Controls
+@inherits ModuleControlBase
+@inject IStringLocalizer<TriStateCheckBox> Localizer 
+
+<img src="@_src" title="@_title" @onclick="SetValue" />
+
+@code {
+    private bool? _value = null;
+    private string _title;
+    private string _src = string.Empty;
+
+    [Parameter]
+    public bool? Value { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public Func<bool?, bool?> OnChange { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _value = Value;
+        SetImage();
+    }
+
+    private void SetValue()
+    {
+        if (!Disabled)
+        {
+            switch (_value)
+            {
+                case true:
+                    _value = false;
+                    break;
+                case false:
+                    _value = null;
+                    break;
+                case null:
+                    _value = true;
+                    break;
+            }
+
+            _value = OnChange(_value);
+            SetImage();
+        }
+    }
+
+    private void SetImage()
+    {
+        if (!Disabled)
+        {
+            switch (_value)
+            {
+                case true:
+                    _src = "images/checked.png";
+                    _title = Localizer["PermissionGranted"];
+                    break;
+                case false:
+                    _src = "images/unchecked.png";
+                    _title = Localizer["PermissionDenied"];
+                    break;
+                case null:
+                    _src = "images/null.png";
+                    _title = string.Empty;
+                    break;
+            }
+        }
+        else
+        {
+            _src = "images/disabled.png";
+            _title = Localizer["PermissionDisabled"];
+        }
+
+        StateHasChanged();
+    }
+}

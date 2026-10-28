@@ -1,0 +1,46 @@
+@namespace Stomme.Modules.Controls
+@inherits LocalizableComponent
+
+@* Migrated to the --db-* design system (D11, Phase 4). The Bootstrap .tab-pane/.fade/.show classes
+   were never covered by bootstrap-compat.css, so once the CDN was dropped every panel rendered at
+   once. .db-tab-pane hides inactive panels; .active reveals one. See D18. *@
+<div id="@(Parent.Id + Name)" class="db-tab-pane @(Name == Parent.ActiveTab ? "active" : "")" role="tabpanel">
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter]
+    private TabStrip Parent { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string Name { get; set; } // required - name of the TabPanel
+
+    [Parameter]
+    public string Heading { get; set; } // optional - defaults to name if not specified
+
+    [Parameter]
+    public SecurityAccessLevel? Security { get; set; } // optional - can be used to specify SecurityAccessLevel
+
+    [Parameter]
+    public string RoleName { get; set; } // optional - can be used to specify Role allowed to view this tab
+
+    [Parameter]
+    public string PermissionName { get; set; } // optional - can be used to specify Permission allowed to view this tab
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        Parent.AddTabPanel((TabPanel)this);
+
+        Heading = string.IsNullOrEmpty(Heading) ? Localize(nameof(Name), Name) : Localize(nameof(Heading), Heading);
+    }
+
+    public string DisplayHeading()
+    {
+        return (string.IsNullOrEmpty(Heading)) ? Name : Heading;
+    }
+}

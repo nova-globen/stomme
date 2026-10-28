@@ -1,0 +1,42 @@
+@namespace Stomme.Modules.Metering
+@inherits ModuleBase
+
+@*
+    The metering entry control (D102 item 11). Every user who holds view-own lands on their OWN consumption -
+    the predecessor platform had no such page at all, and its usage pages hand-checked HasClaim. The operator's links appear only for
+    a user holding the matching key, and the server decides again on every call.
+*@
+
+<PageTitle>Usage</PageTitle>
+
+@if (!IsAuthorizedPermission(MeteringPermissions.ViewOwn) && !IsAuthorizedPermission(MeteringPermissions.View))
+{
+    <p class="db-metering-denied" style="color:var(--db-text-2);">You do not have access to usage on this site.</p>
+}
+else
+{
+    <div class="db-metering-home" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">Usage</h3>
+            @if (IsAuthorizedPermission(MeteringPermissions.ViewOwn))
+            {
+                <a id="metering-myusage-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "MyUsage")">My usage</a>
+            }
+            @if (IsAuthorizedPermission(MeteringPermissions.View))
+            {
+                <a id="metering-quotas-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Quotas")">Quotas</a>
+                <a id="metering-usage-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Usage")">Usage log</a>
+            }
+        </div>
+
+        <p style="margin:0;color:var(--db-text-2);">
+            Consumption is counted per site. A quota's counter is authoritative and the ledger repairs it; nothing on
+            this page can be addressed to another site or another user - the site and the subject are resolved by the
+            server on every call.
+        </p>
+    </div>
+}
+
+@code {
+    public override string Title => ModuleInfo.ModuleName;
+}

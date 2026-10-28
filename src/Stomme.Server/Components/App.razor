@@ -1,0 +1,1032 @@
+@namespace Stomme.Components
+@using System.Net
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Extensions
+@using Microsoft.AspNetCore.Antiforgery
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Net.Http.Headers
+@using Microsoft.Extensions.Primitives
+@using Microsoft.AspNetCore.Authentication
+@using Stomme.Client
+@using Stomme.UI
+@using Stomme.Repository
+@using Stomme.Infrastructure
+@using Stomme.Security
+@using Stomme.Models
+@using Stomme.Shared
+@using Stomme.Themes
+@using Stomme.Extensions
+@using System.Globalization
+@inject NavigationManager NavigationManager
+@inject IAntiforgery Antiforgery
+@inject IConfigManager ConfigManager
+@inject ITenantManager TenantManager
+@inject ISiteService SiteService
+@inject IPageRepository PageRepository
+@inject IThemeRepository ThemeRepository
+@inject ILanguageRepository LanguageRepository
+@inject ILocalizationManager LocalizationManager
+@inject IAliasRepository AliasRepository
+@inject IUrlMappingRepository UrlMappingRepository
+@inject IVisitorRepository VisitorRepository
+@inject Stomme.Infrastructure.Security.VisitorCookie VisitorCookie
+@inject IJwtManager JwtManager
+@inject ICookieConsentService CookieConsentService
+@inject ISettingService SettingService
+
+@if (_initialized)
+{
+    <!DOCTYPE html>
+    @* BL-198: a theme that declares one colour mode fixes the page to it, here, before any script or stylesheet runs. *@
+    <html lang="@_language" data-theme-fixed="@_fixedColorMode" data-theme="@_fixedColorMode" style="@(_fixedColorMode == null ? null : "color-scheme: " + _fixedColorMode)">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <base href="/" />
+        <script>
+            // Single source of truth for the --db-* theme attributes on <html>. `apply` runs both from the
+            // no-flash bootstrap below (before first paint) and at runtime via the theme toggle (JS interop),
+            // so the --db-* surfaces and FluentUI repaint together (D11; FluentUI 5 since BL-192).
+            window.stommeTheme = {
+                // FluentUI 5's theme functions, once Blazor and its initializer have started (measured: Blazor.theme).
+                fluent: function () {
+                    return window.Blazor && window.Blazor.theme;
+                },
+                // Hands FluentUI 5 - the first time it is there to receive it - the mode the bootstrap applied before Blazor
+                // existed; after that, apply() keeps it in step. Its COLOURS are the theme's, bound in app.css (BL-192).
+                sync: function () {
+                    var fluent = window.stommeTheme.fluent();
+                    if (fluent && fluent.setThemeMode && !window.stommeTheme.modeSynced) {
+                        window.stommeTheme.modeSynced = true;
+                        try { fluent.setThemeMode(document.documentElement.getAttribute('data-theme-mode') || 'system'); } catch (e) { /* ignore */ }
+                    }
+                },
+                // BL-198: the mode the page's theme declares (dark or light), which no stored choice and no toggle changes.
+                fixed: function () {
+                    var mode = document.documentElement.getAttribute('data-theme-fixed');
+                    return mode === 'dark' || mode === 'light' ? mode : null;
+                },
+                // The visitor's choice from the toggle, or "system". Read on its own: a browser that refuses storage still gets a mode.
+                stored: function () {
+                    try {
+                        var stored = localStorage.getItem('stomme-theme');
+                        if (!stored) { return 'system'; }
+                        try { return JSON.parse(stored).mode || 'system'; } catch (e) { return stored; }
+                    } catch (e) { return 'system'; }
+                },
+                // FluentUI 5 reads its own stored mode when it starts, before sync() can hand it ours (BL-198): seeding it means
+                // its controls start in the page's mode instead of the system's. Its key is FluentUI's; sync() corrects it anyway.
+                seedFluent: function (mode) {
+                    try {
+                        var key = 'fluentui-blazor:theme-settings';
+                        var settings = JSON.parse(localStorage.getItem(key) || '{}') || {};
+                        if (mode === 'system') { delete settings.mode; } else { settings.mode = mode; }
+                        localStorage.setItem(key, JSON.stringify(settings));
+                    } catch (e) { /* storage refused: FluentUI follows the system until sync() */ }
+                },
+                apply: function (mode) {
+                    try {
+                        // BL-89: no stored choice means "follow the visitor's system", never a hardcoded dark. BL-198: a theme's
+                        // declared mode wins over both.
+                        mode = window.stommeTheme.fixed() || (mode || 'system').toLowerCase();
+                        var resolved = mode;
+                        if (mode === 'system') {
+                            resolved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                        }
+                        document.documentElement.setAttribute('data-theme', resolved);
+                        document.documentElement.setAttribute('data-theme-mode', mode);
+                        // BL-49: a Bootstrap-based theme (BlazorTheme loads Bootstrap 5.3 from the CDN)
+                        // owns its OWN colour mode via data-bs-theme. Setting only data-theme flipped the
+                        // --db-* layer while Bootstrap's chrome stayed light: measured on a dark site,
+                        // body computed rgb(255,255,255) and the dark --db-* cards carried near-black
+                        // heading text -- unreadable. Bootstrap ignores this attribute when absent, so
+                        // themes that do not load it (Graphite, Stomme, Aurora, Slate) are unaffected.
+                        document.documentElement.setAttribute('data-bs-theme', resolved);
+                        // BL-89: the browser's own widgets (scrollbars, form controls, the canvas behind a late
+                        // stylesheet) follow the RESOLVED mode too, not the OS - otherwise a forced mode paints a
+                        // light scrollbar on a dark page. Site CSS should key on html[data-theme], never on a
+                        // prefers-color-scheme media query, which answers for the OS rather than for this site.
+                        document.documentElement.style.colorScheme = resolved;
+                        // BL-192: FluentUI 5 keeps its own mode (there is no <fluent-design-theme> to set any more);
+                        // 'system' hands it no mode, so it follows the OS as the --db-* layer does.
+                        var fluent = window.stommeTheme.fluent();
+                        if (fluent && fluent.setThemeMode) { fluent.setThemeMode(mode); } else { window.stommeTheme.seedFluent(mode); }
+                    } catch (e) { /* ignore */ }
+                },
+                // Render-mode-agnostic dark/light toggle (works in Static SSR, Server and WebAssembly).
+                // Under a theme's fixed mode it does nothing, and app.css hides the toggles (.db-theme-toggle).
+                toggle: function () {
+                    try {
+                        if (window.stommeTheme.fixed()) { return; }
+                        var cur = document.documentElement.getAttribute('data-theme') || 'dark';
+                        var next = cur === 'dark' ? 'light' : 'dark';
+                        localStorage.setItem('stomme-theme', JSON.stringify({ mode: next }));
+                        window.stommeTheme.apply(next);
+                    } catch (e) { /* ignore */ }
+                },
+                // BL-198: the theme on screen changed without a page load (an interactive page moving to another theme); its
+                // declared mode, or none, replaces the one App.razor rendered.
+                fix: function (mode) {
+                    mode = mode === 'dark' || mode === 'light' ? mode : null;
+                    if (mode === window.stommeTheme.fixed()) { return; }
+                    if (mode) { document.documentElement.setAttribute('data-theme-fixed', mode); } else { document.documentElement.removeAttribute('data-theme-fixed'); }
+                }
+            };
+            window.stommeTheme.apply(window.stommeTheme.stored());
+            (function () {
+                // BL-198: when the fixed mode changes - fix() above, or an enhanced navigation bringing another theme's <html> -
+                // the page takes the new one, or the visitor's again.
+                try {
+                    new MutationObserver(function () { window.stommeTheme.apply(window.stommeTheme.stored()); })
+                        .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme-fixed'] });
+                } catch (e) { /* ignore */ }
+            })();
+            (function () {
+                // BL-89: while the mode is "system", a change in the OS preference repaints the page live.
+                try {
+                    if (!window.matchMedia) { return; }
+                    var media = window.matchMedia('(prefers-color-scheme: dark)');
+                    var follow = function () {
+                        if (document.documentElement.getAttribute('data-theme-mode') === 'system') {
+                            window.stommeTheme.apply('system');
+                        }
+                    };
+                    if (media.addEventListener) { media.addEventListener('change', follow); } else if (media.addListener) { media.addListener(follow); }
+                } catch (e) { /* ignore */ }
+            })();
+        </script>
+        <link rel="stylesheet" href="css/app.css?v=@_fingerprint" />
+        @if (_scripts.Contains("PWA Manifest"))
+        {
+            <link id="app-manifest" rel="manifest" />
+        }
+        @((MarkupString)_styleSheets)
+        <link id="app-stylesheet-page" />
+        <link id="app-stylesheet-module" />
+        @* D98 / BL-92: Blazor's <PageTitle>/<HeadContent> render through <HeadOutlet>, which this host never
+           mounted — so a lifted page's <PageTitle> was silently inert (50 of 122 the predecessor platform razor files use it).
+           Mounted BEFORE <Head> deliberately: a page that sets <PageTitle> then owns the FIRST <title> in
+           document order, which is the one the browser reports as document.title, while a page that does not
+           leaves Stomme's own SiteState-driven <title> (Head.razor / ModuleBase.SetPageTitle) untouched. *@
+        @if (_renderMode == RenderModes.Static)
+        {
+            <HeadOutlet />
+            <Head RenderMode="@_renderMode" Runtime="@_runtime" />
+        }
+        else
+        {
+            <HeadOutlet @rendermode="InteractiveRenderMode.GetInteractiveRenderMode(_runtime, _prerender)" />
+            <Head RenderMode="@_renderMode" Runtime="@_runtime" @rendermode="InteractiveRenderMode.GetInteractiveRenderMode(_runtime, _prerender)" />
+        }
+        @((MarkupString)_headResources)
+    </head>
+    <body @attributes="_bodyAttributes">
+        @if (string.IsNullOrEmpty(_message))
+        {
+            @if (_renderMode == RenderModes.Static)
+            {
+                <Routes PageState="@_pageState" RenderMode="@_renderMode" Runtime="@_runtime" AntiForgeryToken="@_antiForgeryToken" AuthorizationToken="@_authorizationToken" Platform="@_platform" />
+            }
+            else
+            {
+                @if (_runtime == Runtimes.WebAssembly && !_prerender)
+                {
+                    @* BL-206: this body is ONE WebAssembly root component and nothing else, so a visitor saw a blank page until the
+                       client had downloaded and started - 238 files, 57.4 MB decoded, measured on UAT 2026-10-02. The status shows
+                       meanwhile, with the download's percentage blazor.web.js sets; app.css hides it once Routes has rendered. *@
+                    <div id="db-boot" class="db-boot" role="status" aria-live="polite"><span class="db-boot-text">Loading</span></div>
+                }
+                <Routes PageState="@_pageState" RenderMode="@_renderMode" Runtime="@_runtime" AntiForgeryToken="@_antiForgeryToken" AuthorizationToken="@_authorizationToken" Platform="@_platform" @rendermode="InteractiveRenderMode.GetInteractiveRenderMode(_runtime, _prerender)" />
+            }
+
+            <script src="_framework/blazor.web.js"></script>
+            <script src="js/app.js?v=@_fingerprint"></script>
+            <script src="js/loadjs.min.js?v=@_fingerprint"></script>
+            <script src="js/interop.js?v=@_fingerprint"></script>
+
+            @((MarkupString)_scripts)
+            @((MarkupString)_bodyResources)
+            @((MarkupString)_bodyContent)
+            @if (_renderMode == RenderModes.Static)
+            {
+                <page-script src="./js/reload.js?v=@_fingerprint"></page-script>
+            }
+        }
+        else
+        {
+            <div class="app-alert">@_message</div>
+        }
+    </body>
+    </html>
+}
+
+@code {
+    private bool _initialized = false;
+    private string _renderMode = RenderModes.Interactive;
+    private string _runtime = Runtimes.Server;
+    private bool _prerender = true;
+    Dictionary<string, object> _bodyAttributes { get; set; } = new();
+    private string _fingerprint = "";
+    private int _visitorId = -1;
+    private string _antiForgeryToken = "";
+    private string _remoteIPAddress = "";
+    private string _platform = "";
+    private string _authorizationToken = "";
+    private string _language = "en";
+    // BL-198: the page's theme's declared colour mode ("dark"/"light"), or null when it follows the visitor.
+    private string _fixedColorMode;
+    private string _headResources = "";
+    private string _bodyResources = "";
+    private string _bodyContent = "";
+    private string _styleSheets = "";
+    private string _scripts = "";
+    private string _message = "";
+    private bool _allowCookies;
+    private PageState _pageState;
+
+    //  CascadingParameter is required to access HttpContext
+    [CascadingParameter]
+    HttpContext Context { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // BL-192: a new release's unversioned assets reach a browser that cached the previous release's.
+        Stomme.Infrastructure.ReleaseAssetCache.Apply(Context, Stomme.Shared.Constants.PackageVersion);
+
+        _antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+        _remoteIPAddress = Context.Connection.RemoteIpAddress?.ToString() ?? "";
+        _platform = System.Runtime.InteropServices.RuntimeInformation.OSDescription;
+
+        // if framework is installed
+        if (ConfigManager.IsInstalled())
+        {
+            var alias = await TenantManager.GetAliasAsync();
+            if (alias != null)
+            {
+                var url = WebUtility.UrlDecode(Context.Request.GetEncodedUrl());
+
+                if (!alias.IsDefault)
+                {
+                    await HandleDefaultAliasRedirectAsync(alias, url);
+                }
+
+                var site = await SiteService.GetSiteAsync(alias.SiteId);
+                if (site != null && (!site.IsDeleted || url.Contains("admin/site")) && site.RenderMode != RenderModes.Headless)
+                {
+                    _renderMode = site.RenderMode;
+                    _runtime = site.Runtime;
+                    _prerender = site.Prerender;
+                    if (_renderMode == RenderModes.Static && !site.EnhancedNavigation)
+                    {
+                        _bodyAttributes.Add("data-enhance-nav", "false");
+                    }
+                    _fingerprint = site.Fingerprint;
+
+                    var cookieConsentSettings = SettingService.GetSetting(site.Settings, "CookieConsent", string.Empty);
+                    _allowCookies = string.IsNullOrEmpty(cookieConsentSettings) || await CookieConsentService.CanTrackAsync(cookieConsentSettings == "optout");
+
+                    var modules = new List<Module>();
+
+                    Route route = new Route(url, alias.Path);
+                    var page = site.Pages.FirstOrDefault(item => item.Path.Equals(route.PagePath, StringComparison.OrdinalIgnoreCase));
+                    if (page == null && route.PagePath == "") // naked path refers to site home page
+                    {
+                        // fallback to use the first page in the collection
+                        page = site.Pages.FirstOrDefault();
+                    }
+                    if (page == null)
+                    {
+                        // personalized pages need to be retrieved using path
+                        page = await PageRepository.GetPageAsync(route.PagePath, site.SiteId);
+                    }
+                    if (page == null || page.IsDeleted)
+                    {
+                        await HandlePageNotFoundAsync(site, page, route);
+                        return;
+                    }
+                    else
+                    {
+                        modules = await SiteService.GetModulesAsync(site.SiteId, page.PageId);
+                    }
+
+                    if (site.VisitorTracking && _allowCookies)
+                    {
+                        await TrackVisitorAsync(site.SiteId);
+                    }
+
+                    // get jwt token for downstream APIs
+                    if (Context.User.Identity.IsAuthenticated)
+                    {
+                        await GetJwtToken(alias);
+                    }
+
+                    // include resources
+                    var resources = await GetPageResources(alias, site, page, modules, int.Parse(route.ModuleId, CultureInfo.InvariantCulture), route.Action);
+                    ManageStyleSheets(resources);
+                    ManageScripts(resources, alias);
+                    AddBodyContent(site.BodyContent);
+                    AddBodyContent(page.BodyContent);
+                    _language = ManageLocalization(alias, site);
+
+                    // PWA script
+                    if (site.PwaIsEnabled && site.PwaAppIconFileId != null && site.PwaSplashIconFileId != null)
+                    {
+                        _scripts += CreatePWAScript(alias, site, route);
+                    }
+
+                    // create initial PageState
+                    _pageState = new PageState
+                    {
+                        Alias = alias,
+                        Site = site,
+                        Page = page,
+                        Modules = modules,
+                        User = site.User,
+                        Uri = new Uri(url, UriKind.Absolute),
+                        Route = route,
+                        QueryString = Utilities.ParseQueryString(route.Query),
+                        UrlParameters = route.UrlParameters,
+                        ModuleId = -1,
+                        Action = "",
+                        EditMode = false,
+                        LastSyncDate = DateTime.MinValue,
+                        RenderMode = _renderMode,
+                        Runtime = (Shared.Runtime)Enum.Parse(typeof(Shared.Runtime), _runtime),
+                        VisitorId = _visitorId,
+                        RemoteIPAddress = _remoteIPAddress,
+                        ReturnUrl = "",
+                        IsInternalNavigation = false,
+                        RenderId = Guid.NewGuid(),
+                        Refresh = true,
+                        AllowCookies = _allowCookies
+                    };
+                }
+                else
+                {
+                    _message = "Site Is Disabled";
+                }
+            }
+            else
+            {
+                _message = "Site Not Configured Correctly - No Matching Alias Exists For Host Name";
+            }
+        }
+        _initialized = true;
+    }
+
+    private async Task HandleDefaultAliasRedirectAsync(Alias alias, string url)
+    {
+        // get aliases for site and tenant
+        var aliases = (await AliasRepository.GetAliasesAsync()).Where(item => item.TenantId == alias.TenantId && item.SiteId == alias.SiteId);
+        // get first default alias
+        var defaultAlias = aliases.Where(item => item.IsDefault).FirstOrDefault();
+        if (defaultAlias != null)
+        {
+            // redirect to default alias
+            NavigationManager.NavigateTo(url.Replace(alias.Name, defaultAlias.Name), true);
+        }
+        else // no default alias specified - use first alias
+        {
+            defaultAlias = aliases.FirstOrDefault();
+            if (defaultAlias != null && alias.Name.Trim() != defaultAlias.Name.Trim())
+            {
+                // redirect to first alias
+                NavigationManager.NavigateTo(url.Replace(alias.Name, defaultAlias.Name), true);
+            }
+        }
+    }
+
+    private async Task HandlePageNotFoundAsync(Site site, Page page, Route route)
+    {
+        // filter
+        string useragent = (Context.Request.Headers[HeaderNames.UserAgent] != StringValues.Empty) ? Context.Request.Headers[HeaderNames.UserAgent] : "(none)";
+        var settings = Context.GetSiteSettings();
+        var filter = settings.GetValue("VisitorFilter", Constants.DefaultVisitorFilter);
+        foreach (string term in filter.ToLower().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(sValue => sValue.Trim()).ToArray())
+        {
+            if (_remoteIPAddress.ToLower().Contains(term) || useragent.ToLower().Contains(term))
+            {
+                // handle not found request in static mode
+                if (_renderMode == RenderModes.Static)
+                {
+                    NavigationManager.NotFound();
+                }
+                else
+                {
+                    // redirect to 404 page
+                    NavigationManager.NavigateTo(route.SiteUrl + "/404", true);
+                }
+                return;
+            }
+        }
+
+        // referrer will only be set if the link originated externally
+        string referrer = (Context.Request.Headers[HeaderNames.Referer] != StringValues.Empty) ? Context.Request.Headers[HeaderNames.Referer] : "";
+
+        // page not found - look for url mapping
+        var urlMapping = await UrlMappingRepository.GetUrlMappingAsync(site.SiteId, route.PagePath, referrer);
+        if (urlMapping != null && !string.IsNullOrEmpty(urlMapping.MappedUrl))
+        {
+            // redirect to mapped url
+            var url = (urlMapping.MappedUrl.StartsWith("http")) ? urlMapping.MappedUrl : route.SiteUrl + (!urlMapping.MappedUrl.StartsWith("/") ? "/" : "") + urlMapping.MappedUrl + ((!urlMapping.MappedUrl.Contains("?")) ? route.Query : "");
+            NavigationManager.NavigateTo(url, true);
+        }
+        else // no url mapping exists
+        {
+            if (route.PagePath != "404")
+            {
+                // handle not found request in static mode
+                if(_renderMode == RenderModes.Static)
+                {
+                    NavigationManager.NotFound();
+                }
+                else
+                {
+                    // redirect to 404 page
+                    NavigationManager.NavigateTo(route.SiteUrl + "/404", true);
+                }
+            }
+        }
+    }
+
+    private async Task TrackVisitorAsync(int SiteId)
+    {
+        try
+        {
+            // get request attributes
+            string useragent = (Context.Request.Headers[HeaderNames.UserAgent] != StringValues.Empty) ? Context.Request.Headers[HeaderNames.UserAgent] : "(none)";
+            useragent = (useragent.Length > 256) ? useragent.Substring(0, 256) : useragent;
+            string language = (Context.Request.Headers[HeaderNames.AcceptLanguage] != StringValues.Empty) ? Context.Request.Headers[HeaderNames.AcceptLanguage] : "";
+            language = (language.Contains(",")) ? language.Substring(0, language.IndexOf(",")) : language;
+            language = (language.Contains(";")) ? language.Substring(0, language.IndexOf(";")) : language;
+            language = (language.Trim().Length == 0) ? "??" : language;
+
+            // filter
+            var settings = Context.GetSiteSettings();
+            var filter = settings.GetValue("VisitorFilter", Constants.DefaultVisitorFilter);
+            foreach (string term in filter.ToLower().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(sValue => sValue.Trim()).ToArray())
+            {
+                if (_remoteIPAddress.ToLower().Contains(term) || useragent.ToLower().Contains(term) || language.ToLower().Contains(term))
+                {
+                    return;
+                }
+            }
+
+            // get other request attributes
+            string url = Context.Request.GetEncodedUrl();
+            string referrer = (Context.Request.Headers[HeaderNames.Referer] != StringValues.Empty) ? Context.Request.Headers[HeaderNames.Referer] : "";
+            int? userid = Context.User.UserId();
+            userid = (userid == -1) ? null : userid;
+
+            // get cookie value: the visitor id and the time the visit record is next refreshed, protected (BL-185). A value
+            // this host did not issue - forged, tampered, or a legacy plain cookie - reads as no visitor, and a new
+            // protected cookie is issued below.
+            var visitorCookieName = Stomme.Infrastructure.Security.VisitorCookie.Name(SiteId);
+            var (cookieVisitorId, expiry) = VisitorCookie.Read(Context.Request.Cookies[visitorCookieName]);
+            _visitorId = cookieVisitorId;
+            bool setcookie = false;
+            Visitor visitor = null;
+
+            if (_visitorId <= 0)
+            {
+                // if enabled use IP Address correlation
+                var correlate = bool.Parse(settings.GetValue("VisitorCorrelation", "true"));
+                if (correlate)
+                {
+                    visitor = await VisitorRepository.GetVisitorAsync(SiteId, _remoteIPAddress);
+                    if (visitor != null)
+                    {
+                        _visitorId = visitor.VisitorId;
+                        setcookie = true;
+                    }
+                }
+            }
+
+            if (_visitorId <= 0)
+            {
+                // create new visitor
+                visitor = new Visitor();
+                visitor.SiteId = SiteId;
+                visitor.IPAddress = _remoteIPAddress;
+                visitor.UserAgent = useragent;
+                visitor.Language = language;
+                visitor.Url = url;
+                visitor.Referrer = referrer;
+                visitor.UserId = userid;
+                visitor.Visits = 1;
+                visitor.CreatedOn = DateTime.UtcNow;
+                visitor.VisitedOn = DateTime.UtcNow;
+                visitor = await VisitorRepository.AddVisitorAsync(visitor);
+                _visitorId = visitor.VisitorId;
+                setcookie = true;
+            }
+            else
+            {
+                // check expiry
+                if (DateTime.UtcNow > expiry)
+                {
+                    if (visitor == null)
+                    {
+                        // get visitor if not previously loaded
+                        visitor = await VisitorRepository.GetVisitorAsync(_visitorId);
+                    }
+                    if (visitor != null)
+                    {
+                        // update visitor
+                        visitor.IPAddress = _remoteIPAddress;
+                        visitor.UserAgent = useragent;
+                        visitor.Language = language;
+                        visitor.Url = url;
+                        if (!string.IsNullOrEmpty(referrer))
+                        {
+                            visitor.Referrer = referrer;
+                        }
+                        if (userid != null)
+                        {
+                            visitor.UserId = userid;
+                        }
+                        visitor.Visits += 1;
+                        visitor.VisitedOn = DateTime.UtcNow;
+                        await VisitorRepository.UpdateVisitorAsync(visitor);
+                        setcookie = true;
+                    }
+                    else
+                    {
+                        // remove cookie if visitor does not exist
+                        Context.Response.Cookies.Delete(visitorCookieName);
+                    }
+                }
+            }
+
+            // set cookie
+            if (setcookie)
+            {
+                expiry = DateTime.UtcNow.AddMinutes(int.Parse(settings.GetValue("VisitorDuration", "5")));
+
+                Context.Response.Cookies.Append(
+                    visitorCookieName,
+                    VisitorCookie.Protect(_visitorId, expiry),
+                    new CookieOptions()
+                    {
+                        Expires = DateTimeOffset.UtcNow.AddYears(10),
+                        IsEssential = true,
+                        SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax, // Set SameSite attribute
+                        Secure = true, // Ensure the cookie is only sent over HTTPS
+                        HttpOnly = true // Optional: Helps mitigate XSS attacks
+                    }
+                );
+            }
+        }
+        catch
+        {
+            // error tracking visitor
+        }
+    }
+
+    private async Task GetJwtToken(Alias alias)
+    {
+        // bearer token may have been provided by remote Identity Provider and persisted using SaveTokens = true
+        _authorizationToken = await Context.GetTokenAsync("access_token");
+        if (string.IsNullOrEmpty(_authorizationToken))
+        {
+            // generate bearer token if a secret has been configured in User Settings
+            var sitesettings = Context.GetSiteSettings();
+            var secret = sitesettings.GetValue("JwtOptions:Secret", "");
+            if (!string.IsNullOrEmpty(secret))
+            {
+                _authorizationToken = JwtManager.GenerateToken(alias, (ClaimsIdentity)Context.User.Identity, secret, sitesettings.GetValue("JwtOptions:Issuer", ""), sitesettings.GetValue("JwtOptions:Audience", ""), int.Parse(sitesettings.GetValue("JwtOptions:Lifetime", "20")));
+            }
+        }
+    }
+
+    private string CreatePWAScript(Alias alias, Site site, Route route)
+    {
+        return Environment.NewLine +
+        "<script>" + Environment.NewLine +
+        "    // PWA Manifest" + Environment.NewLine +
+        "    setTimeout(() => {" + Environment.NewLine +
+        "        var manifest = {" + Environment.NewLine +
+        "            \"name\": \"" + site.Name + "\"," + Environment.NewLine +
+        "            \"short_name\": \"" + site.Name + "\"," + Environment.NewLine +
+        "            \"start_url\": \"" + route.SiteUrl + "/\"," + Environment.NewLine +
+        "            \"display\": \"standalone\"," + Environment.NewLine +
+        "            \"background_color\": \"#fff\"," + Environment.NewLine +
+        "            \"description\": \"" + site.Name + "\"," + Environment.NewLine +
+        "            \"icons\": [{" + Environment.NewLine +
+        "                \"src\": \"" + route.RootUrl + Utilities.FileUrl(alias, site.PwaAppIconFileId.Value) + "\"," + Environment.NewLine +
+        "                \"sizes\": \"192x192\"," + Environment.NewLine +
+        "                \"type\": \"image/png\"" + Environment.NewLine +
+        "                }, {" + Environment.NewLine +
+        "                \"src\": \"" + route.RootUrl + Utilities.FileUrl(alias, site.PwaSplashIconFileId.Value) + "\"," + Environment.NewLine +
+        "                \"sizes\": \"512x512\"," + Environment.NewLine +
+        "                \"type\": \"image/png\"" + Environment.NewLine +
+        "            }]" + Environment.NewLine +
+        "       };" + Environment.NewLine +
+        "       const serialized = JSON.stringify(manifest);" + Environment.NewLine +
+        "       const blob = new Blob([serialized], {type: 'application/javascript'});" + Environment.NewLine +
+        "       const url = URL.createObjectURL(blob);" + Environment.NewLine +
+        "       document.getElementById('app-manifest').setAttribute('href', url);" + Environment.NewLine +
+        "    }, 1000);" + Environment.NewLine +
+        "</script>" + Environment.NewLine +
+        "<script>" + Environment.NewLine +
+        "    // PWA Service Worker" + Environment.NewLine +
+        "    if ('serviceWorker' in navigator) {" + Environment.NewLine +
+        "        navigator.serviceWorker.register('/service-worker.js').then(function(registration) {" + Environment.NewLine +
+        "            console.log('ServiceWorker Registration Successful');" + Environment.NewLine +
+        "        }).catch (function(err) {" + Environment.NewLine +
+        "            console.log('ServiceWorker Registration Failed ', err);" + Environment.NewLine +
+        "        });" + Environment.NewLine +
+        "    };" + Environment.NewLine +
+        "</script>" + Environment.NewLine;
+    }
+
+    private void AddScript(Resource resource, Alias alias)
+    {
+        var script = CreateScript(resource, alias);
+        if (resource.Location == Shared.ResourceLocation.Head && resource.LoadBehavior != ResourceLoadBehavior.BlazorPageScript)
+        {
+            if (!_headResources.Contains(script))
+            {
+                _headResources += script + Environment.NewLine;
+            }
+        }
+        else
+        {
+            if (!_bodyResources.Contains(script))
+            {
+                _bodyResources += script + Environment.NewLine;
+            }
+        }
+    }
+
+    private string CreateScript(Resource resource, Alias alias)
+    {
+        if (resource.LoadBehavior == ResourceLoadBehavior.BlazorPageScript)
+        {
+            return "<page-script src=\"" + resource.Url + "\"></page-script>";
+        }
+        else
+        {
+            var dataAttributes = "";
+            if (!resource.DataAttributes.ContainsKey("data-reload"))
+            {
+                switch (resource.LoadBehavior)
+                {
+                    case ResourceLoadBehavior.Once: 
+                        dataAttributes += " data-reload=\"once\"";
+                        break;
+                    case ResourceLoadBehavior.Always:
+                        dataAttributes += " data-reload=\"always\"";
+                        break;
+                }
+            }
+            if (resource.DataAttributes != null && resource.DataAttributes.Count > 0)
+            {
+                foreach (var attribute in resource.DataAttributes)
+                {
+                    dataAttributes += " " + attribute.Key + "=\"" + attribute.Value + "\"";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(resource.Url))
+            {
+                var url = (string.IsNullOrEmpty(resource.Url) || resource.Url.Contains("://")) ? resource.Url : alias.BaseUrl + resource.Url;
+
+                return "<script src=\"" + url + "\"" +
+                    ((!string.IsNullOrEmpty(resource.Type)) ? " type=\"" + resource.Type + "\"" : "") +
+                    ((!string.IsNullOrEmpty(resource.Integrity)) ? " integrity=\"" + resource.Integrity + "\"" : "") +
+                    ((!string.IsNullOrEmpty(resource.CrossOrigin)) ? " crossorigin=\"" + resource.CrossOrigin + "\"" : "") +
+                    ((!string.IsNullOrEmpty(dataAttributes)) ? dataAttributes : "") +
+                    "></script>";
+            }
+            else
+            {
+                return "<script" +
+                    ((!string.IsNullOrEmpty(resource.Type)) ? " type=\"" + resource.Type + "\"" : "") +
+                    ((!string.IsNullOrEmpty(dataAttributes)) ? dataAttributes : "") +
+                    ">" + resource.Content + "</script>";
+            }
+        }
+    }
+
+    private async Task<List<Resource>> GetPageResources(Alias alias, Site site, Page page, List<Module> modules, int moduleid, string action)
+    {
+        var resources = new List<Resource>();
+
+        // SSR head resources: resolve the same theme the client router will render (D87) — admin pages get the
+        // site's AdminThemeType (when set), public pages the DefaultThemeType, empty falls back to the default.
+        var themeType = Utilities.ResolveThemeType(page.ThemeType, page.Path, site.DefaultThemeType, site.AdminThemeType);
+        var theme = site.Themes.FirstOrDefault(item => item.Themes.Any(item => item.TypeName == themeType));
+        if (theme != null)
+        {
+            resources = AddResources(resources, theme.Resources, ResourceLevel.Page, alias, "Themes", Utilities.GetTypeName(theme.ThemeName), theme.Fingerprint, site.RenderMode);
+        }
+        else
+        {
+            // fallback to default Stomme theme
+            theme = site.Themes.FirstOrDefault(item => item.Themes.Any(item => item.TypeName == Constants.DefaultTheme));
+            resources = AddResources(resources, theme.Resources, ResourceLevel.Page, alias, "Themes", Utilities.GetTypeName(theme.ThemeName), theme.Fingerprint, site.RenderMode);
+        }
+        var colorMode = ThemeColorModes.Normalize(theme?.ColorMode);
+        _fixedColorMode = colorMode == ThemeColorModes.FollowVisitor ? null : colorMode;
+        var type = Type.GetType(themeType);
+        if (type != null)
+        {
+            var obj = Activator.CreateInstance(type) as IThemeControl;
+            if (obj != null)
+            {
+                resources = AddResources(resources, obj.Resources, ResourceLevel.Page, alias, "Themes", type.Namespace, theme.Fingerprint, site.RenderMode);
+            }
+        }
+        // theme settings components are dynamically loaded within the framework Page Management module
+        if (page.Path == "admin/pages" && action.ToLower() == "edit" && theme != null && !string.IsNullOrEmpty(theme.ThemeSettingsType))
+        {
+            var settingsType = Type.GetType(theme.ThemeSettingsType);
+            if (settingsType != null)
+            {
+                var objSettings = Activator.CreateInstance(settingsType) as IModuleControl;
+                resources = AddResources(resources, objSettings.Resources, ResourceLevel.Module, alias, "Modules", settingsType.Namespace, theme.Fingerprint, site.RenderMode);
+            }
+        }
+
+        foreach (Module module in modules.Where(item => item.PageId == page.PageId || item.ModuleId == moduleid))
+        {
+            var typename = "";
+            if (module.ModuleDefinition != null)
+            {
+                // handle default action
+                if (action == Constants.DefaultAction && !string.IsNullOrEmpty(module.ModuleDefinition.DefaultAction))
+                {
+                    action = module.ModuleDefinition.DefaultAction;
+                }
+
+                // get typename template
+                typename = module.ModuleDefinition.ControlTypeTemplate;
+                if (module.ModuleDefinition.ControlTypeRoutes != "")
+                {
+                    // process custom action routes
+                    foreach (string route in module.ModuleDefinition.ControlTypeRoutes.Split(';', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (route.StartsWith(action + "="))
+                        {
+                            typename = route.Replace(action + "=", "");
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // create typename
+            if (Constants.DefaultModuleActions.Contains(action, StringComparer.OrdinalIgnoreCase))
+            {
+                typename = Constants.DefaultModuleActionsTemplate.Replace(Constants.ActionToken, action);
+            }
+            else
+            {
+                typename = typename.Replace(Constants.ActionToken, action);
+            }
+
+            // ensure component exists and implements IModuleControl
+            module.ModuleType = "";
+            var moduletype = Type.GetType(typename, false, true); // case insensitive
+            if (moduletype != null && moduletype.GetInterfaces().Contains(typeof(IModuleControl)))
+            {
+                module.ModuleType = Utilities.GetFullTypeName(moduletype.AssemblyQualifiedName); // get actual type name
+            }
+            if (moduletype != null && module.ModuleType != "")
+            {
+                var moduleobject = Activator.CreateInstance(moduletype) as IModuleControl;
+                if (moduleobject != null)
+                {
+                    if (module.ModuleDefinition != null)
+                    {
+                        resources = AddResources(resources, module.ModuleDefinition.Resources, ResourceLevel.Module, alias, "Modules", moduletype.Namespace, module.ModuleDefinition.Fingerprint, moduleobject.RenderMode);
+                    }
+                    resources = AddResources(resources, moduleobject.Resources, ResourceLevel.Module, alias, "Modules", moduletype.Namespace, module.ModuleDefinition?.Fingerprint, moduleobject.RenderMode);
+
+                    // settings components are dynamically loaded within the framework Settings module
+                    if (action.ToLower() == "settings" && module.ModuleDefinition != null)
+                    {
+                        // module settings component
+                        var settingsType = "";
+                        if (!string.IsNullOrEmpty(module.ModuleDefinition.SettingsType))
+                        {
+                            // module settings type explicitly declared in IModule interface
+                            settingsType = module.ModuleDefinition.SettingsType;
+                        }
+                        else
+                        {
+                            // legacy support - module settings type determined by convention
+                            settingsType = module.ModuleDefinition.ControlTypeTemplate.Replace(Constants.ActionToken, action);
+                        }
+                        moduletype = Type.GetType(settingsType, false, true);
+                        if (moduletype != null)
+                        {
+                            moduleobject = Activator.CreateInstance(moduletype) as IModuleControl;
+                            resources = AddResources(resources, moduleobject.Resources, ResourceLevel.Module, alias, "Modules", moduletype.Namespace, module.ModuleDefinition?.Fingerprint, site.RenderMode);
+                        }
+
+                        // container settings component
+                        if (theme != null && !string.IsNullOrEmpty(theme.ContainerSettingsType))
+                        {
+                            moduletype = Type.GetType(theme.ContainerSettingsType);
+                            if (moduletype != null)
+                            {
+                                moduleobject = Activator.CreateInstance(moduletype) as IModuleControl;
+                                resources = AddResources(resources, moduleobject.Resources, ResourceLevel.Module, alias, "Modules", moduletype.Namespace, theme.Fingerprint, site.RenderMode);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (site.RenderMode == RenderModes.Interactive)
+        {
+            // site level resources for modules in site
+            var sitemodules = await SiteService.GetModulesAsync(site.SiteId, -1);
+            foreach (var module in sitemodules.GroupBy(item => item.ModuleDefinition?.ModuleDefinitionName).Select(group => group.First()).ToList())
+            {
+                if (module.ModuleDefinition?.Resources != null)
+                {
+                    resources = AddResources(resources, module.ModuleDefinition.Resources.Where(item => item.ResourceType == ResourceType.Script && item.Level == ResourceLevel.Site).ToList(), ResourceLevel.Module, alias, "Modules", Utilities.GetTypeName(module.ModuleDefinition.ModuleDefinitionName), module.ModuleDefinition.Fingerprint, site.RenderMode);
+                }
+            }
+        }
+
+        return resources;
+    }
+
+    private List<Resource> AddResources(List<Resource> pageresources, List<Resource> resources, ResourceLevel level, Alias alias, string type, string name, string fingerprint, string rendermode)
+    {
+        if (resources != null)
+        {
+            foreach (var resource in resources)
+            {
+                if (rendermode == RenderModes.Static || resource.ResourceType == ResourceType.Stylesheet || resource.Level == ResourceLevel.Site)
+                {
+                    if (!string.IsNullOrEmpty(resource.Url) && resource.Url.StartsWith("~"))
+                    {
+                        resource.Url = resource.Url.Replace("~", "/" + type + "/" + name + "/").Replace("//", "/");
+                    }
+                    if (!string.IsNullOrEmpty(resource.Url) && !resource.Url.Contains("://") && alias.BaseUrl != "" && !resource.Url.StartsWith(alias.BaseUrl))
+                    {
+                        resource.Url = alias.BaseUrl + resource.Url;
+                    }
+
+                    // ensure resource does not exist already
+                    if (!pageresources.Exists(item => Utilities.GetUrlPath(item.Url).ToLower() == Utilities.GetUrlPath(resource.Url).ToLower()))
+                    {
+                        pageresources.Add(resource.Clone(level, name, fingerprint));
+                    }
+                }
+            }
+        }
+        return pageresources;
+    }
+
+    private void ManageStyleSheets(List<Resource> resources)
+    {
+        if (resources != null)
+        {
+            // include stylesheets to prevent FOUC
+            string batch = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
+            int count = 0;
+            foreach (var resource in resources.Where(item => item.ResourceType == ResourceType.Stylesheet))
+            {
+                count++;
+                string id = "id=\"app-stylesheet-" + ResourceLevel.Page.ToString().ToLower() + "-" + batch + "-" + count.ToString("00") + "\" ";
+                _styleSheets += "<link " + id + "rel=\"stylesheet\"" + 
+                    (!string.IsNullOrEmpty(resource.Integrity) ? " integrity=\"" + resource.Integrity + "\"" : "") + 
+                    (!string.IsNullOrEmpty(resource.CrossOrigin) ? " crossorigin=\"" + resource.CrossOrigin + "\"" : "") + 
+                    " href=\"" + resource.Url + "\" type=\"text/css\"/>" + Environment.NewLine; // href at end of element due to enhanced navigation patch algorithm
+            }
+        }
+    }
+
+    private void ManageScripts(List<Resource> resources, Alias alias)
+    {
+        if (resources != null)
+        {
+            foreach (var resource in resources.Where(item => item.ResourceType == ResourceType.Script))
+            {
+                if (string.IsNullOrEmpty(resource.RenderMode) || resource.RenderMode == RenderModes.Static)
+                {
+                    AddScript(resource, alias);
+                }
+            }
+        }
+    }
+
+    private void AddBodyContent(string content)
+    {
+        if (!string.IsNullOrEmpty(content))
+        {
+            var elements = content.Split('<', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var element in elements)
+            {
+                if (_renderMode == RenderModes.Static || (!element.ToLower().StartsWith("script") && !element.ToLower().StartsWith("/script")))
+                {
+                    if (!_bodyContent.Contains("<" + element) || element.StartsWith("/"))
+                    {
+                        _bodyContent += "<" + element;
+                    }
+                }
+            }
+            _bodyContent += "\n";
+        }
+    }
+
+    private string ManageLocalization(Alias alias, Site site)
+    {
+        // get site culture (content localization)
+        var culture = site.CultureCode;
+        if (string.IsNullOrEmpty(culture))
+        {
+            // use fallback language
+            culture = LocalizationManager.GetDefaultCulture();
+        }
+
+        // determine if site is using content localization
+        var contentLocalization = site.Languages.Any(item => !string.IsNullOrEmpty(item.AliasName));
+
+        // get user culture (ui localization)
+        var uiCulture = site.User?.CultureCode;
+        // if user has not specified a UI culture
+        if (string.IsNullOrEmpty(uiCulture))
+        {
+            // if not using content localization
+            if (!contentLocalization)
+            {
+                // use default language if specified otherwise use first language in collection
+                uiCulture = (site.Languages.Where(l => l.IsDefault).SingleOrDefault() ?? site.Languages.First()).Code;
+            }
+            else
+            {
+                // use site culture
+                uiCulture = culture;
+            }
+        }
+        else
+        {
+            // if not using content localization and UI culture is not supported by site
+            if (!contentLocalization && !site.Languages.Any(item => item.Code == uiCulture))
+            {
+                // use site culture
+                uiCulture = culture;                
+            }
+        }
+
+        // get culture cookie
+        string cultureCookie = Context.Request.Cookies[Shared.CookieRequestCultureProvider.DefaultCookieName];
+
+        // BL-251: the language the visitor chose (the language switcher writes it into the cookie) wins over the profile and
+        // the site's default while the site offers it. Before, every server render rewrote the cookie to the computed
+        // language, so the switcher changed nothing.
+        var chosen = cultureCookie == null ? null : Shared.CookieRequestCultureProvider.ParseCookieValue(cultureCookie)?.UICulture.Name;
+        if (!string.IsNullOrEmpty(chosen) && site.Languages.Any(item => item.Code == chosen))
+        {
+            uiCulture = chosen;
+        }
+
+        if (cultureCookie == null)
+        {
+            // convert to culture cookie format (ie. "c=en|uic=en") and save cookie
+            cultureCookie = Shared.CookieRequestCultureProvider.MakeCookieValue(new Models.RequestCulture(culture, uiCulture));
+            SetLocalizationCookie(cultureCookie);
+        }
+        else
+        {
+            // validate the culture cookie
+            var requestCulture = Shared.CookieRequestCultureProvider.ParseCookieValue(cultureCookie);
+            if (requestCulture?.Culture.Name != culture || requestCulture?.UICulture.Name != uiCulture)
+            {
+                // convert to culture cookie format (ie. "c=en|uic=en") and save cookie
+                cultureCookie = Shared.CookieRequestCultureProvider.MakeCookieValue(new Models.RequestCulture(culture, uiCulture));
+                SetLocalizationCookie(cultureCookie);
+            }
+        }
+
+        // html element language attribute: the content's language where the site localizes content, otherwise the language
+        // the page's text is shown in (BL-251: it named the content culture while the page read in another)
+        return contentLocalization ? culture : uiCulture;
+    }
+
+    private void SetLocalizationCookie(string cookieValue)
+    {
+        var cookieOptions = new Microsoft.AspNetCore.Http.CookieOptions
+        {
+            Expires = DateTimeOffset.UtcNow.AddYears(1),
+            SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax, // Set SameSite attribute
+            Secure = true, // Ensure the cookie is only sent over HTTPS
+            HttpOnly = false // cookie is updated using JS Interop in Interactive render mode
+        };
+
+        Context.Response.Cookies.Append(
+            Shared.CookieRequestCultureProvider.DefaultCookieName,
+            cookieValue,
+            cookieOptions
+        );
+    }
+}

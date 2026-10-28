@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BL-96: the EXTERNAL connector template. One connector authored outside the tree, referencing Stomme ONLY
+    through the slim SDK from the local feed (examples/pack-sdk-slim.ps1) - the contract is Stomme.Shared's
+    (IConnector, IConnectorEgress, the schemes, the schema) and the one registration is an IServerStartup from
+    the Stomme.Server.Sdk compile-surface shim. The assembly name ends in "Stomme" so the host's convention
+    scan discovers it from /bin exactly like a module (D81/D82); a nupkg of it installs through the real
+    InstallationManager. No socket policy of its own: the egress the host hands in is the only network.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>NovaGloben.Connector.Template.Stomme</AssemblyName>
+    <RootNamespace>NovaGloben.Connector.Template</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>Nova Globen AB</Authors>
+    <Company>Nova Globen AB</Company>
+    <Product>NovaGloben.Connector.Template</Product>
+    <Description>The Stomme external connector template: one IConnector over the host's egress, registered by its own IServerStartup.</Description>
+    <Copyright>Nova Globen AB</Copyright>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stomme.Sdk.Slim" Version="10.73.2" />
+  </ItemGroup>
+
+</Project>

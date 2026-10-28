@@ -1,0 +1,40 @@
+@namespace Stomme.Modules.Pipelines
+@using System.Globalization
+
+@*
+    BL-229 - n8n's comparison of evaluation runs: an evaluation's metrics (its averages, or one row's), each beside what an
+    earlier evaluation had for it - "correct 1 (was 0, +1)" - a gain in the theme's ok colour, a loss in its bad one.
+*@
+
+@if (_compared.Count == 0)
+{
+    @("—")
+}
+@for (var index = 0; index < _compared.Count; index++)
+{
+    var metric = _compared[index];
+    @if (index > 0)
+    {
+        @(", ")
+    }
+    <span class="db-pipeline-evaluation-metric">@metric.Name @(metric.Now is { } now ? Number(now) : "—")@if (metric.Before is { } before)
+    {
+        <span class="db-pipeline-evaluation-change @(metric.Change > 0 ? "is-better" : metric.Change < 0 ? "is-worse" : "")"> (was @Number(before)@(metric.Change is { } change ? ", " + PipelineEvaluations.Change(change) : ""))</span>
+    }</span>
+}
+
+@code {
+    private List<(string Name, decimal? Now, decimal? Before, decimal? Change)> _compared = new();
+
+    /// <summary>The metrics now.</summary>
+    [Parameter]
+    public IReadOnlyDictionary<string, decimal> Now { get; set; }
+
+    /// <summary>What the evaluation compared with had for them; none: no comparison.</summary>
+    [Parameter]
+    public IReadOnlyDictionary<string, decimal> Before { get; set; }
+
+    protected override void OnParametersSet() => _compared = PipelineEvaluations.Compare(Now, Before);
+
+    private static string Number(decimal value) => value.ToString("0.###", CultureInfo.InvariantCulture);
+}

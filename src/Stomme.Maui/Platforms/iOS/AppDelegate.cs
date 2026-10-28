@@ -1,0 +1,9 @@
+﻿using Foundation;
+
+namespace Stomme.Maui;
+
+[Register("AppDelegate")]
+public class AppDelegate : MauiUIApplicationDelegate
+{
+	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+}

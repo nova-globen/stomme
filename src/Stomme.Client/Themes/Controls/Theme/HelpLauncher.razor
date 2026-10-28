@@ -1,0 +1,137 @@
+@using System.Globalization
+@using Stomme.Help
+@using Stomme.Modules.ContextualHelp.Services
+@namespace Stomme.Themes.Controls
+@inherits ThemeControlBase
+@inject IHelpService HelpService
+
+@*
+    The contextual-help launcher (BL-84, D103 item 6). ControlPanel renders it in every theme's header under its OWN
+    ShowHelp parameter - outside the ShowLanguageSwitcher @if and outside the admin/editor gate, because help is for the
+    reader of the page (D103 refutation 3a).
+
+    It must NOT open a circuit for an anonymous page view (refutation 3b): it carries no @rendermode of its own, so on a
+    Static page it renders server-side as a native <details> disclosure - no JS, no circuit - and the drawer (which needs
+    a click handler) is used only when the page is ALREADY interactive.
+
+    The anchors are the PAGE (page:{path}) and every CONTROL on it (PageState.Modules[].ModuleType, which the router has
+    already resolved per action - so admin/users and ?action=Edit are different anchors, refutation 5). Anything not
+    resolved renders NOTHING: no topic, help switched off, or a caller without help:view.
+
+    The HTML is the SERVER's: SafeHtml has been through the Markdig pipeline and the allowlist before it left the server,
+    and no Markdig type is referenced from this project.
+*@
+
+@if (_topics.Count > 0)
+{
+    @if (PageState.RenderMode == RenderModes.Interactive)
+    {
+        <button type="button" class="db-icon-btn db-help-trigger @ButtonClass" aria-label="Help" aria-haspopup="dialog" aria-expanded="@(_open ? "true" : "false")" @onclick="Toggle">
+            <span class="oi oi-question-mark"></span>
+        </button>
+        @if (_open)
+        {
+            <button type="button" class="db-drawer-backdrop" aria-label="Close help" @onclick="Toggle"></button>
+        }
+        <div class="db-drawer db-drawer-end @(_open ? "show" : "")" role="dialog" aria-label="Help">
+            <div class="db-drawer-head">
+                <h5 class="db-drawer-title">Help</h5>
+                <button type="button" class="db-icon-btn" aria-label="Close help" @onclick="Toggle"><span class="oi oi-x"></span></button>
+            </div>
+            <div class="db-drawer-body">
+                @foreach (var topic in _topics)
+                {
+                    <section class="db-help-topic" data-anchor="@topic.Anchor" lang="@topic.Locale">
+                        <h6 class="db-help-title">@topic.Title</h6>
+                        @((MarkupString)topic.SafeHtml)
+                    </section>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <details class="db-help">
+            <summary class="db-icon-btn db-help-trigger @ButtonClass" aria-label="Help"><span class="oi oi-question-mark"></span></summary>
+            <div class="db-help-panel" role="region" aria-label="Help">
+                @foreach (var topic in _topics)
+                {
+                    <section class="db-help-topic" data-anchor="@topic.Anchor" lang="@topic.Locale">
+                        <h6 class="db-help-title">@topic.Title</h6>
+                        @((MarkupString)topic.SafeHtml)
+                    </section>
+                }
+            </div>
+        </details>
+    }
+}
+
+@code {
+    [Parameter]
+    public string ButtonClass { get; set; } = "";
+
+    private List<HelpTopicView> _topics = new();
+    private bool _open;
+    private string _resolvedFor;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Resolve once per page (and per culture): a re-render of the same page must not re-read every anchor.
+        var key = $"{PageState?.Page?.PageId}|{PageState?.Page?.Path}|{CultureInfo.CurrentUICulture.Name}|{string.Join(",", Anchors())}";
+        if (key == _resolvedFor)
+        {
+            return;
+        }
+
+        _resolvedFor = key;
+        _open = false;
+
+        // BL-212: the server says whether Help is on, in the site's settings as it says SAML's (D70). Asking a switched-off Help
+        // logged a 404 per page on a WebAssembly site. A server that does not say is asked, as before.
+        if (HostSwitches.IsOff(PageState?.Site, HostSwitches.Help))
+        {
+            _topics = new List<HelpTopicView>();
+            return;
+        }
+
+        var found = new List<HelpTopicView>();
+        try
+        {
+            foreach (var anchor in Anchors())
+            {
+                var topic = await HelpService.GetTopicAsync(anchor, CultureInfo.CurrentUICulture.Name);
+                if (topic != null && !string.IsNullOrEmpty(topic.SafeHtml))
+                {
+                    found.Add(topic);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            // Help is never worth a broken page header: a failure renders nothing, exactly like "no topic".
+            found.Clear();
+        }
+
+        _topics = found;
+    }
+
+    /// <summary>The page first, then each control on it - normalized exactly as a contributor's anchor is, deduplicated.</summary>
+    private IEnumerable<string> Anchors()
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        if (PageState?.Page != null && HelpKeys.TryPageAnchor(PageState.Page.Path, out var page) && seen.Add(page))
+        {
+            yield return page;
+        }
+
+        foreach (var module in PageState?.Modules ?? new List<Module>())
+        {
+            if (HelpKeys.TryModuleAnchor(module.ModuleType, out var control) && seen.Add(control))
+            {
+                yield return control;
+            }
+        }
+    }
+
+    private void Toggle() => _open = !_open;
+}

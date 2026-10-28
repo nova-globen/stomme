@@ -1,0 +1,84 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+
+@*
+    A condition built from rules (BL-229 increment 10, n8n's IF and Switch): each rule tests a value - text with {{ variable }}
+    placeholders - against another with a comparison, and the condition holds when all of them do, or any. Used for a
+    Boolean input (a Decision's, an If's, a While's condition) and for each case of a Switch (flow). The editor owns the
+    condition; every change here is made on it and then announced, so the editor records it as one step of undo.
+*@
+
+<div id="@IdPrefix" class="db-pipeline-editor__condition">
+    <div class="db-pipeline-editor__condition-head">
+        <select id="@(IdPrefix + "-match")" class="db-input" aria-label="@(Label + ": which rules must hold")" value="@Condition.Match" @onchange="e => ChangeAsync(condition => condition.Match = e.Value?.ToString() == PipelineConditions.Any ? PipelineConditions.Any : PipelineConditions.All)" disabled="@Disabled">
+            <option value="@PipelineConditions.All">All of these hold</option>
+            <option value="@PipelineConditions.Any">Any of these holds</option>
+        </select>
+        <span class="db-pipeline-editor__condition-case">
+            <input id="@(IdPrefix + "-ignore-case")" type="checkbox" checked="@Condition.IgnoreCase" @onchange="e => ChangeAsync(condition => condition.IgnoreCase = e.Value is true)" disabled="@Disabled" />
+            <label for="@(IdPrefix + "-ignore-case")">ignore case</label>
+        </span>
+    </div>
+    @for (var index = 0; index < Condition.Rules.Count; index++)
+    {
+        var at = index;
+        var rule = Condition.Rules[at];
+        var takesValue = PipelineConditions.Operator(rule.Operator)?.TakesValue != false;
+        <div class="db-pipeline-editor__rule">
+            <input id="@($"{IdPrefix}-left-{at}")" class="db-input db-pipeline-editor__expression" placeholder="{{ status }}" aria-label="@($"{Label}, rule {at + 1}: the value tested")" value="@rule.Left" @oninput="e => ChangeAsync(_ => rule.Left = e.Value?.ToString() ?? string.Empty)" disabled="@Disabled" />
+            <select id="@($"{IdPrefix}-op-{at}")" class="db-input" aria-label="@($"{Label}, rule {at + 1}: the comparison")" value="@rule.Operator" @onchange="e => ChangeAsync(_ => rule.Operator = e.Value?.ToString() ?? PipelineConditions.EqualsOperator)" disabled="@Disabled">
+                @foreach (var candidate in PipelineConditions.Operators)
+                {
+                    <option value="@candidate.Code">@candidate.Label</option>
+                }
+            </select>
+            @if (takesValue)
+            {
+                <input id="@($"{IdPrefix}-right-{at}")" class="db-input db-pipeline-editor__expression" placeholder="e.g. ok, or {{ limit }}" aria-label="@($"{Label}, rule {at + 1}: what it is compared with")" value="@rule.Right" @oninput="e => ChangeAsync(_ => rule.Right = e.Value?.ToString() ?? string.Empty)" disabled="@Disabled" />
+            }
+            @if (!Disabled && Condition.Rules.Count > 1)
+            {
+                <button id="@($"{IdPrefix}-remove-{at}")" type="button" class="db-btn" title="Remove this rule" @onclick="() => ChangeAsync(condition => condition.Rules.RemoveAt(at))">Remove</button>
+            }
+        </div>
+    }
+    @if (!Disabled)
+    {
+        <button id="@(IdPrefix + "-add")" type="button" class="db-btn" @onclick="() => ChangeAsync(condition => condition.Rules.Add(new PipelineConditionRule()))">Add rule</button>
+    }
+    @if (Preview is not null)
+    {
+        var (text, failed, source) = Preview(Condition);
+        <div id="@(IdPrefix + "-preview")" class="db-pipeline-editor__preview @(failed ? "is-error" : "")">
+            <span class="db-pipeline-editor__preview-source">@source:</span> @text
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>The prefix of every id inside, e.g. <c>pipelines-editor-condition-Condition</c>.</summary>
+    [Parameter, EditorRequired] public string IdPrefix { get; set; }
+
+    /// <summary>What the condition is of, for the fields' labels: an input's name, a case's label.</summary>
+    [Parameter] public string Label { get; set; } = "Condition";
+
+    [Parameter, EditorRequired] public PipelineCondition Condition { get; set; }
+
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>Called after each change, the condition changed in place.</summary>
+    [Parameter] public EventCallback Changed { get; set; }
+
+    /// <summary>Whether the condition holds with the values the editor previews with, and where they came from.</summary>
+    [Parameter] public Func<PipelineCondition, (string Text, bool Failed, string Source)> Preview { get; set; }
+
+    private async Task ChangeAsync(Action<PipelineCondition> change)
+    {
+        if (Disabled)
+        {
+            return;
+        }
+
+        change(Condition);
+        await Changed.InvokeAsync();
+    }
+}

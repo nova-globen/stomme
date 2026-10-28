@@ -1,0 +1,21 @@
+[Unit]
+Description=Nova Globen Stomme (multi-tenant CMS / application framework)
+After=network.target
+
+[Service]
+# @EXEC_START@ is the self-contained native host (app/Stomme.Server) or `dotnet app/Stomme.Server.dll`;
+# the installer fills it in based on the bundle it unpacked.
+WorkingDirectory=@APP_DIR@
+ExecStart=@EXEC_START@
+Restart=on-failure
+RestartSec=5
+User=@USER@
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=@URLS@
+# Stomme reads its DB, host account, OpenIddict cert paths and InstallationId from
+# appsettings.Production.json, written by install-unix.sh into @APP_DIR@.
+KillSignal=SIGINT
+SyslogIdentifier=stomme
+
+[Install]
+WantedBy=multi-user.target

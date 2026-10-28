@@ -1,0 +1,452 @@
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using Stomme.Enums;
+using Stomme.Models;
+using Stomme.Modules;
+using Stomme.Services;
+using Stomme.Shared;
+using Stomme.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Stomme.Themes
+{
+    public abstract class ThemeBase : ComponentBase, IThemeControl
+    {
+        private bool _scriptsloaded = false;
+
+        [Inject]
+        protected ILogService LoggingService { get; set; }
+
+        [Inject]
+        protected IJSRuntime JSRuntime { get; set; }
+
+        [Inject]
+        protected SiteState SiteState { get; set; }
+
+        [CascadingParameter]
+        protected PageState PageState { get; set; }
+
+        // optional interface properties
+        public virtual string Name { get; set; }
+        public virtual string Thumbnail { get; set; }
+        public virtual string Panes { get; set; }
+        public virtual List<Resource> Resources { get; set; }
+
+        // base lifecycle method for handling JSInterop script registration
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                List<Resource> resources = null;
+                var type = GetType();
+                if (type.IsSubclassOf(typeof(ThemeBase)))
+                {
+                    if (type.IsSubclassOf(typeof(ThemeControlBase)) || type.IsSubclassOf(typeof(ContainerBase)))
+                    {
+                        if (Resources != null)
+                        {
+                            resources = Resources.Where(item => item.ResourceType == ResourceType.Script).ToList();
+                        }
+                    }
+                    else // ThemeBase
+                    {
+                        if (PageState.Page.Resources != null)
+                        {
+                            resources = PageState.Page.Resources.Where(item => item.ResourceType == ResourceType.Script && item.Level == ResourceLevel.Page && item.Namespace == type.Namespace).ToList();
+                        }
+                    }
+                }
+                if (resources != null && resources.Any())
+                {
+                    var interop = new Interop(JSRuntime);
+                    var scripts = new List<object>();
+                    var pageScripts = new List<string>();
+                    var inline = 0;
+                    foreach (Resource resource in resources)
+                    {
+                        if (string.IsNullOrEmpty(resource.RenderMode) || resource.RenderMode == RenderModes.Interactive)
+                        {
+                            if (!string.IsNullOrEmpty(resource.Url) && resource.LoadBehavior == ResourceLoadBehavior.BlazorPageScript)
+                            {
+                                // An ES module (BL-202): imported, never added as a classic <script>.
+                                pageScripts.Add((resource.Url.Contains("://")) ? resource.Url : PageState.Alias.BaseUrl + resource.Url);
+                            }
+                            else if (!string.IsNullOrEmpty(resource.Url))
+                            {
+                                var url = (resource.Url.Contains("://")) ? resource.Url : PageState.Alias.BaseUrl + resource.Url;
+                                scripts.Add(new { href = url, type = resource.Type ?? "", bundle = resource.Bundle ?? "", integrity = resource.Integrity ?? "", crossorigin = resource.CrossOrigin ?? "", location = resource.Location.ToString().ToLower(), dataAttributes = resource.DataAttributes });
+                            }
+                            else
+                            {
+                                inline += 1;
+                                await interop.IncludeScript(GetType().Namespace.ToLower() + inline.ToString(), "", "", "", resource.Type ?? "", resource.Content, resource.Location.ToString().ToLower());
+                            }
+                        }
+                    }
+                    if (scripts.Any())
+                    {
+                        await interop.IncludeScripts(scripts.ToArray());
+                    }
+
+                    foreach (var pageScript in pageScripts)
+                    {
+                        await interop.IncludePageScript(pageScript);
+                    }
+                }
+            }
+            _scriptsloaded = true;
+        }
+
+        public bool ScriptsLoaded
+        {
+            get
+            {
+                return _scriptsloaded;
+            }
+        }
+
+        // property for obtaining theme information about this theme component
+        public Theme ThemeState
+        {
+            get
+            {
+                var type = GetType().Namespace + ", " + GetType().Assembly.GetName().Name;
+                return PageState?.Site.Themes.FirstOrDefault(item => item.ThemeName == type);
+            }
+        }
+
+        // path methods
+
+        public string ThemePath()
+        {
+            return PageState?.Alias.BaseUrl + "/Themes/" + GetType().Namespace + "/";
+        }
+
+        public string StaticAssetPath
+        {
+            get
+            {
+                // requires theme to have implemented ITheme
+                return PageState?.Alias.BaseUrl + "_content/" + ThemeState?.PackageName + "/";
+            }
+        }
+
+        // fingerprint hash code for static assets
+        public string Fingerprint
+        {
+            get
+            {
+                return ThemeState.Fingerprint;
+            }
+        }
+
+        // url methods
+
+        // navigate url
+        public string NavigateUrl()
+        {
+            return NavigateUrl(PageState.Page.Path);
+        }
+
+        public string NavigateUrl(string path)
+        {
+            return NavigateUrl(path, "");
+        }
+
+        public string NavigateUrl(bool refresh)
+        {
+            return NavigateUrl(PageState.Page.Path, refresh);
+        }
+
+        public string NavigateUrl(string path, string querystring)
+        {
+            return Utilities.NavigateUrl(PageState.Alias.Path, path, querystring);
+        }
+
+        public string NavigateUrl(string path, Dictionary<string, string> querystring)
+        {
+            return NavigateUrl(path, Utilities.CreateQueryString(querystring));
+        }
+
+        public string NavigateUrl(string path, bool refresh)
+        {
+            return NavigateUrl(path, refresh ? "refresh" : "");
+        }
+
+        public string NavigateUrl(int moduleid, string action)
+        {
+            return EditUrl(moduleid, action, "");
+        }
+
+        public string NavigateUrl(int moduleid, string action, string querystring)
+        {
+            return EditUrl(PageState.Page.Path, moduleid, action, querystring);
+        }
+
+        public string NavigateUrl(int moduleid, string action, Dictionary<string, string> querystring)
+        {
+            return EditUrl(PageState.Page.Path, moduleid, action, Utilities.CreateQueryString(querystring));
+        }
+
+        public string NavigateUrl(string path, int moduleId, string action)
+        {
+            return EditUrl(path, moduleId, action, "");
+        }
+
+        public string NavigateUrl(string path, int moduleid, string action, string querystring)
+        {
+            return EditUrl(path, moduleid, action, querystring);
+        }
+
+        public string NavigateUrl(string path, int moduleid, string action, Dictionary<string, string> querystring)
+        {
+            return EditUrl(path, moduleid, action, querystring);
+        }
+
+        // edit url
+        public string EditUrl(int moduleid, string action)
+        {
+            return EditUrl(moduleid, action, "");
+        }
+
+        public string EditUrl(int moduleid, string action, string querystring)
+        {
+            return EditUrl(PageState.Page.Path, moduleid, action, querystring);
+        }
+
+        public string EditUrl(int moduleid, string action, Dictionary<string, string> querystring)
+        {
+            return EditUrl(PageState.Page.Path, moduleid, action, querystring);
+        }
+
+        public string EditUrl(string path, int moduleid, string action, string querystring)
+        {
+            return Utilities.EditUrl(PageState.Alias.Path, path, moduleid, action, querystring);
+        }
+
+        public string EditUrl(string path, int moduleid, string action, Dictionary<string, string> querystring)
+        {
+            return EditUrl(path, moduleid, action, Utilities.CreateQueryString(querystring));
+        }
+
+        // file url
+        public string FileUrl(string folderpath, string filename)
+        {
+            return FileUrl(folderpath, filename, false);
+        }
+
+        public string FileUrl(string folderpath, string filename, bool download)
+        {
+            return Utilities.FileUrl(PageState.Alias, folderpath, filename, download);
+        }
+        public string FileUrl(int fileid)
+        {
+            return FileUrl(fileid, false);
+        }
+
+        public string FileUrl(int fileid, bool download)
+        {
+            return Utilities.FileUrl(PageState.Alias, fileid, download);
+        }
+
+        // image url
+        public string ImageUrl(int fileid, int width, int height)
+        {
+            return ImageUrl(fileid, width, height, "");
+        }
+
+        public string ImageUrl(int fileid, int width, int height, string mode)
+        {
+            return ImageUrl(fileid, width, height, mode, "", "", 0, false);
+        }
+
+        public string ImageUrl(int fileid, int width, int height, string mode, string position, string background, int rotate, bool recreate)
+        {
+            return Utilities.ImageUrl(PageState.Alias, fileid, width, height, mode, position, background, rotate, recreate);
+        }
+
+        public void SetPageTitle(string title)
+        {
+            SiteState.Properties.PageTitle = title;
+        }
+
+        // note - only supports links and meta tags - not scripts
+        public void AddHeadContent(string content)
+        {
+            SiteState.AppendHeadContent(content);
+        }
+
+        public void AddScript(Resource resource)
+        {
+            resource.ResourceType = ResourceType.Script;
+            if (Resources == null) Resources = new List<Resource>();
+            if (!Resources.Any(item => (!string.IsNullOrEmpty(resource.Url) && item.Url == resource.Url) || (!string.IsNullOrEmpty(resource.Content) && item.Content == resource.Content)))
+            {
+                Resources.Add(resource);
+            }
+        }
+
+        public async Task ScrollToPageTop()
+        {
+            var interop = new Interop(JSRuntime);
+            await interop.ScrollTo(0, 0, "smooth");
+        }
+
+        // logging methods
+        public async Task Log(Alias alias, LogLevel level, string function, Exception exception, string message, params object[] args)
+        {
+            LogFunction logFunction;
+            if (string.IsNullOrEmpty(function))
+            {
+                // try to infer from page action
+                function = PageState.Action;
+            }
+            if (!Enum.TryParse(function, out logFunction))
+            {
+                switch (function.ToLower())
+                {
+                    case "add":
+                        logFunction = LogFunction.Create;
+                        break;
+                    case "edit":
+                        logFunction = LogFunction.Update;
+                        break;
+                    case "delete":
+                        logFunction = LogFunction.Delete;
+                        break;
+                    case "":
+                        logFunction = LogFunction.Read;
+                        break;
+                    default:
+                        logFunction = LogFunction.Other;
+                        break;
+                }
+            }
+            await Log(alias, level, logFunction, exception, message, args);
+        }
+
+        public async Task Log(Alias alias, LogLevel level, LogFunction function, Exception exception, string message, params object[] args)
+        {
+            string category = GetType().AssemblyQualifiedName;
+            string feature = Utilities.GetTypeNameLastSegment(category, 1);
+
+            await LoggingService.Log(alias, PageState.Page.PageId, null, PageState.User?.UserId, category, feature, PageState.RemoteIPAddress, function, level, exception, message, args);
+        }
+
+        public class Logger
+        {
+            private readonly ModuleBase _moduleBase;
+
+            public Logger(ModuleBase moduleBase)
+            {
+                _moduleBase = moduleBase;
+            }
+
+            public async Task LogTrace(string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Trace, "", null, message, args);
+            }
+
+            public async Task LogTrace(LogFunction function, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Trace, function, null, message, args);
+            }
+
+            public async Task LogTrace(Exception exception, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Trace, "", exception, message, args);
+            }
+
+            public async Task LogDebug(string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Debug, "", null, message, args);
+            }
+
+            public async Task LogDebug(LogFunction function, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Debug, function, null, message, args);
+            }
+
+            public async Task LogDebug(Exception exception, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Debug, "", exception, message, args);
+            }
+
+            public async Task LogInformation(string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Information, "", null, message, args);
+            }
+
+            public async Task LogInformation(LogFunction function, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Information, function, null, message, args);
+            }
+
+            public async Task LogInformation(Exception exception, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Information, "", exception, message, args);
+            }
+
+            public async Task LogWarning(string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Warning, "", null, message, args);
+            }
+
+            public async Task LogWarning(LogFunction function, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Warning, function, null, message, args);
+            }
+
+            public async Task LogWarning(Exception exception, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Warning, "", exception, message, args);
+            }
+
+            public async Task LogError(string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Error, "", null, message, args);
+            }
+
+            public async Task LogError(LogFunction function, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Error, function, null, message, args);
+            }
+
+            public async Task LogError(Exception exception, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Error, "", exception, message, args);
+            }
+
+            public async Task LogCritical(string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Critical, "", null, message, args);
+            }
+
+            public async Task LogCritical(LogFunction function, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Critical, function, null, message, args);
+            }
+
+            public async Task LogCritical(Exception exception, string message, params object[] args)
+            {
+                await _moduleBase.Log(null, LogLevel.Critical, "", exception, message, args);
+            }
+        }
+
+        [Obsolete("ContentUrl(int fileId) is deprecated. Use FileUrl(int fileId) instead.", false)]
+        public string ContentUrl(int fileid)
+        {
+            return ContentUrl(fileid, false);
+        }
+
+        [Obsolete("ContentUrl(int fileId, bool asAttachment) is deprecated. Use FileUrl(int fileId, bool download) instead.", false)]
+        public string ContentUrl(int fileid, bool asAttachment)
+        {
+            return Utilities.FileUrl(PageState.Alias, fileid, asAttachment);
+        }
+    }
+}

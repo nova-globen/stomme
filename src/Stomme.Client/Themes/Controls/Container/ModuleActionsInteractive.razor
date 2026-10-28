@@ -1,0 +1,51 @@
+@namespace Stomme.Themes.Controls
+@inherits ModuleActionsBase 
+@attribute [StommeIgnore]
+
+@* Migrated to the --db-* design system (D11/D18). Two defects lived in the old markup:
+   the trigger was a `data-bs-toggle="dropdown"` anchor, so it could never open once Bootstrap's JS
+   went with the CDN; and it was EMPTY -- its only visible part was Bootstrap's `.dropdown-toggle::after`
+   caret, which the supersede layer never drew, so the trigger was invisible too. It is now a real
+   button with an explicit caret, and .db-dropdown opens on hover/:focus-within with no script.
+   The "Move To" submenu no longer needs the hand-rolled subMenu() JS either. *@
+<div class="app-moduleactions db-moduleactions db-dropdown">
+	<button type="button" class="db-moduleactions-toggle" aria-haspopup="true" aria-label="Module Actions">
+		<span class="oi oi-cog" aria-hidden="true"></span>
+		<span class="db-nav-caret" aria-hidden="true"></span>
+	</button>
+    <ul class="db-dropdown-menu">
+		@foreach (var action in Actions.Where(item => !item.Name.Contains("Pane")))
+		{
+			if (string.IsNullOrEmpty(action.Name))
+			{
+				<li class="db-dropdown-divider"></li>
+			}
+			else
+			{
+				<li>
+					<a class="db-dropdown-item" @onclick="(async () => await ModuleAction(action))">
+						<span class="@action.Icon" aria-hidden="true"></span>&nbsp;@action.Name
+					</a>
+				</li>
+			}
+		}
+		@if (Actions.Where(item => item.Name.Contains("Pane")).Any())
+		{
+			<li class="db-dropdown-sub">
+				<a class="db-dropdown-item" tabindex="0">
+					<span class="@Icons.AccountLogin" aria-hidden="true"></span>&nbsp;Move To &gt;
+				</a>
+				<ul class="db-dropdown-menu">
+					@foreach (var action in Actions.Where(item => item.Name.Contains("Pane")))
+					{
+						<li>
+							<a class="db-dropdown-item" @onclick="(async () => await ModuleAction(action))">
+								<span class="@action.Icon" aria-hidden="true"></span>&nbsp;@action.Name
+							</a>
+						</li>
+					}
+				</ul>
+			</li>
+		}
+	</ul>
+</div>

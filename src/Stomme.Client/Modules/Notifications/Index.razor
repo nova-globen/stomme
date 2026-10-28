@@ -1,0 +1,233 @@
+@namespace Stomme.Modules.Notifications
+@inherits ModuleBase
+@implements IAsyncDisposable
+@using Stomme.Transport.Realtime
+@using Microsoft.AspNetCore.SignalR.Client
+@inject INotificationService InboxService
+@inject INotificationsService NotificationsService
+@inject NavigationManager NavigationManager
+
+@*
+    The notification center (BL-78 step 5). The inbox is the EXISTING INotificationService (the framework's Notification rows -
+    what the e-mail and in-app channels write; the UserProfile inbox tab reads the same rows and is unchanged). "Sent to me" is the
+    module's own view-own query. A live feed connects to the notification hub (HubRoutes.Notification, Stomme.Shared) only in the
+    browser and degrades silently when the transport is off or the connection is refused. Operator links appear only for a user
+    holding the matching key; the server decides again on every call.
+*@
+
+<PageTitle>Notifications</PageTitle>
+
+@if (!IsAuthorizedPermission(NotificationsPermissions.ViewOwn))
+{
+    <p class="db-notifications-denied" style="color:var(--db-text-2);">You do not have access to notifications on this site.</p>
+}
+else
+{
+    <div class="db-notifications-center" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">Notifications</h3>
+            <button id="notifications-refresh" type="button" class="db-btn" @onclick="RefreshAsync" disabled="@_busy">Refresh</button>
+            <a id="notifications-preferences-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Preferences")">Preferences</a>
+            @if (IsAuthorizedPermission(NotificationsPermissions.ManageTemplates))
+            {
+                <a id="notifications-templates-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Templates")">Templates</a>
+            }
+            @if (IsAuthorizedPermission(NotificationsPermissions.ManageChannels))
+            {
+                <a id="notifications-channels-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Channels")">Channels</a>
+            }
+            @if (IsAuthorizedPermission(NotificationsPermissions.ViewLog))
+            {
+                <a id="notifications-log-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Log")">Send log</a>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+
+        @if (_live.Count > 0)
+        {
+            <section class="db-card" style="padding:0.75rem 1rem;" aria-live="polite">
+                <strong>Just now</strong>
+                <ul style="margin:0.25rem 0 0;padding-left:1.25rem;">
+                    @foreach (var message in _live)
+                    {
+                        <li>@message</li>
+                    }
+                </ul>
+            </section>
+        }
+
+        <section>
+            <h4 style="margin:0 0 0.5rem;">Inbox</h4>
+            @if (_inbox.Count == 0)
+            {
+                <p class="db-notifications-empty" style="color:var(--db-text-2);">No notifications yet.</p>
+            }
+            else
+            {
+                <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.5rem;">
+                    @foreach (var item in _inbox)
+                    {
+                        <li class="db-card db-notification-item" style="padding:0.5rem 1rem;">
+                            @* BL-229: what the notice says, opened in place - as text, with the site's own addresses as links. *@
+                            <details class="db-notification-item__entry">
+                                <summary style="font-weight:@(item.IsRead ? "400" : "600");cursor:pointer;">@item.Subject</summary>
+                                <div class="db-notification-item__body" style="white-space:pre-wrap;margin:0.25rem 0;">@BodyOf(item)</div>
+                            </details>
+                            <div style="font-size:0.8rem;color:var(--db-text-2);">@item.CreatedOn.ToString("u")</div>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+
+        <section>
+            <h4 style="margin:0 0 0.5rem;">Sent to me</h4>
+            @if (_mine.Count == 0)
+            {
+                <p style="color:var(--db-text-2);">Nothing has been dispatched to you.</p>
+            }
+            else
+            {
+                <table class="table db-notifications-mine">
+                    <thead><tr><th>Template</th><th>Status</th><th>Channels</th><th>Created</th></tr></thead>
+                    <tbody>
+                        @foreach (var item in _mine)
+                        {
+                            <tr>
+                                <td>@item.TemplateKey</td>
+                                <td>@item.Status</td>
+                                <td>@string.Join(", ", item.RequestedChannels)</td>
+                                <td>@item.CreatedOn.ToString("u")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+    </div>
+}
+
+@code {
+    // The hub's client method name (NotificationHub.NotificationMethod, server-side) and its payload shape
+    // (NotificationRealtimeMessage). Kept literal here: the Client cannot reference the Server's hub types.
+    private const string LiveMethod = "notification";
+
+    private sealed record LiveMessage(string UserId, string Subject, string Body);
+
+    private List<Notification> _inbox = new();
+    private IReadOnlyList<NotificationRequestSummary> _mine = Array.Empty<NotificationRequestSummary>();
+    private readonly List<string> _live = new();
+    private HubConnection _hub;
+    private string _error = "";
+    private bool _busy;
+
+    public override string Title => ModuleInfo.ModuleName;
+
+    // The site's own origin: an address in a notice is a link only when it leads here.
+    private string SiteOrigin => new Uri(NavigationManager.BaseUri).GetLeftPart(UriPartial.Authority);
+
+    // A notice's body as text, its addresses on this site as links (NotificationText) - never as markup.
+    private RenderFragment BodyOf(Notification item) => builder =>
+    {
+        foreach (var (text, href) in NotificationText.Runs(NotificationText.Plain(item.Body), SiteOrigin))
+        {
+            if (href is null)
+            {
+                builder.AddContent(0, text);
+            }
+            else
+            {
+                builder.OpenElement(1, "a");
+                builder.AddAttribute(2, "href", href);
+                builder.AddContent(3, text);
+                builder.CloseElement();
+            }
+        }
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(NotificationsPermissions.ViewOwn))
+        {
+            await LoadAsync();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender && OperatingSystem.IsBrowser() && PageState?.User != null && IsAuthorizedPermission(NotificationsPermissions.ViewOwn))
+        {
+            await ConnectLiveFeedAsync();
+        }
+    }
+
+    private async Task RefreshAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            var userId = PageState?.User?.UserId ?? -1;
+            _inbox = userId > 0
+                ? (await InboxService.GetNotificationsAsync(PageState.Site.SiteId, "to", userId) ?? new List<Notification>())
+                : new List<Notification>();
+            _mine = await NotificationsService.GetMyNotificationsAsync() ?? new List<NotificationRequestSummary>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Notifications {Error}", ex.Message);
+            _error = "Your notifications could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task ConnectLiveFeedAsync()
+    {
+        try
+        {
+            _hub = new HubConnectionBuilder()
+                .WithUrl(NavigationManager.ToAbsoluteUri(HubRoutes.Notification))
+                .WithAutomaticReconnect()
+                .Build();
+            _hub.On<LiveMessage>(LiveMethod, message => InvokeAsync(() =>
+            {
+                _live.Insert(0, message?.Subject ?? "");
+                StateHasChanged();
+            }));
+            await _hub.StartAsync();
+        }
+        catch
+        {
+            // The SignalR transport is opt-in (Transport:SignalR) and the hub requires an authenticated connection: when either
+            // is absent the center still works from the inbox - degrade silently, never break the page.
+            await DisposeHubAsync();
+        }
+    }
+
+    private async Task DisposeHubAsync()
+    {
+        if (_hub != null)
+        {
+            try { await _hub.DisposeAsync(); } catch { /* best effort */ }
+            _hub = null;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeHubAsync();
+    }
+}

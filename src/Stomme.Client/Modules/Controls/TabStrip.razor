@@ -1,0 +1,206 @@
+@namespace Stomme.Modules.Controls
+@inherits ModuleControlBase
+
+@* Migrated to the --db-* design system (D11, Phase 4).
+   Tab switching used to be pure Bootstrap JS (data-bs-toggle="tab") -- there was never an @onclick
+   handler here. That JS went away with the CDN in Phase 1, which left every TabStrip page unable to
+   change tabs (and, with no .tab-pane CSS, showing all panels stacked at once). Switching is now
+   Stomme's own, dual-mode like ActionDialog/Pager: Blazor state when interactive, a "tab="
+   querystring link when statically rendered (OnParametersSet already honours "tab"). See D18. *@
+<CascadingValue Value="this" IsFixed="true">
+    <div class="db-tabs">
+        <ul class="db-tablist" role="tablist">
+            @foreach (TabPanel tabPanel in _tabPanels)
+            {
+                var name = tabPanel.Name;
+                var active = name.ToLower() == ActiveTab.ToLower();
+                <li class="db-tab-item" @key="tabPanel.Name">
+                    @if (_interactive)
+                    {
+                        @* A <button> rather than an <a href="#..."> on purpose: the anchor's fragment
+                           navigation races @onclick:preventDefault and can escape to "/#<id>". *@
+                        <button type="button" class="db-tab @(active ? "active" : "")" role="tab"
+                                aria-selected="@active.ToString().ToLower()"
+                                @onclick="@(() => ActivateTab(name))">
+                            @tabPanel.DisplayHeading()
+                        </button>
+                    }
+                    else
+                    {
+                        <a class="db-tab @(active ? "active" : "")" href="@TabUrl(name)" role="tab"
+                           aria-selected="@active.ToString().ToLower()">
+                            @tabPanel.DisplayHeading()
+                        </a>
+                    }
+                </li>
+            }
+        </ul>
+        <div class="db-tab-content @TabContentClass">
+            @ChildContent
+        </div>
+    </div>
+</CascadingValue>
+
+@code {
+	private List<TabPanel> _tabPanels;
+	private string _tabpanelid = string.Empty;
+	private bool _interactive = false; // tabs switch via Blazor when interactive, via "tab=" when static
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; } // contains the TabPanels
+
+	[Parameter]
+	public string ActiveTab { get; set; } // optional - defaults to first TabPanel if not specified. Can also be set using a "tab=" querystring parameter.
+
+	[Parameter]
+	public bool Refresh { get; set; } // optional - used in scenarios where TabPanels are added/removed dynamically within a parent form. ActiveTab may need to be reset as well when this property is used.
+
+	[Parameter]
+	public string Id { get; set; } // optional - used to uniquely identify an instance of a tab strip component (will be set automatically if no value provided)
+
+    [Parameter]
+    public string TabContentClass { get; set; } // optional - to extend the TabContent div.
+
+	protected override void OnInitialized()
+	{
+		if (string.IsNullOrEmpty(Id))
+		{
+			// create unique id for component
+			Id = "TabStrip_" + Guid.NewGuid().ToString("N") + "_" ;
+		}
+	}
+	
+	protected override void OnParametersSet()
+    {
+        _interactive = PageState.RenderMode == RenderModes.Interactive || ModuleState.RenderMode == RenderModes.Interactive;
+
+        if (PageState.QueryString.ContainsKey("tab"))
+        {
+            ActiveTab = PageState.QueryString["tab"];
+        }
+        if (_tabPanels == null || Refresh)
+        {
+            _tabPanels = new List<TabPanel>();
+        }
+    }
+
+    /// <summary>
+    /// Activates a tab when interactively rendered. Replaces the Bootstrap JS that used to drive
+    /// data-bs-toggle="tab", which was removed along with the CDN (D18).
+    /// </summary>
+    private void ActivateTab(string name)
+    {
+        ActiveTab = name;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Statically-rendered fallback: switch tabs via the "tab=" querystring, preserving other parameters.
+    /// </summary>
+    private string TabUrl(string name)
+    {
+        var parameters = new Dictionary<string, string>(PageState.QueryString);
+        if (parameters.ContainsKey("tab")) parameters.Remove("tab");
+        parameters.Add("tab", name);
+        return PageState.Route.AbsolutePath + Utilities.CreateQueryString(parameters);
+    }
+
+    internal void AddTabPanel(TabPanel tabPanel)
+    {
+        if (!_tabPanels.Exists(item => item.Name == tabPanel.Name) && IsAuthorized(tabPanel))
+        {
+            _tabPanels.Add(tabPanel);
+            StateHasChanged();
+        }
+        if (string.IsNullOrEmpty(ActiveTab))
+        {
+            ActiveTab = tabPanel.Name;
+        }
+    }
+
+    /// <summary>
+    /// Determines if a tab should be visible based on user permissions.
+    /// Authorization follows this hierarchy:
+    /// 1. Host tabs (Security == Host): Only users with Host role can access (Admins excluded)
+    /// 2. Admin users: Bypass all other checks (except Host restrictions)
+    /// 3. SecurityAccessLevel check (null/Anonymous/View/Edit/Host):
+    ///    - null: No security level restriction (proceeds to step 4)
+    ///    - Anonymous: No authentication required
+    ///    - View/Edit: Requires corresponding module permission
+    ///    - Host: Only Host role can access
+    /// 4. Additional RoleName requirement (if specified)
+    /// 5. Additional PermissionName requirement (if specified)
+    ///
+    /// Important: When Security is null, RoleName and PermissionName checks STILL apply
+    /// (Security = null doesn't mean unrestricted, it means "no security level required")
+    /// </summary>
+    /// <param name="tabPanel">The tab panel to check authorization for</param>
+    /// <returns>True if user is authorized to see this tab, false otherwise</returns>
+    private bool IsAuthorized(TabPanel tabPanel)
+    {
+        // Step 1: Check for Host-only restriction
+        if (tabPanel.Security == SecurityAccessLevel.Host)
+        {
+            return UserSecurity.IsAuthorized(PageState.User, RoleNames.Host);
+        }
+
+        // Step 2: Admin bypass all restrictions except Host
+        if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
+        {
+            return true;
+        }
+
+        // Step 3: If Security is null, check only RoleName and PermissionName
+        if (tabPanel.Security == null)
+        {
+            // Start with authorized = true for null security
+            bool isAuthorized = true;
+
+            // Only apply RoleName check if provided
+            if (!string.IsNullOrEmpty(tabPanel.RoleName))
+            {
+                isAuthorized = UserSecurity.IsAuthorized(PageState.User, tabPanel.RoleName);
+            }
+
+            // Only apply PermissionName check if provided
+            if (isAuthorized && !string.IsNullOrEmpty(tabPanel.PermissionName))
+            {
+                isAuthorized = UserSecurity.IsAuthorized(PageState.User, tabPanel.PermissionName, ModuleState.PermissionList);
+            }
+
+            return isAuthorized;
+        }
+
+        // Handle other SecurityAccessLevel values
+        bool authorized = false; // Use different variable name or move declaration
+        switch (tabPanel.Security)
+        {
+            case SecurityAccessLevel.Anonymous:
+                authorized = true;
+                break;
+            case SecurityAccessLevel.View:
+                authorized = UserSecurity.IsAuthorized(PageState.User, PermissionNames.View, ModuleState.PermissionList);
+                break;
+            case SecurityAccessLevel.Edit:
+                authorized = UserSecurity.IsAuthorized(PageState.User, PermissionNames.Edit, ModuleState.PermissionList);
+                break;
+            case SecurityAccessLevel.Host:
+                authorized = UserSecurity.IsAuthorized(PageState.User, RoleNames.Host);
+                break;
+        }
+
+        // Step 4: Additional RoleName requirement
+        if (authorized && !string.IsNullOrEmpty(tabPanel.RoleName))
+        {
+            authorized = UserSecurity.IsAuthorized(PageState.User, tabPanel.RoleName);
+        }
+
+        // Step 5: Additional PermissionName requirement
+        if (authorized && !string.IsNullOrEmpty(tabPanel.PermissionName))
+        {
+            authorized = UserSecurity.IsAuthorized(PageState.User, tabPanel.PermissionName, ModuleState.PermissionList);
+        }
+
+        return authorized;
+    }
+}

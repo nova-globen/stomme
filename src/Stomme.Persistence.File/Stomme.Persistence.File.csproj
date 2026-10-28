@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Stomme.Persistence.File</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The SAME Newtonsoft the RavenDB store serializes with (private ctors + value objects round-trip),
+         so a file document and a Raven document reconstruct an aggregate the identical way. MIT. -->
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- BL-81: the backup participant writes a module aggregate in the store's own document form. -->
+    <InternalsVisibleTo Include="Stomme.Server" />
+    <!-- BL-170: the shape a backup part carries is pinned by tests. -->
+    <InternalsVisibleTo Include="Stomme.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stomme.Persistence.Abstractions\Stomme.Persistence.Abstractions.csproj" />
+    <ProjectReference Include="..\Stomme.Tenancy.Abstractions\Stomme.Tenancy.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

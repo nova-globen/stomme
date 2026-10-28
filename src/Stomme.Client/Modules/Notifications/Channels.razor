@@ -1,0 +1,195 @@
+@namespace Stomme.Modules.Notifications
+@inherits ModuleBase
+@inject INotificationsService NotificationsService
+
+@*
+    Delivery channels (BL-78 step 5, NEW - the predecessor platform had no channel page) - manage-channels. The credential is WRITE-ONLY: it is sent
+    once to the server's site secret store and never displayed; the page shows only whether the channel holds a reference.
+*@
+
+<PageTitle>Notification channels</PageTitle>
+
+@if (!IsAuthorizedPermission(NotificationsPermissions.ManageChannels))
+{
+    <p class="db-notifications-denied" style="color:var(--db-text-2);">You do not have access to notification channels.</p>
+}
+else
+{
+    <div class="db-notifications-channels" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">Channels</h3>
+            <button id="notifications-channel-new" type="button" class="db-btn" @onclick="New">New channel</button>
+            <a class="db-btn" href="@NavigateUrl()">Back</a>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="notifications-channels-message" style="margin:0;">@_message</p>
+        }
+
+        <table class="table db-notifications-channel-table">
+            <thead><tr><th>Name</th><th>Kind</th><th>Enabled</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var item in _channels)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Kind</td>
+                        <td>@(item.Enabled ? "Yes" : "No")</td>
+                        <td>
+                            <button type="button" class="db-btn" @onclick="@(() => EditAsync(item.Id))">Edit</button>
+                            <button type="button" class="db-btn" @onclick="@(() => ToggleAsync(item))">@(item.Enabled ? "Disable" : "Enable")</button>
+                            <ActionDialog Header="Delete Channel" Message="Delete this notification channel? It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn" OnClick="@(async () => { await DeleteAsync(item.Id); StateHasChanged(); })" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (_editing)
+        {
+            <section id="notifications-channel-editor" class="db-card" style="padding:0.75rem 1rem;display:flex;flex-direction:column;gap:0.5rem;max-width:560px;">
+                <label>
+                    Kind
+                    <select id="notifications-channel-kind" class="db-input" @bind="_kind" disabled="@(_id != null)">
+                        <option value="@NotificationChannelKind.Email">Email</option>
+                        <option value="@NotificationChannelKind.InApp">InApp</option>
+                        <option value="@NotificationChannelKind.Webhook">Webhook</option>
+                    </select>
+                </label>
+                <label>Name <input id="notifications-channel-name" class="db-input" maxlength="120" @bind="_name" @bind:event="oninput" /></label>
+                @if (_kind == NotificationChannelKind.Webhook)
+                {
+                    <label>Endpoint (https) <input id="notifications-channel-endpoint" class="db-input" @bind="_endpoint" @bind:event="oninput" /></label>
+                    <label>
+                        Credential (sent as a Bearer token; write-only - @(_hasCredential ? "a credential is stored, leave empty to keep it" : "none stored"))
+                        <input id="notifications-channel-secret" type="password" autocomplete="new-password" class="db-input" @bind="_secret" @bind:event="oninput" />
+                    </label>
+                    @if (_id != null && _hasCredential)
+                    {
+                        <div><button id="notifications-channel-remove-credential" type="button" class="db-btn" @onclick="RemoveCredentialAsync">Remove stored credential</button></div>
+                    }
+                }
+                <div><button id="notifications-channel-save" type="button" class="db-btn" @onclick="SaveAsync">Save</button></div>
+            </section>
+        }
+    </div>
+}
+
+@code {
+    private List<NotificationChannelSummary> _channels = new();
+    private Guid? _id;
+    private bool _editing;
+    private NotificationChannelKind _kind = NotificationChannelKind.Email;
+    private string _name = "";
+    private string _endpoint = "";
+    private string _secret = "";
+    private bool _hasCredential;
+    private IReadOnlyList<NotificationChannelOption> _options = Array.Empty<NotificationChannelOption>();
+    private NotificationRateLimitInput _rateLimit;
+    private string _message = "";
+
+    public override string Title => "Notification Channels";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(NotificationsPermissions.ManageChannels))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _channels = await NotificationsService.GetChannelsAsync() ?? new List<NotificationChannelSummary>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Notification Channels {Error}", ex.Message);
+            _message = "The channels could not be loaded.";
+        }
+    }
+
+    private void New()
+    {
+        _id = null;
+        _kind = NotificationChannelKind.Email;
+        _name = "";
+        _endpoint = "";
+        _secret = "";
+        _hasCredential = false;
+        _options = Array.Empty<NotificationChannelOption>();
+        _rateLimit = null;
+        _message = ""; // a message from the last save does not describe the form now open
+        _editing = true;
+        BringIntoView("notifications-channel-editor"); // below the channels (BL-22)
+    }
+
+    private async Task EditAsync(Guid id)
+    {
+        var detail = await NotificationsService.GetChannelAsync(id);
+        if (detail == null)
+        {
+            _message = "The channel could not be loaded.";
+            return;
+        }
+
+        _id = detail.Id;
+        _kind = detail.Kind;
+        _name = detail.Name;
+        _endpoint = detail.Endpoint ?? "";
+        _secret = "";
+        _hasCredential = !string.IsNullOrEmpty(detail.SecretReference);
+        _options = detail.Options ?? Array.Empty<NotificationChannelOption>();
+        _rateLimit = detail.RateLimit;
+        _message = ""; // a message from the last save does not describe the form now open
+        _editing = true;
+        BringIntoView("notifications-channel-editor");
+    }
+
+    private async Task SaveAsync()
+    {
+        var id = await NotificationsService.SaveChannelAsync(new NotificationChannelInput(
+            _id, _kind, _name, _kind == NotificationChannelKind.Webhook ? _endpoint : null,
+            string.IsNullOrWhiteSpace(_secret) ? null : _secret, _options, _rateLimit));
+        _secret = "";
+        if (id == Guid.Empty)
+        {
+            _message = "The channel was refused - check the name and, for a webhook, that the endpoint is an allowed https host.";
+            return;
+        }
+
+        _message = "Channel saved.";
+        _editing = false;
+        await LoadAsync();
+    }
+
+    private async Task RemoveCredentialAsync()
+    {
+        if (_id != null)
+        {
+            await NotificationsService.SetChannelCredentialAsync(_id.Value, new NotificationChannelCredentialInput(null));
+            _hasCredential = false;
+            _message = "Credential removed.";
+        }
+    }
+
+    private async Task ToggleAsync(NotificationChannelSummary channel)
+    {
+        await NotificationsService.SetChannelEnabledAsync(channel.Id, !channel.Enabled);
+        await LoadAsync();
+    }
+
+    private async Task DeleteAsync(Guid id)
+    {
+        await NotificationsService.DeleteChannelAsync(id);
+        if (_id == id)
+        {
+            _editing = false;
+        }
+
+        await LoadAsync();
+    }
+}

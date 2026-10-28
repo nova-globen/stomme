@@ -1,0 +1,3 @@
+namespace Stomme.Engine.Pipelines.CommitStates;
+
+public record PipelineCommitStateStrategyContext(PipelineExecutionContext PipelineExecutionContext, PipelineLifetimeEvent LifetimeEvent);

@@ -1,0 +1,109 @@
+@namespace Stomme.Modules.Sessions
+@inherits ModuleBase
+@inject ISessionService SessionService
+
+@*
+    Every signed-in session on this site (BL-119), each revocable on its own. Administrators only - the page is placed
+    for them and the server decides every call again; a Host's sessions can be ended only by a Host.
+*@
+
+<PageTitle>Sessions</PageTitle>
+
+<div class="db-sessions" style="display:flex;flex-direction:column;gap:1rem;">
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+        <h3 style="margin:0;flex:1 1 auto;">Signed-in sessions</h3>
+        <button id="sessions-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+    </div>
+
+    @if (_sessions is null)
+    {
+        <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+    }
+    else if (_sessions.Count == 0)
+    {
+        <p id="sessions-empty" style="margin:0;color:var(--db-text-2);">Nobody is signed in on this site.</p>
+    }
+    else
+    {
+        <div style="overflow-x:auto;">
+            <table class="db-sessions-table" style="width:100%;border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align:left;">Account</th>
+                        <th style="text-align:left;">Signed in (UTC)</th>
+                        <th style="text-align:left;">Last seen (UTC)</th>
+                        <th style="text-align:left;">From</th>
+                        <th style="text-align:left;">Browser</th>
+                        <th style="width:1px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var session in _sessions)
+                    {
+                        <tr>
+                            <td>@(string.IsNullOrEmpty(session.Username) ? $"#{session.UserId}" : session.Username)</td>
+                            <td>@session.CreatedOnUtc.ToString("u")</td>
+                            <td>@session.LastSeenOnUtc.ToString("u")</td>
+                            <td>@(string.IsNullOrEmpty(session.RemoteAddress) ? "—" : session.RemoteAddress)</td>
+                            <td style="color:var(--db-text-2);max-width:24rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="@session.UserAgent">@(string.IsNullOrEmpty(session.UserAgent) ? "—" : session.UserAgent)</td>
+                            <td>
+                                @if (session.IsCurrent)
+                                {
+                                    <span style="color:var(--db-text-2);white-space:nowrap;">This session</span>
+                                }
+                                else
+                                {
+                                    <button type="button" class="db-btn db-btn-danger" @onclick="@(() => RevokeAsync(session))" disabled="@_busy">Revoke</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    private List<UserSessionView> _sessions;
+    private bool _busy;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _sessions = await SessionService.GetSiteAsync(500);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the site's sessions.");
+            _sessions = new List<UserSessionView>();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task RevokeAsync(UserSessionView session)
+    {
+        _busy = true;
+        try
+        {
+            await SessionService.RevokeSiteSessionAsync(session.Id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not revoke session {SessionId}.", session.Id);
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+}

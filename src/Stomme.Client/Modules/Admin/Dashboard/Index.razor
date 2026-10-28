@@ -1,0 +1,66 @@
+@namespace Stomme.Modules.Admin.Dashboard
+@inherits ModuleBase
+@inject IPageService PageService
+@inject IUserService UserService
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_pages != null)
+{
+    @* BL-204: the search is a page script (dashboard.js) - this control is static, so a Blazor event would never fire. *@
+    <div class="db-dash">
+        <div class="db-dash-search">
+            <input class="db-input" type="search" autocomplete="off" spellcheck="false"
+                   placeholder="@SharedLocalizer["Search"]" aria-label="@SharedLocalizer["Search"]" aria-controls="db-dash-grid" />
+        </div>
+        <p class="db-dash-empty" role="status" hidden>@SharedLocalizer["No admin page matches your search."]</p>
+        <div id="db-dash-grid" class="db-dash-grid">
+            @foreach (var p in _pages)
+            {
+                if (UserSecurity.IsAuthorized(PageState.User, PermissionNames.View, p.PermissionList))
+                {
+                    string url = NavigateUrl(p.Path);
+                    string label = SharedLocalizer[p.Name];
+                    <NavLink class="db-dash-tile" href="@url" Match="NavLinkMatch.All" data-search="@SearchText(p, label)" @attributes="_attributes">
+                        <span class="db-dash-tile-icon @p.Icon" aria-hidden="true"></span>
+                        <span class="db-dash-tile-label">@label</span>
+                    </NavLink>
+                }
+            }
+        </div>
+    </div>
+}
+
+@code {
+    Dictionary<string, object> _attributes { get; set; } = new();
+    private List<Page> _pages;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.View;
+    public override string RenderMode => RenderModes.Static;
+
+    public override List<Resource> Resources => new List<Resource>()
+    {
+        new Resource { ResourceType = ResourceType.Script, Url = ModulePath() + "dashboard.js", LoadBehavior = ResourceLoadBehavior.BlazorPageScript }
+    };
+
+	protected override void OnInitialized()
+	{
+        if (PageState.RenderMode == RenderModes.Static && !PageState.Site.EnhancedNavigation)
+        {
+            _attributes.Add("data-enhance-nav", "true"); // Admin Dashboard utilizes enhanced navigation
+        }
+
+		var admin = PageState.Pages.FirstOrDefault(item => item.Path == "admin");
+		if (admin != null)
+		{
+			_pages = PageState.Pages.Where(item => item.ParentId == admin.PageId).ToList();
+		}
+    }
+
+    // What the search matches: the tile's label as shown, the page's own name and title, and its path - lower-cased, so the
+    // script compares lower-cased terms.
+    internal static string SearchText(Page page, string label) =>
+        string.Join(" ", new[] { label, page.Name, page.Title, page.Path }
+            .Where(part => !string.IsNullOrWhiteSpace(part))
+            .Distinct(StringComparer.OrdinalIgnoreCase))
+            .ToLowerInvariant();
+}

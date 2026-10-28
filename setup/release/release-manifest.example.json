@@ -1,0 +1,16 @@
+{
+  "product": "stomme",
+  "version": "10.73.2",
+  "variants": [
+    {
+      "name": "full",
+      "displayName": "Nova Globen Stomme (full)",
+      "bundles": [
+        { "rid": "linux-x64", "asset": "stomme-full-linux-x64.zip" },
+        { "rid": "linux-arm64", "asset": "stomme-full-linux-arm64.zip" },
+        { "rid": "win-x64", "asset": "stomme-full-win-x64.zip" },
+        { "rid": "osx-arm64", "asset": "stomme-full-osx-arm64.zip" }
+      ]
+    }
+  ]
+}

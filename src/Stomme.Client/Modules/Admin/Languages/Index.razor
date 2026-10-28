@@ -1,0 +1,204 @@
+﻿@* Migrated to native FluentUI controls + the --db-* design system (D11, Phase 4). *@
+@namespace Stomme.Modules.Admin.Languages
+@inherits ModuleBase
+@inject ILanguageService LanguageService
+@inject ILocalizationService LocalizationService
+@inject IPackageService PackageService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_languages == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    <ActionLink Action="Add" Text="Add Language" ResourceKey="AddLanguage" />
+
+    <Pager Items="@_languages" SearchProperties="Name,Code">
+        <Header>
+            <th style="width: 1px;">&nbsp;</th>
+            <th style="width: 1px;">&nbsp;</th>
+            <th>@SharedLocalizer["Name"]</th>
+            <th>@Localizer["Code"]</th>
+            <th>@Localizer["Default"]</th>
+			@if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+			{
+                <th style="width: 1px;">@Localizer["Translation"]</th>
+				<th style="width: 1px;">&nbsp;</th>
+			}
+        </Header>
+        <Row>
+            <td>
+            @if (!context.IsDefault)
+            {
+                <ActionLink Action="Edit" Text="Edit" Parameters="@($"id=" + context.LanguageId.ToString())" ResourceKey="EditLanguage" />                    
+            }
+            </td>
+            <td><ActionDialog Header="Delete Language" Message="@string.Format(Localizer["Confirm.Language.Delete"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteLanguage(context))" Disabled="@((context.IsDefault && _languages.Count > 2) || context.Code == Constants.DefaultCulture)" ResourceKey="DeleteLanguage" /></td>
+            <td>@context.Name</td>
+            <td>@context.Code</td>
+			@* A read-only mark, not a disabled TriStateCheckBox: that draws its disabled icon whatever the value, so the column
+			   never said which language is the default (BL-22's depth-2 pass, 2026-10-03). *@
+			<td>
+			@if (context.IsDefault)
+			{
+				<img src="images/checked.png" alt="@Localizer["Default"]" title="@Localizer["Default"]" />
+			}
+			</td>
+			@if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+			{
+                <td>@((string.IsNullOrEmpty(context.Version)) ? "---" : context.Version)</td>
+				<td>
+					@{
+						var translation = TranslationAvailable(context.Code, context.Version);
+					}
+					@if (translation != null)
+					{
+						if (string.IsNullOrEmpty(context.Version))
+						{
+							<FluentButton Appearance="ButtonAppearance.Primary" OnClick="@(async () => await GetPackage(context.Code, translation.Version))">@SharedLocalizer["Download"]</FluentButton>
+						}
+						else
+						{
+							if (Version.Parse(translation.Version).CompareTo(Version.Parse(context.Version)) > 0)
+							{
+								<FluentButton Appearance="ButtonAppearance.Primary" OnClick="@(async () => await GetPackage(context.Code, translation.Version))">@SharedLocalizer["Upgrade"]</FluentButton>
+							}
+						}
+					}
+				</td>
+			}
+        </Row>
+    </Pager>
+}
+
+@if (_package != null)
+{
+	<div class="app-actiondialog">
+		<div class="db-dialog" tabindex="-1" role="dialog">
+			<div class="db-dialog-panel">
+				<div class="db-dialog-content">
+					<div class="db-dialog-head">
+						<h5 class="db-dialog-title">@SharedLocalizer["Review License Terms"]</h5>
+						<button type="button" class="db-dialog-close" aria-label="Close" @onclick="HideModal"></button>
+					</div>
+					<div class="db-dialog-body">
+						<p style="height: 200px; overflow-y: scroll;">
+							<h4 style="display: inline;"><a href="@_package.ProductUrl" target="_new">@_package.Name</a></h4><br />
+							@SharedLocalizer["Search.By"]:&nbsp;&nbsp;<strong><a href="@_package.OwnerUrl" target="new">@_package.Owner</a></strong><br />
+							@(_package.Description.Length > 400 ? (_package.Description.Substring(0, 400) + "...") : _package.Description)<br />
+							<strong>@(String.Format("{0:n0}", _package.Downloads))</strong> @SharedLocalizer["Search.Downloads"]&nbsp;&nbsp;|&nbsp;&nbsp;
+							@SharedLocalizer["Search.Released"]: <strong>@_package.ReleaseDate.ToString("MMM dd, yyyy")</strong>&nbsp;&nbsp;|&nbsp;&nbsp;
+							@SharedLocalizer["Search.Version"]: <strong>@_package.Version</strong>
+							@((MarkupString)(!string.IsNullOrEmpty(_package.PackageUrl) ? "&nbsp;&nbsp;|&nbsp;&nbsp;" + SharedLocalizer["Search.Source"] + ": <strong>" + new Uri(_package.PackageUrl).Host + "</strong>" : ""))
+							<br /><br />
+							@if (!string.IsNullOrEmpty(_package.License))
+							{
+								@((MarkupString)_package.License.Replace("\n", "<br />"))
+							}
+							else
+							{
+								@SharedLocalizer["License Not Specified"]
+							}
+						</p>
+					</div>
+					<div class="db-dialog-foot">
+						<FluentButton Appearance="ButtonAppearance.Primary" OnClick="DownloadPackage">@SharedLocalizer["Accept"]</FluentButton>
+						<FluentButton Appearance="ButtonAppearance.Default" OnClick="HideModal">@SharedLocalizer["Cancel"]</FluentButton>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+    private List<Language> _languages;
+    private List<Package> _packages;
+    private Package _package;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Admin;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetLanguages();
+
+        if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+        {
+            _packages = await PackageService.GetPackagesAsync("translation");			
+        }
+    }
+
+    private async Task GetLanguages()
+    {
+        _languages = await LanguageService.GetLanguagesAsync(PageState.Site.SiteId, Constants.ClientId);
+    }
+
+    private async Task DeleteLanguage(Language language)
+    {
+        try
+        {
+            await LanguageService.DeleteLanguageAsync(language.LanguageId);
+            await logger.LogInformation("Language Deleted {Language}", language);
+            await GetLanguages();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Language {Language} {Error}", language, ex.Message);
+
+            AddModuleMessage(Localizer["Error.Language.Delete"], MessageType.Error);
+        }
+    }
+
+    private Package TranslationAvailable(string code, string version)
+    {
+        return _packages?.FirstOrDefault(item => item.PackageId == (Constants.PackageId + "." + code));
+    }
+
+    private async Task GetPackage(string code, string version)
+    {
+        try
+        {
+            _package = await PackageService.GetPackageAsync(Constants.PackageId + "." + code, version, false);
+            if (_package != null)
+            {
+                StateHasChanged();
+            }
+            else
+            {
+                await logger.LogError("Error Getting Package {PackageId} {Version}", Constants.PackageId + "." + code, Constants.Version);
+                AddModuleMessage(Localizer["Error.Translation.Download"], MessageType.Error);
+            }
+        }
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Getting Package {PackageId} {Version}", Constants.PackageId + "." + code, Constants.Version);
+			AddModuleMessage(Localizer["Error.Translation.Download"], MessageType.Error);
+		}
+	}
+
+	private async Task DownloadPackage()
+	{
+		try
+		{
+			await PackageService.DownloadPackageAsync(_package.PackageId, _package.Version);
+			await logger.LogInformation("Language Package {Name} {Version} Downloaded Successfully", _package.PackageId, _package.Version);
+			AddModuleMessage(string.Format(Localizer["Success.Language.Download"], NavigateUrl("admin/system")), MessageType.Success);
+			_package = null;
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Downloading Translation {Name} {Version}", _package.PackageId, _package.Version);
+			AddModuleMessage(Localizer["Error.Language.Download"], MessageType.Error);
+		}
+	}
+
+	private void HideModal()
+	{
+		_package = null;
+		StateHasChanged();
+	}
+}

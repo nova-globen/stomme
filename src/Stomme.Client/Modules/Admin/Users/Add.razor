@@ -1,0 +1,286 @@
+﻿@namespace Stomme.Modules.Admin.Users
+@using System.Text.RegularExpressions;
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject IProfileService ProfileService
+@inject ISettingService SettingService
+@inject ITimeZoneService TimeZoneService
+@inject ILanguageService LanguageService
+@inject IStringLocalizer<Add> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_initialized)
+{
+    <TabStrip>
+        <TabPanel Name="Identity" ResourceKey="Identity">
+            @if (_profiles != null)
+            {
+                <div class="db-fields">
+                    <div class="db-field">
+                        <Label For="username" HelpText="A unique username for a user. Note that this field can not be modified once it is saved." ResourceKey="Username"></Label>
+                        <div class="db-field-control">
+                            <input id="username" class="db-input" @bind="@_username" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="email" HelpText="The email address where the user will receive notifications" ResourceKey="Email"></Label>
+                        <div class="db-field-control">
+                            <input id="email" class="db-input" @bind="@_email" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="confirmed" HelpText="Indicates if the user's email is verified" ResourceKey="Confirmed">Verified?</Label>
+                        <div class="db-field-control">
+                            <select id="confirmed" class="db-select" @bind="@_confirmed">
+                                <option value="True">@SharedLocalizer["Yes"]</option>
+                                <option value="False">@SharedLocalizer["No"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="displayname" HelpText="The full name of the user" ResourceKey="DisplayName"></Label>
+                        <div class="db-field-control">
+                            <input id="displayname" class="db-input" @bind="@_displayname" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time Zone:</Label>
+                        <div class="db-field-control">
+                            <select id="timezone" class="db-select" @bind="@_timezoneid">
+                                <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                                @foreach (var timezone in _timezones)
+                                {
+                                    <option value="@timezone.Id">@timezone.DisplayName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="culture" HelpText="The user's preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language:</Label>
+                        <div class="db-field-control">
+                            <select id="culture" class="db-select" @bind="@_culturecode">
+                                <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                                @foreach (var language in _languages)
+                                {
+                                    <option value="@language.Code">@language.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="notify" HelpText="Indicate if new users should receive an email notification" ResourceKey="Notify">Notify? </Label>
+                        <div class="db-field-control">
+                            <select id="notify" class="db-select" @bind="@_notify" required>
+                                <option value="True">@SharedLocalizer["Yes"]</option>
+                                <option value="False">@SharedLocalizer["No"]</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            }
+        </TabPanel>
+        <TabPanel Name="Profile" ResourceKey="Profile">
+            <div class="db-fields">
+                <div class="db-field">
+                    @foreach (Profile profile in _profiles)
+                    {
+                        var p = profile;
+                        if (p.Category != _category)
+                        {
+                            <div class="db-field-category">
+                                <strong>@p.Category</strong>
+                            </div>
+                            _category = p.Category;
+                        }
+                        <div class="db-field">
+                            <Label For="@p.Name" HelpText="@p.Description">@p.Title</Label>
+                            <div class="db-field-control">
+                                @if (!string.IsNullOrEmpty(p.Options))
+                                {
+                                    <select id="@p.Name" class="db-select" @onchange="@(e => ProfileChanged(e, p.Name))">
+                                        @foreach (var option in p.Options.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                        {
+                                            var values = option.Split(':');
+                                            var name = values[0];
+                                            var value = values.Length > 1 ? values[1] : values[0];
+                                            @if (GetProfileValue(p.Name, "") == name || (GetProfileValue(p.Name, "") == "" && p.DefaultValue == name))
+                                            {
+                                                <option value="@name" selected>@value</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@name">@value</option>
+                                            }
+                                        }
+                                    </select>
+                                }
+                                else
+                                {
+                                    @if (p.Rows == 1)
+                                    {
+                                        <input id="@p.Name" class="db-input" value="@GetProfileValue(p.Name, p.DefaultValue)" @onchange="@(e => ProfileChanged(e, p.Name))" @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)" />
+                                    }
+                                    else
+                                    {
+                                        <textarea id="@p.Name" class="db-input" rows="@p.Rows" value="@GetProfileValue(p.Name, p.DefaultValue)" @onchange="@(e => ProfileChanged(e, p.Name))" @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)"></textarea>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </TabPanel>
+    </TabStrip>
+    <br />
+    <br />
+    <button type="button" class="db-btn" @onclick="SaveUser">@SharedLocalizer["Save"]</button>
+    <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+}
+
+
+@code {
+    private List<Models.TimeZone> _timezones;
+    private IEnumerable<Models.Language> _languages;
+
+    private bool _initialized = false;
+    private string _username = string.Empty;
+    private string _email = string.Empty;
+    private string _confirmed = "True";
+    private string _displayname = string.Empty;
+    private string _timezoneid = string.Empty;
+    private string _culturecode = string.Empty;
+    private string _notify = "True";
+    private List<Profile> _profiles;
+    private Dictionary<string, string> _settings;
+    private string _category = string.Empty;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _timezones = TimeZoneService.GetTimeZones();
+            _languages = await LanguageService.GetLanguagesAsync(PageState.Site.SiteId);
+
+            _timezoneid = PageState.Site.TimeZoneId;
+            _culturecode = PageState.Site.CultureCode;
+
+            _profiles = await ProfileService.GetProfilesAsync(ModuleState.SiteId);
+            foreach (var profile in _profiles)
+            {
+                if (profile.Options.ToLower().StartsWith("entityname:"))
+                {
+                    var options = await SettingService.GetSettingsAsync(profile.Options.Substring(11), -1);
+                    options.Add("", $"<{SharedLocalizer["Not Specified"]}>");
+                    profile.Options = string.Join(",", options.OrderBy(item => item.Value).Select(kvp => $"{kvp.Key}:{kvp.Value}"));
+                }
+            }
+
+            _settings = new Dictionary<string, string>();
+
+            _initialized = true;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading User Profile {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Profile.Load"], MessageType.Error);
+        }
+    }
+
+    private string GetProfileValue(string SettingName, string DefaultValue)
+    {
+        string value = SettingService.GetSetting(_settings, SettingName, DefaultValue);
+        if (value.Contains("]"))
+        {
+            value = value.Substring(value.IndexOf("]") + 1);
+        }
+        return value;
+    }
+
+    private async Task SaveUser()
+    {
+        try
+        {
+            if (_username != string.Empty && _email != string.Empty)
+            {
+                if (ValidateProfiles())
+                {
+                    var user = new User();
+                    user.SiteId = PageState.Site.SiteId;
+                    user.Username = _username;
+                    user.Password = ""; // will be auto generated
+                    user.Email = _email;
+                    user.EmailConfirmed = bool.Parse(_confirmed);
+                    user.DisplayName = string.IsNullOrWhiteSpace(_displayname) ? _username : _displayname;
+                    user.TimeZoneId = _timezoneid;
+                    user.CultureCode = _culturecode;
+                    user.PhotoFileId = null;
+                    user.SuppressNotification = !bool.Parse(_notify);
+
+                    user = await UserService.AddUserAsync(user);
+
+                    if (user != null)
+                    {
+                        await SettingService.UpdateUserSettingsAsync(_settings, user.UserId);
+                        await logger.LogInformation("User Created {User}", user);
+                        NavigationManager.NavigateTo(NavigateUrl());
+                    }
+                    else
+                    {
+                        await logger.LogError("Error Adding User {Username} {Email}", _username, _email);
+                        AddModuleMessage(Localizer["Error.User.AddCheckPass"], MessageType.Error);
+                    }
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.ProfileInfo"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Adding User {Username} {Email} {Error}", _username, _email, ex.Message);
+            AddModuleMessage(Localizer["Error.User.Add"], MessageType.Error);
+        }
+    }
+
+    private bool ValidateProfiles()
+    {
+        foreach (Profile profile in _profiles)
+        {
+            var value = GetProfileValue(profile.Name, string.Empty);
+            if (string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(profile.DefaultValue))
+            {
+                _settings = SettingService.SetSetting(_settings, profile.Name, profile.DefaultValue);
+            }
+            if (!profile.IsPrivate || UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
+            {
+                if (profile.IsRequired && string.IsNullOrEmpty(value))
+                {
+                    AddModuleMessage(string.Format(SharedLocalizer["ProfileRequired"], profile.Title), MessageType.Warning);
+                    return false;
+                }
+                if (!string.IsNullOrEmpty(profile.Validation))
+                {
+                    Regex regex = new Regex(profile.Validation);
+                    bool valid = regex.Match(value).Success;
+                    if (!valid)
+                    {
+                        AddModuleMessage(string.Format(SharedLocalizer["ProfileInvalid"], profile.Title), MessageType.Warning);
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private void ProfileChanged(ChangeEventArgs e, string SettingName)
+    {
+        var value = (string)e.Value;
+        _settings = SettingService.SetSetting(_settings, SettingName, value);
+    }
+}

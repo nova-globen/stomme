@@ -1,0 +1,271 @@
+@namespace Stomme.Modules.Admin.OpenIddict
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IOpenIddictService OpenIddictService
+@inject IStringLocalizer<Edit> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_application == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="clientid" HelpText="The OAuth client_id. It identifies the application in this tenant's store and cannot be changed — delete and re-add to rename." ResourceKey="ClientId">Client Id:</Label>
+                <div class="db-field-control">
+                    <input id="clientid" class="db-input" @bind="@_clientId" readonly />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="displayname" HelpText="A human-readable name, shown on the consent screen. Defaults to the client id." ResourceKey="DisplayName">Display Name:</Label>
+                <div class="db-field-control">
+                    <input id="displayname" class="db-input" @bind="@_displayName" maxlength="200" />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="type" HelpText="Confidential clients hold a secret (server-side apps). Public clients cannot keep one (SPA/native) and must use PKCE." ResourceKey="Type">Client Type:</Label>
+                <div class="db-field-control">
+                    <select id="type" class="db-select" @bind="@_type" required>
+                        <option value="confidential">@Localizer["Type.Confidential"]</option>
+                        <option value="public">@Localizer["Type.Public"]</option>
+                    </select>
+                </div>
+            </div>
+            @if (_type == "confidential")
+            {
+                <div class="db-field">
+                    @* The stored secret is hashed and unrecoverable, so it cannot be shown. Blank therefore has
+                       to MEAN something: the server keeps the stored secret when none is supplied on an update,
+                       so editing a redirect URI does not silently break every relying party. *@
+                    <Label For="secret" HelpText="Leave blank to keep the current secret. Entering a value ROTATES it — every relying party using the old secret stops working immediately." ResourceKey="ClientSecret">New Client Secret:</Label>
+                    <div class="db-field-control">
+                        <input id="secret" type="password" class="db-input" @bind="@_clientSecret" maxlength="200" placeholder="@Localizer["ClientSecret.Placeholder"]" />
+                    </div>
+                </div>
+            }
+            <div class="db-field">
+                <Label For="consent" HelpText="Implicit skips the consent screen (first-party apps). Explicit asks the user to approve the requested scopes." ResourceKey="ConsentType">Consent Type:</Label>
+                <div class="db-field-control">
+                    <select id="consent" class="db-select" @bind="@_consentType" required>
+                        <option value="implicit">@Localizer["Consent.Implicit"]</option>
+                        <option value="explicit">@Localizer["Consent.Explicit"]</option>
+                    </select>
+                </div>
+            </div>
+            <div class="db-field">
+                <Label HelpText="The OAuth grants this client may use. A client can only request what it is permitted." ResourceKey="GrantTypes">Grant Types:</Label>
+                <div class="db-field-control">
+                    <FluentCheckbox @bind-Value="_authorizationCode" Label="authorization_code" />
+                    <FluentCheckbox @bind-Value="_clientCredentials" Label="client_credentials" />
+                    <FluentCheckbox @bind-Value="_refreshToken" Label="refresh_token" />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="scopes" HelpText="The scopes this client may request, one per line (openid, profile, email, offline_access, or a custom scope)." ResourceKey="Scopes">Scopes:</Label>
+                <div class="db-field-control">
+                    <textarea id="scopes" class="db-input" rows="4" @bind="@_scopes"></textarea>
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="redirecturis" HelpText="Absolute callback URLs for the authorization-code flow, one per line. Required for authorization_code." ResourceKey="RedirectUris">Redirect Uris:</Label>
+                <div class="db-field-control">
+                    <textarea id="redirecturis" class="db-input" rows="3" @bind="@_redirectUris"></textarea>
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="postlogouturis" HelpText="Absolute URLs the authority may redirect back to after an RP-initiated logout, one per line." ResourceKey="PostLogoutRedirectUris">Post Logout Uris:</Label>
+                <div class="db-field-control">
+                    <textarea id="postlogouturis" class="db-input" rows="3" @bind="@_postLogoutRedirectUris"></textarea>
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="pkce" HelpText="Require Proof Key for Code Exchange on the authorization-code flow. Always on for a public client." ResourceKey="RequirePkce">Require PKCE?</Label>
+                <div class="db-field-control">
+                    <FluentSwitch id="pkce" @bind-Value="_requirePkce" />
+                </div>
+            </div>
+        </div>
+        <button type="button" class="db-btn" @onclick="SaveApplication">@SharedLocalizer["Save"]</button>
+        <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+    </form>
+
+    @* BL-224: a client-credentials application's service account - shown only while OpenIddict:ServiceAccounts:Enabled is on. *@
+    @if (_serviceAccount != null && _application.ClientType == "confidential" && _application.GrantTypes.Contains("client_credentials"))
+    {
+        <div id="openiddict-service-account" style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.5rem;">
+            <h4 style="margin:0;">Service account</h4>
+            @if (_serviceAccount.Exists)
+            {
+                <p style="margin:0;">This application's client-credentials tokens act on the site's API as <strong>@_serviceAccount.Username</strong>, an account that can never sign in. Grant it roles and permissions under Users, as for a person; it holds only the site's default role until you do.</p>
+                <div>
+                    <ActionDialog Header="Remove Service Account" Message="@($"Remove the service account {_serviceAccount.Username}? This application's tokens will sign no one in to the API.")" Action="Remove"
+                                  Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await RemoveServiceAccountAsync())" />
+                </div>
+            }
+            else if (_serviceAccount.NameTaken)
+            {
+                <p style="margin:0;">An account named <strong>@_serviceAccount.Username</strong> already exists and was not made for this application, so none can be created; it is never used for one.</p>
+            }
+            else
+            {
+                <p style="margin:0;">Its client-credentials tokens sign no one in to the site's API. A service account lets them act as an account of their own, which can never sign in and holds only the roles and permissions you grant it.</p>
+                <div><button id="openiddict-service-account-create" type="button" class="db-btn" @onclick="CreateServiceAccountAsync">Create service account</button></div>
+            }
+            @if (!string.IsNullOrEmpty(_serviceAccountMessage))
+            {
+                <p style="margin:0;" role="status">@_serviceAccountMessage</p>
+            }
+        </div>
+    }
+}
+
+@code {
+    private ElementReference form;
+    private bool validated = false;
+
+    private OpenIddictApplicationSummary _application;
+    private string _clientId = string.Empty;
+    private string _displayName = string.Empty;
+    private string _type = "confidential";
+    private string _clientSecret = string.Empty;
+    private string _consentType = "implicit";
+    private bool _authorizationCode;
+    private bool _clientCredentials;
+    private bool _refreshToken;
+    private string _scopes = string.Empty;
+    private string _redirectUris = string.Empty;
+    private string _postLogoutRedirectUris = string.Empty;
+    private bool _requirePkce = true;
+    private OpenIddictServiceAccount _serviceAccount;
+    private string _serviceAccountMessage = string.Empty;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    public override string Title => "Edit Client";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // NavigateUrl writes the value with Uri.EscapeDataString; the host decodes the path segment before
+            // it reaches PageState, so it arrives already decoded — do NOT decode again.
+            _clientId = PageState.QueryString.ContainsKey("clientid") ? PageState.QueryString["clientid"] : string.Empty;
+
+            _application = await OpenIddictService.GetApplicationAsync(_clientId);
+            if (_application == null)
+            {
+                AddModuleMessage(Localizer["Error.NotFound"], MessageType.Error);
+                return;
+            }
+
+            var seed = _application.ToSeed();
+            _displayName = seed.DisplayName;
+            _type = seed.IsPublic ? "public" : "confidential";
+            _consentType = seed.ConsentIsExplicit ? "explicit" : "implicit";
+            _authorizationCode = seed.GrantTypes.Contains("authorization_code");
+            _clientCredentials = seed.GrantTypes.Contains("client_credentials");
+            _refreshToken = seed.GrantTypes.Contains("refresh_token");
+            _scopes = OpenIddictFormValues.JoinLines(seed.Scopes);
+            _redirectUris = OpenIddictFormValues.JoinLines(seed.RedirectUris);
+            _postLogoutRedirectUris = OpenIddictFormValues.JoinLines(seed.PostLogoutRedirectUris);
+            _requirePkce = seed.RequirePkce;
+
+            if ((await OpenIddictService.GetStatusAsync())?.ServiceAccountsEnabled == true)
+            {
+                _serviceAccount = await OpenIddictService.GetServiceAccountAsync(_clientId);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading OpenIddict Client {ClientId} {Error}", _clientId, ex.Message);
+            AddModuleMessage(Localizer["Error.Load"], MessageType.Error);
+        }
+    }
+
+    private async Task CreateServiceAccountAsync()
+    {
+        try
+        {
+            _serviceAccount = await OpenIddictService.CreateServiceAccountAsync(_clientId);
+            _serviceAccountMessage = $"Created {_serviceAccount.Username}. Grant it roles under Users.";
+            await logger.LogInformation("OpenIddict Service Account Created For {ClientId}", _clientId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Creating OpenIddict Service Account For {ClientId} {Error}", _clientId, ex.Message);
+            _serviceAccountMessage = "The service account was not created: " + ex.Message;
+        }
+    }
+
+    private async Task RemoveServiceAccountAsync()
+    {
+        try
+        {
+            await OpenIddictService.DeleteServiceAccountAsync(_clientId);
+            _serviceAccount = await OpenIddictService.GetServiceAccountAsync(_clientId);
+            _serviceAccountMessage = "The service account was removed.";
+            await logger.LogInformation("OpenIddict Service Account Removed For {ClientId}", _clientId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Removing OpenIddict Service Account For {ClientId} {Error}", _clientId, ex.Message);
+            _serviceAccountMessage = "The service account was not removed.";
+        }
+
+        // ActionDialog's OnClick is an Action: this ran after the dialog's own render, so nothing re-renders the page unless
+        // it asks (found driving it - the account was gone and the page still showed it).
+        StateHasChanged();
+    }
+
+    private async Task SaveApplication()
+    {
+        validated = true;
+        var interop = new Interop(JSRuntime);
+        if (!await interop.FormValid(form))
+        {
+            AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+            return;
+        }
+
+        var grantTypes = new List<string>();
+        if (_authorizationCode) grantTypes.Add("authorization_code");
+        if (_clientCredentials) grantTypes.Add("client_credentials");
+        if (_refreshToken) grantTypes.Add("refresh_token");
+
+        var seed = new OpenIddictApplicationSeed
+        {
+            ClientId = _clientId,
+            DisplayName = _displayName,
+            Type = _type,
+            // Blank keeps the stored secret (the server carries it across the update); a value rotates it.
+            ClientSecret = (_type == "confidential" && !string.IsNullOrEmpty(_clientSecret)) ? _clientSecret : null,
+            ConsentType = _consentType,
+            GrantTypes = grantTypes,
+            Scopes = OpenIddictFormValues.SplitLines(_scopes),
+            RedirectUris = OpenIddictFormValues.SplitLines(_redirectUris),
+            PostLogoutRedirectUris = OpenIddictFormValues.SplitLines(_postLogoutRedirectUris),
+            RequirePkce = _requirePkce
+        };
+
+        try
+        {
+            var saved = await OpenIddictService.SaveApplicationAsync(seed);
+            if (saved == null)
+            {
+                AddModuleMessage(Localizer["Error.SaveClient"], MessageType.Error);
+                return;
+            }
+
+            await logger.LogInformation("OpenIddict Client Updated {ClientId}", seed.ClientId);
+            NavigationManager.NavigateTo(NavigateUrl());
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Updating OpenIddict Client {ClientId} {Error}", seed.ClientId, ex.Message);
+            AddModuleMessage(Localizer["Error.SaveClient"], MessageType.Error);
+        }
+    }
+}

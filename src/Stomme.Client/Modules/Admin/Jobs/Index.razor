@@ -1,0 +1,163 @@
+@namespace Stomme.Modules.Admin.Jobs
+@inherits ModuleBase
+@inject IJobService JobService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_jobs == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    <button type="button" class="db-btn db-btn-neutral" @onclick="Refresh">@Localizer["Refresh.Text"]</button>
+    <br />
+
+    <Pager Items="@_jobs" SearchProperties="Name">
+        <Header>
+            <th style="width: 1px;">&nbsp;</th>
+            <th style="width: 1px;">&nbsp;</th>
+            <th>@SharedLocalizer["Name"]</th>
+            <th>@SharedLocalizer["Status"]</th>
+            <th>@Localizer["Frequency"]</th>
+            <th>@Localizer["NextExecution"]</th>
+            <th style="width: 1px;">&nbsp;</th>
+        </Header>
+        <Row>
+            <td><ActionLink Action="Edit" Text="Edit"  Parameters="@($"id=" + context.JobId.ToString())" ResourceKey="EditJob" /></td>
+            <td><ActionLink Action="Log" Text="Log" Class="db-btn db-btn-neutral" Parameters="@($"id=" + context.JobId.ToString())" ResourceKey="JobLog" /></td>
+            <td>@context.Name</td>
+            <td>@DisplayStatus(context.IsEnabled, context.IsExecuting)</td>
+            <td>@DisplayFrequency(context.Interval, context.Frequency)</td>
+            <td>@UtcToLocal(context.NextExecution)</td>
+            <td>
+                @if (context.IsStarted)
+                {
+                    <button type="button" class="db-btn db-btn-danger" @onclick="(async () => await StopJob(context.JobId))">@Localizer["Stop"]</button>
+                }
+                else
+                {
+                    <button type="button" class="db-btn" @onclick="(async () => await StartJob(context.JobId))">@Localizer["Start"]</button>
+                }
+            </td>
+        </Row>
+    </Pager>
+
+    <br />
+    <ActionLink Action="Log" Class="db-btn db-btn-neutral" Text="View All Logs" ResourceKey="ViewLogs" />
+}
+
+@code {
+    private List<Job> _jobs;
+
+    public override SecurityAccessLevel SecurityAccessLevel { get { return SecurityAccessLevel.Host; } }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetJobs();
+    }
+
+    private async Task GetJobs()
+    {
+        _jobs = await JobService.GetJobsAsync();
+    }
+
+	private string DisplayStatus(bool isEnabled, bool isExecuting)
+	{
+		var status = string.Empty;
+		if (!isEnabled)
+		{
+			status = Localizer["Disabled"];
+		}
+		else
+		{
+			if (isExecuting)
+			{
+				status = Localizer["Executing"];
+			}
+			else
+			{
+				status = Localizer["Idle"];
+			}
+		}
+
+		return status;
+	}
+
+
+	private string DisplayFrequency(int interval, string frequency)
+	{
+		var result = "";
+		switch (frequency)
+		{
+			case "m":
+				result = $"{Localizer["Every"]} {interval.ToString()} " + Localizer["Minute"];
+				break;
+			case "H":
+				result = $"{Localizer["Every"]} {interval.ToString()} " + Localizer["Hour"];
+				break;
+			case "d":
+				result = $"{Localizer["Every"]} {interval.ToString()} " + Localizer["Day"];
+				break;
+			case "w":
+				result = $"{Localizer["Every"]} {interval.ToString()} " + Localizer["Week"];
+				break;
+			case "M":
+				result = $"{Localizer["Every"]} {interval.ToString()} " + Localizer["Month"];
+				break;
+			case "O":
+				result = Localizer["Once"];
+				break;
+		}
+        return result;
+    }
+
+    private async Task StartJob(int jobId)
+    {
+        try
+        {
+            Job _job = await JobService.GetJobAsync(jobId);
+            if (!_job.IsEnabled)
+            {
+                AddModuleMessage(Localizer["Message.Job.Disabled"], MessageType.Warning);
+            }
+            else
+            {
+                await JobService.StartJobAsync(jobId);
+                await logger.LogInformation("Job Started {JobId}", jobId);
+                AddModuleMessage(Localizer["Message.Job.Start"], MessageType.Success);
+                _jobs = await JobService.GetJobsAsync();
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Starting Job {JobId} {Error}", jobId, ex.Message);
+            AddModuleMessage(Localizer["Error.Job.Start"], MessageType.Error);
+        }
+    }
+
+    private async Task StopJob(int jobId)
+    {
+        try
+        {
+			await JobService.StopJobAsync(jobId);
+            await logger.LogInformation("Job Stopped {JobId}", jobId);
+            AddModuleMessage(Localizer["Message.Job.Stop"], MessageType.Success);
+			_jobs = await JobService.GetJobsAsync();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Stopping Job {JobId} {Error}", jobId, ex.Message);
+            AddModuleMessage(Localizer["Error.Job.Stop"], MessageType.Error);
+        }
+    }
+
+    private async Task Refresh()
+    {
+        ShowProgressIndicator();
+        await GetJobs();
+        HideProgressIndicator();
+    }
+}

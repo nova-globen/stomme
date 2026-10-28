@@ -1,0 +1,50 @@
+@using System.Text.Json;
+@using System.Text.Json.Nodes;
+@using Stomme.Shared;
+
+@if (string.IsNullOrEmpty(message))
+{
+    <DynamicComponent Type="@ComponentType" Parameters="@Parameters"></DynamicComponent>
+}
+else
+{
+    <br /><br /><center>@message</center>
+}
+
+@code {
+    Type ComponentType = Type.GetType("Stomme.UI.Routes, Stomme.Client");
+    private IDictionary<string, object> Parameters { get; set; }
+    private string message = "";
+
+    protected override void OnInitialized()
+    {
+        Parameters = new Dictionary<string, object>();
+        Parameters.Add(new KeyValuePair<string, object>("RenderMode", RenderModes.Interactive));
+        Parameters.Add(new KeyValuePair<string, object>("Runtime", Runtimes.Hybrid));
+        Parameters.Add(new KeyValuePair<string, object>("Platform", DeviceInfo.Current.Platform.ToString()));
+
+        if (MauiConstants.UseAppSettings)
+        {
+            string file = Path.Combine(FileSystem.Current.AppDataDirectory, "appsettings.json");
+            if (File.Exists(file))
+            {
+                using FileStream stream = File.OpenRead(file);
+                using StreamReader reader = new StreamReader(stream);
+                var content = reader.ReadToEnd();
+                var obj = JsonSerializer.Deserialize<JsonObject>(content)!;
+                if (string.IsNullOrEmpty((string)obj["Url"]) && string.IsNullOrEmpty(MauiConstants.ApiUrl))
+                {
+                    message = "You Must Set The Url In Either MauiConstants.cs Or " + file;
+                }
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(MauiConstants.ApiUrl))
+            {
+                message = "You Must Set The Url In MauiConstants.cs";
+            }
+        }
+    }
+}
+

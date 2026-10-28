@@ -1,0 +1,218 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+@inject Microsoft.JSInterop.IJSRuntime JS
+
+@*
+    What a step received or produced (BL-229, n8n's Table, JSON and Schema views): the JSON as it is, and - when it holds a list
+    of records (as JSON, or as the JSON text the data steps pass) - a table of each, the first rows of it, and its schema: each
+    field, what its values are and an example. The JSON stays the default and is always one click away; nothing is a table that
+    is not a list.
+*@
+
+@if (_tables.Count > 0)
+{
+    <div class="db-pipeline-editor__data-modes" role="group" aria-label="@(Label + ": show as")">
+        <button id="@(Id + "-as-json")" type="button" class="db-btn @(_mode == JsonMode ? "is-active" : "")" aria-pressed="@(_mode == JsonMode ? "true" : "false")" @onclick="() => _mode = JsonMode">JSON</button>
+        <button id="@(Id + "-as-table")" type="button" class="db-btn @(_mode == TableMode ? "is-active" : "")" aria-pressed="@(_mode == TableMode ? "true" : "false")" @onclick="() => _mode = TableMode">Table</button>
+        <button id="@(Id + "-as-schema")" type="button" class="db-btn @(_mode == SchemaMode ? "is-active" : "")" aria-pressed="@(_mode == SchemaMode ? "true" : "false")" @onclick="() => _mode = SchemaMode">Schema</button>
+    </div>
+}
+@* BL-229 - n8n's copy of a step's data: the JSON whole, as the step had it, to the clipboard. *@
+@if (Json is not null)
+{
+    <button id="@(Id + "-copy")" type="button" class="db-btn db-pipeline-editor__data-copy" title="@("Copy " + (Label ?? "the data") + " as JSON")" @onclick="CopyAsync">@(_copied ? "Copied" : "Copy")</button>
+}
+@* BL-229 - n8n's search in a step's data: a table keeps the rows holding the text, a schema the fields named so, the JSON marks
+   each place it occurs - with how many there are. Shown once there is enough to look through. *@
+@if (Searchable)
+{
+    <div class="db-pipeline-editor__data-search">
+        <input id="@(Id + "-search")" type="search" class="db-input" placeholder="Search" aria-label="@("Search " + (Label ?? "the data"))" value="@_search" @oninput="e => _search = e.Value?.ToString() ?? string.Empty" />
+        @if (!string.IsNullOrWhiteSpace(_search))
+        {
+            <span id="@(Id + "-search-count")" class="db-pipeline-editor__data-search-count">@SearchCount()</span>
+        }
+    </div>
+}
+@if (_mode == TableMode && _tables.Count > 0)
+{
+    @for (var index = 0; index < _tables.Count; index++)
+    {
+        var table = _tables[index];
+        var rows = MatchingRows(table);
+        <div id="@(Id + "-table-" + index)" class="db-pipeline-editor__data-table">
+            @if (!string.IsNullOrEmpty(table.Name))
+            {
+                <div class="db-pipeline-editor__data-table-name">@table.Name</div>
+            }
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            @foreach (var column in table.Columns)
+                            {
+                                <th>@column</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in rows)
+                        {
+                            <tr>
+                                @foreach (var cell in row)
+                                {
+                                    <td>@cell</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="db-pipeline-editor__data-table-count">@(table.Total > table.Rows.Count ? $"The first {table.Rows.Count} of {table.Total} rows" : table.Total == 1 ? "1 row" : $"{table.Total} rows")</div>
+        </div>
+    }
+}
+else if (_mode == SchemaMode && _tables.Count > 0)
+{
+    @for (var index = 0; index < _tables.Count; index++)
+    {
+        var table = _tables[index];
+        <div id="@(Id + "-schema-" + index)" class="db-pipeline-editor__data-table">
+            @if (!string.IsNullOrEmpty(table.Name))
+            {
+                <div class="db-pipeline-editor__data-table-name">@table.Name</div>
+            }
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Is</th>
+                            <th>For example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var field in table.Fields.Where(field => Holds(field.Name)))
+                        {
+                            <tr>
+                                <td>@field.Name</td>
+                                <td>@field.Kind</td>
+                                <td>@field.Example</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="db-pipeline-editor__data-table-count">@(table.Total == 1 ? "Read from 1 record" : table.Total > table.Rows.Count ? $"Read from the first {table.Rows.Count} of {table.Total} records" : $"Read from {table.Total} records")</div>
+        </div>
+    }
+}
+else
+{
+    <pre id="@Id" class="db-pipeline-editor__data">@if (Json is null) {@("(nothing)")} else { foreach (var (text, match) in JsonPieces()) { if (match) {<mark>@text</mark>} else {@text} } }</pre>
+}
+
+@code {
+    private const string JsonMode = "json";
+    private const string TableMode = "table";
+    private const string SchemaMode = "schema";
+
+    // Enough to look through: a list of records, or JSON longer than a glance takes in.
+    private const int SearchableLength = 400;
+
+    private IReadOnlyList<PipelineDataTable> _tables = Array.Empty<PipelineDataTable>();
+    private string _readFor;
+    private string _mode = JsonMode;
+    private string _search = string.Empty;
+
+    private bool Searchable => _tables.Count > 0 || (Json?.Length ?? 0) > SearchableLength;
+
+    private string Query => _search.Trim();
+
+    private bool Holds(string text) => Query.Length == 0 || (text ?? string.Empty).Contains(Query, StringComparison.CurrentCultureIgnoreCase);
+
+    private IEnumerable<IReadOnlyList<string>> MatchingRows(PipelineDataTable table) =>
+        table.Rows.Where(row => Query.Length == 0 || row.Any(Holds));
+
+    // The JSON cut where the text occurs: (piece, is it the text).
+    private IEnumerable<(string Text, bool Match)> JsonPieces()
+    {
+        var json = Json ?? string.Empty;
+        if (Query.Length == 0)
+        {
+            yield return (json, false);
+            yield break;
+        }
+
+        var at = 0;
+        for (var found = json.IndexOf(Query, StringComparison.CurrentCultureIgnoreCase); found >= 0; found = json.IndexOf(Query, at, StringComparison.CurrentCultureIgnoreCase))
+        {
+            if (found > at)
+            {
+                yield return (json[at..found], false);
+            }
+
+            yield return (json.Substring(found, Query.Length), true);
+            at = found + Query.Length;
+        }
+
+        if (at < json.Length)
+        {
+            yield return (json[at..], false);
+        }
+    }
+
+    // How many: rows in a table, fields in a schema, places in the JSON.
+    private string SearchCount()
+    {
+        if (_mode == TableMode && _tables.Count > 0)
+        {
+            var (rows, shown) = (_tables.Sum(table => MatchingRows(table).Count()), _tables.Sum(table => table.Rows.Count));
+            return rows == 1 ? $"1 of {shown} rows" : $"{rows} of {shown} rows";
+        }
+
+        if (_mode == SchemaMode && _tables.Count > 0)
+        {
+            var (fields, all) = (_tables.Sum(table => table.Fields.Count(field => Holds(field.Name))), _tables.Sum(table => table.Fields.Count));
+            return fields == 1 ? $"1 of {all} fields" : $"{fields} of {all} fields";
+        }
+
+        var places = JsonPieces().Count(piece => piece.Match);
+        return places == 0 ? "Not found" : places == 1 ? "Found once" : $"Found {places} times";
+    }
+
+    /// <summary>The id of the JSON view; the toggles, tables and schemas take it as their prefix.</summary>
+    [Parameter]
+    public string Id { get; set; }
+
+    /// <summary>What it is: "Input", "Output".</summary>
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public string Json { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!ReferenceEquals(Json, _readFor))
+        {
+            _readFor = Json;
+            _tables = PipelineDataTables.Of(Json);
+            _copied = false; // other data: not copied yet
+        }
+    }
+
+    private bool _copied;
+
+    private async Task CopyAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("stommePipelineEditorWriteClipboard", Json);
+            _copied = true;
+        }
+        catch (Microsoft.JSInterop.JSException)
+        {
+            // the editor's script not there yet: nothing copied, and the button still says Copy
+        }
+    }
+}

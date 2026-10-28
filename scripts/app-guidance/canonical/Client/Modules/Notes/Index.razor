@@ -1,0 +1,102 @@
+@namespace Stomme.Application.Modules.Notes
+@inherits ModuleBase
+@inject INotesService NotesService
+
+@if (!IsAuthorizedPermission(NotesPermissions.View))
+{
+    <p id="notes-denied">You do not have access to the notes on this site.</p>
+}
+else if (_notes == null)
+{
+    <p class="db-muted">Loading notes...</p>
+}
+else
+{
+    @if (IsAuthorizedPermission(NotesPermissions.Edit))
+    {
+        <div class="db-btn-row">
+            <ActionLink Action="Add" Text="Add note" Security="SecurityAccessLevel.View" />
+        </div>
+    }
+
+    @if (_notes.Count == 0)
+    {
+        <div class="db-empty" id="notes-empty">
+            <div class="db-empty-title">No notes yet</div>
+            <div>@(IsAuthorizedPermission(NotesPermissions.Edit) ? "Notes you add appear here. Use Add note to write the first one." : "Notes appear here when someone adds one.")</div>
+        </div>
+    }
+    else
+    {
+        <Pager Items="@_notes" SearchProperties="Title">
+            <Header>
+                <th>Title</th>
+                <th>Last changed</th>
+                <th class="db-col-action"><span class="db-visually-hidden">Actions</span></th>
+            </Header>
+            <Row>
+                <td>@context.Title</td>
+                <td>@UtcToLocal(context.UpdatedUtc)?.ToString("g")</td>
+                <td class="db-col-action">
+                    @if (MayChange(context))
+                    {
+                        <div class="db-actions">
+                            <ActionLink Action="Edit" Text="Edit" Parameters="@($"id={context.Id}")" Security="SecurityAccessLevel.View" />
+                            <ActionDialog Id="@($"delete-{context.Id}")" Header="Delete note" Message="@($"Delete the note '{context.Title}'? This cannot be undone.")" Action="Delete" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAsync(context))" />
+                        </div>
+                    }
+                </td>
+            </Row>
+        </Pager>
+    }
+}
+
+@code {
+    private List<NoteModel> _notes;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsAuthorizedPermission(NotesPermissions.View))
+        {
+            await LoadAsync();
+        }
+    }
+
+    // A convenience for the UI only: the server decides again on every change.
+    private bool MayChange(NoteModel note) =>
+        IsAuthorizedPermission(NotesPermissions.Edit)
+        && (note.AuthorUserId == PageState.User?.UserId || IsAuthorizedPermission(NotesPermissions.Manage));
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _notes = await NotesService.ListAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the notes {Error}", ex.Message);
+            _notes = new List<NoteModel>();
+            AddModuleMessage("The notes could not be loaded. Reload the page; if it keeps failing, ask an administrator to check the event log.", MessageType.Error);
+        }
+    }
+
+    private async Task DeleteAsync(NoteModel note)
+    {
+        try
+        {
+            await NotesService.DeleteAsync(note.Id);
+            await logger.LogInformation("Note deleted {NoteId}", note.Id);
+            await LoadAsync();
+            AddModuleMessage($"The note '{WebUtility.HtmlEncode(note.Title)}' was deleted.", MessageType.Success);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not delete note {NoteId} {Error}", note.Id, ex.Message);
+            AddModuleMessage("The note was not deleted: " + WebUtility.HtmlEncode(ex.Message), MessageType.Error);
+        }
+
+        // ActionDialog calls a plain Action, so nothing re-renders the page unless it asks to.
+        StateHasChanged();
+    }
+}

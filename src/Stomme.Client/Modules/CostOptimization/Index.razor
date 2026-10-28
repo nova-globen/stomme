@@ -1,0 +1,249 @@
+@namespace Stomme.Modules.CostOptimization
+@inherits ModuleBase
+@inject ICostOptimizationService CostOptimizationService
+
+@*
+    The Cost Optimization page (BL-97 increment 6, the predecessor platform's CostOptimizationPage): this site's FinOps recommendations for a
+    holder of cost-optimization:view - the counts, the open savings per currency (never converted), and each recommendation
+    with the evidence it cites; for a holder of cost-optimization:manage, an advisor pass now and a decision per open
+    recommendation: apply it with the action taken, or dismiss it with a reason (its key then stays quiet for the cooldown).
+    Every figure comes from api/CostOptimization, and the server decides every permission again.
+*@
+
+<PageTitle>Cost optimization</PageTitle>
+
+@if (!IsAuthorizedPermission(CostOptimizationPermissions.View))
+{
+    <p id="cost-optimization-denied" style="color:var(--db-text-2);">You do not have access to cost optimization on this site.</p>
+}
+else
+{
+    <div class="db-cost-optimization" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Cost optimization</h3>
+            @if (_canManage)
+            {
+                <button id="cost-optimization-run" type="button" class="db-btn" @onclick="RunAdvisorAsync" disabled="@_busy">Run advisor now</button>
+            }
+            <button id="cost-optimization-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="cost-optimization-message" style="margin:0;" role="status">@_message</p>
+        }
+
+        @if (_recommendations is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading recommendations…</p>
+        }
+        else
+        {
+            <p id="cost-optimization-counts" style="margin:0;">
+                Open: <strong>@_recommendations.Count(r => r.Status == RecommendationStatus.Open)</strong> ·
+                Applied: <strong>@_recommendations.Count(r => r.Status == RecommendationStatus.Applied)</strong> ·
+                Dismissed: <strong>@_recommendations.Count(r => r.Status == RecommendationStatus.Dismissed)</strong>
+                @foreach (var saving in OpenSavingsByCurrency())
+                {
+                    <span> · Estimated open savings: <strong>@Money(saving.Total) @saving.Currency</strong></span>
+                }
+            </p>
+
+            @if (_recommendations.Count == 0)
+            {
+                <p id="cost-optimization-empty" style="margin:0;color:var(--db-text-2);">No recommendations have been raised for this site. The advisor runs weekly@(_canManage ? " - or run it now to analyse the current cloud and AI spend" : string.Empty).</p>
+            }
+            else
+            {
+                <table id="cost-optimization-list" class="db-health-table" style="border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Category</th>
+                            <th style="text-align:left;">Recommendation</th>
+                            <th style="text-align:right;">Estimated saving</th>
+                            <th style="text-align:left;">Raised</th>
+                            <th style="text-align:left;">Status</th>
+                            @if (_canManage)
+                            {
+                                <th></th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var recommendation in _recommendations)
+                        {
+                            <tr data-key="@recommendation.RecommendationKey">
+                                <td>@recommendation.Category</td>
+                                <td>
+                                    @recommendation.Summary
+                                    <details>
+                                        <summary style="color:var(--db-text-2);">Evidence (@recommendation.Evidence.Count)</summary>
+                                        <ul style="margin:0.25rem 0;">
+                                            @foreach (var line in recommendation.Evidence)
+                                            {
+                                                <li>@line</li>
+                                            }
+                                        </ul>
+                                    </details>
+                                    @if (recommendation.AppliedAction is not null)
+                                    {
+                                        <div style="color:var(--db-text-2);">Applied: @recommendation.AppliedAction</div>
+                                    }
+                                    @if (recommendation.DismissReason is not null)
+                                    {
+                                        <div style="color:var(--db-text-2);">Dismissed until @recommendation.DismissedUntilUtc?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture): @recommendation.DismissReason</div>
+                                    }
+                                </td>
+                                <td style="text-align:right;">@Money(recommendation.EstimatedSavingAmount) @recommendation.EstimatedSavingCurrency</td>
+                                <td>@recommendation.RaisedUtc.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)</td>
+                                <td>@recommendation.Status</td>
+                                @if (_canManage)
+                                {
+                                    <td>
+                                        @if (recommendation.Status == RecommendationStatus.Open)
+                                        {
+                                            <button type="button" class="db-btn" disabled="@_busy" @onclick="() => StartDecision(recommendation, apply: true)">Apply…</button>
+                                            <button type="button" class="db-btn" disabled="@_busy" @onclick="() => StartDecision(recommendation, apply: false)">Dismiss…</button>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            @if (_pending is not null)
+            {
+                <section id="cost-optimization-decision" aria-label="Decision" style="display:flex;flex-direction:column;gap:0.5rem;max-width:40rem;">
+                    <h4 style="margin:0;">@(_pendingApply ? "Apply" : "Dismiss") recommendation</h4>
+                    <p style="margin:0;color:var(--db-text-2);">@_pending.Summary</p>
+                    <label>@(_pendingApply ? "Action taken" : "Reason") <input id="cost-optimization-text" type="text" style="width:100%;" @bind="_decisionText" @bind:event="oninput" /></label>
+                    @if (!_pendingApply)
+                    {
+                        <label>Cooldown (days, empty for the default) <input id="cost-optimization-cooldown" type="number" min="1" @bind="_cooldownDays" /></label>
+                    }
+                    <div style="display:flex;gap:0.5rem;">
+                        <button id="cost-optimization-confirm" type="button" class="db-btn" disabled="@(_busy || string.IsNullOrWhiteSpace(_decisionText))" @onclick="ConfirmDecisionAsync">@(_pendingApply ? "Apply" : "Dismiss")</button>
+                        <button type="button" class="db-btn" disabled="@_busy" @onclick="CancelDecision">Cancel</button>
+                    </div>
+                </section>
+            }
+        }
+    </div>
+}
+
+@code {
+    private List<RecommendationView>? _recommendations;
+    private RecommendationView? _pending;
+    private bool _pendingApply;
+    private string _decisionText = string.Empty;
+    private int? _cooldownDays;
+    private bool _busy;
+    private bool _canManage;
+    private string _message = string.Empty;
+
+    public override string Title => "Cost optimization";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsAuthorizedPermission(CostOptimizationPermissions.View))
+        {
+            return;
+        }
+
+        _canManage = IsAuthorizedPermission(CostOptimizationPermissions.Manage);
+        await LoadAsync();
+    }
+
+    private IEnumerable<(string Currency, decimal Total)> OpenSavingsByCurrency() =>
+        (_recommendations ?? new List<RecommendationView>())
+            .Where(r => r.Status == RecommendationStatus.Open && r.EstimatedSavingAmount > 0m)
+            .GroupBy(r => r.EstimatedSavingCurrency, StringComparer.Ordinal)
+            .OrderBy(g => g.Key, StringComparer.Ordinal)
+            .Select(g => (g.Key, g.Sum(r => r.EstimatedSavingAmount)));
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _recommendations = await CostOptimizationService.ListAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the cost optimization recommendations.");
+            _message = "The recommendations could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task RunAdvisorAsync()
+    {
+        _busy = true;
+        try
+        {
+            var run = await CostOptimizationService.RunAdvisorAsync();
+            _message = run.RaisedCount == 0
+                ? $"The advisor found nothing new ({run.SuppressedCount} already open or cooling down)."
+                : $"The advisor raised {run.RaisedCount} recommendation(s) ({run.SuppressedCount} already open or cooling down).";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not run the cost optimization advisor.");
+            _message = "The advisor could not run: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private void StartDecision(RecommendationView recommendation, bool apply)
+    {
+        _pending = recommendation;
+        _pendingApply = apply;
+        _decisionText = string.Empty;
+        _cooldownDays = null;
+    }
+
+    private void CancelDecision() => _pending = null;
+
+    private async Task ConfirmDecisionAsync()
+    {
+        if (_pending is null || string.IsNullOrWhiteSpace(_decisionText))
+        {
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var decision = _pendingApply
+                ? await CostOptimizationService.ApplyAsync(_pending.Id, new ApplyRecommendationRequest { ActionTaken = _decisionText.Trim() })
+                : await CostOptimizationService.DismissAsync(_pending.Id, new DismissRecommendationRequest { Reason = _decisionText.Trim(), CooldownDays = _cooldownDays });
+            _message = decision.Success
+                ? $"{(_pendingApply ? "Applied" : "Dismissed")}: {decision.Recommendation!.Summary}"
+                : $"The decision was refused ({decision.Code}): {decision.Reason}";
+            _pending = null;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not record the recommendation decision.");
+            _message = "The decision was not recorded: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private static string Money(decimal value) => value.ToString("#,##0.00", System.Globalization.CultureInfo.InvariantCulture);
+}

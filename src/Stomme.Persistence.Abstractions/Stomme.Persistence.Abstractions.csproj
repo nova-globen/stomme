@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Stomme.Persistence.Abstractions</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stomme.SharedKernel\Stomme.SharedKernel.csproj" />
+    <ProjectReference Include="..\Stomme.Tenancy.Domain\Stomme.Tenancy.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

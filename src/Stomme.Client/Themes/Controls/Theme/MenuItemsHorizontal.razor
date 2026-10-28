@@ -1,0 +1,69 @@
+@namespace Stomme.Themes.Controls
+@inherits MenuItemsBase
+
+@* Migrated to the --db-* design system (D11).
+   The submenu used to be a pure `data-bs-toggle="dropdown"` anchor. That JS went away with the
+   Bootstrap CDN in Phase 1 and the shim keeps `.dropdown-menu:not(.show)` hidden, so no submenu
+   could ever be opened and every child page was unreachable from this menu. Submenus now open on
+   hover *and* on :focus-within, which needs no script and so behaves identically whether the theme
+   renders statically or interactively (D18). *@
+@if (ParentPage != null)
+{
+    <div class="db-nav-sub" aria-labelledby="@($"navMenu{ParentPage.PageId}")">
+        @foreach (var childPage in GetChildPages())
+        {
+            <a class="db-nav-sub-link @(childPage.PageId == PageState.Page.PageId ? "active" : "")"
+               @attributes="LinkAttributes(childPage)" @onclick="OnNavigate">
+                <span class="@childPage.Icon" aria-hidden="true" />
+                @childPage.Name
+                @if (childPage.PageId == PageState.Page.PageId)
+                {
+                    <span class="db-visually-hidden">(current)</span>
+                }
+            </a>
+        }
+    </div>
+}
+else
+{
+    <ul class="db-nav-list">
+        @foreach (var childPage in GetChildPages())
+        {
+            var hasChildren = Pages.Any(e => e.ParentId == childPage.PageId);
+            <li class="db-nav-item @(hasChildren ? "db-nav-has-sub" : "")">
+                <a class="db-nav-link @(childPage.PageId == PageState.Page.PageId ? "active" : "")"
+                   id="@(hasChildren ? $"navMenu{childPage.PageId}" : null)"
+                   aria-haspopup="@(hasChildren ? "true" : null)"
+                   @attributes="LinkAttributes(childPage)" @onclick="OnNavigate">
+                    <span class="@childPage.Icon" aria-hidden="true" />
+                    @childPage.Name
+                    @if (childPage.PageId == PageState.Page.PageId)
+                    {
+                        <span class="db-visually-hidden">(current)</span>
+                    }
+                    @if (hasChildren)
+                    {
+                        <span class="db-nav-caret" aria-hidden="true"></span>
+                    }
+                </a>
+                @if (hasChildren)
+                {
+                    <MenuItemsHorizontal ParentPage="childPage" Pages="Pages" OnNavigate="OnNavigate" />
+                }
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private Dictionary<string, object> LinkAttributes(Stomme.Models.Page page)
+    {
+        var attributes = new Dictionary<string, object> { { "href", GetUrl(page) } };
+        var target = GetTarget(page);
+        if (!string.IsNullOrEmpty(target))
+        {
+            attributes.Add("target", target);
+        }
+        return attributes;
+    }
+}

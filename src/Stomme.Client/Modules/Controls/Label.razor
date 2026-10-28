@@ -1,0 +1,118 @@
+@namespace Stomme.Modules.Controls
+@inherits LocalizableComponent
+
+@if (_topic != null)
+{
+    @* BL-84 (D103 item 6): a label with a resolved help TOPIC carries it inline, as a native disclosure - no handler, no
+       circuit, the server's allowlisted HTML. The span keeps the .db-field grid at one child, like the tooltip span. *@
+    <span class="db-help-labelled db-field-label">
+        <label for="@For" class="@_labelclass">@ChildContent</label>
+        <details class="db-help db-help-inline">
+            <summary class="db-help-trigger" aria-label="@("Help: " + _topic.Title)"><span class="oi oi-question-mark"></span></summary>
+            <div class="db-help-panel" role="region" aria-label="Help">
+                <section class="db-help-topic" data-anchor="@_topic.Anchor" lang="@_topic.Locale">
+                    <h6 class="db-help-title">@_topic.Title</h6>
+                    @((MarkupString)_topic.SafeHtml)
+                </section>
+            </div>
+        </details>
+    </span>
+}
+else if (!string.IsNullOrEmpty(HelpText))
+{
+    <span class="@_spanclass" data-tip="@((MarkupString)@_helptext)">
+        <label for="@For" class="@_labelclass">@ChildContent</label> <img src="images/help.png" />
+    </span>
+}
+else
+{
+    <label for="@For" class="@_labelclass">@ChildContent</label>
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string For { get; set; } // optional - the id of the associated input control for accessibility
+
+    [Parameter]
+    public string Class { get; set; } // optional - CSS classes
+
+    [Parameter]
+    public string HelpText { get; set; } // optional - tooltip for this label
+
+    /// <summary>
+    /// Optional - a contextual-help ANCHOR (BL-84). When a published topic resolves for it, the label carries that topic
+    /// inline and the <see cref="HelpText"/> tooltip gives way to it; when nothing resolves (no topic, help switched
+    /// off, a caller without <c>help:view</c>) the label renders exactly as it would without this parameter.
+    /// </summary>
+    [Parameter]
+    public string HelpTopic { get; set; }
+
+    // NOT [Inject] IHelpService: this control has hundreds of uses and renders in contexts (and tests) that never
+    // register help. The service is looked up only when HelpTopic is set, so an unset label costs nothing and changes
+    // nothing - its markup is byte-identical to the label before this parameter existed.
+    [Inject]
+    private IServiceProvider Services { get; set; }
+
+    private string _spanclass;
+    private string _labelclass;
+    private string _helptext = string.Empty;
+    private Stomme.Help.HelpTopicView _topic;
+    private string _resolvedTopic;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (!string.IsNullOrEmpty(HelpText))
+        {
+            _helptext = Localize(nameof(HelpText), HelpText);
+            _labelclass = "db-field-label";
+
+            var spanclass = (!string.IsNullOrEmpty(Class)) ? " " + Class : "";
+            // The span is the direct child of .db-field, so it carries the label styling hook.
+            _spanclass = "app-tooltip db-field-label" + spanclass;
+        }
+        else
+        {
+            var labelclass = (!string.IsNullOrEmpty(Class)) ? " " + Class : "";
+            _labelclass = "db-field-label" + labelclass;
+        }
+
+        var text = Localize("Text", String.Empty);
+        if (!string.IsNullOrEmpty(text))
+        {
+            ChildContent =@<text>@text</text>;
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (string.IsNullOrEmpty(HelpTopic))
+        {
+            _topic = null;
+            _resolvedTopic = null;
+            return;
+        }
+
+        if (HelpTopic == _resolvedTopic)
+        {
+            return;
+        }
+
+        _resolvedTopic = HelpTopic;
+        try
+        {
+            var help = Services?.GetService(typeof(Stomme.Modules.ContextualHelp.Services.IHelpService)) as Stomme.Modules.ContextualHelp.Services.IHelpService;
+            var topic = help == null ? null : await help.GetTopicAsync(HelpTopic, System.Globalization.CultureInfo.CurrentUICulture.Name);
+            _topic = topic != null && !string.IsNullOrEmpty(topic.SafeHtml) ? topic : null;
+        }
+        catch (Exception)
+        {
+            // A label is never worth a broken form: a failed lookup renders the plain label.
+            _topic = null;
+        }
+    }
+}

@@ -1,0 +1,314 @@
+@namespace Stomme.Modules.Pipelines
+@inherits ModuleBase
+@inject IPipelinesService PipelinesService
+
+@*
+    BL-229 - the site's pipeline folder: what the file steps read and write, by paths relative to it. n8n keeps a run's files in
+    its execution data, out of reach once the run is gone; here they are files of the site's own folder - a CSV put in for a
+    pipeline to read, a report a run wrote taken out. For the pipelines' authors only: what a run wrote is run data. Every
+    change is decided again by the server, on its key, for the request's site.
+*@
+
+<PageTitle>Pipeline files</PageTitle>
+
+@if (!IsAuthorizedPermission(PipelinesPermissions.Manage))
+{
+    <p class="db-pipelines-denied" style="color:var(--db-text-2);">The pipelines' files are shown to the people who may change the site's pipelines.</p>
+}
+else
+{
+    <div class="db-pipeline-files" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 id="pipelines-files-title" style="margin:0;flex:1 1 auto;">Files</h3>
+            <a id="pipelines-back-link" class="db-btn" href="@NavigateUrl()">Pipelines</a>
+            <button id="pipelines-files-refresh" type="button" class="db-btn" @onclick="() => LoadAsync(_folder)" disabled="@_busy">Refresh</button>
+        </div>
+        <p style="margin:0;color:var(--db-text-2);">The folder the site's pipelines read files from and write them to: a file step's path - <code>reports/today.csv</code> - is a path in it. Put a file here for a pipeline to read; take out one a run wrote. Not for secrets: anyone who may change the pipelines sees these files.</p>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p id="pipelines-error" role="alert" style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="pipelines-message" role="status" style="margin:0;">@_message</p>
+        }
+
+        <nav id="pipelines-files-trail" aria-label="Folder" style="display:flex;flex-wrap:wrap;gap:0.25rem;align-items:center;">
+            <button id="pipelines-files-root" type="button" class="db-btn@(_folder.Length == 0 ? " is-active" : "")" aria-current="@(_folder.Length == 0 ? "location" : null)" @onclick="() => OpenAsync(string.Empty)" disabled="@_busy">Files</button>
+            @foreach (var (name, path) in PipelineFilePaths.Trail(_folder))
+            {
+                var target = path;
+                <span aria-hidden="true">/</span>
+                <button type="button" class="db-btn pipelines-files-trail-step@(target == _folder ? " is-active" : "")" aria-current="@(target == _folder ? "location" : null)" @onclick="() => OpenAsync(target)" disabled="@_busy">@name</button>
+            }
+        </nav>
+
+        @if (_missing)
+        {
+            <p id="pipelines-files-missing" style="margin:0;color:var(--db-text-2);">There is no folder '@_folder' - it may have been deleted or moved.</p>
+        }
+        else if (_listing is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading...</p>
+        }
+        else
+        {
+            @if (_listing.Entries.Count == 0)
+            {
+                <p id="pipelines-files-none" style="margin:0;color:var(--db-text-2);">Nothing here yet.</p>
+            }
+            else
+            {
+                <table id="pipelines-files-list" class="table" style="margin:0;">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Changed (UTC)</th>
+                            <th scope="col"><span class="visually-hidden">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var index = 0; index < _listing.Entries.Count; index++)
+                        {
+                            var at = index;
+                            var entry = _listing.Entries[at];
+                            <tr id="@("pipelines-file-" + at)" @key="entry.Path">
+                                <td>
+                                    @if (entry.IsFolder)
+                                    {
+                                        <button id="@("pipelines-file-open-" + at)" type="button" class="db-btn" aria-label="@($"Open the folder {entry.Name}")" @onclick="() => OpenAsync(entry.Path)" disabled="@_busy">@(entry.Name)/</button>
+                                    }
+                                    else
+                                    {
+                                        <span class="pipelines-file-name">@entry.Name</span>
+                                    }
+                                </td>
+                                <td>@(entry.IsFolder ? "" : PipelineFilePaths.Size(entry.Length))</td>
+                                <td>@entry.ModifiedOnUtc.ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture)</td>
+                                <td>
+                                    <div style="display:flex;flex-wrap:wrap;gap:0.25rem;">
+                                        @if (!entry.IsFolder)
+                                        {
+                                            <a id="@("pipelines-file-download-" + at)" class="db-btn" href="@DownloadUrl(entry.Path)" download="@entry.Name" aria-label="@($"Download {entry.Name}")">Download</a>
+                                        }
+                                        <button id="@("pipelines-file-copy-" + at)" type="button" class="db-btn" title="Copy its path, as a file step reads it" aria-label="@($"Copy the path of {entry.Name}")" @onclick="() => CopyPathAsync(entry.Path)">Copy path</button>
+                                        <ActionDialog Header="@(entry.IsFolder ? "Delete Folder" : "Delete File")" Message="@DeleteQuestion(entry)" Action="Delete" Security="SecurityAccessLevel.Anonymous"
+                                                      Class="@("db-btn pipelines-file-delete-" + at)" ConfirmClass="@("db-btn pipelines-file-delete-confirm-" + at)"
+                                                      OnClick="@(async () => { await DeleteAsync(entry); StateHasChanged(); })" Disabled="@_busy" />
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                <label for="pipelines-files-upload">Upload into @(_folder.Length == 0 ? "this folder" : "'" + _folder + "'")</label>
+                <InputFile id="pipelines-files-upload" multiple OnChange="UploadAsync" disabled="@_busy" />
+                <span style="color:var(--db-text-2);">at most @PipelineFilePaths.Size(_listing.MaxFileBytes) a file, @MaxFilesAtOnce at once; a name already here is refused</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                <label for="pipelines-files-folder-name">New folder</label>
+                <input id="pipelines-files-folder-name" class="db-input" style="width:16rem;" placeholder="reports" value="@_newFolder" @oninput="e => _newFolder = e.Value?.ToString() ?? string.Empty" />
+                @* Never disabled for an empty name: the name reaches the server a moment after the typing, and a click in that moment
+                   would land on a disabled button and do nothing (measured driving it) - an empty name is said instead. *@
+                <button id="pipelines-files-folder-make" type="button" class="db-btn" @onclick="MakeFolderAsync" disabled="@_busy">Make folder</button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    /// <summary>The most files one choice uploads.</summary>
+    public const int MaxFilesAtOnce = 20;
+
+    private PipelineFolderView _listing;
+    private string _folder = "";
+    private bool _missing;
+    private bool _started;
+    private string _newFolder = "";
+    private string _error = "";
+    private string _message = "";
+    private bool _busy;
+
+    public override string Title => "Pipeline files";
+
+    // The editor's script, for its clipboard helper; and the module's stylesheet.
+    public override List<Resource> Resources => new List<Resource>
+    {
+        new Resource { ResourceType = ResourceType.Script, Url = "Modules/Pipelines/pipelines-editor.js", Location = ResourceLocation.Body },
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Pipelines/pipelines-editor.css" },
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(PipelinesPermissions.Manage))
+        {
+            // A link may open a folder (?folder=reports); after that the page goes where its author goes.
+            var folder = _started ? _folder : PageState.QueryString.TryGetValue("folder", out var wanted) ? wanted : string.Empty;
+            _started = true;
+            await LoadAsync(folder);
+        }
+    }
+
+    // Another folder opened: what was said about this one goes with it.
+    private Task OpenAsync(string folder)
+    {
+        _message = "";
+        return LoadAsync(folder);
+    }
+
+    private string DownloadUrl(string path) => Utilities.TenantUrl(PageState.Alias, "/api/Pipelines/files/content?path=" + Uri.EscapeDataString(path ?? ""));
+
+    private static string DeleteQuestion(PipelineFileEntryView entry) => entry.IsFolder
+        ? $"Delete the folder '{entry.Path}' and everything in it? A pipeline that reads from it fails until it is there again. It cannot be undone."
+        : $"Delete '{entry.Path}'? A pipeline that reads it fails until it is there again. It cannot be undone.";
+
+    private async Task LoadAsync(string folder)
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            var normalized = PipelineFilePaths.Normalize(folder);
+            var listing = await PipelinesService.GetPipelineFilesAsync(normalized);
+            _folder = normalized;
+            _listing = listing;
+            _missing = listing is null;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Listing Pipeline Files {Error}", ex.Message);
+            _error = Refusal("The folder could not be listed", ex);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task UploadAsync(InputFileChangeEventArgs args)
+    {
+        _error = "";
+        _message = "";
+        if (args.FileCount > MaxFilesAtOnce)
+        {
+            _error = $"Upload at most {MaxFilesAtOnce} files at once.";
+            return;
+        }
+
+        var max = _listing?.MaxFileBytes ?? 0;
+        var taken = new List<string>();
+        var refused = new List<string>();
+        _busy = true;
+        try
+        {
+            foreach (var file in args.GetMultipleFiles(MaxFilesAtOnce))
+            {
+                if (max > 0 && file.Size > max)
+                {
+                    refused.Add($"'{file.Name}' was not uploaded: it is larger than the {PipelineFilePaths.Size(max)} a pipeline file may be.");
+                    continue;
+                }
+
+                if (PipelineFilePaths.NameProblem(file.Name) is { } problem)
+                {
+                    refused.Add($"'{file.Name}' was not uploaded: {problem}");
+                    continue;
+                }
+
+                try
+                {
+                    await using var content = file.OpenReadStream(max > 0 ? max : file.Size);
+                    var entry = await PipelinesService.UploadPipelineFileAsync(_folder, file.Name, content);
+                    taken.Add(entry?.Name ?? file.Name);
+                }
+                catch (Exception ex)
+                {
+                    await logger.LogError(ex, "Error Uploading A Pipeline File {Error}", ex.Message);
+                    refused.Add(Refusal($"'{file.Name}' was not uploaded", ex));
+                }
+            }
+
+            await LoadAsync(_folder);
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        _message = taken.Count switch
+        {
+            0 => "",
+            1 => $"Uploaded '{taken[0]}'.",
+            _ => $"Uploaded {taken.Count} files.",
+        };
+        _error = string.Join(" ", refused.Prepend(_error).Where(text => !string.IsNullOrEmpty(text)));
+    }
+
+    private async Task MakeFolderAsync()
+    {
+        _error = "";
+        _message = "";
+        var name = (_newFolder ?? "").Trim();
+        if (PipelineFilePaths.NameProblem(name) is { } problem)
+        {
+            _error = problem;
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var made = await PipelinesService.CreatePipelineFolderAsync(PipelineFilePaths.Combine(_folder, name));
+            _newFolder = "";
+            await LoadAsync(_folder);
+            _message = $"Made the folder '{made?.Path ?? name}'.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Making A Pipeline Folder {Error}", ex.Message);
+            _error = Refusal("The folder was not made", ex);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task DeleteAsync(PipelineFileEntryView entry)
+    {
+        _error = "";
+        _message = "";
+        _busy = true;
+        try
+        {
+            var deleted = await PipelinesService.DeletePipelineFileAsync(entry.Path);
+            await LoadAsync(_folder);
+            _message = deleted ? $"Deleted '{entry.Path}'." : $"'{entry.Path}' was not there any more.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting A Pipeline File {Error}", ex.Message);
+            _error = Refusal($"'{entry.Path}' was not deleted", ex);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // What a file step reads, on the system clipboard - to paste into its path.
+    private async Task CopyPathAsync(string path)
+    {
+        await JSRuntime.InvokeVoidAsync("stommePipelineEditorWriteClipboard", path);
+        _message = $"Copied '{path}' - paste it into a file step's path.";
+    }
+
+    // A refusal says why, from the browser's service (its reason) or the server's own (Interactive Server); anything else does not.
+    private static string Refusal(string what, Exception ex) =>
+        ex is Stomme.Services.ServiceRefusalException or InvalidOperationException or ArgumentException ? what + ": " + ex.Message : what + ".";
+}

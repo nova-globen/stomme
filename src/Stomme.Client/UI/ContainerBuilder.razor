@@ -1,0 +1,90 @@
+@using System.ComponentModel
+@namespace Stomme.UI
+@inject SiteState SiteState
+@implements IDisposable
+
+@if (ComponentType != null && _visible)
+{
+    <a id="@ModuleState.PageModuleId.ToString()"></a>
+    <CascadingValue Value="@ModuleState" IsFixed="true">
+		@if (_useadminborder)
+		{
+			<div class="app-pane-admin-border">
+                <DynamicComponent Type="@ComponentType"></DynamicComponent>
+			</div>
+		}
+		else
+		{
+		    <DynamicComponent Type="@ComponentType"></DynamicComponent>
+		}
+	</CascadingValue>
+}
+
+@code {
+    private bool _visible = true;
+    private bool _useadminborder = false;
+    public Type ComponentType { get; set; }
+
+    [CascadingParameter]
+    protected PageState PageState { get; set; }
+
+    [Parameter]
+    public Module ModuleState { get; set; }
+
+    [Parameter]
+    public string ContainerType { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        return PageState?.RenderId == ModuleState?.RenderId;
+    }
+
+    protected override void OnInitialized()
+    {
+        ((INotifyPropertyChanged)SiteState.Properties).PropertyChanged += PropertyChanged;
+    }
+
+    protected override void OnParametersSet()
+    {
+        string container = ModuleState.ContainerType;
+        if (!string.IsNullOrEmpty(ContainerType))
+        {
+            container = ContainerType;
+        }
+        if (PageState.ModuleId != -1 && PageState.Route.Action != "" && ModuleState.UseAdminContainer)
+        {
+            container = (!string.IsNullOrEmpty(PageState.Site.AdminContainerType)) ? PageState.Site.AdminContainerType : Constants.DefaultAdminContainer;
+        }
+
+        if (PageState.EditMode && UserSecurity.IsAuthorized(PageState.User, PermissionNames.Edit, PageState.Page.PermissionList) && PageState.Action == Constants.DefaultAction)
+        {
+            _useadminborder = true;
+        }
+        else
+        {
+            _useadminborder = false;
+        }
+
+        if (ShouldRender())
+        {
+            ComponentType = Type.GetType(container) ?? Type.GetType(Constants.DefaultContainer);
+        }
+    }
+
+	private void PropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == "ModuleVisibility")
+		{
+			if (SiteState.Properties.ModuleVisibility.PageModuleId == ModuleState.PageModuleId)
+			{
+				_visible = SiteState.Properties.ModuleVisibility.Visible;
+				StateHasChanged();
+			}
+		}
+	}
+
+	public void Dispose()
+	{
+		((INotifyPropertyChanged)SiteState.Properties).PropertyChanged -= PropertyChanged;
+	}
+}

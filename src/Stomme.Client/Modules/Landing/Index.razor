@@ -1,0 +1,145 @@
+@namespace Stomme.Modules.Landing
+@inherits ModuleBase
+@using Stomme.Dashboards
+@using Stomme.Modules.Dashboards.Components
+@using Stomme.Modules.Dashboards.Services
+@inject ILandingService LandingService
+@inject IDashboardsService DashboardsService
+
+@*
+    The site's landing page (BL-98), on its home page. STATIC, like HtmlText: the home page is public, and an interactive
+    component here would open a server circuit for EVERY anonymous view of every home page (the Help suite's "no marker"
+    oracle caught exactly that). A viewer sees the PUBLISHED page and nothing at all when there is none - the module is
+    untitled, so an unmade landing page leaves the home page as it was. A holder of landing:manage also sees the draft and a
+    link to the module's interactive Edit action, where the chooser, the editor and the publish controls live.
+
+    A DASHBOARD landing page (increment 2) is the Dashboards module's read-only board, rendered statically; its charts are
+    drawn in the browser by the module's page script, which loads the chart runtime only when the page holds a chart. The
+    board's data is the viewer's own: the Dashboards requests decide dashboards:view again, and the landing request answers
+    nothing to a visitor who may not read dashboards.
+*@
+
+@if (_page is not null && (_content is not null || _board is not null || _generated is not null))
+{
+    <div class="db-landing" style="display:flex;flex-direction:column;gap:1rem;">
+        @if (_page.Status == LandingStatus.Draft)
+        {
+            <p id="landing-draft" role="status" style="margin:0;color:var(--db-text-2);">Draft - only administrators see this landing page until it is published.</p>
+        }
+        @if (_content is not null)
+        {
+            <section id="landing-content" style="display:flex;flex-direction:column;gap:1rem;">
+                <h1 style="margin:0;">@_content.Headline</h1>
+                @if (!string.IsNullOrWhiteSpace(_content.Introduction))
+                {
+                    <p style="margin:0;font-size:1.1rem;">@_content.Introduction</p>
+                }
+                @if (_content.Sections.Count > 0)
+                {
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:1rem;">
+                        @foreach (var section in _content.Sections)
+                        {
+                            <div class="landing-section" style="display:flex;flex-direction:column;gap:0.5rem;padding:1rem;border:1px solid var(--db-border);border-radius:0.5rem;">
+                                <h3 style="margin:0;">@section.Title</h3>
+                                @if (!string.IsNullOrWhiteSpace(section.Text))
+                                {
+                                    <p style="margin:0;">@section.Text</p>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(section.LinkUrl))
+                                {
+                                    <a href="@section.LinkUrl">@section.LinkText</a>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </section>
+        }
+        else if (_generated is not null)
+        {
+            @* A GENERATED page (increment 3): sanitised on the server when it was stored, and shown in a frame that runs no script
+               - no allow-scripts, no allow-same-origin - with a content policy of its own: the sanitizer is the first guard, the
+               frame the second. A site link leaves the frame for the site on a click; an external one opens apart. *@
+            <iframe id="landing-generated" title="Landing page" srcdoc="@_generated" sandbox="allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
+                    referrerpolicy="no-referrer" loading="eager" style="width:100%;min-height:70vh;border:0;"></iframe>
+        }
+        else
+        {
+            <section id="landing-dashboard" style="display:flex;flex-direction:column;gap:0.75rem;">
+                <h1 style="margin:0;">@_board.Name</h1>
+                <DashboardBoard Board="_board" Data="_data" Errors="_errors" />
+            </section>
+        }
+        @if (_canManage)
+        {
+            <a id="landing-manage" class="db-btn" href="@EditUrl("Edit")" style="align-self:flex-start;">Manage the landing page</a>
+        }
+    </div>
+}
+else if (_canManage)
+{
+    <div id="landing-chooser" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;padding:0.75rem 1rem;border:1px dashed var(--db-border);border-radius:0.5rem;">
+        <span style="flex:1 1 auto;">@(_page is null ? "This site has no landing page yet." : "The dashboard this landing page shows is gone or cannot be read.") Only administrators see this.</span>
+        <a id="landing-manage" class="db-btn" href="@EditUrl("Edit")">@(_page is null ? "Make a landing page" : "Manage the landing page")</a>
+    </div>
+}
+
+@code {
+    private LandingPageView _page;
+    private PredefinedLandingContent _content;
+    private DashboardView _board;
+    private string _generated;
+    private IReadOnlyDictionary<Guid, WidgetDataView> _data = new Dictionary<Guid, WidgetDataView>();
+    private IReadOnlyDictionary<Guid, string> _errors = new Dictionary<Guid, string>();
+    private bool _canManage;
+
+    public override string RenderMode => RenderModes.Static;
+
+    // The board's styles, and the page script that draws a static board's charts. A resource's URL is made root-relative
+    // ("/Modules/...", Resource.Url) and fingerprinted; the framework's <page-script> imports it as an ES module, which a
+    // root-relative URL satisfies (a bare "Modules/..." would not be importable).
+    public override List<Resource> Resources => new List<Resource>
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Dashboards/dashboards.css" },
+        new Resource { ResourceType = ResourceType.Script, Url = "Modules/Landing/landing.js", LoadBehavior = ResourceLoadBehavior.BlazorPageScript },
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!ShouldRender())
+        {
+            return;
+        }
+
+        _canManage = IsAuthorizedPermission(LandingPermissions.Manage);
+        _content = null;
+        _board = null;
+        _generated = null;
+        try
+        {
+            _page = IsAuthorizedPermission(LandingPermissions.View) || _canManage ? await LandingService.GetAsync() : null;
+            if (_page is { Source: LandingSource.Predefined })
+            {
+                _content = _page.Predefined;
+            }
+            else if (_page is { Source: LandingSource.GeneratedHtml, GeneratedHtml: { Length: > 0 } html })
+            {
+                _generated = LandingFrame.Srcdoc(html);
+            }
+            else if (_page is { Source: LandingSource.Dashboard, DashboardId: Guid dashboardId })
+            {
+                _board = await DashboardsService.GetAsync(dashboardId);
+                if (_board is not null)
+                {
+                    (_data, _errors) = await DashboardBoard.LoadAsync(DashboardsService, _board, (widget, ex) => logger.LogError(ex, "The landing page could not read widget {WidgetId} of dashboard {DashboardId}.", widget.Id, dashboardId));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the landing page.");
+            _page = null;
+            _board = null;
+        }
+    }
+}

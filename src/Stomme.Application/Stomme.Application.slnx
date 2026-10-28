@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Server\Stomme.Application.Server.csproj" DefaultStartup="true" />
+  <Project Path="Client\Stomme.Application.Client.csproj" />
+  <Project Path="Shared\Stomme.Application.Shared.csproj" />
+</Solution>

@@ -1,0 +1,310 @@
+@namespace Stomme.Modules.Admin.Themes
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IFileService FileService
+@inject IThemeService ThemeService
+@inject IPackageService PackageService
+@inject IStringLocalizer<Add> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<TabStrip>
+    <TabPanel Name="Download" ResourceKey="Download">
+        <div class="db-row db-row-center">
+            <div class="db-center">
+                <div class="db-radio">
+                    <input id="free" type="radio" checked="@(_price == "free")" name="Price" @onchange="@(() => PriceChanged("free"))" />
+                    <label class="db-radio-label" for="free">@SharedLocalizer["Free"]</label>
+                </div>
+                <div class="db-radio">
+                    <input id="paid" type="radio" checked="@(_price == "paid")" name="Price" @onchange="@(() => PriceChanged("paid"))" />
+                    <label class="db-radio-label" for="paid">@SharedLocalizer["Paid"]</label>
+                </div>
+            </div>
+        </div>
+        <div class="db-row db-row-center">
+            <div class="db-col">
+                <div class="db-input-group">
+                    <span class="db-input-group-text">@Localizer["Product"]</span>
+                    <input id="search" class="db-input" placeholder="@SharedLocalizer["Search.Hint"]" @bind="@_search" />
+                    <button type="button" class="db-btn" @onclick="Search">@SharedLocalizer["Search"]</button>
+                    <button type="button" class="db-btn db-btn-neutral" @onclick="Reset">@SharedLocalizer["Reset"]</button>
+                    <button type="button" class="db-btn" @onclick="Refresh"><span class="@Icons.Reload" aria-hidden="true"></span></button>
+                </div>
+            </div>
+        </div>
+        <div class="db-row">
+            <div class="db-col">
+                @if (_initialized)
+                {
+                    <br />
+                    <div class="db-row">
+                        <div class="db-col">
+                            <h3>@((_packages != null) ? _packages.Count : 0) @SharedLocalizer["Search.Results"]</h3>
+                        </div>
+                        <div class="db-col">
+                            &nbsp;
+                        </div>
+                        <div class="db-col">
+                            <select class="db-select" value="@_sort" @onchange="(e => SortChanged(e))">
+                                <option value="popularity">@SharedLocalizer["Search.Popularity"]</option>
+                                <option value="alphabetical">@SharedLocalizer["Search.Alphabetical"]</option>
+                                @if (_price == "free")
+                                {
+                                    <option value="downloads">@SharedLocalizer["Search.Downloads"]</option>
+                                }
+                                <option value="recent">@SharedLocalizer["Search.RecentlyReleased"]</option>
+                                @if (_price == "paid")
+                                {
+                                    <option value="price">@SharedLocalizer["Search.Price"]</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <Pager Format="Grid" Items="@_packages" DisplayPages="1" PageSize="9" Toolbar="Both" Class="db-grid-wrap" RowClass="db-card-grid" ColumnClass="db-card-cell">
+                        <Row>
+                            <div class="db-card db-card-tile">
+                                <div class="db-fields">
+                                    <div class="db-row">
+                                        <div class="db-col-auto">
+                                            <a href="@context.ProductUrl" target="_blank">
+                                            @if (context.LogoUrl != null)
+                                            {
+                                                <img src="@context.LogoUrl" class="db-img-fluid" alt="@context.Name" />
+                                            }
+                                            else
+                                            {
+                                                <img src="/package.png" class="db-img-fluid" alt="@context.Name" />
+                                            }
+                                            </a>
+                                        </div>
+                                        <div class="db-col db-center" style="text-align:right">
+                                            <small>@SharedLocalizer["Search.Version"]:</small> <strong>@context.Version</strong>
+                                            <br /><small>@SharedLocalizer["Search.Released"]:</small> <strong>@context.ReleaseDate.ToString("MM/dd/yyyy")</strong>
+                                            @if (!string.IsNullOrEmpty(context.PackageUrl))
+                                            {
+                                                <br /><small>@SharedLocalizer["Search.Source"]:</small> <strong>@(new Uri(context.PackageUrl).Host)</strong>
+                                            }
+                                            @if (context.Price == null)
+                                            {
+                                                <br /><small>@SharedLocalizer["Search.Downloads"]:</small> <strong>@(String.Format("{0:n0}", context.Downloads))</strong>
+                                            }
+                                            else
+                                            {
+                                                <br /><small>@SharedLocalizer["From"]:</small> <strong>@context.Price.Value.ToString("$#,##0.00")</strong>
+                                                @((MarkupString)(context.TrialPeriod > 0 ? " <strong>(" + context.TrialPeriod + " Day Trial)</strong>" : ""))
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="db-row">
+                                        <div class="db-col">
+                                            <h3 style="display: inline;"><a href="@context.ProductUrl" target="_blank">@context.Name</a></h3><br />
+                                            <small>@SharedLocalizer["Search.By"]:</small> <strong><a href="@context.OwnerUrl" target="new">@context.Owner</a></strong><br />
+                                            @(context.Description.Length > 400 ? (context.Description.Substring(0, 400) + "...") : context.Description)<br />
+                                            <br />
+                                            @if (_themes.Exists(item => item.PackageName == context.PackageId))
+                                            {
+                                                <button type="button" class="db-btn db-btn-neutral">@SharedLocalizer["Installed"]</button>
+                                            }
+                                            else
+                                            {
+                                                @if (!string.IsNullOrEmpty(context.PackageUrl))
+                                                {
+                                                    <button type="button" class="db-btn" @onclick=@(async () => await GetPackage(context.PackageId, context.Version))>@SharedLocalizer["Download"]</button>
+                                                }
+                                                @if (context.Price != null && !string.IsNullOrEmpty(context.PaymentUrl))
+                                                {
+                                                    <a class="db-btn" style="text-decoration: none !important" href="@context.PaymentUrl" target="_new">@SharedLocalizer["Buy"]</a>
+                                                }
+                                            }
+                                            <br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Row>
+                    </Pager>
+                }
+            </div>
+        </div>
+        <br />
+        <ModuleMessage Type="MessageType.Info" Message="@SharedLocalizer["Stomme.Marketplace"]" />
+    </TabPanel>
+    <TabPanel Name="Upload" ResourceKey="Upload">
+        <div class="db-fields">
+            <div class="db-field">
+                <Label HelpText="Upload one or more theme packages." ResourceKey="Theme">Theme: </Label>
+                <div class="db-field-control">
+                    <FileManager Folder="@Constants.PackagesFolder" UploadMultiple="true" OnUpload="OnUpload" />
+                </div>
+            </div>
+        </div>
+    </TabPanel>
+</TabStrip>
+
+@if (_productname != "")
+{
+    <div class="app-actiondialog">
+        <div class="db-dialog" tabindex="-1" role="dialog">
+            <div class="db-dialog-panel">
+                <div class="db-dialog-content">
+                    <div class="db-dialog-head">
+                        <h5 class="db-dialog-title">@SharedLocalizer["Review License Terms"]</h5>
+                        <button type="button" class="db-dialog-close" aria-label="Close" @onclick="HideModal"></button>
+                    </div>
+                    <div class="db-dialog-body">
+                        <p style="height: 200px; overflow-y: scroll;">
+                            <h3>@_productname</h3>
+                            @if (!string.IsNullOrEmpty(_license))
+                            {
+                                @((MarkupString)_license)
+                            }
+                            else
+                            {
+                                @SharedLocalizer["License Not Specified"]
+                            }
+                        </p>
+                    </div>
+                    <div class="db-dialog-foot">
+                        <button type="button" class="db-btn" @onclick="DownloadPackage">@SharedLocalizer["Accept"]</button>
+                        <button type="button" class="db-btn db-btn-neutral" @onclick="HideModal">@SharedLocalizer["Cancel"]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+
+@code {
+    private bool _initialized = false;
+    private List<Theme> _themes;
+    private int _page = 1;
+    private List<Package> _packages;
+    private string _price = "free";
+    private string _sort = "popularity";
+    private string _search = "";
+    private string _productname = "";
+    private string _license = "";
+    private string _packageid = "";
+    private string _version = "";
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _themes = await ThemeService.GetThemesAsync(PageState.Site.SiteId);
+            await LoadPackages();
+            _initialized = true;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Packages {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Package.Load"], MessageType.Error);
+        }
+    }
+
+    private async Task LoadPackages()
+    {
+        ShowProgressIndicator(); 
+        _packages = await PackageService.GetPackagesAsync("theme", _search, _price, "", _sort);
+        HideProgressIndicator();
+    }
+
+    private async void PriceChanged(string price)
+    {
+        _price = price;
+        _sort = "popularity";
+        await LoadPackages();
+        StateHasChanged();
+    }
+
+    private async Task Search()
+    {
+        await LoadPackages();
+    }
+
+    private async Task Reset()
+    {
+        _page = 1;
+        _search = "";
+        await LoadPackages();
+    }
+
+    private async Task Refresh()
+    {
+        await LoadPackages();
+    }
+
+    private void OnPageChange(int page)
+    {
+        _page = page;
+    }
+
+    private async void SortChanged(ChangeEventArgs e)
+    {
+        _sort = (string)e.Value;
+        await LoadPackages();
+    }
+
+    private void HideModal()
+    {
+        _productname = "";
+        _license = "";
+        StateHasChanged();
+    }
+
+    private async Task GetPackage(string packageid, string version)
+    {
+        try
+        {
+            var package = await PackageService.GetPackageAsync(packageid, version, false);
+            if (package != null)
+            {
+                _productname = package.Name;
+                if (!string.IsNullOrEmpty(package.License))
+                {
+                    _license = package.License.Replace("\n", "<br />");
+                }
+                _packageid = package.PackageId;
+                _version = package.Version;
+                StateHasChanged();
+            }
+            else
+            {
+                await logger.LogError("Error Getting Package {PackageId} {Version}", packageid, version);
+                AddModuleMessage(Localizer["Error.Theme.Download"], MessageType.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Getting Package {PackageId} {Version}", packageid, version);
+            AddModuleMessage(Localizer["Error.Theme.Download"], MessageType.Error);
+        }
+    }
+
+    private async Task DownloadPackage()
+    {
+        try
+        {
+            await PackageService.DownloadPackageAsync(_packageid, _version);
+            await logger.LogInformation("Package {PackageId} {Version} Downloaded Successfully", _packageid, _version);
+			AddModuleMessage(string.Format(Localizer["Success.Theme.Download"], NavigateUrl("admin/system")), MessageType.Success);
+            _productname = "";
+            _license = "";
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Downloading Package {PackageId} {Version}", _packageid, _version);
+            AddModuleMessage(Localizer["Error.Theme.Download"], MessageType.Error);
+        }
+    }
+
+    private void OnUpload()
+    {
+        AddModuleMessage(string.Format(Localizer["Success.Theme.Upload"], NavigateUrl("admin/system")), MessageType.Success);
+    }
+}

@@ -1,0 +1,68 @@
+@namespace Stomme.Modules.HtmlText
+@using System.Collections.Generic
+@implements Stomme.Interfaces.ISettingsControl
+@inject ISettingService SettingService
+
+@*
+    Module-WIDE (installation-scoped) configuration control for HtmlText (D86). Distinct from Settings.razor,
+    which is PER-PLACEMENT. Rendered two ways over the SAME ISettingsControl contract:
+      * Admin → Module Definitions → HtmlText → "Configure" tab: ModuleDefinitionId is passed in as a Parameter
+        (a definition-scoped control has no ModuleState placement context) and the control self-persists through
+        the master-DB-routed EntityNames.ModuleDefinition channel.
+      * Installer onboarding step: ModuleDefinitionId is -1 (the master store does not exist yet) and the control
+        reads/writes the installer-supplied InstallSettings dictionary instead — the installer persists it
+        server-side after the install creates the module definitions.
+    Deliberately NOT a ModuleBase: it must render in the installer, which has no cascading ModuleState/PageState.
+*@
+
+<div class="db-fields">
+    <div class="db-field">
+        <Label For="defaultcontent" HelpText="Installation-wide default content used when a new HtmlText module has no content yet." ResourceKey="DefaultContent">Default Content: </Label>
+        <div class="db-field-control">
+            <textarea id="defaultcontent" class="db-input" @bind="@_defaultContent" rows="3" maxlength="4000"></textarea>
+        </div>
+    </div>
+</div>
+
+@code {
+    private const string SettingName = "DefaultContent";
+
+    // Definition-scoped id, passed in by the "Configure" tab. -1 (default) means the installer's onboarding step,
+    // where no id and no master store exist yet.
+    [Parameter]
+    public int ModuleDefinitionId { get; set; } = -1;
+
+    // Installer-supplied config sink used only when ModuleDefinitionId <= 0 (pre-install collect mode).
+    [Parameter]
+    public Dictionary<string, string> InstallSettings { get; set; }
+
+    private string _defaultContent = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ModuleDefinitionId > 0)
+        {
+            var settings = await SettingService.GetModuleDefinitionSettingsAsync(ModuleDefinitionId);
+            _defaultContent = SettingService.GetSetting(settings, SettingName, "");
+        }
+        else if (InstallSettings != null && InstallSettings.TryGetValue(SettingName, out var value))
+        {
+            _defaultContent = value;
+        }
+    }
+
+    public async Task UpdateSettings()
+    {
+        if (ModuleDefinitionId > 0)
+        {
+            var settings = await SettingService.GetModuleDefinitionSettingsAsync(ModuleDefinitionId);
+            settings = SettingService.SetSetting(settings, SettingName, _defaultContent);
+            await SettingService.UpdateModuleDefinitionSettingsAsync(settings, ModuleDefinitionId);
+        }
+        else if (InstallSettings != null)
+        {
+            // install-time collect: raw value into the installer's wizard state (written server-side post-install)
+            InstallSettings[SettingName] = _defaultContent ?? "";
+        }
+    }
+}

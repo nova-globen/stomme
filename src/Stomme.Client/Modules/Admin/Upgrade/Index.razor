@@ -1,0 +1,152 @@
+@namespace Stomme.Modules.Admin.Upgrade
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IFileService FileService
+@inject IPackageService PackageService
+@inject IInstallationService InstallationService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_initialized)
+{
+    <TabStrip>
+        <TabPanel Name="Download" ResourceKey="Download">
+            @if (_package != null && _upgradeavailable)
+            {
+                <div class="db-card">
+                    <div class="db-field">
+                        <Label For="backup" HelpText="Specify if you want to backup files during the upgrade process. Disabling this option will reduce the time required for the upgrade." ResourceKey="Backup">Backup Files? </Label>
+                        <FluentSwitch id="backup" @bind-Value="_backupFiles" />
+                    </div>
+                </div>
+                <div class="db-form-actions">
+                    @if (!_downloaded)
+                    {
+                        <FluentButton Appearance="ButtonAppearance.Primary" OnClick="@(async () => await Download(Constants.PackageId, @_package.Version))">@SharedLocalizer["Download"] @_package.Version</FluentButton>
+                    }
+                    else
+                    {
+                        <FluentButton Appearance="ButtonAppearance.Primary" OnClick="Upgrade">@SharedLocalizer["Upgrade"]</FluentButton>
+                    }
+                </div>
+            }
+            else
+            {
+                <ModuleMessage Type="MessageType.Info" Message=@Localizer["Message.Text"]></ModuleMessage>
+            }
+        </TabPanel>
+        <TabPanel Name="Upload" ResourceKey="Upload">
+            <div class="db-card">
+                <div class="db-field">
+                    <Label HelpText="Upload A Framework Package And Then Select Upgrade" ResourceKey="Framework">Framework: </Label>
+                    <FileManager Folder="@Constants.PackagesFolder" />
+                </div>
+                <div class="db-field">
+                    <Label For="backupupload" HelpText="Specify if you want to backup files during the upgrade process. Disabling this option will reduce the time required for the upgrade." ResourceKey="Backup">Backup Files? </Label>
+                    <FluentSwitch id="backupupload" @bind-Value="_backupFiles" />
+                </div>
+            </div>
+            <div class="db-form-actions">
+                <FluentButton Appearance="ButtonAppearance.Primary" OnClick="Upgrade">@SharedLocalizer["Upgrade"]</FluentButton>
+            </div>
+        </TabPanel>
+    </TabStrip>
+}
+
+@code {
+    private bool _initialized = false;
+    private bool _downloaded = false;
+    private Package _package;
+    private bool _upgradeavailable = false;
+    private string _backup = "True";
+
+    // Typed bridge for the native FluentUI switch over the string-backed setting.
+    private bool _backupFiles
+    {
+        get => bool.TryParse(_backup, out var value) && value;
+        set => _backup = value.ToString();
+    }
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (NavigationManager.BaseUri.Contains("localhost:"))
+            {
+                AddModuleMessage(Localizer["Localhost.Text"], MessageType.Info);
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Disclaimer.Text"], MessageType.Warning);
+
+                List<Package> packages = await PackageService.GetPackagesAsync("framework", "", "", "");
+                if (packages != null)
+                {
+                    _package = packages.Where(item => item.PackageId.StartsWith(Constants.PackageId)).FirstOrDefault();
+                    if (_package != null)
+                    {
+                        _upgradeavailable = (Version.Parse(_package.Version).CompareTo(Version.Parse(Constants.Version)) > 0);
+                    }
+                    else
+                    {
+                        _package = new Package { Name = Constants.PackageId, Version = Constants.Version };
+                    }
+                }
+                _initialized = true;
+            }
+        }
+        catch
+        {
+            // can be caused by no network connection
+        }
+    }
+
+    private async Task Upgrade()
+    {
+        try
+        {
+            AddModuleMessage(Localizer["Info.Upgrade.Wait"], MessageType.Info);
+            ShowProgressIndicator();
+
+            // BL-174: the server answers when the Updater has been handed the upgrade - or why it was not (no package, a
+            // refused pre-upgrade snapshot). Only a started upgrade reloads the page; a refusal stays on it, visible.
+            var result = await InstallationService.Upgrade(bool.Parse(_backup));
+            if (result is { Success: false })
+            {
+                HideProgressIndicator();
+                AddModuleMessage(result.Message, MessageType.Error);
+                return;
+            }
+
+            await new Interop(JSRuntime).RedirectBrowser(NavigateUrl(), 10);
+        }
+        catch (Exception ex)
+        {
+            // The host may already be going down under the Updater: reload as before, once it is back.
+            await logger.LogError(ex, "Error Executing Upgrade {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Upgrade.Execute"], MessageType.Error);
+            await new Interop(JSRuntime).RedirectBrowser(NavigateUrl(), 10);
+        }
+    }
+
+    private async Task Download(string packageid, string version)
+    {
+        try
+        {
+            ShowProgressIndicator();
+            await PackageService.DownloadPackageAsync(packageid, version);
+            await PackageService.DownloadPackageAsync(Constants.UpdaterPackageId, version);
+            _downloaded = true;
+            HideProgressIndicator();
+            AddModuleMessage(Localizer["Success.Framework.Download"], MessageType.Success);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Downloading Framework Package {Error}", ex.Message);
+            HideProgressIndicator();
+            AddModuleMessage(Localizer["Error.Framework.Download"], MessageType.Error);
+        }
+    }
+}

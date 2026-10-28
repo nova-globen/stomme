@@ -1,0 +1,44 @@
+.vs/
+bin/
+obj/
+*.user
+artifacts/
+msbuild.binlog
+.vscode/
+*.binlog
+*.nupkg
+*.zip
+
+*.idea
+_ReSharper.Caches
+.DS_Store
+
+# What the installation writes (Data/appsettings.override.json: the connection string, the installation id) and the
+# SQLite databases. appsettings.json is the app's defaults and is committed.
+Server/Data
+
+Server/Properties/PublishProfiles/FolderProfile.pubxml
+Server/Content
+Server/Content/Log
+Server/Packages
+Server/wwwroot/Content
+Server/wwwroot/Packages/*.log
+
+Server/wwwroot/_content/*
+!Server/wwwroot/_content/Placeholder.txt
+
+Server/wwwroot/Modules/*
+!Server/wwwroot/Modules/Stomme.Modules.*
+# This app's own modules' static files.
+!Server/wwwroot/Modules/Stomme.Application.*
+!Server/wwwroot/Modules/Templates
+Server/wwwroot/Modules/Templates/*
+!Server/wwwroot/Modules/Templates/External
+
+Server/wwwroot/Themes/*
+!Server/wwwroot/Themes/Stomme.Themes.*
+# This app's own themes' static files.
+!Server/wwwroot/Themes/Stomme.Application.*
+!Server/wwwroot/Themes/Templates
+Server/wwwroot/Themes/Templates/*
+!Server/wwwroot/Themes/Templates/External

@@ -1,0 +1,80 @@
+﻿@namespace Stomme.Modules.Admin.Modules
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IModuleService ModuleService
+@inject IFileService FileService
+@inject IStringLocalizer<Import> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+    <div class="db-fields">
+        <div class="db-field">
+            <Label For="file" HelpText="Optionally upload or select a file to import for this module" ResourceKey="File">File: </Label>
+            <div class="db-field-control">
+                <FileManager Id="file" Filter="json" OnSelectFile="OnSelectFile" />
+            </div>
+        </div>
+        <hr />
+        <div class="db-field">
+            <Label For="content" HelpText="Provide the module content to import" ResourceKey="Content">Content: </Label>
+            <div class="db-field-control">
+                <textarea id="content" class="db-input" @bind="@_content" rows="5" required></textarea>
+            </div>
+        </div>
+    </div>
+    <br />
+    <button type="button" class="db-btn" @onclick="ImportModule">@Localizer["Import"]</button>
+    <NavLink class="db-btn db-btn-neutral" href="@PageState.ReturnUrl">@SharedLocalizer["Cancel"]</NavLink>
+</form>
+
+@code {
+    private string _content = string.Empty;
+    private ElementReference form;
+    private bool validated = false;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+    public override string Title => "Import Content";
+
+    private async Task OnSelectFile(int fileId)
+    {
+        var bytes = await FileService.DownloadFileAsync(fileId);
+        _content = System.Text.Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+    }
+
+    private async Task ImportModule()
+    {
+        validated = true;
+        var interop = new Interop(JSRuntime);
+        if (await interop.FormValid(form))
+        {
+            if (_content != string.Empty)
+            {
+                try
+                {
+					bool success = await ModuleService.ImportModuleAsync(ModuleState.ModuleId, PageState.Page.PageId, _content);
+                    if (success)
+                    {
+                        AddModuleMessage(Localizer["Success.Content.Import"], MessageType.Success);
+                    }
+                    else
+                    {
+                        AddModuleMessage(Localizer["Message.Content.ImportProblem"], MessageType.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await logger.LogError(ex, "Error Importing Module {ModuleId} {Error}", ModuleState.ModuleId, ex.Message);
+                    AddModuleMessage(Localizer["Error.Module.Import"], MessageType.Error);
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.ImportContent"], MessageType.Warning);
+            }
+        }
+        else
+        {
+            AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+        }
+    }
+}

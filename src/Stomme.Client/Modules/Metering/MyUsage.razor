@@ -1,0 +1,89 @@
+@namespace Stomme.Modules.Metering
+@inherits ModuleBase
+@inject IMeteringService MeteringService
+
+@*
+    The caller's OWN consumption (D102 item 11, F10). It is its own control rather than a UserProfile tab: the
+    profile page is a hardcoded four-panel TabStrip, and the boot reconciliation adds missing PAGES, not tabs - so
+    "a my-usage tab by reconciliation" was never a thing that could work. The query takes no user id; the server
+    reads the subject from the request principal, so there is no parameter to forge.
+*@
+
+<PageTitle>My usage</PageTitle>
+
+@if (!IsAuthorizedPermission(MeteringPermissions.ViewOwn))
+{
+    <p class="db-metering-denied" style="color:var(--db-text-2);">You do not have access to your usage on this site.</p>
+}
+else
+{
+    <div class="db-metering-mine" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">My usage</h3>
+            <button id="metering-mine-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+
+        @if (_lines.Count == 0)
+        {
+            <p class="db-metering-empty" style="color:var(--db-text-2);">You have not consumed anything on this site yet.</p>
+        }
+        else
+        {
+            <table class="table db-metering-mine-table">
+                <thead><tr><th>Metric</th><th>Window</th><th>Mine</th><th>This site</th><th>Limit</th></tr></thead>
+                <tbody>
+                    @foreach (var line in _lines)
+                    {
+                        <tr>
+                            <td>@line.Metric</td>
+                            <td>@line.Period</td>
+                            <td>@line.MyConsumption</td>
+                            <td>@(line.SiteConsumption?.ToString() ?? "-")</td>
+                            <td>@(line.Unlimited ? "Unlimited" : line.Limit?.ToString() ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+}
+
+@code {
+    private List<MyUsageLine> _lines = new();
+    private string _error = "";
+    private bool _busy;
+
+    public override string Title => "My usage";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(MeteringPermissions.ViewOwn))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            _lines = await MeteringService.GetMyUsageAsync() ?? new List<MyUsageLine>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading My Usage {Error}", ex.Message);
+            _error = "Your usage could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

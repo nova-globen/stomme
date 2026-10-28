@@ -1,0 +1,139 @@
+﻿@namespace Stomme.Modules.Admin.Languages
+@inherits ModuleBase
+@using System.Globalization
+@inject NavigationManager NavigationManager
+@inject ILocalizationService LocalizationService
+@inject ILanguageService LanguageService
+@inject IPackageService PackageService
+@inject IStringLocalizer<Add> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_cultures == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    <TabStrip>
+        <TabPanel Name="Manage" ResourceKey="Manage" Heading="Manage">
+            <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+                <div class="db-fields">
+					<div class="db-field">
+                        <Label For="name" HelpText="Name Of The Language" ResourceKey="Name">Name:</Label>
+                        <div class="db-field-control">
+                            <select id="name" class="db-select" @bind="@_code" required>
+								<option value="-">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+								@foreach (var culture in _cultures)
+                                {
+                                    <option value="@culture.Name">@(culture.DisplayName + " (" + culture.Name + ")")</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="default" HelpText="Indicates Whether Or Not This Language Is The Default For The Site" ResourceKey="IsDefault">Default?</Label>
+                        <div class="db-field-control">
+                            <select id="default" class="db-select" @bind="@_default" required>
+                                <option value="True">@SharedLocalizer["Yes"]</option>
+                                <option value="False">@SharedLocalizer["No"]</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="db-btn" @onclick="SaveLanguage">@SharedLocalizer["Save"]</button>
+				<NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+            </form>
+        </TabPanel>
+        <TabPanel Name="Upload" ResourceKey="Upload" Security="SecurityAccessLevel.Host" Heading="Upload">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label HelpText="Upload one or more translations. Once they are uploaded click Install." ResourceKey="LanguageUpload">Translation: </Label>
+                    <div class="db-field-control">
+                        <FileManager Folder="@Constants.PackagesFolder" UploadMultiple="true" OnUpload="OnUpload" />
+                    </div>
+                </div>
+            </div>
+            <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+        </TabPanel>
+    </TabStrip>
+}
+
+@code {
+	private ElementReference form;
+	private bool validated = false;
+
+	private string _code = "-";
+	private string _default = "False";
+	private List<string> _languages;
+	private IEnumerable<Culture> _cultures;
+
+	public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Admin;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		var languages = await LanguageService.GetLanguagesAsync(PageState.Site.SiteId);
+		_languages = languages.Select(l => l.Code).ToList();
+
+		await LoadCultures();
+	}
+
+	private async Task LoadCultures()
+	{
+		_cultures = await LocalizationService.GetCulturesAsync(false);
+		_cultures = _cultures.Where(c => !c.Name.Equals(Constants.DefaultCulture) && !_languages.Contains(c.Name));
+		_code = "-";
+	}
+
+	private async Task SaveLanguage()
+	{
+		validated = true;
+		var interop = new Interop(JSRuntime);
+		if (await interop.FormValid(form) && _code != "-")
+		{
+			var language = new Language
+				{
+					SiteId = PageState.Page.SiteId,
+					Code = _code,
+					IsDefault = (_default == null ? false : Boolean.Parse(_default))
+				};
+
+			try
+			{
+				language = await LanguageService.AddLanguageAsync(language);
+
+				if (language.IsDefault)
+				{
+					await SetCultureAsync(language.Code);
+				}
+
+				await logger.LogInformation("Language Added {Language}", language);
+
+				NavigationManager.NavigateTo(NavigateUrl());
+			}
+			catch (Exception ex)
+			{
+				await logger.LogError(ex, "Error Adding Language {Language} {Error}", language, ex.Message);
+				AddModuleMessage(Localizer["Error.Language.Add"], MessageType.Error);
+			}
+		}
+		else
+		{
+			AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+		}
+	}
+
+    private async Task SetCultureAsync(string culture)
+    {
+        if (culture != CultureInfo.CurrentUICulture.Name)
+        {
+            var interop = new Interop(JSRuntime);
+            var localizationCookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));
+            await interop.SetCookie(CookieRequestCultureProvider.DefaultCookieName, localizationCookieValue, 360, true, "Lax");
+        }
+    }
+
+    private void OnUpload()
+    {
+        AddModuleMessage(string.Format(Localizer["Success.Language.Download"], NavigateUrl("admin/system")), MessageType.Success);
+    }
+}

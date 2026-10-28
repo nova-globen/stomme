@@ -1,0 +1,34 @@
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Stomme.Databases.Interfaces;
+using Stomme.Migrations.EntityBuilders;
+using Stomme.Repository;
+using Stomme.Shared;
+
+namespace Stomme.Migrations.Tenant
+{
+    [DbContext(typeof(TenantDBContext))]
+    [Migration("Tenant.02.01.00.03")]
+    public class AddFolderType : MultiDatabaseMigration
+    {
+        public AddFolderType(IDatabase database) : base(database)
+        {
+        }
+
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            var folderEntityBuilder = new FolderEntityBuilder(migrationBuilder, ActiveDatabase);
+
+            //Add Type column and initialize
+            folderEntityBuilder.AddStringColumn("Type", 50, true, true);
+            folderEntityBuilder.UpdateData("Type", "'" + FolderTypes.Private + "'");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            var folderEntityBuilder = new FolderEntityBuilder(migrationBuilder, ActiveDatabase);
+
+            folderEntityBuilder.DropColumn("Type");
+        }
+    }
+}

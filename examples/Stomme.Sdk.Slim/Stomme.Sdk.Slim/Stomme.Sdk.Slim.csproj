@@ -1,0 +1,78 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BL-44. The Stomme.Sdk.Slim META-package: the production-slim counterpart of Stomme.Sdk (D81).
+    One PackageReference for a downstream module -> the module-facing COMPILE surface only:
+
+      - Stomme.Server.Sdk / Stomme.Client.Sdk — the two app assemblies as compile-surface shims
+        (no fat closure; the server shim carries the Microsoft.AspNetCore.App frameworkReference),
+      - Stomme.Shared — models/enums/contracts (ModuleDefinition, SiteState, ControllerRoutes,
+        ITransientService, IService...),
+      - Stomme.SharedKernel — the clean-arch domain surface (AggregateRoot, IRepository, IUnitOfWork,
+        IDomainEventHandler, value objects),
+      - Stomme.Mediator — IMediator/handlers + AddMediator,
+      - Microsoft.AspNetCore.Components.WebAssembly — the Blazor component surface a module UI
+        compiles against (ComponentBase/IJSInterop chain for ModuleBase derivatives).
+
+    What it deliberately does NOT bring, versus fat Stomme.Sdk: the persistence PROVIDERS
+    (Persistence.EfCore -> EF Core, Persistence.RavenDb -> RavenDB.Client, Persistence.File) — a
+    storage-blind module authors zero provider code (D79), so it never compiles against them — and the
+    fat Stomme.Server package's 30 third-party dependencies. A module needing a provider-specific
+    escape hatch is not slim's audience; it references fat Stomme.Sdk instead.
+
+    Same meta-package mechanics as Stomme.Sdk: deps-only (IncludeBuildOutput=false), NU5128 expected,
+    restores from ../../local-feed. Versions: the package's own <Version> flows from
+    examples/Directory.Build.props (the pack script's -SdkVersion can rev it independently of an app
+    release); the Stomme.* dependency pins below are hand-maintained in lock-step, exactly as in
+    examples/Stomme.Sdk/Stomme.Sdk.csproj.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <IsPackable>true</IsPackable>
+    <PackageId>Stomme.Sdk.Slim</PackageId>
+    <Authors>Nova Globen AB</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/nova-globen/stomme</PackageProjectUrl>
+    <PackageTags>stomme;module;sdk;slim;storage-blind;provider-neutral</PackageTags>
+    <Description>Meta-package: the slim Stomme module-facing SDK (BL-44). The compile surface a storage-blind module actually uses — ModuleBase/IModuleControl (Client UI), IServerStartup + AddModuleAggregatePersistence (Server), the clean-arch SharedKernel and the mediator — without the full server dependency closure the fat Stomme.Sdk drags (EF providers, RavenDB, OpenIddict, gRPC, Saml2, ...).</Description>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The two compile-surface shims are packed in the same run as this meta, so they pin $(Version):
+         pass -SdkVersion to pack-sdk-slim.ps1 and the meta + shims rev together, independently of the
+         framework lib pins below (which stay at the app version the assemblies were built from). -->
+    <PackageReference Include="Stomme.Server.Sdk" Version="$(Version)" />
+    <PackageReference Include="Stomme.Client.Sdk" Version="$(Version)" />
+    <PackageReference Include="Stomme.Shared" Version="10.73.2" />
+    <PackageReference Include="Stomme.SharedKernel" Version="10.73.2" />
+    <PackageReference Include="Stomme.Mediator" Version="10.73.2" />
+    <!-- D99/BL-99: Stomme.Security.Abstractions — [Requires], IAccessGuard, ICurrentUser, IFeatureEvaluator.
+         A lifted module DECLARES its gates against these four contracts, so they belong in the slim compile
+         surface; the enforcement side (Stomme.Authorization's behavior + AddStommeAuthorization) is the
+         HOST's composition and stays out, exactly like the persistence providers. Deps-only, no third party. -->
+    <PackageReference Include="Stomme.Security.Abstractions" Version="10.73.2" />
+    <!-- BL-86: the TENANCY contracts. BL-111 made a storage-blind aggregate tenant-owned by contract (ITenantOwned, stamped
+         from the ambient ITenantContext's TenantId), and an external module's aggregate that is not is NAMED at startup -
+         yet the slim surface carried none of the three, so a slim-built module could not honour the contract (found
+         building the exemplar). Deps-only, BCL plus SharedKernel. -->
+    <PackageReference Include="Stomme.Tenancy.Domain" Version="10.73.2" />
+    <PackageReference Include="Stomme.Tenancy.Abstractions" Version="10.73.2" />
+    <PackageReference Include="Stomme.Persistence.Abstractions" Version="10.73.2" />
+    <!-- BL-86 increment 3: the BUS contract (IEventBus, IntegrationEvent, IIntegrationEventHandler) - a module announces
+         across contexts through the host's opt-in bus; dependency-free. -->
+    <PackageReference Include="Stomme.EventBus" Version="10.73.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
+  </ItemGroup>
+
+
+  <!-- D98: LICENSE and THIRD-PARTY-NOTICES.md at the package root, as the framework's own packages carry them (BL-186). -->
+  <ItemGroup>
+    <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\..\THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
+
+</Project>

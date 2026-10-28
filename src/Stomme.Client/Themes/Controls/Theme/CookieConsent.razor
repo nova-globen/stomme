@@ -1,0 +1,168 @@
+@namespace Stomme.Themes.Controls
+@inherits ThemeControlBase
+@inject ISettingService SettingService
+@inject ICookieConsentService CookieConsentService
+@inject IStringLocalizer<CookieConsent> Localizer
+
+@* Migrated to the --db-* design system (D11). The bar used to be pinned to `bg-light text-dark`,
+   which forced a light strip with dark text across the bottom of the dark default theme; it now
+   paints on the token surfaces and follows the light/dark override like everything else.
+   Both forms are ordinary posts, so this works statically as well as interactively. *@
+@if (_enabled && !Hidden)
+{
+    <div class="db-consent @(_showBanner ? "open" : "collapsed")">
+        <form method="post" @formname="CookieConsentForm" @onsubmit="async () => await AcceptPolicy()" data-enhance>
+            @if (_showBanner)
+            {
+                <input type="hidden" name="@Constants.RequestVerificationToken" value="@SiteState.AntiForgeryToken" />
+                <div class="db-consent-body">
+                    <label class="db-consent-notice">
+                        @if (PageState.RenderMode == RenderModes.Static)
+                        {
+                            <input type="checkbox" name="cantrack" checked="@_canTrack" value="1" class="db-consent-check" />
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="cantrack" @bind="@_canTrack" value="1" class="db-consent-check" />
+                        }
+                        <span>@((MarkupString)Convert.ToString(Localizer["ConsentNotice"]))</span>
+                    </label>
+                    <div class="db-consent-actions">
+                        <button class="db-btn" type="submit">@((MarkupString)Convert.ToString(Localizer["Confirm"]))</button>
+                        @if (ShowPrivacyLink)
+                        {
+                            <a class="db-btn db-btn-neutral" href="/privacy" target="_blank">@((MarkupString)Convert.ToString(Localizer["Privacy"]))</a>
+                        }
+                    </div>
+                </div>
+            }
+        </form>
+        <form method="post" @formname="CookieConsentToggleForm" @onsubmit="async () => await ToggleBanner()" data-enhance>
+            <input type="hidden" name="@Constants.RequestVerificationToken" value="@SiteState.AntiForgeryToken" />
+            @if (_showBanner)
+            {
+                <input type="hidden" name="showbanner" value="false" />
+                <button type="submit" class="db-consent-toggle db-consent-hide" aria-label="Hide">
+                    <i class="oi oi-chevron-bottom"></i>
+                </button>
+            }
+            else
+            {
+                <input type="hidden" name="showbanner" value="true" />
+                <button type="submit" class="db-consent-toggle db-consent-show" aria-label="Show">
+                    <i class="oi oi-chevron-top"></i>
+                </button>
+            }
+
+        </form>
+    </div>
+}
+@code {
+    private bool _showBanner;
+    private bool _enabled;
+    private bool _optout;
+    private bool _actioned;
+    private bool _canTrack;
+    private bool _consentPostback;
+    private bool _togglePostback;
+
+    [Parameter]
+    public bool Hidden { get; set; }
+
+    [Parameter]
+    public bool ShowPrivacyLink { get; set; } = true;
+
+    [SupplyParameterFromForm(FormName = "CookieConsentToggleForm")]
+    public string ShowBanner
+    {
+        get => "";
+        set
+        {
+            if (!bool.TryParse(value, out _showBanner))
+            {
+                _showBanner = false;
+            }
+            _togglePostback = true;
+        }
+    }
+
+    [SupplyParameterFromForm(FormName = "CookieConsentForm")]
+    public string CanTrack
+    {
+        get => "";
+        set
+        {
+            _canTrack = !string.IsNullOrEmpty(value);
+            _consentPostback = true;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var cookieConsentSetting = SettingService.GetSetting(PageState.Site.Settings, "CookieConsent", string.Empty);
+        _enabled = !string.IsNullOrEmpty(cookieConsentSetting);
+
+        if (!_enabled) return;
+
+        _optout = cookieConsentSetting == "optout";
+        _actioned = await CookieConsentService.IsActionedAsync();
+
+        if (!_consentPostback)
+        {
+            _canTrack = await CookieConsentService.CanTrackAsync(_optout);
+        }
+
+        if (!_togglePostback)
+        {
+            _showBanner = !_actioned;
+        }
+    }
+
+    private async Task AcceptPolicy()
+    {
+        var cookieString = string.Empty;
+        if (_optout)
+        {
+            cookieString = _canTrack ? await CookieConsentService.WithdrawConsentCookieAsync() : await CookieConsentService.CreateConsentCookieAsync();
+        }
+        else
+        {
+            cookieString = _canTrack ? await CookieConsentService.CreateConsentCookieAsync() : await CookieConsentService.WithdrawConsentCookieAsync();
+        }
+
+        //update the page state
+        PageState.AllowCookies = _canTrack;
+
+        if (!string.IsNullOrEmpty(cookieString))
+        {
+            var interop = new Interop(JSRuntime);
+            await interop.SetCookieString(cookieString);
+
+            _actioned = true;
+            _showBanner = false;
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleBanner()
+    {
+        if (!_actioned)
+        {
+            var cookieString = await CookieConsentService.CreateActionedCookieAsync();
+            if (!string.IsNullOrEmpty(cookieString))
+            {
+                var interop = new Interop(JSRuntime);
+                await interop.SetCookieString(cookieString);
+
+                _actioned = true;
+            }
+        }
+
+        if (PageState.RenderMode == RenderModes.Interactive)
+        {
+            _showBanner = !_showBanner;
+            StateHasChanged();
+        }
+    }
+}

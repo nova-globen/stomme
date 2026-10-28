@@ -1,0 +1,78 @@
+@using System.Globalization
+@using Stomme.Models
+@namespace Stomme.Themes.Controls
+@inherits ThemeControlBase
+@inject ILanguageService LanguageService
+@inject ILocalizationCookieService LocalizationCookieService
+@inject NavigationManager NavigationManager
+
+@* Migrated to the --db-* design system (D11). The trigger was a `data-bs-toggle="dropdown"` button
+   whose JS went with the CDN, so the language menu could never be opened; .db-dropdown opens on
+   hover/:focus-within and needs no script (D18). *@
+@if (PageState.Site.Languages.Count() > 1)
+{
+    <div class="app-languages db-dropdown" role="group">
+        <button id="btnCultures" type="button" class="db-icon-btn @ButtonClass" aria-haspopup="true">
+            <span class="oi oi-globe"></span>
+        </button>
+        <div class="db-dropdown-menu @MenuAlignment" aria-labelledby="btnCultures">
+            @foreach (var language in PageState.Site.Languages)
+            {
+                @if (_contentLocalization)
+                {
+                    <a class="db-dropdown-item @(PageState.Site.CultureCode == language.Code ? "active" : String.Empty)" href="@(PageState.Alias.Protocol + language.AliasName)" data-enhance-nav="false">@language.Name</a>
+                }
+                else
+                {
+                    @if (PageState.RenderMode == RenderModes.Interactive)
+                    {
+                        <a class="db-dropdown-item @(CultureInfo.CurrentUICulture.Name == language.Code ? "active" : String.Empty)" href="#" @onclick="@(async e => await SetCultureAsync(language.Code))" @onclick:preventDefault="true">@language.Name</a>
+                    }
+                    else
+                    {
+                        <a class="db-dropdown-item @(CultureInfo.CurrentUICulture.Name == language.Code ? "active" : String.Empty)" href="@NavigateUrl(PageState.Page.Path, "culture=" + language.Code)" data-enhance-nav="false">@language.Name</a>
+                    }
+                }
+            }
+        </div>
+    </div>
+}
+
+@code{
+    private bool _contentLocalization;
+    private string MenuAlignment = string.Empty;
+
+    [Parameter]
+    public string DropdownAlignment { get; set; } = string.Empty; // Empty or Left or Right
+    [Parameter]
+    public string ButtonClass { get; set; } = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        MenuAlignment = DropdownAlignment.ToLower() == "right" ? "db-dropdown-end" : string.Empty;
+
+        // determine if site is using content localization
+        _contentLocalization = PageState.Languages.Any(item => !string.IsNullOrEmpty(item.AliasName));
+
+        if (PageState.QueryString.ContainsKey("culture"))
+        {
+            var culture = PageState.QueryString["culture"];
+            if (PageState.Site.Languages.Any(item => item.Code == culture))
+            {
+                await LocalizationCookieService.SetLocalizationCookieAsync(PageState.Site.CultureCode, culture);
+            }
+            NavigationManager.NavigateTo(NavigationManager.Uri.Replace($"?culture={culture}", ""));
+        }
+    }
+
+    private async Task SetCultureAsync(string culture)
+    {
+        if (culture != CultureInfo.CurrentUICulture.Name)
+        {
+            var localizationCookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(PageState.Site.CultureCode, culture));
+            var interop = new Interop(JSRuntime);
+            await interop.SetCookie(CookieRequestCultureProvider.DefaultCookieName, localizationCookieValue, 360, true, "Lax");
+            NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        }
+    }
+}

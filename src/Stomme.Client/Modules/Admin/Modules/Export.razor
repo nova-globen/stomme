@@ -1,0 +1,101 @@
+﻿@namespace Stomme.Modules.Admin.Modules
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IModuleService ModuleService
+@inject IStringLocalizer<Export> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<TabStrip>
+    <TabPanel Name="Content" Heading="Content" ResourceKey="Content">
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="content" HelpText="Select the Export option and you will be able to view the module content" ResourceKey="Content">Content: </Label>
+                <div class="db-field-control">
+                    <textarea id="content" class="db-input" @bind="@_content" rows="5" readonly></textarea>
+                </div>
+            </div>
+        </div>
+        <br />
+        <button type="button" class="db-btn" @onclick="ExportText">@Localizer["Export"]</button>
+        <NavLink class="db-btn db-btn-neutral" href="@PageState.ReturnUrl">@SharedLocalizer["Cancel"]</NavLink>
+    </TabPanel>
+    <TabPanel Name="File" Heading="File" ResourceKey="File">
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="folder" HelpText="Select a folder where you wish to save the exported content" ResourceKey="Folder">Folder: </Label>
+                <div class="db-field-control">
+                    <FileManager Id="folder" ShowFiles="false" ShowUpload="false" @ref="_filemanager" />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="filename" HelpText="Specify a name for the file (without an extension)" ResourceKey="Filename">Filename: </Label>
+                <div class="db-field-control">
+                    <input id="filename" type="text" class="db-input" @bind="@_filename" />
+                </div>
+            </div>
+        </div>
+        <br />
+        <button type="button" class="db-btn" @onclick="ExportFile">@Localizer["Export"]</button>
+        <NavLink class="db-btn db-btn-neutral" href="@PageState.ReturnUrl">@SharedLocalizer["Cancel"]</NavLink>
+    </TabPanel>
+</TabStrip>
+
+
+
+@code {
+    private string _content = string.Empty;
+    private FileManager _filemanager;
+    private string _filename = string.Empty;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+    public override string Title => "Export Content";
+
+    protected override void OnInitialized()
+    {
+        _filename = Utilities.GetFriendlyUrl(ModuleState.Title);
+    }
+
+    private async Task ExportText()
+    {
+        try
+        {
+            _content = await ModuleService.ExportModuleAsync(ModuleState.ModuleId, PageState.Page.PageId);
+            AddModuleMessage(Localizer["Success.Content.Export"], MessageType.Success);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Exporting Module {ModuleId} {Error}", ModuleState.ModuleId, ex.Message);
+            AddModuleMessage(Localizer["Error.Module.Export"], MessageType.Error);
+        }
+    }
+
+    private async Task ExportFile()
+    {
+        try
+        {
+            var folderid = _filemanager.GetFolderId();
+            if (folderid != -1 && !string.IsNullOrEmpty(_filename))
+            {
+                var fileid = await ModuleService.ExportModuleAsync(ModuleState.ModuleId, PageState.Page.PageId, folderid, _filename);
+                if (fileid != -1)
+                {
+                    AddModuleMessage(Localizer["Success.Content.Export"], MessageType.Success);
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Error.Module.Export"], MessageType.Error);
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Content.Export"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Exporting Module {ModuleId} {Error}", ModuleState.ModuleId, ex.Message);
+            AddModuleMessage(Localizer["Error.Module.Export"], MessageType.Error);
+        }
+    }
+
+}

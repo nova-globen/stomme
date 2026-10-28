@@ -1,0 +1,34 @@
+@namespace Stomme.Installer.Controls
+@implements Stomme.Interfaces.IDatabaseConfigControl
+
+<div class="db-field">
+    <Label For="server" HelpText="Enter the file name to use for the database" ResourceKey="Server">File Name:</Label>
+    <div class="db-field-control">
+        <input id="server" type="text" class="db-input" @bind="@_server" />
+    </div>
+</div>
+
+@code {
+    private string _server = "Stomme-" + DateTime.UtcNow.ToString("yyyyMMddHHmm") + ".db";
+
+    public string GetConnectionString() => ConnectionStringFor(_server);
+
+    /// <summary>
+    /// The connection string for the file name the host entered. A file name or a relative path is placed in the host's
+    /// data directory (BL-194): it was relative to the process's working directory, so in a container (WORKDIR /app, the
+    /// data mounted at /app/Data) the database was written to the image's layer and lost when the container was recreated.
+    /// The token is expanded on the server and the connection string is stored with it; a rooted path is kept as typed.
+    /// </summary>
+    public static string ConnectionStringFor(string fileName)
+    {
+        var path = (fileName ?? string.Empty).Trim();
+        if (path.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        var placed = path.StartsWith("|", StringComparison.Ordinal) || path.StartsWith("/", StringComparison.Ordinal)
+            || path.StartsWith("\\", StringComparison.Ordinal) || (path.Length > 1 && path[1] == ':');
+        return $"Data Source={(placed ? path : "|DataDirectory|/" + path)};";
+    }
+}

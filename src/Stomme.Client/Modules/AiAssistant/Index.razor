@@ -1,0 +1,336 @@
+@namespace Stomme.Modules.AiAssistant
+@inherits ModuleBase
+@inject IAiAssistantService AssistantService
+
+@*
+    The assistant's chat panel (BL-97 increment 10b, the predecessor platform's AssistantChatPanel): for a holder of assistant:use, this
+    site's conversations and one open conversation - its transcript, and every proposal an agent made with Apply and Discard
+    while it is still proposed. Nothing is applied until the user presses Apply, and an apply runs the owning module's own
+    command as this user. A refusal (the guardrail, the site's AI quota, the assistant off or not configured) is shown in
+    place of a reply and nothing is stored. Every answer comes from api/AiAssistant, and the server decides every permission.
+*@
+
+<PageTitle>Assistant</PageTitle>
+
+@if (!IsAuthorizedPermission(AssistantPermissions.Use) && !IsAuthorizedPermission(AssistantPermissions.Configure))
+{
+    <p id="assistant-denied" style="color:var(--db-text-2);">You do not have access to the assistant on this site.</p>
+}
+else
+{
+    <div class="db-assistant" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Assistant</h3>
+            @if (_canConfigure)
+            {
+                <button id="assistant-settings-toggle" type="button" class="db-btn" @onclick="ToggleSettingsAsync" disabled="@_busy">@(_settingsOpen ? "Close settings" : "Settings")</button>
+            }
+            @if (_canUse)
+            {
+                <button id="assistant-new" type="button" class="db-btn" @onclick="StartAsync" disabled="@_busy">New conversation</button>
+            }
+        </div>
+
+        @if (_settingsOpen && _settings is not null)
+        {
+            <fieldset id="assistant-settings" style="display:flex;flex-direction:column;gap:0.5rem;border:1px solid var(--db-border);border-radius:6px;padding:0.75rem;">
+                <legend>This site's assistant</legend>
+                <label><input id="assistant-settings-enabled" type="checkbox" @bind="_form.Enabled" /> Use the assistant on this site</label>
+                <label>Provider
+                    <select id="assistant-settings-provider" @bind="_form.Provider">
+                        @foreach (var provider in _settings.Providers)
+                        {
+                            <option value="@provider">@provider</option>
+                        }
+                    </select>
+                </label>
+                <label>Endpoint <input id="assistant-settings-endpoint" type="url" @bind="_form.Endpoint" style="width:100%;" /></label>
+                <label>Model <input id="assistant-settings-model" type="text" @bind="_form.Model" /></label>
+                <label>Temperature <input id="assistant-settings-temperature" type="number" min="0" max="2" step="0.1" @bind="_form.Temperature" /></label>
+                <label>API key <input id="assistant-settings-key" type="password" autocomplete="new-password" @bind="_form.ApiKey" placeholder="@(_settings.KeyStatus == "Stored" ? "A key is stored - leave empty to keep it" : "No key stored")" /></label>
+                @if (_settings.KeyStatus == "Unreadable")
+                {
+                    <p style="margin:0;color:var(--db-bad);">The stored key can no longer be read; enter it again.</p>
+                }
+                @if (_settings.KeyStatus != "None")
+                {
+                    <label><input id="assistant-settings-clear-key" type="checkbox" @bind="_form.ClearApiKey" /> Remove the stored key</label>
+                }
+                <p style="margin:0;font-size:0.85rem;color:var(--db-text-2);">The endpoint is reached through this site's outbound guard: a server on the local network or this machine (Ollama, LM Studio) answers only when a Host user lists its host under Private hosts on the Connections page. Every call counts against the site's AI quota.</p>
+                <div><button id="assistant-settings-save" type="button" class="db-btn db-btn-primary" @onclick="SaveSettingsAsync" disabled="@_busy">Save</button></div>
+            </fieldset>
+        }
+
+        @if (_refusal is not null)
+        {
+            <p id="assistant-refusal" style="margin:0;color:var(--db-bad);" role="alert">@_refusal.Message</p>
+        }
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="assistant-message" style="margin:0;" role="status">@_message</p>
+        }
+
+        @if (_canUse && _conversations is { Count: > 0 })
+        {
+            <div id="assistant-conversations" style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                @foreach (var summary in _conversations)
+                {
+                    var id = summary.Id;
+                    <button type="button" class="db-btn @(id == _conversation?.Id ? "db-btn-primary" : string.Empty)" data-conversation="@id" @onclick="() => OpenAsync(id)" disabled="@_busy">
+                        @Label(summary)
+                    </button>
+                }
+            </div>
+        }
+
+        @if (!_canUse)
+        {
+        }
+        else if (_conversation is null)
+        {
+            <p id="assistant-empty" style="margin:0;color:var(--db-text-2);">Start a conversation to ask for a pipeline, a dashboard or a chart - or for help with this site.</p>
+        }
+        else
+        {
+            <div id="assistant-transcript" style="display:flex;flex-direction:column;gap:0.5rem;">
+                @foreach (var turn in _conversation.Messages)
+                {
+                    <div class="assistant-turn assistant-turn-@turn.Role.ToLowerInvariant()" style="padding:0.5rem 0.75rem;border-radius:6px;background:var(@(turn.Role == "User" ? "--db-surface-2" : "--db-surface-1"));">
+                        <strong style="display:block;font-size:0.8rem;color:var(--db-text-2);">@(turn.Role == "User" ? "You" : "Assistant")</strong>
+                        <span style="white-space:pre-wrap;">@turn.Content</span>
+                    </div>
+                }
+            </div>
+
+            @if (_conversation.Artifacts.Count > 0)
+            {
+                <div id="assistant-artifacts" style="display:flex;flex-direction:column;gap:0.5rem;">
+                    @foreach (var artifact in _conversation.Artifacts)
+                    {
+                        var artifactId = artifact.Id;
+                        <div class="assistant-artifact" data-artifact="@artifactId" data-state="@artifact.State" style="border:1px solid var(--db-border);border-radius:6px;padding:0.5rem 0.75rem;">
+                            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+                                <strong style="flex:1 1 auto;">@artifact.Title</strong>
+                                <span style="color:var(--db-text-2);">@artifact.Kind · @artifact.State</span>
+                            </div>
+                            <details>
+                                <summary>Draft</summary>
+                                <pre style="white-space:pre-wrap;margin:0.25rem 0 0;">@artifact.SpecJson</pre>
+                            </details>
+                            @if (artifact.State == "Proposed" && _conversation.Status == "Active")
+                            {
+                                <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                                    <button type="button" class="db-btn db-btn-primary assistant-apply" @onclick="() => ApplyAsync(artifactId)" disabled="@_busy">Apply</button>
+                                    <button type="button" class="db-btn assistant-discard" @onclick="() => DiscardAsync(artifactId)" disabled="@_busy">Discard</button>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (_conversation.Status == "Active")
+            {
+                <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                    <label for="assistant-input" style="font-size:0.85rem;color:var(--db-text-2);">Message</label>
+                    <textarea id="assistant-input" rows="3" @bind="_draft" @bind:event="oninput" disabled="@_busy" placeholder="Ask for a pipeline, a dashboard or a chart..."></textarea>
+                    <div>
+                        <button id="assistant-send" type="button" class="db-btn db-btn-primary" @onclick="SendAsync" disabled="@(_busy || string.IsNullOrWhiteSpace(_draft))">@(_busy ? "Working..." : "Send")</button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+}
+
+@code {
+    private List<AssistantConversationSummary> _conversations;
+    private AssistantConversationView _conversation;
+    private AssistantRefusalView _refusal;
+    private string _message;
+    private string _draft = string.Empty;
+    private bool _busy;
+
+    private bool _canUse;
+    private bool _canConfigure;
+    private bool _settingsOpen;
+    private AssistantSettingsView _settings;
+    private readonly SettingsForm _form = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _canUse = IsAuthorizedPermission(AssistantPermissions.Use);
+        _canConfigure = IsAuthorizedPermission(AssistantPermissions.Configure);
+        if (!_canUse)
+        {
+            return;
+        }
+
+        var listed = await AssistantService.ListAsync();
+        if (Show(listed))
+        {
+            _conversations = listed.Value;
+            if (_conversations.Count > 0)
+            {
+                await OpenAsync(_conversations[0].Id);
+            }
+        }
+    }
+
+    private async Task StartAsync() => await RunAsync(async () =>
+    {
+        var started = await AssistantService.StartAsync();
+        if (Show(started))
+        {
+            _conversation = started.Value;
+            await RefreshListAsync();
+        }
+    });
+
+    private async Task OpenAsync(Guid conversationId) => await RunAsync(async () =>
+    {
+        var opened = await AssistantService.GetAsync(conversationId);
+        if (Show(opened))
+        {
+            _conversation = opened.Value;
+        }
+    });
+
+    private async Task SendAsync() => await RunAsync(async () =>
+    {
+        var text = _draft?.Trim();
+        if (_conversation is null || string.IsNullOrEmpty(text))
+        {
+            return;
+        }
+
+        var sent = await AssistantService.SendAsync(_conversation.Id, text);
+        if (Show(sent))
+        {
+            _conversation = sent.Value;
+            _draft = string.Empty;
+            await RefreshListAsync();
+        }
+    });
+
+    private async Task ApplyAsync(Guid artifactId) => await RunAsync(async () =>
+    {
+        var applied = await AssistantService.ApplyAsync(_conversation.Id, artifactId);
+        if (Show(applied))
+        {
+            _message = $"Applied: the {applied.Value.ArtifactKind.ToLowerInvariant()} was created.";
+            await ReloadAsync();
+        }
+    });
+
+    private async Task DiscardAsync(Guid artifactId) => await RunAsync(async () =>
+    {
+        if (Show(await AssistantService.DiscardAsync(_conversation.Id, artifactId)))
+        {
+            _message = "Discarded.";
+            await ReloadAsync();
+        }
+    });
+
+    private async Task ToggleSettingsAsync() => await RunAsync(async () =>
+    {
+        _settingsOpen = !_settingsOpen;
+        if (_settingsOpen)
+        {
+            var read = await AssistantService.GetSettingsAsync();
+            if (Show(read))
+            {
+                Fill(read.Value);
+            }
+            else
+            {
+                _settingsOpen = false;
+            }
+        }
+    });
+
+    private async Task SaveSettingsAsync() => await RunAsync(async () =>
+    {
+        var saved = await AssistantService.SaveSettingsAsync(new SaveAssistantSettingsRequest(_form.Enabled, _form.Provider, _form.Endpoint, _form.Model, _form.Temperature, _form.ApiKey, _form.ClearApiKey));
+        if (Show(saved))
+        {
+            Fill(saved.Value);
+            _message = "Settings saved.";
+        }
+    });
+
+    private void Fill(AssistantSettingsView settings)
+    {
+        _settings = settings;
+        _form.Enabled = settings.Enabled;
+        _form.Provider = settings.Provider;
+        _form.Endpoint = settings.Endpoint;
+        _form.Model = settings.Model;
+        _form.Temperature = settings.Temperature;
+        _form.ApiKey = null;
+        _form.ClearApiKey = false;
+    }
+
+    private sealed class SettingsForm
+    {
+        public bool Enabled { get; set; }
+
+        public string Provider { get; set; }
+
+        public string Endpoint { get; set; }
+
+        public string Model { get; set; }
+
+        public float? Temperature { get; set; }
+
+        public string ApiKey { get; set; }
+
+        public bool ClearApiKey { get; set; }
+    }
+
+    private async Task ReloadAsync()
+    {
+        var reloaded = await AssistantService.GetAsync(_conversation.Id);
+        if (reloaded.Succeeded)
+        {
+            _conversation = reloaded.Value;
+        }
+    }
+
+    private async Task RefreshListAsync()
+    {
+        var listed = await AssistantService.ListAsync();
+        if (listed.Succeeded)
+        {
+            _conversations = listed.Value;
+        }
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _busy = true;
+        _refusal = null;
+        _message = null;
+        try
+        {
+            await action();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private bool Show<T>(AssistantOutcome<T> outcome)
+    {
+        _refusal = outcome.Refusal;
+        return outcome.Succeeded;
+    }
+
+    private static string Label(AssistantConversationSummary summary)
+    {
+        var text = string.IsNullOrWhiteSpace(summary.FirstMessage) ? "New conversation" : summary.FirstMessage.Trim();
+        return text.Length <= 40 ? text : text[..40] + "…";
+    }
+}

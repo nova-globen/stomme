@@ -1,0 +1,221 @@
+@namespace Stomme.UI
+@using System.Reflection
+@using Module = Stomme.Models.Module
+@inject IServiceProvider ServiceProvider
+@inject SiteState ComponentSiteState
+@inject IStringLocalizer<ModuleInstance> Localizer
+@inject ILogService LoggingService
+@inject NavigationManager NavigationManager
+@inherits ErrorBoundary
+
+<CascadingValue Value="@PageState" IsFixed="true">
+    <CascadingValue Value="@ModuleState" IsFixed="true">
+        @if (CurrentException is null)
+        {
+            @if (ModuleType != null)
+            {
+                @if (!string.IsNullOrEmpty(_messageContent) && _messagePosition == "top")
+                {
+                    <ModuleMessage @key="_messageVersionTop" Message="@_messageContent" Type="@_messageType" Parent="@this" Style="@_messageStyle" />
+                }
+                @DynamicComponent
+                @if (_progressIndicator)
+                {
+                    <div class="app-progress-indicator"></div>
+                }
+                @if (!string.IsNullOrEmpty(_messageContent) && _messagePosition == "bottom")
+                {
+                    <ModuleMessage @key="_messageVersionBottom" Message="@_messageContent" Type="@_messageType" Parent="@this" Style="@_messageStyle" />
+                }
+            }
+        }
+        else
+        {
+            @if (!string.IsNullOrEmpty(_error))
+            {
+                <ModuleMessage Message="@_error" Type="@MessageType.Error" />
+            }
+        }
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+    // this component is on the interactive side of the render mode boundary
+    // it receives state as serializable parameters so that the state can be made available to downstream components
+
+    private Type ModuleType { get; set; }
+    RenderFragment DynamicComponent { get; set; }
+
+    private string _messageContent;
+    private MessageType _messageType;
+    private string _messagePosition;
+    private MessageStyle _messageStyle;
+    private bool _progressIndicator = false;
+    private string _error;
+    private string _messageVersionTop = Guid.NewGuid().ToString();
+    private string _messageVersionBottom = Guid.NewGuid().ToString();
+
+    [Parameter]
+    public SiteState SiteState { get; set; }
+
+    [Parameter]
+    public PageState PageState { get; set; }
+
+    [Parameter]
+    public Module ModuleState { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        return PageState?.RenderId == ModuleState?.RenderId;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (ShouldRender())
+        {
+            if (string.IsNullOrEmpty(ModuleState.ModuleType))
+            {
+                _messageContent = string.Format(Localizer["Error.Module.InvalidType"], ModuleState.ModuleDefinitionName);
+                _messageType = MessageType.Error;
+                _messagePosition = "top";
+                _messageStyle = MessageStyle.Alert;
+
+                return;
+            }
+
+            ModuleType = Type.GetType(ModuleState.ModuleType);
+            var moduleName = Utilities.GetTypeNameLastSegment(ModuleState.ModuleType, 0);
+            if (ModuleType == null)
+            {
+                // module does not exist with typename specified
+                _messageContent = string.Format(Localizer["Error.Module.InvalidName"], moduleName);
+                _messageType = MessageType.Error;
+                _messagePosition = "top";
+                _messageStyle = MessageStyle.Alert;
+
+                return;
+            }
+
+            //only validate the services injection in development environment
+            if (NavigationManager.BaseUri.Contains("localhost:") && !ValidateModuleTypeInjectedServices(ModuleType, out IList<string> missingServices))
+            {
+                // module type is not valid for instantiation
+                _messageContent = string.Format(Localizer["Error.Module.InvalidInjectedServices"], string.Join(",", missingServices));
+                _messageType = MessageType.Error;
+                _messagePosition = "top";
+                _messageStyle = MessageStyle.Alert;
+
+                return;
+            }
+
+            // repopulate the SiteState service based on the values passed in the SiteState parameter (this is how state is marshalled across the render mode boundary)
+            ComponentSiteState.Hydrate(SiteState);
+
+            DynamicComponent = builder =>
+            {
+                builder.OpenComponent(0, ModuleType);
+                builder.AddAttribute(1, "RenderModeBoundary", this);
+                builder.CloseComponent();
+            };
+        }
+    }
+
+    public void AddModuleMessage(string message, MessageType type)
+    {
+        AddModuleMessage(message, type, "top");
+    }
+
+    public void AddModuleMessage(string message, MessageType type, string position)
+    {
+        AddModuleMessage(message, type, position, MessageStyle.Alert);
+    }
+
+    public void AddModuleMessage(string message, MessageType type, MessageStyle style)
+    {
+        AddModuleMessage(message, type, "top", style);
+    }
+
+    public void AddModuleMessage(string message, MessageType type, string position, MessageStyle style)
+    {
+        if (message != _messageContent || type != _messageType || position != _messagePosition || style != _messageStyle || style == MessageStyle.Toast)
+        {
+            _messageContent = message;
+            _messageType = type;
+            _messagePosition = position;
+            _messageStyle = style;
+            _progressIndicator = false;
+
+            if (style == MessageStyle.Toast && !string.IsNullOrEmpty(_messageContent))
+            {
+                if (_messagePosition == "top")
+                {
+                    _messageVersionTop = Guid.NewGuid().ToString();
+                }
+                else if (_messagePosition == "bottom")
+                {
+                    _messageVersionBottom = Guid.NewGuid().ToString();
+                }
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    public void ShowProgressIndicator()
+    {
+        _progressIndicator = true;
+        StateHasChanged();
+    }
+
+    public void HideProgressIndicator()
+    {
+        _progressIndicator = false;
+        StateHasChanged();
+    }
+
+    public void DismissMessage()
+    {
+        _messageContent = "";
+        StateHasChanged();
+    }
+
+    protected override async Task OnErrorAsync(Exception exception)
+    {
+        // retrieve friendly localized error
+        _error = Localizer["Error.Module.Exception"];
+        // log error
+        string category = GetType().AssemblyQualifiedName;
+        string feature = Utilities.GetTypeNameLastSegment(category, 1);
+        await LoggingService.Log(null, ModuleState.PageId, ModuleState.ModuleId, PageState.User?.UserId, category, feature, PageState.RemoteIPAddress, LogFunction.Other, LogLevel.Error, exception, "An Unexpected Error Has Occurred In {ModuleDefinitionName}: {Error}", ModuleState.ModuleDefinitionName, exception.Message);
+        await base.OnErrorAsync(exception);
+        return;
+    }
+
+    public new void Recover()
+    {
+        _error = "";
+        base.Recover();
+    }
+
+    private bool ValidateModuleTypeInjectedServices(Type moduleType, out IList<string> missingServices)
+    {
+        missingServices = new List<string>();
+
+        var properties = Utilities.GetPropertiesIncludingInherited(moduleType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        foreach(var property in properties)
+        {
+            var injectAttribute = property.GetCustomAttribute(typeof(InjectAttribute));
+            if (injectAttribute != null)
+            {
+                var serviceType = property.PropertyType;
+                var service = ServiceProvider.GetService(serviceType);
+                if (serviceType != null && service == null)
+                {
+                    missingServices.Add(Utilities.GetTypeNameLastSegment(serviceType.FullName, 0));
+                }
+            }
+        }
+
+        return !missingServices.Any();
+    }
+}

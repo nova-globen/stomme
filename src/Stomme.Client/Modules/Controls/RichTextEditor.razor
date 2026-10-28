@@ -1,0 +1,162 @@
+﻿@using System.Text.RegularExpressions
+@using Microsoft.AspNetCore.Components.Rendering
+@using Microsoft.Extensions.DependencyInjection
+@namespace Stomme.Modules.Controls
+@inherits ModuleControlBase
+@inject IServiceProvider ServiceProvider
+@inject ISettingService SettingService
+@inject IStringLocalizer<RichTextEditor> Localizer 
+
+<div class="db-row" style="@_style">
+    <div class="db-col">
+        @_textEditorComponent
+    </div>
+</div>
+
+@code {
+    private string _textEditorType;
+    private RenderFragment _textEditorComponent;
+    private ITextEditor _textEditor;
+
+    // BL-083 (infra backlog, 2026-08-08): what Initialize was last called with, so a redundant render pass
+    // (same Content, same editor instance) does not call it again and wipe an unsaved edit - see
+    // OnAfterRenderAsync below.
+    private ITextEditor _initializedTextEditor;
+    private string _initializedContent;
+
+    private string _style = "margin-bottom: 50px;";
+
+    [Parameter]
+    public string Content { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
+    [Parameter]
+    public string Placeholder { get; set; }
+
+    [Parameter]
+    public string Provider { get; set; }
+
+    [Parameter]
+    public string Style { get; set; } // optional
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+
+    protected override void OnInitialized()
+    {
+        _textEditorType = GetTextEditorType();
+    }
+
+    protected override void OnParametersSet()
+    {
+
+        if (!string.IsNullOrEmpty(Style))
+        {
+            _style = Style;
+        }
+
+        _textEditorComponent = (builder) =>
+        {
+            CreateTextEditor(builder);
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // BL-083: OnAfterRenderAsync runs after EVERY render of this component, not just the first -
+        // including a render pass triggered by an ancestor that repeats the SAME Content value (Blazor
+        // calls SetParametersAsync again whenever a parent re-renders this component's markup, regardless
+        // of whether any parameter actually changed). Calling Initialize unconditionally on every one of
+        // those passes reset the editor's in-progress content (QuillJSTextEditor.Initialize unconditionally
+        // resets _rawhtml/_originalrawhtml), so a user's unsaved Raw HTML edit was wiped before Save could
+        // read it - observed live, Save persisted empty content.
+        //
+        // Initialize must still run when Content genuinely changes (the Versions tab's Restore and the
+        // post-save reload both re-supply a new Content value through this same path and rely on the
+        // editor picking it up), and when the captured editor reference changes - defensive: today
+        // _textEditorType is computed once in OnInitialized so a mounted RichTextEditor never swaps
+        // editor types, but a recreated child component (TabStrip teardown, future Provider handling)
+        // arrives empty and must be initialized regardless of whether Content moved. The guard
+        // therefore tracks BOTH the editor instance and the content it was last initialized with
+        // rather than just gating on firstRender.
+        if (_textEditor != null && (_textEditor != _initializedTextEditor || Content != _initializedContent))
+        {
+            _textEditor.Initialize(Content);
+            _initializedTextEditor = _textEditor;
+            _initializedContent = Content;
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async Task<string> GetHtml()
+    {
+        return await _textEditor.GetContent();
+    }
+
+    private void CreateTextEditor(RenderTreeBuilder builder)
+    {
+        if(!string.IsNullOrEmpty(_textEditorType))
+        {
+            var editorType = Type.GetType(_textEditorType);
+            if (editorType != null)
+            {
+                builder.OpenComponent(0, editorType);
+
+                var attributes = new Dictionary<string, object>
+                {
+                    { "Placeholder", Placeholder },
+                    { "ReadOnly", ReadOnly }
+                };
+
+                if (AdditionalAttributes != null)
+                {
+                    foreach(var key in AdditionalAttributes.Keys)
+                    {
+                        if(!attributes.ContainsKey(key))
+                        {
+                            attributes.Add(key, AdditionalAttributes[key]);
+                        }
+                        else
+                        {
+                            attributes[key] = AdditionalAttributes[key];
+                        }
+                    }
+                }
+
+                var index = 1;
+                foreach(var name in attributes.Keys)
+                {
+                    if (editorType.GetProperty(name) != null)
+                    {
+                        builder.AddAttribute(index++, name, attributes[name]);
+                    }
+                }
+
+                builder.AddComponentReferenceCapture(index, (c) =>
+                {
+                    _textEditor = (ITextEditor)c;
+                });
+                builder.CloseComponent();
+            }
+        }
+    }
+
+    private string GetTextEditorType()
+    {
+        const string EditorSettingName = "TextEditor";
+
+        if(!string.IsNullOrEmpty(Provider))
+        {
+            var provider = ServiceProvider.GetServices<ITextEditor>().FirstOrDefault(i => i.Name.Equals(Provider, StringComparison.OrdinalIgnoreCase));
+            if(provider != null)
+            {
+                return Utilities.GetFullTypeName(provider.GetType().AssemblyQualifiedName);
+            }
+        }
+
+        return SettingService.GetSetting(PageState.Site.Settings, EditorSettingName, Constants.DefaultTextEditor);
+    }
+}

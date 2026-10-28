@@ -1,0 +1,29 @@
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Stomme.Databases.Interfaces;
+using Stomme.Migrations.EntityBuilders;
+using Stomme.Repository;
+
+namespace Stomme.Migrations.Tenant
+{
+    [DbContext(typeof(TenantDBContext))]
+    [Migration("Tenant.04.00.06.01")]
+    public class AddProfileRows : MultiDatabaseMigration
+    {
+        public AddProfileRows(IDatabase database) : base(database)
+        {
+        }
+
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            var profileEntityBuilder = new ProfileEntityBuilder(migrationBuilder, ActiveDatabase);
+            profileEntityBuilder.AddIntegerColumn("Rows", true);
+            profileEntityBuilder.UpdateData("Rows", 1);
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            // not implemented
+        }
+    }
+}

@@ -1,0 +1,636 @@
+@namespace Stomme.Modules.Pipelines
+@inherits ModuleBase
+@implements IDisposable
+@inject IPipelinesService PipelinesService
+@inject NavigationManager NavigationManager
+
+@*
+    One run (BL-95 increment (b)): its status and its execution log, re-read every two seconds while it is unfinished -
+    observed through InvokeAsync on the circuit's dispatcher, never awaited (D111 item 3, the Step 0 rule). A run is
+    DISPATCHED, so the page a Run button opens (`started=1`) can ask before the engine has stored it: that page waits for
+    the run for up to StartingPolls reads, showing it as starting, before it calls it missing - found walking the editor in
+    a browser, where every new run read "There is no such run on this site" until Refresh was pressed.
+*@
+
+<PageTitle>Run</PageTitle>
+
+@if (!IsAuthorizedPermission(PipelinesPermissions.View))
+{
+    <p class="db-pipelines-denied" style="color:var(--db-text-2);">You do not have access to pipelines on this site.</p>
+}
+else
+{
+    <div class="db-pipeline-run" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 id="pipelines-run-title" style="margin:0;flex:1 1 auto;">@(string.IsNullOrEmpty(_run?.PipelineName) ? "Run" : "Run of " + _run.PipelineName)</h3>
+            @if (!string.IsNullOrEmpty(_run?.PipelineName))
+            {
+                @* BL-229: n8n's execution view - this run on the pipeline's canvas, each step's state and data. *@
+                <a id="pipelines-run-open-editor" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + Uri.EscapeDataString(_run.DefinitionId) + "&run=" + Uri.EscapeDataString(_run.Id))">Open in the editor</a>
+            }
+            <a id="pipelines-runs-back" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Runs")">Runs</a>
+            <button id="pipelines-run-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+        @if (_run is null)
+        {
+            @if (_starting)
+            {
+                <p id="pipelines-run-starting" style="margin:0;color:var(--db-text-2);">The run has started. It shows here once the engine has recorded it - a run that never pauses is recorded when it ends.</p>
+            }
+            else
+            {
+                <p id="pipelines-run-missing" style="margin:0;color:var(--db-text-2);">@(_loaded ? "There is no such run on this site." : "Loading…")</p>
+            }
+        }
+        else
+        {
+            @if (!_run.IsFinished && _run.SubStatus == "Pending")
+            {
+                @* BL-229: one at a time, the rest in turn - a run stored and waiting for the runs before it to end. *@
+                <p id="pipelines-run-queued" style="margin:0 0 0.5rem;color:var(--db-text-2);">It waits its turn: its pipeline runs one at a time, and this run starts once the runs before it have ended, oldest first. Cancel it to take it out of the line.</p>
+            }
+            <dl class="db-pipeline-run-facts" style="display:grid;grid-template-columns:max-content 1fr;gap:0.25rem 1rem;margin:0;">
+                <dt>Status</dt><dd id="pipelines-run-status" style="margin:0;" title="@(_run.Status + " / " + _run.SubStatus)">@PipelineRunStates.LabelOf(_run.SubStatus)</dd>
+                <dt>Pipeline version</dt><dd style="margin:0;">@_run.Version</dd>
+                <dt>Correlation</dt><dd style="margin:0;">@_run.CorrelationId</dd>
+                <dt>Started (UTC)</dt><dd style="margin:0;">@_run.CreatedOnUtc.ToString("u")</dd>
+                <dt>Finished (UTC)</dt><dd style="margin:0;">@(_run.FinishedOnUtc?.ToString("u") ?? "—")</dd>
+                <dt>Incidents</dt><dd style="margin:0;">@_run.IncidentCount</dd>
+                @foreach (var pair in _run.Data ?? new Dictionary<string, string>())
+                {
+                    @* BL-229: what the run saved about itself ("Save run data", n8n's execution data). *@
+                    <dt class="db-pipeline-run-data-key">@pair.Key</dt><dd class="db-pipeline-run-data-value" style="margin:0;">@pair.Value</dd>
+                }
+                @if (_run.Review is { } said)
+                {
+                    @* BL-229 - n8n's execution annotations: what a person said about the run. *@
+                    <dt>Reviewed</dt>
+                    <dd id="pipelines-run-review-said" style="margin:0;">@(said.Rating == PipelineRunReviews.Good ? "Went well" : said.Rating == PipelineRunReviews.Bad ? "Went badly" : "Noted")@(said.Tags.Count > 0 ? " · " + string.Join(", ", said.Tags) : "")@(string.IsNullOrWhiteSpace(said.Note) ? "" : " · " + said.Note)@(said.By is null ? "" : $" - {said.By}, {said.AtUtc:u}")</dd>
+                }
+                @if (!string.IsNullOrEmpty(_run.FailedRunId))
+                {
+                    <dt>Started because</dt>
+                    <dd style="margin:0;"><a id="pipelines-run-failed-run" href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + Uri.EscapeDataString(_run.FailedRunId))">a run of @(_run.FailedPipelineName ?? "a pipeline") failed</a></dd>
+                }
+                @if (!string.IsNullOrEmpty(_run.ParentRunId))
+                {
+                    @* BL-229: a sub-pipeline's run, and the run that started it (n8n's parent execution). *@
+                    <dt>Started by</dt>
+                    <dd style="margin:0;"><a id="pipelines-run-parent" href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + Uri.EscapeDataString(_run.ParentRunId))">a run of @(_run.ParentPipelineName ?? "another pipeline")</a></dd>
+                }
+                @if (!string.IsNullOrEmpty(_run.RetryOfRunId))
+                {
+                    @* BL-229: a run that went on from a failed run's failed step - the steps before it ran in that run, and are there. *@
+                    <dt>Goes on from</dt>
+                    <dd style="margin:0;"><a id="pipelines-run-retry-of" href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + Uri.EscapeDataString(_run.RetryOfRunId))">the run that failed</a>, at the step that failed</dd>
+                }
+            </dl>
+            @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+            {
+                @* BL-229 - n8n's execution annotations: an author says how the run went - well or badly, tags, a note - to find it
+                   again from the runs list and its search. *@
+                @if (_reviewing)
+                {
+                    <section id="pipelines-run-review" style="display:flex;flex-direction:column;gap:0.5rem;padding:0.75rem;border:1px solid var(--db-border);border-radius:var(--db-radius-sm);">
+                        <h4 style="margin:0;">Review</h4>
+                        <div role="group" aria-label="How the run went" style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                            <button id="pipelines-run-review-good" type="button" class="db-btn @(_reviewRating == PipelineRunReviews.Good ? "is-active" : "")" aria-pressed="@(_reviewRating == PipelineRunReviews.Good ? "true" : "false")" @onclick="() => Rate(PipelineRunReviews.Good)">Went well</button>
+                            <button id="pipelines-run-review-bad" type="button" class="db-btn @(_reviewRating == PipelineRunReviews.Bad ? "is-active" : "")" aria-pressed="@(_reviewRating == PipelineRunReviews.Bad ? "true" : "false")" @onclick="() => Rate(PipelineRunReviews.Bad)">Went badly</button>
+                        </div>
+                        <label for="pipelines-run-review-tags">Tags, separated by commas</label>
+                        <input id="pipelines-run-review-tags" class="db-input" value="@_reviewTags" @oninput="e => _reviewTags = e.Value?.ToString() ?? string.Empty" />
+                        <label for="pipelines-run-review-note">Note</label>
+                        <textarea id="pipelines-run-review-note" class="db-input" rows="3" maxlength="@PipelineRunReviews.MaxNoteLength" value="@_reviewNote" @oninput="e => _reviewNote = e.Value?.ToString() ?? string.Empty"></textarea>
+                        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                            <button id="pipelines-run-review-save" type="button" class="db-btn" @onclick="SaveReviewAsync" disabled="@_busy">Save the review</button>
+                            <button id="pipelines-run-review-cancel" type="button" class="db-btn" @onclick="() => _reviewing = false">Cancel</button>
+                        </div>
+                    </section>
+                }
+                else
+                {
+                    <div><button id="pipelines-run-review-open" type="button" class="db-btn" @onclick="OpenReview">@(_run.Review is null ? "Review the run" : "Change the review")</button></div>
+                }
+            }
+            @if (_run.ChildRuns is { Count: > 0 })
+            {
+                <div id="pipelines-run-children">
+                    <h4 style="margin:0 0 0.25rem;">Runs it started</h4>
+                    <ul style="margin:0;padding-left:1.25rem;">
+                        @foreach (var child in _run.ChildRuns)
+                        {
+                            <li><a href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + Uri.EscapeDataString(child.Id))">@(child.PipelineName ?? "a pipeline")</a> - @PipelineRunStates.LabelOf(child.SubStatus), @PipelineRunDurations.Of(child)</li>
+                        }
+                    </ul>
+                </div>
+            }
+            @foreach (var approval in _approvals)
+            {
+                @* BL-229: n8n's "send and wait for approval" - the run waits on a question; a person with the approve key decides here. *@
+                <section class="db-pipeline-approval" id="@("pipelines-approval-" + approval.Id)" style="display:flex;flex-direction:column;gap:0.5rem;padding:0.75rem;border:1px solid var(--db-border);border-radius:var(--db-radius-sm);">
+                    <h4 style="margin:0;">Waiting for approval@(string.IsNullOrEmpty(approval.StepName) ? "" : " - " + approval.StepName)</h4>
+                    <p class="db-pipeline-approval__question" style="margin:0;white-space:pre-wrap;">@approval.Question</p>
+                    @if (!string.IsNullOrEmpty(approval.Details))
+                    {
+                        <pre class="db-pipeline-approval__details db-pipeline-editor__data" style="margin:0;white-space:pre-wrap;">@approval.Details</pre>
+                    }
+                    <p class="db-pipeline-approval__when" style="margin:0;color:var(--db-text-2);">Asked @approval.RequestedOnUtc.ToString("u")@(approval.ExpiresOnUtc is { } expires ? " - to be decided by " + expires.ToString("u") + ", or it goes on down Expired" : "")</p>
+                    @if (IsAuthorizedPermission(PipelinesPermissions.Approve))
+                    {
+                        <label for="@("pipelines-approval-comment-" + approval.Id)">Comment (the run can read it)</label>
+                        <textarea id="@("pipelines-approval-comment-" + approval.Id)" class="db-input" rows="2" maxlength="@PipelineApprovals.MaxCommentLength" value="@CommentOf(approval.Id)" @oninput="e => _comments[approval.Id] = e.Value?.ToString() ?? string.Empty"></textarea>
+                        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                            <button id="@("pipelines-approval-approve-" + approval.Id)" type="button" class="db-btn" @onclick="() => DecideAsync(approval, true)" disabled="@_busy">Approve</button>
+                            <button id="@("pipelines-approval-reject-" + approval.Id)" type="button" class="db-btn" @onclick="() => DecideAsync(approval, false)" disabled="@_busy">Reject</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="db-pipeline-approval__denied" style="margin:0;color:var(--db-text-2);">Deciding it takes the pipelines:approve permission on this site.</p>
+                    }
+                </section>
+            }
+            @if (!string.IsNullOrEmpty(_decided))
+            {
+                <p id="pipelines-approval-decided" style="margin:0;">@_decided</p>
+            }
+            @if (!_run.IsFinished && IsAuthorizedPermission(PipelinesPermissions.Run))
+            {
+                <div><button id="pipelines-run-cancel" type="button" class="db-btn" @onclick="CancelAsync" disabled="@_busy">Cancel</button></div>
+            }
+            else if (_run.IsFinished && !string.IsNullOrEmpty(_run.PipelineName) && IsAuthorizedPermission(PipelinesPermissions.Run) && !_run.InputNotKept)
+            {
+                @* BL-229: n8n's retry - the published version, with what this run was started with; a failed run also from the step
+                   that failed, what had finished not run again. *@
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                    @if (_run.SubStatus == "Faulted")
+                    {
+                        <button id="pipelines-run-retry-failed" type="button" class="db-btn" title="Go on from the step that failed, on the published version - the steps that finished are not run again, and what they saved is kept" @onclick="RetryFromFailedStepAsync" disabled="@_busy">Retry from the failed step</button>
+                    }
+                    <button id="pipelines-run-retry" type="button" class="db-btn" title="Run the pipeline's published version again with what this run was started with" @onclick="() => RetryAsync(false)" disabled="@_busy">@(_run.SubStatus == "Faulted" ? "Retry from the start" : "Run again")</button>
+                    @if (_run.PublishedVersion is { } published && published != _run.Version)
+                    {
+                        @* BL-229 - n8n's "retry with original workflow": the version this run ran, not the published one - to tell a
+                           fault the published version brought from one the run met. *@
+                        <button id="pipelines-run-retry-its-version" type="button" class="db-btn" title="@($"Run version {_run.Version} - the one this run ran - again with what it was started with; version {published} is the published one")" @onclick="() => RetryAsync(true)" disabled="@_busy">@($"Run again on version {_run.Version}")</button>
+                    }
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(_run.InputJson))
+            {
+                <details id="pipelines-run-input">
+                    <summary>What it was started with</summary>
+                    <pre class="db-pipeline-editor__data" style="margin:0.5rem 0 0;white-space:pre-wrap;">@_run.InputJson</pre>
+                </details>
+            }
+            else if (_run.InputNotKept)
+            {
+                @* BL-229 - n8n Enterprise's execution data redaction: what the run was started with was emptied by its pipeline's setting. *@
+                <p id="pipelines-run-input-not-kept" style="color:var(--db-text-2);margin:0;">What it was started with was not kept - the pipeline is set not to keep its runs' data - so it is not run again from here.</p>
+            }
+            @if (_steps.Count > 0)
+            {
+                @* BL-229: the run's timeline - each step's pass a bar, where in the run it began and how long it took, so the slow
+                   step and the wait are seen at once (n8n lists them). *@
+                <h4 style="margin:0;">Timeline</h4>
+                <div id="pipelines-run-timeline" class="db-pipeline-run-timeline">
+                    @foreach (var bar in Timeline())
+                    {
+                        <div class="db-pipeline-run-timeline__row">
+                            <span class="db-pipeline-run-timeline__name" title="@bar.Name">@bar.Name</span>
+                            <span class="db-pipeline-run-timeline__track"><span class="db-pipeline-run-timeline__bar is-@bar.State" style="left:@bar.Left%;width:@bar.Width%;" title="@(bar.Name + " - " + bar.State + ", " + bar.Took)"></span></span>
+                            <span class="db-pipeline-run-timeline__took">@bar.Took</span>
+                        </div>
+                    }
+                    @if (_steps.Count > TimelineMax)
+                    {
+                        <p style="margin:0;color:var(--db-text-2);">The first @TimelineMax of @_steps.Count passes.</p>
+                    }
+                </div>
+                @* BL-229: this run beside another of the same pipeline, step by step - where they part (n8n shows one at a time). *@
+                <div id="pipelines-run-compare" style="display:flex;flex-direction:column;gap:0.4rem;">
+                    @if (_others is null)
+                    {
+                        <div><button id="pipelines-run-compare-open" type="button" class="db-btn" title="Side by side with another run of this pipeline: where the two went another way" @onclick="OpenCompareAsync" disabled="@_busy">Compare with another run…</button></div>
+                    }
+                    else if (_others.Count == 0)
+                    {
+                        <p id="pipelines-run-compare-none" style="margin:0;color:var(--db-text-2);">This pipeline has no other run to compare it with.</p>
+                    }
+                    else
+                    {
+                        <label for="pipelines-run-compare-with" style="color:var(--db-text-2);">Compare with</label>
+                        <select id="pipelines-run-compare-with" class="db-input" style="max-width:32rem;" value="@_otherId" @onchange="e => CompareWithAsync(e.Value?.ToString())">
+                            <option value="">(choose a run)</option>
+                            @foreach (var other in _others)
+                            {
+                                <option value="@other.Id">@other.CreatedOnUtc.ToString("yyyy-MM-dd HH:mm:ss") UTC · @PipelineRunStates.LabelOf(other.SubStatus) · version @other.Version</option>
+                            }
+                        </select>
+                        @if (_comparison is not null)
+                        {
+                            <p id="pipelines-run-compare-summary" style="margin:0;">@PipelineRunComparison.Summary(_comparison) <a href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + Uri.EscapeDataString(_otherId))">Open the other run</a></p>
+                            <div style="overflow-x:auto;">
+                                <table id="pipelines-run-compare-table" class="db-pipeline-run-log" style="width:100%;border-collapse:collapse;">
+                                    <thead><tr><th style="text-align:left;">Step</th><th style="text-align:left;">This run</th><th style="text-align:left;">The other run</th><th style="text-align:left;">What differs</th></tr></thead>
+                                    <tbody>
+                                        @foreach (var row in _comparison)
+                                        {
+                                            <tr class="@(row.Differences.Count > 0 ? "is-different" : "")">
+                                                <td>@(row.StepName ?? row.StepId)</td>
+                                                <td>@Side(row.This)</td>
+                                                <td>@Side(row.Other)</td>
+                                                <td>@(row.Differences.Count == 0 ? "-" : string.Join("; ", row.Differences))</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+            <h4 style="margin:0;">Log</h4>
+            @if (_log.Count == 0)
+            {
+                <p id="pipelines-run-log-empty" style="margin:0;color:var(--db-text-2);">Nothing logged yet.</p>
+            }
+            else
+            {
+                <div style="overflow-x:auto;">
+                    <table class="db-pipeline-run-log" style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">#</th>
+                                <th style="text-align:left;">At (UTC)</th>
+                                <th style="text-align:left;">Step</th>
+                                <th style="text-align:left;">Event</th>
+                                <th style="text-align:left;">Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in _log)
+                            {
+                                <tr>
+                                    <td>@line.Sequence</td>
+                                    <td>@line.TimestampUtc.ToString("HH:mm:ss.fff")</td>
+                                    <td>@(string.IsNullOrEmpty(line.StepName) ? line.StepType : line.StepName)</td>
+                                    <td>@line.EventName</td>
+                                    <td>@line.Message</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p id="pipelines-run-error" style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+    </div>
+}
+
+@code {
+    private PipelineRunView _run;
+    private List<PipelineRunLogLine> _log = new();
+    private List<PipelineStepRunView> _steps = new();
+    private List<PipelineApprovalView> _approvals = new();
+    private readonly Dictionary<string, string> _comments = new(StringComparer.Ordinal);
+    private string _decided = "";
+    private string _id;
+    private string _error = "";
+    private bool _busy;
+    private bool _reviewing;
+    private string _reviewRating;
+    private string _reviewTags = "";
+    private string _reviewNote = "";
+    private bool _loaded;
+    private bool _justStarted;
+    private bool _starting;
+    private int _missingReads;
+    private ITimer _timer;
+
+    /// <summary>How many reads a just-started run may be missing for (one a poll, ten minutes at the default interval) before the page calls it missing: the engine records a run when its burst of work ends - a run that never pauses, when it finishes.</summary>
+    public const int StartingPolls = 300;
+
+    /// <summary>Between two reads of an unfinished or starting run.</summary>
+    [Parameter]
+    public TimeSpan PollInterval { get; set; } = TimeSpan.FromSeconds(2);
+
+    /// <summary>The clock the poll runs on: the system's, or a test's that fires each poll itself - a wall-clock timer's
+    /// callbacks waited for a thread under a loaded test run and the page's test failed now and then (2026-10-03).</summary>
+    [Parameter]
+    public TimeProvider Clock { get; set; } = TimeProvider.System;
+
+    // BL-229: the pipeline's other runs (null until asked for), the one chosen, and the two compared step by step.
+    private List<PipelineRunView> _others;
+    private string _otherId = "";
+    private List<PipelineRunStepComparison> _comparison;
+
+    /// <summary>How many of the pipeline's runs, newest first, are offered to compare with.</summary>
+    public const int CompareChoices = 20;
+
+    private async Task OpenCompareAsync()
+    {
+        try
+        {
+            _others = (await PipelinesService.GetRunsAsync(_run.DefinitionId, CompareChoices + 1) ?? new List<PipelineRunView>())
+                .Where(other => other.Id != _run.Id).Take(CompareChoices).ToList();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Runs To Compare {Error}", ex.Message);
+            _error = "The pipeline's other runs could not be read.";
+        }
+    }
+
+    private async Task CompareWithAsync(string otherId)
+    {
+        _otherId = otherId ?? "";
+        _comparison = null;
+        if (_otherId.Length == 0)
+        {
+            return;
+        }
+
+        try
+        {
+            var theirs = await PipelinesService.GetRunStepsAsync(_otherId) ?? new List<PipelineStepRunView>();
+            _comparison = PipelineRunComparison.Compare(_steps, theirs);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Comparing Runs {Error}", ex.Message);
+            _error = "The other run could not be read.";
+        }
+    }
+
+    // A step in one run, in words: its state, how often it ran, how long it took - or that it did not run.
+    private static string Side(PipelineRunStepSide side) =>
+        side is null ? "did not run"
+        : side.Status + (side.Passes == 1 ? "" : $" · {side.Passes} times") + (side.Took is { } took ? " · " + PipelineRunDurations.Describe(took) : "") + (string.IsNullOrEmpty(side.Error) ? "" : " · " + side.Error);
+
+    public override string Title => "Run";
+
+    // The module's stylesheet (the data blocks): declared here too, so a page opened directly - not reached from the editor
+    // - is styled.
+    public override List<Resource> Resources => new List<Resource>
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Pipelines/pipelines-editor.css" },
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(PipelinesPermissions.View))
+        {
+            var id = PageState.QueryString.ContainsKey("id") ? PageState.QueryString["id"] : null;
+            if (id != _id)
+            {
+                _id = id;
+                _justStarted = PageState.QueryString.ContainsKey("started");
+                _missingReads = 0;
+            }
+
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            if (!string.IsNullOrEmpty(_id))
+            {
+                _run = await PipelinesService.GetRunAsync(_id);
+                _log = _run is null ? new List<PipelineRunLogLine>() : await PipelinesService.GetRunLogAsync(_id) ?? new List<PipelineRunLogLine>();
+                _steps = _run is null ? new List<PipelineStepRunView>() : await PipelinesService.GetRunStepsAsync(_id) ?? new List<PipelineStepRunView>();
+                // Only an unfinished run can be waiting for a decision.
+                _approvals = _run is null || _run.IsFinished ? new List<PipelineApprovalView>() : await PipelinesService.GetApprovalsAsync(_id) ?? new List<PipelineApprovalView>();
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Pipeline Run {Error}", ex.Message);
+            _error = "The run could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+            _loaded = true;
+        }
+
+        // A run the page's own Run button started may not be stored yet: it is starting, for a bounded number of reads.
+        if (_run is null && _justStarted && string.IsNullOrEmpty(_error) && _missingReads < StartingPolls)
+        {
+            _missingReads++;
+            _starting = true;
+        }
+        else
+        {
+            _starting = false;
+            if (_run is not null)
+            {
+                _justStarted = false;
+            }
+        }
+
+        Observe();
+    }
+
+    // Polling, on the circuit's dispatcher: the timer's callback never touches the component directly.
+    private void Observe()
+    {
+        var unfinished = (_run != null && !_run.IsFinished) || _starting;
+        if (unfinished && _timer == null)
+        {
+            _timer = Clock.CreateTimer(_ => _ = InvokeAsync(async () =>
+            {
+                await LoadAsync();
+                StateHasChanged();
+            }), null, PollInterval, Timeout.InfiniteTimeSpan);
+        }
+        else if (unfinished)
+        {
+            _timer.Change(PollInterval, Timeout.InfiniteTimeSpan);
+        }
+        else
+        {
+            _timer?.Dispose();
+            _timer = null;
+        }
+    }
+
+    /// <summary>The most passes the timeline draws.</summary>
+    public const int TimelineMax = 200;
+
+    // Each pass as a bar in the run's span - from the first start to the last end (a pass still going ends now) - its left and
+    // width as percentages (invariant, for the style), its state as the editor's canvas names it, its time as the page says it.
+    private List<(string Name, string State, string Left, string Width, string Took)> Timeline()
+    {
+        var passes = _steps.OrderBy(step => step.StartedAtUtc).Take(TimelineMax).ToList();
+        if (passes.Count == 0)
+        {
+            return new();
+        }
+
+        DateTime EndOf(PipelineStepRunView step) => step.CompletedAtUtc ?? _run?.FinishedOnUtc ?? DateTime.UtcNow;
+        var start = passes.Min(step => step.StartedAtUtc);
+        var span = Math.Max(1d, (passes.Max(EndOf) - start).TotalMilliseconds);
+        return passes.Select(step =>
+        {
+            var took = Math.Max(0, (EndOf(step) - step.StartedAtUtc).TotalMilliseconds);
+            // A bar is never thinner than half a percent, so one that begins at the very end (a quick step after a long wait)
+            // moves left to fit rather than past the track.
+            var width = Math.Clamp(took / span * 100, 0.5, 100);
+            var left = Math.Clamp((step.StartedAtUtc - start).TotalMilliseconds / span * 100, 0, 100 - width);
+            var state = PipelineStepStates.Of(step, _run);
+            return (string.IsNullOrEmpty(step.StepName) ? step.StepType : step.StepName, state, Percent(left), Percent(width), Took(took));
+        }).ToList();
+    }
+
+    private static string Percent(double value) => value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+
+    private static string Took(double milliseconds) =>
+        milliseconds < 1000 ? Math.Round(milliseconds).ToString(System.Globalization.CultureInfo.InvariantCulture) + " ms"
+        : milliseconds < 60_000 ? (milliseconds / 1000).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " s"
+        : (milliseconds / 60_000).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " min";
+
+    // BL-229: the review form opens on what was said before.
+    private void OpenReview()
+    {
+        _reviewRating = _run?.Review?.Rating;
+        _reviewTags = string.Join(", ", _run?.Review?.Tags ?? new List<string>());
+        _reviewNote = _run?.Review?.Note ?? "";
+        _reviewing = true;
+    }
+
+    // A rating pressed again is taken back.
+    private void Rate(string rating) => _reviewRating = _reviewRating == rating ? null : rating;
+
+    private async Task SaveReviewAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            var kept = await PipelinesService.SetRunReviewAsync(_run.Id, new PipelineRunReview { Rating = _reviewRating, Tags = PipelineRunReviews.Tags(_reviewTags.Split(',')), Note = _reviewNote });
+            if (kept is null)
+            {
+                _error = "The run is no longer on this site.";
+            }
+            else
+            {
+                _run.Review = PipelineRunReviews.IsEmpty(kept) ? null : kept;
+                _reviewing = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            _error = "The review was refused: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task CancelAsync()
+    {
+        _error = "";
+        try
+        {
+            await PipelinesService.CancelRunAsync(_id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Cancelling Pipeline Run {Error}", ex.Message);
+            _error = "The run could not be cancelled.";
+        }
+
+        await LoadAsync();
+    }
+
+    // Started again on the published version with this run's input; the new run's page opens, waiting for it as a Run button's does.
+    private async Task RetryAsync(bool onItsVersion)
+    {
+        _error = "";
+        try
+        {
+            var started = await PipelinesService.RetryRunAsync(_id, onItsVersion);
+            if (started is not null && !string.IsNullOrEmpty(started.RunId))
+            {
+                NavigationManager.NavigateTo(NavigateUrl(ModuleState.ModuleId, "Run", "id=" + started.RunId + "&started=1"));
+                return;
+            }
+
+            _error = "The run is no longer on this site.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Retrying Pipeline Run {Error}", ex.Message);
+            _error = "The run could not be started again: " + ex.Message;
+        }
+    }
+
+    // A failed run gone on from its failed step as a new run, whose page opens; refused saying why (the step is gone, it was
+    // also waiting, the pipeline runs one at a time).
+    private async Task RetryFromFailedStepAsync()
+    {
+        _error = "";
+        try
+        {
+            var started = await PipelinesService.RetryFromFailedStepAsync(_id);
+            if (started is not null && !string.IsNullOrEmpty(started.RunId))
+            {
+                NavigationManager.NavigateTo(NavigateUrl(ModuleState.ModuleId, "Run", "id=" + started.RunId + "&started=1"));
+                return;
+            }
+
+            _error = "The run is no longer on this site.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Retrying Pipeline Run From Its Failed Step {Error}", ex.Message);
+            _error = "The run could not go on from the step that failed: " + ex.Message;
+        }
+    }
+
+    private string CommentOf(string approvalId) => _comments.TryGetValue(approvalId, out var comment) ? comment : string.Empty;
+
+    // A decision resumes the run down the chosen outcome; one decided a moment earlier by someone else is said as such.
+    private async Task DecideAsync(PipelineApprovalView approval, bool approve)
+    {
+        _error = "";
+        _decided = "";
+        _busy = true;
+        try
+        {
+            var comment = CommentOf(approval.Id);
+            var decided = await PipelinesService.DecideApprovalAsync(approval.Id, new ApprovalDecisionRequest { Approve = approve, Comment = string.IsNullOrWhiteSpace(comment) ? null : comment });
+            _decided = decided is null
+                ? "It was decided already - by someone else, or its time to decide had ended."
+                : (approve ? "Approved" : "Rejected") + " - the run goes on down " + decided.Outcome + ".";
+            _comments.Remove(approval.Id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deciding Pipeline Approval {Error}", ex.Message);
+            _error = "The decision was refused: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+}

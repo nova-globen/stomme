@@ -1,0 +1,38 @@
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Stomme.Databases.Interfaces;
+using Stomme.Migrations.EntityBuilders;
+using Stomme.Repository;
+
+namespace Stomme.Migrations.Tenant
+{
+    [DbContext(typeof(TenantDBContext))]
+    [Migration("Tenant.03.02.02.01")]
+    public class RemoveFolderFileDeletableColumns : MultiDatabaseMigration
+    {
+        public RemoveFolderFileDeletableColumns(IDatabase database) : base(database)
+        {
+        }
+
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            if (ActiveDatabase.Name != "Sqlite")
+            {
+                var folderEntityBuilder = new FolderEntityBuilder(migrationBuilder, ActiveDatabase);
+                folderEntityBuilder.DropColumn("DeletedBy");
+                folderEntityBuilder.DropColumn("DeletedOn");
+                folderEntityBuilder.DropColumn("IsDeleted");
+
+                var fileEntityBuilder = new FileEntityBuilder(migrationBuilder, ActiveDatabase);
+                fileEntityBuilder.DropColumn("DeletedBy");
+                fileEntityBuilder.DropColumn("DeletedOn");
+                fileEntityBuilder.DropColumn("IsDeleted");
+            }
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            // not implemented
+        }
+    }
+}

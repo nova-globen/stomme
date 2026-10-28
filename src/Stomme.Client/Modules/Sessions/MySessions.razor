@@ -1,0 +1,93 @@
+@namespace Stomme.Modules.Sessions
+@inject ISessionService SessionService
+
+@*
+    The signed-in user's OWN sessions on this site (BL-119), shown on their profile: where they are signed in, and a
+    Revoke for each one that is not the session they are using now (signing out does that).
+*@
+
+<div class="db-my-sessions" style="display:flex;flex-direction:column;gap:0.5rem;">
+    @if (_sessions is null)
+    {
+        <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+    }
+    else if (_sessions.Count == 0)
+    {
+        <div class="db-empty">No other sessions.</div>
+    }
+    else
+    {
+        <div style="overflow-x:auto;">
+            <table class="db-my-sessions-table" style="width:100%;border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align:left;">Signed in (UTC)</th>
+                        <th style="text-align:left;">Last seen (UTC)</th>
+                        <th style="text-align:left;">From</th>
+                        <th style="text-align:left;">Browser</th>
+                        <th style="width:1px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var session in _sessions)
+                    {
+                        <tr>
+                            <td>@session.CreatedOnUtc.ToString("u")</td>
+                            <td>@session.LastSeenOnUtc.ToString("u")</td>
+                            <td>@(string.IsNullOrEmpty(session.RemoteAddress) ? "—" : session.RemoteAddress)</td>
+                            <td style="color:var(--db-text-2);max-width:20rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="@session.UserAgent">@(string.IsNullOrEmpty(session.UserAgent) ? "—" : session.UserAgent)</td>
+                            <td>
+                                @if (session.IsCurrent)
+                                {
+                                    <span style="color:var(--db-text-2);white-space:nowrap;">This session</span>
+                                }
+                                else
+                                {
+                                    <button type="button" class="db-btn db-btn-danger" @onclick="@(() => RevokeAsync(session))" disabled="@_busy">Revoke</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    private List<UserSessionView> _sessions;
+    private bool _busy;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _sessions = await SessionService.GetMineAsync();
+        }
+        catch (Exception)
+        {
+            _sessions = new List<UserSessionView>();
+        }
+    }
+
+    private async Task RevokeAsync(UserSessionView session)
+    {
+        _busy = true;
+        try
+        {
+            await SessionService.RevokeAsync(session.Id);
+        }
+        catch (Exception)
+        {
+            // the reload below shows what is true
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+}

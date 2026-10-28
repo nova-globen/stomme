@@ -1,0 +1,637 @@
+@namespace Stomme.Modules.Pipelines
+@inherits ModuleBase
+@inject IPipelinesService PipelinesService
+
+@*
+    BL-229 - n8n's Data tables: the tables the site keeps for its pipelines. A pipeline reads and writes them with the Data table
+    step; here the site's authors make them, give them columns, and see and change their rows. Every change is decided again
+    by the server, on its key, for the request's site.
+*@
+
+<PageTitle>Data tables</PageTitle>
+
+@if (!IsAuthorizedPermission(PipelinesPermissions.View))
+{
+    <p class="db-pipelines-denied" style="color:var(--db-text-2);">You do not have access to pipelines on this site.</p>
+}
+else
+{
+    <div class="db-pipeline-tables" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 id="pipelines-tables-title" style="margin:0;flex:1 1 auto;">Data tables</h3>
+            <a id="pipelines-back-link" class="db-btn" href="@NavigateUrl()">Pipelines</a>
+            <button id="pipelines-tables-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+        <p style="margin:0;color:var(--db-text-2);">Rows the site's pipelines keep between runs - read and written with the <strong>Data table</strong> step, so a run remembers what an earlier one did. Not for secrets: anyone who may view the pipelines sees them.</p>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p id="pipelines-error" role="alert" style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="pipelines-message" role="status" style="margin:0;">@_message</p>
+        }
+
+        @if (_tables is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading...</p>
+        }
+        else
+        {
+            @if (_tables.Count == 0)
+            {
+                <p id="pipelines-tables-none" style="margin:0;color:var(--db-text-2);">No data tables yet.</p>
+            }
+            else
+            {
+                <ul id="pipelines-tables-list" style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:0.5rem;">
+                    @for (var index = 0; index < _tables.Count; index++)
+                    {
+                        var table = _tables[index];
+                        <li>
+                            <button id="@("pipelines-table-" + index)" type="button" class="db-btn@(table.Id == _open?.Id ? " is-active" : "")" aria-pressed="@(table.Id == _open?.Id ? "true" : "false")"
+                                    title="@string.Join(", ", table.Columns.Select(column => column.Name + " (" + TypeLabel(column.Type) + ")"))" @onclick="() => OpenAsync(table.Id)">@table.Name</button>
+                        </li>
+                    }
+                </ul>
+            }
+
+            @if (IsAuthorizedPermission(PipelinesPermissions.Manage) && _open is null)
+            {
+                <section id="pipelines-tables-new" style="display:flex;flex-direction:column;gap:0.5rem;max-width:48rem;">
+                    <h4 style="margin:0;">New table</h4>
+                    <div style="display:flex;gap:0.5rem;align-items:center;">
+                        <label for="pipelines-tables-new-name">Name</label>
+                        <input id="pipelines-tables-new-name" class="db-input" style="width:20rem;" placeholder="Subscribers" value="@_newName" @oninput="e => _newName = e.Value?.ToString() ?? string.Empty" />
+                    </div>
+                    @ColumnsEditor("pipelines-tables-new-column", _newColumns, _ => false)
+                    <div>
+                        <button id="pipelines-tables-create" type="button" class="db-btn" @onclick="CreateAsync" disabled="@_busy">Create table</button>
+                    </div>
+                </section>
+            }
+
+            @if (_open is not null)
+            {
+                <section id="pipelines-table" style="display:flex;flex-direction:column;gap:0.75rem;">
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+                        <h4 id="pipelines-table-name" style="margin:0;flex:1 1 auto;">@_open.Name</h4>
+                        <span id="pipelines-table-count" style="color:var(--db-text-2);">@(_total == 1 ? "1 row" : _total + " rows")</span>
+                        @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                        {
+                            <button id="pipelines-table-edit" type="button" class="db-btn" @onclick="StartEditing" disabled="@(_busy || _editing)">Edit table</button>
+                            <ActionDialog Header="Delete Table" Message="@($"Delete '{_open.Name}' and its {(_total == 1 ? "row" : _total + " rows")}? A pipeline that uses it fails until a table of that name is made again. It cannot be undone.")" Action="Delete table" Security="SecurityAccessLevel.Anonymous" Class="db-btn pipelines-table-delete" ConfirmClass="db-btn pipelines-table-delete-confirm" OnClick="@(async () => { await DeleteTableAsync(); StateHasChanged(); })" Disabled="@_busy" />
+                        }
+                        <button id="pipelines-table-download" type="button" class="db-btn" title="The table's rows as a CSV file" @onclick="DownloadCsvAsync" disabled="@_busy">Download CSV</button>
+                        <button id="pipelines-table-close" type="button" class="db-btn" @onclick="Close">Close</button>
+                    </div>
+                    @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                    {
+                        @* BL-229: n8n's import into a data table - a CSV's rows added, its header naming the columns; all or nothing. *@
+                        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                            <label for="pipelines-table-import">Add rows from a CSV file</label>
+                            <InputFile id="pipelines-table-import" accept=".csv,text/csv" OnChange="ImportCsvAsync" disabled="@_busy" />
+                            <span style="color:var(--db-text-2);">its header names the columns; a value that does not fit stops the whole file</span>
+                        </div>
+                    }
+
+                    @if (_editing)
+                    {
+                        @* A column keeps its type: one changed is removed and added again (its values go with it). *@
+                        <div id="pipelines-table-editor" style="display:flex;flex-direction:column;gap:0.5rem;max-width:48rem;">
+                            <div style="display:flex;gap:0.5rem;align-items:center;">
+                                <label for="pipelines-table-edit-name">Name</label>
+                                <input id="pipelines-table-edit-name" class="db-input" style="width:20rem;" value="@_editName" @oninput="e => _editName = e.Value?.ToString() ?? string.Empty" />
+                            </div>
+                            @ColumnsEditor("pipelines-table-edit-column", _editColumns, column => column.Was is not null)
+                            <p style="margin:0;color:var(--db-text-2);">A column renamed keeps its values; a removed column's values go with it. A column keeps its type; to change it, remove the column and add it again.</p>
+                            <div style="display:flex;gap:0.5rem;">
+                                <button id="pipelines-table-save" type="button" class="db-btn" @onclick="SaveTableAsync" disabled="@_busy">Save table</button>
+                                <button id="pipelines-table-cancel" type="button" class="db-btn" @onclick="() => _editing = false">Cancel</button>
+                            </div>
+                        </div>
+                    }
+
+                    @* BL-229: n8n's data table view - find rows by any value, sort by a column (click its heading). *@
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                        <label for="pipelines-table-search">Find rows</label>
+                        <input id="pipelines-table-search" type="search" class="db-input" style="width:16rem;" placeholder="any value" value="@_search" @onchange="e => SearchAsync(e.Value?.ToString())" />
+                        @if (!string.IsNullOrEmpty(_search) || !string.IsNullOrEmpty(_sort))
+                        {
+                            <button id="pipelines-table-clear" type="button" class="db-btn" @onclick="ClearViewAsync">Show all, oldest first</button>
+                        }
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table id="pipelines-table-rows" class="db-pipelines-table" style="border-collapse:collapse;min-width:24rem;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:left;">id</th>
+                                    @foreach (var column in _open.Columns)
+                                    {
+                                        var sortBy = column.Name;
+                                        <th style="text-align:left;" title="@TypeLabel(column.Type)"><button id="@("pipelines-table-sort-" + sortBy)" type="button" class="db-link-button" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;" title="@($"Sort by {sortBy}")" @onclick="() => SortAsync(sortBy)">@column.Name@SortMark(sortBy)</button></th>
+                                    }
+                                    <th style="text-align:left;"><button id="pipelines-table-sort-updatedAt" type="button" class="db-link-button" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;" title="Sort by when each row last changed" @onclick="() => SortAsync(PipelineSiteTables.UpdatedColumn)">updated (UTC)@SortMark(PipelineSiteTables.UpdatedColumn)</button></th>
+                                    <th style="width:1px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (var index = 0; index < _rows.Count; index++)
+                                {
+                                    var row = _rows[index];
+                                    var at = index;
+                                    @* Keyed by the row and a count of refusals: a refused value is typed into the input, which the kept value -
+                                       unchanged, so no difference to render - would not replace; a new key renders the input afresh. *@
+                                    <tr @key="@(Cell(row, PipelineSiteTables.IdColumn) + ":" + _refusals)">
+                                        <td><code title="@Cell(row, PipelineSiteTables.IdColumn)">@Short(Cell(row, PipelineSiteTables.IdColumn))</code></td>
+                                        @foreach (var column in _open.Columns)
+                                        {
+                                            var name = column.Name;
+                                            <td>
+                                                @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                                {
+                                                    <input id="@($"pipelines-table-cell-{at}-{name}")" class="db-input" aria-label="@($"{name} of row {at + 1}")" value="@Cell(row, name)" @onchange="e => UpdateCellAsync(at, name, e.Value?.ToString())" />
+                                                }
+                                                else
+                                                {
+                                                    @Cell(row, name)
+                                                }
+                                            </td>
+                                        }
+                                        <td style="white-space:nowrap;color:var(--db-text-2);">@Moment(Cell(row, PipelineSiteTables.UpdatedColumn))</td>
+                                        <td>
+                                            @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                            {
+                                                <ActionDialog Header="Delete Row" Message="Delete this row? It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="@("db-btn pipelines-table-row-delete-" + at)" ConfirmClass="@("db-btn pipelines-table-row-delete-confirm-" + at)" OnClick="@(async () => { await DeleteRowAsync(at); StateHasChanged(); })" Disabled="@_busy" />
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                                @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                {
+                                    <tr id="pipelines-table-add-row">
+                                        <td style="color:var(--db-text-2);">new</td>
+                                        @foreach (var column in _open.Columns)
+                                        {
+                                            var name = column.Name;
+                                            <td><input id="@("pipelines-table-add-" + name)" class="db-input" aria-label="@($"{name} of a new row")" placeholder="@TypeLabel(column.Type)" value="@(_newRow.TryGetValue(name, out var typed) ? typed : "")" @oninput="e => _newRow[name] = e.Value?.ToString() ?? string.Empty" /></td>
+                                        }
+                                        <td></td>
+                                        <td><button id="pipelines-table-add" type="button" class="db-btn" @onclick="AddRowAsync" disabled="@_busy">Add row</button></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (_total > PageSize)
+                    {
+                        <div style="display:flex;gap:0.5rem;align-items:baseline;">
+                            <span id="pipelines-table-page" style="color:var(--db-text-2);">Rows @(_skip + 1)-@(Math.Min(_skip + PageSize, _total)) of @_total</span>
+                            <button id="pipelines-table-previous" type="button" class="db-btn" @onclick="() => PageAsync(-PageSize)" disabled="@(_busy || _skip == 0)">Previous</button>
+                            <button id="pipelines-table-next" type="button" class="db-btn" @onclick="() => PageAsync(PageSize)" disabled="@(_busy || _skip + PageSize >= _total)">Next</button>
+                        </div>
+                    }
+                </section>
+            }
+        }
+    </div>
+}
+
+@code {
+    public const int PageSize = 100;
+
+    private List<PipelineSiteTableView> _tables;
+    private PipelineSiteTableView _open;
+    private List<Dictionary<string, string>> _rows = new();
+    private int _total;
+    private int _skip;
+    private string _error = "";
+    private string _message = "";
+    private bool _busy;
+    private int _refusals;
+    private string _search = "";
+    private string _sort;
+    private bool _descending;
+
+    private string _newName = "";
+    private List<PipelineTableColumn> _newColumns = new() { new PipelineTableColumn() };
+    private Dictionary<string, string> _newRow = new(StringComparer.Ordinal);
+
+    private bool _editing;
+    private string _editName = "";
+    private List<PipelineTableColumn> _editColumns = new();
+
+    public override string Title => "Data tables";
+
+    // The editor's script, for its download helper - its keys act only for an editor that registered with it; and the module's
+    // stylesheet, which widens this page's dialog.
+    public override List<Resource> Resources => new List<Resource>
+    {
+        new Resource { ResourceType = ResourceType.Script, Url = "Modules/Pipelines/pipelines-editor.js", Location = ResourceLocation.Body },
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Pipelines/pipelines-editor.css" },
+    };
+
+    public const long MaxImportBytes = 8 * 1024 * 1024;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(PipelinesPermissions.View))
+        {
+            await LoadAsync();
+            if (_open is null && PageState.QueryString.TryGetValue("table", out var wanted) && _tables?.FirstOrDefault(table => table.Id == wanted || string.Equals(table.Name, wanted, StringComparison.OrdinalIgnoreCase)) is { } chosen)
+            {
+                await OpenAsync(chosen.Id);
+            }
+        }
+    }
+
+    private static string TypeLabel(PipelineTableColumnType type) => PipelineSiteTables.Label(type);
+
+    private static string Cell(Dictionary<string, string> row, string column) =>
+        row.TryGetValue(column, out var value) ? value ?? "" : "";
+
+    // A row id starts with the moment it was made (the same for rows made together) and ends in what tells them apart.
+    private static string Short(string id) => id.Length > 8 ? id[^8..] : id;
+
+    private static string Moment(string iso) =>
+        DateTime.TryParse(iso, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal, out var moment)
+            ? moment.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) : iso;
+
+    // The columns of a table being made or changed: each one's name and type, removable; a kept column's type is fixed.
+    private RenderFragment ColumnsEditor(string idPrefix, List<PipelineTableColumn> columns, Func<PipelineTableColumn, bool> typeFixed) => __builder =>
+    {
+        <div style="display:flex;flex-direction:column;gap:0.25rem;">
+            @for (var index = 0; index < columns.Count; index++)
+            {
+                var at = index;
+                var column = columns[at];
+                <div style="display:flex;gap:0.5rem;align-items:center;">
+                    <input id="@($"{idPrefix}-name-{at}")" class="db-input" style="width:14rem;" aria-label="@($"Column {at + 1}'s name")" placeholder="email" value="@column.Name" @oninput="e => column.Name = e.Value?.ToString() ?? string.Empty" />
+                    <select id="@($"{idPrefix}-type-{at}")" class="db-input" aria-label="@($"Column {at + 1}'s type")" value="@column.Type.ToString()" disabled="@typeFixed(column)" @onchange="e => column.Type = Enum.TryParse<PipelineTableColumnType>(e.Value?.ToString(), out var type) ? type : PipelineTableColumnType.Text">
+                        @foreach (var type in Enum.GetValues<PipelineTableColumnType>())
+                        {
+                            <option value="@type.ToString()">@TypeLabel(type)</option>
+                        }
+                    </select>
+                    <button id="@($"{idPrefix}-remove-{at}")" type="button" class="db-btn" title="Remove this column" @onclick="() => columns.RemoveAt(at)" disabled="@(columns.Count == 1)">Remove</button>
+                </div>
+            }
+            <div>
+                <button id="@($"{idPrefix}-add")" type="button" class="db-btn" @onclick="() => columns.Add(new PipelineTableColumn())" disabled="@(columns.Count >= PipelineSiteTables.MaxColumns)">Add column</button>
+            </div>
+        </div>
+    };
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            _tables = await PipelinesService.GetSiteTablesAsync() ?? new List<PipelineSiteTableView>();
+            if (_open is not null)
+            {
+                if (_tables.FirstOrDefault(table => table.Id == _open.Id) is { } still)
+                {
+                    await ReadRowsAsync(still.Id);
+                }
+                else
+                {
+                    Close();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Data Tables {Error}", ex.Message);
+            _error = "The data tables could not be read.";
+            _tables ??= new List<PipelineSiteTableView>();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task OpenAsync(string tableId)
+    {
+        _message = "";
+        _editing = false;
+        _skip = 0;
+        (_search, _sort, _descending) = ("", null, false);
+        _newRow = new Dictionary<string, string>(StringComparer.Ordinal);
+        await ReadRowsAsync(tableId);
+    }
+
+    private async Task ReadRowsAsync(string tableId)
+    {
+        _error = "";
+        try
+        {
+            var page = await PipelinesService.GetTableRowsAsync(tableId, _skip, PageSize, string.IsNullOrWhiteSpace(_search) ? null : _search.Trim(), _sort, _descending);
+            if (page is null)
+            {
+                _error = "There is no such table on this site.";
+                Close();
+                return;
+            }
+
+            _open = page.Table;
+            _rows = page.Rows ?? new List<Dictionary<string, string>>();
+            _total = page.Total;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Table Rows {Error}", ex.Message);
+            _error = "The table's rows could not be read.";
+        }
+    }
+
+    private void Close()
+    {
+        _open = null;
+        _rows = new List<Dictionary<string, string>>();
+        _total = 0;
+        _editing = false;
+    }
+
+    private async Task PageAsync(int by)
+    {
+        _skip = Math.Max(0, _skip + by);
+        await ReadRowsAsync(_open.Id);
+    }
+
+    private async Task CreateAsync()
+    {
+        _error = "";
+        _message = "";
+        var request = new PipelineSiteTableRequest { Name = (_newName ?? "").Trim(), Columns = _newColumns.Select(column => new PipelineTableColumn { Name = (column.Name ?? "").Trim(), Type = column.Type }).ToList() };
+        if (!PipelineSiteTables.Check(request.Name, request.Columns, out var refused))
+        {
+            _error = refused;
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var created = await PipelinesService.CreateSiteTableAsync(request);
+            _newName = "";
+            _newColumns = new List<PipelineTableColumn> { new PipelineTableColumn() };
+            _tables = await PipelinesService.GetSiteTablesAsync() ?? new List<PipelineSiteTableView>();
+            await OpenAsync(created.Id);
+            _message = $"'{created.Name}' is made - a pipeline reads and writes it with the Data table step.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Creating Data Table {Error}", ex.Message);
+            _error = Refusal("The table could not be made", ex);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private void StartEditing()
+    {
+        _editing = true;
+        _editName = _open.Name;
+        _editColumns = _open.Columns.Select(column => new PipelineTableColumn { Name = column.Name, Type = column.Type, Was = column.Name }).ToList();
+    }
+
+    private async Task SaveTableAsync()
+    {
+        _error = "";
+        _message = "";
+        var request = new PipelineSiteTableRequest { Name = (_editName ?? "").Trim(), Columns = _editColumns.Select(column => new PipelineTableColumn { Name = (column.Name ?? "").Trim(), Type = column.Type, Was = column.Was }).ToList() };
+        if (!PipelineSiteTables.Check(request.Name, request.Columns, out var refused))
+        {
+            _error = refused;
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var saved = await PipelinesService.UpdateSiteTableAsync(_open.Id, request);
+            if (saved is null)
+            {
+                _error = "There is no such table on this site.";
+                Close();
+            }
+            else
+            {
+                _editing = false;
+                _message = $"'{saved.Name}' is saved.";
+                _tables = await PipelinesService.GetSiteTablesAsync() ?? new List<PipelineSiteTableView>();
+                await ReadRowsAsync(saved.Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Data Table {Error}", ex.Message);
+            _error = Refusal("The table could not be saved", ex);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task DeleteTableAsync()
+    {
+        _error = "";
+        _busy = true;
+        try
+        {
+            var name = _open.Name;
+            await PipelinesService.DeleteSiteTableAsync(_open.Id);
+            Close();
+            _message = $"'{name}' is deleted.";
+            _tables = await PipelinesService.GetSiteTablesAsync() ?? new List<PipelineSiteTableView>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Data Table {Error}", ex.Message);
+            _error = Refusal("The table could not be deleted", ex);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task AddRowAsync()
+    {
+        _error = "";
+        _message = "";
+        _busy = true;
+        try
+        {
+            await PipelinesService.AddTableRowAsync(_open.Id, new PipelineTableRowRequest { Values = new Dictionary<string, string>(_newRow) });
+            _newRow = new Dictionary<string, string>(StringComparer.Ordinal);
+            _skip = Math.Max(0, (_total / PageSize) * PageSize); // the new row is the last
+            await ReadRowsAsync(_open.Id);
+            _message = "The row is added.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Adding Table Row {Error}", ex.Message);
+            _error = Refusal("The row could not be added", ex);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task UpdateCellAsync(int at, string column, string value)
+    {
+        _error = "";
+        _message = "";
+        var rowId = Cell(_rows[at], PipelineSiteTables.IdColumn);
+        try
+        {
+            var saved = await PipelinesService.UpdateTableRowAsync(_open.Id, rowId, new PipelineTableRowRequest { Values = new Dictionary<string, string> { [column] = value ?? "" } });
+            if (saved is null)
+            {
+                _error = "The row is no longer there.";
+                await ReadRowsAsync(_open.Id);
+                return;
+            }
+
+            _rows[at] = saved;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Table Row {Error}", ex.Message);
+            var refused = Refusal("The value could not be saved", ex);
+            await ReadRowsAsync(_open.Id); // the cell shows what is kept
+            _refusals++;
+            _error = refused;
+        }
+    }
+
+    private async Task DeleteRowAsync(int at)
+    {
+        _error = "";
+        _message = "";
+        _busy = true;
+        try
+        {
+            await PipelinesService.DeleteTableRowAsync(_open.Id, Cell(_rows[at], PipelineSiteTables.IdColumn));
+            if (_skip >= _total - 1 && _skip > 0)
+            {
+                _skip = Math.Max(0, _skip - PageSize); // the last row of the last page went
+            }
+
+            await ReadRowsAsync(_open.Id);
+            _message = "The row is deleted.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Table Row {Error}", ex.Message);
+            _error = Refusal("The row could not be deleted", ex);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // The sorted column's mark in its heading: up for ascending, down for descending.
+    private string SortMark(string column) =>
+        string.Equals(_sort, column, StringComparison.OrdinalIgnoreCase) ? (_descending ? " \u25BC" : " \u25B2") : "";
+
+    private async Task SearchAsync(string search)
+    {
+        _search = search ?? "";
+        _skip = 0;
+        await ReadRowsAsync(_open.Id);
+    }
+
+    // A first click sorts ascending, a second descending, a third goes back to oldest first.
+    private async Task SortAsync(string column)
+    {
+        if (!string.Equals(_sort, column, StringComparison.OrdinalIgnoreCase))
+        {
+            (_sort, _descending) = (column, false);
+        }
+        else if (!_descending)
+        {
+            _descending = true;
+        }
+        else
+        {
+            (_sort, _descending) = (null, false);
+        }
+
+        _skip = 0;
+        await ReadRowsAsync(_open.Id);
+    }
+
+    private async Task ClearViewAsync()
+    {
+        (_search, _sort, _descending, _skip) = ("", null, false, 0);
+        await ReadRowsAsync(_open.Id);
+    }
+
+    private async Task DownloadCsvAsync()
+    {
+        _error = "";
+        _message = "";
+        try
+        {
+            var csv = await PipelinesService.ExportTableCsvAsync(_open.Id);
+            if (csv is null)
+            {
+                _error = "There is no such table on this site.";
+                return;
+            }
+
+            await JSRuntime.InvokeVoidAsync("stommePipelineEditorDownload", csv.FileName, csv.Csv, "text/csv");
+            _message = $"Downloaded as {csv.FileName}.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Downloading Data Table {Error}", ex.Message);
+            _error = "The table could not be downloaded.";
+        }
+    }
+
+    private async Task ImportCsvAsync(InputFileChangeEventArgs args)
+    {
+        _error = "";
+        _message = "";
+        if (args.File.Size > MaxImportBytes)
+        {
+            _error = $"'{args.File.Name}' was not imported: it is larger than {MaxImportBytes / (1024 * 1024)} MB.";
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            using var reader = new System.IO.StreamReader(args.File.OpenReadStream(MaxImportBytes));
+            var result = await PipelinesService.ImportTableCsvAsync(_open.Id, await reader.ReadToEndAsync());
+            _skip = 0;
+            await ReadRowsAsync(_open.Id);
+            _message = $"Imported {result.Imported} row(s) from '{args.File.Name}'."
+                + (result.Ignored.Count > 0 ? " Not columns of this table, so not imported: " + string.Join(", ", result.Ignored) + "." : "");
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Importing Into Data Table {Error}", ex.Message);
+            _error = Refusal($"'{args.File.Name}' was not imported", ex);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private static string Refusal(string what, Exception ex) =>
+        ex is Stomme.Services.ServiceRefusalException or ArgumentException ? what + ": " + ex.Message : what + ".";
+}

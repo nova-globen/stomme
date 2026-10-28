@@ -1,0 +1,47 @@
+/* The Dashboards module's presentation (BL-96 increment 9, lifted from the predecessor platform's dashboard.css): the theme's --db-* tokens, so widgets follow light and dark. */
+
+.db-dash-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--db-dash-cols, 12), 1fr);
+    grid-auto-rows: var(--db-dash-row-h, 40px);
+    gap: 0.75rem;
+    align-items: stretch;
+}
+
+.db-widget {
+    display: flex;
+    flex-direction: column;
+    background: var(--db-bg-elev, var(--db-bg-elev));
+    border: 1px solid var(--db-border);
+    border-radius: var(--db-radius, 8px);
+    overflow: hidden;
+    min-height: 0;
+}
+
+.db-widget-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--db-border);
+}
+
+.db-widget-titles { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.db-widget-kind { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--db-text-2); font-weight: 700; }
+.db-widget-title { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.db-widget-actions { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; font-size: 11px; color: var(--db-text-2); }
+.db-widget-body { flex: 1 1 auto; padding: 0.75rem; overflow: auto; min-height: 0; }
+.db-widget-chart { width: 100%; height: 100%; min-height: 220px; }
+.db-widget-grid { width: 100%; border-collapse: collapse; font-size: 12px; }
+.db-widget-grid th, .db-widget-grid td { text-align: left; padding: 0.2rem 0.4rem; border-bottom: 1px solid var(--db-border); }
+.db-widget-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+.db-widget-list li { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 12px; }
+.db-kpi { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 0.25rem; }
+.db-kpi-value { font-size: 2rem; font-weight: 600; }
+.db-kpi-label { font-size: 12px; color: var(--db-text-2); }
+.db-dash-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.5rem 0.75rem; align-items: end; }
+.db-dash-form label { display: flex; flex-direction: column; gap: 0.2rem; font-size: 12px; }
+.db-dash-form .db-form-wide { grid-column: 1 / -1; }
+.db-widget-pivot td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+.db-live { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.1rem 0.4rem; border-radius: 999px; border: 1px solid var(--db-border); color: var(--db-text-2); align-self: center; }

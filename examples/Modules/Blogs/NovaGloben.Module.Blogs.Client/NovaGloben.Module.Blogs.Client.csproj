@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!--
+    BL-13: the CLIENT layer of the split (WASM-download-safe) Blogs module — Index.razor : ModuleBase,
+    ModuleInfo (IModule) and the HTTP IBlogService implementation. On a WebAssembly site this assembly
+    (plus the Shared assembly its ModuleDefinition.Dependencies names) is streamed to the BROWSER via
+    api/Installation/list + load, so it must carry NO reference to any server-only assembly
+    (Stomme.Server, Stomme.Persistence.*, EF/Npgsql/Raven) — pinned by
+    Blogs.Drive/ClientAssemblyReferenceTests, which reads the built DLL's referenced-assembly list.
+
+    The RootNamespace stays NovaGloben.Module.Blogs (NOT .Client): the framework derives
+    ModuleDefinitionName from ModuleInfo's namespace + THIS assembly
+    ("NovaGloben.Module.Blogs, NovaGloben.Module.Blogs.Client.Stomme") and resolves the rendered
+    component as {namespace}.{action} in the same assembly — NovaGloben.Module.Blogs.Index — so the
+    /blogs page keeps resolving after the split.
+
+    INDEPENDENT (D81/D82): references Stomme ONLY through a meta-package from the local feed — since
+    BL-44 the SLIM one, Stomme.Sdk.Slim (examples/pack-sdk-slim.ps1). The slim closure still includes
+    the Stomme.Server compile surface, but the compiler only emits assembly references for types
+    actually used — this project uses none, and the reference test proves it (with the Server assembly
+    as the known-dirty control).
+
+    STORAGE-BLIND (owner's bar #2) is unchanged by the split: persistence lives entirely in the
+    Server project (AddModuleAggregatePersistence<BlogPost, Guid>), the client talks HTTP only.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>NovaGloben.Module.Blogs.Client.Stomme</AssemblyName>
+    <RootNamespace>NovaGloben.Module.Blogs</RootNamespace>
+    <Version>2.0.0</Version>
+    <Authors>Nova Globen AB</Authors>
+    <Company>Nova Globen AB</Company>
+    <Product>NovaGloben.Module.Blogs</Product>
+    <Description>Client UI + HTTP service for the split Blogs module (DDD + CQRS on the server).</Description>
+    <Copyright>Nova Globen AB</Copyright>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stomme.Sdk.Slim" Version="10.2.2" />
+  </ItemGroup>
+
+  <!--
+    WASM-safety (measured, BL-13): Microsoft.AspNetCore.OpenApi (transitive via Stomme.Sdk ->
+    Stomme.Server) ships a SOURCE GENERATOR that injects interceptor types into every consuming
+    assembly; those types force references to Microsoft.AspNetCore.OpenApi/Microsoft.OpenApi/Mvc.Core
+    and make Assembly.GetTypes() THROW ReflectionTypeLoadException wherever those assemblies are
+    absent — i.e. in the BROWSER, which would silently kill the WASM client's convention registration
+    (Program.cs swallows the exception). Dropping the analyzer from the compilation keeps this
+    browser-bound assembly free of server-only references; the Server project keeps the generator —
+    OpenApi is server-only surface. (ExcludeAssets="all" on a direct reference does NOT stop the
+    transitive analyzer — measured — so the analyzer item is removed here instead.)
+  -->
+  <Target Name="RemoveOpenApiSourceGenerator" AfterTargets="ResolveReferences" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" Condition="$([System.String]::Copy('%(Analyzer.Identity)').Contains('Microsoft.AspNetCore.OpenApi.SourceGenerators'))" />
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NovaGloben.Module.Blogs.Shared\NovaGloben.Module.Blogs.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BL-86: the exemplar's DRIVE harness (not the module). It installs the packed module through the REAL
+    InstallationManager into the production host (Program.BuildAppAsync, TestServer transport) on SQLite, PostgreSQL and
+    RavenDB, and drives it over HTTP. A harness may reference the framework by project (the render guard does); the
+    packages-only bar is the MODULE's. It keeps its OWN bin - the InstallationManager extracts the module into the entry
+    assembly's bin - so the installed module never leaks into the framework's gated suites. NOT in Stomme.slnx.
+    Prerequisite: pwsh examples/Modules/KnowledgeBase/pack-knowledgebase.ps1 (after examples/pack-sdk-slim.ps1).
+    The PostgreSQL leg reads its password from the environment (POSTGRES_TEST_PASSWORD, or DEFAULT_PASSWORD).
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <IsTestProject>true</IsTestProject>
+    <NoWarn>$(NoWarn);NU1701;NU1902;NU1904</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The packed module, staged beside the harness as DATA (the harness never links the module). -->
+    <None Include="..\Package\NovaGloben.Module.KnowledgeBase.*.nupkg" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Stomme.Server\Stomme.Server.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Stomme.Shared\Stomme.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

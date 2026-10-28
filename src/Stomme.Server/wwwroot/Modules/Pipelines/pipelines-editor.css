@@ -1,0 +1,419 @@
+/* The pipeline editor (BL-95 (c)): the canvas library supplies pan, zoom and links; these are the module's own visuals. */
+/* The editor needs the window. The admin container's dialog is 960px wide for every admin page, which left the canvas a
+   350px strip between the palette and the inspector - a new step landed out of sight (found walking the editor in a
+   browser, 2026-10-02) - so the dialog that holds the editor takes the window's width. */
+.db-admin-modal-dialog:has(.db-pipeline-editor) { max-width: none; margin: 1.5vh auto; }
+/* The runs, evaluations and data tables are wide tables: in the 960px dialog their dates wrapped over three lines and the row's
+   buttons ran past its edge (found looking at UAT with fresh eyes, 2026-10-07). */
+.db-admin-modal-dialog:has(.db-pipeline-runs), .db-admin-modal-dialog:has(.db-pipeline-evaluations), .db-admin-modal-dialog:has(.db-pipeline-tables) { max-width: min(1400px, 96vw); }
+.db-pipeline-editor { display: flex; flex-direction: column; gap: 0.5rem; min-height: 70vh; }
+.db-pipeline-editor__bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.db-pipeline-editor__title { flex: 1 1 auto; display: flex; flex-direction: column; }
+.db-pipeline-editor__meta { color: var(--db-text-2); font-size: 0.85rem; }
+/* BL-229: the pipeline's name, a button for an author - renamed (and described) in place. */
+.db-pipeline-editor__name { align-self: flex-start; padding: 0 0.2rem; margin-left: -0.2rem; border: 1px solid transparent; border-radius: 0.25rem; background: none; color: inherit; font: inherit; font-weight: 700; text-align: left; cursor: text; }
+.db-pipeline-editor__name:hover, .db-pipeline-editor__name:focus-visible { border-color: var(--db-border); }
+.db-pipeline-editor__details { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+.db-pipeline-editor__details input { flex: 1 1 12rem; min-width: 0; }
+.db-pipeline-editor__details input:first-child { flex-basis: 10rem; font-weight: 600; }
+.db-pipeline-editor__error { margin: 0; color: var(--db-bad); }
+.db-pipeline-editor__message { margin: 0; }
+.db-pipeline-editor__body { display: grid; grid-template-columns: 14rem minmax(0, 1fr) 18rem; gap: 0.75rem; min-height: 60vh; }
+@media (max-width: 900px) { .db-pipeline-editor__body { grid-template-columns: 1fr; } }
+.db-pipeline-editor__palette, .db-pipeline-editor__inspector { display: flex; flex-direction: column; gap: 0.4rem; overflow: auto; max-height: 70vh; }
+/* A step's settings, laid out as the inspector lays out its own (the wide view puts them in its middle column). */
+.db-pipeline-editor__settings { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+.db-pipeline-editor__palette h4, .db-pipeline-editor__inspector h4 { margin: 0; }
+.db-pipeline-editor__group h5 { margin: 0.5rem 0 0.25rem; color: var(--db-text-2); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+.db-pipeline-editor__step { display: block; width: 100%; text-align: left; margin: 0 0 0.25rem; padding: 0.35rem 0.5rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); cursor: pointer; }
+.db-pipeline-editor__step:hover:not(:disabled) { border-color: var(--db-accent); }
+/* BL-229 increment 3: the edit toolbar above the canvas. */
+.db-pipeline-editor__tools { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 0.5rem; }
+/* BL-229 increment 10: Import is a label that opens the file input, which stays in the page (and reachable) but unseen. */
+.db-pipeline-editor__tools label.db-btn { cursor: pointer; }
+/* BL-229: a step's data as JSON or, for a list of records, a table (n8n's views). */
+.db-pipeline-editor__data-modes { display: flex; gap: 0.25rem; margin: 0.25rem 0; }
+.db-pipeline-editor__data-modes .db-btn { padding: 0.1rem 0.5rem; font-size: 0.75rem; }
+.db-pipeline-editor__data-modes .db-btn.is-active { font-weight: 600; text-decoration: underline; }
+.db-pipeline-editor__data-table { margin: 0.25rem 0 0.5rem; padding: 0.35rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); font-size: 0.75rem; }
+.db-pipeline-editor__data-table > div[style] { max-height: 16rem; overflow: auto; }
+.db-pipeline-editor__data-table table { border-collapse: collapse; width: 100%; }
+.db-pipeline-editor__data-table th, .db-pipeline-editor__data-table td { border: 1px solid var(--db-border); padding: 0.15rem 0.35rem; text-align: left; vertical-align: top; white-space: nowrap; max-width: 16rem; overflow: hidden; text-overflow: ellipsis; }
+.db-pipeline-editor__data-table-name { font-weight: 600; margin-bottom: 0.2rem; }
+.db-pipeline-editor__data-table-count { margin-top: 0.2rem; color: var(--db-text-2, inherit); }
+/* BL-229: the pipelines list's last run - a failed one stands out. */
+.db-pipelines-last-run__link.is-failed { color: var(--db-bad); font-weight: 600; }
+/* BL-229: a pipeline's tags - chips on the list, each one a filter; the filter row above the table. */
+.db-pipelines-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; margin-top: 0.25rem; }
+/* BL-229: a pipeline's discussion still open, under its name in the list. */
+.db-pipelines-discussion { margin-top: 0.15rem; font-size: 0.85em; }
+.db-pipelines-discussion a { color: var(--db-accent); }
+.db-pipelines-tag { font: inherit; font-size: 0.75rem; line-height: 1.4; padding: 0.05rem 0.5rem; border: 1px solid var(--db-border); border-radius: 999px; background: var(--db-bg-elev); color: var(--db-text); cursor: pointer; }
+.db-pipelines-tag.is-active { border-color: var(--db-accent); font-weight: 600; }
+.db-pipelines-tags-edit { display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; margin-top: 0.25rem; }
+.db-pipelines-tags-edit .db-input { max-width: 20rem; }
+/* BL-229 - n8n's folders: the way back to the top, the folders inside the one shown, and where a found pipeline is. */
+.db-pipelines-folders { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: space-between; }
+.db-pipelines-folders__path { display: flex; flex-wrap: wrap; gap: 0.15rem; align-items: center; }
+.db-pipelines-folders__new { display: flex; gap: 0.25rem; align-items: center; }
+.db-pipelines-folders__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.db-pipelines-folders__list li { display: flex; gap: 0.35rem; align-items: center; padding: 0.35rem 0.6rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipelines-folder, .db-pipelines-folder-link { font: inherit; padding: 0; border: 0; background: none; color: var(--db-accent); cursor: pointer; text-decoration: underline; }
+.db-pipelines-folder { font-weight: 600; text-decoration: none; }
+.db-pipelines-folder::before { content: "\25A4  "; color: var(--db-text-2); }
+/* BL-229: the keyboard shortcuts list (?). */
+.db-pipeline-editor__shortcuts { margin: 0 0 0.5rem; padding: 0.5rem 0.75rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); }
+/* BL-229 - n8n's AI workflow builder: what the author asks, and what the AI says it did (its change is marked on the canvas). */
+.db-pipeline-editor__ai { display: flex; flex-direction: column; gap: 0.35rem; margin: 0 0 0.5rem; padding: 0.5rem 0.75rem; border: 1px solid var(--db-accent); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipeline-editor__ai textarea { width: 100%; min-height: 4.5rem; resize: vertical; }
+.db-pipeline-editor__ai-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.db-pipeline-editor__ai-summary { margin: 0; white-space: pre-line; }
+.db-pipeline-editor__ai-turns { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.2rem; max-height: 14rem; overflow: auto; white-space: pre-line; }
+.db-pipeline-editor__ai-who { font-weight: 600; color: var(--db-text-2); }
+.db-pipeline-editor__shortcuts dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.2rem 1rem; margin: 0 0 0.5rem; }
+.db-pipeline-editor__shortcuts dd { margin: 0; }
+.db-pipeline-editor__shortcuts kbd { font-family: inherit; font-size: 0.85em; padding: 0.05rem 0.35rem; border: 1px solid var(--db-border); border-radius: 0.25rem; white-space: nowrap; }
+.db-pipeline-editor__file { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); border: 0; }
+/* BL-229 increment 4: problems - the list above the canvas, the badge on a step, the inspector's marks. */
+/* BL-229, n8n's mapping: variables and their fields to drag into an input. */
+.db-pipeline-editor__drag-fields { display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; margin: 0.5rem 0; }
+.db-pipeline-editor__drag-hint { color: var(--db-text-2); margin-right: 0.25rem; }
+.db-pipeline-editor__drag-more { display: contents; }
+.db-pipeline-editor__drag-more > summary { cursor: pointer; color: var(--db-text-2); font-size: 0.85em; }
+.db-pipeline-editor__drag-more[open] > summary { flex-basis: 100%; }
+.db-pipeline-editor__drag-field { padding: 0.05rem 0.4rem; border: 1px solid var(--db-border); border-radius: 0.25rem; background: var(--db-bg-elev); font-family: monospace; font-size: 0.85em; cursor: grab; }
+.db-pipeline-editor__drag-field:active { cursor: grabbing; }
+
+/* BL-229: find on the canvas. */
+.db-pipeline-editor__find { margin: 0 0 0.5rem; max-width: 40rem; }
+.db-pipeline-editor__find-none { margin: 0.25rem 0 0; color: var(--db-text-2); }
+.db-pipeline-editor__find-results { list-style: none; margin: 0.25rem 0 0; padding: 0; max-height: 12rem; overflow-y: auto; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipeline-editor__find-result { display: block; width: 100%; text-align: left; padding: 0.3rem 0.5rem; border: 0; background: none; color: var(--db-text); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.db-pipeline-editor__find-result:hover, .db-pipeline-editor__find-result.is-current { background: var(--db-bg); }
+.db-pipeline-editor__find-result.is-current { box-shadow: inset 3px 0 0 var(--db-accent); }
+.db-pipeline-editor__find-result span { color: var(--db-text-2); }
+.db-pipeline-editor__problems { margin: 0 0 0.5rem; padding: 0.35rem 0.6rem; border: 1px solid var(--db-warn); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipeline-editor__problems.has-errors { border-color: var(--db-bad); }
+.db-pipeline-editor__problems summary { cursor: pointer; font-weight: 600; }
+.db-pipeline-editor__problems ul { list-style: none; margin: 0.35rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.15rem; max-height: 10rem; overflow: auto; }
+.db-pipeline-editor__problem { display: block; width: 100%; text-align: left; padding: 0.2rem 0.4rem; border: 0; border-radius: 0.25rem; background: none; color: inherit; cursor: pointer; font: inherit; }
+.db-pipeline-editor__problem:hover { background: var(--db-bg-elev-2); }
+.db-pipeline-editor__problem-kind { display: inline-block; min-width: 4.5rem; font-size: 0.75rem; text-transform: uppercase; }
+.is-error > .db-pipeline-editor__problem .db-pipeline-editor__problem-kind { color: var(--db-bad); }
+.is-warning > .db-pipeline-editor__problem .db-pipeline-editor__problem-kind { color: var(--db-warn); }
+.db-step-node__problems { font-size: 0.75rem; margin: -0.15rem 0 0.3rem; }
+.db-step-node.is-problem-error { border-color: var(--db-bad); }
+.db-step-node.is-problem-error .db-step-node__problems { color: var(--db-bad); }
+.db-step-node.is-problem-warning { border-color: var(--db-warn); }
+.db-step-node.is-problem-warning .db-step-node__problems { color: var(--db-warn); }
+.db-pipeline-editor__step-problems { margin: 0 0 0.5rem; padding-left: 1.1rem; font-size: 0.85rem; }
+.db-pipeline-editor__step-problems .is-error, .db-pipeline-editor__input-problem.is-error { color: var(--db-bad); }
+.db-pipeline-editor__step-problems .is-warning, .db-pipeline-editor__input-problem.is-warning { color: var(--db-warn); }
+.db-pipeline-editor__input-problem { font-size: 0.8rem; margin: 0.15rem 0 0; }
+.db-pipeline-editor__required { color: var(--db-bad); }
+/* D111a: a webhook's new secret, shown once - the box takes the row, the buttons beside it. */
+.db-pipeline-editor__webhook-secret { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; margin: 0.4rem 0; padding: 0.5rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipeline-editor__webhook-secret p { flex: 1 1 100%; margin: 0; font-size: 0.85rem; }
+.db-pipeline-editor__webhook-secret input { flex: 1 1 14rem; min-width: 0; font-family: monospace; font-size: 0.8rem; }
+.db-pipeline-editor__webhook-secret-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.35rem; }
+/* BL-229 increment 8: a stripe in a shade of the accent per category, the minimap, a connection's outcome label. */
+.db-step-node.db-step-node--shade-0 { border-top: 3px solid var(--db-accent); }
+.db-step-node.db-step-node--shade-1 { border-top: 3px solid color-mix(in oklab, var(--db-accent) 75%, var(--db-bg-elev)); }
+.db-step-node.db-step-node--shade-2 { border-top: 3px solid color-mix(in oklab, var(--db-accent) 55%, var(--db-bg-elev)); }
+.db-step-node.db-step-node--shade-3 { border-top: 3px solid color-mix(in oklab, var(--db-accent) 38%, var(--db-bg-elev)); }
+.db-step-node.db-step-node--shade-4 { border-top: 3px solid color-mix(in oklab, var(--db-text-2) 60%, var(--db-bg-elev)); }
+.db-pipeline-editor__minimap { position: absolute; right: 0.5rem; bottom: 0.5rem; z-index: 3; color: var(--db-accent); border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); opacity: 0.92; pointer-events: none; }
+.db-pipeline-editor__minimap .navigator-node { opacity: 0.55; }
+.db-step-node__reliability { font-size: 0.7rem; color: var(--db-text-2); margin: -0.2rem 0 0.3rem; }
+.db-step-node__comment { font-size: 0.75rem; font-style: italic; color: var(--db-text-2); margin: -0.2rem 0 0.35rem; max-width: 16rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.db-note { min-width: 10rem; max-width: 16rem; min-height: 3rem; padding: 0.5rem 0.6rem; border: 1px solid var(--db-border); border-left: 4px solid color-mix(in oklab, var(--db-accent) 55%, var(--db-bg-elev)); border-radius: 0.375rem; background: color-mix(in oklab, var(--db-accent) 8%, var(--db-bg-elev)); font-size: 0.85rem; white-space: pre-wrap; word-break: break-word; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); }
+.db-note.is-selected { border-color: var(--db-accent); }
+/* A note's Markdown (NoteMarkdown), kept to the note's size: headings a little larger, lists indented, code tinted, a link in
+   the theme's accent. Its line breaks stay the note's own (pre-wrap). */
+.db-note h4, .db-note h5, .db-note h6, .db-note p, .db-note ul, .db-note ol { margin: 0 0 0.35rem; }
+.db-note > :last-child { margin-bottom: 0; }
+.db-note h4, .db-note h5, .db-note h6 { font-weight: 600; } /* the theme's headings are 500: too near a note's own text */
+.db-note h4 { font-size: 1rem; }
+.db-note h5 { font-size: 0.92rem; }
+.db-note h6 { font-size: 0.85rem; }
+.db-note ul, .db-note ol { padding-left: 1.1rem; white-space: normal; }
+.db-note code { padding: 0 0.2rem; border-radius: 0.2rem; background: color-mix(in oklab, var(--db-text) 8%, var(--db-bg-elev)); font-size: 0.8rem; }
+.db-note a { color: var(--db-accent); }
+/* BL-229 - n8n's note colours, each one of the theme's: green its ok, amber its warn, red its bad, grey its quiet text. The
+   picker's swatches wear the same classes, so they come first and a colour wins over them. */
+.db-pipeline-editor__note-colors { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; align-items: center; margin: 0.5rem 0; padding: 0; border: 0; }
+.db-pipeline-editor__note-colors legend { width: 100%; margin-bottom: 0.15rem; padding: 0; }
+.db-pipeline-editor__swatch { display: inline-block; width: 0.9rem; height: 0.9rem; margin-right: 0.3rem; vertical-align: middle; border: 1px solid var(--db-border); border-left: 4px solid color-mix(in oklab, var(--db-accent) 55%, var(--db-bg-elev)); border-radius: 0.2rem; background: color-mix(in oklab, var(--db-accent) 8%, var(--db-bg-elev)); }
+.db-note--green, .db-note.db-note--green { border-left-color: var(--db-ok); background: color-mix(in oklab, var(--db-ok) 10%, var(--db-bg-elev)); }
+.db-note--amber, .db-note.db-note--amber { border-left-color: var(--db-warn); background: color-mix(in oklab, var(--db-warn) 12%, var(--db-bg-elev)); }
+.db-note--red, .db-note.db-note--red { border-left-color: var(--db-bad); background: color-mix(in oklab, var(--db-bad) 10%, var(--db-bg-elev)); }
+.db-note--grey, .db-note.db-note--grey { border-left-color: var(--db-text-2); background: color-mix(in oklab, var(--db-text-2) 8%, var(--db-bg-elev)); }
+/* The outcome's name on a connection: the theme's colours - the library's own rule is more specific than a plain class, so this
+   one names the link too. */
+.db-pipeline-editor__canvas .diagram-link div.default-link-label { min-width: 0; font-size: 0.75rem; color: var(--db-text-2); background: var(--db-bg-elev); border: 1px solid var(--db-border); border-radius: 0.25rem; padding: 0 0.3rem; }
+/* BL-229 - n8n's "3 items" on a connection taken in the run shown, above its middle. */
+.db-pipeline-editor__canvas .db-connection-count { display: inline-block; transform: translate(-50%, -50%); padding: 0 0.3rem; border-radius: 0.25rem; background: var(--db-bg-elev); color: var(--db-accent); font-size: 0.7rem; white-space: nowrap; }
+/* BL-229 - n8n's + and bin on a connection: on its middle, shown in place of the outcome's name while the pointer is over the
+   connection or it is selected. A label takes no pointer by the library's rule, so the buttons ask for it back. */
+.db-pipeline-editor__canvas .db-connection-actions { display: inline-flex; gap: 0.25rem; transform: translate(-50%, -50%); pointer-events: all; opacity: 0; transition: opacity 0.12s; }
+.db-pipeline-editor__canvas .diagram-link:hover .db-connection-actions, .db-pipeline-editor__canvas .db-connection-actions.is-shown, .db-pipeline-editor__canvas .db-connection-actions:focus-within { opacity: 1; }
+.db-pipeline-editor__canvas .diagram-link:hover:has(.db-connection-actions) div.default-link-label, .db-pipeline-editor__canvas .diagram-link:has(.db-connection-actions.is-shown) div.default-link-label, .db-pipeline-editor__canvas .diagram-link:has(.db-connection-actions:focus-within) div.default-link-label { visibility: hidden; }
+.db-connection-actions button { width: 1.15rem; height: 1.15rem; padding: 0; border: 1px solid var(--db-border); border-radius: 50%; background: var(--db-bg-elev); color: var(--db-text-2); font-size: 0.8rem; line-height: 1rem; cursor: pointer; }
+.db-connection-actions button:hover, .db-connection-actions button:focus-visible { border-color: var(--db-accent); color: var(--db-text); }
+.db-pipeline-editor__inserting { margin: 0.25rem 0; padding: 0.25rem 0.4rem; border-left: 3px solid var(--db-accent); font-size: 0.8rem; color: var(--db-text-2); }
+/* BL-229 increment 7: the versions panel and the banner of a version open read-only. */
+.db-pipeline-editor__versions, .db-pipeline-editor__viewing, .db-pipeline-editor__comparing { margin: 0 0 0.5rem; padding: 0.35rem 0.6rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipeline-editor__viewing, .db-pipeline-editor__comparing { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; border-color: var(--db-accent); }
+.db-pipeline-editor__versions ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; max-height: 12rem; overflow: auto; }
+.db-pipeline-editor__versions li { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+.db-pipeline-editor__version { flex: 1 1 auto; font-size: 0.85rem; }
+/* BL-229: what the author said changed with a publish - on a line of its own under the version. */
+.db-pipeline-editor__version-note { flex: 1 0 100%; padding-left: 0.6rem; border-left: 2px solid var(--db-border); color: var(--db-text-2); font-size: 0.8rem; font-style: italic; overflow-wrap: anywhere; }
+#pipelines-editor-version-diff ul { display: block; list-style: disc; padding-left: 1.2rem; max-height: 12rem; font-size: 0.85rem; }
+/* BL-229: a line of the comparison about a step on the canvas goes to it. */
+.db-pipeline-editor__change { padding: 0 0.2rem; border: 0; border-radius: 0.25rem; background: none; color: inherit; cursor: pointer; font: inherit; text-align: left; }
+.db-pipeline-editor__change:hover { background: var(--db-bg-elev-2); text-decoration: underline; }
+/* BL-229 increment 5: an input's expression - the text, what it may use next, and what it gives. */
+.db-pipeline-editor__expression { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.85rem; }
+.db-pipeline-editor__suggestions { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0.25rem 0; }
+.db-pipeline-editor__suggestion { padding: 0.1rem 0.4rem; border: 1px solid var(--db-border); border-radius: 0.25rem; background: var(--db-bg-elev); color: inherit; font: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.75rem; cursor: pointer; }
+.db-pipeline-editor__suggestion:hover { border-color: var(--db-accent); }
+.db-pipeline-editor__preview { margin: 0.15rem 0 0; padding: 0.25rem 0.4rem; border-radius: 0.25rem; background: var(--db-bg-elev-2); font-size: 0.8rem; white-space: pre-wrap; word-break: break-word; }
+.db-pipeline-editor__preview.is-error { color: var(--db-bad); }
+.db-pipeline-editor__preview-source { color: var(--db-text-2); }
+/* BL-229 increment 1: the step picker's results; the highlighted one is what Enter adds. */
+.db-pipeline-editor__search-label { font-size: 0.85rem; }
+.db-pipeline-editor__results { list-style: none; margin: 0.25rem 0 0; padding: 0; }
+.db-pipeline-editor__step.is-active { border-color: var(--db-accent); box-shadow: inset 3px 0 0 var(--db-accent); }
+.db-pipeline-editor__step-category { display: block; font-size: 0.75rem; color: var(--db-text-2); }
+.db-pipeline-editor__canvas { position: relative; min-height: 60vh; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev-2); overflow: hidden; }
+.db-pipeline-editor__canvas .diagram-canvas { width: 100%; height: 100%; min-height: 60vh; }
+/* n8n's dotted canvas (CanvasGrid, which sets the pattern's size and offset as the view pans and zooms): the theme's quiet text
+   colour, faded - its border colour all but vanished on the canvas (found looking at it) - under the diagram, never in a pointer's
+   way. */
+/* n8n's empty canvas: the first step a press away, in its middle - around the button the canvas is the pointer's still. */
+.db-pipeline-editor__empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.35rem; color: var(--db-text-2); font-size: 0.85rem; pointer-events: none; }
+.db-pipeline-editor__empty > * { margin: 0; pointer-events: auto; }
+.db-pipeline-editor__grid { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(circle, color-mix(in oklab, var(--db-text-2) 40%, transparent) 1px, transparent 1.5px); }
+.db-pipeline-editor__inspector label { display: block; margin-top: 0.5rem; font-size: 0.85rem; }
+.db-pipeline-editor__inspector .db-input { width: 100%; }
+
+.db-step-node { position: relative; min-width: 12rem; padding: 0.5rem 0.75rem 0.5rem 1rem; border: 1px solid var(--db-border); border-radius: 0.5rem; background: var(--db-bg-elev); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); }
+.db-step-node.is-selected { border-color: var(--db-accent); box-shadow: 0 0 0 2px color-mix(in oklab, var(--db-accent) 25%, transparent); }
+.db-step-node.is-unknown { border-style: dashed; opacity: 0.7; }
+.db-step-node__head { display: flex; gap: 0.5rem; font-size: 0.7rem; color: var(--db-text-2); text-transform: uppercase; }
+.db-step-node__title { font-weight: 600; margin: 0.15rem 0 0.35rem; }
+.db-step-node__bodies { font-size: 0.75rem; color: var(--db-text-2); margin: -0.2rem 0 0.35rem; }
+/* BL-229 increment 2: a run's state on each step - a coloured edge and a one-line note. */
+.db-step-node__run { font-size: 0.75rem; margin: -0.2rem 0 0.35rem; }
+.db-step-node.is-run-completed { box-shadow: inset 4px 0 0 var(--db-ok); }
+.db-step-node.is-run-faulted { box-shadow: inset 4px 0 0 var(--db-bad); }
+.db-step-node.is-run-faulted .db-step-node__run { color: var(--db-bad); }
+.db-step-node.is-run-running { box-shadow: inset 4px 0 0 var(--db-accent); }
+.db-step-node.is-run-handled { box-shadow: inset 4px 0 0 var(--db-warn); }
+.db-step-node.is-run-waiting { box-shadow: inset 4px 0 0 var(--db-accent); border-style: dashed; }
+.db-step-node.is-run-handled .db-step-node__run { color: var(--db-warn); }
+.db-step-node.is-run-canceled, .db-step-node.is-run-none { opacity: 0.6; }
+/* BL-229: a version compared with the canvas - a new step outlined in the theme's "ok", a changed one dashed in its "warn",
+   outside whatever a run or a problem marks; the line under the title says which, and on hover what changed. */
+.db-step-node.is-change-added { outline: 2px solid var(--db-ok); outline-offset: 3px; }
+.db-step-node.is-change-changed { outline: 2px dashed var(--db-warn); outline-offset: 3px; }
+.db-step-node__change { font-size: 0.75rem; margin: -0.15rem 0 0.3rem; }
+.db-step-node.is-change-added .db-step-node__change { color: var(--db-ok); }
+.db-step-node.is-change-changed .db-step-node__change { color: var(--db-warn); }
+.db-pipeline-editor__data { max-height: 16rem; overflow: auto; margin: 0.25rem 0 0.5rem; padding: 0.5rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); font-size: 0.75rem; white-space: pre-wrap; word-break: break-word; }
+.db-step-node__outcomes { display: flex; flex-direction: column; gap: 0.2rem; align-items: flex-end; }
+.db-step-node__outcome { position: relative; display: flex; gap: 0.35rem; align-items: center; font-size: 0.75rem; color: var(--db-text-2); padding-right: 0.9rem; }
+.db-step-port { position: absolute; width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--db-accent); border: 2px solid var(--db-bg-elev); cursor: crosshair; }
+.db-step-port--in { left: -0.45rem; top: 50%; transform: translateY(-50%); }
+.db-step-port--out { right: -0.15rem; top: 50%; transform: translateY(-50%); }
+/* BL-229 increment 10: a trigger's panel - a webhook's address and a call listened for, a schedule's next runs. */
+.db-pipeline-editor__trigger { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; }
+.db-pipeline-editor__trigger p { margin: 0; }
+.db-pipeline-editor__trigger code { font-size: 0.8rem; word-break: break-all; }
+.db-pipeline-editor__runs { margin: 0; padding-left: 1.2rem; font-variant-numeric: tabular-nums; }
+/* BL-229 increment 10: a condition built from rules, and a Switch's cases each holding one. */
+.db-pipeline-editor__condition { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.25rem; padding: 0.4rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipeline-editor__condition-head { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+.db-pipeline-editor__condition-head .db-input { width: auto; }
+.db-pipeline-editor__condition-case { display: inline-flex; gap: 0.25rem; align-items: center; font-size: 0.8rem; }
+.db-pipeline-editor__condition-case label { margin: 0; display: inline; }
+.db-pipeline-editor__rule { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; }
+.db-pipeline-editor__inspector .db-pipeline-editor__rule .db-input { flex: 1 1 7rem; width: auto; min-width: 0; }
+.db-pipeline-editor__cases { display: flex; flex-direction: column; gap: 0.5rem; }
+.db-pipeline-editor__case { padding-left: 0.5rem; border-left: 3px solid color-mix(in oklab, var(--db-accent) 45%, var(--db-bg-elev)); }
+/* A step switched off: kept, greyed, skipped when the pipeline runs. */
+.db-step-node.is-disabled { opacity: 0.55; border-style: dashed; }
+.db-step-node__disabled { font-size: 0.7rem; color: var(--db-text-2); text-transform: uppercase; letter-spacing: 0.04em; }
+/* BL-229: where a variable is used - its setters and readers, each a way to the step. */
+.db-pipeline-editor__variable-uses { flex-basis: 100%; font-size: 0.85em; color: var(--db-text-2); }
+.db-pipeline-editor__variable-uses .is-warning { color: var(--db-warn); }
+.db-pipeline-editor__step-link { padding: 0; border: 0; background: none; color: var(--db-accent); text-decoration: underline; cursor: pointer; font: inherit; }
+/* BL-229 - n8n's "Save changes before leaving?": asked over the editor, its answers in a row. */
+.db-pipeline-editor__leaving { position: sticky; top: 0; z-index: 30; display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.5rem; padding: 0.75rem 1rem; border: 1px solid var(--db-warn); border-radius: var(--db-radius, 0.5rem); background: var(--db-bg-elev); box-shadow: var(--db-shadow-2); }
+.db-pipeline-editor__leaving p { margin: 0; }
+.db-pipeline-editor__leaving-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+/* BL-229 - a code box edited like code: tabs drawn two wide, the caret's line and column and the keys under it. */
+.db-pipeline-editor__code { tab-size: 2; white-space: pre; overflow-wrap: normal; overflow-x: auto; }
+.db-pipeline-editor__code-status { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.75rem; color: var(--db-text-2); }
+/* Its code coloured: the copy behind the box, in the box's own font and spacing (the script copies them), the box's text clear
+   once the copy is drawn - and the copy hidden until then, so the box never shows nothing. */
+.db-pipeline-editor__code-wrap { position: relative; display: block; }
+.db-pipeline-editor__code-wrap > .db-pipeline-editor__code { width: 100%; display: block; }
+.db-pipeline-editor__code-shade { display: none; }
+.db-pipeline-editor__code-wrap.is-shaded > .db-pipeline-editor__code-shade { display: block; position: absolute; inset: 0; margin: 0; overflow: hidden; pointer-events: none; white-space: pre; overflow-wrap: normal; box-sizing: border-box; border-style: solid; border-color: transparent; background: var(--db-bg-elev-2); color: var(--db-text); }
+.db-pipeline-editor__code-wrap.is-shaded > .db-pipeline-editor__code { position: relative; background: transparent; color: transparent; caret-color: var(--db-text); }
+.db-pipeline-editor__code-wrap.is-shaded > .db-pipeline-editor__code::placeholder { color: var(--db-text-2); }
+.db-pipeline-editor__code-wrap.is-shaded > .db-pipeline-editor__code::selection { color: transparent; background: color-mix(in oklab, var(--db-accent) 30%, transparent); }
+/* n8n's completion in its Code node: the list at the caret, over the editor's dialog, the chosen one marked. */
+.db-code-complete { position: fixed; z-index: calc(var(--db-z-modal, 1000) + 20); margin: 0; padding: 0.25rem 0; list-style: none; min-width: 14rem; max-width: 26rem; border: 1px solid var(--db-border-strong, var(--db-border)); border-radius: var(--db-radius-sm, 0.375rem); background: var(--db-bg-elev); box-shadow: var(--db-shadow-2); font-family: var(--db-mono, ui-monospace, monospace); font-size: 0.8rem; }
+.db-code-complete__item { display: flex; justify-content: space-between; gap: 1rem; padding: 0.2rem 0.6rem; cursor: pointer; color: var(--db-text); }
+.db-code-complete__item.is-active { background: color-mix(in oklab, var(--db-accent) 18%, var(--db-bg-elev)); }
+.db-code-complete__detail { color: var(--db-text-2); font-family: var(--db-sans, inherit); font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The theme's own colours, each mixed with its text colour so code reads as text does (the accents alone are UI colours - on
+   Graphite's light boxes a pure accent read at about 2:1, and its accent is the text's own grey). No bold: a bolder letter can
+   be wider than the box's own, and the caret would drift from the copy. */
+.db-code-keyword { color: color-mix(in oklab, var(--db-info) 60%, var(--db-text)); }
+.db-code-string { color: color-mix(in oklab, var(--db-ok) 60%, var(--db-text)); }
+.db-code-number { color: color-mix(in oklab, var(--db-warn) 60%, var(--db-text)); }
+.db-code-comment { color: var(--db-muted); font-style: italic; }
+.db-code-variable { color: color-mix(in oklab, color-mix(in oklab, var(--db-bad) 50%, var(--db-info)) 60%, var(--db-text)); }
+/* BL-229 - n8n's "Ask AI" in its Code node: asked under the script, what the AI is told said beside the button. */
+.db-pipeline-editor__script-ai { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem; padding: 0.5rem; border: 1px dashed var(--db-border); border-radius: 0.375rem; }
+.db-pipeline-editor__script-ai-told { flex: 1 1 12rem; font-size: 0.8rem; color: var(--db-text-2); }
+/* BL-229 - n8n's pinned data: a step whose pinned result a test hands on, marked on it and edited in the inspector. */
+.db-step-node__pinned { align-self: flex-start; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0 0.35rem; border-radius: 0.25rem; color: var(--db-accent); border: 1px solid color-mix(in oklab, var(--db-accent) 55%, var(--db-bg-elev)); }
+.db-pipeline-editor__pinned { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem; padding: 0.5rem; border: 1px solid color-mix(in oklab, var(--db-accent) 40%, var(--db-border)); border-radius: 0.375rem; }
+.db-pipeline-editor__switch { display: flex; gap: 0.35rem; align-items: center; margin-top: 0.5rem; }
+.db-pipeline-editor__inspector .db-pipeline-editor__switch label { display: inline; margin: 0; }
+/* BL-229: a Form trigger's fields in the inspector - one box per field. */
+.db-pipeline-editor__form-fields { display: flex; flex-direction: column; gap: 0.5rem; }
+.db-pipeline-editor__form-field { display: grid; grid-template-columns: max-content 1fr; gap: 0.25rem 0.5rem; align-items: center; margin: 0; padding: 0.5rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipeline-editor__form-field legend { padding: 0 0.25rem; font-weight: 600; }
+.db-pipeline-editor__form-field-required, .db-pipeline-editor__form-field-actions { grid-column: 1 / -1; display: flex; gap: 0.35rem; align-items: center; }
+/* BL-229: what a run saved about itself, in the runs list - each one finds the runs that saved the same. */
+.db-pipeline-runs-data { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem; }
+/* BL-229: what a person said about a run (n8n's execution annotations) - its rating, then its tags. */
+.db-pipeline-runs-review { display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; margin-top: 0.25rem; }
+.db-pipeline-runs-rating { font-size: 0.75rem; font-weight: 600; color: var(--db-ok); }
+.db-pipeline-runs-rating.is-bad { color: var(--db-bad); }
+/* BL-229: a run's timeline - each step's pass a bar in the run's span, coloured by how it went. */
+.db-pipeline-run-timeline { display: flex; flex-direction: column; gap: 0.2rem; }
+/* BL-229: the map of the site's pipelines - each a box, a link a line: a call solid, a start lighter, a failure dashed in the
+   bad colour, an AI tool dotted. */
+.db-pipelines-map { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.5rem; border: 1px solid var(--db-border); border-radius: var(--db-radius-sm, 0.375rem); background: var(--db-bg-elev); }
+.db-pipelines-map svg { color: var(--db-text-2); }
+.db-pipelines-map__node rect { fill: var(--db-bg); stroke: var(--db-accent); stroke-width: 1.5; }
+.db-pipelines-map__node.is-draft rect { stroke-dasharray: 4 3; stroke: var(--db-text-2); }
+.db-pipelines-map a:hover .db-pipelines-map__node rect, .db-pipelines-map a:focus .db-pipelines-map__node rect { stroke-width: 3; }
+.db-pipelines-map__name { fill: var(--db-text); font-size: 13px; font-weight: 600; }
+.db-pipelines-map__note { fill: var(--db-text-2); font-size: 11px; }
+.db-pipelines-map__link { fill: none; stroke: currentColor; stroke-width: 1.5; }
+.db-pipelines-map__link.is-calls { stroke: var(--db-accent); color: var(--db-accent); }
+.db-pipelines-map__link.is-on-failure { stroke: var(--db-bad); color: var(--db-bad); stroke-dasharray: 6 4; }
+.db-pipelines-map__link.is-as-a-tool { stroke-dasharray: 2 4; }
+.db-pipelines-map__legend { color: var(--db-text-2); font-size: 0.85rem; }
+.db-pipelines-map__legend .is-calls { color: var(--db-accent); }
+.db-pipelines-map__legend .is-on-failure { color: var(--db-bad); }
+/* BL-229: before a pipeline others run stops running - what stops working with it. */
+.db-pipelines-leaving { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.5rem; border: 1px solid var(--db-warn); border-radius: var(--db-radius-sm, 0.375rem); background: var(--db-bg-elev); }
+.db-pipelines-leaving ul, .db-pipelines-leaving__list { margin: 0; padding-left: 1.25rem; flex-basis: 100%; }
+/* BL-229: two runs compared - a step that went another way stands out, its differences in the warning colour. */
+#pipelines-run-compare-table tr.is-different td { background: color-mix(in srgb, var(--db-warn) 12%, transparent); }
+#pipelines-run-compare-table tr.is-different td:last-child { color: var(--db-warn); font-weight: 600; }
+.db-pipeline-run-timeline__row { display: grid; grid-template-columns: minmax(5rem, 14rem) minmax(4rem, 1fr) 4.5rem; gap: 0.5rem; align-items: center; font-size: 0.85rem; }
+.db-pipeline-run-timeline__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.db-pipeline-run-timeline__track { position: relative; height: 0.75rem; background: var(--db-bg-elev); border-radius: 999px; }
+.db-pipeline-run-timeline__bar { position: absolute; top: 0; bottom: 0; min-width: 2px; border-radius: 999px; background: var(--db-ok); }
+.db-pipeline-run-timeline__bar.is-faulted { background: var(--db-bad); }
+.db-pipeline-run-timeline__bar.is-handled, .db-pipeline-run-timeline__bar.is-waiting, .db-pipeline-run-timeline__bar.is-running { background: var(--db-warn); }
+.db-pipeline-run-timeline__bar.is-canceled { background: var(--db-text-2); }
+.db-pipeline-run-timeline__took { text-align: right; color: var(--db-text-2); font-variant-numeric: tabular-nums; }
+/* BL-229: an evaluation's metric beside an earlier one's - a gain in the ok colour, a loss in the bad one. */
+.db-pipeline-evaluation-change.is-better { color: var(--db-ok); }
+.db-pipeline-evaluation-change.is-worse { color: var(--db-bad); }
+/* BL-229: a pipeline row's other actions (Duplicate, Publish or Retract, Delete) behind More. */
+.db-pipelines-more { display: inline-block; position: relative; }
+.db-pipelines-more > summary { list-style: none; cursor: pointer; display: inline-block; }
+.db-pipelines-more > summary::-webkit-details-marker { display: none; }
+.db-pipelines-more__actions { position: absolute; right: 0; top: calc(100% + 0.25rem); z-index: 5; display: flex; flex-direction: column; align-items: stretch; gap: 0.25rem; padding: 0.5rem; background: var(--db-bg-elev); border: 1px solid var(--db-border); border-radius: 0.375rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); }
+/* BL-229 - n8n's node details view: the selected step's settings over the canvas (kept in place, hidden, so the diagram keeps its
+   size), between what it received and what it produced in the run shown. On a narrow window the three simply stack. */
+@media (min-width: 901px) {
+    .db-pipeline-editor__body.is-wide > .db-pipeline-editor__canvas { grid-column: 2; grid-row: 1; visibility: hidden; }
+    .db-pipeline-editor__body.is-wide > .db-pipeline-editor__inspector { grid-column: 2 / 4; grid-row: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+}
+.db-pipeline-editor__wide-in, .db-pipeline-editor__wide-out { min-width: 0; padding: 0.5rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); }
+/* BL-229 - n8n's + after a node: on an outcome nothing follows, just outside the step. */
+/* BL-229 - the diagram pans by a transform and its pointer arithmetic assumes its box never scrolls; the library's
+   overflow:hidden still lets the browser scroll the box to reveal a focused button at the edge (a + or a toolbar button),
+   after which every step was drawn 313px from where a click put it (measured). clip forbids that scrolling. */
+.db-pipeline-editor__canvas .diagram-canvas { overflow: clip; }
+/* BL-229 - what testing the pipeline as it stands did, above the canvas: how it went and its log. */
+.db-pipeline-editor__draft-test { margin: 0 0 0.5rem; padding: 0.35rem 0.6rem; border: 1px solid var(--db-border); border-left: 3px solid var(--db-accent); border-radius: 0.375rem; background: var(--db-bg-elev); font-size: 0.85rem; }
+.db-pipeline-editor__draft-test-log { margin: 0.25rem 0 0; padding-left: 1.4rem; max-height: 10rem; overflow: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8rem; }
+/* n8n's logs (Passes): the run's passes in order, as the Test pipeline panel is drawn; each pass's state a dot in the colour the
+   canvas gives it. */
+.db-pipeline-editor__passes { margin: 0 0 0.5rem; padding: 0.35rem 0.6rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); font-size: 0.85rem; }
+.db-pipeline-editor__passes > summary { cursor: pointer; }
+.db-pipeline-editor__passes-list { display: flex; flex-direction: column; gap: 0.1rem; max-height: 14rem; margin: 0.35rem 0 0; padding: 0; overflow: auto; list-style: none; }
+.db-pipeline-editor__pass { display: flex; align-items: center; gap: 0.5rem; width: 100%; padding: 0.15rem 0.35rem; border: 0; border-radius: 0.25rem; background: transparent; color: var(--db-text); font: inherit; text-align: left; cursor: pointer; }
+.db-pipeline-editor__pass:hover, .db-pipeline-editor__pass:focus-visible { background: var(--db-bg-elev-2); }
+.db-pipeline-editor__pass::before { content: ""; flex: none; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--db-text-2); }
+.db-pipeline-editor__pass.is-completed::before { background: var(--db-ok); }
+.db-pipeline-editor__pass.is-handled::before { background: var(--db-warn); }
+.db-pipeline-editor__pass.is-faulted::before { background: var(--db-bad); }
+.db-pipeline-editor__pass.is-waiting::before, .db-pipeline-editor__pass.is-running::before { background: var(--db-accent); }
+.db-pipeline-editor__pass-note { color: var(--db-text-2); }
+/* BL-229 - n8n's search in a step's data: the box, how many, and each place the text occurs. */
+.db-pipeline-editor__data-search { display: flex; gap: 0.5rem; align-items: center; margin: 0.25rem 0; }
+.db-pipeline-editor__data-search .db-input { max-width: 14rem; }
+.db-pipeline-editor__data-search-count { font-size: 0.8rem; color: var(--db-text-2); }
+.db-pipeline-editor__data mark { background: color-mix(in oklab, var(--db-accent) 30%, transparent); color: inherit; border-radius: 0.15rem; }
+/* BL-229 - n8n's zoom buttons in the canvas's corner (the map keeps the other). */
+.db-pipeline-editor__zoom { position: absolute; left: 0.5rem; bottom: 0.5rem; z-index: 3; display: flex; gap: 0.2rem; padding: 0.2rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipeline-editor__zoom-button { min-width: 1.6rem; height: 1.6rem; padding: 0 0.3rem; border: 1px solid transparent; border-radius: 0.25rem; background: transparent; color: var(--db-text-2); font: inherit; font-size: 0.8rem; cursor: pointer; }
+.db-pipeline-editor__zoom-button:hover, .db-pipeline-editor__zoom-button:focus-visible { border-color: var(--db-accent); color: var(--db-text); }
+.db-pipeline-editor__zoom-level { min-width: 3.2rem; }
+/* BL-229 - n8n's right-click menu, over a backdrop that closes it. */
+.db-pipeline-editor__menu-backdrop { position: absolute; inset: 0; z-index: 4; }
+.db-pipeline-editor__menu { position: absolute; z-index: 5; display: flex; flex-direction: column; min-width: 13rem; padding: 0.25rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); }
+/* "Connect to…" lists every step an outcome may go to: a list taller than the canvas (which clips) scrolls inside it. */
+.db-pipeline-editor__menu { box-sizing: border-box; max-height: 100%; overflow-y: auto; }
+.db-pipeline-editor__menu > .db-pipeline-editor__menu-item { flex-shrink: 0; }
+.db-pipeline-editor__menu-item { display: flex; justify-content: space-between; gap: 1rem; padding: 0.3rem 0.5rem; border: 0; border-radius: 0.25rem; background: transparent; color: var(--db-text); font: inherit; font-size: 0.85rem; text-align: left; cursor: pointer; }
+.db-pipeline-editor__menu-item:hover, .db-pipeline-editor__menu-item:focus-visible { background: var(--db-bg-elev-2); }
+.db-pipeline-editor__menu-item kbd { color: var(--db-text-2); font-size: 0.75rem; }
+/* BL-229 - n8n's buttons over a step, on hover or while it is selected; the padding bridges the pointer's way up to them. */
+.db-step-node__actions { position: absolute; right: 0.25rem; bottom: 100%; display: none; gap: 0.2rem; padding-bottom: 0.25rem; }
+.db-step-node:hover .db-step-node__actions, .db-step-node.is-selected .db-step-node__actions { display: flex; }
+.db-step-node__action { width: 1.4rem; height: 1.4rem; padding: 0; border: 1px solid var(--db-border); border-radius: 0.3rem; background: var(--db-bg-elev); color: var(--db-text-2); font-size: 0.75rem; line-height: 1; cursor: pointer; }
+.db-step-node__action:hover, .db-step-node__action:focus-visible { border-color: var(--db-accent); color: var(--db-text); }
+.db-step-node__action--delete:hover, .db-step-node__action--delete:focus-visible { border-color: var(--db-bad); color: var(--db-bad); }
+.db-step-node__add { position: absolute; right: -1.9rem; top: 50%; transform: translateY(-50%); width: 1.15rem; height: 1.15rem; padding: 0; border: 1px solid var(--db-border); border-radius: 50%; background: var(--db-bg-elev); color: var(--db-text-2); font-size: 0.8rem; line-height: 1rem; cursor: pointer; }
+.db-step-node__add:hover, .db-step-node__add:focus-visible { border-color: var(--db-accent); color: var(--db-text); }
+/* BL-229 - the wide view's values to map: each field, what it holds beside it. */
+.db-pipeline-editor__available { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+.db-pipeline-editor__available li { display: flex; gap: 0.5rem; align-items: baseline; min-width: 0; }
+.db-pipeline-editor__available-value { color: var(--db-text-2); font-size: 0.85em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+/* BL-229 - a step's discussion: each comment a card, a resolved one quieter; the count of the open ones on the step. */
+.db-pipeline-editor__discussion { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.75rem; }
+.db-pipeline-editor__discussion h4, .db-pipeline-editor__discussion h5 { margin: 0; }
+.db-pipeline-editor__discussion-quiet { margin: 0; color: var(--db-text-2); }
+.db-pipeline-editor__discussion > .db-btn { align-self: flex-start; }
+/* BL-229 - the people offered while a name is typed after an @: one row each, its user name quieter. */
+.db-pipeline-editor__mentions { display: flex; flex-direction: column; align-self: stretch; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); overflow: hidden; }
+.db-pipeline-editor__mention { display: flex; gap: 0.5rem; align-items: baseline; padding: 0.3rem 0.55rem; border: 0; background: none; color: var(--db-text); font: inherit; text-align: left; cursor: pointer; }
+.db-pipeline-editor__mention span { color: var(--db-text-2); font-size: 0.85em; }
+.db-pipeline-editor__mention:hover, .db-pipeline-editor__mention:focus-visible { background: color-mix(in oklab, var(--db-accent) 12%, var(--db-bg-elev)); }
+.db-pipeline-editor__comments { display: flex; flex-direction: column; gap: 0.35rem; align-items: flex-start; }
+.db-pipeline-editor__comment-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; align-self: stretch; }
+.db-pipeline-editor__comment { padding: 0.45rem 0.55rem; border: 1px solid var(--db-border); border-left: 3px solid var(--db-accent); border-radius: 0.375rem; background: var(--db-bg-elev); }
+.db-pipeline-editor__comment.is-resolved { border-left-color: var(--db-border); color: var(--db-text-2); }
+.db-pipeline-editor__comment-head { display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; align-items: baseline; font-size: 0.8rem; color: var(--db-text-2); }
+.db-pipeline-editor__comment-head strong { color: var(--db-text); }
+.db-pipeline-editor__comment-text { margin: 0.25rem 0; white-space: pre-wrap; word-break: break-word; }
+.db-pipeline-editor__comment-resolved { font-size: 0.8rem; color: var(--db-ok); }
+.db-pipeline-editor__comment-gone { color: var(--db-warn); }
+.db-pipeline-editor__comment-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.25rem; }
+.db-step-node__discussion { align-self: flex-start; font-size: 0.7rem; margin: -0.15rem 0 0.3rem; padding: 0 0.35rem; border-radius: 0.25rem; color: var(--db-accent); background: color-mix(in oklab, var(--db-accent) 12%, var(--db-bg-elev)); }

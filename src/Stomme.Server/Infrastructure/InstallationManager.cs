@@ -1,0 +1,429 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Xml;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Stomme.Shared;
+// ReSharper disable AssignNullToNotNullAttribute
+
+namespace Stomme.Infrastructure
+{
+    public interface IInstallationManager
+    {
+        void InstallPackages();
+        bool UninstallPackage(string PackageName);
+        /// <summary>
+        /// Hands the upgrade to the Updater. Null when it was started; otherwise why it was not (BL-174: no package, a
+        /// package older than this framework, a pre-upgrade snapshot that refused - BL-172 - or no Updater), so a caller
+        /// can show it instead of the log alone holding it.
+        /// </summary>
+        Task<string> UpgradeFramework(bool backup);
+        void RestartApplication();
+    }
+
+    public class InstallationManager : IInstallationManager
+    {
+        private readonly IHostApplicationLifetime _hostApplicationLifetime;
+        private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<InstallationManager> _filelogger;
+        private readonly IEnumerable<IPreUpgradeSnapshot> _preUpgradeSnapshots;
+
+        public InstallationManager(IHostApplicationLifetime hostApplicationLifetime, IWebHostEnvironment environment, ILogger<InstallationManager> filelogger, IEnumerable<IPreUpgradeSnapshot> preUpgradeSnapshots)
+        {
+            _hostApplicationLifetime = hostApplicationLifetime;
+            _environment = environment;
+            _filelogger = filelogger;
+            _preUpgradeSnapshots = preUpgradeSnapshots;
+        }
+
+        public void InstallPackages()
+        {
+            var errors = InstallPackages(_environment.WebRootPath, _environment.ContentRootPath);
+            if (!string.IsNullOrEmpty(errors))
+            {
+                _filelogger.LogError(errors);
+            }
+        }
+
+        // method must be static as it is called in ConfigureServices during Startup
+        public static string InstallPackages(string webRootPath, string contentRootPath)
+        {
+            string errors = "";
+            string binPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+
+            string sourceFolder = Path.Combine(contentRootPath, Constants.PackagesFolder);
+            if (!Directory.Exists(sourceFolder))
+            {
+                Directory.CreateDirectory(sourceFolder);
+            }
+
+            // install Nuget packages in secure Packages folder
+            var packages = Directory.GetFiles(sourceFolder, "*.nupkg");
+            foreach (string packagename in packages)
+            {
+                try
+                {
+                    // open nupkg as zip archive
+                    using (ZipArchive archive = ZipFile.OpenRead(packagename))
+                    {
+                        string id = "";
+                        string frameworkversion = "";
+
+                        // locate nuspec
+                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        {
+                            if (entry.FullName.ToLower().EndsWith(".nuspec"))
+                            {
+                                // open nuspec
+                                var reader = new XmlTextReader(entry.Open());
+                                reader.Namespaces = false; // remove namespace
+                                var doc = new XmlDocument();
+                                doc.Load(reader);
+                                // get id
+                                var node = doc.SelectSingleNode("/package/metadata/id");
+                                if (node != null)
+                                {
+                                    id = node.InnerText;
+                                }
+                                // get minimum framework version using packageType
+                                node = doc.SelectSingleNode("/package/metadata/packageTypes/packageType[@name='Stomme.Framework']");
+                                if (node != null)
+                                {
+                                    frameworkversion = node.Attributes["version"].Value;
+                                }
+                                if (string.IsNullOrEmpty(frameworkversion))
+                                {
+                                    // legacy packages used the dependency metadata
+                                    node = doc.SelectSingleNode("/package/metadata/dependencies/dependency[@id='Stomme.Framework']");
+                                    if (node != null)
+                                    {
+                                        frameworkversion = node.Attributes["version"].Value;
+                                    }
+                                }
+                                reader.Close();
+                                break;
+                            }
+                        }
+
+                        // if compatible with framework version
+                        if (frameworkversion == "" || Version.Parse(Constants.Version).CompareTo(Utilities.ParseReleaseNumber(frameworkversion)) >= 0)
+                        {
+                            List<string> assets = new List<string>();
+                            bool manifest = false;
+                            string name = Path.GetFileNameWithoutExtension(packagename);
+
+                            // deploy to appropriate locations
+                            foreach (ZipArchiveEntry entry in archive.Entries)
+                            {
+                                string filename = "";
+
+                                // evaluate entry root folder
+                                switch (entry.FullName.Split('/')[0].ToLower())
+                                {
+                                    case "lib": // lib/net*/...
+                                        filename = ExtractFile(entry, binPath, 2);
+                                        break;
+                                    case "wwwroot": // wwwroot/...
+                                        filename = ExtractFile(entry, webRootPath, 1);
+                                        break;
+                                    case "staticwebassets": // staticwebassets/...
+                                        filename = ExtractFile(entry, Path.Combine(webRootPath, Path.Combine("_content", id)), 1);
+                                        break;
+                                    case "runtimes": // runtimes/name/...
+                                        filename = ExtractFile(entry, binPath, 0);
+                                        break;
+                                    case "ref": // ref/net*/...
+                                        filename = ExtractFile(entry, Path.Combine(binPath, "ref"), 2);
+                                        break;
+                                    case "refs": // refs/net*/...
+                                        filename = ExtractFile(entry, Path.Combine(binPath, "refs"), 2);
+                                        break;
+                                    case "content": // content/...
+                                        filename = ExtractFile(entry, contentRootPath, 0);
+                                        break;
+                                }
+
+                                if (filename != "")
+                                {
+                                    // ContentRootPath sometimes produces inconsistent path casing - so can't use string.Replace()
+                                    filename = Regex.Replace(filename, Regex.Escape(contentRootPath), "", RegexOptions.IgnoreCase);
+                                    assets.Add(filename);
+
+                                    // packages can include a manifest (rather than relying on the framework to dynamically create one)
+                                    if (!manifest && filename.EndsWith(name + ".log"))
+                                    {
+                                        manifest = true;
+                                    }
+                                }
+                            }
+
+                            // save dynamic list of assets
+                            if (!manifest && assets.Count != 0)
+                            {
+                                string manifestpath = Path.Combine(sourceFolder, name + ".log");
+                                if (File.Exists(manifestpath))
+                                {
+                                    File.Delete(manifestpath);
+                                }
+                                if (!Directory.Exists(Path.GetDirectoryName(manifestpath)))
+                                {
+                                    Directory.CreateDirectory(Path.GetDirectoryName(manifestpath));
+                                }
+                                File.WriteAllText(manifestpath, JsonSerializer.Serialize(assets, new JsonSerializerOptions { WriteIndented = true }));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errors += $"Error Installing Package {packagename} - {ex.Message}. ";
+                }
+
+                // remove package
+                File.Delete(packagename);
+            }
+
+            return errors;
+        }
+
+        private static string ExtractFile(ZipArchiveEntry entry, string folder, int ignoreLeadingSegments)
+        {
+            string[] segments = entry.FullName.Split('/'); // ZipArchiveEntries always use unix path separator
+            string filename = Path.Combine(folder, string.Join(Path.DirectorySeparatorChar, segments, ignoreLeadingSegments, segments.Length - ignoreLeadingSegments));
+
+            // validate path to prevent path traversal
+            if (!Path.GetFullPath(filename).StartsWith(folder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+            {
+                return "";
+            }
+
+            try
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(filename)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename));
+                }
+                if (Path.Exists(filename) && Path.GetExtension(filename).ToLower() == ".dll")
+                {
+                    // ensure assembly version is equal to or greater than existing assembly
+                    var assembly = filename.Replace(Path.GetFileName(filename), "temp.dll");
+                    entry.ExtractToFile(assembly, true);
+                    if (Version.Parse(FileVersionInfo.GetVersionInfo(assembly).FileVersion).CompareTo(Version.Parse(FileVersionInfo.GetVersionInfo(filename).FileVersion)) >= 0)
+                    {
+                        File.Move(assembly, filename, true);
+                    }
+                    else
+                    {
+                        File.Delete(assembly);
+                    }
+                }
+                else
+                {
+                    entry.ExtractToFile(filename, true);
+                }
+            }
+            catch
+            {
+                // an error occurred extracting the file
+                filename = "";
+            }
+
+            return filename;
+        }
+
+        public bool UninstallPackage(string PackageName)
+        {
+            if (!string.IsNullOrEmpty(PackageName))
+            {
+                // get manifest with highest version
+                string packagename = "";
+                string[] packages = Directory.GetFiles(Path.Combine(_environment.ContentRootPath, Constants.PackagesFolder), PackageName + "*.log");
+                if (packages.Length > 0)
+                {
+                    packagename = packages[packages.Length - 1]; // use highest version
+                }
+
+                if (!string.IsNullOrEmpty(packagename))
+                {
+                    // use manifest to clean up file resources
+                    List<string> assets = JsonSerializer.Deserialize<List<string>>(File.ReadAllText(packagename));
+                    assets.Reverse();
+                    foreach (string asset in assets)
+                    {
+                        // legacy support for assets that were stored as absolute paths
+                        string filepath = asset.StartsWith("\\") ? Path.Combine(_environment.ContentRootPath, asset.Substring(1)) : asset;
+
+                        // delete assets
+                        if (Path.GetExtension(filepath) == ".dll")
+                        {
+                            // do not remove licensing assemblies
+                            if (!Path.GetFileName(filepath).StartsWith("Stomme.Licensing."))
+                            {
+                                DeleteFile(filepath);
+                            }
+                        }
+                        else // not an assembly
+                        {
+                            DeleteFile(filepath);
+                        }
+                    }
+
+                    // clean up package asset manifests
+                    foreach (string asset in packages)
+                    {
+                        File.Delete(asset);
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void DeleteFile(string filepath)
+        {
+            if (File.Exists(filepath))
+            {
+                File.Delete(filepath);
+                if (!Directory.EnumerateFiles(Path.GetDirectoryName(filepath)).Any())
+                {
+                    Directory.Delete(Path.GetDirectoryName(filepath), true);
+                }
+            }
+        }
+
+        public async Task<string> UpgradeFramework(bool backup)
+        {
+            string folder = Path.Combine(_environment.ContentRootPath, Constants.PackagesFolder);
+            if (!Directory.Exists(folder) || Directory.GetFiles(folder, Constants.PackageId + ".*.nupkg").Length == 0)
+            {
+                return "No framework package has been downloaded or uploaded.";
+            }
+
+            if (Directory.Exists(folder))
+            {
+                // get package with highest version
+                string packagename = "";
+                string[] packages = Directory.GetFiles(folder, Constants.PackageId + ".*.nupkg");
+                if (packages.Length > 0)
+                {
+                    packagename = packages[packages.Length - 1]; // use highest version
+                }
+
+                if (packagename != "")
+                {
+                    // verify package version
+                    string packageversion = "";
+                    string packageurl = "";
+                    using (ZipArchive archive = ZipFile.OpenRead(packagename))
+                    {
+                        // locate nuspec
+                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        {
+                            if (entry.FullName.ToLower().EndsWith(".nuspec"))
+                            {
+                                // open nuspec
+                                XmlTextReader reader = new XmlTextReader(entry.Open());
+                                reader.Namespaces = false; // remove namespace
+                                XmlDocument doc = new XmlDocument();
+                                doc.Load(reader);
+                                // get framework version
+                                XmlNode node = doc.SelectSingleNode("/package/metadata/version");
+                                if (node != null)
+                                {
+                                    packageversion = node.InnerText;
+                                }
+                                node = doc.SelectSingleNode("/package/metadata/projectUrl");
+                                if (node != null)
+                                {
+                                    packageurl = node.InnerText;
+                                }
+                                reader.Close();
+                                break;
+                            }
+                        }
+                    }
+
+                    // ensure package version is greater than or equal to current framework version
+                    if (packageversion != "" && Version.Parse(Constants.Version).CompareTo(Utilities.ParseReleaseNumber(packageversion)) <= 0 && packageurl != "")
+                    {
+                        // BL-172: a data snapshot BEFORE anything is touched - a refusal leaves the installation exactly as it was.
+                        foreach (var snapshot in _preUpgradeSnapshots)
+                        {
+                            if (await snapshot.TakeAsync(_hostApplicationLifetime.ApplicationStopping) is { } refusal)
+                            {
+                                _filelogger.LogError("Upgrade to {Version} refused: {Reason}", packageversion, refusal);
+                                return refusal;
+                            }
+                        }
+
+                        // install Stomme.Framework and Stomme.Updater nuget packages
+                        InstallPackages(_environment.WebRootPath, _environment.ContentRootPath);
+                        // download upgrade zip package
+                        Uri uri = new Uri(packageurl);
+                        string upgradepackage = Path.Combine(folder, uri.Segments[uri.Segments.Length - 1]);
+                        using (var client = new HttpClient())
+                        {
+                            using (var stream = await client.GetStreamAsync(packageurl))
+                            {
+                                using (var fileStream = new FileStream(upgradepackage, FileMode.CreateNew))
+                                {
+                                    await stream.CopyToAsync(fileStream);
+                                }
+                            }
+                        }
+                        // install Stomme.Upgrade zip package
+                        return File.Exists(upgradepackage) ? FinishUpgrade(backup) : "The upgrade package was not downloaded.";
+                    }
+
+                    return $"The framework package ({(packageversion == "" ? "no version" : packageversion)}) is not an upgrade of {Constants.Version}, or names no upgrade package.";
+                }
+            }
+
+            return "No framework package has been downloaded or uploaded.";
+        }
+
+        private string FinishUpgrade(bool backup)
+        {
+            // check if updater application exists
+            string Updater = Constants.UpdaterPackageId + ".dll";
+            string folder = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            if (folder == null || !File.Exists(Path.Combine(folder, Updater))) return "The Updater is not installed.";
+
+            // run updater application
+            using (var process = new Process())
+            {
+                process.StartInfo = new ProcessStartInfo
+                {
+                    WorkingDirectory = folder,
+                    FileName = "dotnet",
+                    Arguments = Path.Combine(folder, Updater) + " \"" + _environment.ContentRootPath + "\" \"" + _environment.WebRootPath + "\" \"" + backup.ToString() + "\"",
+                    UseShellExecute = false,
+                    ErrorDialog = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = false,
+                    RedirectStandardError = false
+                };
+                process.Start();
+            };
+
+            return null;
+        }
+
+        public void RestartApplication()
+        {
+            _hostApplicationLifetime.StopApplication();
+        }
+    }
+}

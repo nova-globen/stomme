@@ -1,0 +1,430 @@
+@namespace Stomme.Modules.Pipelines
+@inherits ModuleBase
+@implements IDisposable
+@inject IPipelinesService PipelinesService
+
+@*
+    The site's runs (BL-95 increment (b)), newest first, for one pipeline (?definition=) or all. A run is observed, never
+    awaited: while any listed run is unfinished the list re-reads itself every two seconds through InvokeAsync, on the
+    circuit's own dispatcher (D111 item 3, the Step 0 rule).
+*@
+
+<PageTitle>Runs</PageTitle>
+
+@if (!IsAuthorizedPermission(PipelinesPermissions.View))
+{
+    <p class="db-pipelines-denied" style="color:var(--db-text-2);">You do not have access to pipelines on this site.</p>
+}
+else
+{
+    <div class="db-pipeline-runs" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 id="pipelines-runs-title" style="margin:0;flex:1 1 auto;">@(PipelineName(_definitionId) is { } named ? "Runs of " + named : "Runs")</h3>
+            <a id="pipelines-back-link" class="db-btn" href="@NavigateUrl()">Pipelines</a>
+            <button id="pipelines-runs-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+        @{ var approvals = _approvals.Where(approval => _definitionId is null || approval.DefinitionId == _definitionId).ToList(); }
+        @if (approvals.Count > 0)
+        {
+            @* BL-229: the runs waiting for a person's decision ("Ask for approval"), oldest first - each decided on its run's page. *@
+            <section id="pipelines-runs-approvals" style="display:flex;flex-direction:column;gap:0.25rem;">
+                <h4 style="margin:0;">Waiting for approval</h4>
+                <div style="overflow-x:auto;">
+                    <table class="db-pipeline-approvals-table" style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">Asked (UTC)</th>
+                                <th style="text-align:left;">Pipeline</th>
+                                <th style="text-align:left;">Step</th>
+                                <th style="text-align:left;">Question</th>
+                                <th style="text-align:left;">Decide by (UTC)</th>
+                                <th style="width:1px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var approval in approvals)
+                            {
+                                <tr>
+                                    <td>@approval.RequestedOnUtc.ToString("u")</td>
+                                    <td>@(approval.PipelineName ?? "—")</td>
+                                    <td>@(approval.StepName ?? "—")</td>
+                                    <td class="db-pipeline-approvals-question">@Short(approval.Question)</td>
+                                    <td>@(approval.ExpiresOnUtc?.ToString("u") ?? "—")</td>
+                                    <td style="white-space:nowrap;"><a class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + approval.RunId)">@(IsAuthorizedPermission(PipelinesPermissions.Approve) ? "Decide" : "Open")</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        }
+        @* BL-229: n8n's execution filters - one pipeline's runs or every one's, in one state or any. *@
+        <div id="pipelines-runs-filters" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            @if (_pipelines is not null)
+            {
+                <label for="pipelines-runs-pipeline">Pipeline</label>
+                <select id="pipelines-runs-pipeline" class="db-input" style="width:auto;" value="@(_definitionId ?? "")" @onchange="e => FilterAsync(e.Value?.ToString(), _state)">
+                    <option value="">(every pipeline)</option>
+                    @foreach (var pipeline in _pipelines)
+                    {
+                        <option value="@pipeline.DefinitionId">@pipeline.Name</option>
+                    }
+                </select>
+            }
+            <label for="pipelines-runs-state">State</label>
+            <select id="pipelines-runs-state" class="db-input" style="width:auto;" value="@(_state ?? "")" @onchange="e => FilterAsync(_definitionId, e.Value?.ToString())">
+                <option value="">(any)</option>
+                @foreach (var state in PipelineRunStates.All)
+                {
+                    <option value="@state.State">@state.Label</option>
+                }
+            </select>
+            @* BL-229: n8n's execution search - a run by its id, or the runs of a correlation id (an order, a ticket). *@
+            <label for="pipelines-runs-search">Find</label>
+            <input id="pipelines-runs-search" type="search" class="db-input" style="width:16rem;" placeholder="run id, correlation id, saved data (order: 42) or a tag" value="@_search" @onchange="e => SearchAsync(e.Value?.ToString())" />
+            @* BL-229: n8n's start-date filter - runs started on or after the first day and on or before the second, days in UTC. *@
+            <label for="pipelines-runs-from">Started from</label>
+            <input id="pipelines-runs-from" type="date" class="db-input" style="width:auto;" value="@Day(_from)" @onchange="e => DaysAsync(e.Value?.ToString(), Day(_to))" />
+            <label for="pipelines-runs-to">to</label>
+            <input id="pipelines-runs-to" type="date" class="db-input" style="width:auto;" value="@Day(_to)" @onchange="e => DaysAsync(Day(_from), e.Value?.ToString())" />
+            <span style="color:var(--db-text-2);">(days in UTC)</span>
+        </div>
+        @if (_chosen.Count > 0)
+        {
+            @* BL-229: n8n's bulk delete - finished runs chosen in the list, deleted together once confirmed. *@
+            <div id="pipelines-runs-chosen" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                <span>@(_chosen.Count == 1 ? "1 run chosen" : _chosen.Count + " runs chosen")</span>
+                <ActionDialog Header="Delete Runs" Message="@(_chosen.Count == 1 ? "Delete the chosen run and its log? It cannot be undone." : $"Delete the {_chosen.Count} chosen runs and their logs? It cannot be undone.")" Action="Delete chosen" Security="SecurityAccessLevel.Anonymous" Class="db-btn pipelines-runs-delete-chosen" ConfirmClass="db-btn pipelines-runs-delete-confirm" OnClick="@(async () => { await DeleteChosenAsync(); StateHasChanged(); })" Disabled="@_busy" />
+                <button id="pipelines-runs-choose-none" type="button" class="db-btn" @onclick="() => _chosen.Clear()">Choose none</button>
+            </div>
+        }
+        @if (_runs is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+        }
+        else if (_runs.Count == 0)
+        {
+            <p id="pipelines-runs-empty" style="margin:0;color:var(--db-text-2);">@(string.IsNullOrEmpty(_definitionId) && string.IsNullOrEmpty(_state) && _search is null && _from is null && _to is null ? "No runs yet." : "No runs match.")</p>
+        }
+        else
+        {
+            <div style="overflow-x:auto;">
+                <table class="db-pipeline-runs-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            @if (CanDelete)
+                            {
+                                <th style="width:1px;"></th>
+                            }
+                            <th style="text-align:left;">Started (UTC)</th>
+                            <th style="text-align:left;">Pipeline</th>
+                            <th style="text-align:left;">Version</th>
+                            <th style="text-align:left;">Status</th>
+                            <th style="text-align:right;">Took</th>
+                            <th style="text-align:left;">Correlation</th>
+                            <th style="text-align:right;">Incidents</th>
+                            <th style="width:1px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var run in _runs)
+                        {
+                            <tr>
+                                @if (CanDelete)
+                                {
+                                    <td>
+                                        @if (run.IsFinished)
+                                        {
+                                            var id = run.Id;
+                                            <input type="checkbox" class="db-pipeline-runs-choose" aria-label="@("Choose the run started " + run.CreatedOnUtc.ToString("u"))" checked="@_chosen.Contains(id)" @onchange="e => Choose(id, e.Value is true)" />
+                                        }
+                                    </td>
+                                }
+                                <td style="white-space:nowrap;" title="@(run.CreatedOnUtc.ToString("u"))">@run.CreatedOnUtc.ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture)</td>
+                                <td class="db-pipeline-runs-pipeline">@(run.PipelineName ?? "—")</td>
+                                <td>@run.Version</td>
+                                @* The state in a word (Faulted is Failed), the engine's own two in its title. *@
+                                <td class="db-pipeline-runs-state" style="white-space:nowrap;" title="@(run.Status + " / " + run.SubStatus)">@PipelineRunStates.LabelOf(run.SubStatus)</td>
+                                <td class="db-pipeline-runs-took" style="text-align:right;white-space:nowrap;">@PipelineRunDurations.Of(run)</td>
+                                <td>
+                                    @run.CorrelationId
+                                    @if (run.Data is { Count: > 0 })
+                                    {
+                                        @* BL-229: what the run saved about itself; a click finds the runs with the same. *@
+                                        <div class="db-pipeline-runs-data">
+                                            @foreach (var pair in run.Data.Take(4))
+                                            {
+                                                var term = pair.Key + ": " + pair.Value;
+                                                <button type="button" class="db-pipelines-tag" title="Find the runs that saved @term" @onclick="() => SearchAsync(term)">@term</button>
+                                            }
+                                            @if (run.Data.Count > 4)
+                                            {
+                                                <span style="color:var(--db-text-2);">+@(run.Data.Count - 4)</span>
+                                            }
+                                        </div>
+                                    }
+                                    @if (run.Review is { } review)
+                                    {
+                                        @* BL-229 - n8n's execution annotations: what a person said about the run; a click on a tag finds the runs with it. *@
+                                        <div class="db-pipeline-runs-review">
+                                            @if (review.Rating is not null)
+                                            {
+                                                <span class="db-pipeline-runs-rating @(review.Rating == PipelineRunReviews.Bad ? "is-bad" : "")" title="@(review.Note ?? "")">@(review.Rating == PipelineRunReviews.Good ? "Went well" : "Went badly")</span>
+                                            }
+                                            @foreach (var tag in review.Tags)
+                                            {
+                                                <button type="button" class="db-pipelines-tag" title="Find the runs tagged @tag" @onclick="() => SearchAsync(tag)">@tag</button>
+                                            }
+                                        </div>
+                                    }
+                                </td>
+                                <td style="text-align:right;">@run.IncidentCount</td>
+                                <td style="white-space:nowrap;">
+                                    <a class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + run.Id)">Open</a>
+                                    @if (!run.IsFinished && IsAuthorizedPermission(PipelinesPermissions.Run))
+                                    {
+                                        <button type="button" class="db-btn" @onclick="() => CancelAsync(run)" disabled="@_busy">Cancel</button>
+                                    }
+                                    @if (run.IsFinished && IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                    {
+                                        <ActionDialog Header="Delete Run" Message="Delete this run and its log? It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn" OnClick="@(async () => { await DeleteAsync(run); StateHasChanged(); })" Disabled="@_busy" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p id="pipelines-runs-error" style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+    </div>
+}
+
+@code {
+    private List<PipelineRunView> _runs;
+    private List<PipelineView> _pipelines;
+    private string _definitionId;
+    private string _state;
+    private string _error = "";
+    private bool _busy;
+    private Timer _timer;
+
+    public override string Title => "Runs";
+
+    // The module's stylesheet (its chips, the run data, the reviews): declared here too, so a page opened directly - not
+    // reached from the editor - is styled.
+    public override List<Resource> Resources => new List<Resource>
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Pipelines/pipelines-editor.css" },
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(PipelinesPermissions.View))
+        {
+            _definitionId = PageState.QueryString.ContainsKey("definition") ? PageState.QueryString["definition"] : null;
+            _state = PageState.QueryString.ContainsKey("state") && PipelineRunStates.IsKnown(PageState.QueryString["state"]) ? PageState.QueryString["state"] : null;
+            _search = PageState.QueryString.ContainsKey("search") ? PageState.QueryString["search"] : null;
+            _from = PageState.QueryString.TryGetValue("from", out var from) ? ParseDay(from) : null;
+            _to = PageState.QueryString.TryGetValue("to", out var to) ? ParseDay(to) : null;
+            if (_pipelines is null)
+            {
+                try
+                {
+                    _pipelines = (await PipelinesService.GetPipelinesAsync() ?? new List<PipelineView>()).OrderBy(pipeline => pipeline.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
+                }
+                catch (Exception ex)
+                {
+                    await logger.LogError(ex, "Error Loading Pipelines {Error}", ex.Message);
+                    _pipelines = null; // the pipeline filter is left out; the list works without it
+                }
+            }
+
+            await LoadAsync();
+        }
+    }
+
+    private string PipelineName(string definitionId) =>
+        string.IsNullOrEmpty(definitionId) ? null : _pipelines?.FirstOrDefault(pipeline => pipeline.DefinitionId == definitionId)?.Name;
+
+    private async Task FilterAsync(string definitionId, string state)
+    {
+        _definitionId = string.IsNullOrEmpty(definitionId) ? null : definitionId;
+        _state = string.IsNullOrEmpty(state) ? null : state;
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            _runs = await PipelinesService.GetRunsAsync(_definitionId, 100, _state, _search, _from, _to) ?? new List<PipelineRunView>();
+            _chosen.IntersectWith(_runs.Where(run => run.IsFinished).Select(run => run.Id)); // a run no longer listed is no longer chosen
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Pipeline Runs {Error}", ex.Message);
+            _error = "The runs could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        try
+        {
+            _approvals = await PipelinesService.GetApprovalsAsync() ?? new List<PipelineApprovalView>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Pipeline Approvals {Error}", ex.Message);
+            _approvals = new List<PipelineApprovalView>(); // the runs list works without them
+        }
+
+        Observe();
+    }
+
+    private List<PipelineApprovalView> _approvals = new();
+
+    private string _search;
+    private readonly HashSet<string> _chosen = new(StringComparer.Ordinal);
+
+    private bool CanDelete => IsAuthorizedPermission(PipelinesPermissions.Manage);
+
+    private async Task SearchAsync(string search)
+    {
+        _search = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+        await LoadAsync();
+    }
+
+    // BL-229: the days the runs started on, both kept (UTC, as the list shows times); empty for no bound.
+    private DateOnly? _from;
+    private DateOnly? _to;
+
+    private static string Day(DateOnly? day) => day?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) ?? "";
+
+    private static DateOnly? ParseDay(string text) =>
+        DateOnly.TryParseExact(text ?? "", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var day) ? day : null;
+
+    private async Task DaysAsync(string from, string to)
+    {
+        var (first, last) = (ParseDay(from), ParseDay(to));
+        if (first is { } start && last is { } end && end < start)
+        {
+            _error = $"No run could have started from {Day(start)} to {Day(end)}: the second day comes first.";
+            return;
+        }
+
+        (_from, _to) = (first, last);
+        await LoadAsync();
+    }
+
+    private void Choose(string runId, bool chosen)
+    {
+        if (chosen)
+        {
+            _chosen.Add(runId);
+        }
+        else
+        {
+            _chosen.Remove(runId);
+        }
+    }
+
+    // Each chosen run deleted in turn; one that cannot be is said so, and the others are still deleted.
+    private async Task DeleteChosenAsync()
+    {
+        _error = "";
+        _busy = true;
+        var failed = 0;
+        foreach (var runId in _chosen.ToList())
+        {
+            try
+            {
+                await PipelinesService.DeleteRunAsync(runId);
+                _chosen.Remove(runId);
+            }
+            catch (Exception ex)
+            {
+                failed++;
+                await logger.LogError(ex, "Error Deleting Pipeline Run {Error}", ex.Message);
+            }
+        }
+
+        _busy = false;
+        if (failed > 0)
+        {
+            _error = failed == 1 ? "One run could not be deleted." : failed + " runs could not be deleted.";
+        }
+
+        await LoadAsync();
+    }
+
+    private static string Short(string text) => text is { Length: > 140 } ? text[..140] + "…" : text;
+
+    // Polling, on the circuit's dispatcher: the timer's callback never touches the component directly.
+    private void Observe()
+    {
+        var unfinished = _runs != null && _runs.Any(run => !run.IsFinished);
+        if (unfinished && _timer == null)
+        {
+            _timer = new Timer(_ => _ = InvokeAsync(async () =>
+            {
+                await LoadAsync();
+                StateHasChanged();
+            }), null, TimeSpan.FromSeconds(2), Timeout.InfiniteTimeSpan);
+        }
+        else if (unfinished)
+        {
+            _timer.Change(TimeSpan.FromSeconds(2), Timeout.InfiniteTimeSpan);
+        }
+        else
+        {
+            _timer?.Dispose();
+            _timer = null;
+        }
+    }
+
+    private async Task CancelAsync(PipelineRunView run)
+    {
+        _error = "";
+        try
+        {
+            await PipelinesService.CancelRunAsync(run.Id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Cancelling Pipeline Run {Error}", ex.Message);
+            _error = "The run could not be cancelled.";
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task DeleteAsync(PipelineRunView run)
+    {
+        _error = "";
+        try
+        {
+            await PipelinesService.DeleteRunAsync(run.Id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Pipeline Run {Error}", ex.Message);
+            _error = "The run could not be deleted.";
+        }
+
+        await LoadAsync();
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+}

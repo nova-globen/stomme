@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  <data name="AddClient.Text" xml:space="preserve"><value>Add Client</value></data>
+  <data name="AddScope.Text" xml:space="preserve"><value>Add Scope</value></data>
+  <data name="Authorization.HelpText" xml:space="preserve"><value>The authorization endpoint (interactive browser login)</value></data>
+  <data name="Authorization.Text" xml:space="preserve"><value>Authorization:</value></data>
+  <data name="ClientId" xml:space="preserve"><value>Client Id</value></data>
+  <data name="ClientType" xml:space="preserve"><value>Type</value></data>
+  <data name="Confirm.DeleteClient" xml:space="preserve"><value>Are You Sure You Wish To Delete The Client {0}? Any application using it will stop being able to obtain tokens immediately.</value></data>
+  <data name="Confirm.DeleteScope" xml:space="preserve"><value>Are You Sure You Wish To Delete The Scope {0}?</value></data>
+  <data name="DeleteClient.Text" xml:space="preserve"><value>Delete</value></data>
+  <data name="DeleteScope.Text" xml:space="preserve"><value>Delete</value></data>
+  <data name="Description" xml:space="preserve"><value>Description</value></data>
+  <data name="Disabled.Heading" xml:space="preserve"><value>The Identity Provider Is Disabled</value></data>
+  <data name="Disabled.Text" xml:space="preserve"><value>Nova Globen Stomme can act as an OpenID Connect authority for this tenant, but it is switched off. Add the following to appsettings.json and restart the application to enable it.</value></data>
+  <data name="Discovery.HelpText" xml:space="preserve"><value>The OpenID Connect discovery document a relying party reads to configure itself</value></data>
+  <data name="Discovery.Text" xml:space="preserve"><value>Discovery:</value></data>
+  <data name="DisplayName" xml:space="preserve"><value>Display Name</value></data>
+  <data name="EditClient.Text" xml:space="preserve"><value>Edit</value></data>
+  <data name="EditScope.Text" xml:space="preserve"><value>Edit</value></data>
+  <data name="EndSession.HelpText" xml:space="preserve"><value>The RP-initiated logout (end session) endpoint</value></data>
+  <data name="EndSession.Text" xml:space="preserve"><value>End Session:</value></data>
+  <data name="Error.DeleteClient" xml:space="preserve"><value>Error Deleting Client</value></data>
+  <data name="Error.DeleteScope" xml:space="preserve"><value>Error Deleting Scope</value></data>
+  <data name="Error.Load" xml:space="preserve"><value>Error Loading Identity Provider Configuration</value></data>
+  <data name="GrantTypes" xml:space="preserve"><value>Grant Types</value></data>
+  <data name="Issuer.HelpText" xml:space="preserve"><value>The issuer this tenant's tokens carry. It is inferred from the request host, so every alias is its own issuer.</value></data>
+  <data name="Issuer.Text" xml:space="preserve"><value>Issuer:</value></data>
+  <data name="Jwks.HelpText" xml:space="preserve"><value>The JSON Web Key Set a relying party uses to validate token signatures</value></data>
+  <data name="Jwks.Text" xml:space="preserve"><value>JWKS:</value></data>
+  <data name="NoClients" xml:space="preserve"><value>No client applications are registered yet.</value></data>
+  <data name="NoScopes" xml:space="preserve"><value>No custom scopes are registered yet. The standard openid, profile, email and offline_access scopes are always available.</value></data>
+  <data name="RedirectUris" xml:space="preserve"><value>Redirect Uris</value></data>
+  <data name="Resources" xml:space="preserve"><value>Resources</value></data>
+  <data name="Scopes" xml:space="preserve"><value>Scopes</value></data>
+  <data name="SigningKey.Ephemeral" xml:space="preserve"><value>Ephemeral - Rotates On Restart</value></data>
+  <data name="SigningKey.HelpText" xml:space="preserve"><value>Whether a persistent signing certificate is configured. Without one the key is ephemeral and regenerates on every restart, invalidating outstanding tokens.</value></data>
+  <data name="SigningKey.Persistent" xml:space="preserve"><value>Persistent Certificate</value></data>
+  <data name="SigningKey.Text" xml:space="preserve"><value>Signing Key:</value></data>
+  <data name="Success.DeleteClient" xml:space="preserve"><value>Client {0} Deleted</value></data>
+  <data name="Success.DeleteScope" xml:space="preserve"><value>Scope {0} Deleted</value></data>
+  <data name="Token.HelpText" xml:space="preserve"><value>The token endpoint</value></data>
+  <data name="Token.Text" xml:space="preserve"><value>Token:</value></data>
+  <data name="UserInfo.HelpText" xml:space="preserve"><value>The userinfo endpoint</value></data>
+  <data name="UserInfo.Text" xml:space="preserve"><value>UserInfo:</value></data>
+</root>

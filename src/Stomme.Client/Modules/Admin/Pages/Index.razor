@@ -1,0 +1,66 @@
+@namespace Stomme.Modules.Admin.Pages
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IPageService PageService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_pages != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
+{
+    <ActionLink Action="Add" Text="Add Page" ResourceKey="AddPage" />
+
+    <Pager Items="@_pages.Where(item => !item.IsDeleted)" SearchProperties="Name">
+        <Header>
+        <th style="width: 1px;">&nbsp;</th>
+        <th style="width: 1px;">&nbsp;</th>
+        <th style="width: 1px;">&nbsp;</th>
+        <th>@SharedLocalizer["Name"]</th>
+        </Header>
+        <Row>
+            <td><ActionLink Action="Edit" Text="Edit" Parameters="@($"id=" + context.PageId.ToString())" ResourceKey="EditPage" /></td>
+            <td><ActionDialog Header="Delete Page" Message="@string.Format(Localizer["Confirm.Page.Delete"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeletePage(context))" ResourceKey="DeletePage" /></td>
+            <td><button type="button" class="db-btn db-btn-neutral" @onclick="@(async () => NavigationManager.NavigateTo(Browse(context)))">@Localizer["Browse"]</button></td>
+            <td>@(new string('-', context.Level * 2))@(context.Name)</td>
+        </Row>
+    </Pager>
+}
+
+@code {
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Admin;
+
+    private List<Page> _pages;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _pages = await PageService.GetPagesAsync(PageState.Site.SiteId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Pages {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Page.Load"], MessageType.Error);
+        }
+    }
+
+    private async Task DeletePage(Page page)
+    {
+        try
+        {
+            page.IsDeleted = true;
+
+            await PageService.UpdatePageAsync(page);
+            await logger.LogInformation("Page Deleted {Page}", page);
+            NavigationManager.NavigateTo(NavigateUrl("admin/pages"));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Page {Page} {Error}", page, ex.Message);
+            AddModuleMessage(Localizer["Error.Page.Delete"], MessageType.Error);
+        }
+    }
+    protected string Browse(Page page)
+    {
+        return string.IsNullOrEmpty(page.Url) ? NavigateUrl(page.Path) : page.Url;
+    }
+}

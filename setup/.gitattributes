@@ -1,0 +1,4 @@
+# Deploy scripts must keep LF endings — CRLF breaks the shebang on Linux/macOS (`bad interpreter`).
+*.sh               text eol=lf
+docker-entrypoint.sh text eol=lf
+*.service.template text eol=lf

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>
+            Provides pipeline runtime functionality.
+        </Description>
+        <PackageTags>stomme module pipelines runtime</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+		<PackageReference Include="DistributedLock.FileSystem" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+        <PackageReference Include="Open.Linq.AsyncExtensions" />
+        <PackageReference Include="ThrottleDebounce" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Stomme.Engine.Caching\Stomme.Engine.Caching.csproj" />
+        <ProjectReference Include="..\Stomme.Engine.KeyValues\Stomme.Engine.KeyValues.csproj" />
+        <ProjectReference Include="..\Stomme.Engine.Tenants\Stomme.Engine.Tenants.csproj" />
+        <ProjectReference Include="..\Stomme.Engine.Pipelines\Stomme.Engine.Pipelines.csproj" />
+        <ProjectReference Include="..\Stomme.Engine.Pipelines.Management\Stomme.Engine.Pipelines.Management.csproj" />
+    </ItemGroup>
+
+</Project>

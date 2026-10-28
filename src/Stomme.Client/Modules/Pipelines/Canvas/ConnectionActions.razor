@@ -1,0 +1,16 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+
+@* BL-229 - n8n's + and bin on a connection: shown while the pointer is over it (or it is selected); a press here is the
+   button's, never the canvas's, so it neither selects the connection nor starts a drag. *@
+<div class="db-connection-actions @(Label.Parent.Selected ? "is-shown" : "")" role="group" aria-label="This connection"
+     @onpointerdown:stopPropagation="true" @onmousedown:stopPropagation="true">
+    <button type="button" class="db-connection-actions__insert" title="Put a step between these two" aria-label="Put a step between these two"
+            @onclick="() => Label.Insert(Label.Parent)" @onclick:stopPropagation="true">+</button>
+    <button type="button" class="db-connection-actions__remove" title="Remove this connection" aria-label="Remove this connection"
+            @onclick="() => Label.Remove(Label.Parent)" @onclick:stopPropagation="true">×</button>
+</div>
+
+@code {
+    [Parameter]
+    public ConnectionActionsModel Label { get; set; }
+}

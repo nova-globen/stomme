@@ -1,0 +1,26 @@
+{
+  "$comment": [
+    "Variant registry for the release pipeline. A release job reads this file and fans out a build matrix of",
+    "variant x rid: for each variant, build-bundle publishes Stomme.Server for every rid below and zips the",
+    "bundle. Each variant is one named asset set within a single version tag.",
+    "",
+    "To add a variant: append an object with its dotnet publish args. Keep names product-neutral and kebab-case.",
+    "publishArgs are extra `-p:KEY=VALUE` MSBuild properties passed to `dotnet publish`; today 'full' is the",
+    "baseline with no switches off."
+  ],
+  "rids": ["win-x64", "linux-x64", "linux-arm64", "osx-arm64"],
+  "variants": [
+    {
+      "name": "full",
+      "displayName": "Nova Globen Stomme (full)",
+      "selfContained": true,
+      "publishArgs": {}
+    },
+    {
+      "name": "framework-dependent",
+      "displayName": "Nova Globen Stomme (framework-dependent, needs ASP.NET 10 runtime)",
+      "selfContained": false,
+      "publishArgs": {}
+    }
+  ]
+}

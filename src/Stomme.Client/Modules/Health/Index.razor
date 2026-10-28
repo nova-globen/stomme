@@ -1,0 +1,237 @@
+@namespace Stomme.Modules.Health
+@inherits ModuleBase
+@implements IAsyncDisposable
+@using Stomme.Transport.Realtime
+@using Microsoft.AspNetCore.SignalR.Client
+@inject IHealthService HealthService
+@inject NavigationManager NavigationManager
+
+@*
+    The health entry control (D104 item 12). It renders in Static, Interactive and Headless alike: the table is
+    plain markup, and nothing here needs an event to be readable. The permission is checked here so a user is never
+    offered a view the server would refuse - and the server decides again on every call regardless.
+
+    LIVE UPDATE (BL-83): in the browser, the page connects to the health hub (HubRoutes.Health, health:view) and re-reads
+    the dashboard whenever its site's state is pushed - after each job tick and after any "run probes now". The push is a
+    nudge carrying one word; the detail still comes from api/Health. The transport is opt-in (Transport:SignalR) and a
+    refused or absent hub degrades silently to load-and-Refresh, as the notification centre does.
+*@
+
+<PageTitle>Health</PageTitle>
+
+@if (!IsAuthorizedPermission(HealthPermissions.View))
+{
+    <p class="db-health-denied" style="color:var(--db-text-2);">You do not have access to health on this site.</p>
+}
+else
+{
+    <div class="db-health-home" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Health</h3>
+            @if (_dashboard is not null)
+            {
+                @* Seen in a browser drive: "Healthy" beside "never checked". With nothing probed there IS no verdict,
+                   and the word would be the one answer a monitor must never give by accident. *@
+                <span class="db-health-worst" style="font-weight:600;">@(_dashboard.Subjects.Count == 0 ? "Unknown" : _dashboard.Worst.ToString())</span>
+                <span style="color:var(--db-text-2);">
+                    @(_dashboard.LastTickUtc is null ? "never checked" : $"checked {_dashboard.LastTickUtc:u}")
+                </span>
+            }
+            @* Re-reads what the last job tick recorded. It triggers NO probe - see the note at the foot of the page. *@
+            <button id="health-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+            @if (IsAuthorizedPermission(HealthPermissions.Manage))
+            {
+                @* The one control that DOES probe - health:manage only, one in flight per site, decided again by the server. *@
+                <button id="health-run-now" type="button" class="db-btn db-btn-neutral" @onclick="RunNowAsync" disabled="@_busy">Run probes now</button>
+            }
+            @* The thresholds are installation-wide, so the page is the Host's alone (Thresholds.razor). *@
+            <ActionLink Action="Thresholds" Text="Thresholds" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-neutral" />
+        </div>
+
+        @if (!string.IsNullOrEmpty(_runMessage))
+        {
+            <p id="health-run-message" style="margin:0;">@_runMessage</p>
+        }
+
+        @if (_dashboard is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading health…</p>
+        }
+        else if (_dashboard.Subjects.Count == 0 && !_dashboard.ProbingEnabled)
+        {
+            @* Found by driving (BL-83): with probing off, the "not yet" text below promised a tick that never comes. *@
+            <p id="health-probing-off" style="margin:0;color:var(--db-text-2);">
+                Health probing is switched off on this install (<code>Health:Enabled</code>), so nothing is being checked.
+                Switch it on in the installation's configuration and restart to start the health job.
+            </p>
+        }
+        else if (_dashboard.Subjects.Count == 0)
+        {
+            @* Not an error: a host that has not ticked yet genuinely knows nothing, and saying "healthy" here
+               would be the one answer a monitor must never give by accident. *@
+            <p style="margin:0;color:var(--db-text-2);">
+                Nothing has been probed yet. The health job runs every minute; this page fills in after its first tick.
+            </p>
+        }
+        else
+        {
+            <div style="overflow-x:auto;">
+                <table class="db-health-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Dependency</th>
+                            <th style="text-align:left;">Scope</th>
+                            <th style="text-align:left;">State</th>
+                            <th style="text-align:left;">Since</th>
+                            <th style="text-align:left;">Alerts</th>
+                            <th style="text-align:left;">Last hours</th>
+                            <th style="text-align:left;">Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var subject in _dashboard.Subjects)
+                        {
+                            <tr>
+                                <td>@subject.Dependency</td>
+                                <td>@subject.Scope</td>
+                                <td>@subject.State</td>
+                                <td>@(subject.BadSinceUtc is null ? "—" : $"{subject.BadSinceUtc:u}")</td>
+                                <td>@subject.AlertCount</td>
+                                @* The sparkline (BL-96 increment 10, re-booked from D104): the subject's availability per hourly rollup,
+                                   oldest at the left; empty until two periods exist. Drawn by HealthSparkline, BCL-only, so it renders statically. *@
+                                <td class="db-health-sparkline">@((MarkupString)HealthSparkline.Svg(_rollups, subject.Subject))</td>
+                                @* A null description is NORMAL, not an error: the raw text of a SHARED dependency
+                                   carries host, database and user, so it is Host-only. *@
+                                <td style="color:var(--db-text-2);">@(subject.Description ?? "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <p style="margin:0;color:var(--db-text-2);">
+                Probes run server-side on a schedule, and "Run probes now" runs them at once. Opening this page
+                triggers none, and the public health endpoints never do — they report the last completed check.
+            </p>
+        }
+    </div>
+}
+
+@code {
+    // The hub's client method (HealthHub.StateMethod, server-side). Literal: the Client cannot reference the Server's hub.
+    private const string LiveMethod = "health";
+
+    private HealthDashboard _dashboard;
+    private List<HealthRollupView> _rollups = new();
+    private bool _busy;
+    private string _runMessage;
+    private HubConnection _hub;
+
+    private async Task RunNowAsync()
+    {
+        _busy = true;
+        try
+        {
+            var result = await HealthService.RunNowAsync();
+            _runMessage = result is null
+                ? "A health check is already running for this site - try again in a moment."
+                : $"Ran {result.ProbesRun} probe(s): {result.Worst}.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not run the health probes.");
+            _runMessage = "The health probes could not be run.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsAuthorizedPermission(HealthPermissions.View))
+        {
+            return;
+        }
+
+        await LoadAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender && OperatingSystem.IsBrowser() && PageState?.User != null && IsAuthorizedPermission(HealthPermissions.View))
+        {
+            await ConnectLiveUpdateAsync();
+        }
+    }
+
+    private async Task ConnectLiveUpdateAsync()
+    {
+        try
+        {
+            _hub = new HubConnectionBuilder()
+                .WithUrl(NavigationManager.ToAbsoluteUri(HubRoutes.Health))
+                .WithAutomaticReconnect()
+                .Build();
+            _hub.On<object>(LiveMethod, _ => InvokeAsync(async () =>
+            {
+                await LoadAsync();
+                StateHasChanged();
+            }));
+            await _hub.StartAsync();
+        }
+        catch
+        {
+            // Transport off, or the connection refused: the page still loads and refreshes on its own.
+            await DisposeHubAsync();
+        }
+    }
+
+    private async Task DisposeHubAsync()
+    {
+        if (_hub != null)
+        {
+            try { await _hub.DisposeAsync(); } catch { /* best effort */ }
+            _hub = null;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeHubAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _dashboard = await HealthService.GetDashboardAsync();
+            try
+            {
+                _rollups = await HealthService.GetRollupsAsync("Hour", 200);
+            }
+            catch (Exception ex)
+            {
+                // The sparklines are an extra: without the rollups the table still stands.
+                await logger.LogError(ex, "Could not load the health rollups.");
+                _rollups = new List<HealthRollupView>();
+            }
+
+        }
+        catch (Exception ex)
+        {
+            // A health page that throws when health is unreachable is its own joke. Log it and render the empty
+            // state, which already says the right thing.
+            await logger.LogError(ex, "Could not load the health dashboard.");
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

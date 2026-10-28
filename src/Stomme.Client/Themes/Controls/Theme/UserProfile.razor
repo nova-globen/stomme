@@ -1,0 +1,117 @@
+@namespace Stomme.Themes.Controls
+@using System.Net
+@inherits ThemeControlBase
+@inject ISettingService SettingService
+@inject IStringLocalizer<UserProfile> Localizer
+@inject NavigationManager NavigationManager
+
+@if (PageState.User != null)
+{
+    <a href="@_profileurl" class="@CssClass app-profile">@_displayname</a>
+}
+else
+{
+    @if (ShowRegister && PageState.Site.AllowRegistration)
+    {
+        <a href="@_registerurl" class="@CssClass app-profile">@Localizer["Register"]</a>
+    }
+}
+
+@code {
+
+    [Parameter]
+    public bool ShowRegister { get; set; }
+
+    [Parameter]
+    // --db-* by default (D11). This lived as a Bootstrap class in a C# parameter
+    // default, so no class="..." scan ever saw it -- only the rendered DOM did.
+    public string CssClass { get; set; } = "db-btn";
+
+    [Parameter]
+    public string RegisterUrl { get; set; } // optional parameter to specify a custom registration url
+
+    [Parameter]
+    public string ProfileUrl { get; set; } // optional parameter to specify a custom user profile url
+
+    [Parameter]
+    public string DisplayName { get; set; }
+
+    private string _registerurl = "";
+    private string _profileurl = "";
+    private string _returnurl = "";
+    private string _displayname = "";
+
+    protected override void OnParametersSet()
+    {        
+        if (!PageState.QueryString.ContainsKey("returnurl"))
+        {
+            // remember current url
+            _returnurl = WebUtility.UrlEncode(PageState.Route.PathAndQuery);
+        }
+        else
+        {
+            // use existing value
+            _returnurl = PageState.QueryString["returnurl"];
+        }
+
+        if (!string.IsNullOrEmpty(RegisterUrl))
+        {
+            _registerurl = RegisterUrl;            
+            _registerurl += (!_registerurl.Contains("?") ? "?" : "&") + "returnurl=" + (_registerurl.Contains("://") ? WebUtility.UrlEncode(PageState.Route.RootUrl) + _returnurl : _returnurl);
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:RegisterUrl", "")))
+            {
+                _registerurl = SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:RegisterUrl", "");
+                _registerurl += (!_registerurl.Contains("?") ? "?" : "&") + "returnurl=" + (_registerurl.Contains("://") ? WebUtility.UrlEncode(PageState.Route.RootUrl) + _returnurl : _returnurl);
+            }
+            else
+            {
+                _registerurl = NavigateUrl("register", "returnurl=" + _returnurl);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(ProfileUrl))
+        {
+            _profileurl = ProfileUrl;
+            _profileurl += (!_profileurl.Contains("?") ? "?" : "&") + "returnurl=" + (_profileurl.Contains("://") ? WebUtility.UrlEncode(PageState.Route.RootUrl) + _returnurl : _returnurl);
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:ProfileUrl", "")))
+            {
+                _profileurl = SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:ProfileUrl", "");
+                _profileurl += (!_profileurl.Contains("?") ? "?" : "&") + "returnurl=" + (_profileurl.Contains("://") ? WebUtility.UrlEncode(PageState.Route.RootUrl) + _returnurl : _returnurl);
+            }
+            else
+            {
+                _profileurl = NavigateUrl("profile", "returnurl=" + _returnurl);
+            }
+        }
+
+        if (PageState.User != null)
+        {
+            var displayname = DisplayName;
+            if (string.IsNullOrEmpty(displayname))
+            {
+                displayname = SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:ProfileDisplayName", "username");
+            }
+
+            switch (displayname.ToLower())
+            {
+                case "displayname":
+                    _displayname = PageState.User.DisplayName;
+                    break;
+                case "email":
+                    _displayname = PageState.User.Email;
+                    break;
+                default:
+                    _displayname = PageState.User.Username;
+                    break;
+            }
+        }
+    }
+}
+
+

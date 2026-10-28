@@ -1,0 +1,99 @@
+@namespace [Owner].Module.[Module]
+@inherits ModuleBase
+@inject I[Module]Service [Module]Service
+
+@*
+    The module's page. It asks the host whether the user holds the module's keys (IsAuthorizedPermission) and works through
+    the service contract only - over HTTP in a browser, directly on the server. The API refuses the same callers the page
+    hides its controls from: the page's checks are for the user, the API's are the security.
+*@
+
+@if (!IsAuthorizedPermission([Module]Permissions.View))
+{
+    <p style="color:var(--db-text-2);">You do not have access to this module.</p>
+}
+else
+{
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+        @if (_entries is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+        }
+        else if (_entries.Count == 0)
+        {
+            <p style="margin:0;color:var(--db-text-2);">No entries yet.</p>
+        }
+        else
+        {
+            <ul style="margin:0;">
+                @foreach (var entry in _entries)
+                {
+                    <li>@entry.Text <span style="color:var(--db-text-2);">(@entry.CreatedUtc.ToString("yyyy-MM-dd"))</span></li>
+                }
+            </ul>
+        }
+
+        @if (IsAuthorizedPermission([Module]Permissions.Edit))
+        {
+            <form style="display:flex;gap:0.5rem;align-items:baseline;" @onsubmit="AddAsync" @onsubmit:preventDefault>
+                <label>New entry <input type="text" maxlength="500" @bind="_text" @bind:event="oninput" /></label>
+                <button type="submit" class="db-btn" disabled="@(_busy || string.IsNullOrWhiteSpace(_text))">Add</button>
+            </form>
+        }
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p role="status" style="margin:0;">@_message</p>
+        }
+    </div>
+}
+
+@code {
+    private List<[Module]EntryModel>? _entries;
+    private string _text = string.Empty;
+    private bool _busy;
+    private string _message = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsAuthorizedPermission([Module]Permissions.View))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _entries = await [Module]Service.ListEntriesAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the entries.");
+            _message = "The entries could not be loaded.";
+            _entries = new List<[Module]EntryModel>();
+        }
+    }
+
+    private async Task AddAsync()
+    {
+        _busy = true;
+        try
+        {
+            await [Module]Service.AddEntryAsync(new Add[Module]EntryRequest { Text = _text.Trim() });
+            _text = string.Empty;
+            _message = "Added.";
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not add the entry.");
+            _message = "The entry was not added: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

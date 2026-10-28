@@ -1,0 +1,116 @@
+@namespace Stomme.Modules.Admin.Features
+@inherits ModuleBase
+@inject IFeatureService FeatureService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_features == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else if (_features.Count == 0)
+{
+    @* Flags are created by catalog seeding or by the first toggle — an empty list is a real state, say so. *@
+    <div class="db-note">
+        <strong>@Localizer["NoFlags.Heading"]</strong>
+        <p>@Localizer["NoFlags.Text"]</p>
+    </div>
+}
+else
+{
+    <Pager Items="@_features" SearchProperties="Key,Description,Category">
+        <Header>
+            <th style="width: 1px;">&nbsp;</th>
+            <th>@Localizer["Key"]</th>
+            <th>@Localizer["Category"]</th>
+            <th>@Localizer["Configured"]</th>
+            <th>@Localizer["Targeting"]</th>
+            <th>@Localizer["Effective"]</th>
+        </Header>
+        <Row>
+            <td><ActionLink Action="Edit" Text="Edit" Security="SecurityAccessLevel.Host" Parameters="@($"key={Uri.EscapeDataString(context.Key)}")" ResourceKey="EditFlag" /></td>
+            <td>
+                <span class="db-mono">@context.Key</span>
+                @if (!string.IsNullOrEmpty(context.Description))
+                {
+                    <br /><small style="color: var(--db-text-2);">@context.Description</small>
+                }
+            </td>
+            <td>@context.Category</td>
+            <td>
+                @* The toggle acts on the STORED flag; Host-only, matching the server gate. *@
+                <button type="button" class="db-btn @(context.Enabled ? "db-btn-primary" : "")"
+                        disabled="@(!IsAuthorizedRole(RoleNames.Host))"
+                        @onclick="@(async () => await Toggle(context))">
+                    @(context.Enabled ? Localizer["On"] : Localizer["Off"])
+                </button>
+            </td>
+            <td>
+                @if (context.TargetRoles != null && context.TargetRoles.Count > 0)
+                {
+                    <span>@string.Join(", ", context.TargetRoles)</span>
+                }
+                else
+                {
+                    <span style="color: var(--db-text-2);">@Localizer["Everyone"]</span>
+                }
+                @if (context.RolloutPercentage < 100)
+                {
+                    <span class="db-status-pill muted">@context.RolloutPercentage%</span>
+                }
+            </td>
+            <td>
+                @if (context.Effective)
+                {
+                    <span class="db-status-pill online">@Localizer["Effective.On"]</span>
+                }
+                else
+                {
+                    <span class="db-status-pill muted">@Localizer["Effective.Off"]</span>
+                }
+            </td>
+        </Row>
+    </Pager>
+}
+
+@code {
+    private List<Feature> _features;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Admin;
+
+    public override string Title => "Feature Flags";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Refresh();
+    }
+
+    private async Task Refresh()
+    {
+        try
+        {
+            _features = await FeatureService.GetFeaturesAsync() ?? new List<Feature>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Feature Flags {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Load"], MessageType.Error);
+        }
+    }
+
+    private async Task Toggle(Feature feature)
+    {
+        try
+        {
+            await FeatureService.ToggleFeatureAsync(feature.Key, !feature.Enabled);
+            await logger.LogInformation("Feature Flag {Key} Set To {Enabled}", feature.Key, !feature.Enabled);
+            await Refresh();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Toggling Feature Flag {Key} {Error}", feature.Key, ex.Message);
+            AddModuleMessage(string.Format(Localizer["Error.Toggle"], feature.Key), MessageType.Error);
+        }
+    }
+}

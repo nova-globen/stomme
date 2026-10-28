@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\Stomme.Engine.Testing.Shared\Stomme.Engine.Testing.Shared.csproj" />
+        <ProjectReference Include="..\..\..\src\Engine\Stomme.Engine.Expressions\Stomme.Engine.Expressions.csproj" />
+    </ItemGroup>
+
+</Project>

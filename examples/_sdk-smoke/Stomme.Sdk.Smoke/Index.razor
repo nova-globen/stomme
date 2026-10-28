@@ -1,0 +1,14 @@
+@namespace Stomme.Sdk.Smoke
+@inherits ModuleBase
+
+@*
+   A trivial module control: it inherits ModuleBase (from the Stomme.Client package), which itself
+   implements IModuleControl. This proves the Blazor UI base type is reachable from the SDK packages with
+   no source reference to Stomme.Client.
+*@
+
+<p>Stomme.Sdk independence proof — @Title</p>
+
+@code {
+    public override string Title => "Stomme.Sdk independence proof";
+}

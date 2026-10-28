@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>$projectname$</id>
+        <version>1.0.0</version>
+        <authors>[Owner]</authors>
+        <owners>[Owner]</owners>
+        <title>[Theme]</title>
+        <description>[Description]</description>
+        <copyright>[Owner]</copyright>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <license type="expression">MIT</license>
+        <projectUrl>https://github.com/nova-globen/stomme</projectUrl>
+        <icon>icon.png</icon>
+        <tags>stomme theme</tags>
+        <releaseNotes></releaseNotes>
+        <summary></summary>
+        <packageTypes>
+            <packageType name="Dependency" />
+            <packageType name="Stomme.Framework" version="[FrameworkVersion]" />
+        </packageTypes>
+    </metadata>
+    <files>
+        <file src="..\Client\bin\Release\$targetframework$\$projectname$.Client.Stomme.dll" target="lib\$targetframework$" />
+        <file src="..\Client\bin\Release\$targetframework$\$projectname$.Client.Stomme.pdb" target="lib\$targetframework$" />
+        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.$ProjectName$.Microsoft.AspNetCore.StaticWebAssetEndpoints.props" target="build\Microsoft.AspNetCore.StaticWebAssetEndpoints.props" />
+        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.$ProjectName$.Microsoft.AspNetCore.StaticWebAssets.props" target="build\Microsoft.AspNetCore.StaticWebAssets.props" />
+        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.build.$ProjectName$.props" target="build\$ProjectName$.props" />
+        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.buildMultiTargeting.$ProjectName$.props" target="buildMultiTargeting\$ProjectName$.props" />
+        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.buildTransitive.$ProjectName$.props" target="buildTransitive\$ProjectName$.props" />
+        <file src="..\Client\wwwroot\**\*.*" target="staticwebassets" />
+        <file src="icon.png" target="" />
+    </files>
+</package>

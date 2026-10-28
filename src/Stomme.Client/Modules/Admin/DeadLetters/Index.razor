@@ -1,0 +1,145 @@
+@namespace Stomme.Modules.Admin.DeadLetters
+@inherits ModuleBase
+@inject IDeadLetterService DeadLetterService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_status == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else if (!_status.MessagingEnabled)
+{
+    <div class="db-note db-note-warn">
+        <strong>@Localizer["Disabled.Heading"]</strong>
+        <p>@Localizer["Disabled.Text"]</p>
+        <pre class="db-mono">"Messaging": {
+  "Enabled": true
+}</pre>
+    </div>
+}
+else if (!_status.HasDeadLetterQueue)
+{
+    @* Real state on the in-memory / broker transports today: only the RavenDB transport backs the admin
+       port, everything else registers the Null port. Say so rather than rendering an empty table. *@
+    <div class="db-note">
+        <strong>@Localizer["NoQueue.Heading"]</strong>
+        <p>@Localizer["NoQueue.Text"]</p>
+    </div>
+}
+else
+{
+    <div class="db-page-head">
+        <span class="db-status-pill @(_status.Count == 0 ? "online" : "warning")">
+            @string.Format(Localizer["Count"], _status.Count)
+        </span>
+        <button type="button" class="db-btn" @onclick="Refresh">@Localizer["Refresh"]</button>
+    </div>
+
+    @if (_messages == null || _messages.Count == 0)
+    {
+        <p><em>@Localizer["Empty"]</em></p>
+    }
+    else
+    {
+        <Pager Items="@_messages" SearchProperties="MessageType,ErrorDetails">
+            <Header>
+                <th style="width: 1px;">&nbsp;</th>
+                <th style="width: 1px;">&nbsp;</th>
+                <th>@Localizer["MessageType"]</th>
+                <th>@Localizer["EnqueuedUtc"]</th>
+                <th>@Localizer["Error"]</th>
+            </Header>
+            <Row>
+                <td>
+                    <button type="button" class="db-btn" @onclick="@(async () => await Retry(context))">@Localizer["Retry"]</button>
+                </td>
+                <td>
+                    <ActionDialog Header="Discard Message" Message="@string.Format(Localizer["Confirm.Discard"], context.MessageType)" Action="Discard"
+                                  Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger"
+                                  OnClick="@(async () => await Discard(context))" ResourceKey="DiscardMessage" />
+                </td>
+                <td><span class="db-mono">@ShortTypeName(context.MessageType)</span></td>
+                <td>@context.EnqueuedUtc.ToString("u")</td>
+                <td style="max-width: 28rem; overflow-wrap: anywhere;"><small>@Truncate(context.ErrorDetails)</small></td>
+            </Row>
+        </Pager>
+    }
+}
+
+@code {
+    private DeadLetterStatus _status;
+    private List<DeadLetterItem> _messages;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    public override string Title => "Message Queue";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Refresh();
+    }
+
+    private async Task Refresh()
+    {
+        try
+        {
+            _status = await DeadLetterService.GetStatusAsync();
+            _messages = _status != null && _status.HasDeadLetterQueue
+                ? await DeadLetterService.GetDeadLettersAsync() ?? new List<DeadLetterItem>()
+                : new List<DeadLetterItem>();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Dead-Letter Queue {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Load"], MessageType.Error);
+        }
+    }
+
+    private async Task Retry(DeadLetterItem message)
+    {
+        try
+        {
+            await DeadLetterService.RetryAsync(message.Id);
+            await logger.LogInformation("Dead-Letter Message {Id} Returned To The Input Queue", message.Id);
+            await Refresh();
+            AddModuleMessage(Localizer["Success.Retry"], MessageType.Success);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Retrying Dead-Letter Message {Id} {Error}", message.Id, ex.Message);
+            AddModuleMessage(Localizer["Error.Retry"], MessageType.Error);
+        }
+    }
+
+    private async Task Discard(DeadLetterItem message)
+    {
+        try
+        {
+            await DeadLetterService.DiscardAsync(message.Id);
+            await logger.LogInformation("Dead-Letter Message {Id} Discarded", message.Id);
+            await Refresh();
+            AddModuleMessage(Localizer["Success.Discard"], MessageType.Success);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Discarding Dead-Letter Message {Id} {Error}", message.Id, ex.Message);
+            AddModuleMessage(Localizer["Error.Discard"], MessageType.Error);
+        }
+    }
+
+    private static string ShortTypeName(string messageType)
+    {
+        if (string.IsNullOrEmpty(messageType))
+        {
+            return "(unknown)";
+        }
+        var withoutAssembly = messageType.Split(',')[0];
+        var lastDot = withoutAssembly.LastIndexOf('.');
+        return lastDot >= 0 ? withoutAssembly.Substring(lastDot + 1) : withoutAssembly;
+    }
+
+    private static string Truncate(string text) =>
+        string.IsNullOrEmpty(text) ? "" : (text.Length <= 300 ? text : text.Substring(0, 300) + "…");
+}

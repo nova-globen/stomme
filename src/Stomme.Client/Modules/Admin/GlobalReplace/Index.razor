@@ -1,0 +1,89 @@
+@namespace Stomme.Modules.Admin.GlobalReplace
+@using System.Text.Json
+@inherits ModuleBase
+@inject ISiteTaskService SiteTaskService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@* Migrated to native FluentUI form controls + the --db-* design system (D11, Phase 4). *@
+<div class="db-card">
+    <div class="db-field">
+        <Label For="find" HelpText="Specify the content which needs to be replaced" ResourceKey="Find">Find What: </Label>
+        <FluentTextInput id="find" @bind-Value="_find" class="db-field-control" Placeholder="Text to find" />
+    </div>
+    <div class="db-field">
+        <Label For="replace" HelpText="Specify the replacement content" ResourceKey="Replace">Replace With: </Label>
+        <FluentTextInput id="replace" @bind-Value="_replace" class="db-field-control" Placeholder="Replacement text" />
+    </div>
+    <div class="db-field">
+        <Label For="casesensitive" HelpText="Specify if the replacement operation should be case sensitive" ResourceKey="CaseSensitive">Match Case? </Label>
+        <FluentSwitch id="casesensitive" @bind-Value="_caseSensitive" />
+    </div>
+    <div class="db-field">
+        <Label For="site" HelpText="Specify if site information should be updated (ie. name, head content, body content, settings)" ResourceKey="Site">Site Info? </Label>
+        <FluentSwitch id="site" @bind-Value="_site" />
+    </div>
+    <div class="db-field">
+        <Label For="pages" HelpText="Specify if page information should be updated (ie. name, title, head content, body content, settings)" ResourceKey="Pages">Page Info? </Label>
+        <FluentSwitch id="pages" @bind-Value="_pages" />
+    </div>
+    <div class="db-field">
+        <Label For="modules" HelpText="Specify if module information should be updated (ie. title, header, footer, settings)" ResourceKey="Modules">Module Info? </Label>
+        <FluentSwitch id="modules" @bind-Value="_modules" />
+    </div>
+    <div class="db-field">
+        <Label For="content" HelpText="Specify if module content should be updated" ResourceKey="Content">Module Content? </Label>
+        <FluentSwitch id="content" @bind-Value="_content" />
+    </div>
+</div>
+
+<div class="db-form-actions">
+    <ActionDialog Header="Global Replace" Message="This Operation is Permanent. Are You Sure You Wish To Proceed?" Action="Replace" Class="db-btn" OnClick="@(async () => await Save())" ResourceKey="GlobalReplace" />
+</div>
+
+@code {
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Admin;
+    public override string Title => "Global Replace";
+
+    private string _find;
+    private string _replace;
+    private bool _caseSensitive = true;
+    private bool _site = true;
+    private bool _pages = true;
+    private bool _modules = true;
+    private bool _content = true;
+
+    private async Task Save()
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(_find) && !string.IsNullOrEmpty(_replace))
+            {
+                var replace = new GlobalReplace
+                {
+                    Find = _find,
+                    Replace = _replace,
+                    CaseSensitive = _caseSensitive,
+                    Site = _site,
+                    Pages = _pages,
+                    Modules = _modules,
+                    Content = _content
+                };
+
+                var siteTask = new SiteTask(PageState.Site.SiteId, "Global Replace", "Stomme.Infrastructure.GlobalReplaceTask, Stomme.Server", JsonSerializer.Serialize(replace));
+                await SiteTaskService.AddSiteTaskAsync(siteTask);
+
+                AddModuleMessage(Localizer["Success.Save"], MessageType.Success);
+            }
+            else
+            {
+                AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Global Replace Settings {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Save"], MessageType.Error);
+        }
+    }
+}

@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <RootNamespace>Stomme.FeatureManagement.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <!--
+    Live verification for the feature-flag system (brief 06 / D12, D73). Part of Stomme.slnx. It exercises
+    seeding, evaluation, role targeting, percentage rollout, per-user overrides, flag dependencies, the audit
+    trail, and IFeatureContributor discovery against the real persistence seam.
+
+    FeatureFlagLiveTests drives the RELATIONAL store (SQLite on a temp file), which needs no external server.
+    FeatureFlagStoreConformanceTests (D73) drives the SAME contract against BOTH the relational store AND the
+    RavenDB document store and asserts identical behaviour — so the RavenDB half needs the LOCAL RavenDB
+    (RAVENDB_TEST_URL, default http://127.0.0.1:7000) and, like the D46 parity suite, FAILS rather than skips
+    when it is unreachable: an EF-only run proves nothing about the both-providers invariant.
+  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
+    <!-- D84: the concrete configuration providers (JSON file, environment variables, in-memory) so the
+         config-precedence tests DRIVE the real IConfiguration-backed feature source, not a fake. -->
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Stomme.FeatureManagement\Stomme.FeatureManagement.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Persistence.Abstractions\Stomme.Persistence.Abstractions.csproj" />
+    <!-- D73: the RavenDB provider, so the conformance suite can DRIVE the feature-flag system on the document
+         store as well as SQLite and assert identical behaviour. Like the D46 parity suite, the RavenDB tests
+         FAIL rather than skip when the server is unreachable (RAVENDB_TEST_URL, default http://127.0.0.1:7000):
+         an EF-only run proves nothing about the both-providers invariant. -->
+    <ProjectReference Include="..\..\src\Stomme.Persistence.RavenDb\Stomme.Persistence.RavenDb.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.SharedKernel\Stomme.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Tenancy.Domain\Stomme.Tenancy.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Tenancy.Abstractions\Stomme.Tenancy.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

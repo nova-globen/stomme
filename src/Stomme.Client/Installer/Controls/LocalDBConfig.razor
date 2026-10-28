@@ -1,0 +1,32 @@
+@namespace Stomme.Installer.Controls
+@implements Stomme.Interfaces.IDatabaseConfigControl
+
+<div class="db-field">
+    <Label For="server" HelpText="Enter the database server" ResourceKey="Server">Server:</Label>
+    <div class="db-field-control">
+        <input id="server" type="text" class="db-input" @bind="@_server" />
+    </div>
+</div>
+<div class="db-field">
+    <Label For="database" HelpText="Enter the name of the database" ResourceKey="Database">Database:</Label>
+    <div class="db-field-control">
+        <input id="database" type="text" class="db-input" @bind="@_database" />
+    </div>
+</div>
+
+@code {
+    private string _server = "(LocalDb)\\MSSQLLocalDB";
+    private string _database = "Stomme-" + DateTime.UtcNow.ToString("yyyyMMddHHmm");
+
+    public string GetConnectionString()
+    {
+        var connectionString = String.Empty;
+
+        if (!String.IsNullOrEmpty(_server) && !String.IsNullOrEmpty(_database))
+        {
+            connectionString = $"Data Source={_server};AttachDbFilename=|DataDirectory|\\{_database}.mdf;Initial Catalog={_database};Integrated Security=SSPI;Encrypt=false;";
+        }
+
+        return connectionString;
+    }
+}

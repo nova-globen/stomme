@@ -1,0 +1,232 @@
+@namespace Stomme.Modules.Admin.Licensing
+@inherits ModuleBase
+@inject ILicenceService LicenceService
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@* D105 design item 10: the Host-only licensing page. It is added to the admin site template only under
+   Deployment:Mode=OnPrem, but the boot reconciliation is additive, so a site switched back to Hosted keeps the page -
+   which is why the "not enabled" branch (api/Licence answers 404) exists. Visibility here is cosmetic; the controller
+   is the enforcement. *@
+
+@if (_loading)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else if (_notEnabled)
+{
+    <div class="db-note db-note-warn">
+        <strong>Licensing is not enabled on this installation</strong>
+        <p>Offline licence keys are read only when the installation runs in on-premises mode:</p>
+        <pre class="db-mono">"Deployment": {
+  "Mode": "OnPrem"
+}</pre>
+    </div>
+}
+else if (_status == null)
+{
+    <div class="db-note db-note-warn">
+        <strong>The licensing status could not be loaded</strong>
+        <p>@_loadError</p>
+    </div>
+}
+else if (!_status.InstallationInitialised)
+{
+    <div class="db-note db-note-warn">
+        <strong>This installation is not yet initialised</strong>
+        <p>It has no InstallationId yet, so no licence key can be bound to it. The id is created when the installation
+           or upgrade completes; reload this page afterwards.</p>
+    </div>
+}
+else
+{
+    <div class="db-card">
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="installationid" HelpText="Send this id to your vendor: a licence key is issued for exactly one installation." ResourceKey="InstallationId">Installation Id:</Label>
+                <div class="db-field-control"><input id="installationid" class="db-input db-mono" readonly value="@_status.InstallationId" /></div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Licence keys</h3>
+    @if (_status.Keys.Count == 0)
+    {
+        <p><em>No licence keys are configured.</em></p>
+    }
+    else
+    {
+        <div class="db-table-wrap">
+            <table class="db-table">
+                <thead>
+                    <tr>
+                        <th>Label</th>
+                        <th>Licence Id</th>
+                        <th>Status</th>
+                        <th>Entitlements</th>
+                        <th>Limits</th>
+                        <th>Expires</th>
+                        <th>Source</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var key in _status.Keys)
+                    {
+                        <tr>
+                            <td>@key.Label</td>
+                            <td class="db-mono">@key.Lid</td>
+                            <td><span class="db-status-pill @PillClass(key.Reason)">@key.Reason</span></td>
+                            <td>@string.Join(", ", key.Entitlements)</td>
+                            <td>@string.Join(", ", key.Limits.Select(limit => $"{limit.Key} = {(limit.Value < 0 ? "unlimited" : limit.Value.ToString())}"))</td>
+                            <td>@(key.Expires.HasValue ? key.Expires.Value.ToString("yyyy-MM-dd HH:mm 'UTC'") : "never")</td>
+                            <td>@key.Source</td>
+                            <td>
+                                @if (key.Deletable)
+                                {
+                                    <ActionDialog Header="Delete Licence Key" Message="Delete this licence key? The entitlements it grants end with it." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => { await DeleteKey(key); StateHasChanged(); })" Disabled="@_busy" />
+                                }
+                                else
+                                {
+                                    <span class="db-muted">supplied by @key.Source - cannot be removed here</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <h3>Add a licence key</h3>
+    <div class="db-card">
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="licencekey" HelpText="Paste the complete SLK1 key your vendor issued for this installation." ResourceKey="LicenceKey">Licence Key:</Label>
+                <div class="db-field-control">
+                    <textarea id="licencekey" class="db-input db-mono" rows="4" @bind="_key" @bind:event="oninput" spellcheck="false" autocomplete="off"></textarea>
+                </div>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(_addError))
+        {
+            <div class="db-note db-note-warn"><p>@_addError</p></div>
+        }
+        <div class="db-btn-row">
+            <button type="button" class="db-btn" disabled="@(_busy || string.IsNullOrWhiteSpace(_key))" @onclick="AddKey">Add key</button>
+        </div>
+    </div>
+
+    <p class="db-muted">
+        A licence key is bound to this installation's id so that a key is not reused on another installation by
+        accident. It is not copy protection: anyone who can change this installation's configuration or code can
+        bypass it.
+    </p>
+}
+
+@code {
+    private LicenceStatus _status;
+    private bool _loading = true;
+    private bool _notEnabled;
+    private bool _busy;
+    private string _loadError = string.Empty;
+    private string _addError = string.Empty;
+    private string _key = string.Empty;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    public override string Title => "Licensing";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Refresh();
+    }
+
+    private async Task Refresh()
+    {
+        try
+        {
+            var result = await LicenceService.GetStatusAsync();
+            _notEnabled = result.NotEnabled;
+            _status = result.Succeeded ? result.Status : null;
+            _loadError = result.Succeeded ? string.Empty : $"The server answered {(int)result.StatusCode}: {result.Message}";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Licensing Status {Error}", ex.Message);
+            _status = null;
+            _loadError = "The licensing status could not be loaded.";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task AddKey()
+    {
+        _busy = true;
+        _addError = string.Empty;
+        try
+        {
+            // The key itself is never logged - only the outcome.
+            var result = await LicenceService.AddKeyAsync(_key);
+            if (result.Succeeded)
+            {
+                _status = result.Status;
+                _key = string.Empty;
+                AddModuleMessage("Licence key added.", MessageType.Success);
+            }
+            else if (result.NotEnabled)
+            {
+                _notEnabled = true;
+            }
+            else
+            {
+                _addError = $"The key was not added: {result.Message}";
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Adding Licence Key {Error}", ex.Message);
+            _addError = "The key was not added: the request failed.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task DeleteKey(LicenceKeyStatus key)
+    {
+        _busy = true;
+        try
+        {
+            var result = await LicenceService.DeleteKeyAsync(key.Name);
+            if (result.Succeeded)
+            {
+                _status = result.Status;
+                AddModuleMessage($"Licence key {key.Lid} removed.", MessageType.Success);
+            }
+            else
+            {
+                AddModuleMessage($"Licence key {key.Lid} was not removed: {result.Message}", MessageType.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Removing Licence Key {Lid} {Error}", key.Lid, ex.Message);
+            AddModuleMessage($"Licence key {key.Lid} was not removed.", MessageType.Error);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private static string PillClass(string reason) => reason switch
+    {
+        "Valid" => "online",
+        "Expired" or "NotYetValid" => "warning",
+        _ => "muted"
+    };
+}

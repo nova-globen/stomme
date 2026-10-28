@@ -1,0 +1,13 @@
+{
+  "$comment": [
+    "Release-wide policy the pipeline stamps into the manifest. Committed so a release's criticality is a",
+    "reviewed change, not an ad-hoc button. 'critical' can also be overridden per run via a workflow_dispatch",
+    "input; a plain tag push uses the value here.",
+    "",
+    "minSupportedVersion: any install below this floor is treated as critical even when 'critical' is false",
+    "(a security floor without flagging every release). Empty = no floor."
+  ],
+  "product": "stomme",
+  "critical": false,
+  "minSupportedVersion": ""
+}

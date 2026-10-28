@@ -1,0 +1,227 @@
+@namespace Stomme.Modules.Admin.Features
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IFeatureService FeatureService
+@inject IStringLocalizer<Edit> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_feature == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    <TabStrip>
+        <TabPanel Name="Settings" Heading="Settings" ResourceKey="Settings">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="key" HelpText="The flag key. Keys are created by catalog seeding or by the first toggle, and cannot be renamed." ResourceKey="Key">Key:</Label>
+                    <div class="db-field-control"><input id="key" class="db-input db-mono" readonly value="@_feature.Key" /></div>
+                </div>
+                <div class="db-field">
+                    <Label For="enabled" HelpText="The stored state of the flag. Config-sourced values (the FeatureManagement section) still take precedence over this at evaluation time." ResourceKey="Enabled">Enabled:</Label>
+                    <div class="db-field-control">
+                        @* Bound as a STRING like every other admin bool select (e.g. Jobs/Edit) — a bound
+                           bool select rendered its first option regardless of value (observed driving). *@
+                        <select id="enabled" class="db-select" @bind="@_enabled">
+                            <option value="True">@SharedLocalizer["Yes"]</option>
+                            <option value="False">@SharedLocalizer["No"]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="roles" HelpText="Restrict the flag to these roles (comma separated). Empty means everyone." ResourceKey="TargetRoles">Target Roles:</Label>
+                    <div class="db-field-control"><input id="roles" class="db-input" @bind="@_targetRoles" /></div>
+                </div>
+                <div class="db-field">
+                    <Label For="rollout" HelpText="Percentage rollout, 0-100. Users are bucketed deterministically." ResourceKey="Rollout">Rollout %:</Label>
+                    <div class="db-field-control"><input id="rollout" type="number" min="0" max="100" class="db-input" @bind="@_rolloutPercentage" /></div>
+                </div>
+            </div>
+            <button type="button" class="db-btn" @onclick="Save">@SharedLocalizer["Save"]</button>
+            <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+        </TabPanel>
+
+        <TabPanel Name="Overrides" Heading="Overrides" ResourceKey="Overrides">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="userid" HelpText="The user id (see the Users admin page) to override the flag for" ResourceKey="UserId">User Id:</Label>
+                    <div class="db-field-control"><input id="userid" type="number" min="1" class="db-input" @bind="@_overrideUserId" /></div>
+                </div>
+                <div class="db-field">
+                    <Label For="overridestate" HelpText="Force the flag on or off for that user, or clear an existing override" ResourceKey="OverrideState">State:</Label>
+                    <div class="db-field-control">
+                        <select id="overridestate" class="db-input" @bind="@_overrideState">
+                            <option value="on">@Localizer["Override.On"]</option>
+                            <option value="off">@Localizer["Override.Off"]</option>
+                            <option value="clear">@Localizer["Override.Clear"]</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="db-btn" @onclick="ApplyOverride">@Localizer["ApplyOverride"]</button>
+
+            @if (_feature.UserOverrides != null && _feature.UserOverrides.Count > 0)
+            {
+                <div style="margin-top: 1rem;">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th>@Localizer["OverrideUser"]</th>
+                                <th>@Localizer["OverrideState"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var entry in _feature.UserOverrides)
+                            {
+                                <tr>
+                                    <td class="db-mono">@entry.Key</td>
+                                    <td>@(entry.Value ? Localizer["Override.On"] : Localizer["Override.Off"])</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </TabPanel>
+
+        <TabPanel Name="History" Heading="History" ResourceKey="History">
+            @if (_audits == null || _audits.Count == 0)
+            {
+                <p><em>@Localizer["NoHistory"]</em></p>
+            }
+            else
+            {
+                <table class="db-table">
+                    <thead>
+                        <tr>
+                            <th>@Localizer["ChangedAt"]</th>
+                            <th>@Localizer["ChangedTo"]</th>
+                            <th>@Localizer["ChangedBy"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var audit in _audits)
+                        {
+                            <tr>
+                                <td>@audit.ChangedAtUtc.ToString("u")</td>
+                                <td>@(audit.Enabled ? Localizer["Override.On"] : Localizer["Override.Off"])</td>
+                                <td>@audit.ChangedBy</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </TabPanel>
+    </TabStrip>
+}
+
+@code {
+    private Feature _feature;
+    private List<FeatureAudit> _audits;
+
+    private string _enabled = "True";
+    private string _targetRoles = string.Empty;
+    private int _rolloutPercentage = 100;
+
+    private int _overrideUserId;
+    private string _overrideState = "on";
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    public override string Title => "Edit Feature Flag";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var key = PageState.QueryString.ContainsKey("key") ? PageState.QueryString["key"] : string.Empty;
+        if (string.IsNullOrEmpty(key))
+        {
+            AddModuleMessage(Localizer["Error.NotFound"], MessageType.Error);
+            return;
+        }
+        await Load(key);
+    }
+
+    private async Task Load(string key)
+    {
+        try
+        {
+            var features = await FeatureService.GetFeaturesAsync() ?? new List<Feature>();
+            _feature = features.FirstOrDefault(item => item.Key == key);
+            if (_feature == null)
+            {
+                AddModuleMessage(Localizer["Error.NotFound"], MessageType.Error);
+                return;
+            }
+
+            _enabled = _feature.Enabled.ToString();
+            _targetRoles = string.Join(", ", _feature.TargetRoles ?? new List<string>());
+            _rolloutPercentage = _feature.RolloutPercentage;
+            _audits = await FeatureService.GetFeatureAuditsAsync(key) ?? new List<FeatureAudit>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Feature Flag {Key} {Error}", key, ex.Message);
+            AddModuleMessage(Localizer["Error.Load"], MessageType.Error);
+        }
+    }
+
+    private async Task Save()
+    {
+        try
+        {
+            if (_rolloutPercentage < 0 || _rolloutPercentage > 100)
+            {
+                AddModuleMessage(Localizer["Error.Rollout"], MessageType.Warning);
+                return;
+            }
+
+            var roles = _targetRoles
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+
+            var enabled = bool.Parse(_enabled);
+            if (enabled != _feature.Enabled)
+            {
+                await FeatureService.ToggleFeatureAsync(_feature.Key, enabled);
+            }
+            await FeatureService.SetTargetingAsync(_feature.Key, roles, _rolloutPercentage);
+            await logger.LogInformation("Feature Flag {Key} Saved", _feature.Key);
+            NavigationManager.NavigateTo(NavigateUrl());
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Feature Flag {Key} {Error}", _feature.Key, ex.Message);
+            AddModuleMessage(Localizer["Error.Save"], MessageType.Error);
+        }
+    }
+
+    private async Task ApplyOverride()
+    {
+        if (_overrideUserId <= 0)
+        {
+            AddModuleMessage(Localizer["Error.UserId"], MessageType.Warning);
+            return;
+        }
+
+        try
+        {
+            bool? state = _overrideState switch
+            {
+                "on" => true,
+                "off" => false,
+                _ => null
+            };
+            await FeatureService.SetUserOverrideAsync(_feature.Key, _overrideUserId, state);
+            await logger.LogInformation("Feature Flag {Key} Override Applied For User {UserId}", _feature.Key, _overrideUserId);
+            await Load(_feature.Key);
+            AddModuleMessage(Localizer["Success.Override"], MessageType.Success);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Applying Feature Flag Override {Key} {Error}", _feature.Key, ex.Message);
+            AddModuleMessage(Localizer["Error.Override"], MessageType.Error);
+        }
+    }
+}

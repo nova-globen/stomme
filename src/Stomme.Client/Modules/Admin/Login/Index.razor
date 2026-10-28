@@ -1,0 +1,550 @@
+@using System.Net
+@namespace Stomme.Modules.Admin.Login
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject ISettingService SettingService
+@inject IServiceProvider ServiceProvider
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (PageState.User != null)
+{
+    <ModuleMessage Message="@Localizer["Info.SignedIn"]" Type="MessageType.Info" />
+}
+else
+{
+    <form @ref="login" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+        <div class="Stomme-Modules-Admin-Login" @onkeypress="@(e => KeyPressed(e))">
+            @switch (_action)
+            {
+                case "Login":
+                    @if (_allowexternallogin)
+                    {
+                        <button type="button" class="db-btn db-btn-block" @onclick="ExternalLogin">@Localizer["Use"] @PageState.Site.Settings["ExternalLogin:ProviderName"]</button>
+                        <hr class="db-login-rule" />
+                    }
+                    @if (_allowsamllogin)
+                    {
+                        <button type="button" class="db-btn db-btn-block" @onclick="SamlLogin">@Localizer["Use"] @_samlprovidername</button>
+                        <hr class="db-login-rule" />
+                    }
+                    @if (_allowwindowslogin)
+                    {
+                        <button type="button" class="db-btn db-btn-block" @onclick="WindowsLogin">@Localizer["Use"] @_windowsprovidername</button>
+                        <hr class="db-login-rule" />
+                    }
+                    @if (_allowsitelogin)
+                    {
+                        <div class="db-login-field">
+                            <Label For="username" HelpText="Please enter your Username" ResourceKey="Username">Username:</Label>
+                            <input id="username" type="text" @ref="username" class="db-input" placeholder="@Localizer["Username.Placeholder"]" @bind="@_username" @bind:event="oninput" required />
+                        </div>
+                        <div class="db-login-field">
+                            <Label For="password" HelpText="Please enter your Password" ResourceKey="Password">Password:</Label>
+                            <div class="db-input-group">
+                                <input id="password" type="@_passwordtype" @ref="password" name="Password" class="db-input" placeholder="@Localizer["Password.Placeholder"]" @bind="@_password" @bind:event="oninput" required />
+                                <button type="button" class="db-btn db-btn-neutral" @onclick="@TogglePassword" tabindex="-1">@_togglepassword</button>
+                            </div>
+                        </div>
+                        @if (!_alwaysremember)
+                        {
+                            <div class="db-login-field">
+                                <div>
+                                    <input id="remember" type="checkbox" @bind="@_remember" />
+                                    <Label For="remember" HelpText="Specify if you would like to be signed back in automatically the next time you visit this site" ResourceKey="Remember">Stay Signed In?</Label>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="db-btn-split" role="group">
+                            <button type="button" class="db-btn" @onclick="Login">@SharedLocalizer["Login"]</button>
+                            <button type="button" class="db-btn db-btn-neutral" @onclick="CancelLogin">@SharedLocalizer["Cancel"]</button>
+                        </div>
+
+                        @if (_allowpasswordrecovery)
+                        {
+                            <button type="button" class="db-btn db-btn-neutral db-btn-block" @onclick="@(() => SetAction("ForgotPassword"))">@Localizer["ForgotPassword"]</button>
+                        }
+                    }
+
+                    @if (_allowloginlink)
+                    {
+                        <hr class="db-login-rule" />
+                        <button type="button" class="db-btn db-btn-block" @onclick="@(() => SetAction("LoginLink"))">@Localizer["UseLoginLink"]</button>
+                    }
+
+                    @if (_allowpasskeys)
+                    {
+                        <hr class="db-login-rule" />
+                        <button type="button" class="db-btn db-btn-block" @onclick="PasskeyLogin">@Localizer["Passkey"]</button>
+                    }
+
+                    @if (PageState.Site.AllowRegistration)
+                    {
+                        <hr class="db-login-rule" />
+                        <div class="db-login-register">
+                            <NavLink href="@_registerurl">@Localizer["Register"]</NavLink>
+                        </div>
+                    }
+                    break;
+                case "ForgotPassword":
+                    <div class="db-login-field">
+                        <Label For="username" HelpText="Please enter your Username" ResourceKey="Username">Username:</Label>
+                        <input id="username" type="text" class="db-input" placeholder="@Localizer["Username.Placeholder"]" @bind="@_username" @bind:event="oninput" required />
+                    </div>
+                    <div class="db-btn-split" role="group">
+                        <button type="button" class="db-btn" @onclick="ForgotPassword">@SharedLocalizer["Send"]</button>
+                        <button type="button" class="db-btn db-btn-neutral" @onclick="@(() => SetAction("Login"))">@SharedLocalizer["Cancel"]</button>
+                    </div>
+                    <button type="button" class="db-btn db-btn-neutral db-btn-block" @onclick="@(() => SetAction("ForgotUsername"))">@Localizer["ForgotUsername"]</button>
+                    break;
+                case "ForgotUsername":
+                    <div class="db-login-field">
+                        <Label For="email" HelpText="Please enter your Email" ResourceKey="Email">Email:</Label>
+                        <input id="email" type="text" class="db-input" placeholder="@Localizer["Email.Placeholder"]" @bind="@_email" required />
+                    </div>
+                    <div class="db-btn-split" role="group">
+                        <button type="button" class="db-btn" @onclick="ForgotUsername">@SharedLocalizer["Send"]</button>
+                        <button type="button" class="db-btn db-btn-neutral" @onclick="@(() => SetAction("Login"))">@SharedLocalizer["Cancel"]</button>
+                    </div>
+                    break;
+                case "LoginLink":
+                    <div class="db-login-field">
+                        <Label For="email" HelpText="Please enter your Email" ResourceKey="Email">Email:</Label>
+                        <input id="email" type="text" class="db-input" placeholder="@Localizer["Email.Placeholder"]" @bind="@_email" required />
+                    </div>
+                    <div class="db-btn-split" role="group">
+                        <button type="button" class="db-btn" @onclick="LoginLink">@SharedLocalizer["Send"]</button>
+                        <button type="button" class="db-btn db-btn-neutral" @onclick="@(() => SetAction("Login"))">@SharedLocalizer["Cancel"]</button>
+                    </div>
+                    break;
+                case "TwoFactor":
+                    <div class="db-login-field">
+                        <Label For="code" HelpText="Please enter the secure verification code which was sent to you by email" ResourceKey="Code">Verification Code:</Label>
+                        <input id="code" class="db-input" @bind="@_code" placeholder="@Localizer["Code.Placeholder"]" maxlength="6" required />
+                    </div>
+                    <div class="db-btn-split" role="group">
+                        <button type="button" class="db-btn" @onclick="Login">@SharedLocalizer["Login"]</button>
+                        <button type="button" class="db-btn db-btn-neutral" @onclick="@(() => SetAction("Login"))">@SharedLocalizer["Cancel"]</button>
+                    </div>
+                    break;
+            }
+        </div>
+    </form>
+}
+
+@code {
+    private string _action = "Login";
+    private bool _allowexternallogin = false;
+    private bool _allowsamllogin = false;
+    private bool _allowwindowslogin = false;
+    private string _samlprovidername = "SAML";
+    private string _windowsprovidername = "Windows";
+    private bool _allowsitelogin = true;
+    private bool _allowloginlink = false;
+    private bool _allowpasswordrecovery = true;
+    private bool _allowpasskeys = false;
+    private string _returnurl = string.Empty;
+
+    private ElementReference login;
+    private bool validated = false;
+    private string _username = string.Empty;
+    private ElementReference username;
+    private string _password = string.Empty;
+    private string _passwordtype = "password";
+    private string _togglepassword = string.Empty;
+    private ElementReference password;
+    private bool _remember = false;
+    private bool _alwaysremember = false;
+    private string _registerurl = string.Empty;
+    private string _email = string.Empty;
+    private string _code = string.Empty;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Anonymous;
+
+    public override List<Resource> Resources => new List<Resource>()
+    {
+        new Stylesheet(ModulePath() + "Module.css")
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _allowexternallogin = (SettingService.GetSetting(PageState.Site.Settings, "ExternalLogin:ProviderType", "") != "") ? true : false;
+            // D70: installation-wide SAML2 / Windows-Negotiate schemes, surfaced into site settings server-side
+            // (ServerSiteService). Show each button only when its scheme is enabled.
+            _allowsamllogin = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "Saml2:Enabled", "false"));
+            _allowwindowslogin = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "WindowsAuth:Enabled", "false"));
+            _samlprovidername = SettingService.GetSetting(PageState.Site.Settings, "Saml2:ProviderName", "SAML");
+            _windowsprovidername = SettingService.GetSetting(PageState.Site.Settings, "WindowsAuth:ProviderName", "Windows");
+            _allowsitelogin = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:AllowSiteLogin", "true"));
+            _allowloginlink = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:LoginLink", "false"));
+            _allowpasswordrecovery = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:AllowPasswordRecovery", "true"));
+            _allowpasskeys = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:Passkeys", "false"));
+            _alwaysremember = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:AlwaysRemember", "false"));
+
+            if (!string.IsNullOrEmpty(SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:RegisterUrl", "")))
+            {
+                _registerurl = SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:RegisterUrl", "");
+            }
+            else
+            {
+                _registerurl = NavigateUrl("register");
+            }
+
+            // PageState.ReturnUrl is not specified if user navigated directly to login page
+            _returnurl = (!string.IsNullOrEmpty(PageState.ReturnUrl)) ? PageState.ReturnUrl : PageState.Alias.Path;
+
+            _togglepassword = SharedLocalizer["ShowPassword"];
+
+            if (PageState.QueryString.ContainsKey("name"))
+            {
+                _username = PageState.QueryString["name"];
+            }
+
+            if (PageState.QueryString.ContainsKey("token") && !string.IsNullOrEmpty(_username))
+            {
+                var user = new User();
+                user.SiteId = PageState.Site.SiteId;
+                user.Username = _username;
+
+                if (PageState.QueryString.ContainsKey("key"))
+                {
+                    user = await UserService.AddLoginAsync(user, PageState.QueryString["token"], PageState.Site.Settings["ExternalLogin:ProviderType"], PageState.QueryString["key"], PageState.Site.Settings["ExternalLogin:ProviderName"]);
+                    if (user != null)
+                    {
+                        await logger.LogInformation(LogFunction.Security, "External Login Linkage Successful For Username {Username}", _username);
+                        AddModuleMessage(Localizer["Success.Account.Linked"], MessageType.Info);						
+                    }
+                    else
+                    {
+                        await logger.LogError(LogFunction.Security, "External Login Linkage Failed For Username {Username}", _username);
+                        AddModuleMessage(Localizer["Message.Account.NotLinked"], MessageType.Warning);						
+                    }
+                    _username = "";
+                }
+                else
+                {
+                    user = await UserService.VerifyEmailAsync(user, PageState.QueryString["token"]);
+                    if (user != null)
+                    {
+                        await logger.LogInformation(LogFunction.Security, "Email Verified For Username {Username}", _username);
+                        AddModuleMessage(Localizer["Success.Account.Verified"], MessageType.Info);						
+                    }
+                    else
+                    {
+                        await logger.LogError(LogFunction.Security, "Email Verification Failed For Username {Username}", _username);
+                        AddModuleMessage(Localizer["Message.Account.NotVerified"], MessageType.Warning);						
+                    }
+                }
+            }
+            else
+            {
+                if (PageState.QueryString.ContainsKey("status"))
+                {
+                    AddModuleMessage(Localizer["ExternalLoginStatus." + PageState.QueryString["status"]], MessageType.Warning);
+                }
+                else
+                {
+                    if (_allowexternallogin && !_allowsitelogin)
+                    {
+                        // external login
+                        ExternalLogin();
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Login {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.LoadLogin"], MessageType.Error);
+        }
+    }
+
+    private async Task KeyPressed(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            switch (_action)
+            {
+                case "Login":
+                    await Login();
+                    break;
+            }
+        }
+    }
+
+    private void SetAction(string action)
+    {
+        _action = action;
+        _username = "";
+        _password = "";
+        _email = "";
+        ClearModuleMessage();
+        StateHasChanged();
+    }
+
+    private void ExternalLogin()
+    {
+        NavigationManager.NavigateTo(Utilities.TenantUrl(PageState.Alias, "/pages/external?returnurl=" + WebUtility.UrlEncode(_returnurl)), true);
+    }
+
+    private void SamlLogin()
+    {
+        // D70: the installation-wide SAML2 challenge (config-gated). The endpoint itself re-checks the scheme is
+        // registered and 403s otherwise, so this button can never force a challenge on a disabled install.
+        NavigationManager.NavigateTo(Utilities.TenantUrl(PageState.Alias, "/pages/saml-login?returnurl=" + WebUtility.UrlEncode(_returnurl)), true);
+    }
+
+    private void WindowsLogin()
+    {
+        // D70: the installation-wide Windows/Negotiate challenge (config-gated, Windows-only). Same endpoint-side
+        // gate as SAML above.
+        NavigationManager.NavigateTo(Utilities.TenantUrl(PageState.Alias, "/pages/windows-login?returnurl=" + WebUtility.UrlEncode(_returnurl)), true);
+    }
+
+    private void TogglePassword()
+    {
+        if (_passwordtype == "password")
+        {
+            _passwordtype = "text";
+            _togglepassword = SharedLocalizer["HidePassword"];
+        }
+        else
+        {
+            _passwordtype = "password";
+            _togglepassword = SharedLocalizer["ShowPassword"];
+        }
+    }
+
+    private async Task Login()
+    {
+        try
+        {
+            validated = true;
+            var interop = new Interop(JSRuntime);
+            if (await interop.FormValid(login))
+            {
+                var hybrid = (PageState.Runtime == Shared.Runtime.Hybrid);
+                var user = new User { SiteId = PageState.Site.SiteId, Username = _username, Password = _password, LastIPAddress = SiteState.RemoteIPAddress};
+
+                if (_action == "Login")
+                { 
+                    _remember = _alwaysremember || _remember;
+                    user = await UserService.LoginUserAsync(user, hybrid, _remember);
+                }
+                else
+                {
+                    user = await UserService.VerifyTwoFactorAsync(user, _code);
+                }
+
+                if (user != null && user.IsAuthenticated)
+                {
+                    await logger.LogInformation(LogFunction.Security, "Login Successful For {Username} From IP Address {IPAddress}", _username, SiteState.RemoteIPAddress);
+
+                    if (hybrid)
+                    {
+                        // hybrid apps utilize an interactive login
+                        var authstateprovider = (IdentityAuthenticationStateProvider)ServiceProvider.GetService(typeof(IdentityAuthenticationStateProvider));
+                        authstateprovider.NotifyAuthenticationChanged();
+                        NavigationManager.NavigateTo(NavigateUrl(_returnurl, true));
+                    }
+                    else
+                    {
+                        // post back to the Login page so that the cookies are set correctly
+                        // the verified second-factor code goes with the password: the page that sets the cookie checks it again (BL-254)
+                        var fields = new { __RequestVerificationToken = SiteState.AntiForgeryToken, username = _username, password = _password, remember = _remember, returnurl = WebUtility.UrlEncode(_returnurl), code = (_action == "TwoFactor") ? _code : string.Empty };
+                        string url = Utilities.TenantUrl(PageState.Alias, "/pages/login/");
+                        await interop.SubmitForm(url, fields);
+                    }
+                }
+                else
+                {
+                    if (SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:TwoFactor", "false") == "required" || (user != null && user.TwoFactorRequired))
+                    {
+                        _action = "TwoFactor";
+                        validated = false;
+                        AddModuleMessage(Localizer["Message.TwoFactor"], MessageType.Info);
+                    }
+                    else
+                    {
+                        if (_action != "TwoFactor")
+                        {
+                            await logger.LogInformation(LogFunction.Security, "Login Failed For Username {Username}", _username);
+                            AddModuleMessage(Localizer["Error.Login.Fail"], MessageType.Error);
+                        }
+                        else
+                        {
+                            await logger.LogInformation(LogFunction.Security, "Two Factor Verification Failed For Username {Username}", _username);
+                            AddModuleMessage(Localizer["Error.TwoFactor.Fail"], MessageType.Error);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.UserInfo"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Performing Login {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Login"], MessageType.Error);
+        }
+    }
+
+    private void CancelLogin()
+    {
+        NavigationManager.NavigateTo(_returnurl);
+    }
+
+    private async Task PasskeyLogin()
+    {
+        // post back to the Passkey page so that the cookies are set correctly
+        var interop = new Interop(JSRuntime);
+        var fields = new { __RequestVerificationToken = SiteState.AntiForgeryToken, operation = "request", returnurl = _returnurl };
+        string url = Utilities.TenantUrl(PageState.Alias, "/pages/passkey/");
+        await interop.SubmitForm(url, fields);
+    }
+
+    private async Task ForgotPassword()
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(_username))
+            {
+                if (await UserService.ForgotPasswordAsync(_username))
+                {
+                    await logger.LogInformation(LogFunction.Security, "Password Reset Notification Sent For Username {Username}", _username);
+                    AddModuleMessage(Localizer["Message.ForgotPassword"], MessageType.Info);
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.UserDoesNotExist"], MessageType.Warning);
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.UserInfo"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Resetting Password {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.ResetPassword"], MessageType.Error);
+        }
+    }
+
+    private async Task ForgotUsername()
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(_email))
+            {
+                if (await UserService.ForgotUsernameAsync(_email))
+                {
+                    AddModuleMessage(Localizer["Message.ForgotUsername"], MessageType.Info);
+                    await logger.LogInformation(LogFunction.Security, "Username Reminder Notification Sent For Email {Email}", _email);
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.UserDoesNotExist"], MessageType.Warning);
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.UserInfo"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Sending Username Reminder {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.ForgotUsername"], MessageType.Error);
+        }
+    }
+
+    private async Task LoginLink()
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(_email))
+            {
+                if (await UserService.SendLoginLinkAsync(_email, _returnurl))
+                {
+                    AddModuleMessage(Localizer["Message.SendLoginLink"], MessageType.Info);
+                    await logger.LogInformation(LogFunction.Security, "Login Link Sent To Email {Email}", _email);
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.UserDoesNotExist"], MessageType.Warning);
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.UserInfo"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Sending Login Link {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.SendLoginLink"], MessageType.Error);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && PageState.QueryString.ContainsKey("options"))
+        {
+            // user has initiated a passkey login
+            try
+            {
+                var interop = new Interop(JSRuntime);
+                var credential = await interop.RequestCredential(WebUtility.UrlDecode(PageState.QueryString["options"]));
+                if (!string.IsNullOrEmpty(credential))
+                {
+                    // post back to the Passkey page so that the cookies are set correctly
+                    var fields = new { __RequestVerificationToken = SiteState.AntiForgeryToken, operation = "login", credential = credential, returnurl = _returnurl };
+                    string url = Utilities.TenantUrl(PageState.Alias, "/pages/passkey/");
+                    await interop.SubmitForm(url, fields);
+                }
+                else
+                {
+                    await logger.LogError("Passkey Login Was Not Successful");
+                    AddModuleMessage(Localizer["Error.Passkey.Fail"], MessageType.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "Passkey Login Was Not Successful");
+                AddModuleMessage(Localizer["Error.Passkey.Fail"], MessageType.Warning);
+            }
+            return;
+        }
+
+        if (firstRender && PageState.User == null && _allowsitelogin && _action == "Login")
+        {
+            if (string.IsNullOrEmpty(_username))
+            {
+                if (!string.IsNullOrEmpty(username.Id)) // ensure username is visible in UI
+                {
+                    await username.FocusAsync();
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(password.Id)) // ensure password is visible in UI
+                {
+                    await password.FocusAsync();
+                }
+            }
+        }
+
+        // redirect logged in user to specified page
+        if (PageState.User != null && !UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
+        {
+            NavigationManager.NavigateTo(_returnurl);
+        }
+    }
+}

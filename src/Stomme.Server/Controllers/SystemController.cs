@@ -1,0 +1,165 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using Stomme.Shared;
+using System;
+using Microsoft.AspNetCore.Hosting;
+using Stomme.Infrastructure;
+using Microsoft.AspNetCore.Http.Features;
+using System.IO;
+using System.Threading.Tasks;
+using Stomme.Enums;
+
+namespace Stomme.Controllers
+{
+    [Route(ControllerRoutes.ApiRoute)]
+    public class SystemController : Controller
+    {
+        private readonly IWebHostEnvironment _environment;
+        private readonly IConfigManager _configManager;
+        private readonly ICacheManager _cacheManager;
+        private readonly ILogManager _logger;
+
+        public SystemController(IWebHostEnvironment environment, IConfigManager configManager, ICacheManager cacheManager, ILogManager logger)
+        {
+            _environment = environment;
+            _configManager = configManager;
+            _cacheManager = cacheManager;
+            _logger = logger;
+        }
+
+        // GET: api/<controller>?type=x
+        [HttpGet]
+        [Authorize(Roles = RoleNames.Host)]
+        public Dictionary<string, object> Get(string type)
+        {
+            Dictionary<string, object> systeminfo = new Dictionary<string, object>();
+
+            switch (type.ToLower())
+            {
+                case "environment":
+                    systeminfo.Add("CLRVersion", Environment.Version.ToString());
+                    systeminfo.Add("OSVersion", Environment.OSVersion.ToString());
+                    systeminfo.Add("Process", (Environment.Is64BitProcess) ? "64 Bit" : "32 Bit");
+                    systeminfo.Add("MachineName", Environment.MachineName);
+                    systeminfo.Add("Instance", Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID") ?? "");
+                    systeminfo.Add("WorkingSet", Environment.WorkingSet.ToString());
+                    systeminfo.Add("TickCount", Environment.TickCount64.ToString());
+                    systeminfo.Add("ContentRootPath", _environment.ContentRootPath);
+                    systeminfo.Add("WebRootPath", _environment.WebRootPath);
+                    systeminfo.Add("Environment", _environment.EnvironmentName);
+                    systeminfo.Add("ServerTime", DateTime.UtcNow.ToString());
+                    var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
+                    systeminfo.Add("IPAddress", feature?.LocalIpAddress?.ToString());
+                    break;
+                case "configuration":
+                    systeminfo.Add("InstallationId", _configManager.GetInstallationId());
+                    systeminfo.Add("RenderMode", _configManager.GetSetting("RenderMode", RenderModes.Interactive));
+                    systeminfo.Add("Runtime", _configManager.GetSetting("Runtime", Runtimes.Server));
+                    systeminfo.Add("DetailedErrors", _configManager.GetSetting("DetailedErrors", "false"));
+                    systeminfo.Add("Logging:LogLevel:Default", _configManager.GetSetting("Logging:LogLevel:Default", "Information"));
+                    systeminfo.Add("Logging:LogLevel:Notify", _configManager.GetSetting("Logging:LogLevel:Notify", "Error"));
+                    systeminfo.Add("Logging:LogLevel:Broadcast", _configManager.GetSetting("Logging:LogLevel:Broadcast", "None"));
+                    systeminfo.Add("UseSwagger", _configManager.GetSetting("UseSwagger", "false"));
+                    systeminfo.Add("Caching:Duration", _configManager.GetSetting("Caching:Duration", "10"));
+                    systeminfo.Add("Caching:FailSafe", _configManager.GetSetting("Caching:FailSafe", "true"));
+                    systeminfo.Add("Caching:Distributed", _configManager.GetSetting("Caching:Distributed", "false"));
+                    systeminfo.Add($"ConnectionStrings:{SettingKeys.DistributedCacheKey}", _configManager.GetSetting($"ConnectionStrings:{SettingKeys.DistributedCacheKey}", ""));
+                    systeminfo.Add("Caching:ScaleOut", _configManager.GetSetting("Caching:ScaleOut", "false"));
+                    systeminfo.Add("Caching:Cache-Control", _configManager.GetSetting("Caching:Cache-Control", ""));
+                    systeminfo.Add("PackageRegistryUrl", _configManager.GetSetting("PackageRegistryUrl", Constants.PackageRegistryUrl));
+                    systeminfo.Add("PackageRegistryEmail", _configManager.GetSetting("PackageRegistryEmail", ""));
+                    break;
+                case "log":
+                    string log = "";
+                    string path = Path.Combine(_environment.ContentRootPath, "Content", "Log", "error.log");
+                    if (System.IO.File.Exists(path))
+                    {
+                        log = System.IO.File.ReadAllText(path);
+                    }
+                    systeminfo.Add("Log", log);
+                    break;
+                case "connectionstrings":
+                    foreach (var kvp in _configManager.GetSettings(SettingKeys.ConnectionStringsSection))
+                    {
+                        if (kvp.Key != SettingKeys.DistributedCacheKey)
+                        {
+                            systeminfo.Add(kvp.Key, kvp.Value);
+                        }
+                    }
+                    break;
+            }
+
+            return systeminfo;
+        }
+
+        // GET: api/<controller>
+        [HttpGet("{key}/{value}")]
+        [Authorize(Roles = RoleNames.Host)]
+        public object Get(string key, object value)
+        {
+            return _configManager.GetSetting(key, value);
+        }
+
+        // POST: api/<controller>
+        [HttpPost]
+        [Authorize(Roles = RoleNames.Host)]
+        public void Post([FromBody] Dictionary<string, object> settings)
+        {
+            foreach(KeyValuePair<string, object> kvp in settings)
+            {
+                UpdateSetting(kvp.Key, kvp.Value);
+            }
+        }
+
+        // POST: api/<controller>/cache/clear
+        /// <summary>
+        /// The SystemInfo Caching section's "Clear All" (BL-100 O1): removes every framework cache entry. Its own
+        /// endpoint rather than a key through <see cref="Post"/>, whose unknown keys are WRITTEN to appsettings.
+        /// </summary>
+        [HttpPost("cache/clear")]
+        [Authorize(Roles = RoleNames.Host)]
+        public async Task ClearCache()
+        {
+            await _cacheManager.ClearAllAsync();
+            _logger.Log(Shared.LogLevel.Information, this, LogFunction.Security, "Cache Cleared");
+        }
+
+        // GET: api/<controller>/icons
+        [HttpGet("icons")]
+        public Dictionary<string, string> Get()
+        {
+            var icons = new Dictionary<string, string>();
+
+            // use reflection to get list of icons from Icons class
+            Type iconsType = typeof(Icons);
+            System.Reflection.FieldInfo[] fields = iconsType.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.GetField);
+            foreach (System.Reflection.FieldInfo field in fields)
+            {
+                if (field.FieldType == typeof(string))
+                {
+                    icons.Add((string)field.GetValue(null), field.Name); // ie. ("oi oi-home", "Home")
+                }
+            }
+
+            return icons;
+        }
+
+        private void UpdateSetting(string key, object value)
+        {
+            switch (key.ToLower())
+            {
+                case "clearlog":
+                    string path = Path.Combine(_environment.ContentRootPath, "Content", "Log", "error.log");
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.IO.File.Delete(path);
+                    }
+                    break;
+                default:
+                    _configManager.AddOrUpdateSetting(key, value, true);
+                    break;
+            }
+        }
+    }
+}

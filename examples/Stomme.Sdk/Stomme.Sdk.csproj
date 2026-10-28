@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    D81. The Stomme.Sdk META-package: one PackageReference for a downstream module -> the whole
+    module-facing surface. Standard meta-package shape: IncludeBuildOutput=false (no lib, deps-only),
+    SuppressDependenciesWhenPacking=false (the PackageReferences below flow as package dependencies).
+    NU5128 (deps but no lib for the TFM) is expected for a meta-package and suppressed.
+    Restores from ../local-feed (see nuget.config), so `dotnet pack` here emits a deps-only nupkg.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <IsPackable>true</IsPackable>
+    <PackageId>Stomme.Sdk</PackageId>
+    <Authors>Nova Globen AB</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/nova-globen/stomme</PackageProjectUrl>
+    <PackageTags>stomme;module;sdk;storage-blind;provider-neutral</PackageTags>
+    <Description>Meta-package: the complete Stomme module-facing SDK surface (storage-blind, provider-neutral). One reference brings ModuleBase/IModuleControl (Client UI), IServerStartup + AddModuleAggregatePersistence (Server), the clean-arch SharedKernel, the persistence abstractions + EF/Raven/File providers, tenancy abstractions and the mediator — so a module compiles against packages only, zero source references.</Description>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stomme.Server" Version="$(Version)" />
+    <PackageReference Include="Stomme.Client" Version="$(Version)" />
+    <PackageReference Include="Stomme.Shared" Version="$(Version)" />
+    <PackageReference Include="Stomme.SharedKernel" Version="$(Version)" />
+    <PackageReference Include="Stomme.Persistence.Abstractions" Version="$(Version)" />
+    <PackageReference Include="Stomme.Persistence.EfCore" Version="$(Version)" />
+    <PackageReference Include="Stomme.Persistence.RavenDb" Version="$(Version)" />
+    <PackageReference Include="Stomme.Persistence.File" Version="$(Version)" />
+    <PackageReference Include="Stomme.Tenancy.Abstractions" Version="$(Version)" />
+    <PackageReference Include="Stomme.Mediator" Version="$(Version)" />
+    <!-- D99/BL-99: the authorization bridge. Security.Abstractions is what a module compiles [Requires],
+         IAccessGuard and ICurrentUser against; Authorization carries the behavior + AddStommeAuthorization
+         a host composes. Both are already package dependencies of Stomme.Server above — listing them here
+         makes the module-facing surface explicit rather than transitive. -->
+    <PackageReference Include="Stomme.Security.Abstractions" Version="$(Version)" />
+    <PackageReference Include="Stomme.Authorization" Version="$(Version)" />
+  </ItemGroup>
+
+
+  <!-- D98: LICENSE and THIRD-PARTY-NOTICES.md at the package root, as the framework's own packages carry them (BL-186). -->
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
+
+</Project>

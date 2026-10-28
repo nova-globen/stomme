@@ -1,0 +1,62 @@
+@namespace Stomme.Themes.Controls
+@inherits MenuItemsBase
+
+@* Migrated to the --db-* design system (D11). The vertical menu flattens its hierarchy and indents
+   by level, so it has no dropdown to drive -- only the inert dismiss spans to remove (D18). *@
+@if (ParentPage != null)
+{
+    foreach (var childPage in GetChildPages())
+    {
+        <li class="db-nav-item" style="margin-left: @(childPage.Level * 15)px;">
+            <a class="db-nav-link @(childPage.PageId == PageState.Page.PageId ? "active" : "")"
+               @attributes="LinkAttributes(childPage)" @onclick="OnNavigate">
+                <span class="@childPage.Icon" aria-hidden="true" />
+                @childPage.Name
+                @if (childPage.PageId == PageState.Page.PageId)
+                {
+                    <span class="db-visually-hidden">(current)</span>
+                }
+            </a>
+        </li>
+        if (Pages.Any(e => e.ParentId == childPage.PageId))
+        {
+            <MenuItemsVertical ParentPage="childPage" Pages="Pages" OnNavigate="OnNavigate" />
+        }
+    }
+}
+else
+{
+    <ul class="db-nav-list db-nav-list-vertical">
+        @foreach (var childPage in GetChildPages())
+        {
+            <li class="db-nav-item" style="margin-left: @(childPage.Level * 15)px;">
+                <a class="db-nav-link @(childPage.PageId == PageState.Page.PageId ? "active" : "")"
+                   @attributes="LinkAttributes(childPage)" @onclick="OnNavigate">
+                    <span class="@childPage.Icon" aria-hidden="true" />
+                    @childPage.Name
+                    @if (childPage.PageId == PageState.Page.PageId)
+                    {
+                        <span class="db-visually-hidden">(current)</span>
+                    }
+                </a>
+            </li>
+            if (Pages.Any(e => e.ParentId == childPage.PageId))
+            {
+                <MenuItemsVertical ParentPage="childPage" Pages="Pages" OnNavigate="OnNavigate" />
+            }
+        }
+    </ul>
+}
+
+@code {
+    private Dictionary<string, object> LinkAttributes(Stomme.Models.Page page)
+    {
+        var attributes = new Dictionary<string, object> { { "href", GetUrl(page) } };
+        var target = GetTarget(page);
+        if (!string.IsNullOrEmpty(target))
+        {
+            attributes.Add("target", target);
+        }
+        return attributes;
+    }
+}

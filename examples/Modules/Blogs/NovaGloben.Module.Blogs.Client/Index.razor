@@ -1,0 +1,122 @@
+@namespace NovaGloben.Module.Blogs
+@inherits ModuleBase
+@inject IBlogService BlogService
+
+<div class="db-blogs">
+    <h3 style="margin:0 0 0.25rem;">Blog</h3>
+    <p style="margin:0 0 1rem;color:var(--db-text-2);">
+        An independent, storage-blind sample module installed from a NuGet package. Publish a post below &mdash;
+        it round-trips through a Stomme mediator command over a DDD aggregate the host persists on whatever
+        store it was installed with, and the list is a mediator query.
+    </p>
+
+    <div class="db-blog-form" style="display:flex;flex-direction:column;gap:0.5rem;max-width:640px;margin-bottom:1.25rem;">
+        <input class="db-input" placeholder="Post title" maxlength="150" @bind="_title" @bind:event="oninput" />
+        <input class="db-input" placeholder="Author" maxlength="100" @bind="_author" @bind:event="oninput" />
+        <textarea class="db-input" placeholder="Write your post..." rows="4" maxlength="20000" @bind="_body" @bind:event="oninput"></textarea>
+        <div>
+            <button class="db-btn" @onclick="Publish" disabled="@_busy">Publish post</button>
+        </div>
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+    </div>
+
+    @if (_posts.Count == 0)
+    {
+        <p style="color:var(--db-text-2);">No posts yet. Be the first to publish.</p>
+    }
+    else
+    {
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.75rem;">
+            @foreach (var post in _posts)
+            {
+                <li class="db-card" style="padding:0.75rem 1rem;">
+                    <div style="font-weight:600;font-size:1.1rem;">@post.Title</div>
+                    <div style="font-size:0.8rem;color:var(--db-text-2);margin:0.15rem 0 0.5rem;">
+                        by @post.Author &middot; @post.PublishedOnUtc.ToString("u")
+                    </div>
+                    <div style="white-space:pre-wrap;">@post.Body</div>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private List<BlogPostModel> _posts = new();
+    private string _title = "";
+    private string _author = "";
+    private string _body = "";
+    private string _error = "";
+    private bool _busy;
+
+    // Prerender the module so its list + form appear in the server-rendered HTML (the drive asserts on that
+    // markup). Safe against the D29 renderer-deadlock class: the module's data path is its own module-aggregate
+    // store, whose async surface completes synchronously on SQLite.
+    public override bool? Prerender => true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null)
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _posts = await BlogService.ListPostsAsync(ModuleState.ModuleId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error loading blog posts {Error}", ex.Message);
+        }
+    }
+
+    private async Task Publish()
+    {
+        _error = "";
+        if (string.IsNullOrWhiteSpace(_title) || string.IsNullOrWhiteSpace(_body) || string.IsNullOrWhiteSpace(_author))
+        {
+            _error = "Please enter a title, an author and a body.";
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var created = await BlogService.CreatePostAsync(new BlogPostModel
+            {
+                ModuleId = ModuleState.ModuleId,
+                Title = _title,
+                Author = _author,
+                Body = _body
+            });
+
+            if (created != null)
+            {
+                _title = "";
+                _author = "";
+                _body = "";
+                await LoadAsync();
+            }
+            else
+            {
+                _error = "Your post could not be saved. Please check your entry and try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error publishing blog post {Error}", ex.Message);
+            _error = "Your post could not be saved.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

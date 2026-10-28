@@ -1,0 +1,119 @@
+@namespace Stomme.Modules.Health
+@inherits ModuleBase
+@inject ISettingService SettingService
+
+@*
+    The health THRESHOLDS (BL-83 / D104 item 12), as the module's "Thresholds" action - NOT "Settings", which SiteRouter
+    reserves for the framework's module-settings dialog. They are Host-scope Setting rows - ONE value for the deployment, which every
+    site of the tenant runs by (a shared store cannot be Degraded on one site and Healthy on the next) - so this page is
+    HOST-ONLY, not health:manage: a site's administrator must not be able to change every other site's alerting. D104 item 12
+    said health:manage; its correction records why that cannot stand. The server decides again: SettingController only lets
+    the Host role EDIT Host settings. Values the health module cannot use fall back to its defaults (HealthSettings parses
+    defensively), and retention is clamped there to 1..365 days.
+*@
+
+<PageTitle>Health thresholds</PageTitle>
+
+<div id="health-settings" style="display:flex;flex-direction:column;gap:0.75rem;max-width:640px;">
+    <h3 style="margin:0;">Health thresholds</h3>
+    <p style="margin:0;color:var(--db-text-2);">
+        These apply to the whole installation. Leave a field empty to use its default.
+    </p>
+
+    @foreach (var field in _fields)
+    {
+        <label class="db-field-label" for="@field.Key">@field.Label <span style="color:var(--db-text-2);">(default @field.Default)</span></label>
+        <input id="@field.Key" class="db-input" type="number" min="1" max="@field.Max" @bind="field.Value" @bind:event="oninput" />
+    }
+
+    <div style="display:flex;gap:0.5rem;">
+        <button id="health-settings-save" type="button" class="db-btn" @onclick="SaveAsync" disabled="@_busy">Save</button>
+        <a class="db-btn db-btn-neutral" href="@NavigateUrl()">Back</a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(_message))
+    {
+        <p id="health-settings-message" style="margin:0;">@_message</p>
+    }
+</div>
+
+@code {
+    // The keys and defaults are HealthSettings' (Stomme.Server); they are restated here because the client does not
+    // reference the server. HealthSettingsPageContractTests holds the two lists together.
+    private readonly List<Field> _fields = new()
+    {
+        new("HealthDegradedLatencyMs", "Degraded above (ms)", 1000, 600000),
+        new("HealthProbeTimeoutMs", "Probe timeout (ms)", 5000, 600000),
+        new("HealthUnhealthyAlertAfter", "Alert when unhealthy for (minutes)", 2, 1440),
+        new("HealthDegradedAlertAfter", "Alert when degraded for (minutes)", 5, 1440),
+        new("HealthAlertCooldownMinutes", "Alert cooldown (minutes)", 30, 1440),
+        new("HealthRetention", "Keep history for (days)", 30, 365),
+    };
+
+    private bool _busy;
+    private string _message = "";
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    public override string Title => "Health Thresholds";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var settings = await SettingService.GetSettingsAsync(EntityNames.Host, -1) ?? new Dictionary<string, string>();
+            foreach (var field in _fields)
+            {
+                field.Value = settings.TryGetValue(field.Key, out var raw) && int.TryParse(raw, out var value) && value > 0 ? value : null;
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the health thresholds.");
+            _message = "The thresholds could not be loaded.";
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        _busy = true;
+        try
+        {
+            // Only these keys are sent, so every other Host setting is left exactly as it is. An empty field is stored as
+            // empty, which the server reads as "use the default".
+            var values = _fields.ToDictionary(field => field.Key, field => field.Value is int value && value > 0 ? Math.Min(value, field.Max).ToString() : "");
+            await SettingService.UpdateSettingsAsync(values, EntityNames.Host, -1);
+            _message = "Thresholds saved. The health job uses them from its next tick.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not save the health thresholds.");
+            _message = "The thresholds could not be saved.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private sealed class Field
+    {
+        public Field(string key, string label, int @default, int max)
+        {
+            Key = key;
+            Label = label;
+            Default = @default;
+            Max = max;
+        }
+
+        public string Key { get; }
+
+        public string Label { get; }
+
+        public int Default { get; }
+
+        public int Max { get; }
+
+        public int? Value { get; set; }
+    }
+}

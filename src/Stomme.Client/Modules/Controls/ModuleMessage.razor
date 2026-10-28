@@ -1,0 +1,107 @@
+@namespace Stomme.Modules.Controls
+@inherits ModuleControlBase
+@inject NavigationManager NavigationManager
+
+@* Migrated off the Bootstrap .alert onto the --db-* message surfaces (D11, Phase 4).
+   Shared control: every module renders its messages through here. *@
+@* Shared body so the Alert and Toast styles cannot drift apart. *@
+@{
+    RenderFragment _MessageBody =
+    @<text>
+        <div class="db-message-body">
+            @((MarkupString)Message)
+            @if (Type == MessageType.Error && PageState != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+            {
+                <NavLink class="db-message-link" href="@NavigateUrl("admin/log")">View Details</NavLink>
+            }
+        </div>
+        <form method="post" class="app-form-inline" @formname="ModuleMessageForm" @onsubmit="CloseMessage" data-enhance>
+            <input type="hidden" name="@Constants.RequestVerificationToken" value="@SiteState.AntiForgeryToken" />
+            <button type="submit" class="db-message-close" aria-label="close">&times;</button>
+        </form>
+    </text>;
+}
+@if (!string.IsNullOrEmpty(Message))
+{
+    @if (_style == MessageStyle.Alert)
+    {
+        <div class="@_classname" role="alert">
+            @_MessageBody
+        </div>
+    }
+
+    @if (_style == MessageStyle.Toast)
+    {
+        <div class="db-message-toast">
+            <div class="@_classname" role="alert">
+                @_MessageBody
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private string _message = string.Empty;
+    private string _classname = string.Empty;
+    private MessageStyle _style;
+
+    [Parameter]
+    public string Message { get; set; }
+
+    [Parameter]
+    public MessageType Type { get; set; }
+
+    [Parameter]
+    public MessageStyle Style { get; set; } = MessageStyle.Alert;
+
+    [Parameter]
+    public RenderModeBoundary Parent { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _message = Message;
+        if (!string.IsNullOrEmpty(_message))
+        {
+            _classname = GetMessageType(Type);
+            _style = Style;
+            if (Type == MessageType.Error)
+            {
+                _style = MessageStyle.Alert; // errors should always be displayed as alerts
+            }
+        }
+    }
+
+    private string GetMessageType(MessageType type)
+    {
+        string classname = string.Empty;
+        switch (type)
+        {
+            case MessageType.Success:
+                classname = "db-message db-message-ok";
+                break;
+            case MessageType.Info:
+                classname = "db-message db-message-info";
+                break;
+            case MessageType.Warning:
+                classname = "db-message db-message-warn";
+                break;
+            case MessageType.Error:
+                classname = "db-message db-message-bad";
+                break;
+        }
+
+        return classname;
+    }
+
+    private void CloseMessage()
+    {
+        if (Parent != null)
+        {
+            Parent.DismissMessage();
+        }
+        else
+        {
+            NavigationManager.NavigateTo(NavigationManager.Uri);
+        }
+    }
+}

@@ -1,0 +1,150 @@
+@namespace Stomme.Modules.Admin.UrlMappings
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IUrlMappingService UrlMappingService
+@inject ISiteService SiteService
+@inject ISettingService SettingService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_urlMappings == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    <TabStrip>
+        <TabPanel Name="Urls" Heading="Urls" ResourceKey="Urls">
+			@* Migrated to native FluentUI controls + the --db-* design system (D11, Phase 4). *@
+			<div class="db-page-head">
+				<ActionLink Action="Add" Text="Add Url Mapping" ResourceKey="AddUrlMapping" />
+				<div class="db-page-head-actions">
+					<FluentSelect id="type" TOption="string" TValue="string" Value="@_mapped.ToString().ToLower()" ValueChanged="@(v => MappedChanged(v))">
+						<FluentOption TValue="string" Value="@("true")">@Localizer["Mapped"]</FluentOption>
+						<FluentOption TValue="string" Value="@("false")">@Localizer["Broken"]</FluentOption>
+					</FluentSelect>
+				</div>
+			</div>
+            <Pager Items="@_urlMappings" SearchProperties="Url">
+				<Header>
+					<th style="width: 1px;">&nbsp;</th>
+					<th style="width: 1px;">&nbsp;</th>
+					<th>@Localizer["Url"]</th>
+					<th>@Localizer["Requests"]</th>
+					<th>@Localizer["Requested"]</th>
+					<th>@Localizer["Referrer"]</th>
+				</Header>
+				<Row>
+                    <td><ActionLink Action="Edit" Text="Edit" Parameters="@($"id=" + context.UrlMappingId.ToString())" ResourceKey="Edit" /></td>
+					<td><ActionDialog Header="Delete Url Mapping" Message="@string.Format(Localizer["Confirm.DeleteUrlMapping"], context.Url)" Action="Delete" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUrlMapping(context))" ResourceKey="DeleteUrlMapping" /></td>
+					<td>
+						<a href="@Utilities.TenantUrl(PageState.Alias, context.Url)">@context.Url</a>
+						@if (_mapped)
+						{
+							@((MarkupString)"<br />&gt;&gt;&nbsp;")<a href="@((context.MappedUrl.StartsWith("http") ? context.MappedUrl : Utilities.TenantUrl(PageState.Alias, context.MappedUrl)))">@context.MappedUrl</a>
+						}
+					</td>
+					<td>@context.Requests</td>
+					<td>@UtcToLocal(context.RequestedOn)</td>
+                    <td>@context.Referrer</td>
+                </Row>
+			</Pager>
+		</TabPanel>
+        <TabPanel Name="Settings" Heading="Settings" ResourceKey="Settings">
+			<div class="db-card">
+				<div class="db-field">
+					<Label For="capturebrokenurls" HelpText="Specify if broken Urls should be captured automatically and saved in Url Mappings" ResourceKey="CaptureBrokenUrls">Capture Broken Urls? </Label>
+					<FluentSwitch id="capturebrokenurls" @bind-Value="_captureBrokenUrls" />
+				</div>
+				<div class="db-field">
+					<Label For="retention" HelpText="Number of days of broken urls to retain" ResourceKey="Retention">Retention (Days): </Label>
+					<FluentNumberInput id="retention" @bind-Value="_retention" Min="0" Step="1" class="db-field-control" />
+				</div>
+			</div>
+			<div class="db-form-actions">
+				<FluentButton Appearance="ButtonAppearance.Primary" OnClick="SaveSiteSettings">@SharedLocalizer["Save"]</FluentButton>
+			</div>
+		</TabPanel>
+	</TabStrip>
+}
+
+@code {
+	private bool _mapped = true;
+	private List<UrlMapping> _urlMappings;
+	private string _capturebrokenurls;
+    private int _retention = 30;
+
+	// Typed bridge for the native FluentUI switch over the string-backed setting.
+	private bool _captureBrokenUrls
+	{
+		get => bool.TryParse(_capturebrokenurls, out var value) && value;
+		set => _capturebrokenurls = value.ToString();
+	}
+
+	public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Admin;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await GetUrlMappings();
+		_capturebrokenurls = PageState.Site.CaptureBrokenUrls.ToString();
+
+        var settings = await SettingService.GetSiteSettingsAsync(PageState.Site.SiteId);
+        _retention = int.Parse(SettingService.GetSetting(settings, "UrlMappingRetention", "30"));
+    }
+
+	private async void MappedChanged(string value)
+	{
+		try
+		{
+			_mapped = bool.Parse(value);
+			await GetUrlMappings();
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error On TypeChanged");
+		}
+	}
+
+	private async Task DeleteUrlMapping(UrlMapping urlMapping)
+	{
+		try
+		{
+			await UrlMappingService.DeleteUrlMappingAsync(urlMapping.UrlMappingId);
+			await logger.LogInformation("UrlMapping Deleted {UrlMapping}", urlMapping);
+			await GetUrlMappings();
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Deleting UrlMapping {UrlMapping} {Error}", urlMapping, ex.Message);
+			AddModuleMessage(Localizer["Error.DeleteUrlMapping"], MessageType.Error);
+		}
+	}
+
+	private async Task GetUrlMappings()
+	{
+		_urlMappings = await UrlMappingService.GetUrlMappingsAsync(PageState.Site.SiteId, _mapped);
+	}
+
+	private async Task SaveSiteSettings()
+	{
+		try
+		{
+			var site = PageState.Site;
+			site.CaptureBrokenUrls = bool.Parse(_capturebrokenurls);
+			await SiteService.UpdateSiteAsync(site);
+
+            var settings = await SettingService.GetSiteSettingsAsync(site.SiteId);
+            settings = SettingService.SetSetting(settings, "UrlMappingRetention", _retention.ToString(), true);
+            await SettingService.UpdateSiteSettingsAsync(settings, site.SiteId);
+
+            AddModuleMessage(Localizer["Success.SaveSiteSettings"], MessageType.Success);
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Saving Site Settings {Error}", ex.Message);
+			AddModuleMessage(Localizer["Error.SaveSiteSettings"], MessageType.Error);
+		}
+	}
+}

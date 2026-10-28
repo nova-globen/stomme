@@ -1,0 +1,9 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+
+@* BL-229 - n8n's "3 items" on a connection taken in the run shown. *@
+<div class="db-connection-count">@Label.Content</div>
+
+@code {
+    [Parameter]
+    public RunCountLabelModel Label { get; set; }
+}

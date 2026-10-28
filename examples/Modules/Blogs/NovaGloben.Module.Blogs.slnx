@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="NovaGloben.Module.Blogs.Shared/NovaGloben.Module.Blogs.Shared.csproj" />
+  <Project Path="NovaGloben.Module.Blogs.Client/NovaGloben.Module.Blogs.Client.csproj" />
+  <Project Path="NovaGloben.Module.Blogs.Server/NovaGloben.Module.Blogs.Server.csproj" />
+</Solution>

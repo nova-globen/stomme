@@ -1,0 +1,133 @@
+﻿@namespace Stomme.Modules.Admin.Visitors
+@using System.Globalization
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IVisitorService VisitorService
+@inject IUserService UserService
+@inject IStringLocalizer<Detail> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_initialized)
+{
+	<div class="db-fields">
+		<div class="db-field">
+			<Label For="ip" HelpText="The last recorded IP address for this visitor" ResourceKey="IP">IP Address: </Label>
+			<div class="db-field-control">
+				<input id="ip" class="db-input" @bind="@_ip" readonly />
+			</div>
+		</div>
+		<div class="db-field">
+			<Label For="language" HelpText="The last recorded language for this visitor" ResourceKey="Language">Language: </Label>
+			<div class="db-field-control">
+				<input id="language" class="db-input" @bind="@_language" readonly />
+			</div>
+		</div>
+		<div class="db-field">
+			<Label For="useragent" HelpText="The last recorded user agent for this visitor" ResourceKey="UserAgent">User Agent: </Label>
+			<div class="db-field-control">
+				<input id="useragent" class="db-input" @bind="@_useragent" readonly />
+			</div>
+		</div>
+		<div class="db-field">
+			<Label For="url" HelpText="The last recorded url for this visitor" ResourceKey="Url">Url: </Label>
+			<div class="db-field-control">
+				<input id="url" class="db-input" @bind="@_url" readonly />
+			</div>
+		</div>
+		<div class="db-field">
+			<Label For="referrer" HelpText="The last recorded referrer for this visitor" ResourceKey="Referrer">Referrer: </Label>
+			<div class="db-field-control">
+				<input id="referrer" class="db-input" @bind="@_referrer" readonly />
+			</div>
+		</div>
+		@if (_user != string.Empty)
+		{
+			<div class="db-field">
+				<Label For="user" HelpText="The last recorded user associated with this visitor" ResourceKey="User">User: </Label>
+				<div class="db-field-control">
+					<input id="user" class="db-input" @bind="@_user" readonly />
+				</div>
+			</div>
+		}
+		<div class="db-field">
+			<Label For="visits" HelpText="The total number of visits by this visitor all time" ResourceKey="Visits">Visits: </Label>
+			<div class="db-field-control">
+				<input id="visits" class="db-input" @bind="@_visits" readonly />
+			</div>
+		</div>
+		<div class="db-field">
+			<Label For="visited" HelpText="The last recorded date/time when the visitor visited the site" ResourceKey="Visited">Visited: </Label>
+				<div class="db-field-control">
+				<input id="visited" class="db-input" @bind="@_visited" readonly />
+			</div>
+		</div>
+		<div class="db-field">
+			<Label For="created" HelpText="The first recorded date/time when this visitor visited the site" ResourceKey="Created">Created: </Label>
+			<div class="db-field-control">
+				<input id="created" class="db-input" @bind="@_created" readonly />
+			</div>
+		</div>
+	</div>
+}
+
+<NavLink class="db-btn db-btn-neutral" href="@CloseUrl()">@SharedLocalizer["Cancel"]</NavLink>
+
+@code {
+	private bool _initialized = false;
+	private int _visitorId;
+	private string _ip = string.Empty;
+	private string _language = string.Empty;
+	private string _useragent = string.Empty;
+	private string _url = string.Empty;
+	private string _referrer = string.Empty;
+	private string _user = string.Empty;
+	private string _visits = string.Empty;
+	private string _visited = string.Empty;
+	private string _created = string.Empty;
+
+	public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Admin;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			_visitorId = Int32.Parse(PageState.QueryString["id"]);
+			var visitor = await VisitorService.GetVisitorAsync(_visitorId);
+			if (visitor != null)
+			{
+				_ip = visitor.IPAddress;
+				_language = visitor.Language;
+				_useragent = visitor.UserAgent;
+				_url = visitor.Url;
+				_referrer = visitor.Referrer;
+				_visits = visitor.Visits.ToString();
+				_visited = UtcToLocal(visitor.VisitedOn).Value.ToString(CultureInfo.CurrentCulture);
+				_created = UtcToLocal(visitor.CreatedOn).Value.ToString(CultureInfo.CurrentCulture);
+
+				if (visitor.UserId != null)
+				{
+					var user = await UserService.GetUserAsync(visitor.UserId.Value, PageState.Site.SiteId);
+					if (user != null)
+					{
+						_user = user.DisplayName;
+					}
+				}
+				_initialized = true;
+			}
+			else
+			{
+				AddModuleMessage(Localizer["Error.LoadVisitor"], MessageType.Error);
+			}
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Loading Visitor {VisitorId} {Error}", _visitorId, ex.Message);
+			AddModuleMessage(Localizer["Error.LoadVisitor"], MessageType.Error);
+		}
+	}
+
+	private string CloseUrl()
+	{
+		return (!string.IsNullOrEmpty(PageState.ReturnUrl)) ? PageState.ReturnUrl : NavigateUrl();
+	}
+}

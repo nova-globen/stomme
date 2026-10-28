@@ -1,0 +1,98 @@
+@namespace Stomme.UI
+@inject IInstallationService InstallationService
+@inject SiteState SiteState
+
+@if (_initialized)
+{
+    @if (!_installed)
+    {
+        <Installer />
+    }
+    else
+    {
+        if (RenderMode == RenderModes.Static)
+        {
+            <CascadingValue Value="@_pageState">
+                <SiteRouter RenderMode="@RenderMode" Runtime="@Runtime" OnStateChange="@ChangeState" />
+            </CascadingValue>
+        }
+        else
+        {
+            <div class="db-app" style="@_display">
+                <CascadingValue Value="@_pageState">
+                    <SiteRouter RenderMode="@RenderMode" Runtime="@Runtime" OnStateChange="@ChangeState" />
+                </CascadingValue>
+            </div>
+        }
+    }
+}
+
+@code {
+    [Parameter]
+    public PageState PageState { get; set; } = null;
+
+    [Parameter]
+    public string RenderMode { get; set; }
+
+    [Parameter]
+    public string Runtime { get; set; }
+
+    [Parameter]
+    public string AntiForgeryToken { get; set; } = "";
+
+    [Parameter]
+    public string AuthorizationToken { get; set; } = "";
+
+    [Parameter]
+    public string Platform { get; set; } = "";
+
+    private bool _initialized = false;
+    private bool _installed = false;
+    private string _display = "display: none;"; // prevents flash on initial interactive page load
+
+    private PageState _pageState { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        SiteState.AntiForgeryToken = AntiForgeryToken;
+        SiteState.AuthorizationToken = AuthorizationToken;
+        SiteState.Platform = Platform;
+        SiteState.IsPrerendering = !RendererInfo.IsInteractive;
+
+        if (Runtime == Runtimes.Hybrid)
+        {
+            var installation = await InstallationService.IsInstalled();
+            _installed = installation.Success;
+            if (installation.Alias != null)
+            {
+                SiteState.Alias = installation.Alias;
+            }
+        }
+        else
+        {
+            if (PageState != null)
+            {
+                _pageState = PageState;
+                SiteState.Alias = _pageState.Alias;
+                SiteState.RemoteIPAddress = _pageState.RemoteIPAddress;
+                _installed = true;
+            }
+        }
+        _initialized = true;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _display = "";
+            StateHasChanged();
+        }
+    }
+
+    private void ChangeState(PageState pageState)
+    {
+        _pageState = pageState;
+        StateHasChanged();
+    }
+}

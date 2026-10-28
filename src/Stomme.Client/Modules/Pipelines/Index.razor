@@ -1,0 +1,1924 @@
+@namespace Stomme.Modules.Pipelines
+@inherits ModuleBase
+@inject IPipelinesService PipelinesService
+@inject NavigationManager NavigationManager
+
+@*
+    The site's pipelines (BL-95 increment (b), D111): the latest version of each, whether it is published, and the actions
+    a key allows. Every action is decided again by the server, per key, on the request's site. Starting a run navigates
+    to the run's page, which POLLS the run - a run is dispatched and observed, never awaited in a handler (D111 item 3).
+*@
+
+<PageTitle>Pipelines</PageTitle>
+
+@if (!IsAuthorizedPermission(PipelinesPermissions.View))
+{
+    <p class="db-pipelines-denied" style="color:var(--db-text-2);">You do not have access to pipelines on this site.</p>
+}
+else
+{
+    <div class="db-pipelines" style="display:flex;flex-direction:column;gap:1.5rem;">
+        <section style="display:flex;flex-direction:column;gap:0.5rem;">
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+                <h3 style="margin:0;flex:1 1 auto;">Pipelines</h3>
+                @if (_approvals > 0)
+                {
+                    @* BL-229: runs waiting for a person's decision ("Ask for approval") - listed at the top of the runs. *@
+                    <a id="pipelines-approvals-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Runs")">@(_approvals == 1 ? "1 run waits for approval" : _approvals + " runs wait for approval")</a>
+                }
+                <a id="pipelines-runs-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Runs")">All runs</a>
+                <a id="pipelines-tables-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Tables")" title="Rows the site's pipelines keep between runs">Data tables</a>
+                @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                {
+                    <a id="pipelines-files-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Files")" title="The folder the site's pipelines read files from and write them to">Files</a>
+                    <button id="pipelines-new-open" type="button" class="db-btn" aria-expanded="@(_creating ? "true" : "false")" @onclick="() => _creating = !_creating">New pipeline</button>
+                }
+                <button id="pipelines-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+            </div>
+            @if (IsAuthorizedPermission(PipelinesPermissions.Manage) && (_creating || _pipelines is { Count: 0 }))
+            {
+                @* BL-229: at the top, opened by New pipeline (n8n's Create workflow) - or open on a site with none yet; below a long
+                   list it was out of sight. *@
+                <section id="pipelines-new" style="display:flex;flex-direction:column;gap:0.5rem;padding:0.75rem;border:1px solid var(--db-border);border-radius:var(--db-radius-sm);">
+                    <h3 style="margin:0;">New pipeline</h3>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;">
+                        <label for="pipelines-new-name">Name</label>
+                        <input id="pipelines-new-name" type="text" class="db-input" style="width:16rem;" maxlength="200" @bind="_newName" />
+                        <label for="pipelines-new-description">Description</label>
+                        <input id="pipelines-new-description" type="text" class="db-input" style="width:24rem;" @bind="_newDescription" />
+                        @* BL-229 increment 10: start from a shipped pipeline (n8n's templates), or from nothing. *@
+                        <label for="pipelines-new-starter">Start from</label>
+                        <select id="pipelines-new-starter" class="db-input" style="width:auto;" value="@_starterId" @onchange="e => ChooseStarter(e.Value?.ToString())">
+                            <option value="">Nothing - an empty pipeline</option>
+                            @foreach (var starter in PipelineStarters.All)
+                            {
+                                <option value="@starter.Id">@starter.Name</option>
+                            }
+                        </select>
+                        <button id="pipelines-create" type="button" class="db-btn" @onclick="CreateAsync" disabled="@(_busy || string.IsNullOrWhiteSpace(_newName))">Create</button>
+                    </div>
+                    <p id="pipelines-new-starter-description" style="margin:0;color:var(--db-text-2);">
+                        @if (PipelineStarters.Find(_starterId) is { } chosen)
+                        {
+                            @(chosen.Description + " It opens in the editor, a draft until you publish it.")
+                        }
+                        else
+                        {
+                            @("A new pipeline is a draft with no steps. Open it with Edit to place its steps and connect them, then publish it to run it.")
+                        }
+                    </p>
+                    @* A file exported from an editor - this site's or another's - as a new pipeline, judged by the save before anything is stored. *@
+                    <div style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;">
+                        <label for="pipelines-import-file">Import a pipeline file</label>
+                        <InputFile id="pipelines-import-file" accept=".json,application/json" OnChange="ImportFileAsync" disabled="@_busy" />
+                        <span style="color:var(--db-text-2);">named as the file says, or as typed in Name above</span>
+                    </div>
+                </section>
+            }
+            @if (_insights is { } insights)
+            {
+                @* BL-229: n8n's Insights - how the site's pipelines have been running, over a day, a week or a month. *@
+                <div id="pipelines-insights" class="db-pipelines-insights" style="display:flex;flex-wrap:wrap;gap:0.5rem 1.5rem;align-items:baseline;">
+                    <label for="pipelines-insights-days">Insights</label>
+                    <select id="pipelines-insights-days" class="db-input" style="width:auto;" value="@insights.Days" @onchange="e => InsightsAsync(e.Value?.ToString())">
+                        <option value="1">Last 24 hours</option>
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                    </select>
+                    <span id="pipelines-insights-runs"><strong>@insights.Total.Runs</strong> @(insights.Total.Runs == 1 ? "run" : "runs")</span>
+                    <span id="pipelines-insights-failed">
+                        @if (insights.Total.Failed > 0)
+                        {
+                            <a href="@NavigateUrl(ModuleState.ModuleId, "Runs", "state=" + PipelineRunStates.Failed)"><strong>@insights.Total.Failed</strong> failed</a>
+                        }
+                        else
+                        {
+                            <span><strong>0</strong> failed</span>
+                        }
+                    </span>
+                    <span id="pipelines-insights-rate">failure rate <strong>@PipelineInsights.Percent(insights.Total.FailureRate)</strong></span>
+                    <span id="pipelines-insights-median">median run <strong>@(insights.Total.MedianMilliseconds is { } median ? PipelineRunDurations.Describe(TimeSpan.FromMilliseconds(median)) : "—")</strong></span>
+                    @if (insights.Total.Unfinished > 0)
+                    {
+                        <span id="pipelines-insights-unfinished"><strong>@insights.Total.Unfinished</strong> not ended</span>
+                    }
+                    @* BL-229: n8n's time saved - each pipeline's minutes per run that finished well, added up. *@
+                    @if (insights.Total.MinutesSaved is { } saved)
+                    {
+                        <span id="pipelines-insights-saved" title="As each pipeline says one run that finishes well saves - set in its editor"><strong>@PipelineInsights.Saved(saved)</strong> saved</span>
+                    }
+                    @if (insights.Capped)
+                    {
+                        <span id="pipelines-insights-capped" style="color:var(--db-text-2);">(the newest @PipelineInsights.MaxRuns.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) runs)</span>
+                    }
+                </div>
+            }
+            @* BL-229 - what runs next: the published pipelines' schedules and their next runs, the soonest first (beyond n8n). *@
+            @if (_upcoming is { } upcoming)
+            {
+                <details id="pipelines-upcoming" class="db-pipelines-upcoming" open="@(upcoming.Schedules.Count > 0)">
+                    <summary>Coming up - @(upcoming.Schedules.Count == 1 ? "1 schedule" : $"{upcoming.Schedules.Count} schedules") in the next @(upcoming.Hours == 24 ? "day" : "week")</summary>
+                    <label for="pipelines-upcoming-hours" class="db-visually-hidden">Coming up in the next</label>
+                    <select id="pipelines-upcoming-hours" class="db-input" style="width:auto;" value="@upcoming.Hours" @onchange="e => UpcomingAsync(e.Value?.ToString())">
+                        <option value="24">Next 24 hours</option>
+                        <option value="168">Next 7 days</option>
+                    </select>
+                    @if (!upcoming.Enabled)
+                    {
+                        <p id="pipelines-upcoming-off" style="margin:0.35rem 0 0;color:var(--db-warn);">This site runs no schedules (Pipelines:Schedules:Enabled is off): none of these fires.</p>
+                    }
+                    @if (upcoming.Schedules.Count == 0)
+                    {
+                        <p id="pipelines-upcoming-none" style="margin:0.35rem 0 0;color:var(--db-text-2);">No published pipeline runs on a schedule in that time.</p>
+                    }
+                    else
+                    {
+                        <table class="db-pipelines-upcoming__table">
+                            <thead><tr><th style="text-align:left;">Next</th><th style="text-align:left;">Pipeline</th><th style="text-align:left;">Schedule</th><th style="text-align:right;">Runs</th></tr></thead>
+                            <tbody>
+                                @foreach (var schedule in upcoming.Schedules)
+                                {
+                                    <tr class="db-pipelines-upcoming__row">
+                                        <td>@schedule.NextRunsUtc[0].ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture) UTC <span style="color:var(--db-text-2);">· @PipelineUpcoming.Until(schedule.NextRunsUtc[0], DateTime.UtcNow)</span></td>
+                                        <td><a href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + schedule.DefinitionId)">@(schedule.PipelineName ?? schedule.DefinitionId)</a></td>
+                                        <td><code>@schedule.Cron</code>@(schedule.TimeZone is null ? " UTC" : " " + schedule.TimeZone)@(string.IsNullOrEmpty(schedule.StepName) ? "" : " · " + schedule.StepName)</td>
+                                        <td style="text-align:right;">@(schedule.RunsInWindow >= PipelineUpcoming.MaxCounted ? schedule.RunsInWindow + "+" : schedule.RunsInWindow.ToString(System.Globalization.CultureInfo.InvariantCulture))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </details>
+            }
+            @if (_pipelines is null)
+            {
+                <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+            }
+            else if (_pipelines.Count == 0)
+            {
+                <p id="pipelines-empty" style="margin:0;color:var(--db-text-2);">No pipelines yet.</p>
+            }
+            else
+            {
+                @* BL-229: n8n's workflow list - found by any words of its name or description, each with how its last run went. And
+                   n8n's archive: the pipelines set aside are out of the list, a button away - restored, or deleted for good, there. *@
+                var archivedCount = _pipelines.Count(pipeline => pipeline.ArchivedOnUtc is not null);
+                var inView = _pipelines.Where(pipeline => (pipeline.ArchivedOnUtc is not null) == _showArchived).ToList();
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                    <input id="pipelines-search" type="search" class="db-input" style="max-width:24rem;" placeholder="Find a pipeline" aria-label="Find a pipeline" value="@_search" @oninput="e => _search = e.Value?.ToString() ?? string.Empty" />
+                    @* BL-229 - find in every pipeline: where the text is used in steps, notes and variables, not only names. *@
+                    @if (_search.Trim().Length >= PipelineContentSearch.MinLength)
+                    {
+                        <button id="pipelines-search-inside" type="button" class="db-btn" title="Where it is used in the pipelines' steps, notes and variables - a sensitive input is never read" @onclick="FindInsideAsync" disabled="@_busy">Search inside the pipelines</button>
+                    }
+                    @* BL-229: the map of the site's pipelines - which runs which. *@
+                    <button id="pipelines-map-toggle" type="button" class="db-btn" aria-pressed="@(_map is null ? "false" : "true")" title="Which pipeline runs which - calls, starts, failures and AI tools" @onclick="ToggleMapAsync" disabled="@_busy">@(_map is null ? "Map" : "Close the map")</button>
+                    @* BL-229: the site's pipeline activity - who changed or ran what, and when (n8n's audit log); an author's to read. *@
+                    @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                    {
+                        <button id="pipelines-activity-toggle" type="button" class="db-btn" aria-pressed="@(_activity is null ? "false" : "true")" title="Who changed or ran which pipeline, and when" @onclick="ToggleActivityAsync" disabled="@_busy">@(_activity is null ? "Activity" : "Close the activity")</button>
+                    }
+                    @if (archivedCount > 0 || _showArchived)
+                    {
+                        <button id="pipelines-archived-toggle" type="button" class="db-btn" aria-pressed="@(_showArchived ? "true" : "false")"
+                                title="@(_showArchived ? "Back to the pipelines in use" : "The pipelines set aside - restore one, or delete it for good")" @onclick="() => _showArchived = !_showArchived">@(_showArchived ? "Back to the pipelines" : $"Archived ({archivedCount})")</button>
+                    }
+                </div>
+                @if (_showArchived)
+                {
+                    <p id="pipelines-archived-note" style="margin:0;color:var(--db-text-2);">Archived pipelines do not run. Restore one as a draft, or delete it for good.</p>
+                }
+                @if (_map is not null)
+                {
+                    var drawn = MapDrawing();
+                    <section id="pipelines-map" class="db-pipelines-map" aria-label="The map of the pipelines">
+                        @if (drawn.Nodes.Count == 0)
+                        {
+                            <p id="pipelines-map-empty" style="margin:0;color:var(--db-text-2);">No pipeline runs another - nothing to draw yet. Execute pipeline, Dispatch pipeline, Pipeline failed and AI agent tools make the links.</p>
+                        }
+                        else
+                        {
+                            <div style="overflow:auto;max-height:28rem;">
+                                <svg id="pipelines-map-drawing" width="@F(drawn.Width)" height="@F(drawn.Height)" viewBox="@($"0 0 {F(drawn.Width)} {F(drawn.Height)}")" role="img" aria-label="Which pipeline runs which">
+                                    <defs>
+                                        <marker id="pipelines-map-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" /></marker>
+                                    </defs>
+                                    @foreach (var line in drawn.Lines)
+                                    {
+                                        <path class="db-pipelines-map__link is-@line.Kind.Replace(' ', '-')" d="@line.Path" marker-end="url(#pipelines-map-arrow)"><title>@line.Title</title></path>
+                                    }
+                                    @foreach (var node in drawn.Nodes)
+                                    {
+                                        <a href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + node.Node.DefinitionId)">
+                                            <g class="db-pipelines-map__node @(node.Node.IsPublished ? "is-published" : "is-draft")" data-pipeline="@node.Node.DefinitionId">
+                                                <rect x="@F(node.X)" y="@F(node.Y)" width="@F(MapNodeWidth)" height="@F(MapNodeHeight)" rx="6" />
+                                                <text x="@F(node.X + 10)" y="@F(node.Y + 20)" class="db-pipelines-map__name">@Clip(node.Node.Name, 24)</text>
+                                                <text x="@F(node.X + 10)" y="@F(node.Y + 38)" class="db-pipelines-map__note">@MapNote(node.Node)</text>
+                                                <title>@node.Node.Name@(node.Node.Folder.Length == 0 ? "" : " (in " + node.Node.Folder + ")")</title>
+                                            </g>
+                                        </a>
+                                    }
+                                </svg>
+                            </div>
+                            <p id="pipelines-map-legend" class="db-pipelines-map__legend" style="margin:0;">
+                                <span class="is-calls">— calls (and waits)</span> · <span class="is-starts">— starts</span> · <span class="is-on-failure">- - starts when it fails</span> · <span class="is-as-a-tool">··· may use as an AI tool</span>
+                                @if (drawn.Alone > 0)
+                                {
+                                    <span id="pipelines-map-alone"> · @(drawn.Alone == 1 ? "1 pipeline runs no other and is run by none" : $"{drawn.Alone} pipelines run no other and are run by none") - not drawn.</span>
+                                }
+                            </p>
+                        }
+                    </section>
+                }
+                @if (_activity is not null)
+                {
+                    <section id="pipelines-activity" class="db-pipelines-map" aria-label="The pipelines' activity">
+                        @if (_activity.Count == 0)
+                        {
+                            <p id="pipelines-activity-none" style="margin:0;color:var(--db-text-2);">Nothing recorded yet: what is done to the site's pipelines - saved, published, run, archived - is listed here as it happens.</p>
+                        }
+                        else
+                        {
+                            <div style="overflow:auto;max-height:28rem;">
+                                <table id="pipelines-activity-table" class="db-pipelines-table" style="width:100%;border-collapse:collapse;">
+                                    <thead><tr><th>When (UTC)</th><th>Who</th><th>What</th><th>Pipeline</th><th></th></tr></thead>
+                                    <tbody>
+                                        @foreach (var entry in _activity)
+                                        {
+                                            <tr>
+                                                <td style="white-space:nowrap;">@entry.OccurredOnUtc.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)</td>
+                                                <td>@(entry.UserName ?? "the system")</td>
+                                                <td>@entry.Action@(string.IsNullOrEmpty(entry.Detail) ? "" : " - " + entry.Detail)</td>
+                                                <td>
+                                                    @if (entry.DefinitionId.Length > 0)
+                                                    {
+                                                        <a href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + Uri.EscapeDataString(entry.DefinitionId))">@(entry.PipelineName ?? entry.DefinitionId)</a>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(entry.RunId))
+                                                    {
+                                                        <a href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + Uri.EscapeDataString(entry.RunId))">The run</a>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p id="pipelines-activity-note" style="margin:0;color:var(--db-text-2);">The newest @_activity.Count. Kept a year unless the site's retention setting says otherwise; a variable's value or a row's content is never written here.</p>
+                        }
+                    </section>
+                }
+                @if (_found is not null)
+                {
+                    <div id="pipelines-found" class="db-pipelines-folders" role="region" aria-label="Where the text is used">
+                        <strong id="pipelines-found-count">@(_found.Count == 0 ? $"'{_foundFor}' is not used in any pipeline's steps, notes or variables." : $"'{_foundFor}' is used in {(_found.Count == 1 ? "1 place" : $"{(_found.Count >= PipelineContentSearch.MaxResults ? "at least " : "")}{_found.Count} places")}:")</strong>
+                        <button id="pipelines-found-close" type="button" class="db-btn" @onclick="() => _found = null">Close</button>
+                        @if (_found.Count > 0)
+                        {
+                            <ul class="db-pipelines-found" style="flex:1 0 100%;margin:0;padding-left:1.2rem;">
+                                @foreach (var place in _found)
+                                {
+                                    <li>
+                                        <a href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + place.DefinitionId + (place.StepId is null ? "" : "&step=" + Uri.EscapeDataString(place.StepId)))">@place.PipelineName</a>@(place.Folder.Length == 0 ? "" : $" (in {place.Folder})") - @place.Where: <code>@place.Snippet</code>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                }
+                var allTags = TagsOf(inView);
+                @if (allTags.Count > 0)
+                {
+                    @* BL-229: n8n's tag filter - the pipelines carrying every tag chosen. *@
+                    <div id="pipelines-tag-filter" class="db-pipelines-tags" role="group" aria-label="Show the pipelines tagged">
+                        <span style="color:var(--db-text-2);">Tags:</span>
+                        @foreach (var tag in allTags)
+                        {
+                            var active = _tags.Contains(tag);
+                            <button type="button" class="db-pipelines-tag @(active ? "is-active" : "")" aria-pressed="@(active ? "true" : "false")" title="@(active ? "Stop filtering by" : "Show only the pipelines tagged") @tag" @onclick="() => ToggleTag(tag)">@tag</button>
+                        }
+                        @if (_tags.Count > 0)
+                        {
+                            <button type="button" id="pipelines-tag-filter-clear" class="db-btn" style="padding:0.05rem 0.5rem;font-size:0.75rem;" @onclick="() => _tags.Clear()">Any tag</button>
+                        }
+                    </div>
+                }
+                @* BL-229 - n8n's folders: the list shows one folder at a time - the folders inside it, then its pipelines - with the
+                   way back above; a search or a tag finds in every folder, each pipeline saying where it is. *@
+                var browsing = !_showArchived && string.IsNullOrWhiteSpace(_search) && _tags.Count == 0;
+                var allFolders = PipelineFolders.All(inView.Select(pipeline => pipeline.Folder));
+                var children = browsing ? PipelineFolders.Children(inView.Select(pipeline => pipeline.Folder), _folder) : new();
+                @if (browsing && (allFolders.Count > 0 || _folder.Length > 0 || IsAuthorizedPermission(PipelinesPermissions.Manage)))
+                {
+                    <div class="db-pipelines-folders">
+                        <nav id="pipelines-folder-path" class="db-pipelines-folders__path" aria-label="Folders">
+                            @if (_folder.Length == 0)
+                            {
+                                <strong aria-current="page">All pipelines</strong>
+                            }
+                            else
+                            {
+                                <button id="pipelines-folder-top" type="button" class="db-pipelines-folder-link" @onclick='() => OpenFolder("")'>All pipelines</button>
+                            }
+                            @foreach (var step in PipelineFolders.Path(_folder))
+                            {
+                                var to = step;
+                                <span aria-hidden="true"> / </span>
+                                @if (PipelineFolders.IsIn(step, _folder))
+                                {
+                                    <strong aria-current="page">@PipelineFolders.Name(step)</strong>
+                                }
+                                else
+                                {
+                                    <button type="button" class="db-pipelines-folder-link" @onclick="() => OpenFolder(to)">@PipelineFolders.Name(step)</button>
+                                }
+                            }
+                        </nav>
+                        @* BL-229 - n8n's folder rename, move and delete, on the folder shown: what is in it goes along, or up. *@
+                        @if (_folder.Length > 0 && allFolders.Any(known => PipelineFolders.IsIn(known, _folder)) && IsAuthorizedPermission(PipelinesPermissions.Manage))
+                        {
+                            <span id="pipelines-folder-actions" class="db-pipelines-folders__new">
+                                @if (_folderAction == RenameFolderAction)
+                                {
+                                    <label for="pipelines-folder-rename-input" style="color:var(--db-text-2);">Rename or move to</label>
+                                    <input id="pipelines-folder-rename-input" type="text" class="db-input" style="max-width:16rem;" title="@($"The folder's new name, or its path to move it - names separated by '/', at most {PipelineFolders.MaxDepth} deep")" value="@_folderTo" @oninput="e => _folderTo = e.Value?.ToString() ?? string.Empty" @onkeydown="RenameFolderKeyAsync" />
+                                    <button id="pipelines-folder-rename-apply" type="button" class="db-btn" @onclick="RenameFolderAsync" disabled="@_busy">Rename</button>
+                                    <button id="pipelines-folder-rename-cancel" type="button" class="db-btn" @onclick="() => _folderAction = null">Cancel</button>
+                                }
+                                else if (_folderAction == RemoveFolderAction)
+                                {
+                                    var inIt = (_pipelines ?? new List<PipelineView>()).Count(pipeline => PipelineFolders.IsWithin(pipeline.Folder, _folder));
+                                    var above = PipelineFolders.Parent(_folder);
+                                    <span id="pipelines-folder-remove-what">Remove '@PipelineFolders.Name(_folder)'? @(inIt == 1 ? "Its pipeline moves" : $"Its {inIt} pipelines move") to @(above.Length == 0 ? "the top of the list" : above) - none is deleted.</span>
+                                    <button id="pipelines-folder-remove-confirm" type="button" class="db-btn" @onclick="RemoveFolderAsync" disabled="@_busy">Remove folder</button>
+                                    <button id="pipelines-folder-remove-cancel" type="button" class="db-btn" @onclick="() => _folderAction = null">Cancel</button>
+                                }
+                                else
+                                {
+                                    <button id="pipelines-folder-rename" type="button" class="db-btn" title="Rename the folder, or move it - what is in it goes along" @onclick="StartRenameFolder">Rename…</button>
+                                    <button id="pipelines-folder-remove" type="button" class="db-btn" title="Remove the folder - what is in it moves to the folder above" @onclick="() => _folderAction = RemoveFolderAction">Remove folder</button>
+                                }
+                            </span>
+                        }
+                        @* BL-229: the folder shown - or every pipeline, at the top - as ONE file: imported elsewhere, its folders kept and
+                           the calls among its pipelines running the copies. *@
+                        @if (inView.Any(pipeline => PipelineFolders.IsWithin(pipeline.Folder, _folder)))
+                        {
+                            <button id="pipelines-folder-export" type="button" class="db-btn" title="@(_folder.Length == 0 ? "Every pipeline as one file, with its folder" : "The pipelines in this folder, and in the folders inside it, as one file")" @onclick="ExportFolderAsync" disabled="@_busy">@(_folder.Length == 0 ? "Export all" : "Export folder")</button>
+                        }
+                        @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                        {
+                            <span class="db-pipelines-folders__new">
+                                <input id="pipelines-folder-new" type="text" class="db-input" style="max-width:12rem;" placeholder="New folder" aria-label="@(_folder.Length == 0 ? "A new folder's name" : "A new folder's name, in " + _folder)" value="@_newFolder" @oninput="e => _newFolder = e.Value?.ToString() ?? string.Empty" @onkeydown="NewFolderKey" />
+                                <button id="pipelines-folder-new-open" type="button" class="db-btn" title="Open a new folder here - a pipeline created in it, or moved to it, goes in it" @onclick="NewFolder" disabled="@string.IsNullOrWhiteSpace(_newFolder)">New folder</button>
+                            </span>
+                        }
+                    </div>
+                    @if (children.Count > 0)
+                    {
+                        <ul id="pipelines-folders" class="db-pipelines-folders__list">
+                            @foreach (var child in children)
+                            {
+                                var path = child.Path;
+                                <li>
+                                    <button type="button" class="db-pipelines-folder" title="@("Open " + path)" @onclick="() => OpenFolder(path)">@child.Name</button>
+                                    <span style="color:var(--db-text-2);">@child.Count @(child.Count == 1 ? "pipeline" : "pipelines")</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                }
+                var shown = Matching(browsing ? inView.Where(pipeline => PipelineFolders.IsIn(pipeline.Folder, _folder)) : inView, _search, _tags).ToList();
+                @if (shown.Count == 0 && browsing && _folder.Length > 0 && children.Count == 0)
+                {
+                    <p id="pipelines-folder-empty" style="margin:0;color:var(--db-text-2);">Nothing in this folder yet: a pipeline created here goes in it, or move one here from its row's More.</p>
+                }
+                else if (shown.Count == 0 && !(browsing && (children.Count > 0 || _folder.Length > 0)))
+                {
+                    <p id="pipelines-none-match" style="margin:0;color:var(--db-text-2);">No pipeline matches@(string.IsNullOrWhiteSpace(_search) ? "" : $" '{_search}'")@(_tags.Count == 0 ? "" : " tagged " + string.Join(", ", _tags)).</p>
+                }
+                @if (_leaving is not null && !_showArchived)
+                {
+                    @* BL-229: before a pipeline others run stops running - what stops working with it. *@
+                    <div id="pipelines-leaving" class="db-pipelines-leaving" role="region" aria-label="Before it stops running">
+                        <strong id="pipelines-leaving-what">@(_leavingAction == LeaveRetract ? "Retract" : "Archive") '@_leaving.Name'? It will not run, and:</strong>
+                        <ul id="pipelines-leaving-list">
+                            @foreach (var line in _leavingSaid)
+                            {
+                                <li>@line</li>
+                            }
+                        </ul>
+                        <span class="db-pipelines-folders__new">
+                            <button id="pipelines-leaving-confirm" type="button" class="db-btn" @onclick="LeaveAnywayAsync" disabled="@_busy">@(_leavingAction == LeaveRetract ? "Retract anyway" : "Archive anyway")</button>
+                            <button id="pipelines-leaving-cancel" type="button" class="db-btn" @onclick="() => _leaving = null">Cancel</button>
+                        </span>
+                    </div>
+                }
+                @* BL-229: pipelines chosen on the list, and what is done to them at once - moved, tagged, exported as one file, archived. *@
+                var choosing =!_showArchived && IsAuthorizedPermission(PipelinesPermissions.Manage);
+                var chosen = choosing ? shown.Where(pipeline => _chosen.Contains(pipeline.DefinitionId)).ToList() : new List<PipelineView>();
+                @if (chosen.Count > 0)
+                {
+                    <div id="pipelines-chosen" class="db-pipelines-folders" role="region" aria-label="The pipelines chosen">
+                        <strong id="pipelines-chosen-count">@(chosen.Count == 1 ? "1 pipeline chosen" : $"{chosen.Count} pipelines chosen")</strong>
+                        @if (_chosenAction == ChosenMove)
+                        {
+                            <span class="db-pipelines-folders__new">
+                                <label for="pipelines-chosen-folder" style="color:var(--db-text-2);">To folder</label>
+                                <input id="pipelines-chosen-folder" class="db-input" list="pipelines-chosen-folders-known" placeholder="Finance/Invoices - empty for the top" value="@_chosenText" @oninput="e => _chosenText = e.Value?.ToString() ?? string.Empty" />
+                                <datalist id="pipelines-chosen-folders-known">
+                                    @foreach (var known in allFolders)
+                                    {
+                                        <option value="@known"></option>
+                                    }
+                                </datalist>
+                                <button id="pipelines-chosen-move" type="button" class="db-btn" @onclick="() => MoveChosenAsync(chosen)" disabled="@_busy">Move</button>
+                                <button type="button" class="db-btn" @onclick="() => _chosenAction = null">Cancel</button>
+                            </span>
+                        }
+                        else if (_chosenAction == ChosenTag)
+                        {
+                            <span class="db-pipelines-folders__new">
+                                <label for="pipelines-chosen-tag" style="color:var(--db-text-2);">Tag</label>
+                                <input id="pipelines-chosen-tag" class="db-input" list="pipelines-chosen-tags-known" placeholder="nightly" value="@_chosenText" @oninput="e => _chosenText = e.Value?.ToString() ?? string.Empty" />
+                                <datalist id="pipelines-chosen-tags-known">
+                                    @foreach (var known in allTags)
+                                    {
+                                        <option value="@known"></option>
+                                    }
+                                </datalist>
+                                <button id="pipelines-chosen-tag-add" type="button" class="db-btn" @onclick="() => TagChosenAsync(chosen)" disabled="@_busy">Add tag</button>
+                                <button type="button" class="db-btn" @onclick="() => _chosenAction = null">Cancel</button>
+                            </span>
+                        }
+                        else if (_chosenAction == ChosenArchive)
+                        {
+                            var left = _chosenMapUnread ? new List<string> { "Which other pipelines run them could not be read." } : PipelineLinks.LeftBehind(_chosenMap, chosen.Select(pipeline => pipeline.DefinitionId));
+                            <span class="db-pipelines-folders__new">
+                                <span id="pipelines-chosen-archive-what">Archive @(chosen.Count == 1 ? "it" : $"these {chosen.Count}")? An archived pipeline does not run; restore it, or delete it for good, under Archived.@(left.Count == 0 ? "" : " And:")</span>
+                                <button id="pipelines-chosen-archive-confirm" type="button" class="db-btn" @onclick="() => ArchiveChosenAsync(chosen)" disabled="@_busy">@(left.Count == 0 ? "Archive" : "Archive anyway")</button>
+                                <button type="button" class="db-btn" @onclick="() => _chosenAction = null">Cancel</button>
+                            </span>
+                            @if (left.Count > 0)
+                            {
+                                <ul id="pipelines-chosen-archive-left" class="db-pipelines-leaving__list">
+                                    @foreach (var line in left)
+                                    {
+                                        <li>@line</li>
+                                    }
+                                </ul>
+                            }
+                        }
+                        else
+                        {
+                            <span class="db-pipelines-folders__new">
+                                <button id="pipelines-chosen-move-open" type="button" class="db-btn" title="Move them to a folder - or to the top of the list" @onclick="() => { _chosenAction = ChosenMove; _chosenText = _folder; }">Move to folder…</button>
+                                <button id="pipelines-chosen-tag-open" type="button" class="db-btn" title="Add a tag to each of them" @onclick="() => { _chosenAction = ChosenTag; _chosenText = string.Empty; }">Add tag…</button>
+                                <button id="pipelines-chosen-export" type="button" class="db-btn" title="Them as one file - imported elsewhere, the calls among them run the copies" @onclick="() => ExportChosenAsync(chosen, browsing)" disabled="@_busy">Export</button>
+                                <button id="pipelines-chosen-archive" type="button" class="db-btn" title="Set them aside: unpublished, so nothing starts them" @onclick="OpenChosenArchiveAsync" disabled="@_busy">Archive…</button>
+                                <button id="pipelines-chosen-clear" type="button" class="db-btn" @onclick="() => { _chosen.Clear(); _chosenAction = null; }">Clear</button>
+                            </span>
+                        }
+                    </div>
+                }
+                <div style="overflow-x:auto;">
+                    <table class="db-pipelines-table" style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr>
+                                @if (choosing && shown.Count > 0)
+                                {
+                                    <th style="width:1px;"><input id="pipelines-choose-all" type="checkbox" aria-label="Choose every pipeline shown" checked="@(shown.All(pipeline => _chosen.Contains(pipeline.DefinitionId)))" @onchange="e => ChooseAll(shown, e.Value is true)" /></th>
+                                }
+                                <th style="text-align:left;">Name</th>
+                                <th style="text-align:left;">Version</th>
+                                <th style="text-align:left;">State</th>
+                                <th style="text-align:left;">Last run</th>
+                                @if (_insights is not null)
+                                {
+                                    <th style="text-align:left;">@WindowLabel(_insights.Days)</th>
+                                }
+                                <th style="text-align:left;">Created (UTC)</th>
+                                <th style="width:1px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pipeline in shown)
+                            {
+                                <tr>
+                                    @if (choosing)
+                                    {
+                                        var definitionId = pipeline.DefinitionId;
+                                        <td><input type="checkbox" class="db-pipelines-choose" aria-label="@("Choose " + pipeline.Name)" checked="@_chosen.Contains(definitionId)" @onchange="e => Choose(definitionId, e.Value is true)" /></td>
+                                    }
+                                    <td>
+                                        <strong>@pipeline.Name</strong>
+                                        @if (!string.IsNullOrEmpty(pipeline.Description))
+                                        {
+                                            <div style="color:var(--db-text-2);">@pipeline.Description</div>
+                                        }
+                                        @* BL-229: the discussion still open on its steps - a way to it for whoever reviews. *@
+                                        @if (_openComments.GetValueOrDefault(pipeline.DefinitionId) is > 0 and var open)
+                                        {
+                                            <div class="db-pipelines-discussion"><a href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + Uri.EscapeDataString(pipeline.DefinitionId))" title="Open it to read the discussion of its steps">@open open @(open == 1 ? "comment" : "comments")</a></div>
+                                        }
+                                        @if (!browsing && !string.IsNullOrEmpty(pipeline.Folder))
+                                        {
+                                            var folder = pipeline.Folder;
+                                            <div class="db-pipelines-in-folder" style="color:var(--db-text-2);">in <button type="button" class="db-pipelines-folder-link" title="@("Open " + folder)" @onclick="() => { _search = string.Empty; _tags.Clear(); OpenFolder(folder); }">@folder</button></div>
+                                        }
+                                        @if (_moving == pipeline.DefinitionId)
+                                        {
+                                            <div class="db-pipelines-tags-edit">
+                                                <label for="pipelines-folder-input" style="color:var(--db-text-2);">Folder</label>
+                                                <input id="pipelines-folder-input" class="db-input" list="pipelines-folders-known" placeholder="Finance/Invoices - empty for the top" title="@($"Names separated by '/': at most {PipelineFolders.MaxDepth} deep, each at most {PipelineFolders.MaxLength} letters, digits, spaces, '-', '_' or '.'")" value="@_moveTo" @oninput="e => _moveTo = e.Value?.ToString() ?? string.Empty" @onkeydown="MoveKeyAsync" />
+                                                <datalist id="pipelines-folders-known">
+                                                    @foreach (var known in allFolders)
+                                                    {
+                                                        <option value="@known"></option>
+                                                    }
+                                                </datalist>
+                                                <button type="button" id="pipelines-folder-move" class="db-btn" @onclick="() => MoveAsync(pipeline)" disabled="@_busy">Move</button>
+                                                <button type="button" id="pipelines-folder-cancel" class="db-btn" @onclick="() => _moving = null">Cancel</button>
+                                            </div>
+                                        }
+                                        @if (_editingTags == pipeline.DefinitionId)
+                                        {
+                                            <div class="db-pipelines-tags-edit">
+                                                <label for="pipelines-tags-input" style="color:var(--db-text-2);">Tags</label>
+                                                <input id="pipelines-tags-input" class="db-input" list="pipelines-tags-known" placeholder="billing, nightly" title="Separated by commas: at most @PipelineTags.MaxTags, each at most @PipelineTags.MaxLength letters, digits, spaces, '-', '_' or '.'" value="@_tagsText" @oninput="e => _tagsText = e.Value?.ToString() ?? string.Empty" @onkeydown="TagsKeyAsync" />
+                                                <datalist id="pipelines-tags-known">
+                                                    @foreach (var known in allTags)
+                                                    {
+                                                        <option value="@known"></option>
+                                                    }
+                                                </datalist>
+                                                <button type="button" id="pipelines-tags-save" class="db-btn" @onclick="() => SaveTagsAsync(pipeline)" disabled="@_busy">Save</button>
+                                                <button type="button" id="pipelines-tags-cancel" class="db-btn" @onclick="() => _editingTags = null">Cancel</button>
+                                            </div>
+                                        }
+                                        else if (pipeline.Tags?.Count > 0 || IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                        {
+                                            <div class="db-pipelines-tags">
+                                                @foreach (var tag in pipeline.Tags ?? new List<string>())
+                                                {
+                                                    <button type="button" class="db-pipelines-tag @(_tags.Contains(tag) ? "is-active" : "")" title="Show only the pipelines tagged @tag" @onclick="() => ToggleTag(tag)">@tag</button>
+                                                }
+                                                @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                                {
+                                                    <button type="button" class="db-pipelines-tag db-pipelines-tags-change" style="color:var(--db-text-2);" title="Change this pipeline's tags" @onclick="() => EditTags(pipeline)">@(pipeline.Tags?.Count > 0 ? "Edit tags" : "+ Tag")</button>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>@pipeline.Version</td>
+                                    <td title="@(pipeline.ArchivedOnUtc is null || string.IsNullOrEmpty(pipeline.ArchivedBy) ? null : "Archived by " + pipeline.ArchivedBy)">@(pipeline.ArchivedOnUtc is { } archivedOn ? "Archived" + (archivedOn > DateTime.MinValue ? " " + archivedOn.ToString("yyyy-MM-dd") : "") : pipeline.IsPublished ? "Published" : "Draft")</td>
+                                    <td class="db-pipelines-last-run">
+                                        @if (pipeline.LastRun is { } last)
+                                        {
+                                            <a class="db-pipelines-last-run__link is-@PipelineRunStates.StateOf(last.SubStatus)" href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + last.Id)">@PipelineRunStates.LabelOf(last.SubStatus)</a>
+                                            <span style="color:var(--db-text-2);"> @last.CreatedOnUtc.ToString("yyyy-MM-dd HH:mm") UTC</span>
+                                            @if (pipeline.Queued > 0)
+                                            {
+                                                @* BL-229: one at a time, the rest in turn - how many wait, a link to them. *@
+                                                <span> · </span><a class="db-pipelines-queued" href="@NavigateUrl(ModuleState.ModuleId, "Runs", "definition=" + Uri.EscapeDataString(pipeline.DefinitionId) + "&state=" + PipelineRunStates.Queued)" title="Runs waiting their turn - the pipeline runs one at a time">@pipeline.Queued queued</a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span style="color:var(--db-text-2);">never</span>
+                                        }
+                                    </td>
+                                    @if (_insights is not null)
+                                    {
+                                        var figures = _insights.Pipelines.FirstOrDefault(insight => insight.DefinitionId == pipeline.DefinitionId);
+                                        <td class="db-pipelines-insight">
+                                            @if (figures is null || figures.Runs == 0)
+                                            {
+                                                <span style="color:var(--db-text-2);">no runs</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@figures.Runs @(figures.Runs == 1 ? "run" : "runs")</span>
+                                                @if (figures.Failed > 0)
+                                                {
+                                                    <span> · </span><a class="db-pipelines-insight__failed" href="@NavigateUrl(ModuleState.ModuleId, "Runs", "definition=" + pipeline.DefinitionId + "&state=" + PipelineRunStates.Failed)">@figures.Failed failed</a>
+                                                }
+                                                @if (figures.MedianMilliseconds is { } median)
+                                                {
+                                                    <span style="color:var(--db-text-2);"> · @PipelineRunDurations.Describe(TimeSpan.FromMilliseconds(median))</span>
+                                                }
+                                                @if (figures.MinutesSaved is { } saved)
+                                                {
+                                                    <span class="db-pipelines-insight__saved" title="@(figures.MinutesSavedPerRun + " min a run that finishes well")"> · @PipelineInsights.Saved(saved) saved</span>
+                                                }
+                                            }
+                                        </td>
+                                    }
+                                    <td>@pipeline.CreatedOnUtc.ToString("u")</td>
+                                    <td style="white-space:nowrap;">
+                                        <a class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + pipeline.DefinitionId)">@(IsAuthorizedPermission(PipelinesPermissions.Manage) && pipeline.ArchivedOnUtc is null ? "Edit" : "Open")</a>
+                                        <a class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Runs", "definition=" + pipeline.DefinitionId)">Runs</a>
+                                        @if (IsAuthorizedPermission(PipelinesPermissions.Run) && pipeline.IsPublished)
+                                        {
+                                            <button type="button" class="db-btn" @onclick="() => StartAsync(pipeline)" disabled="@_busy">Run</button>
+                                        }
+                                        @if (IsAuthorizedPermission(PipelinesPermissions.Manage) && pipeline.ArchivedOnUtc is not null)
+                                        {
+                                            @* BL-229 - n8n's archive: an archived pipeline comes back as a draft, or is deleted for good - only from here. *@
+                                            <button type="button" class="db-btn db-pipelines-restore" title="Back from the archive as a draft - publish it to run it again" @onclick="() => RestoreAsync(pipeline)" disabled="@_busy">Restore</button>
+                                            <ActionDialog Header="Delete Pipeline" Message="Delete this pipeline for good - every version of it, and its triggers? It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => { await DeleteAsync(pipeline); StateHasChanged(); })" Disabled="@_busy" />
+                                        }
+                                        else if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                        {
+                                            @* BL-229: the row's other actions behind More - six buttons alike to a row made Delete look like Edit. *@
+                                            <details class="db-pipelines-more">
+                                            <summary class="db-btn" title="Duplicate, publish or retract, archive">More</summary>
+                                            <div class="db-pipelines-more__actions">
+                                            @* BL-229: n8n's Duplicate - a copy of the pipeline as a new draft, opened in the editor. *@
+                                            <button type="button" class="db-btn db-pipelines-duplicate" title="A copy of the pipeline as a new draft" @onclick="() => DuplicateAsync(pipeline)" disabled="@_busy">Duplicate</button>
+                                            @* BL-229 - n8n's Move: to another folder, or to the top - not an edit, nothing published. *@
+                                            <button type="button" class="db-btn db-pipelines-move" title="Move it to a folder - or to the top of the list" @onclick="() => StartMove(pipeline)" disabled="@_busy">Move to folder…</button>
+                                            @if (pipeline.IsPublished)
+                                            {
+                                                <button type="button" class="db-btn db-pipelines-retract" title="Unpublished: nothing starts it until it is published again" @onclick="() => AskBeforeLeavingAsync(pipeline, LeaveRetract)" disabled="@_busy">Retract</button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="db-btn" @onclick="() => PublishAsync(pipeline)" disabled="@_busy">Publish</button>
+                                            }
+                                            @* BL-229 - n8n's archive, where its Delete was: set aside, unpublished - nothing lost, so asked only when
+                                               another pipeline runs it. *@
+                                            <button type="button" class="db-btn db-pipelines-archive" title="Set it aside: unpublished and out of the list - restore it, or delete it for good, under Archived" @onclick="() => AskBeforeLeavingAsync(pipeline, LeaveArchive)" disabled="@_busy">Archive</button>
+                                            </div>
+                                            </details>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </section>
+
+        @if (_variables is not null)
+        {
+            @* BL-229 - n8n's Variables: values every pipeline on the site reads as {{ $vars.name }}; its authors change them here. *@
+            <section id="pipelines-variables" style="display:flex;flex-direction:column;gap:0.5rem;">
+                <h3 style="margin:0;">Site variables</h3>
+                <p style="margin:0;color:var(--db-text-2);">Every pipeline on this site reads them in its expressions as <code>{{ $vars.name }}</code>. Not for secrets - anyone who may view the pipelines sees them; keep a secret in a connection.</p>
+                @if (_variables.Count == 0)
+                {
+                    <p id="pipelines-variables-none" style="margin:0;color:var(--db-text-2);">None yet.</p>
+                }
+                else
+                {
+                    <table class="db-pipelines-table" style="border-collapse:collapse;max-width:48rem;">
+                        <thead><tr><th style="text-align:left;">Name</th><th style="text-align:left;">Value</th><th style="width:1px;"></th></tr></thead>
+                        <tbody>
+                            @for (var index = 0; index < _variables.Count; index++)
+                            {
+                                var at = index;
+                                <tr>
+                                    <td><code id="@("pipelines-variable-name-" + at)">@_variables[at].Name</code></td>
+                                    <td>
+                                        @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                        {
+                                            <input id="@("pipelines-variable-value-" + at)" class="db-input" aria-label="@("The value of " + _variables[at].Name)" value="@_variables[at].Value" @onchange="e => _variables[at] = (_variables[at].Name, e.Value?.ToString() ?? string.Empty)" />
+                                        }
+                                        else
+                                        {
+                                            @_variables[at].Value
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                        {
+                                            <button id="@("pipelines-variable-remove-" + at)" type="button" class="db-btn" title="@("Remove " + _variables[at].Name)" @onclick="() => _variables.RemoveAt(at)">Remove</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
+                {
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                        <label for="pipelines-variables-add-name">Name</label>
+                        <input id="pipelines-variables-add-name" class="db-input" style="width:12rem;" placeholder="apiBase" value="@_newVariableName" @oninput="e => _newVariableName = e.Value?.ToString() ?? string.Empty" />
+                        <label for="pipelines-variables-add-value">Value</label>
+                        <input id="pipelines-variables-add-value" class="db-input" style="width:20rem;" placeholder="https://api.example.com" value="@_newVariableValue" @oninput="e => _newVariableValue = e.Value?.ToString() ?? string.Empty" />
+                        <button id="pipelines-variables-add" type="button" class="db-btn" @onclick="AddVariable">Add</button>
+                        <button id="pipelines-variables-save" type="button" class="db-btn" @onclick="SaveVariablesAsync" disabled="@_busy">Save variables</button>
+                    </div>
+                }
+            </section>
+        }
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p id="pipelines-error" style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="pipelines-message" style="margin:0;">@_message</p>
+        }
+    </div>
+}
+
+@code {
+    private List<PipelineView> _pipelines;
+    private bool _creating; // BL-229: the New pipeline form shown at the top
+    private string _newName = "";
+    private string _newDescription = "";
+    private string _starterId = "";
+    private string _error = "";
+    private string _message = "";
+    private bool _busy;
+
+    // BL-229: the site's variables, as the page shows and edits them; null when they could not be read.
+    private List<(string Name, string Value)> _variables;
+    private string _newVariableName = "";
+    private string _newVariableValue = "";
+
+    private void AddVariable()
+    {
+        _error = "";
+        var name = (_newVariableName ?? "").Trim();
+        if (!PipelineSiteVariables.IsName(name))
+        {
+            _error = $"'{name}' cannot be a variable's name: a letter or '_', then letters, digits or '_', at most {PipelineSiteVariables.MaxNameLength}.";
+            return;
+        }
+
+        _variables.RemoveAll(variable => variable.Name == name);
+        _variables.Add((name, _newVariableValue ?? ""));
+        _newVariableName = "";
+        _newVariableValue = "";
+    }
+
+    private async Task SaveVariablesAsync()
+    {
+        _error = "";
+        _message = "";
+        _busy = true;
+        try
+        {
+            var saved = await PipelinesService.SetSiteVariablesAsync(_variables.ToDictionary(variable => variable.Name, variable => variable.Value, StringComparer.Ordinal));
+            _variables = (saved ?? new Dictionary<string, string>()).OrderBy(pair => pair.Key, StringComparer.Ordinal).Select(pair => (pair.Key, pair.Value)).ToList();
+            _message = _variables.Count == 1 ? "1 site variable saved." : $"{_variables.Count} site variables saved.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Site Variables {Error}", ex.Message);
+            _error = ex is Stomme.Services.ServiceRefusalException or ArgumentException ? "The variables could not be saved: " + ex.Message : "The variables could not be saved.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    public override string Title => ModuleInfo.ModuleName;
+
+    // The module's stylesheet (the tags, the last run's mark): declared here too, so the list opened directly - not reached
+    // back from the editor - is styled.
+    public override List<Resource> Resources => new List<Resource>
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Pipelines/pipelines-editor.css" },
+        // BL-229: a folder exported is a file to save (stommePipelineEditorDownload).
+        new Resource { ResourceType = ResourceType.Script, Url = "Modules/Pipelines/pipelines-editor.js", Location = ResourceLocation.Body },
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(PipelinesPermissions.View))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            _pipelines = await PipelinesService.GetPipelinesAsync(withLastRuns: true) ?? new List<PipelineView>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Pipelines {Error}", ex.Message);
+            _error = "The pipelines could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        try
+        {
+            _variables = (await PipelinesService.GetSiteVariablesAsync() ?? new Dictionary<string, string>())
+                .OrderBy(pair => pair.Key, StringComparer.Ordinal).Select(pair => (pair.Key, pair.Value)).ToList();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogInformation("The site's pipeline variables could not be read: {Error}", ex.Message);
+            _variables = null;
+        }
+
+        try
+        {
+            _openComments = await PipelinesService.GetOpenCommentCountsAsync() ?? new Dictionary<string, int>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogInformation("The pipelines' open comments could not be counted: {Error}", ex.Message);
+            _openComments = new Dictionary<string, int>(); // the list works without them
+        }
+
+        try
+        {
+            _approvals = (await PipelinesService.GetApprovalsAsync() ?? new List<PipelineApprovalView>()).Count;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Pipeline Approvals {Error}", ex.Message);
+            _approvals = 0; // the list works without the count
+        }
+
+        await InsightsAsync(_insights?.Days.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        await UpcomingAsync(_upcoming?.Hours.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        if (_map is not null)
+        {
+            // An open map follows the list: a pipeline archived, retracted or added changes it.
+            try
+            {
+                _map = await PipelinesService.GetMapAsync() ?? new PipelineMapView();
+            }
+            catch (Exception ex)
+            {
+                await logger.LogInformation("The pipeline map could not be read again: {Error}", ex.Message);
+            }
+        }
+
+        if (_activity is not null)
+        {
+            // An open activity list follows the list too: what was just done is its newest line.
+            try
+            {
+                _activity = await PipelinesService.GetAuditAsync() ?? new List<PipelineAuditEntryView>();
+            }
+            catch (Exception ex)
+            {
+                await logger.LogInformation("The pipelines' activity could not be read again: {Error}", ex.Message);
+            }
+        }
+    }
+
+    private int _approvals;
+
+    // BL-229: each pipeline's comments still open, by definition id; none when they could not be counted.
+    private Dictionary<string, int> _openComments = new();
+
+    private PipelineInsightsView _insights;
+
+    // BL-229 - what runs next, in the window chosen (the next day or week); the list works without it.
+    private PipelineUpcomingView _upcoming;
+
+    private async Task UpcomingAsync(string hours)
+    {
+        try
+        {
+            _upcoming = await PipelinesService.GetUpcomingRunsAsync(PipelineUpcoming.Window(int.TryParse(hours, out var value) ? value : 24));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Upcoming Runs {Error}", ex.Message);
+            _upcoming = null;
+        }
+    }
+
+    // The window chosen (1, 7 or 30 days; a week otherwise), read again; the list works without it.
+    private async Task InsightsAsync(string days)
+    {
+        try
+        {
+            _insights = await PipelinesService.GetInsightsAsync(PipelineInsights.Window(int.TryParse(days, out var value) ? value : 7));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Pipeline Insights {Error}", ex.Message);
+            _insights = null;
+        }
+    }
+
+    private static string WindowLabel(int days) => days switch
+    {
+        1 => "Last 24 hours",
+        30 => "Last 30 days",
+        _ => "Last 7 days",
+    };
+
+    private string _search = "";
+
+    // Every word typed, anywhere in the name, the description or a tag, ignoring case - the step search's rule; and every tag
+    // chosen in the filter (BL-229, n8n's tag filter).
+    public static IEnumerable<PipelineView> Matching(IEnumerable<PipelineView> pipelines, string search, IReadOnlyCollection<string> tags = null)
+    {
+        var words = (search ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return pipelines.Where(pipeline =>
+            words.All(word =>
+                (pipeline.Name ?? "").Contains(word, StringComparison.CurrentCultureIgnoreCase)
+                || (pipeline.Description ?? "").Contains(word, StringComparison.CurrentCultureIgnoreCase)
+                || (pipeline.Tags ?? new List<string>()).Any(tag => tag.Contains(word, StringComparison.CurrentCultureIgnoreCase)))
+            && (tags ?? Array.Empty<string>()).All(tag => (pipeline.Tags ?? new List<string>()).Contains(tag, StringComparer.OrdinalIgnoreCase)));
+    }
+
+    /// <summary>Every tag the site's pipelines carry, once whatever its case, in order.</summary>
+    public static List<string> TagsOf(IEnumerable<PipelineView> pipelines) =>
+        pipelines.SelectMany(pipeline => pipeline.Tags ?? new List<string>())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(tag => tag, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+
+    private readonly List<string> _tags = new();
+    private string _editingTags;
+    private string _tagsText = "";
+
+    private void ToggleTag(string tag)
+    {
+        var chosen = _tags.FirstOrDefault(each => string.Equals(each, tag, StringComparison.OrdinalIgnoreCase));
+        if (chosen is null)
+        {
+            _tags.Add(tag);
+        }
+        else
+        {
+            _tags.Remove(chosen);
+        }
+    }
+
+    private void EditTags(PipelineView pipeline)
+    {
+        _editingTags = pipeline.DefinitionId;
+        _tagsText = string.Join(", ", pipeline.Tags ?? new List<string>());
+    }
+
+    private async Task TagsKeyAsync(KeyboardEventArgs args)
+    {
+        if (args.Key == "Escape")
+        {
+            _editingTags = null;
+        }
+        else if (args.Key == "Enter" && _pipelines?.FirstOrDefault(pipeline => pipeline.DefinitionId == _editingTags) is { } pipeline)
+        {
+            await SaveTagsAsync(pipeline);
+        }
+    }
+
+    // A tag is the pipeline's, not a version's: saving one is not an edit and publishes nothing.
+    private async Task SaveTagsAsync(PipelineView pipeline)
+    {
+        _error = "";
+        _message = "";
+        var tags = PipelineTags.Parse(_tagsText, out var problem);
+        if (problem is not null)
+        {
+            _error = problem;
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            pipeline.Tags = await PipelinesService.SetTagsAsync(pipeline.DefinitionId, tags) ?? new List<string>();
+            _editingTags = null;
+            _message = pipeline.Tags.Count == 0 ? $"'{pipeline.Name}' has no tags now." : $"'{pipeline.Name}' is tagged {string.Join(", ", pipeline.Tags)}.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Tagging Pipeline {Error}", ex.Message);
+            _error = ex is Stomme.Services.ServiceRefusalException or ArgumentException ? "The tags could not be saved: " + ex.Message : "The tags could not be saved.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // BL-229 - n8n's folders: the folder shown (empty: the top), a new one's name, and the pipeline being moved where.
+    private string _folder = "";
+    private string _newFolder = "";
+    private string _moving;
+    private string _moveTo = "";
+
+    private void OpenFolder(string folder)
+    {
+        _folder = folder ?? "";
+        _moving = null;
+        _folderAction = null;
+        _chosen.Clear();
+        _chosenAction = null;
+    }
+
+    // BL-229 - the map of the site's pipelines: null while it is not shown. Drawn left to right by who runs whom (the canvas's
+    // own tidy-up, a pipeline a step and a link a connection); a pipeline linked to none is counted, not drawn.
+    private PipelineMapView _map;
+    // BL-229: the site's pipeline activity (null while it is not shown) - read again each time it is opened.
+    private List<PipelineAuditEntryView> _activity;
+
+    private async Task ToggleActivityAsync()
+    {
+        if (_activity is not null)
+        {
+            _activity = null;
+            return;
+        }
+
+        try
+        {
+            _activity = await PipelinesService.GetAuditAsync() ?? new List<PipelineAuditEntryView>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading The Pipelines' Activity {Error}", ex.Message);
+            _error = "The activity could not be read.";
+        }
+    }
+
+    private const double MapNodeWidth = 200;
+    private const double MapNodeHeight = 48;
+    private const double MapRowScale = 0.55;
+
+    private async Task ToggleMapAsync()
+    {
+        if (_map is not null)
+        {
+            _map = null;
+            return;
+        }
+
+        try
+        {
+            _map = await PipelinesService.GetMapAsync() ?? new PipelineMapView();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading The Pipeline Map {Error}", ex.Message);
+            _error = "The map could not be read.";
+        }
+    }
+
+    private (List<(PipelineMapNode Node, double X, double Y)> Nodes, List<(string Kind, string Path, string Title)> Lines, double Width, double Height, int Alone) MapDrawing()
+    {
+        var linked = _map.Links.SelectMany(link => new[] { link.From, link.To }).Concat(_map.Nodes.Where(node => node.WatchesEvery).Select(node => node.DefinitionId))
+            .ToHashSet(StringComparer.Ordinal);
+        var shown = _map.Nodes.Where(node => linked.Contains(node.DefinitionId)).OrderBy(node => node.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
+        var graph = new PipelineGraph
+        {
+            Steps = shown.Select(node => new PipelineGraphStep { Id = node.DefinitionId, Type = "map" }).ToList(),
+            Connections = _map.Links.Select(link => new PipelineGraphConnection { SourceId = link.From, TargetId = link.To }).ToList(),
+        };
+        Stomme.Modules.Pipelines.Canvas.AutoLayout.Arrange(graph);
+        var at = graph.Steps.ToDictionary(step => step.Id, step => (X: step.Position.X, Y: Canvas.AutoLayout.Top + (step.Position.Y - Canvas.AutoLayout.Top) * MapRowScale), StringComparer.Ordinal);
+        var nodes = shown.Select(node => (node, at[node.DefinitionId].X, at[node.DefinitionId].Y)).ToList();
+        var names = _map.Nodes.ToDictionary(node => node.DefinitionId, node => node.Name, StringComparer.Ordinal);
+        var lines = new List<(string, string, string)>();
+        foreach (var link in _map.Links.Where(link => at.ContainsKey(link.From) && at.ContainsKey(link.To)))
+        {
+            var (fromX, fromY) = (at[link.From].X + MapNodeWidth, at[link.From].Y + MapNodeHeight / 2);
+            var (toX, toY) = (at[link.To].X, at[link.To].Y + MapNodeHeight / 2);
+            var bend = Math.Max(40, Math.Abs(toX - fromX) / 2);
+            var path = string.Create(System.Globalization.CultureInfo.InvariantCulture, $"M {fromX} {fromY} C {fromX + bend} {fromY}, {toX - bend} {toY}, {toX} {toY}");
+            lines.Add((link.Kind, path, $"{names.GetValueOrDefault(link.From)} {Said(link.Kind)} {names.GetValueOrDefault(link.To)}"));
+        }
+
+        var width = nodes.Count == 0 ? 0 : nodes.Max(node => node.Item2) + MapNodeWidth + 30;
+        var height = nodes.Count == 0 ? 0 : nodes.Max(node => node.Item3) + MapNodeHeight + 30;
+        return (nodes, lines, width, height, _map.Nodes.Count - shown.Count);
+    }
+
+    private static string Said(string kind) => kind switch
+    {
+        PipelineLinks.Calls => "calls",
+        PipelineLinks.Starts => "starts",
+        PipelineLinks.OnFailure => "failing starts",
+        PipelineLinks.AsTool => "may use as an AI tool",
+        _ => kind,
+    };
+
+    private static string MapNote(PipelineMapNode node) =>
+        string.Join(" · ", new[] { node.IsPublished ? null : "draft", node.WatchesEvery ? "on any failure" : null, node.IsTool ? "AI tool" : null, node.Folder.Length == 0 ? null : node.Folder }.Where(part => part is not null));
+
+    // A number as SVG reads it, whatever the browser's culture.
+    private static string F(double value) => value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+
+    private static string Clip(string text, int most) => string.IsNullOrEmpty(text) || text.Length <= most ? text : text[..(most - 1)] + "…";
+
+    // BL-229 - find in every pipeline: the places the last search found (null when none was asked for) and what it looked for.
+    private List<PipelineFoundView> _found;
+    private string _foundFor = "";
+
+    private async Task FindInsideAsync()
+    {
+        var text = _search.Trim();
+        _error = "";
+        _busy = true;
+        try
+        {
+            _found = await PipelinesService.FindInPipelinesAsync(text) ?? new List<PipelineFoundView>();
+            _foundFor = text;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Finding In Pipelines {Error}", ex.Message);
+            _error = "The pipelines could not be searched.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // BL-229: the pipelines chosen on the list (by definition id) and what is being done to them - each one's own call, as a row's
+    // action makes it, so what one refuses is said and the rest are done.
+    private const string ChosenMove = "move";
+    private const string ChosenTag = "tag";
+    private const string ChosenArchive = "archive";
+    private readonly HashSet<string> _chosen = new(StringComparer.Ordinal);
+    private string _chosenAction;
+    private string _chosenText = "";
+
+    private void Choose(string definitionId, bool chosen)
+    {
+        if (chosen)
+        {
+            _chosen.Add(definitionId);
+        }
+        else
+        {
+            _chosen.Remove(definitionId);
+        }
+    }
+
+    private void ChooseAll(IEnumerable<PipelineView> shown, bool chosen)
+    {
+        foreach (var pipeline in shown)
+        {
+            Choose(pipeline.DefinitionId, chosen);
+        }
+    }
+
+    private async Task MoveChosenAsync(List<PipelineView> chosen)
+    {
+        var folder = PipelineFolders.Normalize(_chosenText, out var problem);
+        if (problem is not null)
+        {
+            _error = problem;
+            return;
+        }
+
+        folder = PipelineFolders.Spelled(folder, (_pipelines ?? new List<PipelineView>()).Select(other => other.Folder));
+        await ForEachChosenAsync(chosen, pipeline => PipelinesService.SetFolderAsync(pipeline.DefinitionId, folder),
+            done => $"Moved {Count(done)} to {(folder.Length == 0 ? "the top of the list" : folder)}.");
+    }
+
+    private async Task TagChosenAsync(List<PipelineView> chosen)
+    {
+        var tag = PipelineTags.Normalize(new List<string> { _chosenText }, out var problem);
+        if (problem is not null || tag.Count == 0)
+        {
+            _error = problem ?? "A tag needs a name.";
+            return;
+        }
+
+        await ForEachChosenAsync(chosen, pipeline =>
+        {
+            var tags = (pipeline.Tags ?? new List<string>()).Append(tag[0]).ToList();
+            PipelineTags.Normalize(tags, out var tooMany);
+            return tooMany is null ? PipelinesService.SetTagsAsync(pipeline.DefinitionId, tags) : throw new ArgumentException(tooMany);
+        }, done => $"Tagged {Count(done)} {tag[0]}.");
+    }
+
+    // The map read when the chosen pipelines' archive is asked: what stops working is said from it as the choice changes.
+    private PipelineMapView _chosenMap;
+    private bool _chosenMapUnread;
+
+    private async Task OpenChosenArchiveAsync()
+    {
+        _busy = true;
+        try
+        {
+            _chosenMap = await PipelinesService.GetMapAsync() ?? new PipelineMapView();
+            _chosenMapUnread = false;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading The Pipeline Map {Error}", ex.Message);
+            (_chosenMap, _chosenMapUnread) = (null, true);
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        _chosenAction = ChosenArchive;
+    }
+
+    private Task ArchiveChosenAsync(List<PipelineView> chosen) =>
+        ForEachChosenAsync(chosen, pipeline => PipelinesService.ArchivePipelineAsync(pipeline.DefinitionId),
+            done => $"Archived {Count(done)}: {(done == 1 ? "it does" : "they do")} not run. Restore, or delete for good, under Archived.");
+
+    // Them as one file (PipelineExchange.WriteMany): browsing a folder, each one's folder below it; found by a search, its own.
+    private async Task ExportChosenAsync(List<PipelineView> chosen, bool browsing)
+    {
+        _error = "";
+        _message = "";
+        _busy = true;
+        try
+        {
+            var documents = new List<PipelineExchangeDocument>();
+            foreach (var pipeline in chosen)
+            {
+                documents.Add(new PipelineExchangeDocument
+                {
+                    Id = pipeline.DefinitionId,
+                    Name = pipeline.Name,
+                    Description = pipeline.Description,
+                    Folder = browsing ? PipelineFolders.Moved(pipeline.Folder, _folder, "") : pipeline.Folder,
+                    Graph = await PipelinesService.GetGraphAsync(pipeline.DefinitionId) ?? new PipelineGraph(),
+                });
+            }
+
+            const string file = "chosen.pipelines.json";
+            await JSRuntime.InvokeVoidAsync("stommePipelineEditorDownload", file, PipelineExchange.WriteMany(documents));
+            _message = $"Exported {Count(documents.Count)} as {file} - imported on another site, the calls among them run the copies.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Exporting Pipelines {Error}", ex.Message);
+            _error = "The pipelines could not be exported: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private static string Count(int pipelines) => pipelines == 1 ? "1 pipeline" : $"{pipelines} pipelines";
+
+    private async Task ForEachChosenAsync(List<PipelineView> chosen, Func<PipelineView, Task> act, Func<int, string> said)
+    {
+        _error = "";
+        _message = "";
+        _busy = true;
+        var done = 0;
+        var refused = new List<string>();
+        try
+        {
+            foreach (var pipeline in chosen)
+            {
+                try
+                {
+                    await act(pipeline);
+                    done++;
+                    _chosen.Remove(pipeline.DefinitionId);
+                }
+                catch (Exception ex) when (ex is Stomme.Services.ServiceRefusalException or ArgumentException)
+                {
+                    refused.Add($"'{pipeline.Name}' ({ex.Message})"); // refused, saying why - an answer, not an error
+                }
+                catch (Exception ex)
+                {
+                    await logger.LogError(ex, "Error Acting On A Chosen Pipeline {Error}", ex.Message);
+                    refused.Add($"'{pipeline.Name}' (it could not be done)");
+                }
+            }
+
+            _chosenAction = null;
+            await LoadAsync();
+            _message = said(done);
+            _error = refused.Count == 0 ? "" : "Not done: " + string.Join("; ", refused) + ".";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // BL-229 - n8n's folder rename, move and delete, on the folder shown: which is being done, and where to.
+    private const string RenameFolderAction = "rename";
+    private const string RemoveFolderAction = "remove";
+    private string _folderAction;
+    private string _folderTo = "";
+
+    private void StartRenameFolder()
+    {
+        _folderAction = RenameFolderAction;
+        _folderTo = _folder;
+    }
+
+    private async Task RenameFolderKeyAsync(KeyboardEventArgs args)
+    {
+        if (args.Key == "Escape")
+        {
+            _folderAction = null;
+        }
+        else if (args.Key == "Enter")
+        {
+            await RenameFolderAsync();
+        }
+    }
+
+    private async Task RenameFolderAsync()
+    {
+        var folders = (_pipelines ?? new List<PipelineView>()).Select(pipeline => pipeline.Folder);
+        var to = PipelineFolders.Normalize(_folderTo, out var problem);
+        if ((problem ?? PipelineFolders.MoveProblem(folders, _folder, to)) is { } refused)
+        {
+            _error = refused;
+            return;
+        }
+
+        await MoveFolderAsync(new PipelineFolderMoveRequest { Folder = _folder, NewFolder = to }, moved =>
+            $"'{PipelineFolders.Name(_folder)}' is {moved.Folder} now{(moved.Moved == 1 ? ", with its pipeline." : $", with its {moved.Moved} pipelines.")}");
+    }
+
+    // BL-229: the pipelines in the folder shown - and in the folders inside it; every one at the top - as one file, each with its
+    // id and its folder below this one (PipelineExchange.WriteMany). Archived ones stay behind, as the list leaves them out.
+    private async Task ExportFolderAsync()
+    {
+        _error = "";
+        _message = "";
+        var chosen = (_pipelines ?? new List<PipelineView>())
+            .Where(pipeline => pipeline.ArchivedOnUtc is null && PipelineFolders.IsWithin(pipeline.Folder, _folder))
+            .OrderBy(pipeline => pipeline.Folder ?? "", StringComparer.CurrentCultureIgnoreCase).ThenBy(pipeline => pipeline.Name, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+        if (chosen.Count > PipelineExchange.MaxWorkflows)
+        {
+            _error = $"{chosen.Count} pipelines are more than one file holds ({PipelineExchange.MaxWorkflows}) - export a folder inside it.";
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var documents = new List<PipelineExchangeDocument>();
+            foreach (var pipeline in chosen)
+            {
+                documents.Add(new PipelineExchangeDocument
+                {
+                    Id = pipeline.DefinitionId,
+                    Name = pipeline.Name,
+                    Description = pipeline.Description,
+                    Folder = PipelineFolders.Moved(pipeline.Folder, _folder, ""),
+                    Graph = await PipelinesService.GetGraphAsync(pipeline.DefinitionId) ?? new PipelineGraph(),
+                });
+            }
+
+            var file = PipelineExchange.FileName(_folder.Length == 0 ? "all" : PipelineFolders.Name(_folder)).Replace(".pipeline.json", ".pipelines.json", StringComparison.Ordinal);
+            await JSRuntime.InvokeVoidAsync("stommePipelineEditorDownload", file, PipelineExchange.WriteMany(documents));
+            _message = $"Exported {(documents.Count == 1 ? "1 pipeline" : $"{documents.Count} pipelines")} as {file} - imported on another site, its folders are kept and the calls among them run the copies.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Exporting Pipelines {Error}", ex.Message);
+            _error = "The pipelines could not be exported: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private Task RemoveFolderAsync() =>
+        MoveFolderAsync(new PipelineFolderMoveRequest { Folder = _folder, Remove = true }, moved =>
+            $"'{PipelineFolders.Name(_folder)}' is removed; {(moved.Moved == 1 ? "its pipeline is" : $"its {moved.Moved} pipelines are")} in {(moved.Folder.Length == 0 ? "the top of the list" : moved.Folder)} now.");
+
+    // The server moves every pipeline in the folder - the archived ones too - and the list is read again, then shows where they went.
+    private async Task MoveFolderAsync(PipelineFolderMoveRequest request, Func<PipelineFolderMoveResult, string> said)
+    {
+        _error = "";
+        _message = "";
+        _busy = true;
+        try
+        {
+            var moved = await PipelinesService.MoveFolderAsync(request);
+            if (moved is null)
+            {
+                await LoadAsync();
+                OpenFolder("");
+                _error = "That folder has no pipeline in it any more - the list is read again.";
+                return;
+            }
+
+            var message = said(moved);
+            await LoadAsync();
+            OpenFolder(moved.Folder);
+            _message = message;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Moving Folder {Error}", ex.Message);
+            _error = ex is Stomme.Services.ServiceRefusalException or ArgumentException ? "The folder was not changed: " + ex.Message : "The folder could not be changed.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // A new folder is opened before anything is in it - it is there once a pipeline is created in it or moved to it.
+    private void NewFolder()
+    {
+        var name = PipelineFolders.Normalize(_newFolder, out var error);
+        var path = error is null && name.Length > 0 ? PipelineFolders.Normalize(_folder.Length == 0 ? name : _folder + PipelineFolders.Separator + name, out error) : "";
+        if (error is not null || path.Length == 0)
+        {
+            _error = error ?? "A folder needs a name.";
+            return;
+        }
+
+        _error = "";
+        _newFolder = "";
+        _folder = path;
+        _message = $"'{PipelineFolders.Name(path)}' is open - a pipeline created here goes in it, or move one here from its row's More.";
+    }
+
+    private void NewFolderKey(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            NewFolder();
+        }
+    }
+
+    private void StartMove(PipelineView pipeline)
+    {
+        _moving = pipeline.DefinitionId;
+        _moveTo = pipeline.Folder ?? "";
+    }
+
+    private async Task MoveKeyAsync(KeyboardEventArgs args)
+    {
+        if (args.Key == "Escape")
+        {
+            _moving = null;
+        }
+        else if (args.Key == "Enter" && _pipelines?.FirstOrDefault(pipeline => pipeline.DefinitionId == _moving) is { } pipeline)
+        {
+            await MoveAsync(pipeline);
+        }
+    }
+
+    // A pipeline's folder is the pipeline's, not a version's: moving it is not an edit and publishes nothing. A folder already on
+    // the list keeps its spelling - one folder, whatever case it is typed in.
+    private async Task MoveAsync(PipelineView pipeline)
+    {
+        _error = "";
+        _message = "";
+        var folder = PipelineFolders.Normalize(_moveTo, out var problem);
+        if (problem is not null)
+        {
+            _error = problem;
+            return;
+        }
+
+        folder = PipelineFolders.Spelled(folder, (_pipelines ?? new List<PipelineView>()).Select(other => other.Folder));
+        _busy = true;
+        try
+        {
+            pipeline.Folder = await PipelinesService.SetFolderAsync(pipeline.DefinitionId, folder) ?? "";
+            _moving = null;
+            _message = pipeline.Folder.Length == 0 ? $"'{pipeline.Name}' is at the top of the list now." : $"'{pipeline.Name}' is in {pipeline.Folder} now.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Moving Pipeline {Error}", ex.Message);
+            _error = ex is Stomme.Services.ServiceRefusalException or ArgumentException ? "The pipeline was not moved: " + ex.Message : "The pipeline could not be moved.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // What is created in a folder goes in it, as n8n's does: a new pipeline, a starter, an import - and a copy goes where its
+    // original is. It is made either way: a folder refused is said.
+    private async Task PlaceInFolderAsync(string definitionId, string folder)
+    {
+        if (string.IsNullOrEmpty(folder) || string.IsNullOrEmpty(definitionId))
+        {
+            return;
+        }
+
+        try
+        {
+            await PipelinesService.SetFolderAsync(definitionId, folder);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Placing Pipeline In Folder {Error}", ex.Message);
+            _error = $"It was made, but not put in {folder} - move it from its row's More.";
+        }
+    }
+
+    // A starter chosen names the new pipeline after itself while no name of the author's own is typed - as a workflow made from
+    // an n8n template is named after it - so Create needs one choice, not two.
+    private void ChooseStarter(string id)
+    {
+        var named = PipelineStarters.Find(_starterId)?.Name;
+        _starterId = id ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(_newName) || _newName == named)
+        {
+            _newName = PipelineStarters.Find(_starterId)?.Name ?? string.Empty;
+        }
+    }
+
+    private async Task CreateAsync()
+    {
+        if (PipelineStarters.Find(_starterId) is { } starter)
+        {
+            await ImportAsync(new ImportPipelineRequest { Name = _newName, Description = string.IsNullOrWhiteSpace(_newDescription) ? starter.Description : _newDescription, Graph = starter.Graph() });
+            return;
+        }
+
+        _busy = true;
+        _error = "";
+        _message = "";
+        try
+        {
+            var created = await PipelinesService.CreatePipelineAsync(new CreatePipelineRequest { Name = _newName, Description = _newDescription });
+            _newName = "";
+            _newDescription = "";
+            _message = $"Created '{created.Name}' as a draft" + (_folder.Length == 0 ? "." : $", in {_folder}.");
+            await PlaceInFolderAsync(created.DefinitionId, _folder);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Creating Pipeline {Error}", ex.Message);
+            _error = "The pipeline was refused: it needs a name of at most 200 characters.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    // BL-229 increment 10: a file read here (its shape checked by the one reader the editor uses too), stored by the server only
+    // once its save would accept it.
+    private async Task ImportFileAsync(InputFileChangeEventArgs args)
+    {
+        _error = "";
+        _message = "";
+        IReadOnlyList<PipelineExchangeDocument> documents;
+        try
+        {
+            // BL-229: n8n's export of many workflows is one file too - each a pipeline of its own (PipelineExchange.ReadMany).
+            if (args.File.Size > PipelineExchange.MaxManyBytes)
+            {
+                throw new PipelineExchangeException($"The file is larger than {PipelineExchange.MaxManyBytes / (1024 * 1024)} MB.");
+            }
+
+            using var reader = new System.IO.StreamReader(args.File.OpenReadStream(PipelineExchange.MaxManyBytes));
+            documents = PipelineExchange.ReadMany(await reader.ReadToEndAsync());
+        }
+        catch (PipelineExchangeException ex)
+        {
+            _error = $"'{args.File.Name}' was not imported: {ex.Message}";
+            return;
+        }
+
+        if (documents.Count > 1)
+        {
+            await ImportManyAsync(documents, System.IO.Path.GetFileNameWithoutExtension(args.File.Name));
+            return;
+        }
+
+        var document = documents[0];
+        var name = !string.IsNullOrWhiteSpace(_newName) ? _newName
+            : !string.IsNullOrWhiteSpace(document.Name) ? document.Name
+            : System.IO.Path.GetFileNameWithoutExtension(args.File.Name);
+        await ImportAsync(new ImportPipelineRequest { Name = name, Description = string.IsNullOrWhiteSpace(_newDescription) ? document.Description : _newDescription, Graph = document.Graph });
+    }
+
+    // BL-229: each workflow of n8n's export a draft of its own, judged by the save as any import is; the list says how many came
+    // over, and which did not and why - the rest are not held back by one. A file of this site's many (a folder exported) keeps
+    // its folders below the one shown, and once every pipeline is made, the calls among them are pointed at the new ones.
+    private async Task ImportManyAsync(IReadOnlyList<PipelineExchangeDocument> documents, string fileName)
+    {
+        _busy = true;
+        var created = 0;
+        var refused = new List<string>();
+        var becameOf = new Dictionary<string, string>(StringComparer.Ordinal);
+        var made = new List<(string DefinitionId, PipelineExchangeDocument Document)>();
+        try
+        {
+            for (var index = 0; index < documents.Count; index++)
+            {
+                var name = !string.IsNullOrWhiteSpace(documents[index].Name) ? documents[index].Name : fileName + " " + (index + 1);
+                try
+                {
+                    var imported = await PipelinesService.ImportPipelineAsync(new ImportPipelineRequest { Name = name, Description = documents[index].Description, Graph = documents[index].Graph });
+                    created++;
+                    await PlaceInFolderAsync(imported?.DefinitionId, PipelineExchange.FolderIn(_folder, documents[index].Folder));
+                    if (imported?.DefinitionId is { } definitionId)
+                    {
+                        made.Add((definitionId, documents[index]));
+                        if (documents[index].Id is { } id)
+                        {
+                            becameOf[id] = definitionId;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await logger.LogError(ex, "Error Importing Pipeline {Error}", ex.Message);
+                    refused.Add($"'{name}' ({ex.Message})");
+                }
+            }
+
+            var repointed = 0;
+            foreach (var (definitionId, document) in made.Where(pair => PipelineExchange.References(pair.Document.Graph).Any(becameOf.ContainsKey)))
+            {
+                try
+                {
+                    var changed = PipelineExchange.Repoint(document.Graph, becameOf);
+                    await PipelinesService.SaveGraphAsync(definitionId, document.Graph);
+                    repointed += changed;
+                }
+                catch (Exception ex)
+                {
+                    await logger.LogError(ex, "Error Pointing Imported Calls {Error}", ex.Message);
+                    refused.Add($"'{document.Name}' was made, but still calls the pipelines it was exported with ({ex.Message})");
+                }
+            }
+
+            var fromN8n = documents.Any(document => document.ConvertedFrom == N8nWorkflowImport.Source);
+            _newName = "";
+            _newDescription = "";
+            await LoadAsync();
+            _message = $"Imported {created} of {documents.Count} pipelines as drafts"
+                + (repointed == 0 ? "" : $" - what they named of each other now names the new pipelines ({(repointed == 1 ? "1 place" : $"{repointed} places")})")
+                + (fromN8n ? " - each brought over from n8n has a note on its canvas of what is left to finish." : ".");
+            _error = refused.Count == 0 ? _error : "Not created: " + string.Join("; ", refused) + ".";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task ImportAsync(ImportPipelineRequest request)
+    {
+        _busy = true;
+        _error = "";
+        _message = "";
+        try
+        {
+            var created = await PipelinesService.ImportPipelineAsync(request);
+            _newName = "";
+            _newDescription = "";
+            _starterId = "";
+            await PlaceInFolderAsync(created.DefinitionId, _folder);
+            NavigationManager.NavigateTo(NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + created.DefinitionId));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Importing Pipeline {Error}", ex.Message);
+            _error = $"'{request.Name}' was not created: {ex.Message}";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task PublishAsync(PipelineView pipeline)
+    {
+        _error = "";
+        _message = "";
+        try
+        {
+            var result = await PipelinesService.PublishPipelineAsync(pipeline.DefinitionId);
+            _message = result.Succeeded
+                ? $"Published '{pipeline.Name}' version {pipeline.Version}."
+                : $"'{pipeline.Name}' was not published: {string.Join("; ", result.Errors)}";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Publishing Pipeline {Error}", ex.Message);
+            _error = "The pipeline could not be published.";
+        }
+
+        await LoadAsync();
+    }
+
+    // BL-229 - before a pipeline stops running (archived or retracted - only a published version runs): what stops working with it,
+    // read from the map (PipelineLinks.LeftBehind) - asked only when something does; when nothing does, nothing is asked.
+    private const string LeaveArchive = "archive";
+    private const string LeaveRetract = "retract";
+    private PipelineView _leaving;
+    private string _leavingAction;
+    private List<string> _leavingSaid = new();
+
+    private async Task<List<string>> LeftBehindAsync(IEnumerable<string> leaving)
+    {
+        try
+        {
+            return PipelineLinks.LeftBehind(await PipelinesService.GetMapAsync(), leaving);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading The Pipeline Map {Error}", ex.Message);
+            return new List<string> { "Which other pipelines run it could not be read." };
+        }
+    }
+
+    private async Task AskBeforeLeavingAsync(PipelineView pipeline, string action)
+    {
+        _error = "";
+        _message = "";
+        _leaving = null;
+        _busy = true;
+        List<string> said;
+        try
+        {
+            said = await LeftBehindAsync(new[] { pipeline.DefinitionId });
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        if (said.Count > 0)
+        {
+            (_leaving, _leavingAction, _leavingSaid) = (pipeline, action, said);
+            return;
+        }
+
+        await (action == LeaveRetract ? RetractAsync(pipeline) : ArchiveAsync(pipeline));
+    }
+
+    private async Task LeaveAnywayAsync()
+    {
+        var (pipeline, action) = (_leaving, _leavingAction);
+        _leaving = null;
+        if (pipeline is not null)
+        {
+            await (action == LeaveRetract ? RetractAsync(pipeline) : ArchiveAsync(pipeline));
+        }
+    }
+
+    private async Task RetractAsync(PipelineView pipeline)
+    {
+        _error = "";
+        _message = "";
+        try
+        {
+            await PipelinesService.RetractPipelineAsync(pipeline.DefinitionId);
+            _message = $"Retracted '{pipeline.Name}'.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Retracting Pipeline {Error}", ex.Message);
+            _error = "The pipeline could not be retracted.";
+        }
+
+        await LoadAsync();
+    }
+
+    // BL-229 - n8n's archive: set aside - unpublished, so nothing starts it - and out of the list until it is restored or deleted.
+    private async Task ArchiveAsync(PipelineView pipeline)
+    {
+        string message = null;
+        string error = null;
+        try
+        {
+            await PipelinesService.ArchivePipelineAsync(pipeline.DefinitionId);
+            message = $"Archived '{pipeline.Name}': it does not run. Restore it, or delete it for good, under Archived.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Archiving Pipeline {Error}", ex.Message);
+            error = "The pipeline could not be archived.";
+        }
+
+        await LoadAsync();
+        (_message, _error) = (message ?? "", error ?? "");
+    }
+
+    private async Task RestoreAsync(PipelineView pipeline)
+    {
+        string message = null;
+        string error = null;
+        try
+        {
+            await PipelinesService.RestorePipelineAsync(pipeline.DefinitionId);
+            message = $"Restored '{pipeline.Name}' as a draft - publish it to run it again.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Restoring Pipeline {Error}", ex.Message);
+            error = "The pipeline could not be restored.";
+        }
+
+        await LoadAsync();
+        (_message, _error) = (message ?? "", error ?? "");
+        if (error is null && _pipelines?.Any(other => other.ArchivedOnUtc is not null) != true)
+        {
+            _showArchived = false; // the archive is empty: back to the pipelines
+        }
+    }
+
+    private async Task DeleteAsync(PipelineView pipeline)
+    {
+        _error = "";
+        _message = "";
+        try
+        {
+            await PipelinesService.DeletePipelineAsync(pipeline.DefinitionId);
+            _message = $"Deleted '{pipeline.Name}' and every version of it.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Pipeline {Error}", ex.Message);
+            _error = "The pipeline could not be deleted.";
+        }
+
+        var (message, error) = (_message, _error);
+        await LoadAsync();
+        (_message, _error) = (message, error);
+        if (_pipelines?.Any(other => other.ArchivedOnUtc is not null) != true)
+        {
+            _showArchived = false; // the archive is empty: back to the pipelines
+        }
+    }
+
+    // BL-229 - n8n's archive: the list shows the pipelines in use, or - when asked - the ones set aside.
+    private bool _showArchived;
+
+    // Start = dispatch and leave. The run's page observes it by polling; nothing here waits for the engine.
+    private async Task StartAsync(PipelineView pipeline)
+    {
+        _error = "";
+        _message = "";
+        try
+        {
+            var started = await PipelinesService.StartPipelineAsync(pipeline.DefinitionId, new StartPipelineRequest());
+            NavigationManager.NavigateTo(NavigateUrl(ModuleState.ModuleId, "Run", "id=" + started.RunId + "&started=1"));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Starting Pipeline {Error}", ex.Message);
+            // The server's reason when it refused (BL-222) - e.g. a pipeline that runs one at a time, with a run still going.
+            // On a Server site the handler's own exception carries it; over HTTP the refusal does.
+            _error = ex is Stomme.Services.ServiceRefusalException or InvalidOperationException ? "The run could not be started: " + ex.Message : "The run could not be started.";
+        }
+    }
+
+    // A copy is the pipeline's graph imported under a new name - judged by the save's rule like any import - and opened in the
+    // editor; a draft until it is published, so a trigger it holds starts nothing yet.
+    private async Task DuplicateAsync(PipelineView pipeline)
+    {
+        _error = "";
+        _message = "";
+        _busy = true;
+        try
+        {
+            var graph = await PipelinesService.GetGraphAsync(pipeline.DefinitionId) ?? new PipelineGraph();
+            var copy = await PipelinesService.ImportPipelineAsync(new ImportPipelineRequest { Name = CopyName(pipeline.Name), Description = pipeline.Description, Graph = graph });
+            if (pipeline.Tags?.Count > 0)
+            {
+                await PipelinesService.SetTagsAsync(copy.DefinitionId, pipeline.Tags);
+            }
+
+            await PlaceInFolderAsync(copy.DefinitionId, pipeline.Folder);
+
+            NavigationManager.NavigateTo(NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + copy.DefinitionId));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Duplicating Pipeline {Error}", ex.Message);
+            _error = "The pipeline could not be duplicated.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    /// <summary>The copy's name: the pipeline's, said to be a copy, within the 200 characters a name may have.</summary>
+    public static string CopyName(string name)
+    {
+        const string suffix = " (copy)";
+        var original = (name ?? "").Trim();
+        return (original.Length + suffix.Length > 200 ? original[..(200 - suffix.Length)] : original) + suffix;
+    }
+}

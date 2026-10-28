@@ -1,0 +1,156 @@
+@namespace Stomme.Modules.Admin.OpenIddict
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IOpenIddictService OpenIddictService
+@inject IStringLocalizer<Add> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+    <div class="db-fields">
+        <div class="db-field">
+            <Label For="clientid" HelpText="The OAuth client_id the relying party authenticates with. Must be unique within this tenant." ResourceKey="ClientId">Client Id:</Label>
+            <div class="db-field-control">
+                <input id="clientid" class="db-input" @bind="@_clientId" maxlength="100" required />
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="displayname" HelpText="A human-readable name, shown on the consent screen. Defaults to the client id." ResourceKey="DisplayName">Display Name:</Label>
+            <div class="db-field-control">
+                <input id="displayname" class="db-input" @bind="@_displayName" maxlength="200" />
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="type" HelpText="Confidential clients hold a secret (server-side apps). Public clients cannot keep one (SPA/native) and must use PKCE." ResourceKey="Type">Client Type:</Label>
+            <div class="db-field-control">
+                <select id="type" class="db-select" @bind="@_type" required>
+                    <option value="confidential">@Localizer["Type.Confidential"]</option>
+                    <option value="public">@Localizer["Type.Public"]</option>
+                </select>
+            </div>
+        </div>
+        @if (_type == "confidential")
+        {
+            <div class="db-field">
+                <Label For="secret" HelpText="The client secret. It is hashed at rest and can never be read back — record it now." ResourceKey="ClientSecret">Client Secret:</Label>
+                <div class="db-field-control">
+                    <input id="secret" type="password" class="db-input" @bind="@_clientSecret" maxlength="200" required />
+                </div>
+            </div>
+        }
+        <div class="db-field">
+            <Label For="consent" HelpText="Implicit skips the consent screen (first-party apps). Explicit asks the user to approve the requested scopes." ResourceKey="ConsentType">Consent Type:</Label>
+            <div class="db-field-control">
+                <select id="consent" class="db-select" @bind="@_consentType" required>
+                    <option value="implicit">@Localizer["Consent.Implicit"]</option>
+                    <option value="explicit">@Localizer["Consent.Explicit"]</option>
+                </select>
+            </div>
+        </div>
+        <div class="db-field">
+            <Label HelpText="The OAuth grants this client may use. A client can only request what it is permitted." ResourceKey="GrantTypes">Grant Types:</Label>
+            <div class="db-field-control">
+                <FluentCheckbox @bind-Value="_authorizationCode" Label="authorization_code" />
+                <FluentCheckbox @bind-Value="_clientCredentials" Label="client_credentials" />
+                <FluentCheckbox @bind-Value="_refreshToken" Label="refresh_token" />
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="scopes" HelpText="The scopes this client may request, one per line (openid, profile, email, offline_access, or a custom scope)." ResourceKey="Scopes">Scopes:</Label>
+            <div class="db-field-control">
+                <textarea id="scopes" class="db-input" rows="4" @bind="@_scopes"></textarea>
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="redirecturis" HelpText="Absolute callback URLs for the authorization-code flow, one per line. Required for authorization_code." ResourceKey="RedirectUris">Redirect Uris:</Label>
+            <div class="db-field-control">
+                <textarea id="redirecturis" class="db-input" rows="3" @bind="@_redirectUris"></textarea>
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="postlogouturis" HelpText="Absolute URLs the authority may redirect back to after an RP-initiated logout, one per line." ResourceKey="PostLogoutRedirectUris">Post Logout Uris:</Label>
+            <div class="db-field-control">
+                <textarea id="postlogouturis" class="db-input" rows="3" @bind="@_postLogoutRedirectUris"></textarea>
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="pkce" HelpText="Require Proof Key for Code Exchange on the authorization-code flow. Always on for a public client." ResourceKey="RequirePkce">Require PKCE?</Label>
+            <div class="db-field-control">
+                <FluentSwitch id="pkce" @bind-Value="_requirePkce" />
+            </div>
+        </div>
+    </div>
+    <button type="button" class="db-btn" @onclick="SaveApplication">@SharedLocalizer["Save"]</button>
+    <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+</form>
+
+@code {
+    private ElementReference form;
+    private bool validated = false;
+
+    private string _clientId = string.Empty;
+    private string _displayName = string.Empty;
+    private string _type = "confidential";
+    private string _clientSecret = string.Empty;
+    private string _consentType = "implicit";
+    private bool _authorizationCode = true;
+    private bool _clientCredentials = false;
+    private bool _refreshToken = false;
+    private string _scopes = "openid\nprofile\nemail";
+    private string _redirectUris = string.Empty;
+    private string _postLogoutRedirectUris = string.Empty;
+    private bool _requirePkce = true;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    public override string Title => "Add Client";
+
+    private async Task SaveApplication()
+    {
+        validated = true;
+        var interop = new Interop(JSRuntime);
+        if (!await interop.FormValid(form))
+        {
+            AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+            return;
+        }
+
+        var grantTypes = new List<string>();
+        if (_authorizationCode) grantTypes.Add("authorization_code");
+        if (_clientCredentials) grantTypes.Add("client_credentials");
+        if (_refreshToken) grantTypes.Add("refresh_token");
+
+        var seed = new OpenIddictApplicationSeed
+        {
+            ClientId = _clientId,
+            DisplayName = _displayName,
+            Type = _type,
+            ClientSecret = (_type == "confidential") ? _clientSecret : null,
+            ConsentType = _consentType,
+            GrantTypes = grantTypes,
+            Scopes = OpenIddictFormValues.SplitLines(_scopes),
+            RedirectUris = OpenIddictFormValues.SplitLines(_redirectUris),
+            PostLogoutRedirectUris = OpenIddictFormValues.SplitLines(_postLogoutRedirectUris),
+            RequirePkce = _requirePkce
+        };
+
+        try
+        {
+            var saved = await OpenIddictService.SaveApplicationAsync(seed);
+            if (saved == null)
+            {
+                // The controller rejects an invalid seed with 400 (e.g. a confidential client with no secret),
+                // which ServiceBase surfaces as a null result rather than an exception.
+                AddModuleMessage(Localizer["Error.SaveClient"], MessageType.Error);
+                return;
+            }
+
+            await logger.LogInformation("OpenIddict Client Added {ClientId}", seed.ClientId);
+            NavigationManager.NavigateTo(NavigateUrl());
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Adding OpenIddict Client {ClientId} {Error}", seed.ClientId, ex.Message);
+            AddModuleMessage(Localizer["Error.SaveClient"], MessageType.Error);
+        }
+    }
+}

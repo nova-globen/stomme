@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!--
+    D81 PROOF. A storage-blind, provider-neutral Stomme module that references Stomme ONLY through the
+    Stomme.Sdk meta-package from the local feed — ZERO ProjectReference, ZERO source references. If this
+    RESTORES + BUILDS, the published SDK surface is complete for a storage-blind module (owner's bar #1).
+
+    Razor SDK: the project carries both a Blazor component (Index.razor : ModuleBase) and the server-side
+    IServerStartup + aggregate, exactly the surface a real module spans. The Microsoft.AspNetCore.App shared
+    framework flows transitively from the Stomme.Server package's frameworkReference.
+
+    The assembly name contains "Stomme" so the host's convention scan would discover it (not needed to
+    compile; it documents that this is a real module shape, not a bespoke test project).
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Stomme.Sdk.Smoke.Stomme</AssemblyName>
+    <RootNamespace>Stomme.Sdk.Smoke</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The SDK of THIS tree (examples/Directory.Build.props): the hand pin said 10.2.1 at 10.3.0 and the proof built
+         against a stale meta (BL-186). -->
+    <PackageReference Include="Stomme.Sdk" Version="$(Version)" />
+  </ItemGroup>
+
+</Project>

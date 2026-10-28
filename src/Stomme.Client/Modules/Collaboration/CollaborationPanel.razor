@@ -1,0 +1,444 @@
+@namespace Stomme.Modules.Collaboration
+@implements IAsyncDisposable
+@inject ICollaborationService CollaborationService
+@inject NavigationManager NavigationManager
+@inject IServiceProvider Services
+@inject SiteState SiteState
+@using System.Threading
+@using Microsoft.AspNetCore.SignalR.Client
+@using Stomme.Transport.Realtime
+
+@*
+    The collaboration panel an editor hosts (BL-97 increment 12, D114; the predecessor platform's CollaborationPanel): it joins the resource's
+    session, takes the advisory lock if nobody holds it (the first editor does) and renews it while the editor stays open,
+    shows who else is here and where, who holds the lock, the last change announced, and a warning when someone else SAVED
+    the resource - with Reload. It is told over the collaboration hub in a browser, over the host's in-process signal on an
+    Interactive Server circuit, and polls with neither. Best-effort: collaboration switched off, a user without the key, a
+    resource they may not edit - the panel renders nothing and editing is exactly the single-editor behaviour.
+*@
+
+@if (_session is not null)
+{
+    <div id="collaboration-panel" role="group" aria-label="Collaboration" style="display:flex;flex-wrap:wrap;gap:0.35rem 1rem;align-items:center;padding:0.4rem 0.75rem;margin:0.5rem 0;border:1px solid var(--db-border);border-radius:6px;font-size:0.9em;">
+        <span id="collaboration-presence">
+            <strong>Editing now:</strong>
+            @foreach (var participant in _session.Participants)
+            {
+                <span class="collaboration-participant" style="margin-left:0.4rem;">@participant.DisplayName@(participant.UserId == CurrentUserId ? " (you)" : string.Empty)@(string.IsNullOrEmpty(participant.ActiveRegion) ? string.Empty : " · " + participant.ActiveRegion)</span>
+            }
+        </span>
+        <span id="collaboration-lock">@LockText()</span>
+        @if (_lock is null)
+        {
+            <button id="collaboration-take-lock" type="button" class="db-btn" @onclick="TakeLockAsync" disabled="@_busy">Take the edit lock</button>
+        }
+        @if (!string.IsNullOrEmpty(_lastChange))
+        {
+            <span id="collaboration-last-change" style="color:var(--db-text-2);">@_lastChange</span>
+        }
+        <span id="collaboration-mode" style="color:var(--db-text-2);margin-left:auto;">@_mode</span>
+    </div>
+    @foreach (var warning in _warnings.ToList())
+    {
+        <div class="collaboration-warning" role="status" style="display:flex;gap:0.75rem;align-items:center;padding:0.4rem 0.75rem;margin:0 0 0.5rem;border-left:3px solid var(--db-accent);background:var(--db-bg-elev-2);">
+            <span>@warning</span>
+            @if (OnReloadRequested.HasDelegate)
+            {
+                <button type="button" class="db-btn collaboration-reload" @onclick="() => ReloadAsync(warning)">Reload</button>
+            }
+            <button type="button" class="db-btn collaboration-dismiss" @onclick="() => _warnings.Remove(warning)">Dismiss</button>
+        </div>
+    }
+}
+
+@code {
+    private readonly List<string> _warnings = new();
+    private EditSessionView _session;
+    private ResourceLockResult _lock;
+    private string _lastChange;
+    private string _mode = string.Empty;
+    private bool _busy;
+    private HubConnection _hub;
+    private ICollaborationSignal _signal;
+    private CancellationTokenSource _stop;
+
+    /// <summary>The lowercase resource type (<c>pipeline</c>, <c>dashboard</c>).</summary>
+    [Parameter, EditorRequired]
+    public string ResourceType { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string ResourceId { get; set; } = string.Empty;
+
+    /// <summary>The word the warnings use for the resource: <c>pipeline</c>, <c>board</c>.</summary>
+    [Parameter]
+    public string ResourceLabel { get; set; } = "item";
+
+    /// <summary>
+    /// Whether the page offers collaboration here - its own write key. The collaboration key is the SERVER's to decide: a
+    /// module page cannot ask for another module's key (its permission list holds its own), and a refused join renders nothing.
+    /// </summary>
+    [Parameter]
+    public bool Enabled { get; set; }
+
+    [Parameter]
+    public int CurrentUserId { get; set; }
+
+    [CascadingParameter]
+    public PageState PageState { get; set; }
+
+    /// <summary>What the user may do instead of reloading, added to the saved-elsewhere warning - the pipeline editor's merge.</summary>
+    [Parameter]
+    public string SaveAdvice { get; set; } = string.Empty;
+
+    /// <summary>Someone else stored the resource: the page may mark itself stale.</summary>
+    [Parameter]
+    public EventCallback<CollaborationNotice> OnSavedElsewhere { get; set; }
+
+    /// <summary>The user asked to reload the resource after someone else saved it.</summary>
+    [Parameter]
+    public EventCallback OnReloadRequested { get; set; }
+
+    /// <summary>Whether the editor is in the resource's session - the pipeline editor then saves through the merge.</summary>
+    public bool IsJoined => _session is not null;
+
+    /// <summary>Whether the current user holds the edit lock.</summary>
+    public bool HoldsLock => _lock is { } held && held.HolderUserId == CurrentUserId && held.Acquired;
+
+    /// <summary>Where the user is editing (a step, a widget), told to the others. A no-op before the session is joined.</summary>
+    public async Task SetRegionAsync(string region)
+    {
+        if (_session is null || string.IsNullOrWhiteSpace(region))
+        {
+            return;
+        }
+
+        try
+        {
+            await CollaborationService.PresenceAsync(_session.Id, region);
+        }
+        catch (Exception)
+        {
+            // Presence is awareness, never a gate on editing.
+        }
+    }
+
+    /// <summary>Announces what the user changed - only a lock holder may; anyone else's announcement is simply not made.</summary>
+    public async Task AnnounceAsync(string descriptor)
+    {
+        if (_session is null || !HoldsLock || string.IsNullOrWhiteSpace(descriptor))
+        {
+            return;
+        }
+
+        try
+        {
+            if ((await CollaborationService.AnnounceAsync(_session.Id, descriptor)) is { Succeeded: true, Value: { } session })
+            {
+                _session = session;
+            }
+        }
+        catch (Exception)
+        {
+            // An announcement the server refused changes nothing the user made.
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // BL-212: with collaboration switched off for the installation - the default - the join answers 404, which a
+        // WebAssembly site's browser logged every time the editor or a board opened; the site says so, and nothing is asked.
+        if (!firstRender || !Enabled || string.IsNullOrEmpty(ResourceType) || string.IsNullOrEmpty(ResourceId)
+            || HostSwitches.IsOff(PageState?.Site, HostSwitches.Collaboration))
+        {
+            return;
+        }
+
+        try
+        {
+            var joined = await CollaborationService.JoinAsync(ResourceType, ResourceId);
+            if (!joined.Succeeded || joined.Value is null)
+            {
+                return; // switched off, no key, not editable: no collaboration here
+            }
+
+            _session = joined.Value;
+            _stop = new CancellationTokenSource();
+            _ = HeartbeatLoopAsync(_stop.Token);
+            await TakeLockAsync();
+            await ConnectAsync();
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            // Collaboration is an overlay on the editor, never a gate on it.
+            _session = null;
+        }
+    }
+
+    private async Task TakeLockAsync()
+    {
+        if (_session is null)
+        {
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var taken = await CollaborationService.AcquireAsync(Request());
+            if (taken.Succeeded)
+            {
+                _lock = taken.Value;
+                if (HoldsLock && _stop is { } stop)
+                {
+                    _ = RenewLoopAsync(stop.Token);
+                }
+            }
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // The heartbeat: renewed at half of what is left, so a lease two minutes long is renewed every minute.
+    private async Task RenewLoopAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested && HoldsLock)
+            {
+                var left = _lock.ExpiresUtc - DateTime.UtcNow;
+                await Task.Delay(TimeSpan.FromSeconds(Math.Clamp(left.TotalSeconds / 2, 5, 300)), cancellationToken);
+                var renewed = await CollaborationService.RenewAsync(Request());
+                await InvokeAsync(() =>
+                {
+                    _lock = renewed.Succeeded ? renewed.Value : _lock;
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // The editor closed.
+        }
+        catch (Exception)
+        {
+            // A failed heartbeat lets the lease lapse, which is what it is for.
+        }
+    }
+
+    // Presence lives on this heartbeat (increment 12): the sweep forgets a participant not heard from for two minutes, so a
+    // browser that crashed leaves no ghost; every half minute says "still here" and tells nobody.
+    private async Task HeartbeatLoopAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(30), cancellationToken);
+                if (_session is { } session)
+                {
+                    await CollaborationService.HeartbeatAsync(session.Id);
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // The editor closed.
+        }
+        catch (Exception)
+        {
+            // A missed heartbeat is at worst a presence the sweep forgets; the next join brings it back.
+        }
+    }
+
+    private async Task ConnectAsync()
+    {
+        if (OperatingSystem.IsBrowser())
+        {
+            try
+            {
+                _hub = new HubConnectionBuilder()
+                    .WithUrl(NavigationManager.ToAbsoluteUri(HubRoutes.Collaboration))
+                    .WithAutomaticReconnect()
+                    .Build();
+                _hub.On<CollaborationNotice>(CollaborationHubMethods.Changed, notice => InvokeAsync(() => OnNoticeAsync(notice)));
+                await _hub.StartAsync();
+                _mode = "live";
+                return;
+            }
+            catch (Exception)
+            {
+                await DisposeHubAsync(); // the transport is off or refused: poll
+            }
+        }
+        else if (Services.GetService(typeof(ICollaborationSignal)) is ICollaborationSignal signal)
+        {
+            // An Interactive Server circuit has no browser cookie to open the hub with: the host's in-process signal.
+            _signal = signal;
+            _signal.Changed += OnSignalled;
+            _mode = "live";
+            return;
+        }
+
+        _mode = "refreshing every few seconds";
+        if (_stop is { } stop)
+        {
+            _ = PollLoopAsync(stop.Token);
+        }
+    }
+
+    private void OnSignalled(string siteKey, CollaborationNotice notice)
+    {
+        if (SiteState?.Alias is not null && siteKey == SiteState.Alias.SiteKey)
+        {
+            _ = InvokeAsync(() => OnNoticeAsync(notice));
+        }
+    }
+
+    private async Task PollLoopAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+                await InvokeAsync(RefreshAsync);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // The editor closed.
+        }
+    }
+
+    private async Task OnNoticeAsync(CollaborationNotice notice)
+    {
+        if (notice is null || notice.ResourceType != ResourceType || notice.ResourceId != ResourceId || _session is null)
+        {
+            return;
+        }
+
+        await RefreshAsync();
+        if (notice.ByUserId != CurrentUserId)
+        {
+            if (notice.Kind == CollaborationNoticeKinds.Saved)
+            {
+                var text = $"{NameOf(notice.ByUserId)} saved this {ResourceLabel}. Reload to see their changes.{(string.IsNullOrWhiteSpace(SaveAdvice) ? string.Empty : " " + SaveAdvice)}";
+                _warnings.RemoveAll(existing => existing.Contains(" saved this ", StringComparison.Ordinal));
+                _warnings.Add(text);
+                await OnSavedElsewhere.InvokeAsync(notice);
+            }
+            else if (notice.Kind == CollaborationNoticeKinds.Change && _session.Changes.LastOrDefault() is { } change)
+            {
+                _lastChange = $"{NameOf(change.AuthorUserId)}: {change.Descriptor}";
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task RefreshAsync()
+    {
+        if (_session is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var session = await CollaborationService.SessionAsync(_session.Id);
+            if (session.Succeeded && session.Value is not null)
+            {
+                _session = session.Value;
+            }
+            else
+            {
+                // The session was closed (an administrator ended it, or it emptied): join again - a new one opens.
+                var joined = await CollaborationService.JoinAsync(ResourceType, ResourceId);
+                _session = joined.Succeeded ? joined.Value : null;
+            }
+
+            var held = await CollaborationService.LockAsync(ResourceType, ResourceId);
+            if (held.Succeeded)
+            {
+                var wasMine = HoldsLock;
+                _lock = held.Value;
+                if (wasMine && !HoldsLock)
+                {
+                    _warnings.Add($"Your edit lock on this {ResourceLabel} was taken over or lapsed.");
+                }
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            // Staleness, not an outage: the next notice or poll catches up.
+        }
+    }
+
+    private async Task ReloadAsync(string warning)
+    {
+        _warnings.Remove(warning);
+        await OnReloadRequested.InvokeAsync();
+    }
+
+    private string LockText() => _lock switch
+    {
+        null => "Nobody holds the edit lock.",
+        { } held when held.HolderUserId == CurrentUserId && held.Acquired => "You hold the edit lock.",
+        { } held => $"{(string.IsNullOrWhiteSpace(held.HolderDisplayName) ? NameOf(held.HolderUserId) : held.HolderDisplayName)} holds the edit lock - what you save is merged with their work.",
+    };
+
+    private string NameOf(int userId) =>
+        _session?.Participants.FirstOrDefault(participant => participant.UserId == userId)?.DisplayName
+        ?? (_lock is { } held && held.HolderUserId == userId ? held.HolderDisplayName : null)
+        ?? "Another editor";
+
+    private LockRequest Request() => new(ResourceType, ResourceId, LockScope.Resource);
+
+    private async Task DisposeHubAsync()
+    {
+        if (_hub is not null)
+        {
+            try { await _hub.DisposeAsync(); } catch { /* best effort */ }
+            _hub = null;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        var stop = _stop;
+        _stop = null;
+        stop?.Cancel();
+        stop?.Dispose();
+        if (_signal is not null)
+        {
+            _signal.Changed -= OnSignalled;
+            _signal = null;
+        }
+
+        await DisposeHubAsync();
+        var (session, holding) = (_session, HoldsLock);
+        _session = null;
+        _lock = null;
+        if (session is not null)
+        {
+            try
+            {
+                if (holding)
+                {
+                    await CollaborationService.ReleaseAsync(Request());
+                }
+
+                await CollaborationService.LeaveAsync(session.Id);
+            }
+            catch (Exception)
+            {
+                // Leaving is best-effort: the lease lapses and the sweep releases it.
+            }
+        }
+    }
+}

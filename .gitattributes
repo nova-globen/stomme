@@ -1,0 +1,83 @@
+# Line endings and diff behaviour.
+#
+# WHY THIS FILE MATTERS HERE. Until 2026-09-19 this file held two rules and nothing else, and
+# `core.autocrlf` was unset locally and globally - so whether a checkout wrote CRLF or LF was decided by
+# whichever tool last wrote each file. The whole tree flipped at once more than once: 1,695 files showed as
+# modified while `git diff --ignore-all-space` reported ZERO, and a fast-forward merge aborted rather than
+# overwrite them. The rules below settle it: the repository stores text as LF, and a Windows working tree
+# gets CRLF, which is what .editorconfig (`end_of_line = crlf`) asks for.
+#
+# IF A WHOLE-TREE DIFF EVER APPEARS AGAIN: check `git diff --ignore-all-space --name-only` first. Empty
+# means it is line endings only and `git checkout -- .` discards it safely; non-empty means it is real work.
+
+# Everything Git detects as text is normalised to LF in the index and checked out native (CRLF on Windows).
+* text=auto
+
+# Source and content. Declared explicitly so a new extension cannot depend on Git's guess.
+*.cs            text diff=csharp
+*.razor         text
+*.cshtml        text
+*.csproj        text
+*.slnx          text
+*.props         text
+*.targets       text
+*.json          text
+*.jsonc         text
+*.xml           text
+*.config        text
+*.yml           text
+*.yaml          text
+*.md            text
+*.txt           text
+*.css           text
+*.js            text
+*.html          text
+*.resx          text
+*.editorconfig  text
+*.nuspec        text
+*.proto         text
+*.sql           text
+
+# Files whose interpreter cares about the ending, whatever the platform.
+*.sh            text eol=lf
+.githooks/*     text eol=lf
+Dockerfile      text eol=lf
+*.dockerfile    text eol=lf
+.gitattributes  text eol=lf
+.gitignore      text eol=lf
+*.cmd           text eol=crlf
+*.bat           text eol=crlf
+*.ps1           text eol=crlf
+*.psm1          text eol=crlf
+
+# The packaged templates ship shell scripts that must stay LF wherever they are unpacked.
+Stomme.Server/wwwroot/Modules/Templates/External/Package/*.sh eol=lf
+Stomme.Server/wwwroot/Themes/Templates/External/Package/*.sh eol=lf
+
+# Binary: never normalised, never line-diffed. A normalised binary is a corrupted binary.
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.gif           binary
+*.ico           binary
+*.webp          binary
+*.svgz          binary
+*.woff          binary
+*.woff2         binary
+*.ttf           binary
+*.eot           binary
+*.otf           binary
+*.pdf           binary
+*.zip           binary
+*.gz            binary
+*.7z            binary
+*.nupkg         binary
+*.snupkg        binary
+*.dll           binary
+*.exe           binary
+*.pdb           binary
+*.snk           binary
+*.pfx           binary
+*.db            binary
+*.mp4           binary
+*.webm          binary

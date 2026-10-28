@@ -1,0 +1,403 @@
+using Stomme.Models;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using System;
+using Stomme.Documentation;
+using Stomme.Infrastructure;
+using Stomme.Repository;
+using Stomme.Security;
+using Microsoft.AspNetCore.Http;
+using Stomme.Enums;
+using Stomme.Shared;
+using System.Globalization;
+using Stomme.Extensions;
+using Stomme.Managers;
+using Microsoft.AspNetCore.Hosting;
+
+namespace Stomme.Services
+{
+    [PrivateApi("Don't show in the documentation, as everything should use the Interface")]
+    public class ServerSiteService : ISiteService
+    {
+        private readonly ISiteRepository _sites;
+        private readonly ISiteGroupMemberRepository _siteGroupMembers;
+        private readonly IAliasRepository _aliases;
+        private readonly IPageRepository _pages;
+        private readonly IThemeRepository _themes;
+        private readonly IPageModuleRepository _pageModules;
+        private readonly IModuleDefinitionRepository _moduleDefinitions;
+        private readonly ILanguageRepository _languages;
+        private readonly IUserManager _userManager;
+        private readonly IUserPermissions _userPermissions;
+        private readonly ISettingRepository _settings;
+        private readonly ITenantManager _tenantManager;
+        private readonly ISyncManager _syncManager;
+        private readonly IConfigManager _configManager;
+        private readonly ILogManager _logger;
+        private readonly ICacheManager _cache;
+        private readonly IHttpContextAccessor _accessor;
+        private readonly IWebHostEnvironment _environment;
+        private readonly string _private = "[PRIVATE]";
+
+        public ServerSiteService(ISiteRepository sites, ISiteGroupMemberRepository siteGroupMembers, IAliasRepository aliases, IPageRepository pages, IThemeRepository themes, IPageModuleRepository pageModules, IModuleDefinitionRepository moduleDefinitions, ILanguageRepository languages, IUserManager userManager, IUserPermissions userPermissions, ISettingRepository settings, ITenantManager tenantManager, ISyncManager syncManager, IConfigManager configManager, ILogManager logger, ICacheManager cache, IHttpContextAccessor accessor, IWebHostEnvironment environment)
+        {
+            _environment = environment;
+            _sites = sites;
+            _siteGroupMembers = siteGroupMembers;
+            _aliases = aliases;
+            _pages = pages;
+            _themes = themes;
+            _pageModules = pageModules;
+            _moduleDefinitions = moduleDefinitions;
+            _languages = languages;
+            _userManager = userManager;
+            _userPermissions = userPermissions;
+            _settings = settings;
+            _tenantManager = tenantManager;
+            _syncManager = syncManager;
+            _configManager = configManager;
+            _logger = logger;
+            _cache = cache;
+            _accessor = accessor;
+        }
+
+        public async Task<List<Site>> GetSitesAsync()
+        {
+            List<Site> sites = new List<Site>();
+            if (_accessor.HttpContext.User.IsInRole(RoleNames.Host))
+            {
+                sites = (await _sites.GetSitesAsync()).ToList();
+            }
+            return sites;
+        }
+
+        public async Task<Site> GetSiteAsync(int siteId)
+        {
+            var alias = await _tenantManager.GetAliasAsync();
+            var site = await _cache.GetCacheAsync(alias, "Site", async entry =>
+            {
+                return await GetSiteInternalAsync(siteId);
+            });
+
+            // clone object so that cache is not mutated
+            site = site.Clone();
+
+            // trim site settings based on user permissions
+            site.Settings = site.Settings
+                .Where(item => !item.Value.StartsWith(_private) || _accessor.HttpContext.User.IsInRole(RoleNames.Admin))
+                .ToDictionary(setting => setting.Key, setting => setting.Value.Replace(_private, ""));
+
+            // trim pages based on user permissions
+            var pages = new List<Page>();
+            foreach (Page page in site.Pages)
+            {
+                if (!page.IsDeleted && await _userPermissions.IsAuthorizedAsync(_accessor.HttpContext.User, PermissionNames.View, page.PermissionList) && (Utilities.IsEffectiveAndNotExpired(page.EffectiveDate, page.ExpiryDate) || await _userPermissions.IsAuthorizedAsync(_accessor.HttpContext.User, PermissionNames.Edit, page.PermissionList)))
+                {
+                    // hoisted out of the Where predicate below, which cannot await; the result is a pure
+                    // function of the user and this page's PermissionList, so it is constant across the settings
+                    var canEditPage = await _userPermissions.IsAuthorizedAsync(_accessor.HttpContext.User, PermissionNames.Edit, page.PermissionList);
+                    page.Settings = page.Settings
+                        .Where(item => !item.Value.StartsWith(_private) || canEditPage)
+                        .ToDictionary(setting => setting.Key, setting => setting.Value.Replace(_private, ""));
+                    pages.Add(page);
+                }
+            }
+            site.Pages = pages;
+
+            // get language display name for user
+            foreach (Language language in site.Languages)
+            {
+                language.Name = CultureInfo.GetCultureInfo(language.Code).DisplayName;
+            }
+            site.Languages = site.Languages.OrderBy(item => item.Name).ToList();
+
+            // get user
+            if (_accessor.HttpContext.User.IsAuthenticated())
+            {
+                site.User = await _userManager.GetUserAsync(_accessor.HttpContext.User.UserId(), site.SiteId);
+            }
+
+            return site;
+        }
+
+        private async Task<Site> GetSiteInternalAsync(int siteid)
+        {
+            var alias = await _tenantManager.GetAliasAsync();
+            var site = await _sites.GetSiteAsync(siteid);
+            if (site != null && site.SiteId == alias.SiteId)
+            {
+                // site settings
+                site.Settings = (await _settings.GetSettingsAsync(EntityNames.Site, site.SiteId, EntityNames.Host, -1))
+                    .ToDictionary(setting => setting.SettingName, setting => (setting.IsPrivate ? _private : "") + setting.SettingValue);
+
+                // populate file extensions 
+                site.ImageFiles = site.Settings.ContainsKey("ImageFiles") && !string.IsNullOrEmpty(site.Settings["ImageFiles"])
+                    ? site.Settings["ImageFiles"] : Constants.ImageFiles;
+                site.UploadableFiles = site.Settings.ContainsKey("UploadableFiles") && !string.IsNullOrEmpty(site.Settings["UploadableFiles"])
+                    ? site.Settings["UploadableFiles"] : Constants.UploadableFiles;
+
+                // pages
+                List<Setting> settings = (await _settings.GetSettingsAsync(EntityNames.Page)).ToList();
+                site.Pages = new List<Page>();
+                foreach (Page page in await _pages.GetPagesAsync(site.SiteId))
+                {
+                    page.Settings = settings.Where(item => item.EntityId == page.PageId)
+                        .ToDictionary(setting => setting.SettingName, setting => (setting.IsPrivate ? _private : "") + setting.SettingValue);
+                    site.Pages.Add(page);
+                }
+
+                // framework modules
+                var modules = await GetPageModulesAsync(site.SiteId);
+                site.Settings.Add(Constants.AdminDashboardModule, modules.FirstOrDefault(item => item.ModuleDefinitionName == Constants.AdminDashboardModule).ModuleId.ToString());
+                site.Settings.Add(Constants.PageManagementModule, modules.FirstOrDefault(item => item.ModuleDefinitionName == Constants.PageManagementModule).ModuleId.ToString());
+
+                // languages
+                site.Languages = await GetLanguagesAsync(site.SiteId, alias.TenantId);
+
+                // themes
+                site.Themes = _themes.FilterThemes((await _themes.GetThemesAsync(site.SiteId)).ToList());
+
+                // the ?v= on the site's own static assets (BL-228): the content of those files
+                site.Fingerprint = SiteAssetFingerprint.Of(_environment.WebRootFileProvider);
+
+                // D70: surface the installation-wide external-scheme gates (SAML2 / Windows-Negotiate) into the
+                // site settings that travel to the Blazor client, so the login UI can show a scheme's button ONLY
+                // when it is enabled. These are appsettings (installation-wide, config-gated) which the client
+                // cannot read directly; the per-site OIDC/OAuth consumer already reaches the login UI this way via
+                // its ExternalLogin:* DB settings, so this reuses the SAME channel rather than adding an HTTP
+                // round-trip. The explicit challenge endpoints (/pages/saml-login, /pages/windows-login) still
+                // gate on the scheme being registered, so a stale/true flag cannot force a challenge — the worst
+                // case is a button that returns 403.
+                site.Settings["Saml2:Enabled"] = _configManager.GetSetting("Saml2", "Enabled", false).ToString().ToLowerInvariant();
+                site.Settings["Saml2:ProviderName"] = _configManager.GetSetting("Saml2", "ProviderName", "SAML");
+                site.Settings["WindowsAuth:Enabled"] = _configManager.GetSetting("WindowsAuth", "Enabled", false).ToString().ToLowerInvariant();
+                site.Settings["WindowsAuth:ProviderName"] = _configManager.GetSetting("WindowsAuth", "ProviderName", "Windows");
+
+                // BL-212: the switches client components read before they call the API they guard, by the same channel (see
+                // HostSwitches). With one off - the default - the API answers 404 and a WebAssembly site's browser logged it.
+                foreach (var section in HostSwitches.Published)
+                {
+                    site.Settings[HostSwitches.SettingName(section)] = _configManager.GetSetting(section, "Enabled", false).ToString().ToLowerInvariant();
+                }
+
+                // set tenant
+                site.TenantId = alias.TenantId;
+            }
+            else
+            {
+                if (site != null)
+                {
+                    _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Site Get Attempt {SiteId}", siteid);
+                    site = null;
+                }
+            }
+            return site;
+        }
+
+        public async Task<Site> AddSiteAsync(Site site)
+        {
+            if (_accessor.HttpContext.User.IsInRole(RoleNames.Host))
+            {
+                site = await _sites.AddSiteAsync(site);
+                await _syncManager.AddSyncEventAsync(await _tenantManager.GetAliasAsync(), EntityNames.Site, site.SiteId, SyncEventActions.Create);
+                _logger.Log(site.SiteId, LogLevel.Information, this, LogFunction.Create, "Site Added {Site}", site);
+            }
+            else
+            {
+                site = null;
+            }
+            return site;
+        }
+
+        public async Task<Site> UpdateSiteAsync(Site site)
+        {
+            if (_accessor.HttpContext.User.IsInRole(RoleNames.Admin))
+            {
+                var alias = await _tenantManager.GetAliasAsync();
+                var current = await _sites.GetSiteAsync(site.SiteId, false);
+                if (site.SiteId == alias.SiteId && current != null)
+                {
+                    site = await _sites.UpdateSiteAsync(site);
+
+                    await _syncManager.AddSyncEventAsync(alias, EntityNames.Site, site.SiteId, SyncEventActions.Update);
+
+                    string action = (current.RenderMode != site.RenderMode || current.Runtime != site.Runtime) ? SyncEventActions.Reload : SyncEventActions.Refresh;
+                    if (current.CultureCode != site.CultureCode)
+                    {
+                        // when a culture code changes, all sites in the tenant need to be refreshed
+                        foreach (var siteId in (await _sites.GetSitesAsync()).Select(item => item.SiteId))
+                        {
+                            await _syncManager.AddSyncEventAsync(alias, EntityNames.Site, siteId, action);
+                        }
+                    }
+                    else
+                    {
+                        // refresh current site
+                        await _syncManager.AddSyncEventAsync(alias, EntityNames.Site, site.SiteId, action);
+                    }
+
+                    _logger.Log(site.SiteId, LogLevel.Information, this, LogFunction.Update, "Site Updated {Site}", site);
+                }
+                else
+                {
+                    _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Site Put Attempt {Site}", site);
+                    site = null;
+                }
+            }
+            else
+            {
+                site = null;
+            }
+            return site;
+        }
+
+        public async Task DeleteSiteAsync(int siteId)
+        {
+            if (_accessor.HttpContext.User.IsInRole(RoleNames.Host))
+            {
+                var alias = await _tenantManager.GetAliasAsync();
+                var site = await _sites.GetSiteAsync(siteId);
+                if (site != null && site.SiteId == alias.SiteId)
+                {
+                    await _sites.DeleteSiteAsync(siteId);
+                    await _syncManager.AddSyncEventAsync(alias, EntityNames.Site, site.SiteId, SyncEventActions.Delete);
+                    await _syncManager.AddSyncEventAsync(alias, EntityNames.Site, site.SiteId, SyncEventActions.Refresh);
+                    _logger.Log(siteId, LogLevel.Information, this, LogFunction.Delete, "Site Deleted {SiteId}", siteId);
+                }
+                else
+                {
+                    _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Site Delete Attempt {SiteId}", siteId);
+                }
+            }
+        }
+
+        public async Task<List<Module>> GetModulesAsync(int siteId, int pageId)
+        {
+            var alias = await _tenantManager.GetAliasAsync();
+            var modules = await _cache.GetCacheAsync(alias, "Modules", async entry =>
+            {
+                return await GetPageModulesAsync(siteId);
+            });
+
+            // clone object so that cache is not mutated
+            modules = modules.ConvertAll(module => module.Clone());
+
+            // trim modules for current page based on user permissions
+            var pagemodules = new List<Module>();
+            foreach (Module module in modules.Where(item => (item.PageId == pageId || pageId == -1) && !item.IsDeleted))
+            {
+                // the View check moved out of the Where predicate above, which cannot await; skipping the
+                // unauthorized module here filters exactly the same set, in the same order
+                if (!await _userPermissions.IsAuthorizedAsync(_accessor.HttpContext.User, PermissionNames.View, module.PermissionList))
+                {
+                    continue;
+                }
+
+                if (Utilities.IsEffectiveAndNotExpired(module.EffectiveDate, module.ExpiryDate) || await _userPermissions.IsAuthorizedAsync(_accessor.HttpContext.User, PermissionNames.Edit, module.PermissionList))
+                {
+                    // hoisted out of the Where predicate below, which cannot await; the result is a pure
+                    // function of the user and this module's PermissionList, so it is constant across the settings
+                    var canEditModule = await _userPermissions.IsAuthorizedAsync(_accessor.HttpContext.User, PermissionNames.Edit, module.PermissionList);
+                    module.Settings = module.Settings
+                        .Where(item => !item.Value.StartsWith(_private) || canEditModule)
+                        .ToDictionary(setting => setting.Key, setting => setting.Value.Replace(_private, ""));
+                    pagemodules.Add(module);
+                }
+            }
+            return pagemodules;
+        }
+
+        private async Task<List<Module>> GetPageModulesAsync(int siteId)
+        {
+            List<ModuleDefinition> moduledefinitions = (await _moduleDefinitions.GetModuleDefinitionsAsync(siteId)).ToList();
+            var settings = (await _settings.GetSettingsAsync(EntityNames.Module)).ToList();
+            var modules = new List<Module>();
+
+            foreach (PageModule pagemodule in await _pageModules.GetPageModulesAsync(siteId))
+            {
+                Module module = new Module
+                {
+                    SiteId = pagemodule.Module.SiteId,
+                    ModuleDefinitionName = pagemodule.Module.ModuleDefinitionName,
+                    AllPages = pagemodule.Module.AllPages,
+                    PermissionList = pagemodule.Module.PermissionList,
+                    CreatedBy = pagemodule.Module.CreatedBy,
+                    CreatedOn = pagemodule.Module.CreatedOn,
+                    ModifiedBy = pagemodule.Module.ModifiedBy,
+                    ModifiedOn = pagemodule.Module.ModifiedOn,
+                    DeletedBy = pagemodule.DeletedBy,
+                    DeletedOn = pagemodule.DeletedOn,
+                    IsDeleted = pagemodule.IsDeleted,
+
+                    PageModuleId = pagemodule.PageModuleId,
+                    ModuleId = pagemodule.ModuleId,
+                    PageId = pagemodule.PageId,
+                    Title = pagemodule.Title,
+                    Pane = pagemodule.Pane,
+                    Order = pagemodule.Order,
+                    ContainerType = pagemodule.ContainerType,
+                    EffectiveDate = pagemodule.EffectiveDate,
+                    ExpiryDate = pagemodule.ExpiryDate,
+                    Header = pagemodule.Header,
+                    Footer = pagemodule.Footer,
+
+                    ModuleDefinition = _moduleDefinitions.FilterModuleDefinition(moduledefinitions.Find(item => item.ModuleDefinitionName == pagemodule.Module.ModuleDefinitionName)),
+
+                    Settings = settings.Where(item => item.EntityId == pagemodule.ModuleId)
+                        .ToDictionary(setting => setting.SettingName, setting => (setting.IsPrivate ? _private : "") + setting.SettingValue)
+                };
+
+                modules.Add(module);
+            }
+
+            return modules.OrderBy(item => item.PageId).ThenBy(item => item.Pane).ThenBy(item => item.Order).ToList();
+        }
+
+        private async Task<List<Language>> GetLanguagesAsync(int siteId, int tenantId)
+        {
+            var languages = new List<Language>();
+
+            var siteGroupMembers = await _siteGroupMembers.GetSiteGroupMembersAsync();
+            if (siteGroupMembers.Any(item => item.SiteId == siteId && item.SiteGroup.Type == SiteGroupTypes.Localization))
+            {
+                // site is part of a localized site group - get all languages from the site group
+                var sites = (await _sites.GetSitesAsync()).ToList();
+                var aliases = (await _aliases.GetAliasesAsync()).ToList();
+
+                foreach (var siteGroupId in siteGroupMembers.Where(item => item.SiteId == siteId && item.SiteGroup.Type == SiteGroupTypes.Localization).Select(item => item.SiteGroupId).Distinct().ToList())
+                {
+                    foreach (var siteGroupMember in siteGroupMembers.Where(item => item.SiteGroupId == siteGroupId))
+                    {
+                        var site = sites.FirstOrDefault(item => item.SiteId == siteGroupMember.SiteId);
+                        if (site != null && !string.IsNullOrEmpty(site.CultureCode))
+                        {
+                            var alias = aliases.FirstOrDefault(item => item.SiteId == siteGroupMember.SiteId && item.TenantId == tenantId && item.IsDefault);
+                            if (alias != null)
+                            {
+                                languages.Add(new Language { Code = site.CultureCode, Name = "", AliasName = alias.Name, IsDefault = false });
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // use site languages
+                languages = (await _languages.GetLanguagesAsync(siteId)).ToList();
+                var defaultCulture = CultureInfo.GetCultureInfo(Constants.DefaultCulture);
+                if (!languages.Exists(item => item.Code == defaultCulture.Name))
+                {
+                    languages.Add(new Language { Code = defaultCulture.Name, Name = "", Version = Constants.Version, IsDefault = !languages.Any(l => l.IsDefault) });
+                }
+            }
+
+            return languages;
+        } 
+
+        [Obsolete("This method is deprecated.", false)]
+        public void SetAlias(Alias alias)
+        {
+        }
+    }
+}

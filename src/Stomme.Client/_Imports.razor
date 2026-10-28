@@ -1,0 +1,38 @@
+@using System
+@using System.Linq
+@using System.Collections.Generic
+@using System.Net.Http
+@using System.Net.Http.Json
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.Extensions.Localization
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.FluentUI.AspNetCore.Components
+@* Disambiguate Stomme's module message enum from FluentUI's MessageType (both now in scope). *@
+@using MessageType = Stomme.Modules.MessageType
+@* FluentUI 5 adds its own IThemeService, INotificationService and Theme to the same scope (BL-192). *@
+@using IThemeService = Stomme.Services.IThemeService
+@using INotificationService = Stomme.Services.INotificationService
+@using Theme = Stomme.Models.Theme
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+
+@using Stomme.Client
+@using Stomme.Models
+@using Stomme.Modules
+@using Stomme.Modules.Controls
+@using Stomme.Providers
+@using Stomme.Security
+@using Stomme.Services
+@using Stomme.Shared
+@using Stomme.Themes
+@using Stomme.Themes.Controls
+@using Stomme.UI
+@using Stomme.Enums
+@using Stomme.Installer
+@using Stomme.Interfaces 
+@using Stomme.Extensions

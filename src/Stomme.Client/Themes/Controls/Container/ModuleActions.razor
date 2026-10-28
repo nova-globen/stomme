@@ -1,0 +1,32 @@
+@namespace Stomme.Themes.Controls
+@inherits ContainerBase
+@attribute [StommeIgnore]
+
+@if (PageState.EditMode && UserSecurity.IsAuthorized(PageState.User, PermissionNames.Edit, PageState.Page.PermissionList) && PageState.Action == Constants.DefaultAction)
+{
+    @if (PageState.RenderMode == RenderModes.Interactive)
+    {
+        <ModuleActionsInteractive PageState="@_pageState" ModuleState="@ModuleState" />
+    }
+    else
+    {
+        <ModuleActionsInteractive PageState="@_pageState" ModuleState="@ModuleState" @rendermode="@InteractiveRenderMode.GetInteractiveRenderMode(PageState.Site.Runtime, false)" />
+    }
+}
+
+@code {
+    private PageState _pageState;
+
+    protected override void OnParametersSet()
+    {
+        // trim PageState to mitigate page bloat caused by Blazor serializing/encrypting state when crossing render mode boundaries
+        // only include properties required by the ModuleActionsInteractive component
+        _pageState = new PageState
+        {
+            Alias = PageState.Alias,
+            Page = PageState.Page,
+            User = PageState.User,
+            EditMode = PageState.EditMode
+        };
+    }
+}

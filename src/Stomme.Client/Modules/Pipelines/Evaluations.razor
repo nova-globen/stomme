@@ -1,0 +1,391 @@
+@namespace Stomme.Modules.Pipelines
+@inherits ModuleBase
+@implements IDisposable
+@inject IPipelinesService PipelinesService
+
+@*
+    BL-229 - n8n's Evaluations: a pipeline's published version run over a data table's rows as test cases - each row a run that
+    starts at the pipeline's "When evaluating" step with the row - and what its Evaluation steps record per row (metrics,
+    averaged; outputs), newest evaluation first. A running evaluation is observed, never awaited: the page re-reads itself every
+    two seconds through InvokeAsync, on the circuit's own dispatcher, while one runs.
+*@
+
+<PageTitle>Evaluations</PageTitle>
+
+@if (!IsAuthorizedPermission(PipelinesPermissions.View))
+{
+    <p class="db-pipelines-denied" style="color:var(--db-text-2);">You do not have access to pipelines on this site.</p>
+}
+else if (string.IsNullOrEmpty(_definitionId))
+{
+    <p style="margin:0;color:var(--db-text-2);">No pipeline was named. <a href="@NavigateUrl()">Back to the pipelines.</a></p>
+}
+else
+{
+    <div class="db-pipeline-evaluations" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 id="pipelines-evaluations-title" style="margin:0;flex:1 1 auto;">@(string.IsNullOrEmpty(_pipeline?.Name) ? "Evaluations" : "Evaluations of " + _pipeline.Name)</h3>
+            <a id="pipelines-back-link" class="db-btn" href="@NavigateUrl()">Pipelines</a>
+            <a id="pipelines-evaluations-editor" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + Uri.EscapeDataString(_definitionId))">Open in the editor</a>
+            <button id="pipelines-evaluations-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+        <p style="margin:0;color:var(--db-text-2);">Runs the published pipeline once per row of a data table - each run starts at its <strong>When evaluating</strong> step with the row - and averages what its <strong>Evaluation</strong> steps record. Use <strong>If evaluating</strong> to skip what a test case must not do.</p>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p id="pipelines-error" role="alert" style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+
+        @if (IsAuthorizedPermission(PipelinesPermissions.Run))
+        {
+            <div id="pipelines-evaluations-new" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                @if (_tables is { Count: 0 })
+                {
+                    <span style="color:var(--db-text-2);">The test cases are a data table's rows - <a href="@NavigateUrl(ModuleState.ModuleId, "Tables")">make one</a> first.</span>
+                }
+                else
+                {
+                    <label for="pipelines-evaluations-table">Test cases</label>
+                    <select id="pipelines-evaluations-table" class="db-input" style="width:auto;" value="@_tableId" @onchange="e => _tableId = e.Value?.ToString() ?? string.Empty">
+                        <option value="">(choose a data table)</option>
+                        @foreach (var table in _tables ?? new List<PipelineSiteTableView>())
+                        {
+                            <option value="@table.Id">@table.Name</option>
+                        }
+                    </select>
+                    <label for="pipelines-evaluations-rows">Rows</label>
+                    <input id="pipelines-evaluations-rows" type="number" class="db-input" style="width:6rem;" min="1" max="@PipelineEvaluations.MaxRows" value="@_maxRows" @onchange="e => _maxRows = int.TryParse(e.Value?.ToString(), out var rows) ? rows : PipelineEvaluations.MaxRows" />
+                    <button id="pipelines-evaluations-start" type="button" class="db-btn" @onclick="StartAsync" disabled="@(_busy || string.IsNullOrEmpty(_tableId))">Start the evaluation</button>
+                }
+            </div>
+        }
+
+        @if (_evaluations is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+        }
+        else if (_evaluations.Count == 0)
+        {
+            <p id="pipelines-evaluations-none" style="margin:0;color:var(--db-text-2);">No evaluations yet.</p>
+        }
+        else
+        {
+            <div style="overflow-x:auto;">
+                <table class="db-pipeline-evaluations-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Started (UTC)</th>
+                            <th style="text-align:left;">By</th>
+                            <th style="text-align:left;">Test cases</th>
+                            <th style="text-align:left;">Version</th>
+                            <th style="text-align:left;">State</th>
+                            <th style="text-align:left;">Averages</th>
+                            <th style="width:1px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var evaluation in _evaluations)
+                        {
+                            <tr class="@(evaluation.Id == _open?.Id ? "is-active" : "")">
+                                <td>@evaluation.StartedOnUtc.ToString("u")</td>
+                                <td>@(evaluation.StartedBy ?? "—")</td>
+                                <td>@(evaluation.TableName ?? "—")</td>
+                                <td>@evaluation.Version</td>
+                                <td class="db-pipeline-evaluations-state">@StateOf(evaluation)</td>
+                                <td class="db-pipeline-evaluations-averages">@Averages(evaluation.Averages)</td>
+                                <td style="white-space:nowrap;">
+                                    <button type="button" class="db-btn" @onclick="() => OpenAsync(evaluation.Id)" disabled="@_busy">Open</button>
+                                    @if (evaluation.State == PipelineEvaluations.Running && IsAuthorizedPermission(PipelinesPermissions.Run))
+                                    {
+                                        <button type="button" class="db-btn" @onclick="() => CancelAsync(evaluation.Id)" disabled="@_busy">Cancel</button>
+                                    }
+                                    else if (evaluation.State != PipelineEvaluations.Running && IsAuthorizedPermission(PipelinesPermissions.Manage))
+                                    {
+                                        <ActionDialog Header="Delete Evaluation" Message="Delete this evaluation and what its rows recorded? Its runs stay. It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn pipelines-evaluation-delete" ConfirmClass="db-btn pipelines-evaluation-delete-confirm" OnClick="@(async () => { await DeleteAsync(evaluation.Id); StateHasChanged(); })" Disabled="@_busy" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (_open is not null)
+        {
+            <section id="pipelines-evaluation" style="display:flex;flex-direction:column;gap:0.5rem;">
+                <h4 style="margin:0;">@(_open.TableName ?? "The test cases") - @StateOf(_open)</h4>
+                @{ var earlier = (_evaluations ?? new List<PipelineEvaluationView>()).Where(each => each.Id != _open.Id && each.State != PipelineEvaluations.Running).ToList(); }
+                @if (earlier.Count > 0)
+                {
+                    @* BL-229 - n8n's comparison of evaluation runs: the previous one by default, any other on request. *@
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                        <label for="pipelines-evaluation-compare">Compare with</label>
+                        <select id="pipelines-evaluation-compare" class="db-input" style="width:auto;" value="@(_compare?.Id ?? "")" @onchange="e => CompareWithAsync(e.Value?.ToString())">
+                            <option value="">(nothing)</option>
+                            @foreach (var other in earlier)
+                            {
+                                <option value="@other.Id">@other.StartedOnUtc.ToString("u") · @(other.TableName ?? "?") · @Averages(other.Averages)</option>
+                            }
+                        </select>
+                    </div>
+                }
+                @if (_open.Averages.Count > 0 || _compare is not null)
+                {
+                    <p id="pipelines-evaluation-averages" style="margin:0;">Averages: <EvaluationMetrics Now="_open.Averages" Before="_compare?.Averages" /></p>
+                }
+                <div style="overflow-x:auto;">
+                    <table class="db-pipeline-evaluation-rows" style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:right;">#</th>
+                                <th style="text-align:left;">Test case</th>
+                                <th style="text-align:left;">State</th>
+                                <th style="text-align:left;">Metrics</th>
+                                <th style="text-align:left;">Outputs</th>
+                                <th style="width:1px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var index = 0; index < _open.Rows.Count; index++)
+                            {
+                                var row = _open.Rows[index];
+                                <tr>
+                                    <td style="text-align:right;">@(index + 1)</td>
+                                    <td class="db-pipeline-evaluation-case">@Short(string.Join(", ", row.Values.Select(pair => pair.Key + ": " + pair.Value)))</td>
+                                    <td class="db-pipeline-evaluation-state">@row.State@(string.IsNullOrEmpty(row.Error) ? "" : " - " + row.Error)</td>
+                                    <td class="db-pipeline-evaluation-metrics"><EvaluationMetrics Now="row.Metrics" Before="_compare?.Rows.FirstOrDefault(earlierRow => earlierRow.RowId == row.RowId)?.Metrics" /></td>
+                                    <td class="db-pipeline-evaluation-outputs">
+                                        @foreach (var output in row.Outputs)
+                                        {
+                                            <div><strong>@output.Key</strong>: <span style="white-space:pre-wrap;">@Short(output.Value)</span></div>
+                                        }
+                                    </td>
+                                    <td style="white-space:nowrap;">
+                                        @if (!string.IsNullOrEmpty(row.RunId) && row.State != PipelineEvaluations.RowRunning)
+                                        {
+                                            <a class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + Uri.EscapeDataString(row.RunId))">Run</a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        }
+    </div>
+}
+
+@code {
+    private string _definitionId;
+    private PipelineDetail _pipeline;
+    private List<PipelineSiteTableView> _tables;
+    private List<PipelineEvaluationView> _evaluations;
+    private PipelineEvaluationView _open;
+    private PipelineEvaluationView _compare;
+    private bool _compareChosen;
+    private string _tableId = "";
+    private int _maxRows = PipelineEvaluations.MaxRows;
+    private string _error = "";
+    private bool _busy;
+    private ITimer _timer;
+
+    /// <summary>Between two reads while an evaluation runs.</summary>
+    [Parameter]
+    public TimeSpan PollInterval { get; set; } = TimeSpan.FromSeconds(2);
+
+    /// <summary>The clock the poll runs on: the system's, or a test's that fires each poll itself.</summary>
+    [Parameter]
+    public TimeProvider Clock { get; set; } = TimeProvider.System;
+
+    public override string Title => "Evaluations";
+
+    // The module's stylesheet: declared here too, so the page opened directly is styled.
+    public override List<Resource> Resources => new List<Resource>
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Pipelines/pipelines-editor.css" },
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(PipelinesPermissions.View))
+        {
+            var definitionId = PageState.QueryString.ContainsKey("definition") ? PageState.QueryString["definition"] : null;
+            if (definitionId != _definitionId)
+            {
+                _definitionId = definitionId;
+                _open = null;
+                _pipeline = string.IsNullOrEmpty(definitionId) ? null : await PipelinesService.GetPipelineAsync(definitionId);
+                _tables = IsAuthorizedPermission(PipelinesPermissions.Run) ? await PipelinesService.GetSiteTablesAsync() ?? new List<PipelineSiteTableView>() : null;
+            }
+
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        if (string.IsNullOrEmpty(_definitionId))
+        {
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            _evaluations = await PipelinesService.GetEvaluationsAsync(_definitionId) ?? new List<PipelineEvaluationView>();
+            if (_open is not null)
+            {
+                _open = await PipelinesService.GetEvaluationAsync(_open.Id);
+                await DefaultCompareAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Pipeline Evaluations {Error}", ex.Message);
+            _error = "The evaluations could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        Observe();
+    }
+
+    private async Task StartAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            var started = await PipelinesService.StartEvaluationAsync(_definitionId, new PipelineEvaluationRequest { TableId = _tableId, MaxRows = _maxRows });
+            _open = started;
+            _compare = null;
+            _compareChosen = false;
+        }
+        catch (Exception ex)
+        {
+            _error = "The evaluation could not start: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task OpenAsync(string id)
+    {
+        _error = "";
+        _open = await PipelinesService.GetEvaluationAsync(id);
+        _compare = null;
+        _compareChosen = false;
+        await DefaultCompareAsync();
+        Observe();
+    }
+
+    // The author's choice of what to compare with; "(nothing)" stays nothing.
+    private async Task CompareWithAsync(string id)
+    {
+        _compareChosen = true;
+        _compare = string.IsNullOrEmpty(id) ? null : await PipelinesService.GetEvaluationAsync(id);
+    }
+
+    // Unless the author chose: the finished evaluation just before the one open - what n8n compares an evaluation run with.
+    private async Task DefaultCompareAsync()
+    {
+        if (_compareChosen || _open is null)
+        {
+            return;
+        }
+
+        var previous = (_evaluations ?? new List<PipelineEvaluationView>())
+            .Where(each => each.Id != _open.Id && each.State != PipelineEvaluations.Running && each.StartedOnUtc < _open.StartedOnUtc)
+            .OrderByDescending(each => each.StartedOnUtc)
+            .FirstOrDefault();
+        if (previous?.Id != _compare?.Id)
+        {
+            _compare = previous is null ? null : await PipelinesService.GetEvaluationAsync(previous.Id);
+        }
+    }
+
+    private async Task CancelAsync(string id)
+    {
+        _error = "";
+        try
+        {
+            var cancelled = await PipelinesService.CancelEvaluationAsync(id);
+            if (_open?.Id == id)
+            {
+                _open = cancelled;
+            }
+        }
+        catch (Exception ex)
+        {
+            _error = "The evaluation could not be cancelled: " + ex.Message;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task DeleteAsync(string id)
+    {
+        _error = "";
+        try
+        {
+            await PipelinesService.DeleteEvaluationAsync(id);
+            if (_open?.Id == id)
+            {
+                _open = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _error = "The evaluation could not be deleted: " + ex.Message;
+        }
+
+        await LoadAsync();
+    }
+
+    // Polling, on the circuit's dispatcher: the timer's callback never touches the component directly.
+    private void Observe()
+    {
+        var running = (_evaluations?.Any(evaluation => evaluation.State == PipelineEvaluations.Running) ?? false) || _open?.State == PipelineEvaluations.Running;
+        if (running && _timer == null)
+        {
+            _timer = Clock.CreateTimer(_ => _ = InvokeAsync(async () =>
+            {
+                await LoadAsync();
+                StateHasChanged();
+            }), null, PollInterval, Timeout.InfiniteTimeSpan);
+        }
+        else if (running)
+        {
+            _timer.Change(PollInterval, Timeout.InfiniteTimeSpan);
+        }
+        else
+        {
+            _timer?.Dispose();
+            _timer = null;
+        }
+    }
+
+    private static string StateOf(PipelineEvaluationView evaluation) =>
+        evaluation.State == PipelineEvaluations.Running
+            ? $"Running - {evaluation.RowsDone} of {evaluation.RowCount} rows done"
+            : $"{evaluation.State} - {evaluation.RowCount} rows" + (evaluation.RowsFailed > 0 ? $", {evaluation.RowsFailed} did not finish" : "");
+
+    private static string Averages(IReadOnlyDictionary<string, decimal> metrics) =>
+        metrics is null || metrics.Count == 0 ? "—" : string.Join(", ", metrics.Select(metric => $"{metric.Key} {metric.Value.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)}"));
+
+    private static string Short(string text) => text is { Length: > 160 } ? text[..160] + "…" : text;
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+}

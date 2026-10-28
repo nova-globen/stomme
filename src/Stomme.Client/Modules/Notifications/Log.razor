@@ -1,0 +1,185 @@
+@namespace Stomme.Modules.Notifications
+@inherits ModuleBase
+@inject INotificationsService NotificationsService
+
+@* The site's send log (BL-78 step 5): requests and their attempts - view-log; retry and send-test - send. *@
+
+<PageTitle>Notification send log</PageTitle>
+
+@if (!IsAuthorizedPermission(NotificationsPermissions.ViewLog))
+{
+    <p class="db-notifications-denied" style="color:var(--db-text-2);">You do not have access to the notification send log.</p>
+}
+else
+{
+    <div class="db-notifications-log" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">Send log</h3>
+            <button id="notifications-log-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+            <a class="db-btn" href="@NavigateUrl()">Back</a>
+        </div>
+
+        @if (IsAuthorizedPermission(NotificationsPermissions.Send))
+        {
+            <section class="db-card" style="padding:0.75rem 1rem;display:flex;flex-direction:column;gap:0.5rem;max-width:560px;">
+                <strong>Send a test notification to yourself</strong>
+                <input id="notifications-test-subject" class="db-input" placeholder="Subject" maxlength="200" @bind="_testSubject" @bind:event="oninput" />
+                <textarea id="notifications-test-body" class="db-input" rows="2" placeholder="Message" maxlength="4000" @bind="_testBody" @bind:event="oninput"></textarea>
+                <label><input type="checkbox" @bind="_testEmail" /> E-mail</label>
+                <label><input type="checkbox" @bind="_testInApp" /> In-app</label>
+                <div><button id="notifications-send-test" type="button" class="db-btn" @onclick="SendTestAsync" disabled="@_busy">Send test</button></div>
+            </section>
+        }
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="notifications-log-message" style="margin:0;">@_message</p>
+        }
+
+        @if (_requests.Count == 0)
+        {
+            <p style="color:var(--db-text-2);">No notifications have been dispatched on this site.</p>
+        }
+        else
+        {
+            <table class="table db-notifications-log-table">
+                <thead><tr><th>Template</th><th>Status</th><th>Severity</th><th>Recipients</th><th>Created</th><th>Last attempt</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var item in _requests)
+                    {
+                        <tr>
+                            <td>@item.TemplateKey</td>
+                            <td>@item.Status</td>
+                            <td>@item.Severity</td>
+                            <td>@item.RecipientCount</td>
+                            <td>@item.CreatedOn.ToString("u")</td>
+                            <td>@(item.LastAttemptOn?.ToString("u") ?? "")</td>
+                            <td><button type="button" class="db-btn" @onclick="@(() => ShowAsync(item.Id))">Attempts</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (_detail != null)
+        {
+            <section class="db-card db-notifications-attempts" style="padding:0.75rem 1rem;">
+                <strong>@_detail.TemplateKey - @_detail.Status</strong>
+                <div style="font-size:0.85rem;color:var(--db-text-2);">Retries used: @_detail.AttemptCount; next attempt @_detail.NextAttemptOn.ToString("u"); completed @(_detail.CompletedOn?.ToString("u") ?? "no")</div>
+                <table class="table">
+                    <thead><tr><th>Channel</th><th>Outcome</th><th>At</th><th>Error</th></tr></thead>
+                    <tbody>
+                        @foreach (var attempt in _detail.Attempts)
+                        {
+                            <tr><td>@attempt.Channel</td><td>@attempt.Status</td><td>@attempt.AttemptedOn.ToString("u")</td><td>@attempt.Error</td></tr>
+                        }
+                    </tbody>
+                </table>
+                @if (IsAuthorizedPermission(NotificationsPermissions.Send) && _detail.CompletedOn != null && _detail.Status != NotificationRequestStatus.Sent)
+                {
+                    <button id="notifications-retry" type="button" class="db-btn" @onclick="@(() => RetryAsync(_detail.Id))" disabled="@_busy">Retry</button>
+                }
+            </section>
+        }
+    </div>
+}
+
+@code {
+    private List<NotificationRequestSummary> _requests = new();
+    private NotificationRequestDetail _detail;
+    private string _testSubject = "";
+    private string _testBody = "";
+    private bool _testEmail;
+    private bool _testInApp = true;
+    private string _message = "";
+    private bool _busy;
+
+    public override string Title => "Notification Send Log";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(NotificationsPermissions.ViewLog))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _requests = await NotificationsService.GetRequestsAsync() ?? new List<NotificationRequestSummary>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Notification Send Log {Error}", ex.Message);
+            _message = "The send log could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task ShowAsync(Guid id)
+    {
+        try
+        {
+            _detail = await NotificationsService.GetRequestAsync(id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Notification Request {Error}", ex.Message);
+        }
+    }
+
+    private async Task RetryAsync(Guid id)
+    {
+        _busy = true;
+        try
+        {
+            await NotificationsService.RetryRequestAsync(id);
+            _message = "The request is due again; the dispatch job will re-attempt it within a minute.";
+            _detail = await NotificationsService.GetRequestAsync(id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Retrying Notification Request {Error}", ex.Message);
+            _message = "The request could not be retried.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task SendTestAsync()
+    {
+        var channels = new List<NotificationChannelKind>();
+        if (_testEmail) { channels.Add(NotificationChannelKind.Email); }
+        if (_testInApp) { channels.Add(NotificationChannelKind.InApp); }
+        if (channels.Count == 0 || string.IsNullOrWhiteSpace(_testSubject) || string.IsNullOrWhiteSpace(_testBody))
+        {
+            _message = "Choose a channel and enter a subject and a message.";
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var id = await NotificationsService.SendTestAsync(new NotificationSendTestInput(channels, _testSubject, _testBody));
+            _message = id == Guid.Empty ? "The test notification was refused." : "Queued - the dispatch job delivers it within a minute.";
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Sending Test Notification {Error}", ex.Message);
+            _message = "The test notification could not be sent.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

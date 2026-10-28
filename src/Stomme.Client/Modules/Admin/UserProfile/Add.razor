@@ -1,0 +1,84 @@
+﻿@namespace Stomme.Modules.Admin.UserProfile
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject IUserRoleService UserRoleService
+@inject INotificationService NotificationService
+@inject IStringLocalizer<Add> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (PageState.User != null)
+{
+<div class="db-fields">
+    <div class="db-field">
+        <Label For="to" HelpText="Enter the user you wish to send a message to" ResourceKey="To">To: </Label>
+        <div class="db-field-control">
+            <AutoComplete Id="to" OnSearch="GetUsers" Placeholder="@Localizer["Username.Enter"]" @ref="username" />
+        </div>
+    </div>
+    <div class="db-field">
+        <Label For="subject" HelpText="Enter the subject of the message" ResourceKey="Subject">Subject: </Label>
+        <div class="db-field-control">
+            <input id="subject" class="db-input" @bind="@subject" />
+        </div>
+    </div>
+    <div class="db-field">
+        <Label For="message" HelpText="Enter the message" ResourceKey="Message">Message: </Label>
+        <div class="db-field-control">
+            <textarea id="message" class="db-input" @bind="@body" rows="5" />
+        </div>
+    </div>
+</div>
+<br/>
+    <button type="button" class="db-btn" @onclick="Send">@SharedLocalizer["Send"]</button>
+    <NavLink class="db-btn db-btn-neutral" href="@PageState.ReturnUrl">@SharedLocalizer["Cancel"]</NavLink>
+}
+
+@code {
+    private AutoComplete username;
+    private string subject = "";
+    private string body = "";
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.View;
+
+    public override string Title => "Send Notification";
+
+    private async Task<Dictionary<string, string>> GetUsers(string filter)
+    {
+        var users = await UserRoleService.GetUserRolesAsync(PageState.Site.SiteId, RoleNames.Registered);
+        return users.Where(item => item.User.Username.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            .ToDictionary(item => item.UserId.ToString(), item => item.User.Username);
+    }
+
+    private async Task Send()
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(username.Key) && !string.IsNullOrEmpty(subject))
+            {
+                var user = await UserService.GetUserAsync(int.Parse(username.Key), ModuleState.SiteId);
+                if (user != null)
+                {
+                    var notification = new Notification(PageState.Site.SiteId, PageState.User, user, subject, body);
+                    notification = await NotificationService.AddNotificationAsync(notification);
+                    await logger.LogInformation("Notification Created {NotificationId}", notification.NotificationId);
+                    NavigationManager.NavigateTo(PageState.ReturnUrl);
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.User.Invalid"], MessageType.Warning);
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Adding Notification {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Notification.Add"], MessageType.Error);
+        }
+    }
+
+}

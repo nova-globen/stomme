@@ -1,0 +1,148 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+@using Stomme.Modules.Pipelines.Services
+@inject IPipelinesService PipelinesService
+
+@*
+    BL-229 - a file step's path chosen from the site's pipeline folder, the one the Files page shows: its folders opened, a file
+    chosen sets the path, "Use this folder" sets the folder - keeping the file name a path to write already has. The path stays
+    a plain value the author may still type; nothing here writes a file. Shown to the pipelines' authors only, who alone may
+    read that folder.
+*@
+
+<div class="db-pipeline-editor__file-picker">
+    @if (!_open)
+    {
+        <button id="@(IdPrefix + "-browse")" type="button" class="db-btn" title="Choose a file or a folder in the site's pipeline folder" @onclick="OpenAsync" disabled="@Disabled">Browse files</button>
+    }
+    else
+    {
+        <div id="@IdPrefix" role="group" aria-label="The site's pipeline folder" style="display:flex;flex-direction:column;gap:0.25rem;">
+            <div style="display:flex;flex-wrap:wrap;gap:0.25rem;align-items:center;">
+                <button id="@(IdPrefix + "-root")" type="button" class="db-btn" @onclick="() => LoadAsync(string.Empty)" disabled="@_busy">Files</button>
+                @foreach (var (name, path) in PipelineFilePaths.Trail(_folder))
+                {
+                    var target = path;
+                    <span aria-hidden="true">/</span>
+                    <button type="button" class="db-btn" @onclick="() => LoadAsync(target)" disabled="@_busy">@name</button>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(_error))
+            {
+                <p id="@(IdPrefix + "-error")" role="alert" style="margin:0;color:var(--db-bad);">@_error</p>
+            }
+            @if (_listing is null && string.IsNullOrEmpty(_error))
+            {
+                <p style="margin:0;color:var(--db-text-2);">Loading...</p>
+            }
+            else if (_listing is not null)
+            {
+                @if (_listing.Entries.Count == 0)
+                {
+                    <p id="@(IdPrefix + "-none")" style="margin:0;color:var(--db-text-2);">Nothing here yet - put a file in on the <a href="@FilesUrl">Files</a> page.</p>
+                }
+                else
+                {
+                    <ul id="@(IdPrefix + "-list")" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0.125rem;">
+                        @for (var index = 0; index < _listing.Entries.Count; index++)
+                        {
+                            var at = index;
+                            var entry = _listing.Entries[at];
+                            <li>
+                                @if (entry.IsFolder)
+                                {
+                                    <button id="@($"{IdPrefix}-open-{at}")" type="button" class="db-btn" aria-label="@($"Open the folder {entry.Name}")" @onclick="() => LoadAsync(entry.Path)" disabled="@_busy">@(entry.Name)/</button>
+                                }
+                                else
+                                {
+                                    <button id="@($"{IdPrefix}-choose-{at}")" type="button" class="db-btn" aria-label="@($"Use {entry.Path}")" @onclick="() => ChooseAsync(entry.Path)" disabled="@_busy">@entry.Name</button>
+                                    <span style="color:var(--db-text-2);"> @PipelineFilePaths.Size(entry.Length)</span>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+                <div style="display:flex;flex-wrap:wrap;gap:0.25rem;">
+                    @if (FolderChoice() is { Length: > 0 } inFolder)
+                    {
+                        <button id="@(IdPrefix + "-use-folder")" type="button" class="db-btn" title="@($"Set the path to {inFolder}")" @onclick="() => ChooseAsync(inFolder)" disabled="@_busy">Use this folder</button>
+                    }
+                    <button id="@(IdPrefix + "-close")" type="button" class="db-btn" @onclick="Close">Close</button>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string IdPrefix { get; set; } = "pipelines-editor-files";
+
+    /// <summary>The input's value now: where browsing starts, and the file name "Use this folder" keeps.</summary>
+    [Parameter] public string Current { get; set; }
+
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>The Files page, for a folder with nothing in it yet.</summary>
+    [Parameter] public string FilesUrl { get; set; }
+
+    [Parameter] public EventCallback<string> Chosen { get; set; }
+
+    private bool _open;
+    private bool _busy;
+    private string _folder = "";
+    private string _error = "";
+    private PipelineFolderView _listing;
+
+    // Browsing starts in the folder the path is already in - the site's folder when there is none, or it is not there.
+    private async Task OpenAsync()
+    {
+        _open = true;
+        var current = PipelineFilePaths.Normalize(Current ?? "");
+        await LoadAsync(current.Contains("{{", StringComparison.Ordinal) ? string.Empty : PipelineFilePaths.Parent(current));
+        if (_listing is null && string.IsNullOrEmpty(_error) && _folder.Length > 0)
+        {
+            await LoadAsync(string.Empty);
+        }
+    }
+
+    private async Task LoadAsync(string folder)
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            var normalized = PipelineFilePaths.Normalize(folder);
+            _listing = await PipelinesService.GetPipelineFilesAsync(normalized);
+            _folder = normalized;
+            if (_listing is null && normalized.Length == 0)
+            {
+                _error = "The site's pipeline folder could not be read.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _listing = null;
+            _error = ex is Stomme.Services.ServiceRefusalException or InvalidOperationException ? ex.Message : "The site's pipeline folder could not be read.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // The folder shown, with the file name the path already names kept - a path to write keeps its name; a folder's path
+    // (Unzip's destination) is the folder. Nothing at the site's folder itself: an empty path is no path.
+    private string FolderChoice()
+    {
+        var current = PipelineFilePaths.Normalize(Current ?? "");
+        var name = current.Contains("{{", StringComparison.Ordinal) ? "" : PipelineFilePaths.Name(current);
+        return name.Contains('.') ? PipelineFilePaths.Combine(_folder, name) : _folder;
+    }
+
+    private async Task ChooseAsync(string path)
+    {
+        _open = false;
+        await Chosen.InvokeAsync(path);
+    }
+
+    private void Close() => _open = false;
+}

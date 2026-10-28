@@ -1,0 +1,50 @@
+@using System.ComponentModel
+@namespace Stomme.Themes.Controls
+@inherits ContainerBase      
+@attribute [StommeIgnore]
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@inject IStringLocalizerFactory LocalizerFactory
+@implements IDisposable
+
+<span class="app-moduletitle">
+    @((MarkupString)title)
+</span>
+
+@code {
+	private string title = "";
+
+	protected override void OnInitialized()
+	{
+		((INotifyPropertyChanged)SiteState.Properties).PropertyChanged += PropertyChanged;
+	}
+
+	protected override void OnParametersSet()
+	{
+		if (!string.IsNullOrEmpty(ModuleState.ControlTitle))
+		{
+            var localizer = LocalizerFactory.Create(ModuleState.ModuleType);
+            title = localizer[ModuleState.ControlTitle];
+		}
+		else
+		{
+            title = SharedLocalizer[ModuleState.Title];
+		}
+	}
+
+	private void PropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == "ModuleTitle")
+		{
+			if (SiteState.Properties.ModuleTitle.PageModuleId == ModuleState.PageModuleId)
+			{
+				title = SiteState.Properties.ModuleTitle.Title;
+				StateHasChanged();
+			}
+		}
+	}
+
+	public void Dispose()
+	{
+		((INotifyPropertyChanged)SiteState.Properties).PropertyChanged -= PropertyChanged;
+	}
+}

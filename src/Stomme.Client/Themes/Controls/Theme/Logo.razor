@@ -1,0 +1,28 @@
+@namespace Stomme.Themes.Controls
+@inherits ThemeControlBase
+
+@* Migrated to the --db-* design system (D11). `img-fluid` was a Bootstrap class the supersede layer
+   never defined, so the logo was never actually responsive; `.db-logo img` handles that now. *@
+@if (PageState.Site.LogoFileId != null)
+{
+    <span class="app-logo db-logo">
+        <a href="@PageState.Alias.Path">
+            <img src="@Utilities.FileUrl(PageState.Alias, PageState.Site.LogoFileId.Value)" alt="@PageState.Site.Name" />
+        </a>
+    </span>
+}
+else
+{
+    if (UseSiteNameAsFallback)
+    {
+        <span class="app-logo db-logo">
+            <a class="db-brand" href="@PageState.Alias.Path">@PageState.Site.Name</a>
+        </span>
+    }
+}
+
+@code {
+    [Parameter]
+    public bool UseSiteNameAsFallback { get; set; } = false; // indicates if the site name should be displayed in scenarios where a site does not have a logo defined
+}
+

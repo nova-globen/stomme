@@ -1,0 +1,64 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+@using Blazor.Diagrams
+@implements IDisposable
+
+@* BL-229 - n8n's dotted canvas: a dot every 20 of the diagram's pixels in the theme's border colour, moving with the pan and spaced
+   by the zoom, behind everything on the canvas and never in a pointer's way. It redraws itself on the diagram's pan and zoom,
+   never the editor (the library's grid widget has colours of its own, so the theme could not govern it). *@
+<div class="db-pipeline-editor__grid" aria-hidden="true" style="@StyleFor(Diagram?.Zoom ?? 1, Diagram?.Pan.X ?? 0, Diagram?.Pan.Y ?? 0)"></div>
+
+@code {
+    /// <summary>The dots' spacing in the diagram's own pixels, at 100 %.</summary>
+    public const double Spacing = 20;
+
+    [Parameter]
+    public BlazorDiagram Diagram { get; set; }
+
+    private BlazorDiagram _watched;
+
+    /// <summary>
+    /// The pattern's size and offset for a zoom and a pan (invariant, for the style): the spacing scaled by the zoom - doubled while
+    /// it is under 8 pixels, so a far zoom shows fewer dots rather than a grey wash - and moved with the pan.
+    /// </summary>
+    public static string StyleFor(double zoom, double panX, double panY)
+    {
+        var size = Spacing * (zoom > 0 ? zoom : 1);
+        while (size < 8)
+        {
+            size *= 2;
+        }
+
+        return FormattableString.Invariant($"background-size:{size:0.##}px {size:0.##}px;background-position:{Mod(panX, size):0.##}px {Mod(panY, size):0.##}px;");
+    }
+
+    private static double Mod(double value, double by) => ((value % by) + by) % by;
+
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(_watched, Diagram))
+        {
+            return;
+        }
+
+        Unwatch();
+        _watched = Diagram;
+        if (_watched is not null)
+        {
+            _watched.ZoomChanged += OnMoved;
+            _watched.PanChanged += OnMoved;
+        }
+    }
+
+    private void OnMoved() => InvokeAsync(StateHasChanged);
+
+    private void Unwatch()
+    {
+        if (_watched is not null)
+        {
+            _watched.ZoomChanged -= OnMoved;
+            _watched.PanChanged -= OnMoved;
+        }
+    }
+
+    public void Dispose() => Unwatch();
+}

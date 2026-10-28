@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Stomme.MessageBus.Tests</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <!-- D83 security pin: EF Core Sqlite pulls SQLitePCLRaw.bundle_e_sqlite3 2.1.11 transitively, whose
+         native lib carries GHSA-2m69-gcr7-jv3q (HIGH, NU1903). A direct reference picks up the central
+         3.0.3 pin (patched lib), mirroring what Conformance.Tests already does. -->
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Stomme.EventBus\Stomme.EventBus.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Infrastructure.EventBus\Stomme.Infrastructure.EventBus.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Persistence\Stomme.Persistence.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Persistence.Abstractions\Stomme.Persistence.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Persistence.EfCore\Stomme.Persistence.EfCore.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.SharedKernel\Stomme.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Tenancy.Abstractions\Stomme.Tenancy.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Tenancy.Domain\Stomme.Tenancy.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

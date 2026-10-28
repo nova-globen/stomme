@@ -1,0 +1,146 @@
+@namespace NovaGloben.Module.KnowledgeBase
+@inherits ModuleBase
+@inject IKnowledgeBaseService KnowledgeBaseService
+@inject NavigationManager NavigationManager
+
+@*
+    The module's EDIT ACTION (BL-86): a second component of the same module, reached through EditUrl("Add") or
+    EditUrl("Edit", "slug=..."), which the framework routes to this control by its Actions. It drafts a new article or
+    edits one (its slug never changes), and a publisher can publish it. The keys decide: knowledge-base:edit to draft and
+    edit, knowledge-base:publish to publish.
+*@
+
+@if (!IsAuthorizedPermission(KnowledgeBasePermissions.Edit))
+{
+    <p id="knowledge-base-edit-denied" style="color:var(--db-text-2);">You cannot edit the knowledge base on this site.</p>
+}
+else
+{
+    <form id="knowledge-base-edit-form" style="display:flex;flex-direction:column;gap:0.5rem;max-width:48rem;" @onsubmit="SaveAsync" @onsubmit:preventDefault>
+        <label>Title <input id="knowledge-base-title" type="text" style="width:100%;" @bind="_title" @bind:event="oninput" maxlength="150" /></label>
+        @if (_article is null)
+        {
+            <label>Address (optional - derived from the title) <input id="knowledge-base-slug" type="text" style="width:100%;" @bind="_slug" maxlength="80" /></label>
+        }
+        else
+        {
+            <p style="margin:0;color:var(--db-text-2);">Address: @_article.Slug</p>
+        }
+        <label>
+            Category
+            <select id="knowledge-base-category" @bind="_categoryId">
+                <option value="">(none)</option>
+                @foreach (var category in _categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+        </label>
+        <label>Body <textarea id="knowledge-base-body" rows="12" style="width:100%;" @bind="_body" @bind:event="oninput"></textarea></label>
+        <div style="display:flex;gap:0.5rem;">
+            <button id="knowledge-base-save" type="submit" class="db-btn" disabled="@(_busy || string.IsNullOrWhiteSpace(_title) || string.IsNullOrWhiteSpace(_body))">@(_article is null ? "Save draft" : "Save")</button>
+            @if (_article is not null && _article.Status == ArticleStatus.Draft && IsAuthorizedPermission(KnowledgeBasePermissions.Publish))
+            {
+                <button id="knowledge-base-edit-publish" type="button" class="db-btn" disabled="@_busy" @onclick="PublishAsync">Publish</button>
+            }
+            <a href="@NavigateUrl()">Cancel</a>
+        </div>
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="knowledge-base-edit-message" role="status" style="margin:0;">@_message</p>
+        }
+    </form>
+}
+
+@code {
+    private List<CategoryModel> _categories = new();
+    private ArticleModel? _article;
+    private string _title = string.Empty;
+    private string _slug = string.Empty;
+    private string _body = string.Empty;
+    private string _categoryId = string.Empty;
+    private bool _busy;
+    private string _message = string.Empty;
+
+    public override string Actions => "Add,Edit";
+
+    public override string Title => "Edit article";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsAuthorizedPermission(KnowledgeBasePermissions.Edit))
+        {
+            return;
+        }
+
+        try
+        {
+            _categories = await KnowledgeBaseService.ListCategoriesAsync();
+            if (PageState.QueryString.TryGetValue("slug", out var slug) && !string.IsNullOrEmpty(slug))
+            {
+                _article = await KnowledgeBaseService.GetArticleAsync(slug);
+                if (_article is null)
+                {
+                    _message = "There is no such article.";
+                    return;
+                }
+
+                _title = _article.Title;
+                _body = _article.Body;
+                _categoryId = _article.CategoryId?.ToString() ?? string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the article to edit.");
+            _message = "The article could not be loaded.";
+        }
+    }
+
+    private Guid? SelectedCategory => Guid.TryParse(_categoryId, out var id) ? id : null;
+
+    private async Task SaveAsync()
+    {
+        _busy = true;
+        try
+        {
+            var saved = _article is null
+                ? await KnowledgeBaseService.DraftArticleAsync(new DraftArticleRequest { Title = _title, Slug = string.IsNullOrWhiteSpace(_slug) ? null : _slug, Body = _body, CategoryId = SelectedCategory })
+                : await KnowledgeBaseService.EditArticleAsync(_article.Id, new EditArticleRequest { Title = _title, Body = _body, CategoryId = SelectedCategory });
+            NavigationManager.NavigateTo(NavigateUrl(PageState.Page.Path, AddUrlParameters("article", saved.Slug)));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not save the article.");
+            _message = "The article was not saved: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task PublishAsync()
+    {
+        if (_article is null)
+        {
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            _article = await KnowledgeBaseService.PublishArticleAsync(_article.Id);
+            NavigationManager.NavigateTo(NavigateUrl(PageState.Page.Path, AddUrlParameters("article", _article.Slug)));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not publish the article.");
+            _message = "The article was not published.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

@@ -1,0 +1,240 @@
+@namespace Stomme.Modules.Formats
+@inherits ModuleBase
+@inject IFormatsService FormatsService
+
+@*
+    The Formats page (BL-94 increment 2, D110): the system presets and this site's own definitions, with a live example
+    per row. A holder of formats:view reads; a holder of formats:manage adds, edits and deletes the site's own - never a
+    preset. Every button that appears is decided again by the server when it is pressed.
+*@
+
+<PageTitle>Formats</PageTitle>
+
+@if (!IsAuthorizedPermission(FormatPermissions.View))
+{
+    <p class="db-formats-denied" style="color:var(--db-text-2);">You do not have access to formats on this site.</p>
+}
+else
+{
+    <div class="db-formats" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Formats</h3>
+            <select id="formats-kind" class="db-input" style="width:auto;" @onchange="@(e => SetKindAsync(e.Value?.ToString()))">
+                <option value="">All kinds</option>
+                @foreach (var kind in Enum.GetValues<FormatKind>())
+                {
+                    <option value="@kind" selected="@(_kind == kind)">@kind</option>
+                }
+            </select>
+            <button id="formats-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (_formats is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+        }
+        else if (_formats.Count == 0)
+        {
+            <p id="formats-empty" style="margin:0;color:var(--db-text-2);">No formats.</p>
+        }
+        else
+        {
+            <div style="overflow-x:auto;">
+                <table class="db-formats-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Name</th>
+                            <th style="text-align:left;">Kind</th>
+                            <th style="text-align:left;">Pattern</th>
+                            <th style="text-align:left;">Culture</th>
+                            <th style="text-align:left;">Example</th>
+                            <th style="text-align:left;">Scope</th>
+                            <th style="width:1px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var format in _formats)
+                        {
+                            <tr id="format-@format.Id">
+                                <td>@format.Name</td>
+                                <td>@format.Kind</td>
+                                <td style="font-family:monospace;">@(string.IsNullOrEmpty(format.Pattern) ? "—" : format.Pattern)</td>
+                                <td style="font-family:monospace;">@(string.IsNullOrEmpty(format.Culture) ? "(invariant)" : format.Culture)</td>
+                                <td style="font-family:monospace;">@format.Example()</td>
+                                <td style="color:var(--db-text-2);">@format.Scope</td>
+                                <td style="white-space:nowrap;">
+                                    @if (_canManage && format.Scope == FormatScope.Tenant)
+                                    {
+                                        <button type="button" class="db-btn" @onclick="@(() => Edit(format))" disabled="@_busy">Edit</button>
+                                        <ActionDialog Header="Delete Format" Message="@($"Delete the format '{format.Name}'? It cannot be undone.")" Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAsync(format))" Disabled="@_busy" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (_canManage)
+        {
+            <section id="formats-editor" style="display:flex;flex-direction:column;gap:0.5rem;">
+                <h3 style="margin:0;">@(_editing is null ? "New format" : $"Edit '{_editing.Name}'")</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                    <input id="formats-name" class="db-input" style="width:auto;" placeholder="Name" @bind="_name" />
+                    <select id="formats-editor-kind" class="db-input" style="width:auto;" @bind="_editKind">
+                        @foreach (var kind in Enum.GetValues<FormatKind>())
+                        {
+                            <option value="@kind">@kind</option>
+                        }
+                    </select>
+                    <input id="formats-pattern" class="db-input" style="width:auto;font-family:monospace;" placeholder="Pattern (e.g. yyyy-MM-dd)" @bind="_pattern" disabled="@(_editKind == FormatKind.Locale)" />
+                    <input id="formats-culture" class="db-input" style="width:auto;" placeholder="Culture (e.g. en-US)" @bind="_culture" />
+                    <input id="formats-timezone" class="db-input" style="width:auto;" placeholder="Time zone (dates, optional)" @bind="_timeZone" disabled="@(_editKind != FormatKind.Date)" />
+                    <button id="formats-save" type="button" class="db-btn" @onclick="SaveAsync" disabled="@_busy">@(_editing is null ? "Create" : "Save")</button>
+                    @if (_editing is not null)
+                    {
+                        <button type="button" class="db-btn" @onclick="CancelEdit" disabled="@_busy">Cancel</button>
+                    }
+                </div>
+                <p style="margin:0;color:var(--db-text-2);">Preview: <span style="font-family:monospace;">@Preview()</span></p>
+            </section>
+        }
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="formats-message" style="margin:0;">@_message</p>
+        }
+    </div>
+}
+
+@code {
+    private List<FormatDescriptor> _formats;
+    private FormatKind? _kind;
+    private bool _busy;
+    private bool _canManage;
+    private string _message = string.Empty;
+
+    private FormatDescriptor _editing;
+    private string _name = string.Empty;
+    private FormatKind _editKind = FormatKind.Date;
+    private string _pattern = string.Empty;
+    private string _culture = string.Empty;
+    private string _timeZone = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _canManage = IsAuthorizedPermission(FormatPermissions.Manage);
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _formats = await FormatsService.ListAsync(_kind);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the formats.");
+            _formats = new List<FormatDescriptor>();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task SetKindAsync(string value)
+    {
+        _kind = Enum.TryParse<FormatKind>(value, out var kind) ? kind : null;
+        await LoadAsync();
+    }
+
+    private string Preview()
+    {
+        try
+        {
+            return new FormatDescriptor(Guid.Empty, _name, _editKind, _pattern ?? string.Empty, _culture ?? string.Empty, FormatScope.Tenant, _timeZone ?? string.Empty).Example();
+        }
+        catch (Exception)
+        {
+            return "—";
+        }
+    }
+
+    private void Edit(FormatDescriptor format)
+    {
+        _editing = format;
+        _name = format.Name;
+        _editKind = format.Kind;
+        _pattern = format.Pattern;
+        _culture = format.Culture;
+        _timeZone = format.TimeZone;
+        _message = string.Empty;
+        BringIntoView("formats-editor"); // below the list, which holds every preset (BL-22)
+    }
+
+    private void CancelEdit()
+    {
+        _editing = null;
+        _name = _pattern = _culture = _timeZone = string.Empty;
+        _editKind = FormatKind.Date;
+    }
+
+    private async Task SaveAsync()
+    {
+        _busy = true;
+        try
+        {
+            var saved = await FormatsService.SaveAsync(new FormatDefinitionRequest
+            {
+                Id = _editing?.Id,
+                Name = _name,
+                Kind = _editKind,
+                Pattern = _editKind == FormatKind.Locale ? null : _pattern,
+                Culture = _culture,
+                TimeZone = _editKind == FormatKind.Date ? _timeZone : null,
+            });
+            _message = saved is null ? "The format was not saved." : $"'{saved.Name}' saved.";
+            if (saved is not null)
+            {
+                CancelEdit();
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not save the format.");
+            _message = "The format was not saved: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task DeleteAsync(FormatDescriptor format)
+    {
+        _busy = true;
+        try
+        {
+            await FormatsService.DeleteAsync(format.Id);
+            _message = $"'{format.Name}' deleted.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not delete format {FormatId}.", format.Id);
+            _message = "The format was not deleted: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+        StateHasChanged(); // called back from the confirmation dialog, not from an event of this page (BL-22)
+    }
+}

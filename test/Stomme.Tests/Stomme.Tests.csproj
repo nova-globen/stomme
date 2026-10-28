@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <!-- Transport (brief 04 / D10): drive the opt-in gRPC + SignalR transports live against a real Kestrel host. -->
+    <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Grpc.Net.Client.Web" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+    <!-- Host composition guard: resolving Rebus' IBus is what forces the bus configuration callback to run,
+         which is where a scoped service was being resolved from the root provider. -->
+    <PackageReference Include="Rebus" />
+    <!-- Boot/install/render guard: drives the REAL host in-process (Program.BuildApp + TestServer transport)
+         so GET / goes through the actual middleware pipeline and the actual MapRazorComponents<App> endpoint. -->
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+    <!-- The architecture gates: D33 (async-all-the-way) and D40 (domain-event handler contract) parse source
+         with the real C# parser. See AsyncAllTheWayDownTests.cs, DomainEventHandlerContractTests.cs, and
+         Directory.Packages.props for why a text scan is not good enough. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <!-- BL-14 (D86): bUnit renders the real Installer wizard and pins its no-Router navigation model —
+         step changes are history.pushState JSInterop, never a NavigationManager navigation (which would
+         remount the component and wipe collected wizard state). See InstallerWizardNavigationTests.cs. -->
+    <PackageReference Include="bunit" />
+  </ItemGroup>
+
+  <!-- The tests reflect over the framework host + client to prove assembly/module discovery.
+       Referencing the Web host pulls Stomme.Client and Stomme.Shared into the test output;
+       the AspNetCore framework reference lets the host's types load in the test runtime. -->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Stomme.Infrastructure.Security.Cryptography\Stomme.Infrastructure.Security.Cryptography.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Server\Stomme.Server.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Shared\Stomme.Shared.csproj" />
+  </ItemGroup>
+
+  <!-- W2 (D85): bundle the independent example Blogs module by build-time PackageReference to drive the
+       end-to-end PackageReference-bundling + discovery + config-gated render path. OFF by default
+       (-p:IncludeDemoModules=true turns it on), so the default suite never depends on the demo .nupkg. The
+       #if-guarded BlogsBundlingDriveTests compiles only under the same flag. This is the dedicated TEST HOST
+       used to avoid coupling the shipped Stomme.Server to the example. -->
+  <PropertyGroup Condition="'$(IncludeDemoModules)' == 'true'">
+    <DefineConstants>$(DefineConstants);INCLUDE_DEMO_MODULES</DefineConstants>
+  </PropertyGroup>
+  <!-- The PackageVersion is declared HERE (not Directory.Packages.props) so it is fully scoped to this
+       opt-in flag and can never perturb central package management for the rest of the solution. -->
+  <ItemGroup Condition="'$(IncludeDemoModules)' == 'true'">
+    <!-- 2.0.0 is the BL-13 split package (Client/Server/Shared DLLs in one nupkg); the bundling drive is
+         layout-agnostic — all three .Stomme assemblies bake into /bin and ride the same convention scan. -->
+    <PackageVersion Include="NovaGloben.Module.Blogs" Version="2.0.0" />
+    <PackageReference Include="NovaGloben.Module.Blogs" />
+  </ItemGroup>
+
+</Project>

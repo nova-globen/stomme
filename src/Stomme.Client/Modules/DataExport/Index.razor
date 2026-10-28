@@ -1,0 +1,431 @@
+@namespace Stomme.Modules.DataExport
+@inherits ModuleBase
+@inject IDataExportService DataExportService
+
+@*
+    The data-export control (D108 item 11). A user with export:view sees their OWN exports; a user with export:manage
+    may switch to every export on the site. Nothing here can name a site, a tenant or a user - the server resolves all
+    three from the request - and every button that appears is decided again by the server when it is pressed. The
+    artifact is fetched by the browser from the module's own download route: the framework's file endpoints authorise
+    by folder View, which a requester does not hold on the private Exports folder.
+*@
+
+<PageTitle>Data Export</PageTitle>
+
+@if (!IsAuthorizedPermission(ExportPermissions.View) && !IsAuthorizedPermission(ExportPermissions.Create))
+{
+    <p class="db-dataexport-denied" style="color:var(--db-text-2);">You do not have access to data export on this site.</p>
+}
+else
+{
+    <div class="db-dataexport" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">Data Export</h3>
+            @if (IsAuthorizedPermission(ExportPermissions.Manage))
+            {
+                <button id="dataexport-scope" type="button" class="db-btn" @onclick="ToggleScopeAsync" disabled="@_busy">
+                    @(_wholeSite ? "Show my exports" : "Show every export on this site")
+                </button>
+            }
+            <button id="dataexport-refresh" type="button" class="db-btn" @onclick="RefreshAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p id="dataexport-error" style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+
+        @if (!string.IsNullOrEmpty(_notice))
+        {
+            <p id="dataexport-notice" style="margin:0;color:var(--db-text-2);">@_notice</p>
+        }
+
+        @if (IsAuthorizedPermission(ExportPermissions.Create))
+        {
+            <section class="db-card" style="padding:0.75rem 1rem;">
+                <h4 style="margin:0 0 0.5rem;">Request an export</h4>
+                @if (_sources.Count == 0)
+                {
+                    <p id="dataexport-nosources" style="margin:0;color:var(--db-text-2);">There is nothing you can export on this site.</p>
+                }
+                else
+                {
+                    <div class="db-field">
+                        <label class="db-field-label" for="dataexport-source">Source</label>
+                        <div class="db-field-control">
+                            <select id="dataexport-source" class="form-select" @bind="_request.SourceKey">
+                                @foreach (var source in _sources)
+                                {
+                                    <option value="@source.Key">@source.Key</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <label class="db-field-label" for="dataexport-format">Format</label>
+                        <div class="db-field-control">
+                            <select id="dataexport-format" class="form-select" @bind="_request.Format">
+                                @if (SelectedSourceIsSingleTable)
+                                {
+                                    <option value="Csv">CSV</option>
+                                }
+                                <option value="Xlsx">Excel (XLSX)</option>
+                                <option value="Json">JSON</option>
+                                <option value="Pdf">PDF (Latin-1 text only)</option>
+                            </select>
+                        </div>
+                    </div>
+                    @if (_request.Format == "Pdf")
+                    {
+                        <div class="db-field">
+                            <label class="db-field-label" for="dataexport-pdf-size">Page size</label>
+                            <div class="db-field-control">
+                                <select id="dataexport-pdf-size" class="form-select" @bind="_request.PdfPageSize">
+                                    @foreach (var size in ExportRenderOptions.AllowedPdfPageSizes)
+                                    {
+                                        <option value="@size">@size</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <label class="db-field-label" for="dataexport-pdf-orientation">Orientation</label>
+                            <div class="db-field-control">
+                                <select id="dataexport-pdf-orientation" class="form-select" @bind="_request.PdfOrientation">
+                                    @foreach (var orientation in ExportRenderOptions.AllowedPdfOrientations)
+                                    {
+                                        <option value="@orientation">@orientation</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    }
+                    @if (IsAuthorizedPermission(ExportPermissions.Manage))
+                    {
+                        <div class="db-field">
+                            <label class="db-field-label" for="dataexport-raw">
+                                Write formula-like values unchanged
+                            </label>
+                            <div class="db-field-control">
+                                <input id="dataexport-raw" type="checkbox" @bind="_rawFormulas" />
+                                <small style="color:var(--db-text-2);">
+                                    Off by default: a cell beginning = + - or @@ is executed by a spreadsheet when the
+                                    file is opened. Leave this off unless you trust every row.
+                                </small>
+                            </div>
+                        </div>
+                    }
+                    <button id="dataexport-request" type="button" class="db-btn" @onclick="RequestAsync" disabled="@_busy">Request</button>
+
+                    @* BL-95: the same request, repeated - each run is an ordinary export requested as you, checked again then. *@
+                    <div id="dataexport-schedule-form" style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--db-border);display:flex;flex-direction:column;gap:0.5rem;">
+                        <h5 style="margin:0;">Or repeat it on a schedule</h5>
+                        <div class="db-field">
+                            <label class="db-field-label" for="dataexport-schedule-name">Name</label>
+                            <div class="db-field-control">
+                                <input id="dataexport-schedule-name" type="text" class="db-input" maxlength="100" @bind="_scheduleName" />
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <label class="db-field-label" for="dataexport-schedule-cron">When (cron, UTC)</label>
+                            <div class="db-field-control">
+                                <input id="dataexport-schedule-cron" type="text" class="db-input" maxlength="100" placeholder="0 6 * * 1 = Mondays at 06:00 UTC" @bind="_scheduleCron" />
+                                <small style="color:var(--db-text-2);">minute hour day-of-month month day-of-week, at least 15 minutes apart. Each run is requested as you and checked again then; if you may no longer make it, the schedule pauses.</small>
+                            </div>
+                        </div>
+                        <div><button id="dataexport-schedule" type="button" class="db-btn" @onclick="ScheduleAsync" disabled="@_busy">Schedule</button></div>
+                    </div>
+                }
+            </section>
+        }
+
+        @if (IsAuthorizedPermission(ExportPermissions.View) && _schedules.Count != 0)
+        {
+            <section id="dataexport-schedules" class="db-card" style="padding:0.75rem 1rem;">
+                <h4 style="margin:0 0 0.5rem;">Schedules</h4>
+                <table class="table db-dataexport-table">
+                    <thead>
+                        <tr><th>Name</th><th>Source</th><th>Format</th><th>When (UTC)</th><th>Next run (UTC)</th><th>Last run (UTC)</th><th>State</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var schedule in _schedules)
+                        {
+                            <tr>
+                                <td>@schedule.Name</td>
+                                <td>@schedule.SourceKey</td>
+                                <td>@schedule.Format</td>
+                                <td><code>@schedule.Cron</code></td>
+                                <td>@schedule.NextRunOnUtc?.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@schedule.LastRunOnUtc?.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@(schedule.IsPaused ? "Paused" + (schedule.PauseReason is "OwnerNotAllowed" ? " - its owner may no longer make this export" : schedule.PauseReason is "SourceUnavailable" ? " - its source is gone" : "") : "Running")</td>
+                                <td style="white-space:nowrap;">
+                                    @if (schedule.IsPaused)
+                                    {
+                                        <button type="button" class="db-btn dataexport-schedule-resume" @onclick="@(() => ChangeScheduleAsync(schedule, "resume"))" disabled="@_busy">Resume</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="db-btn dataexport-schedule-pause" @onclick="@(() => ChangeScheduleAsync(schedule, "pause"))" disabled="@_busy">Pause</button>
+                                    }
+                                    @if (IsAuthorizedPermission(ExportPermissions.Manage) && schedule.OwnerUserId != (PageState.User?.UserId ?? -1))
+                                    {
+                                        <button type="button" class="db-btn dataexport-schedule-takeover" @onclick="@(() => ChangeScheduleAsync(schedule, "takeover"))" disabled="@_busy">Take over</button>
+                                    }
+                                    <ActionDialog Id="@("dataexport-schedule-delete-" + schedule.Id.ToString("N"))" Header="Delete Schedule" Message="@($"Delete the schedule {schedule.Name}? Exports it already made stay.")" Action="Delete"
+                                                  Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteScheduleAsync(schedule))" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+        }
+
+        @if (IsAuthorizedPermission(ExportPermissions.View))
+        {
+            @if (_exports.Count == 0)
+            {
+                <p id="dataexport-empty" class="db-dataexport-empty" style="color:var(--db-text-2);">No exports yet.</p>
+            }
+            else
+            {
+                <table id="dataexport-table" class="table db-dataexport-table">
+                    <thead>
+                        <tr><th>Requested (UTC)</th><th>Source</th><th>Format</th><th>Status</th><th>Rows</th><th>Expires (UTC)</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var export in _exports)
+                        {
+                            <tr>
+                                <td>@export.RequestedOnUtc.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@export.SourceKey</td>
+                                <td>@export.Format</td>
+                                <td>@(export.FailureCode is null ? export.Status : $"{export.Status} ({export.FailureCode})")</td>
+                                <td>@export.RowCount</td>
+                                <td>@export.ExpiresOnUtc?.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>
+                                    @if (export.CanDownload)
+                                    {
+                                        <a class="db-btn dataexport-download" href="@DataExportService.DownloadUrl(export.Id)" target="_blank" rel="noopener">Download</a>
+                                    }
+                                    @if (export.Status is "Queued" or "Rendering")
+                                    {
+                                        <button type="button" class="db-btn dataexport-cancel" @onclick="@(() => CancelAsync(export.Id))" disabled="@_busy">Cancel</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+    </div>
+}
+
+@code {
+    private List<ExportSourceView> _sources = new();
+    private List<ExportJobView> _exports = new();
+    private List<ExportScheduleView> _schedules = new();
+    private string _scheduleName = "";
+    private string _scheduleCron = "";
+    private ExportRequest _request = new() { Format = "Xlsx" };
+    private bool _rawFormulas;
+    private bool _wholeSite;
+    private bool _busy;
+    private string _error = "";
+    private string _notice = "";
+
+    public override string Title => ModuleInfo.ModuleName;
+
+    private bool SelectedSourceIsSingleTable =>
+        _sources.FirstOrDefault(source => source.Key == _request.SourceKey)?.SingleTable ?? false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null)
+        {
+            await LoadAsync();
+        }
+    }
+
+    // A reload after an action keeps what the action said: every action reloads, so clearing here wiped every refusal
+    // before it was drawn (found driving BL-95's schedule form). Refresh and the scope switch clear it themselves.
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            if (IsAuthorizedPermission(ExportPermissions.Create))
+            {
+                _sources = await DataExportService.GetSourcesAsync() ?? new List<ExportSourceView>();
+                if (_sources.Count != 0 && _sources.All(source => source.Key != _request.SourceKey))
+                {
+                    _request.SourceKey = _sources[0].Key;
+                }
+            }
+
+            if (IsAuthorizedPermission(ExportPermissions.View))
+            {
+                _exports = (_wholeSite && IsAuthorizedPermission(ExportPermissions.Manage)
+                    ? await DataExportService.GetSiteExportsAsync()
+                    : await DataExportService.GetMyExportsAsync()) ?? new List<ExportJobView>();
+                _schedules = await DataExportService.GetSchedulesAsync() ?? new List<ExportScheduleView>();
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Data Exports {Error}", ex.Message);
+            _error = "The exports could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task RefreshAsync()
+    {
+        _error = "";
+        _notice = "";
+        await LoadAsync();
+    }
+
+    private async Task ToggleScopeAsync()
+    {
+        _wholeSite = !_wholeSite;
+        await RefreshAsync();
+    }
+
+    private async Task RequestAsync()
+    {
+        _busy = true;
+        _error = "";
+        _notice = "";
+        try
+        {
+            // Null leaves the guard ON; only a manager's explicit tick sends false, and the server checks it again.
+            _request.NeutraliseFormulas = _rawFormulas ? false : null;
+            if (!SelectedSourceIsSingleTable && _request.Format == "Csv")
+            {
+                _request.Format = "Xlsx";
+            }
+
+            var id = await DataExportService.RequestAsync(_request);
+            if (id == Guid.Empty)
+            {
+                _error = "The export request was refused.";
+            }
+            else
+            {
+                _notice = "Your export is queued. It will appear below as Ready when it has been rendered.";
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Requesting Data Export {Error}", ex.Message);
+            _error = "The export could not be requested.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    // BL-95: the request as it stands, repeated on the cron given.
+    private async Task ScheduleAsync()
+    {
+        _busy = true;
+        _error = "";
+        _notice = "";
+        try
+        {
+            _request.NeutraliseFormulas = _rawFormulas ? false : null;
+            if (!SelectedSourceIsSingleTable && _request.Format == "Csv")
+            {
+                _request.Format = "Xlsx";
+            }
+
+            var created = await DataExportService.CreateScheduleAsync(new ExportScheduleRequest { Name = _scheduleName, Cron = _scheduleCron, Request = _request });
+            _notice = $"Scheduled '{created.Name}'. Its first run is at {created.NextRunOnUtc:yyyy-MM-dd HH:mm} UTC.";
+            _scheduleName = "";
+            _scheduleCron = "";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Scheduling Data Export {Error}", ex.Message);
+            _error = "The schedule was not created: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task ChangeScheduleAsync(ExportScheduleView schedule, string change)
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            await (change switch
+            {
+                "pause" => DataExportService.PauseScheduleAsync(schedule.Id),
+                "resume" => DataExportService.ResumeScheduleAsync(schedule.Id),
+                _ => DataExportService.TakeOverScheduleAsync(schedule.Id),
+            });
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Changing Data Export Schedule {Error}", ex.Message);
+            _error = "The schedule was not changed: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task DeleteScheduleAsync(ExportScheduleView schedule)
+    {
+        try
+        {
+            await DataExportService.DeleteScheduleAsync(schedule.Id);
+            _notice = $"Deleted the schedule '{schedule.Name}'.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Data Export Schedule {Error}", ex.Message);
+            _error = "The schedule was not deleted: " + ex.Message;
+        }
+
+        await LoadAsync();
+        StateHasChanged(); // ActionDialog's OnClick is an Action: nothing re-renders after it unless asked
+    }
+
+    private async Task CancelAsync(Guid id)
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            await DataExportService.CancelAsync(id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Cancelling Data Export {Error}", ex.Message);
+            _error = "The export could not be cancelled.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+}

@@ -1,0 +1,114 @@
+@namespace NovaGloben.Module.KnowledgeBase.Categories
+@inherits ModuleBase
+@inject IKnowledgeBaseService KnowledgeBaseService
+
+@*
+    The NESTED page's module (BL-86): /knowledge-base/categories, a child of /knowledge-base. Each category links back to
+    the parent page's parameterised listing (/knowledge-base/!/category/{slug}); an editor creates a category here.
+*@
+
+@if (!IsAuthorizedPermission(KnowledgeBasePermissions.View))
+{
+    <p id="knowledge-base-categories-denied" style="color:var(--db-text-2);">You do not have access to the knowledge base on this site.</p>
+}
+else
+{
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+        <h3 style="margin:0;">Categories</h3>
+
+        @if (_categories is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading the categories…</p>
+        }
+        else if (_categories.Count == 0)
+        {
+            <p id="knowledge-base-no-categories" style="margin:0;color:var(--db-text-2);">No categories yet.</p>
+        }
+        else
+        {
+            <ul id="knowledge-base-category-list" style="margin:0;">
+                @foreach (var category in _categories)
+                {
+                    <li data-slug="@category.Slug">
+                        <a href="@NavigateUrl(ParentPath, AddUrlParameters("category", category.Slug))">@category.Name</a>
+                        <span style="color:var(--db-text-2);"> (@Count(category))</span>
+                    </li>
+                }
+            </ul>
+        }
+
+        @if (IsAuthorizedPermission(KnowledgeBasePermissions.Edit))
+        {
+            <form id="knowledge-base-category-form" style="display:flex;gap:0.5rem;align-items:baseline;" @onsubmit="CreateAsync" @onsubmit:preventDefault>
+                <label>New category <input id="knowledge-base-category-name" type="text" maxlength="80" @bind="_name" @bind:event="oninput" /></label>
+                <button id="knowledge-base-category-create" type="submit" class="db-btn" disabled="@(_busy || string.IsNullOrWhiteSpace(_name))">Create</button>
+            </form>
+        }
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="knowledge-base-categories-message" role="status" style="margin:0;">@_message</p>
+        }
+
+        <a id="knowledge-base-back" href="@NavigateUrl(ParentPath)">All articles</a>
+    </div>
+}
+
+@code {
+    private List<CategoryModel>? _categories;
+    private List<ArticleModel> _articles = new();
+    private string _name = string.Empty;
+    private bool _busy;
+    private string _message = string.Empty;
+
+    public override string Title => "Categories";
+
+    // The parent page's path: this page is placed one level under it.
+    private string ParentPath => PageState.Page.Path.Contains('/') ? PageState.Page.Path.Substring(0, PageState.Page.Path.LastIndexOf('/')) : "knowledge-base";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsAuthorizedPermission(KnowledgeBasePermissions.View))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private int Count(CategoryModel category) => _articles.Count(article => article.CategoryId == category.Id);
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _categories = await KnowledgeBaseService.ListCategoriesAsync();
+            _articles = await KnowledgeBaseService.ListArticlesAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the knowledge base's categories.");
+            _message = "The categories could not be loaded.";
+            _categories = new List<CategoryModel>();
+        }
+    }
+
+    private async Task CreateAsync()
+    {
+        _busy = true;
+        try
+        {
+            var created = await KnowledgeBaseService.CreateCategoryAsync(new CreateCategoryRequest { Name = _name.Trim() });
+            _message = $"Created {created.Name}.";
+            _name = string.Empty;
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not create the category.");
+            _message = "The category was not created: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

@@ -1,0 +1,206 @@
+@namespace Stomme.Modules.Notifications
+@inherits ModuleBase
+@inject INotificationsService NotificationsService
+
+@* Template authoring and PREVIEW (BL-78 step 5) - manage-templates. A preview is HTML-encoded exactly as e-mail / in-app encode. *@
+
+<PageTitle>Notification templates</PageTitle>
+
+@if (!IsAuthorizedPermission(NotificationsPermissions.ManageTemplates))
+{
+    <p class="db-notifications-denied" style="color:var(--db-text-2);">You do not have access to notification templates.</p>
+}
+else
+{
+    <div class="db-notifications-templates" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">Templates</h3>
+            <button id="notifications-template-new" type="button" class="db-btn" @onclick="New">New template</button>
+            <a class="db-btn" href="@NavigateUrl()">Back</a>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="notifications-templates-message" style="margin:0;">@_message</p>
+        }
+
+        <table class="table db-notifications-template-table">
+            <thead><tr><th>Key</th><th>Channels</th><th>Locales</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var item in _templates)
+                {
+                    <tr>
+                        <td>@item.Key</td>
+                        <td>@string.Join(", ", item.SupportedChannels)</td>
+                        <td>@string.Join(", ", item.Locales)</td>
+                        <td>
+                            <button type="button" class="db-btn" @onclick="@(() => EditAsync(item.Id))">Edit</button>
+                            <ActionDialog Header="Delete Template" Message="Delete this notification template? It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn" OnClick="@(async () => { await DeleteAsync(item.Id); StateHasChanged(); })" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (_editing)
+        {
+            <section id="notifications-template-editor" class="db-card" style="padding:0.75rem 1rem;display:flex;flex-direction:column;gap:0.5rem;max-width:720px;">
+                <label>Key <input id="notifications-template-key" class="db-input" maxlength="120" @bind="_key" @bind:event="oninput" disabled="@(_id != null)" /></label>
+                <div>
+                    @foreach (var kind in _kinds)
+                    {
+                        <label style="margin-right:1rem;"><input type="checkbox" checked="@_channels.Contains(kind)" @onchange="@(args => Toggle(kind, (bool)args.Value))" /> @kind</label>
+                    }
+                </div>
+                <label>Locale <input class="db-input" maxlength="35" @bind="_locale" @bind:event="oninput" /></label>
+                <label>Subject <input id="notifications-template-subject" class="db-input" @bind="_subject" @bind:event="oninput" /></label>
+                <label>Body <textarea id="notifications-template-body" class="db-input" rows="5" @bind="_body" @bind:event="oninput"></textarea></label>
+                <label>Placeholders (comma separated) <input id="notifications-template-placeholders" class="db-input" @bind="_placeholders" @bind:event="oninput" /></label>
+                <div style="display:flex;gap:0.5rem;">
+                    <button id="notifications-template-save" type="button" class="db-btn" @onclick="SaveAsync">Save</button>
+                    @if (_id != null)
+                    {
+                        <button id="notifications-template-preview" type="button" class="db-btn" @onclick="PreviewAsync">Preview with sample values</button>
+                    }
+                </div>
+                @if (_preview != null)
+                {
+                    <div class="db-notifications-preview">
+                        @if (!string.IsNullOrEmpty(_preview.Error))
+                        {
+                            <p style="color:var(--db-bad);">@_preview.Error</p>
+                        }
+                        else
+                        {
+                            <div><strong>@_preview.Subject</strong></div>
+                            <pre style="white-space:pre-wrap;">@_preview.Body</pre>
+                        }
+                    </div>
+                }
+            </section>
+        }
+    </div>
+}
+
+@code {
+    private static readonly NotificationChannelKind[] _kinds = { NotificationChannelKind.Email, NotificationChannelKind.InApp, NotificationChannelKind.Webhook };
+
+    private List<NotificationTemplateSummary> _templates = new();
+    private readonly HashSet<NotificationChannelKind> _channels = new();
+    private Guid? _id;
+    private bool _editing;
+    private string _key = "";
+    private string _locale = "en";
+    private string _subject = "";
+    private string _body = "";
+    private string _placeholders = "";
+    private NotificationTemplatePreview _preview;
+    private string _message = "";
+
+    public override string Title => "Notification Templates";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(NotificationsPermissions.ManageTemplates))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _templates = await NotificationsService.GetTemplatesAsync() ?? new List<NotificationTemplateSummary>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Notification Templates {Error}", ex.Message);
+            _message = "The templates could not be loaded.";
+        }
+    }
+
+    private void New()
+    {
+        _id = null;
+        _key = "";
+        _locale = "en";
+        _subject = "";
+        _body = "";
+        _placeholders = "";
+        _channels.Clear();
+        _channels.Add(NotificationChannelKind.Email);
+        _preview = null;
+        _message = ""; // a message from the last save does not describe the form now open
+        _editing = true;
+        BringIntoView("notifications-template-editor"); // below the templates (BL-22)
+    }
+
+    private void Toggle(NotificationChannelKind kind, bool on)
+    {
+        if (on) { _channels.Add(kind); } else { _channels.Remove(kind); }
+    }
+
+    private async Task EditAsync(Guid id)
+    {
+        var detail = await NotificationsService.GetTemplateAsync(id);
+        if (detail == null)
+        {
+            _message = "The template could not be loaded.";
+            return;
+        }
+
+        _id = detail.Id;
+        _key = detail.Key;
+        var content = detail.Contents.FirstOrDefault();
+        _locale = content?.LocaleCode ?? "en";
+        _subject = content?.Subject ?? "";
+        _body = content?.Body ?? "";
+        _placeholders = string.Join(", ", detail.Placeholders);
+        _channels.Clear();
+        foreach (var kind in detail.SupportedChannels) { _channels.Add(kind); }
+        _preview = null;
+        _message = ""; // a message from the last save does not describe the form now open
+        _editing = true;
+        BringIntoView("notifications-template-editor");
+    }
+
+    private async Task SaveAsync()
+    {
+        var placeholders = (_placeholders ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var id = await NotificationsService.SaveTemplateAsync(new NotificationTemplateInput(
+            _id, _key, _channels.ToList(), new[] { new NotificationTemplateContentInput(_locale, _subject, _body) }, placeholders));
+        if (id == Guid.Empty)
+        {
+            _message = "The template was refused - check the key, the channels and that every placeholder the content uses is declared.";
+            return;
+        }
+
+        _id = id;
+        _message = "Template saved.";
+        await LoadAsync();
+    }
+
+    private async Task PreviewAsync()
+    {
+        if (_id == null)
+        {
+            return;
+        }
+
+        var placeholders = (_placeholders ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        _preview = await NotificationsService.PreviewTemplateAsync(new NotificationTemplatePreviewInput(
+            _id.Value, _locale, placeholders.Select(name => new DispatchParameter(name, "[" + name + "]")).ToList()));
+    }
+
+    private async Task DeleteAsync(Guid id)
+    {
+        await NotificationsService.DeleteTemplateAsync(id);
+        _message = "";
+        await LoadAsync();
+        if (_templates.Any(item => item.Id == id))
+        {
+            _message = "The template is referenced by notification requests and cannot be deleted.";
+        }
+    }
+}

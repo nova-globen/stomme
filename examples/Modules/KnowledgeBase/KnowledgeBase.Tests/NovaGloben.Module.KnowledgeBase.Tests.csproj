@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BL-86: the exemplar's UNIT tests - its domain and application logic with no host, against the same SDK packages the
+    module builds with (through the Server project). An external developer's module tests look like this; the
+    installed-host behaviour is the drive's (KnowledgeBase.Drive). Run by pack-knowledgebase.ps1 before it packs.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NovaGloben.Module.KnowledgeBase.Server\NovaGloben.Module.KnowledgeBase.Server.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,35 @@
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Stomme.Databases.Interfaces;
+using Stomme.Migrations.EntityBuilders;
+using Stomme.Repository;
+
+namespace Stomme.Migrations.Tenant
+{
+    [DbContext(typeof(TenantDBContext))]
+    [Migration("Tenant.04.00.00.01")]
+    public class AddHeaderContent : MultiDatabaseMigration
+    {
+        public AddHeaderContent(IDatabase database) : base(database)
+        {
+        }
+
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            var siteEntityBuilder = new SiteEntityBuilder(migrationBuilder, ActiveDatabase);
+            siteEntityBuilder.AddStringColumn("HeadContent", 4000, true);
+
+            var pageEntityBuilder = new PageEntityBuilder(migrationBuilder, ActiveDatabase);
+            pageEntityBuilder.AddStringColumn("HeadContent", 4000, true);
+
+            pageEntityBuilder.UpdateData("HeadContent", "Meta");
+            pageEntityBuilder.DropColumn("Meta");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            // not implemented
+        }
+    }
+}

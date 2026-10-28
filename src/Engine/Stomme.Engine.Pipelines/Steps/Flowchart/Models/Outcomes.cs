@@ -1,0 +1,11 @@
+namespace Stomme.Engine.Pipelines.Steps.Flowchart.Models;
+
+/// <summary>
+/// Represents a list of outcomes that can be send when completing a step. This information is used by <see cref="Steps.Flowchart"/>.
+/// </summary>
+/// <param name="Names">A list of outcome names.</param>
+public record Outcomes(params string[] Names)
+{
+    public static readonly Outcomes Default = new(null!, "Done");
+    public static readonly Outcomes Empty = new();
+}

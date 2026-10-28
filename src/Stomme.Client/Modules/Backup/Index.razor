@@ -1,0 +1,292 @@
+@namespace Stomme.Modules.Backup
+@inherits ModuleBase
+@inject IBackupService BackupService
+@inject ITenantService TenantService
+
+@*
+    Backup and restore (BL-81): encrypted snapshots of the whole installation, restored when the host restarts. Placed for the
+    Host while Backup:Enabled is on; every action is decided again by the server, which requires the Host role.
+*@
+
+<PageTitle>Backup</PageTitle>
+
+<div class="db-backup" style="display:flex;flex-direction:column;gap:1.5rem;">
+    <section style="display:flex;flex-direction:column;gap:0.5rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Snapshots</h3>
+            <button id="backup-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+        @if (_snapshots is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+        }
+        else if (_snapshots.Count == 0)
+        {
+            <p id="backup-empty" style="margin:0;color:var(--db-text-2);">No snapshots yet.</p>
+        }
+        else
+        {
+            <div style="overflow-x:auto;">
+                <table class="db-backup-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Taken (UTC)</th>
+                            <th style="text-align:left;">Kind</th>
+                            <th style="text-align:left;">Status</th>
+                            <th style="text-align:right;">Size</th>
+                            <th style="text-align:left;">Last restored (UTC)</th>
+                            <th style="width:1px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var snapshot in _snapshots)
+                        {
+                            <tr>
+                                <td>@snapshot.CreatedOnUtc.ToString("u")</td>
+                                <td>@snapshot.RetentionTag</td>
+                                <td>@snapshot.Status@(string.IsNullOrEmpty(snapshot.FailureReason) ? "" : $" ({snapshot.FailureReason})")</td>
+                                <td style="text-align:right;">@Size(snapshot.SizeBytes)</td>
+                                <td>@(snapshot.LastRestoredOnUtc?.ToString("u") ?? "—")</td>
+                                <td style="white-space:nowrap;">
+                                    @if (snapshot.CanRestore)
+                                    {
+                                        <a class="db-btn" href="@DownloadUrl(snapshot)" download>Download</a>
+                                        <button type="button" class="db-btn" @onclick="() => BeginRestore(snapshot)" disabled="@_busy">Restore…</button>
+                                    }
+                                    @if (snapshot.CanDelete)
+                                    {
+                                        <ActionDialog Header="Delete Snapshot" Message="Delete this backup snapshot and its archive? It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn" OnClick="@(async () => { await DeleteAsync(snapshot); StateHasChanged(); })" Disabled="@_busy" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    @if (_restoring is not null)
+    {
+        <section id="backup-restore" style="display:flex;flex-direction:column;gap:0.5rem;">
+            <h3 style="margin:0;">Restore the snapshot of @_restoring.CreatedOnUtc.ToString("u")</h3>
+            <p style="margin:0;">
+                Everything is checked first and nothing is changed until the host restarts. A safety snapshot of the current
+                state is taken before the restore is staged; if the restore fails, that safety snapshot is put back.
+            </p>
+            @if (_tenants.Count > 1)
+            {
+                <fieldset id="backup-restore-tenants" style="border:1px solid var(--db-border);padding:0.5rem;">
+                    <legend>Tenants to put back</legend>
+                    <p style="margin:0 0 0.5rem 0;color:var(--db-text-2);">All of them restores the whole installation. Tenants that share one database are restored together.</p>
+                    @foreach (var tenant in _tenants)
+                    {
+                        <label style="display:inline-flex;gap:0.25rem;align-items:center;margin-right:1rem;">
+                            <input type="checkbox" checked="@_selectedTenants.Contains(tenant.TenantId)" @onchange="@(e => ToggleTenant(tenant.TenantId, e.Value is true))" />
+                            @tenant.Name (@tenant.TenantId)
+                        </label>
+                    }
+                </fieldset>
+            }
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                <label for="backup-restore-passphrase">Passphrase</label>
+                <input id="backup-restore-passphrase" type="password" class="db-input" style="width:auto;" autocomplete="off" @bind="_restorePassphrase" />
+                <button id="backup-restore-run" type="button" class="db-btn" @onclick="RestoreAsync" disabled="@_busy">Stage the restore</button>
+                <button type="button" class="db-btn" @onclick="CancelRestore" disabled="@_busy">Cancel</button>
+            </div>
+        </section>
+    }
+
+    <section style="display:flex;flex-direction:column;gap:0.5rem;">
+        <h3 style="margin:0;">Take a snapshot</h3>
+        <p style="margin:0;">The passphrase encrypts the snapshot and is never stored - without it the snapshot cannot be restored.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <label for="backup-passphrase">Passphrase</label>
+            <input id="backup-passphrase" type="password" class="db-input" style="width:auto;" autocomplete="new-password" @bind="_passphrase" />
+            <button id="backup-create" type="button" class="db-btn" @onclick="CreateAsync" disabled="@_busy">Take a snapshot</button>
+        </div>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:0.5rem;">
+        <h3 style="margin:0;">Import an archive</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <InputFile id="backup-import-file" OnChange="PickArchive" accept=".dcbak" />
+            <label for="backup-import-passphrase">Passphrase</label>
+            <input id="backup-import-passphrase" type="password" class="db-input" style="width:auto;" autocomplete="off" @bind="_importPassphrase" />
+            <button id="backup-import" type="button" class="db-btn" @onclick="ImportAsync" disabled="@(_busy || _archive is null)">Import</button>
+        </div>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:0.5rem;">
+        <h3 style="margin:0;">Schedule</h3>
+        <p style="margin:0;">
+            Scheduled snapshots use the passphrase configured as Backup:Schedule:Passphrase (or held in the file Backup:Schedule:PassphraseFile names), and run from the Backup Schedule Job,
+            which is off until it is enabled under Jobs.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;">
+            <label style="display:flex;gap:0.5rem;align-items:center;"><input id="backup-schedule-enabled" type="checkbox" @bind="_schedule.Enabled" /> Enabled</label>
+            <label for="backup-schedule-interval">Every (hours)</label>
+            <input id="backup-schedule-interval" type="number" min="1" class="db-input" style="width:6rem;" @bind="_schedule.IntervalHours" />
+            <label for="backup-schedule-days">Keep (days)</label>
+            <input id="backup-schedule-days" type="number" min="1" class="db-input" style="width:6rem;" @bind="_schedule.RetentionDays" />
+            <label for="backup-schedule-last">At least the last</label>
+            <input id="backup-schedule-last" type="number" min="1" class="db-input" style="width:6rem;" @bind="_schedule.KeepLast" />
+            <button id="backup-schedule-save" type="button" class="db-btn" @onclick="SaveScheduleAsync" disabled="@_busy">Save</button>
+        </div>
+    </section>
+
+    @if (_problems.Count > 0)
+    {
+        <div id="backup-problems" class="db-empty">
+            <ul style="margin:0;">@foreach (var problem in _problems) { <li>@problem</li> }</ul>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(_message))
+    {
+        <p id="backup-message" style="margin:0;">@_message</p>
+    }
+</div>
+
+@code {
+    private List<BackupSnapshotView> _snapshots;
+    private BackupScheduleView _schedule = new();
+    private BackupSnapshotView _restoring;
+    private IBrowserFile _archive;
+    private bool _busy;
+    private string _passphrase = string.Empty;
+    private string _restorePassphrase = string.Empty;
+    private List<Tenant> _tenants = new();
+    private HashSet<int> _selectedTenants = new();
+    private string _importPassphrase = string.Empty;
+    private string _message = string.Empty;
+    private List<string> _problems = new();
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private string DownloadUrl(BackupSnapshotView snapshot) => Utilities.TenantUrl(PageState.Alias, $"/api/Backup/{snapshot.Id}/download");
+
+    private static string Size(long bytes) => bytes <= 0 ? "—" : bytes < 1024 * 1024 ? $"{bytes / 1024.0:0.#} KiB" : $"{bytes / (1024.0 * 1024):0.#} MiB";
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _snapshots = await BackupService.ListAsync();
+            _schedule = (await BackupService.SchedulesAsync()).FirstOrDefault() ?? new BackupScheduleView();
+            if (_restoring is not null && await BackupService.RestoreReportAsync(_restoring.Id) is { Completed: true } report)
+            {
+                _problems = report.Problems;
+                _message = report.Accepted ? "The restore is staged. It is applied when the host restarts." : "The restore was refused:";
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the backups.");
+            _snapshots = new List<BackupSnapshotView>();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private Task CreateAsync() => RunAsync(async () =>
+    {
+        var result = await BackupService.CreateAsync(new BackupPassphraseRequest { Passphrase = _passphrase });
+        _passphrase = string.Empty;
+        Show(result, "The snapshot is being taken; Refresh to see it become Available.");
+    });
+
+    private async Task BeginRestore(BackupSnapshotView snapshot)
+    {
+        _restoring = snapshot;
+        _restorePassphrase = string.Empty;
+        _problems = new List<string>();
+        _message = string.Empty;
+        try
+        {
+            // BL-171: a multi-tenant installation may put back some tenants only; the default is all of them.
+            _tenants = await TenantService.GetTenantsAsync() ?? new List<Tenant>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not list the tenants for the restore.");
+            _tenants = new List<Tenant>();
+        }
+
+        _selectedTenants = _tenants.Select(tenant => tenant.TenantId).ToHashSet();
+    }
+
+    private void ToggleTenant(int tenantId, bool selected)
+    {
+        if (selected)
+        {
+            _selectedTenants.Add(tenantId);
+        }
+        else
+        {
+            _selectedTenants.Remove(tenantId);
+        }
+    }
+
+    private void CancelRestore() => _restoring = null;
+
+    private Task RestoreAsync() => RunAsync(async () =>
+    {
+        var whole = _tenants.Count <= 1 || _selectedTenants.Count == _tenants.Count;
+        var result = await BackupService.RestoreAsync(_restoring.Id, new BackupPassphraseRequest { Passphrase = _restorePassphrase, TenantIds = whole ? null : _selectedTenants.OrderBy(id => id).ToList() });
+        _restorePassphrase = string.Empty;
+        Show(result, "The restore is being checked and staged; Refresh to see the result.");
+    });
+
+    private Task DeleteAsync(BackupSnapshotView snapshot) => RunAsync(async () =>
+    {
+        await BackupService.DeleteAsync(snapshot.Id);
+        _message = "The snapshot was deleted.";
+    });
+
+    private void PickArchive(InputFileChangeEventArgs args) => _archive = args.File;
+
+    private Task ImportAsync() => RunAsync(async () =>
+    {
+        await using var stream = _archive.OpenReadStream(maxAllowedSize: long.MaxValue);
+        var result = await BackupService.ImportAsync(stream, _importPassphrase);
+        _importPassphrase = string.Empty;
+        Show(result, "The archive was verified and imported.");
+    });
+
+    private Task SaveScheduleAsync() => RunAsync(async () =>
+    {
+        _schedule = await BackupService.SaveScheduleAsync(_schedule);
+        _message = "The schedule was saved.";
+    });
+
+    private void Show(BackupOperationResult result, string accepted)
+    {
+        _problems = result.Accepted ? new List<string>() : result.Problems;
+        _message = result.Accepted ? accepted : "The request was refused:";
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _busy = true;
+        _problems = new List<string>();
+        try
+        {
+            await action();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "A backup request failed.");
+            _message = "The request was refused.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+}

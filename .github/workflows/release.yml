@@ -1,0 +1,151 @@
+name: release
+
+# Publishes the framework's packages to nuget.org from a version tag (v<version>) in the PUBLIC repository.
+# The tag must equal both Directory.Build.props versions. The local full gate (`pwsh scripts/gate.ps1 -Full`) runs before
+# any tag; this workflow packs, checks and pushes.
+#
+# Packs, in the order the restores need: the framework and its project closure (scripts/pack-framework.ps1) with the fat
+# SDK meta, the app template (scripts/pack-template.ps1), the slim SDK. Pushes every Stomme.* package. Guards before the
+# push: every package carries the LICENSE file, the themes' embedded static-web-asset props declare exactly what they
+# package (BL-70), and no pushed package depends on an id this run does not push.
+#
+# Publishes with nuget.org TRUSTED PUBLISHING (infra's ruling C21): no stored API key. The job asks GitHub for an OIDC
+# token (id-token: write), NuGet/login exchanges it for a key that lives one hour, requested right before the push. The
+# nuget.org policy names this repository and this workflow file; the repository variable NUGET_USER is the nuget.org
+# profile name (not an e-mail).
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version to pack and push (equals Directory.Build.props); empty = from the tag'
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  DOTNET_NOLOGO: '1'
+
+jobs:
+  pack-and-push:
+    if: github.repository == 'nova-globen/stomme'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Resolve and assert the version
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          set -eu
+          VERSION="${INPUT_VERSION:-}"
+          if [ -z "$VERSION" ]; then
+              case "$GITHUB_REF" in
+                  refs/tags/v*) VERSION="${GITHUB_REF#refs/tags/v}";;
+                  *) echo "not a v<version> tag: $GITHUB_REF" >&2; exit 1;;
+              esac
+          fi
+          case "$VERSION" in *[!0-9A-Za-z.-]*|'') echo "invalid version: $VERSION" >&2; exit 1;; esac
+          ROOT_V=$(sed -n 's/.*<Version>\(.*\)<\/Version>.*/\1/p' Directory.Build.props | head -n1)
+          EXAMPLES_V=$(sed -n 's/.*<Version>\(.*\)<\/Version>.*/\1/p' examples/Directory.Build.props | head -n1)
+          if [ "$VERSION" != "$ROOT_V" ] || [ "$VERSION" != "$EXAMPLES_V" ]; then
+              echo "VERSION MISMATCH: tag $VERSION, Directory.Build.props $ROOT_V, examples/Directory.Build.props $EXAMPLES_V" >&2
+              exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Install wasm-tools workload
+        run: dotnet workload install wasm-tools
+
+      - name: Pack the framework and the fat SDK into examples/local-feed
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force examples/local-feed, pkg-out -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory pkg-out | Out-Null
+          pwsh -NoProfile -File scripts/pack-framework.ps1 -Output examples/local-feed
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet pack examples/Stomme.Sdk/Stomme.Sdk.csproj -c Release --output examples/local-feed
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      - name: Pack the app template
+        shell: pwsh
+        run: pwsh -NoProfile -File scripts/pack-template.ps1 -Output pkg-out
+
+      - name: Pack the slim SDK into examples/local-feed
+        run: |
+          set -eu
+          dotnet pack examples/Stomme.Sdk.Slim/Stomme.Server.Sdk/Stomme.Server.Sdk.csproj -c Release --output examples/local-feed
+          dotnet pack examples/Stomme.Sdk.Slim/Stomme.Client.Sdk/Stomme.Client.Sdk.csproj -c Release --output examples/local-feed
+          dotnet pack examples/Stomme.Sdk.Slim/Stomme.Sdk.Slim/Stomme.Sdk.Slim.csproj -c Release --output examples/local-feed
+
+      - name: Collect what is pushed
+        run: |
+          set -eu
+          mkdir -p push
+          cp examples/local-feed/Stomme.*.nupkg pkg-out/Stomme.*.nupkg push/ 2>/dev/null || true
+          ls -1 push
+
+      - name: Guard - every package carries the LICENSE file (D115)
+        run: |
+          set -eu
+          bad=0
+          for pkg in push/*.nupkg; do
+              unzip -p "$pkg" '*.nuspec' | grep -q '<license type="file">LICENSE</license>' || { echo "NOT THE LICENSE FILE: $pkg" >&2; bad=1; }
+              unzip -l "$pkg" LICENSE >/dev/null 2>&1 || { echo "NO LICENSE AT THE PACKAGE ROOT: $pkg" >&2; bad=1; }
+          done
+          exit $bad
+
+      - name: Guard - the theme packs declare exactly the assets they package (BL-70)
+        run: |
+          set -eu
+          for pkg in push/Stomme.Theme.*.nupkg; do
+              [ -e "$pkg" ] || continue
+              files=$(unzip -l "$pkg" 'staticwebassets/*' | grep -c 'staticwebassets/' || true)
+              declared=$(unzip -p "$pkg" 'build/Microsoft.AspNetCore.StaticWebAssets.props' | grep -c '<StaticWebAsset ' || true)
+              echo "$pkg: packaged=$files declared=$declared"
+              [ "$files" = "$declared" ] || { echo "POISONED PACK: $pkg" >&2; exit 1; }
+          done
+
+      - name: Guard - no pushed package depends on an id this run does not push
+        # The framework's packages depend on each other; a dependency nuget.org does not have makes every restore fail.
+        run: |
+          set -eu
+          ids=$(for p in push/*.nupkg; do unzip -p "$p" '*.nuspec' | sed -n 's:.*<id>\(.*\)</id>.*:\1:p' | head -n1; done | sort -u)
+          bad=0
+          for p in push/*.nupkg; do
+              for dep in $(unzip -p "$p" '*.nuspec' | grep -o '<dependency id="[^"]*"' | sed 's/<dependency id="\(.*\)"/\1/' | sort -u); do
+                  case "$dep" in
+                      Stomme.*|NovaGloben.*) echo "$ids" | grep -qx "$dep" || { echo "$p depends on $dep, which this run does not push" >&2; bad=1; };;
+                  esac
+              done
+          done
+          exit $bad
+
+      - name: Sign in to nuget.org (trusted publishing; a key that lives one hour)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      - name: Push to nuget.org
+        run: |
+          set -eu
+          for p in push/*.nupkg; do
+              dotnet nuget push "$p" --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          done

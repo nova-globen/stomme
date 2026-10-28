@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>
+            Provides a store for holding key value records.
+        </Description>
+        <PackageTags>stomme module keyvalue</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Stomme.Engine.Features\Stomme.Engine.Features.csproj" />
+      <ProjectReference Include="..\Stomme.Engine.Common\Stomme.Engine.Common.csproj" />
+    </ItemGroup>
+</Project>

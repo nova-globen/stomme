@@ -1,0 +1,185 @@
+﻿@namespace Stomme.Modules.Admin.UserProfile
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject INotificationService NotificationService
+@inject IStringLocalizer<View> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (PageState.User != null)
+{
+    @if (title == "From")
+    {
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="username" HelpText="The user who sent the message" ResourceKey="From">From:</Label>
+                <div class="db-field-control">
+                    <input id="username" class="db-input" @bind="@username" readonly />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="subject" HelpText="The subject of the message" ResourceKey="Subject">Subject:</Label>
+                <div class="db-field-control">
+                    <input id="subject" class="db-input" @bind="@subject" readonly />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="date" HelpText="The date the message was sent" ResourceKey="Date">Sent:</Label>
+                <div class="db-field-control">
+                    <input id="date" class="db-input" @bind="@createdon" readonly />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="message" HelpText="The contents of the message" ResourceKey="Message">Message:</Label>
+                <div class="db-field-control">
+                    <textarea id="message" class="db-input" @bind="@body" rows="5" readonly />
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="username" HelpText="The user who will be the recipient of the message" ResourceKey="To">To:</Label>
+                <div class="db-field-control">
+                    <input id="username" class="db-input" @bind="@username" readonly />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="subject" HelpText="The subject of the message" ResourceKey="Subject">Subject:</Label>
+                <div class="db-field-control">
+                    <input id="subject" class="db-input" @bind="@subject" readonly="@(!reply)" />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="message" HelpText="The content of the message" ResourceKey="Message">Message:</Label>
+                <div class="db-field-control">
+                    <textarea id="message" class="db-input" @bind="@body" rows="5" readonly="@(!reply)" />
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (reply)
+    {
+        <button type="button" class="db-btn" @onclick="Send">@SharedLocalizer["Send"]</button>
+    }
+    else
+    {
+        if (title == "From" && username != Localizer["System"])
+        {
+            <button type="button" class="db-btn" @onclick="Reply">@Localizer["Reply"]</button>
+        }
+    }
+    <NavLink class="db-btn db-btn-neutral" href="@PageState.ReturnUrl">@SharedLocalizer["Cancel"]</NavLink>
+}
+
+@code {
+    private int notificationid;
+    private string title = string.Empty;
+    private string username = "";
+    private string subject = string.Empty;
+    private string createdon = string.Empty;
+    private string body = string.Empty;
+    private bool reply = false;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.View;
+    public override string Title => "View Notification";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            notificationid = Int32.Parse(PageState.QueryString["id"]);
+            Notification notification = await NotificationService.GetNotificationAsync(notificationid);
+            if (notification != null)
+            {
+                int userid = -1;
+                if (notification.ToUserId == PageState.User.UserId)
+                {
+                    title = "From";
+                    if (notification.FromUserId != null)
+                    {
+                        userid = notification.FromUserId.Value;
+                    }
+                }
+                else
+                {
+                    title = "To";
+                    if (notification.ToUserId != null)
+                    {
+                        userid = notification.ToUserId.Value;
+                    }
+                }
+                if (userid != -1)
+                {
+                    var user = await UserService.GetUserAsync(userid, PageState.Site.SiteId);
+                    if (user != null)
+                    {
+                        username = user.Username;
+                    }
+                }
+                if (username == "")
+                {
+                    username = Localizer["System"];
+                }
+                subject = notification.Subject;
+                createdon = notification.CreatedOn.ToString();
+                body = notification.Body;
+
+                if (title == "From" && !notification.IsRead)
+                {
+                    notification.IsRead = true;
+                    notification = await NotificationService.UpdateNotificationAsync(notification);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Users {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.User.Load"], MessageType.Error);
+        }
+    }
+
+    private void Reply()
+    {
+        title = "To";
+        if (!subject.Contains(Localizer["RE:"]))
+        {
+            subject = Localizer["RE"] + " " + subject;
+        }
+        body = $"\n\n____________________________________________\n" +
+            $"{Localizer["From.Text"]} {username}\n" +
+            $"{Localizer["Date.Text"]} {createdon}\n" +
+            $"{Localizer["Subject.Text"]} {subject}\n\n" +
+            body;
+        reply = true;
+        StateHasChanged();
+    }
+
+    private async Task Send()
+    {
+        try
+        {
+            var user = await UserService.GetUserAsync(username, PageState.Site.SiteId);
+            if (user != null)
+            {
+                var notification = new Notification(PageState.Site.SiteId, PageState.User, user, subject, body, notificationid);
+                notification = await NotificationService.AddNotificationAsync(notification);
+                await logger.LogInformation("Notification Created {NotificationId}", notification.NotificationId);
+                NavigationManager.NavigateTo(PageState.ReturnUrl);
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.User.Invalid"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Adding Notification {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Notification.Add"], MessageType.Error);
+        }
+    }
+}
+

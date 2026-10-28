@@ -1,0 +1,89 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <AssemblyName>Stomme.Application.Server.Stomme</AssemblyName>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
+    <CompressionEnabled>false</CompressionEnabled>
+    <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+
+  <!-- Data is this machine's installation: appsettings.override.json (the connection string, the installation id, any
+       unattended HostPassword) and the SQLite databases. It is never content - published, it would carry those secrets
+       into every deployment and install the published app from them without showing the installer. -->
+  <ItemGroup>
+    <Content Remove="Data\**" />
+    <None Remove="Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\Modules\Templates\**" />
+    <Compile Remove="wwwroot\Themes\Templates\**" />
+    <Content Remove="wwwroot\Modules\Templates\**" />
+    <Content Remove="wwwroot\Themes\Templates\**" />
+    <EmbeddedResource Remove="wwwroot\Modules\Templates\**" />
+    <EmbeddedResource Remove="wwwroot\Themes\Templates\**" />
+    <None Remove="wwwroot\Modules\Templates\**" />
+    <None Remove="wwwroot\Themes\Templates\**" />
+    <Watch Remove="wwwroot\Modules\Templates\**" />
+    <Watch Remove="wwwroot\Themes\Templates\**" />
+  </ItemGroup>
+
+  <!-- The module and theme templates the host's Create Module and Create Theme generate from (Server/wwwroot/{Modules,Themes}/
+       Templates, carried into the app at the framework's version when the template was packed). They are source code, kept out
+       of every item group above so nothing compiles or serves them, and copied into the published web root the way the
+       framework's own host does, so Create Module works in a published app too. -->
+  <ItemGroup>
+    <ModuleTemplateFiles Include="$(ProjectDir)wwwroot\Modules\Templates\**\*.*" />
+    <ThemeTemplateFiles Include="$(ProjectDir)wwwroot\Themes\Templates\**\*.*" />
+  </ItemGroup>
+
+  <Target Name="PublishStommeTemplates" AfterTargets="Publish">
+    <Copy SourceFiles="@(ModuleTemplateFiles)" DestinationFiles="@(ModuleTemplateFiles->'$(PublishDir)wwwroot\Modules\Templates\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
+    <Copy SourceFiles="@(ThemeTemplateFiles)" DestinationFiles="@(ThemeTemplateFiles->'$(PublishDir)wwwroot\Themes\Templates\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Client\Stomme.Application.Client.csproj" />
+    <ProjectReference Include="..\Shared\Stomme.Application.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stomme.Server" />
+  </ItemGroup>
+
+  <!-- The feature-flag config file — copied alongside appsettings so the module.<id>.enabled knob is
+       live at runtime and in a published app. -->
+  <ItemGroup>
+    <Content Update="features.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!--
+    BUNDLING AN EXTERNAL MODULE BY BUILD-TIME PackageReference.
+
+    A Stomme app can ship an external module by simply referencing its NuGet package here. The module's
+    `.Stomme`-named assembly bakes into the publish output and is discovered at startup by the existing
+    convention scan (InstallationManager / IsStommeAssembly over /bin) — no InstallationManager upload, no
+    project reference, no framework edit. Discovery is UNCONDITIONAL; WHICH bundled modules are enabled/seeded
+    by default is driven by the feature-flag config knob `module.<id>.enabled` in features.json (see below).
+
+    Example (uncomment + point at the feed that hosts the module package):
+
+    <ItemGroup>
+      <PackageReference Include="NovaGloben.Module.Blogs" Version="1.0.0" />
+    </ItemGroup>
+
+    Under central package management (Directory.Packages.props) put the Version on a <PackageVersion> there and
+    reference it without a Version here.
+  -->
+
+</Project>

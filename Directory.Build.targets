@@ -1,0 +1,20 @@
+<Project>
+  <!--
+    TEST-HOST THROTTLE (owner request 2026-09-15): several implementation agents run `dotnet test` in parallel
+    worktrees on one 31 GB laptop and exhausted RAM. Every test project compiles
+    test/TestHostLock/MachineWideTestHostLock.cs, whose module initializer takes the named mutex
+    Global\Stomme.TestHost before the first test runs, so only ONE test host executes tests at a time,
+    machine-wide. Other test hosts (any worktree, any run) wait; the OS releases the mutex when the owning process
+    exits, so a killed run cannot wedge the queue. Nothing is skipped: every suite still runs, one after another.
+    Skipped automatically when CI=true (isolated CI containers); opt out locally with STOMME_TEST_PARALLEL=1.
+    Each acquisition appends one line to %TEMP%\stomme-test-lock.log. Verified 2026-09-15: two concurrent runs of
+    Stomme.FeatureManagement.Tests - the second host acquired 3.07 s later, when the first exited; both 69/0.
+  -->
+  <ItemGroup Condition="'$(IsTestProject)' == 'true' and '$(Language)' == 'C#'">
+    <Compile Include="$(MSBuildThisFileDirectory)test/TestHostLock/MachineWideTestHostLock.cs" Link="Properties/MachineWideTestHostLock.cs" Visible="false" />
+    <!-- BL-156: the sweep of earlier runs' leftovers, run by the lock once it is held. -->
+    <Compile Include="$(MSBuildThisFileDirectory)test/TestHostLock/TestScratchSweep.cs" Link="Properties/TestScratchSweep.cs" Visible="false" />
+    <!-- 2026-10-03: and the test databases earlier runs left on this machine's own RavenDB. -->
+    <Compile Include="$(MSBuildThisFileDirectory)test/TestHostLock/RavenTestDatabaseSweep.cs" Link="Properties/RavenTestDatabaseSweep.cs" Visible="false" />
+  </ItemGroup>
+</Project>

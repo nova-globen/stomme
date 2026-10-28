@@ -1,0 +1,127 @@
+@namespace Stomme.Modules.Metering
+@inherits ModuleBase
+@inject IMeteringService MeteringService
+
+@*
+    The site's usage log and its AI dashboard (D102 item 11). The dashboard reads ROLLUPS, which the nightly pass
+    maintains - never a ledger scan, which is what the predecessor platform's job did every night. The ledger carries no prompt and
+    no completion; there is nothing here that could render one.
+*@
+
+<PageTitle>Usage log</PageTitle>
+
+@if (!IsAuthorizedPermission(MeteringPermissions.View))
+{
+    <p class="db-metering-denied" style="color:var(--db-text-2);">You do not have access to the usage log of this site.</p>
+}
+else
+{
+    <div class="db-metering-log" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">Usage log</h3>
+            <button id="metering-usage-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p style="margin:0;color:var(--db-bad);">@_error</p>
+        }
+
+        <section class="db-card db-metering-ai" style="padding:0.75rem 1rem;">
+            <h4 style="margin:0 0 0.5rem;">AI usage</h4>
+            @if (_dashboard == null || _dashboard.Rollups.Count == 0)
+            {
+                <p style="margin:0;color:var(--db-text-2);">No AI usage has been rolled up for this site yet.</p>
+            }
+            else
+            {
+                <p style="margin:0 0 0.5rem;">
+                    @_dashboard.Calls calls, @_dashboard.BillableTokens billable tokens, @_dashboard.Errors errors,
+                    @_dashboard.EstimatedCost.ToString("0.####") @_dashboard.CurrencyCode estimated.
+                </p>
+                <table class="table db-metering-ai-table">
+                    <thead><tr><th>Day</th><th>Provider</th><th>Model</th><th>Agent</th><th>Calls</th><th>Tokens</th><th>Errors</th><th>Cost</th></tr></thead>
+                    <tbody>
+                        @foreach (var row in _dashboard.Rollups)
+                        {
+                            <tr>
+                                <td>@row.DayUtc.ToString("yyyy-MM-dd")</td>
+                                <td>@row.Provider</td>
+                                <td>@row.Model</td>
+                                <td>@row.Agent</td>
+                                <td>@row.Calls</td>
+                                <td>@row.BillableTokens</td>
+                                <td>@row.Errors</td>
+                                <td>@row.EstimatedCost.ToString("0.####") @row.CurrencyCode</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+
+        <section>
+            <h4 style="margin:0 0 0.5rem;">Ledger</h4>
+            @if (_usage.Count == 0)
+            {
+                <p class="db-metering-empty" style="color:var(--db-text-2);">Nothing has been metered on this site yet.</p>
+            }
+            else
+            {
+                <table class="table db-metering-usage-table">
+                    <thead><tr><th>When</th><th>Metric</th><th>Quantity</th><th>Source</th><th>User</th><th>State</th></tr></thead>
+                    <tbody>
+                        @foreach (var row in _usage)
+                        {
+                            <tr>
+                                <td>@row.OccurredOnUtc.ToString("u")</td>
+                                <td>@row.Metric</td>
+                                <td>@row.Quantity</td>
+                                <td>@row.Source</td>
+                                <td>@(row.UserId?.ToString() ?? "-")</td>
+                                <td>@row.FoldState</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+    </div>
+}
+
+@code {
+    private List<UsageRecordView> _usage = new();
+    private AiUsageDashboard _dashboard;
+    private string _error = "";
+    private bool _busy;
+
+    public override string Title => "Usage log";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(MeteringPermissions.View))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        _error = "";
+        try
+        {
+            _usage = await MeteringService.GetUsageAsync() ?? new List<UsageRecordView>();
+            _dashboard = await MeteringService.GetAiDashboardAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Usage Log {Error}", ex.Message);
+            _error = "The usage log could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

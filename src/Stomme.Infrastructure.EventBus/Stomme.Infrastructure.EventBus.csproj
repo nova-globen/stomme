@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Stomme.Infrastructure.EventBus</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stomme.EventBus\Stomme.EventBus.csproj" />
+    <!-- Tenant propagation across the bus: read the ambient tenant on send, restore the scope on receive. -->
+    <ProjectReference Include="..\Stomme.Tenancy.Abstractions\Stomme.Tenancy.Abstractions.csproj" />
+    <ProjectReference Include="..\Stomme.Persistence.Abstractions\Stomme.Persistence.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Rebus" />
+    <PackageReference Include="Rebus.ServiceProvider" />
+    <!-- Config-selectable broker transports (the RavenDB transport is supplied by its store module). -->
+    <PackageReference Include="Rebus.RabbitMq" />
+    <PackageReference Include="Rebus.AzureServiceBus" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Stomme.Tests" />
+    <InternalsVisibleTo Include="Stomme.MessageBus.Tests" />
+  </ItemGroup>
+</Project>

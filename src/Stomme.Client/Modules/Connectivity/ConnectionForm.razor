@@ -1,0 +1,272 @@
+@namespace Stomme.Modules.Connectivity
+@inject IConnectionsService ConnectionsService
+
+@*
+    A connection made or edited (BL-94 increment 7, D110; a component of its own since BL-229, so the pipeline editor makes one
+    where a step needs it, as n8n makes a credential from the node): the chosen connector's declared settings and its scheme's
+    credential fields; a credential is typed in and never read back - on an edit a blank one means "leave it". The server
+    decides every save: a refusal is said here, in its words.
+*@
+
+<div id="@(IdPrefix + "-form")" style="display:flex;flex-direction:column;gap:0.5rem;">
+    <label for="@(IdPrefix + "-name")" style="font-size:0.85em;color:var(--db-text-2);">Name</label>
+    <input id="@(IdPrefix + "-name")" class="db-input" placeholder="Name" @bind="_name" />
+    @if (Editing is null)
+    {
+        <label for="@(IdPrefix + "-connector")" style="font-size:0.85em;color:var(--db-text-2);">Connector</label>
+        <select id="@(IdPrefix + "-connector")" class="db-input" @onchange="@(e => SelectConnector(e.Value?.ToString()))">
+            <option value="">Choose a connector</option>
+            @foreach (var group in Groups())
+            {
+                <optgroup label="@group.Label">
+                    @foreach (var connector in group.Connectors)
+                    {
+                        <option value="@connector.ConnectorType" selected="@(_connectorType == connector.ConnectorType)">@connector.DisplayName</option>
+                    }
+                </optgroup>
+            }
+        </select>
+    }
+    else
+    {
+        <p style="margin:0;color:var(--db-text-2);">Connector: @(Selected?.DisplayName ?? _connectorType) (fixed at creation)</p>
+    }
+
+    @if (Selected is { } selected)
+    {
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;color:var(--db-text-2);">
+            <span style="display:inline-flex;">@((MarkupString)selected.Icon)</span>
+            <strong>@selected.DisplayName</strong>
+            @foreach (var category in selected.Categories)
+            {
+                <span>@category.Label</span>
+            }
+            @if (selected.HostOnly)
+            {
+                <span id="@(IdPrefix + "-host-only")">Host only: this connector reaches the host itself; only a Host user may save it.</span>
+            }
+            @if (selected.WebsiteUrl is not null)
+            {
+                <a href="@selected.WebsiteUrl" target="_blank" rel="noopener noreferrer">Website</a>
+            }
+            @if (selected.ApiDocumentationUrl is not null)
+            {
+                <a href="@selected.ApiDocumentationUrl" target="_blank" rel="noopener noreferrer">API documentation</a>
+            }
+        </div>
+
+        <input id="@(IdPrefix + "-endpoint")" class="db-input" style="font-family:monospace;" placeholder="@(selected.EndpointExample ?? (selected.EndpointKind == "Url" ? "https://api.example.com/v1" : "Host=db;Port=5432;Database=app;Username=app (no password here - it goes below)"))" @bind="_endpoint" />
+
+        @foreach (var field in selected.AuthFields)
+        {
+            <input @key="@($"{selected.ConnectorType}:{field.Name}")" id="@(IdPrefix + "-credential-" + field.Name)" class="db-input" type="@(field.Secret ? "password" : "text")" autocomplete="off"
+                   placeholder="@(field.DisplayName + (Editing is not null ? " (blank keeps the stored value)" : ""))"
+                   value="@Credential(field.Name)" @onchange="@(e => _credentials[field.Name] = e.Value?.ToString() ?? string.Empty)" />
+        }
+
+        @foreach (var field in VisibleFields(selected))
+        {
+            <div @key="@($"{selected.ConnectorType}:{field.Name}")" style="display:flex;flex-direction:column;gap:0.25rem;">
+                @switch (field.Type)
+                {
+                    case "Boolean":
+                        <label><input type="checkbox" checked="@IsTrue(field.Name)" @onchange="@(e => _settings[field.Name] = e.Value is true ? "true" : "false")" /> @field.DisplayName</label>
+                        break;
+                    case "Select":
+                        <select class="db-input" @onchange="@(e => _settings[field.Name] = e.Value?.ToString() ?? string.Empty)">
+                            <option value="">@field.DisplayName</option>
+                            @foreach (var option in field.Options)
+                            {
+                                <option value="@option.Value" selected="@(Setting(field.Name) == option.Value)">@option.Label</option>
+                            }
+                        </select>
+                        break;
+                    case "Multiline":
+                        <textarea class="db-input" placeholder="@(field.Placeholder ?? field.DisplayName)" value="@Setting(field.Name)" @onchange="@(e => _settings[field.Name] = e.Value?.ToString() ?? string.Empty)"></textarea>
+                        break;
+                    default:
+                        <input class="db-input" type="@(field.Type is "Integer" or "Number" ? "number" : "text")" placeholder="@(field.Placeholder ?? field.DisplayName + (field.Required ? " (required)" : ""))"
+                               value="@Setting(field.Name)" @onchange="@(e => _settings[field.Name] = e.Value?.ToString() ?? string.Empty)" />
+                        break;
+                }
+                @if (!string.IsNullOrWhiteSpace(field.HelpText))
+                {
+                    <span style="color:var(--db-text-2);font-size:0.85em;">@field.HelpText</span>
+                }
+            </div>
+        }
+
+        <label style="display:flex;gap:0.5rem;align-items:center;">Timeout (seconds) <input id="@(IdPrefix + "-timeout")" class="db-input" type="number" min="1" max="300" style="width:6rem;" @bind="_timeoutSeconds" /></label>
+    }
+
+    <div style="display:flex;gap:0.5rem;">
+        <button id="@(IdPrefix + "-save")" type="button" class="db-btn" @onclick="SaveAsync" disabled="@(_busy || string.IsNullOrWhiteSpace(_connectorType))">@(Editing is null ? "Create" : "Save")</button>
+        @if (Editing is not null || CanCancel)
+        {
+            <button id="@(IdPrefix + "-cancel")" type="button" class="db-btn" @onclick="CancelAsync" disabled="@_busy">Cancel</button>
+        }
+    </div>
+    @if (!string.IsNullOrEmpty(_refusal))
+    {
+        <p id="@(IdPrefix + "-refusal")" style="margin:0;">@_refusal</p>
+    }
+</div>
+
+@code {
+    /// <summary>Prefixes every id the form renders: the Connections page keeps <c>connections</c>, another page names its own.</summary>
+    [Parameter] public string IdPrefix { get; set; } = "connections";
+
+    /// <summary>The installed connectors - what a new connection is made from.</summary>
+    [Parameter] public List<ConnectorView> Connectors { get; set; } = new();
+
+    /// <summary>The connection edited; null makes a new one.</summary>
+    [Parameter] public ConnectionView Editing { get; set; }
+
+    /// <summary>Whether a new connection's form offers Cancel (an edit always does).</summary>
+    [Parameter] public bool CanCancel { get; set; }
+
+    /// <summary>The connection the server saved.</summary>
+    [Parameter] public EventCallback<ConnectionView> OnSaved { get; set; }
+
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private bool _busy;
+    private string _refusal = string.Empty;
+    private ConnectionView _shown;
+    private string _name = string.Empty;
+    private string _connectorType = string.Empty;
+    private string _endpoint = string.Empty;
+    private int _timeoutSeconds = 30;
+    private readonly Dictionary<string, string> _settings = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, string> _credentials = new(StringComparer.Ordinal);
+
+    private ConnectorView Selected => string.IsNullOrWhiteSpace(_connectorType) ? null : (Connectors ?? new()).FirstOrDefault(connector => string.Equals(connector.ConnectorType, _connectorType, StringComparison.OrdinalIgnoreCase));
+
+    private sealed record PickerGroup(string Label, List<ConnectorView> Connectors);
+
+    // The connection shown follows Editing: another one edited loads its values; none starts a new one, empty.
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(_shown, Editing))
+        {
+            return;
+        }
+
+        _shown = Editing;
+        _refusal = string.Empty;
+        _settings.Clear();
+        _credentials.Clear(); // never read back; on an edit, blank means "leave it"
+        if (Editing is null)
+        {
+            _name = _connectorType = _endpoint = string.Empty;
+            _timeoutSeconds = 30;
+            return;
+        }
+
+        _name = Editing.Name;
+        _connectorType = Editing.ConnectorType;
+        _endpoint = Editing.Endpoint;
+        _timeoutSeconds = Editing.TimeoutSeconds;
+        foreach (var (key, value) in Editing.Settings)
+        {
+            _settings[key] = value;
+        }
+    }
+
+    // A connector lists under every category it carries, in the registry's order; a connector with none is Uncategorized last.
+    private IEnumerable<PickerGroup> Groups() =>
+        (Connectors ?? new()).SelectMany(connector => connector.Categories.Select(category => (category, connector)))
+            .GroupBy(pair => pair.category.Id)
+            .OrderBy(group => group.First().category.Order)
+            .Select(group => new PickerGroup(group.First().category.Label, group.Select(pair => pair.connector).OrderBy(connector => connector.DisplayName, StringComparer.OrdinalIgnoreCase).ToList()));
+
+    private IEnumerable<ConnectorFieldView> VisibleFields(ConnectorView connector) =>
+        connector.Fields.Where(field => field.Type != "Secret" && (field.VisibleWhen is null || string.Equals(Setting(field.VisibleWhen.Field), field.VisibleWhen.EqualsValue, StringComparison.OrdinalIgnoreCase)));
+
+    private string Setting(string name) => _settings.TryGetValue(name, out var value) ? value : string.Empty;
+
+    private string Credential(string name) => _credentials.TryGetValue(name, out var value) ? value : string.Empty;
+
+    private bool IsTrue(string name) => bool.TryParse(Setting(name), out var value) && value;
+
+    private void SelectConnector(string connectorType)
+    {
+        _connectorType = connectorType ?? string.Empty;
+        _settings.Clear();
+        _credentials.Clear();
+        if (Selected is { } selected)
+        {
+            foreach (var field in selected.Fields.Where(field => !string.IsNullOrEmpty(field.Default)))
+            {
+                _settings[field.Name] = field.Default;
+            }
+        }
+    }
+
+    private ConnectionRequest BuildRequest()
+    {
+        var settings = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (Selected is { } selected)
+        {
+            foreach (var field in VisibleFields(selected))
+            {
+                var value = Setting(field.Name);
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    settings[field.Name] = value;
+                }
+            }
+        }
+
+        var credentials = _credentials.Where(pair => !string.IsNullOrWhiteSpace(pair.Value)).ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+        return new ConnectionRequest
+        {
+            Name = _name,
+            ConnectorType = _connectorType,
+            Endpoint = _endpoint,
+            Settings = settings.Count == 0 ? null : settings,
+            Credentials = credentials.Count == 0 ? null : credentials,
+            TimeoutSeconds = _timeoutSeconds,
+        };
+    }
+
+    private async Task SaveAsync()
+    {
+        _busy = true;
+        _refusal = string.Empty;
+        try
+        {
+            var request = BuildRequest();
+            var saved = Editing is null ? await ConnectionsService.CreateAsync(request) : await ConnectionsService.UpdateAsync(Editing.Id, request);
+            if (saved is null)
+            {
+                _refusal = "The connection was not saved.";
+                return;
+            }
+
+            if (Editing is null)
+            {
+                _name = _connectorType = _endpoint = string.Empty; // ready for the next one
+                _timeoutSeconds = 30;
+                _settings.Clear();
+            }
+
+            _credentials.Clear();
+            await OnSaved.InvokeAsync(saved);
+        }
+        catch (Exception ex)
+        {
+            _refusal = "The connection was not saved: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private Task CancelAsync()
+    {
+        _refusal = string.Empty;
+        return OnCancel.InvokeAsync();
+    }
+}

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\src\Engine\Stomme.Engine.Mediator\Stomme.Engine.Mediator.csproj" />
+    </ItemGroup>
+
+</Project>

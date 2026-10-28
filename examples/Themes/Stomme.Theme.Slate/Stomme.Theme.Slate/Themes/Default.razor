@@ -1,0 +1,68 @@
+@namespace Stomme.Themes.Slate
+@inherits ThemeBase
+@inject ISettingService SettingService
+
+@* Slate — an independent, external ADMIN theme for Stomme (D87). A dark, amber-accented management shell
+   with a clearly labelled banner so a driven render can prove the admin theme rendered on admin pages. It names
+   no FluentUI type (BL-192): the host's ThemeBuilder renders FluentUI's providers after every theme, and the
+   theme's colour reaches FluentUI through --db-accent, so one build runs on a FluentUI 4 host and a FluentUI 5
+   host alike. *@
+
+
+<div class="slate-admin-shell">
+    <header class="slate-header">
+        <span class="slate-brand"><Logo UseSiteNameAsFallback="true" /></span>
+        <span class="slate-tag" data-theme-marker="slate-admin">Slate &mdash; Admin Theme</span>
+        <nav class="slate-nav">
+            <Menu MenuType="Stomme.Themes.Controls.MenuHorizontal, Stomme.Client" />
+        </nav>
+        <div class="slate-actions">
+            <UserProfile ShowRegister="@_register" />
+            <Login ShowLogin="@_login" />
+            <ControlPanel LanguageDropdownAlignment="right" />
+        </div>
+    </header>
+
+    <main role="main" class="slate-body">
+        <div class="slate-page">
+            <div class="slate-panes"><Pane Name="@PaneNames.Default" /></div>
+            <div class="slate-panes"><Pane Name="@PaneNames.Admin" /></div>
+            <Pane Name="Top Full Width" />
+            <div class="slate-panes"><Pane Name="Top 100%" /></div>
+            <div class="slate-cols">
+                <div class="slate-col"><Pane Name="Left 50%" /></div>
+                <div class="slate-col"><Pane Name="Right 50%" /></div>
+            </div>
+            <div class="slate-panes"><Pane Name="Bottom 100%" /></div>
+            <Pane Name="Bottom Full Width" />
+        </div>
+    </main>
+
+    <footer class="slate-footer">
+        <Pane Name="Footer" />
+    </footer>
+    <CookieConsent />
+</div>
+
+@code {
+    public override string Name => "Slate Default";
+
+    public override string Panes => PaneNames.Default + "," + PaneNames.Admin + ",Top Full Width,Top 100%,Left 50%,Right 50%,Bottom 100%,Bottom Full Width,Footer";
+
+    private bool _login = true;
+    private bool _register = true;
+
+    protected override void OnParametersSet()
+    {
+        try
+        {
+            var settings = SettingService.MergeSettings(PageState.Site.Settings, PageState.Page.Settings);
+            _login = bool.Parse(SettingService.GetSetting(settings, GetType().Namespace + ":Login", "true"));
+            _register = bool.Parse(SettingService.GetSetting(settings, GetType().Namespace + ":Register", "true"));
+        }
+        catch
+        {
+            // error loading theme settings
+        }
+    }
+}

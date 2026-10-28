@@ -1,0 +1,293 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- ASP.NET Core / Blazor / Extensions (10.0.12 since BL-192: FluentUI 5 needs Components.Web and Extensions.Http at
+       10.0.12, and a lower direct pin is a downgrade error. ASP.NET Identity's EF store stays on 10.0.9 with EF Core,
+       below.) 10.0.13 since 2026-10-17: .NET's servicing of 2026-10-13 fixed CVE-2026-102870 (remote code execution,
+       Components.WebAssembly.Server, GHSA-g27p-qf6j-c96c) and CVE-2026-70179 (elevation of privilege,
+       Authentication.Negotiate, GHSA-vrrp-6v32-2p8g), both HIGH, both in 10.0.0 to 10.0.12 - the family moves together. -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.13" />
+    <!-- BL-80 / D101: the MCP SDK. Apache-2.0, net10.0. Pinned AND referenced directly in
+         Stomme.Server.csproj, because central TRANSITIVE pinning is off in this repository. -->
+    <PackageVersion Include="ModelContextProtocol" Version="1.4.0" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.4.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Localization" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.13" />
+    <PackageVersion Include="System.Net.Http.Json" Version="10.0.13" />
+  </ItemGroup>
+
+  <!-- Transitive pin: Microsoft.OpenApi patched (CVE-2026-49451 / GHSA-v5pm-xwqc-g5wc, fixed in 2.7.5); 2.12.0 since
+       Microsoft.AspNetCore.OpenApi 10.0.12 requires it (BL-192's servicing move to 10.0.12), 2.12.2 since its 10.0.13 does -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.OpenApi" Version="2.12.2" />
+  </ItemGroup>
+
+  <!-- Transitive pin (D83): System.Drawing.Common. The 4.7.0 that flows in transitively
+       (Stomme.Server -> Sustainsys.Saml2.AspNetCore2 -> Sustainsys.Saml2 ->
+       System.Security.Cryptography.Xml -> System.Security.Permissions -> System.Windows.Extensions
+       -> System.Drawing.Common 4.7.0) carries GHSA-rxg9-xrhp-64gj (CRITICAL, NU1904). It surfaces in
+       the non-Web-SDK test project Stomme.Persistence.Conformance.Tests, which references
+       Stomme.Server but does not get the ASP.NET Core shared framework's higher-versioned override.
+       This repo does NOT enable central transitive pinning, so a PackageVersion alone does not move a
+       transitive (proven: SQLitePCLRaw.bundle_e_sqlite3 pinned 3.0.3 still resolved 2.1.11 wherever it
+       was only transitive). The pin therefore pairs with a direct PackageReference in the affected
+       project. 10.0.10 is the current patched stable in the 10.0.x line (dotnet/runtime, MIT). -->
+  <ItemGroup>
+    <PackageVersion Include="System.Drawing.Common" Version="10.0.13" />
+  </ItemGroup>
+
+  <!-- Transitive pin, the D83 way (a PackageVersion paired with a direct PackageReference in each affected project):
+       System.Security.Cryptography.Pkcs. The 10.0.0 that flows in transitively carries CVE-2026-84008 (denial of
+       service, HIGH, GHSA-846f-f764-76mx, 10.0.0 to 10.0.12), fixed in .NET's servicing of 2026-10-13. -->
+  <ItemGroup>
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+  </ItemGroup>
+
+  <!-- Entity Framework Core + database providers. HELD AT 10.0.9 (BL-192, measured 2026-10-02): the 10.0.12 SQL Server
+       provider requires Microsoft.Data.SqlClient 6.1.6, which (unlike 6.1.1) depends on Microsoft.Identity.Client.Broker,
+       which brings Microsoft.Identity.Client.NativeInterop - licensed under Microsoft terms that forbid distributing it
+       (clause 3(e)), with a linux-x64 native library that would ship in every published image and app. The licence gate
+       caught it. The EF family moves together, and ASP.NET Identity's EF store with it (its 10.0.12 requires EF
+       Relational 10.0.12). Revisit when a SqlClient line without the broker is required (7.x moves Azure sign-in to a
+       separate package). -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
+    <PackageVersion Include="EFCore.NamingConventions" Version="10.0.1" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
+    <!-- Bare ADO driver: the PostgreSQL advisory-lock IDistributedLock in Stomme.Persistence.EfCore
+         (pg_try_advisory_lock). Kept in lock-step with the Npgsql the EF provider resolves. -->
+    <PackageVersion Include="Npgsql" Version="10.0.3" />
+    <!-- BL-96 increment 2: the FTP and Active Directory connectors' drivers (both MIT; the licence gate proves them from the packages). -->
+    <PackageVersion Include="FluentFTP" Version="54.2.0" />
+    <PackageVersion Include="System.DirectoryServices.Protocols" Version="10.0.13" />
+    <!-- BL-229: the MySQL connector's driver - MySqlConnector, MIT (D2 keeps the GPL drivers out; this one is not one). -->
+    <PackageVersion Include="MySqlConnector" Version="2.6.2" />
+    <!-- BL-229: the Redis connector's client (MIT) - the version the caching packages already resolve, referenced directly
+         because the connector uses its API. -->
+    <PackageVersion Include="StackExchange.Redis" Version="2.10.1" />
+    <!-- BL-229: the MongoDB connector's driver - MongoDB.Driver, Apache-2.0 (its dependencies MIT, Apache-2.0 and BSD-3). -->
+    <PackageVersion Include="MongoDB.Driver" Version="3.12.0" />
+    <!-- BL-229: the SFTP connector's client - SSH.NET, MIT (its cryptography BouncyCastle.Cryptography, MIT). -->
+    <PackageVersion Include="SSH.NET" Version="2026.0.0" />
+    <!-- BL-229: the RabbitMQ connector's client - RabbitMQ.Client, Apache-2.0 / MPL-2.0 - the version the message bus's Rebus.RabbitMq
+         already resolves, referenced directly because the connector uses its API. -->
+    <PackageVersion Include="RabbitMQ.Client" Version="7.1.2" />
+    <!-- BL-229: the MQTT connector's client - MQTTnet, MIT (a .NET Foundation project). -->
+    <PackageVersion Include="MQTTnet" Version="5.2.0.1603" />
+    <!-- BL-229: the AMQP 1.0 connector's client - AMQPNetLite.Core, Apache-2.0 (Microsoft's Azure/amqpnetlite), no dependencies on .NET Standard 2.0. -->
+    <PackageVersion Include="AMQPNetLite.Core" Version="2.5.4" />
+    <PackageVersion Include="RavenDB.Client" Version="7.2.4" />
+    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
+  </ItemGroup>
+
+  <!-- Transport (brief 04): gRPC (Apache-2.0 / BSD-3-Clause) + SignalR (MIT). Opt-in — see D10. -->
+  <ItemGroup>
+    <PackageVersion Include="Grpc.AspNetCore" Version="2.80.0" />
+    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.80.0" />
+    <PackageVersion Include="Grpc.Core.Api" Version="2.80.0" />
+    <PackageVersion Include="Grpc.Net.Client" Version="2.80.0" />
+    <PackageVersion Include="Grpc.Net.Client.Web" Version="2.80.0" />
+    <PackageVersion Include="Grpc.Tools" Version="2.80.0" />
+    <PackageVersion Include="Google.Protobuf" Version="3.35.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.13" />
+  </ItemGroup>
+
+  <!-- FluentUI Blazor (MIT) — standard UI component system (D11). Its icon package is NOT referenced (BL-206): nothing in
+       the framework used it (Stomme's icons are its own Icons class), and its three assemblies were 21.3 MB of the 57.4 MB a
+       WebAssembly client downloads. An app that uses FluentUI's icons references the package itself. -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components" Version="5.0.0" />
+  </ItemGroup>
+
+  <!-- The pipeline editor's canvas (BL-95 (c), D111): pan, zoom, ports and links; MIT (read from its nuspec). The node visuals
+       are ours. And the dashboards' charts (BL-96 (9), D110), Apache-2.0. Both once sat inside the vendored engine's GENERATED
+       block below, which scripts/vendor-engine.ps1 rewrites - a re-run would have dropped their versions (measured 2026-10-08). -->
+  <ItemGroup>
+    <PackageVersion Include="Z.Blazor.Diagrams" Version="3.0.4.1" />
+    <PackageVersion Include="Vizor.ECharts" Version="0.9.7" />
+  </ItemGroup>
+
+  <!-- FluentValidation (Apache-2.0), consumed by Stomme.Mediator's validation pipeline. It arrived with
+       the lifted Stomme.Identity.* model (D8); that model and its Argon2/bcrypt pins were retired by BL-100 (D109). -->
+  <ItemGroup>
+    <PackageVersion Include="FluentValidation" Version="12.1.1" />
+  </ItemGroup>
+
+  <!-- OpenIddict authority (brief 02 / D61 spike) — headless OIDC/OAuth2 server + validation + EF Core
+       stores. Apache-2.0 (permissive, passes D2). Version pinned to match the predecessor platform precedent. -->
+  <PropertyGroup>
+    <OpenIddictVersion>7.5.0</OpenIddictVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="OpenIddict.Abstractions" Version="$(OpenIddictVersion)" />
+    <PackageVersion Include="OpenIddict.Core" Version="$(OpenIddictVersion)" />
+    <PackageVersion Include="OpenIddict.EntityFrameworkCore" Version="$(OpenIddictVersion)" />
+    <PackageVersion Include="OpenIddict.Server.AspNetCore" Version="$(OpenIddictVersion)" />
+    <PackageVersion Include="OpenIddict.Validation.AspNetCore" Version="$(OpenIddictVersion)" />
+    <PackageVersion Include="OpenIddict.Validation.ServerIntegration" Version="$(OpenIddictVersion)" />
+  </ItemGroup>
+
+  <!-- External-login consumer schemes (brief 02 / D65): SAML2 (Sustainsys, MIT) + Windows/Negotiate
+       (Microsoft first-party). Both installation-wide and config-gated (Saml2:Enabled / WindowsAuth:Enabled),
+       off by default so a stock install registers neither. -->
+  <ItemGroup>
+    <PackageVersion Include="Sustainsys.Saml2.AspNetCore2" Version="2.11.0" />
+    <!-- 10.0.10: clears GHSA-2p3q-h3hg-jcqq + GHSA-8prm-248r-h957 (both high, published against <=10.0.9 on
+         2026-07-22 — the NU1903s appeared between two same-day builds). Direct reference in Stomme.Server,
+         so the central version alone moves it (the D83 pairing rule is for transitive-only arrivals). -->
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="10.0.13" />
+  </ItemGroup>
+
+  <!-- Third-party libraries -->
+  <ItemGroup>
+    <PackageVersion Include="AngleSharp" Version="1.5.2" />
+    <!-- BL-84 (D103 item 5): Markdown for help topics. BSD-2-Clause, no dependencies on net10.0. Rendered server-side
+         only and always through the AngleSharp allowlist; never UseAdvancedExtensions (it includes UseGenericAttributes,
+         which survives DisableHtml). Paired with a direct PackageReference in Stomme.Server.csproj. -->
+    <PackageVersion Include="Markdig" Version="1.3.2" />
+    <PackageVersion Include="MailKit" Version="4.17.0" />
+    <!-- BL-78 (D100 point 5): Liquid rendering for notification templates. MIT; pulls Parlot 1.5.2 (BSD-3-Clause)
+         and TimeZoneConverter 7.2.0 (MIT) - both recorded in THIRD-PARTY-NOTICES.md. Paired with a DIRECT
+         PackageReference in Stomme.Server.csproj (central transitive pinning is OFF). -->
+    <PackageVersion Include="Fluid.Core" Version="2.31.0" />
+    <PackageVersion Include="Jint" Version="4.16.4" />
+    <!-- BL-169: the backup archive's S3-compatible object store. Apache-2.0; AWSSDK.Core arrives with it. Recorded in
+         THIRD-PARTY-NOTICES.md. -->
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.100.2" />
+    <!-- BL-97 increment 9 (D113): the assistant's model access - IChatClient over the OpenAI-compatible API. MIT; brings
+         Microsoft.Extensions.AI.Abstractions and the official OpenAI SDK (MIT, recorded in THIRD-PARTY-NOTICES.md). -->
+    <!-- BL-97 increment 10 (D113): the agents' tool-calling loop - ChatClientBuilder and FunctionInvokingChatClient. MIT. -->
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="10.10.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.10.1" />
+    <!-- RavenDB's public serialization API (NewtonsoftJsonSerializationConventions) is Newtonsoft-based;
+         the Stomme.Persistence.RavenDb value-object converters bind to it. MIT. -->
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="NodaTime" Version="3.1.0" />
+    <!-- XLSX rendering for the data-export engine (BL-85 / D108). MIT, as are DocumentFormat.OpenXml.Framework
+         and System.IO.Packaging in its closure (nuspecs read 2026-09-14). Central TRANSITIVE pinning is off, so
+         this PackageVersion is paired with a direct PackageReference in Stomme.Server.csproj. -->
+    <PackageVersion Include="DocumentFormat.OpenXml" Version="3.5.1" />
+    <!-- BL-229: the text of a PDF for the pipelines' Read document step (n8n's Extract from File). Apache-2.0, and no
+         dependencies on net8.0 and later (its nuspec read 2026-10-07). -->
+    <PackageVersion Include="PdfPig" Version="0.1.16" />
+    <PackageVersion Include="SkiaSharp" Version="4.150.0" />
+    <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.6.0" />
+    <PackageVersion Include="ZiggyCreatures.FusionCache.Backplane.StackExchangeRedis" Version="2.6.0" />
+    <PackageVersion Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="2.6.0" />
+    <!-- Feature-flag engine surface (brief 06 / D12). MIT. The module's evaluation logic is Stomme's
+         own (targeting, per-user overrides, audit); this package supplies the standard IFeatureManager
+         abstraction the module bridges to. -->
+    <PackageVersion Include="Microsoft.FeatureManagement" Version="4.6.0" />
+  </ItemGroup>
+
+  <!-- Message bus (Rebus + transports) — all MIT (see docs/decisions.md D9). The bus rides an
+       IEventBus seam; the default transport is in-memory, with RabbitMQ / Azure Service Bus / the
+       custom RavenDB transport selectable. Rebus.SqlServer is intentionally NOT pinned: the
+       relational messaging story is the transactional outbox, not a SQL bus transport. -->
+  <ItemGroup>
+    <PackageVersion Include="Rebus" Version="8.9.2" />
+    <PackageVersion Include="Rebus.ServiceProvider" Version="10.7.2" />
+    <PackageVersion Include="Rebus.RabbitMq" Version="10.1.1" />
+    <PackageVersion Include="Rebus.AzureServiceBus" Version="10.7.0" />
+    <PackageVersion Include="Rebus.Outbox" Version="2.0.0" />
+    <PackageVersion Include="Rebus.OpenTelemetry" Version="1.4.0" />
+    <PackageVersion Include="Rebus.Microsoft.Extensions.Configuration" Version="1.2.0" />
+  </ItemGroup>
+
+  <!-- Stomme framework packages (consumed by the Application template projects) -->
+  <ItemGroup>
+    <PackageVersion Include="Stomme.Client" Version="10.2.1" />
+    <PackageVersion Include="Stomme.Server" Version="10.2.1" />
+    <PackageVersion Include="Stomme.Shared" Version="10.2.1" />
+  </ItemGroup>
+
+  <!-- .NET MAUI (version supplied by the MAUI workload via $(MauiVersion)) -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)" />
+    <PackageVersion Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <PackageVersion Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+  </ItemGroup>
+
+  <!-- BEGIN vendored engine (BL-93 / D98) - GENERATED by scripts/vendor-engine.ps1; edit the script. -->
+  <!-- Third-party versions are upstream elsa-core 3.7.1's; Microsoft.Extensions.* follow this file's 10.0.12 family.
+       Each new package passes D2 (permissive-only) - see scripts/check-licenses.ps1. -->
+  <ItemGroup>
+    <PackageVersion Include="Cronos" Version="0.11.1" />
+    <PackageVersion Include="DistributedLock.Core" Version="1.0.8" />
+    <PackageVersion Include="DistributedLock.FileSystem" Version="1.0.3" />
+    <PackageVersion Include="Humanizer.Core" Version="3.0.1" />
+    <PackageVersion Include="IronCompress" Version="1.7.0" />
+    <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
+    <PackageVersion Include="LinqKit.Core" Version="1.2.9" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.13" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="Open.Linq.AsyncExtensions" Version="1.2.0" />
+    <PackageVersion Include="Scrutor" Version="7.0.0" />
+    <PackageVersion Include="Snappier" Version="1.3.1" />
+    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
+    <PackageVersion Include="ThrottleDebounce" Version="2.0.1" />
+  </ItemGroup>
+  <!-- END vendored engine (BL-93 / D98) -->
+
+  <!-- Test tier -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <!-- Fluent assertions, Apache-2.0. AwesomeAssertions is the community fork of FluentAssertions 7, created
+         when FluentAssertions 8 moved to Xceed's commercial/source-available licence — which is exactly the
+         class of package D2's licence gate exists to keep out, so the fork is the permissive-only choice here
+         rather than a preference. Drop-in: the API and the `FluentAssertions` namespace are preserved, so
+         examples written against FluentAssertions compile unchanged. Test tier only; no framework project
+         references it. -->
+    <PackageVersion Include="AwesomeAssertions" Version="9.5.0" />
+    <!-- The architecture gates (D33 async-all-the-way; D40 the domain-event handler contract) parse C# with
+         the real compiler rather than scanning text. MIT. Test-tier only — no framework project references it.
+         Measured on this repository, naive scans produce false positives: a naive async scan reported 17 hits
+         of which 7 were FALSE — `match.Result("${key}")` is Regex.Match.Result (a METHOD), `context.Result =`
+         is MVC, and one was inside a comment. The parser tells a call from a comment, and a handler's own body
+         from a nested lambda, by construction. See AsyncAllTheWayDownTests and DomainEventHandlerContractTests. -->
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+    <!-- D92: the stock external themes, restored from the forge NuGet feed (D97;
+         NuGet.config maps NovaGloben.* there). Dual-consumable 1.1.0 packs: build*/ props serve their
+         wwwroot to a PackageReference consumer; InstallationManager consumers extract staticwebassets/.
+         First restore per machine needs the store reachable; NuGet's global cache covers thereafter. -->
+    <!-- 1.1.1 (BL-70): repacked WITHOUT the self-referential static-web-asset declaration. The 1.1.0s are
+         permanently ambiguous - the store and forge feeds served DIFFERENT BYTES under that version (two
+         pack pipelines), and the forge copy's embedded pack props declared a stale second asset that broke
+         every Stomme.Server build against it. A repack never reuses a version.
+         1.1.2 (BL-187): the same themes declaring the proprietary licence (D98), published with nuget-v10.4.1.
+         1.2.0 (BL-192): naming no FluentUI type - 1.1.2 renders FluentDesignTheme, which FluentUI 5 removed - and their
+         colour on the shared accent token; published with nuget-v10.5.0-preview.2, so this host could pin them only after it. -->
+    <PackageVersion Include="Stomme.Theme.Aurora" Version="1.2.0" />
+    <PackageVersion Include="Stomme.Theme.Slate" Version="1.2.0" />
+    <!-- bUnit (MIT) — Blazor component testing. Guards the installer wizard's no-Router navigation model
+         (BL-14 / D86): step changes must stay history.pushState via JSInterop, never NavigationManager
+         navigations, or the wizard remounts and wipes collected state. Test-tier only. -->
+    <PackageVersion Include="bunit" Version="2.7.2" />
+  </ItemGroup>
+</Project>

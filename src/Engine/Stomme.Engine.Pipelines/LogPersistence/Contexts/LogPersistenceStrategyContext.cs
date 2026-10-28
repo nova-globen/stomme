@@ -1,0 +1,3 @@
+namespace Stomme.Engine.Pipelines.LogPersistence;
+
+public record LogPersistenceStrategyContext(CancellationToken CancellationToken);

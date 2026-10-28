@@ -1,0 +1,652 @@
+@namespace Stomme.Installer
+@using Stomme.Interfaces
+@using Microsoft.AspNetCore.Components.Routing
+@implements IDisposable
+@inject NavigationManager NavigationManager
+@inject IInstallationService InstallationService
+@inject ISiteService SiteService
+@inject IUserService UserService
+@inject IDatabaseService DatabaseService
+@inject ISiteTemplateService SiteTemplateService
+@inject IJSRuntime JSRuntime
+@inject IStringLocalizer<Installer> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@inject SiteState SiteState
+
+<div class="db-installer">
+    <div class="db-row">
+        <div class="db-col db-center">
+            <img src="installer-logo.png" />
+            <div style="font-weight: bold">@SharedLocalizer["Version"] @Constants.PackageVersion (.NET @Environment.Version.Major)</div>
+        </div>
+    </div>
+    <hr class="app-rule" />
+
+    @* Wizard step indicator — each step is a real ?step= URL the user can navigate to (Back/Next below). *@
+    <div class="db-row db-row-center">
+        <div class="db-col db-center">
+            <div class="db-input-group" role="navigation" aria-label="Installer steps">
+                @foreach (var s in _steps)
+                {
+                    <button type="button"
+                            class="db-btn @(s.Key == CurrentStep ? "" : "db-btn-neutral")"
+                            disabled="@(!CanNavigateTo(s.Key))"
+                            @onclick="@(() => GoToStep(s.Key))">
+                        @Localizer[s.Value]
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <div class="db-row db-row-center">
+        <div class="db-col db-center">
+
+            @if (CurrentStep == StepDatabase)
+            {
+                <h2>@Localizer["DatabaseConfig"]</h2><br />
+                <div class="db-fields">
+                    <div class="db-field">
+                        <Label For="databaseType" HelpText="Select the type of database you wish to use" ResourceKey="DatabaseType">Database:</Label>
+                        <div class="db-field-control">
+                            @if (_databases != null)
+                            {
+                                <div class="db-input-group">
+                                    <select id="databaseType" class="db-select" value="@_databaseName" @onchange="(e => DatabaseChanged(e))" required>
+                                        @foreach (var database in _databases)
+                                        {
+                                            <option value="@database.Name">@Localizer[@database.Name]</option>
+                                        }
+                                    </select>
+                                    @if (!_showConnectionString)
+                                    {
+                                        <button type="button" class="db-btn db-btn-neutral" @onclick="ToggleConnectionString">@Localizer["EnterConnectionString"]</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="db-btn db-btn-neutral" @onclick="ToggleConnectionString">@Localizer["EnterConnectionParameters"]</button>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    @if (!_showConnectionString)
+                    {
+                        if (_databaseConfigType != null)
+                        {
+                            @DatabaseConfigComponent
+                        }
+                    }
+                    else
+                    {
+                        <div class="db-field">
+                            <Label For="connectionstring" HelpText="Enter a complete connection string including all parameters and delimiters" ResourceKey="ConnectionString">Settings:</Label>
+                            <div class="db-field-control">
+                                <textarea id="connectionstring" class="db-input" @bind="@_connectionString" rows="3"></textarea>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else if (CurrentStep == StepAccount)
+            {
+                <h2>@Localizer["ApplicationAdmin"]</h2><br />
+                <div class="db-fields">
+                    <div class="db-field">
+                        <Label For="username" HelpText="Provide a username for the primary user account" ResourceKey="Username">Username:</Label>
+                        <div class="db-field-control">
+                            <input id="username" type="text" class="db-input" maxlength="256" @bind="@_hostUsername" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="password" HelpText="Provide a password for the primary user account" ResourceKey="Password">Password:</Label>
+                        <div class="db-field-control">
+                            <div class="db-input-group">
+                                <input id="password" type="@_passwordType" class="db-input" maxlength="256" @bind="@_hostPassword" autocomplete="new-password" />
+                                <button type="button" class="db-btn db-btn-neutral" @onclick="@TogglePassword" tabindex="-1">@_togglePassword</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="confirm" HelpText="Please confirm the password entered above by entering it again" ResourceKey="Confirm">Confirm:</Label>
+                        <div class="db-field-control">
+                            <div class="db-input-group">
+                                <input id="confirm" type="@_confirmPasswordType" class="db-input" maxlength="256" @bind="@_confirmPassword" autocomplete="new-password" />
+                                <button type="button" class="db-btn db-btn-neutral" @onclick="@ToggleConfirmPassword" tabindex="-1">@_toggleConfirmPassword</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="email" HelpText="Provide the email address for the host user account" ResourceKey="Email">Email:</Label>
+                        <div class="db-field-control">
+                            <input id="email" type="text" class="db-input" maxlength="256" @bind="@_hostEmail" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="name" HelpText="Provide the full name of the host user" ResourceKey="Name">Full Name:</Label>
+                        <div class="db-field-control">
+                            <input id="name" type="text" class="db-input" maxlength="50" @bind="@_hostName" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="template" HelpText="Select a site template" ResourceKey="Template">Template:</Label>
+                        <div class="db-field-control">
+                            @if (_templates != null)
+                            {
+                                <select id="template" class="db-select" @bind="@_template" required>
+                                    @foreach (var template in _templates)
+                                    {
+                                        <option value="@template.TypeName">@template.Name</option>
+                                    }
+                                </select>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (CurrentStep == StepConfigure)
+            {
+                <h2>@Localizer["ConfigureModules"]</h2><br />
+                @if (_configurableModules == null)
+                {
+                    <div class="db-center">@Localizer["Loading"]</div>
+                }
+                else if (_configurableModules.Count == 0)
+                {
+                    <div class="db-center">@Localizer["NoModulesToConfigure"]</div>
+                }
+                else
+                {
+                    <div class="db-fields">
+                        @foreach (var module in _configurableModules)
+                        {
+                            <div class="db-field">
+                                <h3>@module.Name</h3>
+                                @RenderModuleConfig(module)
+                            </div>
+                        }
+                    </div>
+                }
+            }
+            else // finish
+            {
+                <h2>@Localizer["ReadyToInstall"]</h2><br />
+                <div class="db-fields">
+                    <div class="db-field">
+                        <Label For="finish-db" ResourceKey="DatabaseType">Database:</Label>
+                        <div class="db-field-control"><input id="finish-db" class="db-input" value="@_databaseName" disabled /></div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="finish-user" ResourceKey="Username">Username:</Label>
+                        <div class="db-field-control"><input id="finish-user" class="db-input" value="@_hostUsername" disabled /></div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <hr class="app-rule" />
+    <div class="db-row db-row-center">
+        <div class="db-col db-center">
+            <div class="db-input-group">
+                @if (CurrentStep != StepDatabase)
+                {
+                    <button type="button" class="db-btn db-btn-neutral" @onclick="Back">@Localizer["Back"]</button>
+                }
+                @if (CurrentStep == StepFinish)
+                {
+                    <button type="button" class="db-btn" @onclick="Install">@Localizer["InstallNow"]</button>
+                }
+                else
+                {
+                    <button type="button" class="db-btn" @onclick="Next">@Localizer["Next"]</button>
+                }
+            </div>
+            <br /><br />
+            @if (!string.IsNullOrEmpty(_message))
+            {
+                <div class="db-message db-message-bad" role="alert">
+                    <div class="db-message-body">@((MarkupString)_message)</div>
+                    <button type="button" class="db-message-close" aria-label="Close" @onclick="DismissModal">&times;</button>
+                </div>
+            }
+        </div>
+        <div class="app-progress-indicator" style="@_loadingDisplay"></div>
+    </div>
+</div>
+
+@code {
+    private const string StepDatabase = "database";
+    private const string StepAccount = "account";
+    private const string StepConfigure = "configure";
+    private const string StepFinish = "finish";
+
+    // ordered step list (key -> localization key for the heading)
+    private readonly List<KeyValuePair<string, string>> _steps = new()
+    {
+        new(StepDatabase, "Step.Database"),
+        new(StepAccount, "Step.Account"),
+        new(StepConfigure, "Step.Configure"),
+        new(StepFinish, "Step.Finish"),
+    };
+
+    private List<Database> _databases;
+    private string _databaseName;
+    private Type _databaseConfigType;
+    private object _databaseConfig;
+    private RenderFragment DatabaseConfigComponent { get; set; }
+    private bool _showConnectionString = false;
+    private string _connectionString = string.Empty;
+    // The chosen connection string, cached from the DB config control while the Database step is on-screen — the
+    // control is NOT rendered on later steps, so Install() and the breadcrumb guard must read the cached value.
+    private string _resolvedConnectionString = string.Empty;
+
+    private string _hostUsername = string.Empty;
+    private string _hostPassword = string.Empty;
+    private string _passwordType = "password";
+    private string _confirmPasswordType = "password";
+    private string _togglePassword = string.Empty;
+    private string _toggleConfirmPassword = string.Empty;
+    private string _confirmPassword = string.Empty;
+    private string _hostEmail = string.Empty;
+    private string _hostName = string.Empty;
+    private List<SiteTemplate> _templates;
+    private string _template = Constants.DefaultSiteTemplate;
+    // BL-197: opt-in - ticking it sends the host's email and name to the package registry.
+    private string _message = string.Empty;
+    private string _loadingDisplay = "display: none;";
+
+    // D86 onboarding: bundled+enabled modules that declare a config control, plus the wizard state they collect.
+    private List<ConfigurableModule> _configurableModules;
+    private readonly Dictionary<string, Dictionary<string, string>> _moduleSettingsState = new();
+    private readonly Dictionary<string, object> _moduleConfigInstances = new();
+
+    // The current wizard step is INTERNAL component state, not derived from the URL on every render. This is
+    // deliberate and load-bearing: the installer runs interactive WITHOUT an interactive <Router> (Routes.razor
+    // just renders <Installer/>), so NavigationManager.NavigateTo does a FULL document round-trip that REMOUNTS
+    // the component and loses every collected value (measured: Back reset the DB choice + re-ran OnInitialized).
+    // So step changes never navigate — they set _step and update the URL cosmetically via history.pushState (JS),
+    // which keeps the single circuit alive and all wizard state intact. Browser back/forward still works: it
+    // raises LocationChanged (a location change, not a document nav, so no remount) which we sync below.
+    private string _step = StepDatabase;
+    private string CurrentStep => _step;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // The Bootstrap CDN stylesheet used to be injected here, and the CDN script in OnAfterRenderAsync. Both are
+        // gone (D11: no CDN — a CSP/offline win, and on-prem installs may have no internet at all, which is
+        // precisely when the installer runs). The installer renders BEFORE a site or theme exists, so css/app.css
+        // is all it has.
+
+        NavigationManager.LocationChanged += OnLocationChanged;
+
+        // Honour a deep-linked ?step= on first load (fresh state for that step; the per-step validation gates
+        // stop a premature install).
+        var initialStep = GetStepParam();
+        if (_steps.Any(s => s.Key == initialStep))
+        {
+            _step = initialStep;
+        }
+
+        _togglePassword = SharedLocalizer["ShowPassword"];
+        _toggleConfirmPassword = SharedLocalizer["ShowPassword"];
+
+        _databases = await DatabaseService.GetDatabasesAsync();
+        if (_databases.Exists(item => item.IsDefault))
+        {
+            _databaseName = _databases.Find(item => item.IsDefault).Name;
+        }
+        else
+        {
+            _databaseName = Constants.DefaultDBName;
+        }
+        LoadDatabaseConfigComponent();
+
+        _templates = await SiteTemplateService.GetSiteTemplatesAsync();
+
+        // D86: the bundled+enabled modules that declare a module-wide config control. Reflects loaded assemblies
+        // server-side, so it works while still uninstalled. Empty list -> the Configure step is a friendly no-op.
+        _configurableModules = await InstallationService.GetConfigurableModulesAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Give the current step a real, deep-linkable URL. replaceState (not pushState) so it does not add a
+        // spurious history entry on load. Done here because JS interop is only available after render.
+        if (firstRender && GetStepParam() != _step)
+        {
+            await ReplaceStepUrlAsync(_step);
+        }
+    }
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        // Browser back/forward: the URL's ?step= changed under us (this is a location change, NOT a document
+        // navigation, so the component is NOT remounted). Re-sync the internal step to keep the wizard in step
+        // with the address bar. Our own Back/Next use pushState directly and do not raise this event.
+        var step = GetStepParam();
+        if (_steps.Any(s => s.Key == step) && step != _step)
+        {
+            _step = step;
+            _message = string.Empty;
+            StateHasChanged();
+        }
+    }
+
+    private string GetStepParam()
+    {
+        var query = new Uri(NavigationManager.Uri).Query.TrimStart('?');
+        foreach (var pair in query.Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var kv = pair.Split('=', 2);
+            if (kv.Length == 2 && kv[0].Equals("step", StringComparison.OrdinalIgnoreCase))
+            {
+                return Uri.UnescapeDataString(kv[1]).ToLowerInvariant();
+            }
+        }
+        return string.Empty;
+    }
+
+    private async Task GoToStep(string step)
+    {
+        // Change the step WITHOUT a Blazor navigation (which would remount and wipe wizard state) — set the
+        // internal step and push the matching URL straight into browser history via JS. pushState is silent to
+        // Blazor's NavigationManager, so this does not raise LocationChanged and does not remount.
+        _step = step;
+        _message = string.Empty;
+        await PushStepUrlAsync(step);
+    }
+
+    private string BuildStepUrl(string step)
+    {
+        // path + ?step=<step>, preserving nothing else (the installer has no other query params). Relative form so
+        // it is base-href-safe.
+        var uri = new Uri(NavigationManager.Uri);
+        return uri.LocalPath + "?step=" + step;
+    }
+
+    private async Task PushStepUrlAsync(string step)
+    {
+        await JSRuntime.InvokeVoidAsync("history.pushState", null, "", BuildStepUrl(step));
+    }
+
+    private async Task ReplaceStepUrlAsync(string step)
+    {
+        await JSRuntime.InvokeVoidAsync("history.replaceState", null, "", BuildStepUrl(step));
+    }
+
+    // Guard the breadcrumb: never let a click jump PAST a step whose prerequisites are not satisfied.
+    private bool CanNavigateTo(string step)
+    {
+        var target = _steps.FindIndex(s => s.Key == step);
+        var account = _steps.FindIndex(s => s.Key == StepAccount);
+        var configure = _steps.FindIndex(s => s.Key == StepConfigure);
+        if (target >= account && string.IsNullOrEmpty(GetConnectionString()))
+        {
+            return false;
+        }
+        if (target >= configure && !IsAccountStepValid())
+        {
+            return false;
+        }
+        return true;
+    }
+
+    private async Task Next()
+    {
+        switch (CurrentStep)
+        {
+            case StepDatabase:
+                // Capture the connection string NOW, from the live DB config control (fully initialized by the
+                // time this click handler runs), because the control is not rendered on later steps.
+                _resolvedConnectionString = ReadLiveConnectionString();
+                if (!string.IsNullOrEmpty(_resolvedConnectionString))
+                {
+                    await GoToStep(StepAccount);
+                }
+                else
+                {
+                    _message = Localizer["Message.Require.DbInfo"];
+                }
+                break;
+            case StepAccount:
+                if (IsAccountStepValid())
+                {
+                    await GoToStep(StepConfigure);
+                }
+                else
+                {
+                    _message = Localizer["Message.Require.DbInfo"];
+                }
+                break;
+            case StepConfigure:
+                await CollectModuleConfigAsync();
+                await GoToStep(StepFinish);
+                break;
+        }
+    }
+
+    private async Task Back()
+    {
+        var index = _steps.FindIndex(s => s.Key == CurrentStep);
+        if (index > 0)
+        {
+            await GoToStep(_steps[index - 1].Key);
+        }
+    }
+
+    private void DatabaseChanged(ChangeEventArgs eventArgs)
+    {
+        try
+        {
+            _databaseName = (string)eventArgs.Value;
+            _showConnectionString = false;
+            LoadDatabaseConfigComponent();
+        }
+        catch
+        {
+            _message = Localizer["Error.DbConfig.Load"];
+        }
+    }
+
+    private void LoadDatabaseConfigComponent()
+    {
+        var database = _databases.SingleOrDefault(d => d.Name == _databaseName);
+        if (database != null)
+        {
+            _databaseConfigType = Type.GetType(database.ControlType);
+            DatabaseConfigComponent = builder =>
+            {
+                builder.OpenComponent(0, _databaseConfigType);
+                builder.AddComponentReferenceCapture(1, inst => { _databaseConfig = Convert.ChangeType(inst, _databaseConfigType); });
+                builder.CloseComponent();
+            };
+        }
+    }
+
+    // The connection string chosen on the Database step. Cached explicitly by the Database-step Next handler
+    // (ReadLiveConnectionString) because the DB config control is only rendered on the Database step — reading a
+    // captured-but-disposed control on a later step returns empty, which would break Install() at the Finish step.
+    private string GetConnectionString()
+    {
+        // While the control is on-screen keep the cache live (so the breadcrumb reflects edits); otherwise return
+        // the value captured when the user advanced from the Database step.
+        if (CurrentStep == StepDatabase)
+        {
+            var live = ReadLiveConnectionString();
+            if (!string.IsNullOrEmpty(live))
+            {
+                _resolvedConnectionString = live;
+            }
+        }
+        return _resolvedConnectionString;
+    }
+
+    private string ReadLiveConnectionString()
+    {
+        if (_showConnectionString)
+        {
+            return _connectionString;
+        }
+        if (_databaseConfig is IDatabaseConfigControl databaseConfigControl)
+        {
+            return databaseConfigControl.GetConnectionString();
+        }
+        return string.Empty;
+    }
+
+    private bool IsAccountStepValid()
+    {
+        return !string.IsNullOrEmpty(_hostUsername)
+            && !string.IsNullOrEmpty(_hostPassword)
+            && _hostPassword == _confirmPassword
+            && !string.IsNullOrEmpty(_hostEmail)
+            && _hostEmail.Contains("@")
+            && !string.IsNullOrEmpty(_hostName);
+    }
+
+    private RenderFragment RenderModuleConfig(ConfigurableModule module) => builder =>
+    {
+        var type = Type.GetType(module.ConfigSettingsType);
+        if (type != null)
+        {
+            builder.OpenComponent(0, type);
+            builder.AddAttribute(1, "InstallSettings", GetModuleSettings(module.ModuleDefinitionName));
+            builder.AddComponentReferenceCapture(2, inst => { _moduleConfigInstances[module.ModuleDefinitionName] = inst; });
+            builder.CloseComponent();
+        }
+    };
+
+    private Dictionary<string, string> GetModuleSettings(string moduleDefinitionName)
+    {
+        if (!_moduleSettingsState.TryGetValue(moduleDefinitionName, out var dict))
+        {
+            dict = new Dictionary<string, string>();
+            _moduleSettingsState[moduleDefinitionName] = dict;
+        }
+        return dict;
+    }
+
+    // Pull each config control's current values into wizard state, while the controls are still rendered (leaving
+    // the Configure step). These are persisted server-side by the install (the master store does not exist yet,
+    // and the wizard is not logged in, so a post-install HTTP settings write is not available).
+    private async Task CollectModuleConfigAsync()
+    {
+        foreach (var inst in _moduleConfigInstances.Values)
+        {
+            if (inst is ISettingsControl control)
+            {
+                await control.UpdateSettings();
+            }
+        }
+    }
+
+    private async Task Install()
+    {
+        var connectionString = GetConnectionString();
+
+        if (connectionString != "" && IsAccountStepValid())
+        {
+            var result = await UserService.ValidateUserAsync(_hostUsername, _hostEmail, _hostPassword);
+            if (result.Succeeded)
+            {
+                _loadingDisplay = "";
+                StateHasChanged();
+
+                Uri uri = new Uri(NavigationManager.Uri);
+
+                var database = _databases.SingleOrDefault(d => d.Name == _databaseName);
+
+                var config = new InstallConfig
+                    {
+                        DatabaseType = database.DBType,
+                        ConnectionString = connectionString,
+                        Aliases = uri.Authority,
+                        HostUsername = _hostUsername,
+                        HostPassword = _hostPassword,
+                        HostEmail = _hostEmail,
+                        HostName = _hostName,
+                        TenantName = TenantNames.Master,
+                        IsNewTenant = true,
+                        SiteName = Constants.DefaultSite,
+                        SiteTemplate = _template,
+                        RenderMode = "", // provided by appsettings.json
+                        Runtime = "", // provided by appsettings.json
+                        ModuleSettings = _moduleSettingsState
+                            .Where(kv => kv.Value != null && kv.Value.Count > 0)
+                            .Select(kv => new ModuleConfigSetting { ModuleDefinitionName = kv.Key, Settings = kv.Value })
+                            .ToList()
+                    };
+
+                var installation = await InstallationService.Install(config);
+                if (installation.Success)
+                {
+                    NavigationManager.NavigateTo(uri.Scheme + "://" + uri.Authority, true);
+                }
+                else
+                {
+                    _message = installation.Message;
+                    _loadingDisplay = "display: none;";
+                }
+            }
+            else
+            {
+                _message = string.Join("<br />", result.Errors.Select(i => !string.IsNullOrEmpty(i.Value) ? i.Value : Localizer[i.Key]));
+            }
+        }
+        else
+        {
+            _message = Localizer["Message.Require.DbInfo"];
+        }
+    }
+
+    private void TogglePassword()
+    {
+        if (_passwordType == "password")
+        {
+            _passwordType = "text";
+            _togglePassword = SharedLocalizer["HidePassword"];
+        }
+        else
+        {
+            _passwordType = "password";
+            _togglePassword = SharedLocalizer["ShowPassword"];
+        }
+    }
+
+    private void ToggleConfirmPassword()
+    {
+        if (_confirmPasswordType == "password")
+        {
+            _confirmPasswordType = "text";
+            _toggleConfirmPassword = SharedLocalizer["HidePassword"];
+        }
+        else
+        {
+            _confirmPasswordType = "password";
+            _toggleConfirmPassword = SharedLocalizer["ShowPassword"];
+        }
+    }
+
+    private void ToggleConnectionString()
+    {
+        if (_databaseConfig is IDatabaseConfigControl databaseConfigControl)
+        {
+            _connectionString = databaseConfigControl.GetConnectionString();
+        }
+        _showConnectionString = !_showConnectionString;
+    }
+
+    private void DismissModal()
+    {
+        _message = "";
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

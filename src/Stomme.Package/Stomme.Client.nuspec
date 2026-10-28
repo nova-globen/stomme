@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Stomme.Client</id>
+    <version>10.2.1</version>
+    <authors>Nova Globen AB</authors>
+    <owners>Nova Globen AB</owners>
+    <title>Nova Globen Stomme Framework</title>
+    <summary>A modular application framework for Blazor</summary>
+    <description>A modular application framework for Blazor</description>
+    <copyright>© 2026 Nova Globen AB</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">LICENSE</license>
+    <projectUrl>https://github.com/nova-globen/stomme</projectUrl>
+    <releaseNotes>https://github.com/nova-globen/stomme/releases/tag/v10.2.1</releaseNotes>
+    <readme>readme.md</readme>
+    <icon>icon.png</icon>
+    <tags>stomme</tags>
+    <!-- This group mirrors Stomme.Client.csproj's PackageReferences at the versions in
+         Directory.Packages.props. Reconciled 2026-08-02 (BL-43): Radzen.Blazor dropped (removed from the
+         code at D11) and the five references the csproj had since gained added — the drift had left a
+         consumer restoring a DLL whose FluentUI/gRPC/SignalR references no package satisfied. NOTE the
+         LIVE packaging path (examples/pack-sdk.ps1, D81) runs `dotnet pack` on the csproj and generates
+         its dependencies; this hand nuspec serves the legacy release.cmd path only. -->
+    <dependencies>
+      <group targetFramework="net10.0">
+        <dependency id="Stomme.Shared" version="10.2.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.Components.WebAssembly" version="10.0.9" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.Components.WebAssembly.Authentication" version="10.0.9" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Localization" version="10.0.9" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Http" version="10.0.9" exclude="Build,Analyzers" />
+        <dependency id="Grpc.Net.Client" version="2.80.0" exclude="Build,Analyzers" />
+        <dependency id="Grpc.Net.Client.Web" version="2.80.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.SignalR.Client" version="10.0.9" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.FluentUI.AspNetCore.Components" version="5.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\LICENSE" target="" />
+    <file src="..\..\THIRD-PARTY-NOTICES.md" target="" />
+    <file src="..\Stomme.Client\bin\Release\net10.0\Stomme.Client.dll" target="lib\net10.0" /> 
+    <file src="..\Stomme.Client\bin\Release\net10.0\Stomme.Client.pdb" target="lib\net10.0" /> 
+    <file src="icon.png" target="" />
+    <file src="readme.md" target="" />
+  </files>
+</package>

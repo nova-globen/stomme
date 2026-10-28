@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Shared/[Owner].Module.[Module].Shared.csproj" />
+  <Project Path="Client/[Owner].Module.[Module].Client.csproj" />
+  <Project Path="Server/[Owner].Module.[Module].Server.csproj" />
+  <Project Path="Package/[Owner].Module.[Module].Package.csproj" />
+</Solution>

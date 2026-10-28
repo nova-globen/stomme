@@ -1,0 +1,197 @@
+@namespace Stomme.Modules.Dashboards.Components
+@using Stomme.Dashboards
+@using Stomme.Datasets
+
+@*
+    One widget's body (BL-98 increment 2, taken out of the Dashboards page): the widget kinds over the widget's loaded data.
+    It has no event handler, so the interactive Dashboards page and a STATIC board (the landing page) render the same markup.
+    A chart cell is an element the browser draws: the page draws it through its interop once interactive; a static board
+    carries the spec, the columns and the rows on the element, and stommeCharts.renderAll draws it with no circuit.
+*@
+
+@if (Error is not null)
+{
+    <p class="db-widget-error" style="margin:0;color:var(--db-text-2);" role="alert">@Error</p>
+}
+else if (Data is null)
+{
+    <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+}
+else
+{
+    switch (Widget.Kind)
+    {
+        case WidgetKind.Chart:
+            @if (StaticChart)
+            {
+                <div id="@ChartElementId(Widget.Id)" class="db-widget-chart" role="img" aria-label="@($"{Widget.Title} chart")"
+                     data-db-chart-spec="@(Widget.ChartSpecJson ?? string.Empty)"
+                     data-db-chart-columns="@System.Text.Json.JsonSerializer.Serialize(Widget.Columns)"
+                     data-db-chart-rows="@(Data.RowsAllowed ? Data.RowsJson : null)"></div>
+                <p class="db-widget-chart-problem" style="margin:0;color:var(--db-text-2);" hidden></p>
+            }
+            else
+            {
+                <div id="@ChartElementId(Widget.Id)" class="db-widget-chart" role="img" aria-label="@($"{Widget.Title} chart")"></div>
+                @if (ChartProblem is not null)
+                {
+                    <p class="db-widget-chart-problem" style="margin:0;color:var(--db-text-2);">@ChartProblem</p>
+                }
+            }
+            break;
+        case WidgetKind.Grid:
+            @if (!Data.RowsAllowed)
+            {
+                <p style="margin:0;color:var(--db-text-2);">Row-level data is unavailable for @Data.Classification data.</p>
+            }
+            else
+            {
+                var columns = Widget.Columns.Count > 0 ? Widget.Columns : Rows(Data).SelectMany(row => row.Keys).Distinct().ToList();
+                var rows = SortedRows(Widget, Rows(Data));
+                @if (rows.Count == 0)
+                {
+                    <p style="margin:0;color:var(--db-text-2);">No rows to display.</p>
+                }
+                else
+                {
+                    <table class="db-widget-grid">
+                        <thead><tr>@foreach (var column in columns) { <th>@column</th> }</tr></thead>
+                        <tbody>
+                            @foreach (var row in rows)
+                            {
+                                <tr>@foreach (var column in columns) { <td style="font-family:monospace;">@(row.TryGetValue(column, out var value) ? value : string.Empty)</td> }</tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
+            break;
+        case WidgetKind.Pivot:
+            @if (!Data.RowsAllowed)
+            {
+                <p style="margin:0;color:var(--db-text-2);">Row-level data is unavailable for @Data.Classification data.</p>
+            }
+            else
+            {
+                var keyColumn = Widget.Columns.FirstOrDefault() ?? string.Empty;
+                var valueColumn = Widget.Columns.Skip(1).FirstOrDefault();
+                var pivot = keyColumn.Length == 0 ? new List<PivotRow>() : PivotTable.Compute(Rows(Data), keyColumn, valueColumn);
+                @if (pivot.Count == 0)
+                {
+                    <p style="margin:0;color:var(--db-text-2);">No rows to pivot.</p>
+                }
+                else
+                {
+                    <table class="db-widget-grid db-widget-pivot">
+                        <thead><tr><th>@keyColumn</th><th>Count</th>@if (valueColumn is not null) { <th>Sum of @valueColumn</th> }</tr></thead>
+                        <tbody>
+                            @foreach (var row in pivot)
+                            {
+                                <tr><td style="font-family:monospace;">@row.Key</td><td>@row.Count.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)</td>@if (valueColumn is not null) { <td>@(row.Sum is { } sum ? sum.ToString("N2", System.Globalization.CultureInfo.InvariantCulture) : "—")</td> }</tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
+            break;
+        case WidgetKind.List:
+            <ul class="db-widget-list">
+                @foreach (var column in ListColumns(Widget, Data))
+                {
+                    <li><span style="font-family:monospace;">@column.Name</span><span style="color:var(--db-text-2);">@(column.Samples.Count > 0 ? string.Join(", ", column.Samples.Take(5)) : $"{column.UniqueCount} unique")</span></li>
+                }
+                @if (!ListColumns(Widget, Data).Any())
+                {
+                    <li><span style="color:var(--db-text-2);">No columns to show.</span></li>
+                }
+            </ul>
+            break;
+        default:
+            <div class="db-kpi">
+                <div class="db-kpi-value">@Data.Summary.RowCountEstimate.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)</div>
+                <div class="db-kpi-label">@(Widget.Columns.Count > 0 ? $"rows · {string.Join(", ", Widget.Columns)}" : $"rows in {Data.DatasetName}")</div>
+            </div>
+            break;
+    }
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public WidgetView Widget { get; set; }
+
+    [Parameter]
+    public WidgetDataView Data { get; set; }
+
+    [Parameter]
+    public string Error { get; set; }
+
+    [Parameter]
+    public string ChartProblem { get; set; }
+
+    // True on a static board: the chart element carries its spec and data for the browser to draw with no circuit.
+    [Parameter]
+    public bool StaticChart { get; set; }
+
+    public static string ChartElementId(Guid widgetId) => $"db-chart-{widgetId:N}";
+
+    private static List<Dictionary<string, string>> Rows(WidgetDataView data)
+    {
+        if (string.IsNullOrWhiteSpace(data.RowsJson))
+        {
+            return new List<Dictionary<string, string>>();
+        }
+
+        try
+        {
+            using var document = System.Text.Json.JsonDocument.Parse(data.RowsJson);
+            if (document.RootElement.ValueKind != System.Text.Json.JsonValueKind.Array)
+            {
+                return new List<Dictionary<string, string>>();
+            }
+
+            var rows = new List<Dictionary<string, string>>();
+            foreach (var element in document.RootElement.EnumerateArray())
+            {
+                if (element.ValueKind != System.Text.Json.JsonValueKind.Object)
+                {
+                    continue;
+                }
+
+                var row = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var property in element.EnumerateObject())
+                {
+                    row[property.Name] = property.Value.ValueKind switch
+                    {
+                        System.Text.Json.JsonValueKind.String => property.Value.GetString() ?? string.Empty,
+                        System.Text.Json.JsonValueKind.Null => string.Empty,
+                        _ => property.Value.GetRawText(),
+                    };
+                }
+
+                rows.Add(row);
+            }
+
+            return rows;
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return new List<Dictionary<string, string>>();
+        }
+    }
+
+    // The persisted grid sort is applied on render; the column widths and the filter are the builder's.
+    private static List<Dictionary<string, string>> SortedRows(WidgetView widget, List<Dictionary<string, string>> rows)
+    {
+        if (string.IsNullOrEmpty(widget.GridState.SortColumn) || rows.Count == 0)
+        {
+            return rows;
+        }
+
+        var column = widget.GridState.SortColumn;
+        var ordered = rows.OrderBy(row => row.TryGetValue(column, out var value) ? value : string.Empty, StringComparer.OrdinalIgnoreCase);
+        return (widget.GridState.SortDescending ? ordered.Reverse() : ordered).ToList();
+    }
+
+    private static IEnumerable<DatasetColumnSummaryDescriptor> ListColumns(WidgetView widget, WidgetDataView data) =>
+        widget.Columns.Count == 0 ? data.Summary.Columns : data.Summary.Columns.Where(column => widget.Columns.Contains(column.Name, StringComparer.OrdinalIgnoreCase));
+}

@@ -1,0 +1,93 @@
+/* Stomme default theme — this theme's OWN layout only.
+
+   The `--db-*` design system itself is NOT here. It is a FRAMEWORK concern and ships globally in
+   `wwwroot/css/app.css`: the tokens, the base typography, and the whole component layer (buttons,
+   inputs, tables, cards, dialogs, tabs, pager, messages, …). See D27, and D31 for the hoist.
+
+   What stays in a theme is only what that theme genuinely owns: the shell it wraps the page in
+   (`.db-shell`, `.db-header*`, `.db-body`, `.db-page`, the pane grid, `.db-footer`) and its own
+   module container chrome (`.db-module*`). Everything a SHARED control or an admin module emits
+   must be styled by a stylesheet that is always loaded — this file is only loaded while this theme
+   is the active one, so anything shared that lands here is unstyled under every other theme.
+
+   Theme-scoped overrides of a global component are fine and expected — e.g. the narrow-viewport
+   `.db-header .db-icon-btn` sizing below. This file is linked AFTER app.css, so it wins. */
+/* ============================== Shell / header ============================== */
+.db-shell { min-height: 100vh; display: flex; flex-direction: column; background: var(--db-bg); }
+.db-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    height: var(--db-appbar-h, 64px); padding: 0 1.5rem;
+    background: var(--db-bg-elev);
+    border-bottom: 1px solid var(--db-border);
+    position: sticky; top: 0; z-index: var(--db-z-sticky);
+}
+.db-header-actions { display: flex; align-items: center; gap: 0.35rem; margin-left: auto; }
+/* ============================== Page ============================== */
+.db-body { background: var(--db-bg); flex: 1 1 auto; }
+.db-page { max-width: 1320px; margin: 0 auto; padding: 1.75rem 2rem 4rem; }
+
+/* Pane grid — CSS Grid instead of Bootstrap's .row/.col-md-* scaffold (D11).
+   A 12-column grid that collapses to one column below the md breakpoint, which is exactly what
+   col-md-* did. `:empty` panes collapse so an unused pane row costs no space. */
+.db-panes { display: grid; grid-template-columns: repeat(12, 1fr); gap: 0 1.5rem; }
+.db-panes:empty { display: none; }
+.db-pane-3  { grid-column: span 3; min-width: 0; }
+.db-pane-4  { grid-column: span 4; min-width: 0; }
+.db-pane-6  { grid-column: span 6; min-width: 0; }
+.db-pane-8  { grid-column: span 8; min-width: 0; }
+.db-pane-12 { grid-column: span 12; min-width: 0; }
+
+@media (max-width: 767.98px) {
+    .db-panes { grid-template-columns: 1fr; }
+    .db-pane-3, .db-pane-4, .db-pane-6, .db-pane-8, .db-pane-12 { grid-column: span 1; }
+}
+
+.db-page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.db-page-head h1 { margin: 0.25rem 0; }
+.db-page-head p { margin: 0; max-width: 70ch; }
+.db-page-head-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.db-page > .db-card, .db-page > .db-table, .db-page > .db-table-wrap { margin-bottom: 1.25rem; }
+.db-page > .db-grid { margin-bottom: 1.25rem; }
+/* ============================== Theme shell chrome ============================== */
+.db-header-nav { display: flex; align-items: stretch; gap: 0.1rem; margin-left: 0.5rem; flex: 1 1 auto; min-width: 0; }
+.db-header .app-logo img { max-height: 40px; }
+.db-header .app-search { display: inline-flex; align-items: center; }
+
+@media (max-width: 767.98px) {
+    /* Header reflow. Without this the header never adapted: .db-header-nav is flex: 1 1 auto and
+       the action cluster does not shrink, so below ~768px the nav was squeezed to width 0 and
+       .db-header-actions laid out straight over the top of it. The search button then sat on the
+       toggler and ate the click -- the toggler was not just inert, it was unreachable. Found by
+       driving: elementFromPoint at the toggler's centre returned BUTTON.btn-search.
+       Below the breakpoint the nav is only ever the 40px toggler, so it must not flex at all.
+       The menu's own collapse behaviour is global chrome and lives in css/app.css. */
+    .db-header { padding: 0 0.5rem; gap: 0.2rem; }
+    .db-header-nav { flex: 0 0 auto; margin-left: 0.25rem; }
+    .db-header-actions { min-width: 0; gap: 0.1rem; }
+    .db-header .app-logo img { max-height: 32px; }
+
+    /* The action cluster still has to FIT. Sizing these to the 40px .db-icon-btn made the header
+       overflow at 500px (measured: .db-header-actions scrollWidth 433 vs clientWidth 347, dragging
+       a horizontal scrollbar across the document). Below the breakpoint the controls shrink and
+       the search collapses to its icon -- the text field is what actually blows the row out
+       (189px of the 347px available). */
+    .db-header .db-icon-btn { width: 32px; height: 32px; font-size: 15px; }
+    .db-header .db-btn { padding: 0.4rem 0.5rem; font-size: 12px; }
+    .db-header .app-search .db-search-input { display: none; }
+    .db-header .app-search .db-search-btn { position: static; transform: none; }
+}
+.db-footer { border-top: 1px solid var(--db-border); background: var(--db-bg-elev); color: var(--db-text-2); padding: 1rem 2rem; text-align: center; }
+.db-footer:empty { display: none; }
+
+/* Module container chrome (StommeTheme/Containers/Container.razor). */
+.db-module { margin-bottom: 1.25rem; }
+
+/* Content images must never blow the page out sideways. The seeded HtmlText content tags its
+   images `img-fluid` -- a Bootstrap class the supersede layer never defined -- so on a 500px
+   viewport a 600px image dragged a horizontal scrollbar across the whole document (found by
+   driving: html.scrollWidth 632 vs clientWidth 500). Making module content images responsive by
+   default fixes every image rather than only the ones that happen to carry the old class. */
+.db-module img, .db-page img { max-width: 100%; height: auto; }
+.db-module-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+.db-module-head h2 { font-size: 1.25rem; }
+.db-module-rule { border: none; border-top: 1px solid var(--db-border); margin: 0.25rem 0 0.85rem; }

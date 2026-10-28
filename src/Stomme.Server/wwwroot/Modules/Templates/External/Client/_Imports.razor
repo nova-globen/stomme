@@ -1,0 +1,12 @@
+@* Microsoft.AspNetCore.Components.Web is REQUIRED for a working @onclick in a module (BL-54): without it the page builds,
+   renders, and every event handler compiles to a plain attribute - silently dead in an interactive mode. *@
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+@using Stomme.Modules
+@using Stomme.Shared
+@using [Owner].Module.[Module].Models
+@using [Owner].Module.[Module].Services

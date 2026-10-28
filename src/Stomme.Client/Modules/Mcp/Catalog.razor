@@ -1,0 +1,74 @@
+@namespace Stomme.Modules.Mcp
+@inherits ModuleBase
+@inject IMcpService McpService
+
+@*
+    What THIS install publishes over MCP (BL-80 / D101 item 7) - mcp:view.
+
+    It is what the CURRENT USER may see: every descriptor listed here has already passed its own gates for this principal on
+    this site, so the page cannot become a directory of what somebody else could use. The approval column shows the EFFECTIVE
+    value, after any mcp.tool.{name}.approval site override - a site may tighten any tool, and can never open a Deny one nor
+    make a mutating-named tool Auto.
+*@
+
+<PageTitle>MCP catalog</PageTitle>
+
+@if (!IsAuthorizedPermission(McpPermissions.View))
+{
+    <p class="db-mcp-denied" style="color:var(--db-text-2);">You do not have access to the MCP catalog.</p>
+}
+else
+{
+    <div class="db-mcp-catalog" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">What this site publishes</h3>
+            <button id="mcp-catalog-refresh" type="button" class="db-btn" @onclick="LoadAsync">Refresh</button>
+        </div>
+
+        @if (_items.Count == 0)
+        {
+            <p id="mcp-catalog-empty" style="margin:0;color:var(--db-text-2);">
+                Nothing is published to you on this site. Either no module contributes an MCP resource or tool, the MCP server
+                is switched off (<code>Mcp:Server:Enabled</code>), or you do not hold the keys the contributions require.
+            </p>
+        }
+        else
+        {
+            <table class="table db-mcp-catalog-table">
+                <thead><tr><th>Kind</th><th>Name</th><th>Description</th><th>Approval</th></tr></thead>
+                <tbody>
+                    @foreach (var item in _items)
+                    {
+                        <tr>
+                            <td>@item.Kind</td>
+                            <td style="word-break:break-all;">@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>@(item.Approval ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <p style="margin:0;color:var(--db-text-2);font-size:0.9em;">
+                <b>Confirm</b> means the tool is described but will not run: this release has no approval pipeline, and a call
+                is denied with its own entry in the audit ledger. A tool set to <b>Deny</b> is not listed at all.
+            </p>
+        }
+    </div>
+}
+
+@code {
+    private List<McpPublishedItemView> _items = new();
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        if (IsAuthorizedPermission(McpPermissions.View))
+        {
+            // An empty list is also the answer when the server half is off: the route does not exist then, and the
+            // service answers an empty list rather than an error, because "this install publishes nothing" is the truth.
+            _items = await McpService.GetPublishedAsync();
+        }
+    }
+}

@@ -1,0 +1,242 @@
+@namespace Stomme.Modules.ContextualHelp
+@inherits ModuleBase
+@inject IHelpService HelpService
+
+@*
+    The contextual-help admin control (BL-84, D103 item 9) on admin/help: every topic of this site, drafts included, and
+    an in-place editor. The editor is a <textarea> with a SERVER preview - not Quill, which is an HTML editor (D11), while
+    a topic is Markdown and its HTML is produced only by the server, through the allowlist a reader gets. What a control
+    offers is pre-checked per key so nobody is offered an action the server would refuse; the server decides again on
+    every call.
+*@
+
+<PageTitle>Help</PageTitle>
+
+@if (!IsAuthorizedPermission(HelpPermissions.Manage) && !IsAuthorizedPermission(HelpPermissions.Author))
+{
+    <p id="help-denied" style="color:var(--db-text-2);">You do not have access to help on this site.</p>
+}
+else
+{
+    <div id="help-admin" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">Help</h3>
+            @if (_canAuthor)
+            {
+                <button id="help-new" type="button" class="db-btn" @onclick="New">New topic</button>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="help-message" style="margin:0;">@_message</p>
+        }
+
+        @if (_conflicts.Count > 0)
+        {
+            @* Nothing was served for these - a key shipped twice costs EVERY side (BL-105). This is how an operator finds the package. *@
+            <section id="help-conflicts" class="db-card" style="padding:0.75rem 1rem;">
+                <strong>Rejected contributions</strong>
+                <ul style="margin:0.5rem 0 0;">
+                    @foreach (var conflict in _conflicts)
+                    {
+                        <li><code>@conflict.Name</code> (@conflict.Kind) from @string.Join(" and ", conflict.Contributors): @conflict.Reason</li>
+                    }
+                </ul>
+            </section>
+        }
+
+        @if (_canManage)
+        {
+            <div style="overflow-x:auto;">
+                <table id="help-topics" class="table" style="width:100%;">
+                    <thead><tr><th>Anchor</th><th>Locale</th><th>Title</th><th>State</th><th>Owner</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var topic in _topics)
+                        {
+                            <tr>
+                                <td><code>@topic.Anchor</code></td>
+                                <td>@topic.Locale</td>
+                                <td>@topic.Title</td>
+                                <td>@(topic.IsPublished ? "Published" : "Draft")</td>
+                                <td>@(topic.IsSeeded ? "Contributed (" + topic.SeedContributorId + ")" : "This site")</td>
+                                <td style="white-space:nowrap;">
+                                    @if (_canAuthor)
+                                    {
+                                        <button type="button" class="db-btn" @onclick="@(() => EditAsync(topic.Id))">Edit</button>
+                                        <button type="button" class="db-btn" @onclick="@(() => SetPublishedAsync(topic.Id, !topic.IsPublished))">@(topic.IsPublished ? "Unpublish" : "Publish")</button>
+                                    }
+                                    <ActionDialog Header="Delete Help Topic" Message="Delete this help topic? It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-neutral" OnClick="@(async () => { await DeleteAsync(topic.Id); StateHasChanged(); })" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin:0;color:var(--db-text-2);">
+                A contributed topic that is deleted comes back the next time the site starts. To hide one for good, unpublish it.
+            </p>
+        }
+
+        @if (_editing)
+        {
+            <section id="help-editor" class="db-card" style="padding:0.75rem 1rem;display:flex;flex-direction:column;gap:0.5rem;max-width:860px;">
+                <label>Anchor <input id="help-anchor" class="db-input" maxlength="200" @bind="_anchor" @bind:event="oninput" disabled="@(_id != null)" /></label>
+                <label>Locale <input id="help-locale" class="db-input" maxlength="16" @bind="_locale" @bind:event="oninput" disabled="@(_id != null)" /></label>
+                <label>Title <input id="help-title" class="db-input" maxlength="200" @bind="_title" @bind:event="oninput" /></label>
+                <label>Markdown <textarea id="help-markdown" class="db-input" rows="12" @bind="_markdown" @bind:event="oninput"></textarea></label>
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                    <button id="help-save" type="button" class="db-btn" @onclick="SaveAsync">Save</button>
+                    <button id="help-preview" type="button" class="db-btn db-btn-neutral" @onclick="PreviewAsync">Preview</button>
+                    @if (_canManage && _edited is { HasContributedSeed: true, IsSeeded: false })
+                    {
+                        <button id="help-reset" type="button" class="db-btn db-btn-neutral" @onclick="ResetAsync">Reset to contributed text</button>
+                    }
+                    <button type="button" class="db-btn db-btn-neutral" @onclick="Close">Close</button>
+                </div>
+                @if (_edited is { IsSeeded: true })
+                {
+                    <p style="margin:0;color:var(--db-text-2);">
+                        Saving makes this topic the site's own: @_edited.SeedContributorId will no longer update it.
+                    </p>
+                }
+                @if (_previewHtml != null)
+                {
+                    @* SERVER-rendered through the reader's pipeline and allowlist - the same bytes a reader would get. *@
+                    <div id="help-preview-output" class="db-card" style="padding:0.75rem 1rem;">@((MarkupString)_previewHtml)</div>
+                }
+            </section>
+        }
+    </div>
+}
+
+@code {
+    private List<HelpTopicSummary> _topics = new();
+    private List<HelpConflictView> _conflicts = new();
+    private bool _canManage;
+    private bool _canAuthor;
+    private bool _editing;
+    private Guid? _id;
+    private HelpTopicEditView _edited;
+    private string _anchor = "";
+    private string _locale = "en";
+    private string _title = "";
+    private string _markdown = "";
+    private string _previewHtml;
+    private string _message = "";
+
+    public override string Title => "Help";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _canManage = IsAuthorizedPermission(HelpPermissions.Manage);
+        _canAuthor = IsAuthorizedPermission(HelpPermissions.Author);
+        if (ModuleState != null && _canManage)
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _topics = await HelpService.GetTopicsAsync() ?? new List<HelpTopicSummary>();
+            _conflicts = await HelpService.GetConflictsAsync() ?? new List<HelpConflictView>();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Help Topics {Error}", ex.Message);
+            _message = "The help topics could not be loaded.";
+        }
+    }
+
+    private void New()
+    {
+        _id = null;
+        _edited = null;
+        _anchor = "";
+        _locale = "en";
+        _title = "";
+        _markdown = "";
+        _previewHtml = null;
+        _message = "";
+        _editing = true;
+        BringIntoView("help-editor"); // below the topics (BL-22)
+    }
+
+    private void Close()
+    {
+        _editing = false;
+        _previewHtml = null;
+    }
+
+    private async Task EditAsync(Guid id)
+    {
+        var topic = await HelpService.GetTopicForEditAsync(id);
+        if (topic == null)
+        {
+            _message = "The topic could not be loaded.";
+            return;
+        }
+
+        _id = topic.Id;
+        _edited = topic;
+        _anchor = topic.Anchor;
+        _locale = topic.Locale;
+        _title = topic.Title;
+        _markdown = topic.Markdown;
+        _previewHtml = null;
+        _message = "";
+        _editing = true;
+        BringIntoView("help-editor");
+    }
+
+    private async Task SaveAsync()
+    {
+        var id = await HelpService.SaveTopicAsync(new HelpTopicSaveInput(_id, _anchor, _locale, _title, _markdown));
+        if (id == Guid.Empty)
+        {
+            _message = "The topic was refused - check the anchor, the locale, and that the title and text are not empty or too long.";
+            return;
+        }
+
+        // Re-read what the SERVER saved: a "new" topic whose anchor and locale already existed was an edit of that row.
+        await EditAsync(id);
+        _message = _edited is { IsPublished: true } ? "Topic saved." : "Topic saved as a draft. Publish it to show it.";
+        await LoadAsync();
+    }
+
+    private async Task PreviewAsync()
+    {
+        _previewHtml = await HelpService.PreviewAsync(_markdown) ?? "";
+    }
+
+    private async Task SetPublishedAsync(Guid id, bool published)
+    {
+        await HelpService.SetPublishedAsync(id, published);
+        await LoadAsync();
+    }
+
+    private async Task ResetAsync()
+    {
+        if (_id is Guid id)
+        {
+            await HelpService.ResetTopicAsync(id);
+            await EditAsync(id);
+            _message = "The topic is the contributor's again.";
+            await LoadAsync();
+        }
+    }
+
+    private async Task DeleteAsync(Guid id)
+    {
+        await HelpService.DeleteTopicAsync(id);
+        if (_id == id)
+        {
+            Close();
+        }
+
+        await LoadAsync();
+    }
+}

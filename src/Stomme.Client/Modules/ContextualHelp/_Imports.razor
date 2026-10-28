@@ -1,0 +1,8 @@
+@* Contextual help's own imports (BL-84). Microsoft.AspNetCore.Components.Web is REQUIRED (BL-54): without it @onclick /
+   @bind:event compile as plain HTML attributes, the module builds GREEN and renders, and every click is silently dead
+   with no console error. For an IN-TREE Client module the line is redundant (the project-root _Imports.razor carries it
+   and Razor imports cascade); it is kept for the day the module leaves the Client project. *@
+@using Microsoft.AspNetCore.Components.Web
+@using Stomme.Help
+@using Stomme.Models.Help
+@using Stomme.Modules.ContextualHelp.Services

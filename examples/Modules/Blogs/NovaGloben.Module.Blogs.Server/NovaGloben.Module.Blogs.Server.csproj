@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BL-13: the SERVER layer of the split (WASM-download-safe) Blogs module — BlogController,
+    the CQRS handlers (Application/), the DDD aggregate (Domain/), the storage-blind persistence
+    wiring (Persistence/ + ServerStartup's AddModuleAggregatePersistence<BlogPost, Guid>) and the
+    server IBlogService. It is discovered from /bin by the same convention scan as the other two
+    assemblies but is NEVER streamed to the browser: api/Installation/list serves only the
+    ModuleDefinition's AssemblyName (the Client assembly) + its Dependencies (the Shared assembly),
+    and the WASM streaming drive asserts this Server assembly is EXCLUDED.
+
+    INDEPENDENT (D81/D82): references Stomme ONLY through a meta-package from the local feed — since
+    BL-44 the SLIM one, Stomme.Sdk.Slim (examples/pack-sdk-slim.ps1): the module-facing compile
+    surface without the fat Stomme.Server closure (measured: 180 packages / ~1.2 GB restored down to
+    the curated slim set). The ASP.NET Core surface arrives via the Stomme.Server.Sdk shim's
+    Microsoft.AspNetCore.App framework reference, exactly as it did via the fat package. STORAGE-BLIND
+    (owner's bar #2): the module still authors ZERO EF DbContext / RavenDB store / file store /
+    provider branch.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>NovaGloben.Module.Blogs.Server.Stomme</AssemblyName>
+    <RootNamespace>NovaGloben.Module.Blogs</RootNamespace>
+    <Version>2.0.0</Version>
+    <Authors>Nova Globen AB</Authors>
+    <Company>Nova Globen AB</Company>
+    <Product>NovaGloben.Module.Blogs</Product>
+    <Description>Server controller, CQRS handlers, DDD aggregate and storage-blind persistence for the split Blogs module.</Description>
+    <Copyright>Nova Globen AB</Copyright>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stomme.Sdk.Slim" Version="10.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NovaGloben.Module.Blogs.Shared\NovaGloben.Module.Blogs.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

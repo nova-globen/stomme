@@ -1,0 +1,323 @@
+@namespace Stomme.Modules.Admin.Sql
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject ISystemService SystemService
+@inject ITenantService TenantService
+@inject IDatabaseService DatabaseService
+@inject ISqlService SqlService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_tenants == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    @* Migrated to native FluentUI form controls + the --db-* design system (D11, Phase 4). *@
+    <div class="db-card">
+		<div class="db-field">
+			<Label For="connection" HelpText="Select a database connection (from appsettings.json)" ResourceKey="Connection">Connection: </Label>
+			<FluentSelect id="connection" TOption="string" TValue="string" Value="@_connection" ValueChanged="@(v => ConnectionChanged(v))" class="db-field-control">
+				<FluentOption TValue="string" Value="@("-")">&lt;@Localizer["Connection.Select"]&gt;</FluentOption>
+				<FluentOption TValue="string" Value="@("+")">&lt;@Localizer["Connection.Add"]&gt;</FluentOption>
+				@foreach (var connection in _connections)
+				{
+					<FluentOption TValue="string" Value="@connection.Key">@connection.Key</FluentOption>
+				}
+			</FluentSelect>
+		</div>
+		@if (_connection == "+")
+		{
+			<div class="db-field">
+				<Label For="name" HelpText="Enter the name of the connection" ResourceKey="Name">Name: </Label>
+				<FluentTextInput id="name" @bind-Value="_name" MaxLength="100" Required="true" class="db-field-control" />
+			</div>
+			<div class="db-field">
+				<Label For="databasetype" HelpText="Select the database type" ResourceKey="DatabaseType">Type: </Label>
+				@if (_databases != null)
+				{
+					<FluentSelect id="databasetype" TOption="string" TValue="string" Value="@_databasetype" ValueChanged="@(v => DatabaseTypeChanged(v))" Required="true" class="db-field-control">
+						@foreach (var database in _databases)
+						{
+							<FluentOption TValue="string" Value="@database.Name">@Localizer[@database.Name]</FluentOption>
+						}
+					</FluentSelect>
+					<FluentButton Appearance="ButtonAppearance.Default" OnClick="ShowConnectionString">
+						@(!_showConnectionString ? Localizer["EnterConnectionString"] : Localizer["EnterConnectionParameters"])
+					</FluentButton>
+				}
+			</div>
+			@if (!_showConnectionString)
+			{
+				if (_databaseConfigType != null)
+				{
+					@DatabaseConfigComponent
+				}
+			}
+			else
+			{
+				<div class="db-field">
+					<Label For="connectionstring" HelpText="Enter a complete connection string including all parameters and delimiters" ResourceKey="ConnectionString">Settings:</Label>
+					<FluentTextArea id="connectionstring" @bind-Value="_connectionstring" Rows="3" class="db-field-control" />
+				</div>
+			}
+			<div class="db-form-actions">
+				<FluentButton Appearance="ButtonAppearance.Primary" OnClick="Add">@Localizer["Add"]</FluentButton>
+			</div>
+		}
+		else
+		{
+			@if (_connection != "-")
+			{
+				<div class="db-field">
+					<Label For="databasetype" HelpText="The database type" ResourceKey="DatabaseType">Type: </Label>
+					<FluentTextInput id="databasetype" @bind-Value="_databasetype" ReadOnly="true" class="db-field-control" />
+				</div>
+				@if (!string.IsNullOrEmpty(_tenant))
+				{
+					<div class="db-field">
+						<Label For="tenant" HelpText="The database using this connection" ResourceKey="Tenant">Database: </Label>
+						<FluentTextInput id="tenant" @bind-Value="_tenant" ReadOnly="true" class="db-field-control" />
+					</div>
+				}
+				<div class="db-field">
+					<Label For="connectionstring" HelpText="The connection string" ResourceKey="ConnectionString">Settings: </Label>
+					<FluentTextInput id="connectionstring" TextInputType="@_connectionStringFieldType" @bind-Value="_connectionstring" ReadOnly="true" class="db-field-control" />
+					<FluentButton Appearance="ButtonAppearance.Default" OnClick="ToggleConnectionString">@_connectionstringtoggle</FluentButton>
+				</div>
+				<div class="db-field">
+					<Label For="sqlQuery" HelpText="Enter a valid SQL query for the database" ResourceKey="SqlQuery">SQL Query: </Label>
+					<FluentTextArea id="sqlQuery" @bind-Value="_sql" Rows="3" class="db-field-control" />
+				</div>
+				<div class="db-form-actions">
+					<FluentButton Appearance="ButtonAppearance.Primary" OnClick="Execute">@Localizer["Execute"]</FluentButton>
+				</div>
+				@if (_results != null)
+				{
+					@if (_results.Count > 0)
+					{
+						<div class="db-table-wrap">
+							<Pager Class="db-table" Items="@_results">
+								<Header>
+									@foreach (KeyValuePair<string, string> kvp in _results.First())
+									{
+									<th>@kvp.Key</th>
+									}
+								</Header>
+								<Row>
+									@foreach (KeyValuePair<string, string> kvp in context)
+									{
+										<td>@kvp.Value</td>
+									}
+								</Row>
+							</Pager>
+						</div>
+					}
+					else
+					{
+						<p class="db-muted">@Localizer["Return.NoResult"]</p>
+					}
+				}
+			}
+		}
+	</div>
+}
+
+@code {
+    private string _connection = "-";
+    private Dictionary<string, object> _connections;
+    private List<Tenant> _tenants;
+    private List<Database> _databases;
+
+    private string _name = string.Empty;
+    private string _databasetype = string.Empty;
+    private Type _databaseConfigType;
+    private object _databaseConfig;
+    private RenderFragment DatabaseConfigComponent { get; set; }
+    private bool _showConnectionString = false;
+    private string _tenant = string.Empty;
+    private string _connectionstring = string.Empty;
+    private string _connectionstringtype = "password";
+    private string _connectionstringtoggle = string.Empty;
+
+    // Typed bridge for the native FluentUI text field over the string-backed input type.
+    private TextInputType _connectionStringFieldType => (_connectionstringtype == "password") ? TextInputType.Password : TextInputType.Text;
+    private string _sql = string.Empty;
+    private List<Dictionary<string, string>> _results;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _connections = await SystemService.GetSystemInfoAsync("connectionstrings");
+            _tenants = await TenantService.GetTenantsAsync();
+            _databases = await DatabaseService.GetDatabasesAsync();
+            _connectionstringtoggle = SharedLocalizer["ShowPassword"];
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Tenants {Error}", ex.Message);
+            AddModuleMessage(ex.Message, MessageType.Error);
+        }
+    }
+
+    private async void ConnectionChanged(string value)
+    {
+        try
+        {
+            _connection = value;
+            if (_connection != "-" && _connection != "+")
+            {
+                _connectionstring = _connections[_connection].ToString();
+                _tenant = "";
+                _databasetype = "";
+                var tenant = _tenants.FirstOrDefault(item => item.DBConnectionString == _connection);
+                if (tenant != null)
+                {
+                    _tenant = tenant.Name;
+                    // hack - there are 3 providers with SqlServerDatabase DBTypes - so we are choosing the last one in alphabetical order
+                    _databasetype = _databases.Where(item => item.DBType == tenant.DBType).OrderBy(item => item.Name).Last()?.Name;
+                }
+                else
+                {
+                    if (_connection.Contains(" ("))
+                    {
+                        _databasetype = _connection.Substring(_connection.LastIndexOf(" (") + 2).Replace(")", "");
+                    }
+                    else
+                    {
+                        if (_databases.Exists(item => item.IsDefault))
+                        {
+                            _databasetype = _databases.Find(item => item.IsDefault).Name;
+                        }
+                        else
+                        {
+                            _databasetype = Constants.DefaultDBName;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (_databases.Exists(item => item.IsDefault))
+                {
+                    _databasetype = _databases.Find(item => item.IsDefault).Name;
+                }
+                else
+                {
+                    _databasetype = Constants.DefaultDBName;
+                }
+                _showConnectionString = false;
+                LoadDatabaseConfigComponent();
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Connection {Connection} {Error}", _connection, ex.Message);
+            AddModuleMessage(ex.Message, MessageType.Error);
+        }
+    }
+
+    private void DatabaseTypeChanged(string value)
+    {
+        try
+        {
+            _databasetype = value;
+            _showConnectionString = false;
+            LoadDatabaseConfigComponent();
+        }
+        catch
+        {
+            AddModuleMessage(Localizer["Error.Database.LoadConfig"], MessageType.Error);
+        }
+    }
+
+    private void LoadDatabaseConfigComponent()
+    {
+        var database = _databases.SingleOrDefault(d => d.Name == _databasetype);
+        if (database != null)
+        {
+            _databaseConfigType = Type.GetType(database.ControlType);
+            DatabaseConfigComponent = builder =>
+            {
+                builder.OpenComponent(0, _databaseConfigType);
+                builder.AddComponentReferenceCapture(1, inst => { _databaseConfig = Convert.ChangeType(inst, _databaseConfigType); });
+                builder.CloseComponent();
+            };
+        }
+    }
+
+    private void ShowConnectionString()
+    {
+        if (_databaseConfig is IDatabaseConfigControl databaseConfigControl)
+        {
+            _connectionstring = databaseConfigControl.GetConnectionString();
+        }
+        _showConnectionString = !_showConnectionString;
+    }
+
+    private async Task Add()
+    {
+        var connectionstring = _connectionstring;
+        if (!_showConnectionString && _databaseConfig is IDatabaseConfigControl databaseConfigControl)
+        {
+            connectionstring = databaseConfigControl.GetConnectionString();
+        }
+        if (!string.IsNullOrEmpty(_name) && !string.IsNullOrEmpty(connectionstring))
+        {
+            _name = _name + " (" + _databasetype +")";
+            var settings = new Dictionary<string, object>();
+			settings.Add($"{SettingKeys.ConnectionStringsSection}:{_name}", connectionstring);
+			await SystemService.UpdateSystemInfoAsync(settings);
+			_connections = await SystemService.GetSystemInfoAsync("connectionstrings");
+			_connection = "-";
+			AddModuleMessage(Localizer["Message.Connection.Added"], MessageType.Success);
+		}
+		else
+		{
+			AddModuleMessage(Localizer["Message.Required.Connection"], MessageType.Warning);
+		}
+	}
+
+	private void ToggleConnectionString()
+	{
+		if (_connectionstringtype == "password")
+		{
+			_connectionstringtype = "text";
+			_connectionstringtoggle = SharedLocalizer["HidePassword"];
+		}
+		else
+		{
+			_connectionstringtype = "password";
+			_connectionstringtoggle = SharedLocalizer["ShowPassword"];
+		}
+	}
+
+	private async Task Execute()
+	{
+		try
+		{
+			if (_databasetype != "-" && !string.IsNullOrEmpty(_sql))
+			{
+				var dbtype = _databases.FirstOrDefault(item => item.Name == _databasetype).DBType;
+				var sqlquery = new SqlQuery { DBConnectionString = _connection, DBType = dbtype, Query = _sql };
+                sqlquery = await SqlService.ExecuteQueryAsync(sqlquery);
+                _results = sqlquery.Results;
+                AddModuleMessage(Localizer["Success.QueryExecuted"], MessageType.Success);
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.Tenant"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Executing SQL Query {SQL} {Error}", _sql, ex.Message);
+            AddModuleMessage(ex.Message, MessageType.Error);
+        }
+    }
+}

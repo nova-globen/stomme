@@ -1,0 +1,213 @@
+@namespace Stomme.Modules.Admin.Register
+@using System.Net
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject ISettingService SettingService
+@inject ITimeZoneService TimeZoneService
+@inject ILanguageService LanguageService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_initialized)
+{
+    @if (PageState.Site.AllowRegistration)
+    {
+        if (!_userCreated)
+        {
+            if (PageState.User != null)
+            {
+                <ModuleMessage Message="@Localizer["Info.Registration.Exists"]" Type="MessageType.Info" />
+            }
+            else
+            {
+                <ModuleMessage Message="@_passwordrequirements" Type="MessageType.Info" />
+                @* Migrated to native FluentUI form controls + the --db-* design system (D11, Phase 4). *@
+                <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+                    <div class="db-card">
+                        <div class="db-field">
+                            <Label For="username" HelpText="Your username. Note that this field can not be modified once it is saved." ResourceKey="Username"></Label>
+                            <FluentTextInput id="username" @bind-Value="_username" MaxLength="256" Required="true" class="db-field-control" />
+                        </div>
+                        <div class="db-field">
+                            <Label For="password" HelpText="Please choose a sufficiently secure password and enter it here" ResourceKey="Password"></Label>
+                            <FluentTextInput id="password" TextInputType="@_passwordFieldType" @bind-Value="_password" autocomplete="new-password" Required="true" class="db-field-control" />
+                            <FluentButton Appearance="ButtonAppearance.Default" OnClick="TogglePassword" tabindex="-1">@_togglepassword</FluentButton>
+                        </div>
+                        <div class="db-field">
+                            <Label For="confirm" HelpText="Enter your password again to confirm it matches the value entered above" ResourceKey="Confirm"></Label>
+                            <FluentTextInput id="confirm" TextInputType="@_passwordFieldType" @bind-Value="_confirm" autocomplete="new-password" Required="true" class="db-field-control" />
+                            <FluentButton Appearance="ButtonAppearance.Default" OnClick="TogglePassword" tabindex="-1">@_togglepassword</FluentButton>
+                        </div>
+                        <div class="db-field">
+                            <Label For="email" HelpText="Your email address where you wish to receive notifications" ResourceKey="Email"></Label>
+                            <FluentTextInput id="email" @bind-Value="_email" MaxLength="256" Required="true" class="db-field-control" />
+                        </div>
+                        <div class="db-field">
+                            <Label For="displayname" HelpText="Your full name" ResourceKey="DisplayName"></Label>
+                            <FluentTextInput id="displayname" @bind-Value="_displayname" MaxLength="50" class="db-field-control" />
+                        </div>
+                        <div class="db-field">
+                            <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time Zone:</Label>
+                            <FluentSelect id="timezone" TOption="string" TValue="string" @bind-Value="_timezoneid" class="db-field-control">
+                                <FluentOption TValue="string" Value="@string.Empty">&lt;@SharedLocalizer["Not Specified"]&gt;</FluentOption>
+                                @foreach (var timezone in _timezones)
+                                {
+                                    <FluentOption TValue="string" Value="@timezone.Id">@timezone.DisplayName</FluentOption>
+                                }
+                            </FluentSelect>
+                        </div>
+                        <div class="db-field">
+                            <Label For="culture" HelpText="Your preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language:</Label>
+                            <FluentSelect id="culture" TOption="string" TValue="string" @bind-Value="_culturecode" class="db-field-control">
+                                <FluentOption TValue="string" Value="@string.Empty">&lt;@SharedLocalizer["Not Specified"]&gt;</FluentOption>
+                                @foreach (var language in _languages)
+                                {
+                                    <FluentOption TValue="string" Value="@language.Code">@language.Name</FluentOption>
+                                }
+                            </FluentSelect>
+                        </div>
+                    </div>
+
+                    <div class="db-form-actions">
+                        <FluentButton Appearance="ButtonAppearance.Primary" OnClick="Register">@Localizer["Register"]</FluentButton>
+                        <FluentButton Appearance="ButtonAppearance.Default" OnClick="Cancel">@SharedLocalizer["Cancel"]</FluentButton>
+                    </div>
+                    @if (_allowsitelogin)
+                    {
+                        <div class="db-form-actions">
+                            <NavLink href="@NavigateUrl("login")">@Localizer["Login"]</NavLink>
+                        </div>
+                    }
+                </form>
+            }
+        }
+    }
+    else
+    {
+        <ModuleMessage Message="@Localizer["Info.Registration.Disabled"]" Type="MessageType.Info" />
+    }
+}
+
+@code {
+    private bool _initialized = false;
+    private List<Models.TimeZone> _timezones;
+    private IEnumerable<Models.Language> _languages;
+
+    private string _passwordrequirements;
+    private string _username = string.Empty;
+    private ElementReference form;
+    private bool validated = false;
+    private string _password = string.Empty;
+    private string _passwordtype = "password";
+    private string _togglepassword = string.Empty;
+
+    // Typed bridge for the native FluentUI text field over the string-backed input type.
+    private TextInputType _passwordFieldType => (_passwordtype == "password") ? TextInputType.Password : TextInputType.Text;
+    private string _confirm = string.Empty;
+    private string _email = string.Empty;
+    private string _displayname = string.Empty;
+    private string _timezoneid = string.Empty;
+    private string _culturecode = string.Empty;
+    private bool _userCreated = false;
+    private bool _allowsitelogin = true;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Anonymous;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _timezones = TimeZoneService.GetTimeZones();
+        _languages = await LanguageService.GetLanguagesAsync(PageState.Site.SiteId);            
+
+        _passwordrequirements = await UserService.GetPasswordRequirementsAsync(PageState.Site.SiteId); 
+        _allowsitelogin = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:AllowSiteLogin", "true"));
+        _timezoneid = PageState.Site.TimeZoneId;
+        _culturecode = PageState.Site.CultureCode;
+        _initialized = true;
+    }
+
+    protected override void OnParametersSet()
+    {
+        _togglepassword = SharedLocalizer["ShowPassword"];     
+    }
+
+    private async Task Register()
+    {
+        validated = true;
+        var interop = new Interop(JSRuntime);
+        if (await interop.FormValid(form))
+        {
+            try
+            {
+                bool _isEmailValid = Utilities.IsValidEmail(_email);
+
+                if (_isEmailValid)
+                {
+                    if (_password == _confirm)
+                    {
+                        var user = new User
+                        {
+                            SiteId = PageState.Site.SiteId,
+                            Username = _username,
+                            Password = _password,
+                            Email = _email,
+                            DisplayName = (_displayname == string.Empty ? _username : _displayname),
+                            TimeZoneId = _timezoneid,
+                            CultureCode = _culturecode,
+							PhotoFileId = null
+                        };
+                        user = await UserService.AddUserAsync(user);
+
+                        if (user != null)
+                        {
+                            await logger.LogInformation("User Created {Username} {Email}", _username, _email);
+                            _userCreated = true;
+                             AddModuleMessage(Localizer["Info.User.AccountCreate"], MessageType.Info);
+                        }
+                        else
+                        {
+                            await logger.LogError("Error Adding User {Username} {Email}", _username, _email);
+                            AddModuleMessage(Localizer["Error.User.AddInfo"], MessageType.Error);
+                        }
+                    }
+                    else
+                    {
+                        AddModuleMessage(Localizer["Message.Password.NoMatch"], MessageType.Warning);
+                    }
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.Required.UserInfo"], MessageType.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "Error Adding User {Username} {Email} {Error}", _username, _email, ex.Message);
+                AddModuleMessage(Localizer["Error.User.Add"], MessageType.Error);
+            }
+        }
+        else
+        {
+            AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo(PageState.ReturnUrl);
+    }
+
+    private void TogglePassword()
+	{
+		if (_passwordtype == "password")
+		{
+			_passwordtype = "text";
+			_togglepassword = SharedLocalizer["HidePassword"];
+		}
+		else
+		{
+			_passwordtype = "password";
+			_togglepassword = SharedLocalizer["ShowPassword"];
+		}
+	}
+}

@@ -1,0 +1,3 @@
+namespace Stomme.Engine.Pipelines.Pipelines.PipelineExecution;
+
+public delegate ValueTask PipelineMiddlewareDelegate(PipelineExecutionContext context);

@@ -1,0 +1,7 @@
+<Project>
+  <!-- The module pins its own package versions (Stomme.Sdk.Slim on each project), as a downstream app does. This file also
+       stops the walk: an enclosing repository's central package management does not reach the module. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+</Project>

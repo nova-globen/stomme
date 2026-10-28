@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The SERVER layer: the domain, the storage-blind persistence wiring, the commands and queries, the API and the server
+    manager. The host loads it from /bin; it never streams to a browser.
+    INDEPENDENT (D81/D82): Stomme arrives only through the Stomme.Sdk.Slim package - no source or project reference.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>[Owner].Module.[Module].Server.Stomme</AssemblyName>
+    <RootNamespace>[Owner].Module.[Module]</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>[Owner]</Authors>
+    <Company>[Owner]</Company>
+    <Product>[Owner].Module.[Module]</Product>
+    <Description>[Description]</Description>
+    <Copyright>[Owner]</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stomme.Sdk.Slim" Version="[FrameworkVersion]" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\[Owner].Module.[Module].Shared.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,314 @@
+@namespace Stomme.Modules.CloudUsage
+@inherits ModuleBase
+@inject ICloudUsageService CloudUsageService
+@inject IConnectionsService ConnectionsService
+
+@*
+    The Cloud Usage page (BL-97 increment 4): this site's cloud and SaaS spend for a month - the totals per currency, by
+    provider, the top services, the month over the one before, and each budget against its spend - for a holder of
+    cloud-usage:view; and, for a holder of cloud-usage:manage, a budget per scope and a manual sync that fetches a window of
+    costs through one of the site's cost connections. Totals are per currency: nothing is converted. Every figure comes
+    from api/CloudUsage, and the server decides every permission again.
+*@
+
+<PageTitle>Cloud usage</PageTitle>
+
+@if (!IsAuthorizedPermission(CloudUsagePermissions.View))
+{
+    <p id="cloud-usage-denied" style="color:var(--db-text-2);">You do not have access to cloud usage on this site.</p>
+}
+else
+{
+    <div class="db-cloud-usage" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Cloud usage</h3>
+            <label>Month <input id="cloud-usage-month" type="month" value="@_month.ToString("yyyy-MM", System.Globalization.CultureInfo.InvariantCulture)" @onchange="OnMonthChanged" /></label>
+            <button id="cloud-usage-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="cloud-usage-message" style="margin:0;" role="status">@_message</p>
+        }
+
+        @if (_summary is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading cloud usage…</p>
+        }
+        else if (_summary.RecordCount == 0)
+        {
+            <p id="cloud-usage-empty" style="margin:0;color:var(--db-text-2);">No cost rows for @_month.ToString("yyyy-MM", System.Globalization.CultureInfo.InvariantCulture). A sync through a cost connection records them.</p>
+        }
+        else
+        {
+            <section aria-label="Totals">
+                <h4 style="margin:0 0 0.25rem 0;">Totals</h4>
+                <table id="cloud-usage-totals" class="db-health-table" style="border-collapse:collapse;">
+                    <thead><tr><th style="text-align:left;">Currency</th><th style="text-align:right;">Spend</th><th style="text-align:right;">Rows</th><th style="text-align:right;">vs previous month</th></tr></thead>
+                    <tbody>
+                        @foreach (var total in _summary.TotalsByCurrency)
+                        {
+                            var delta = _monthOverMonth?.ByCurrency.FirstOrDefault(d => d.Currency == total.Currency);
+                            <tr>
+                                <td>@total.Currency</td>
+                                <td style="text-align:right;">@Money(total.TotalCost)</td>
+                                <td style="text-align:right;">@total.RecordCount</td>
+                                <td style="text-align:right;">@(delta is null ? "—" : delta.DeltaPercent is { } percent ? $"{Money(delta.Delta)} ({percent:0.#}%)" : Money(delta.Delta))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+
+            <section aria-label="By provider">
+                <h4 style="margin:0 0 0.25rem 0;">By provider</h4>
+                <table id="cloud-usage-by-provider" class="db-health-table" style="border-collapse:collapse;">
+                    <thead><tr><th style="text-align:left;">Provider</th><th style="text-align:left;">Currency</th><th style="text-align:right;">Spend</th><th style="text-align:right;">Rows</th></tr></thead>
+                    <tbody>
+                        @foreach (var line in _byProvider?.ByProvider ?? Array.Empty<CloudCostProviderBreakdown>())
+                        {
+                            <tr><td>@CloudProviderNames.Display(line.Provider.ToString())</td><td>@line.Currency</td><td style="text-align:right;">@Money(line.TotalCost)</td><td style="text-align:right;">@line.RecordCount</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+
+            <section aria-label="Top services">
+                <h4 style="margin:0 0 0.25rem 0;">Top services</h4>
+                <table id="cloud-usage-by-service" class="db-health-table" style="border-collapse:collapse;">
+                    <thead><tr><th style="text-align:left;">Service</th><th style="text-align:left;">Category</th><th style="text-align:left;">Currency</th><th style="text-align:right;">Spend</th></tr></thead>
+                    <tbody>
+                        @foreach (var line in _byService?.ByService ?? Array.Empty<CloudCostServiceBreakdown>())
+                        {
+                            <tr><td>@line.Service</td><td>@line.ServiceCategory</td><td>@line.Currency</td><td style="text-align:right;">@Money(line.TotalCost)</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+        }
+
+        <section aria-label="Budgets">
+            <h4 style="margin:0 0 0.25rem 0;">Budgets</h4>
+            @if ((_budgetStatus?.Budgets.Count ?? 0) == 0)
+            {
+                <p id="cloud-usage-no-budget" style="margin:0;color:var(--db-text-2);">No budget is set for this site.</p>
+            }
+            else
+            {
+                <table id="cloud-usage-budgets" class="db-health-table" style="border-collapse:collapse;">
+                    <thead><tr><th style="text-align:left;">Scope</th><th style="text-align:right;">Budget</th><th style="text-align:right;">Spend</th><th style="text-align:right;">Remaining</th><th style="text-align:right;">Used</th></tr></thead>
+                    <tbody>
+                        @foreach (var line in _budgetStatus!.Budgets)
+                        {
+                            <tr>
+                                <td>@(line.Provider is { } scope ? CloudProviderNames.Display(scope) : "All providers")</td>
+                                <td style="text-align:right;">@Money(line.BudgetAmount) @line.Currency</td>
+                                <td style="text-align:right;">@Money(line.ActualSpend) @line.Currency</td>
+                                <td style="text-align:right;">@Money(line.RemainingAmount) @line.Currency</td>
+                                <td style="text-align:right;@(line.PercentUsed >= 100 ? "font-weight:600;" : string.Empty)">@line.PercentUsed.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)%</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            @if (_canManage)
+            {
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:end;margin-top:0.5rem;">
+                    <label>Scope
+                        <select id="cloud-usage-budget-scope" @bind="_budgetScope">
+                            <option value="">All providers</option>
+                            @foreach (var provider in Enum.GetValues<CloudProvider>())
+                            {
+                                <option value="@provider">@CloudProviderNames.Display(provider)</option>
+                            }
+                        </select>
+                    </label>
+                    <label>Monthly amount <input id="cloud-usage-budget-amount" type="number" min="0.01" step="0.01" @bind="_budgetAmount" /></label>
+                    <label>Currency <input id="cloud-usage-budget-currency" maxlength="3" size="4" @bind="_budgetCurrency" /></label>
+                    <button id="cloud-usage-budget-save" type="button" class="db-btn" @onclick="SaveBudgetAsync" disabled="@_busy">Set budget</button>
+                </div>
+            }
+        </section>
+
+        @if (_canManage)
+        {
+            <section aria-label="Sync">
+                <h4 style="margin:0 0 0.25rem 0;">Sync costs</h4>
+                @if (_connections.Count == 0)
+                {
+                    <p id="cloud-usage-no-connection" style="margin:0;color:var(--db-text-2);">No cost connection on this site. Add an Azure, AWS, GCP or SaaS cost connection under Connections first.</p>
+                }
+                else
+                {
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:end;">
+                        <label>Connection
+                            <select id="cloud-usage-sync-connection" @bind="_syncConnection">
+                                @foreach (var connection in _connections)
+                                {
+                                    <option value="@connection.Id">@connection.Name (@connection.ConnectorDisplayName)</option>
+                                }
+                            </select>
+                        </label>
+                        <label>Window
+                            <select id="cloud-usage-sync-window" @bind="_syncWindow">
+                                <option value="daily">Yesterday</option>
+                                <option value="monthly">Last month</option>
+                            </select>
+                        </label>
+                        <label>Into dataset (optional) <input id="cloud-usage-sync-dataset" @bind="_syncDataset" /></label>
+                        <button id="cloud-usage-sync" type="button" class="db-btn" @onclick="SyncAsync" disabled="@_busy">Sync</button>
+                    </div>
+                }
+            </section>
+        }
+    </div>
+}
+
+@code {
+    // A connection's connector type names the cost source it fetches (BL-96's cost connectors, and the generic rest one).
+    private static readonly Dictionary<string, CloudProvider> CostConnectorTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["azurecost"] = CloudProvider.Azure,
+        ["awscost"] = CloudProvider.Aws,
+        ["gcpcost"] = CloudProvider.Gcp,
+        ["datadogcost"] = CloudProvider.Datadog,
+        ["snowflakecost"] = CloudProvider.Snowflake,
+        ["githubcost"] = CloudProvider.GitHub,
+        ["m365cost"] = CloudProvider.Microsoft365,
+        ["salesforcecost"] = CloudProvider.Salesforce,
+    };
+
+    private DateOnly _month = DateOnly.FromDateTime(DateTime.UtcNow);
+    private CloudCostSummaryView? _summary;
+    private CloudCostByProviderView? _byProvider;
+    private CloudCostByServiceView? _byService;
+    private CloudCostMonthOverMonthView? _monthOverMonth;
+    private CloudBudgetStatusView? _budgetStatus;
+    private List<ConnectionView> _connections = new();
+    private bool _busy;
+    private bool _canManage;
+    private string _message = string.Empty;
+    private string _budgetScope = string.Empty;
+    private decimal _budgetAmount = 1000m;
+    private string _budgetCurrency = "USD";
+    private Guid _syncConnection;
+    private string _syncWindow = "daily";
+    private string _syncDataset = string.Empty;
+
+    public override string Title => "Cloud usage";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsAuthorizedPermission(CloudUsagePermissions.View))
+        {
+            return;
+        }
+
+        _canManage = IsAuthorizedPermission(CloudUsagePermissions.Manage);
+        await LoadAsync();
+    }
+
+    private async Task OnMonthChanged(ChangeEventArgs args)
+    {
+        if (DateOnly.TryParseExact($"{args.Value}-01", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var month))
+        {
+            _month = month;
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            var from = new DateOnly(_month.Year, _month.Month, 1);
+            var to = from.AddMonths(1).AddDays(-1);
+            _summary = await CloudUsageService.GetSummaryAsync(from, to);
+            _byProvider = await CloudUsageService.GetByProviderAsync(from, to);
+            _byService = await CloudUsageService.GetByServiceAsync(from, to, 10);
+            _monthOverMonth = await CloudUsageService.GetMonthOverMonthAsync(from);
+            _budgetStatus = await CloudUsageService.GetBudgetStatusAsync(from);
+            if (_canManage)
+            {
+                _connections = (await ConnectionsService.ListAsync()).Where(connection => CostConnectorTypes.ContainsKey(connection.ConnectorType)).OrderBy(connection => connection.Name).ToList();
+                if (_connections.Count > 0 && _connections.All(connection => connection.Id != _syncConnection))
+                {
+                    _syncConnection = _connections[0].Id;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load cloud usage.");
+            _message = "Cloud usage could not be loaded.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task SaveBudgetAsync()
+    {
+        _busy = true;
+        try
+        {
+            var budget = await CloudUsageService.SetBudgetAsync(new SetCloudBudgetRequest
+            {
+                MonthlyAmount = _budgetAmount,
+                Currency = _budgetCurrency.Trim(),
+                Provider = Enum.TryParse<CloudProvider>(_budgetScope, out var provider) ? provider : null,
+            });
+            _message = $"Budget set: {Money(budget.MonthlyAmount)} {budget.Currency} a month for {(budget.Provider is { } scope ? CloudProviderNames.Display(scope) : "all providers")}.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not set the cloud budget.");
+            _message = "The budget was not set: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task SyncAsync()
+    {
+        var connection = _connections.FirstOrDefault(candidate => candidate.Id == _syncConnection);
+        if (connection is null || !CostConnectorTypes.TryGetValue(connection.ConnectorType, out var provider))
+        {
+            _message = "Choose a cost connection to sync.";
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var result = await CloudUsageService.SyncAsync(new SyncCloudCostsRequest
+            {
+                ConnectionId = connection.Id,
+                Provider = provider.ToString(),
+                Window = _syncWindow,
+                TargetDataset = string.IsNullOrWhiteSpace(_syncDataset) ? null : _syncDataset.Trim(),
+            });
+            _message = result.Success ? result.Reason : $"The sync was refused ({result.Code}): {result.Reason}";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not sync cloud costs.");
+            _message = "The sync failed: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private static string Money(decimal value) => value.ToString("#,##0.00", System.Globalization.CultureInfo.InvariantCulture);
+}

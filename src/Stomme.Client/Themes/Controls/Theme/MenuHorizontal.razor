@@ -1,0 +1,32 @@
+@namespace Stomme.Themes.Controls
+
+@inherits MenuBase
+
+@* Migrated to the --db-* design system (D11) and to Stomme-owned toggling (D18).
+   See MenuBase for why this is dual-mode (Blazor state when interactive, a scriptless
+   checkbox+label when statically rendered). *@
+@if (MenuPages.Any())
+{
+    <div class="db-nav db-nav-horizontal">
+        @if (Interactive)
+        {
+            <button type="button" class="db-nav-toggle" id="MenuToggle" aria-controls="Menu"
+                    aria-expanded="@Open.ToString().ToLower()" aria-label="Toggle Navigation" @onclick="ToggleMenu">
+                <span class="db-nav-toggle-icon" aria-hidden="true"></span>
+            </button>
+            <div class="db-nav-items @(Open ? "open" : "")" id="Menu">
+                <MenuItemsHorizontal ParentPage="null" Pages="MenuPages" OnNavigate="CloseMenu" />
+            </div>
+        }
+        else
+        {
+            <input type="checkbox" class="db-nav-checkbox" id="MenuToggle" aria-controls="Menu" />
+            <label class="db-nav-toggle" for="MenuToggle" aria-label="Toggle Navigation">
+                <span class="db-nav-toggle-icon" aria-hidden="true"></span>
+            </label>
+            <div class="db-nav-items" id="Menu">
+                <MenuItemsHorizontal ParentPage="null" Pages="MenuPages" />
+            </div>
+        }
+    </div>
+}

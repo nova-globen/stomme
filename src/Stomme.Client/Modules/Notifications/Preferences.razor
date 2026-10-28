@@ -1,0 +1,147 @@
+@namespace Stomme.Modules.Notifications
+@inherits ModuleBase
+@inject INotificationsService NotificationsService
+
+@* The caller's OWN notification preferences (BL-78 step 5) - view-own. The user is the server's ICurrentUser, never a field here. *@
+
+<PageTitle>Notification preferences</PageTitle>
+
+@if (!IsAuthorizedPermission(NotificationsPermissions.ViewOwn))
+{
+    <p class="db-notifications-denied" style="color:var(--db-text-2);">You do not have access to notification preferences on this site.</p>
+}
+else
+{
+    <div class="db-notifications-preferences" style="display:flex;flex-direction:column;gap:0.75rem;max-width:560px;">
+        <h3 style="margin:0;">Notification preferences</h3>
+
+        <fieldset>
+            <legend>Channels I accept (none ticked = all)</legend>
+            @foreach (var kind in _kinds)
+            {
+                <label style="display:block;">
+                    <input type="checkbox" id="@($"notifications-accept-{kind}")" checked="@_accepted.Contains(kind)" @onchange="@(args => Toggle(kind, (bool)args.Value))" />
+                    @kind
+                </label>
+            }
+        </fieldset>
+
+        <label>
+            Severity
+            <select id="notifications-severity" class="db-input" @bind="_severity">
+                @foreach (var value in Enum.GetValues<NotificationSeverityPreference>())
+                {
+                    <option value="@value">@value</option>
+                }
+            </select>
+        </label>
+
+        <label>
+            Delivery
+            <select id="notifications-digest" class="db-input" @bind="_digest">
+                @foreach (var value in Enum.GetValues<NotificationDigestMode>())
+                {
+                    <option value="@value">@value</option>
+                }
+            </select>
+        </label>
+
+        <label>
+            Muted topics (comma separated)
+            <input id="notifications-muted" class="db-input" @bind="_muted" @bind:event="oninput" />
+        </label>
+
+        <label>
+            Preferred language (e.g. en, de)
+            <input id="notifications-locale" class="db-input" maxlength="35" @bind="_locale" @bind:event="oninput" />
+        </label>
+
+        <div style="display:flex;gap:0.5rem;">
+            <button id="notifications-preferences-save" type="button" class="db-btn" @onclick="SaveAsync" disabled="@_busy">Save</button>
+            <a class="db-btn" href="@NavigateUrl()">Back</a>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="notifications-preferences-message" style="margin:0;">@_message</p>
+        }
+    </div>
+}
+
+@code {
+    private static readonly NotificationChannelKind[] _kinds = { NotificationChannelKind.Email, NotificationChannelKind.InApp, NotificationChannelKind.Webhook };
+
+    private readonly HashSet<NotificationChannelKind> _accepted = new();
+    private NotificationSeverityPreference _severity = NotificationSeverityPreference.All;
+    private NotificationDigestMode _digest = NotificationDigestMode.Immediate;
+    private NotificationQuietHoursInput _quietHours;
+    private string _muted = "";
+    private string _locale = "";
+    private string _message = "";
+    private bool _busy;
+
+    public override string Title => "Notification Preferences";
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.View;
+
+    /// <summary>How many saves this control has submitted - observable from a component test.</summary>
+    public int SaveCount { get; private set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ShouldRender() && ModuleState != null && IsAuthorizedPermission(NotificationsPermissions.ViewOwn))
+        {
+            try
+            {
+                var view = await NotificationsService.GetMyPreferencesAsync();
+                if (view != null)
+                {
+                    _accepted.Clear();
+                    foreach (var kind in view.AcceptedChannels ?? Array.Empty<NotificationChannelKind>())
+                    {
+                        _accepted.Add(kind);
+                    }
+
+                    _severity = view.SeverityFilter;
+                    _digest = view.Digest;
+                    _quietHours = view.QuietHours;
+                    _muted = string.Join(", ", view.MutedTopics ?? Array.Empty<string>());
+                    _locale = view.PreferredLocale ?? "";
+                }
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "Error Loading Notification Preferences {Error}", ex.Message);
+                _message = "Your preferences could not be loaded.";
+            }
+        }
+    }
+
+    private void Toggle(NotificationChannelKind kind, bool on)
+    {
+        if (on) { _accepted.Add(kind); } else { _accepted.Remove(kind); }
+    }
+
+    private async Task SaveAsync()
+    {
+        _busy = true;
+        _message = "";
+        SaveCount++;
+        try
+        {
+            var muted = (_muted ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            await NotificationsService.SaveMyPreferencesAsync(new NotificationPreferencesView(
+                _accepted.ToList(), _severity, muted, _quietHours, _digest, string.IsNullOrWhiteSpace(_locale) ? null : _locale.Trim()));
+            _message = "Preferences saved.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Notification Preferences {Error}", ex.Message);
+            _message = "Your preferences could not be saved.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

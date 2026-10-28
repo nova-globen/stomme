@@ -1,0 +1,41 @@
+@namespace Stomme.Themes.GraphiteTheme
+@inherits ContainerBase
+@inject ISettingService SettingService
+
+<div class="db-module gt-module @_classes">
+    @if (_title && ModuleState.Title != "-")
+    {
+        <div class="db-module-head">
+            <ModuleActions /><h2><ModuleTitle /></h2>
+        </div>
+        <hr class="db-module-rule" />
+    }
+    else
+    {
+        <ModuleActions />
+    }
+    <ModuleInstance />
+</div>
+
+@code {
+    public override string Name => "Customizable Container";
+
+    private bool _title = true;
+    private string _classes = "";
+
+    protected override void OnParametersSet()
+    {
+        try
+        {
+            _title = bool.Parse(SettingService.GetSetting(ModuleState.Settings, GetType().Namespace + ":Title", "true"));
+            _classes += " " + SettingService.GetSetting(ModuleState.Settings, GetType().Namespace + ":Background", "");
+            _classes += " " + SettingService.GetSetting(ModuleState.Settings, GetType().Namespace + ":Text", "");
+            _classes += " " + SettingService.GetSetting(ModuleState.Settings, GetType().Namespace + ":Border", "");
+            _classes = _classes.Trim();
+        }
+        catch
+        {
+            // error loading container settings
+        }
+    }
+}

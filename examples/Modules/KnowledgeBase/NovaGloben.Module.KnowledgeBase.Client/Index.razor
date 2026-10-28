@@ -1,0 +1,187 @@
+@namespace NovaGloben.Module.KnowledgeBase
+@inherits ModuleBase
+@inject IKnowledgeBaseService KnowledgeBaseService
+
+@*
+    The knowledge base's page (BL-86): the FLAT page /knowledge-base, and - through its URL parameters - the PARAMETERISED
+    ones. /knowledge-base/!/article/{slug} shows one article; /knowledge-base/!/category/{slug} lists one category's. The
+    parameters ride the page's own URL (NavigateUrl + AddUrlParameters), so the article has a stable, shareable address
+    without a page per article. A visitor reads the published articles; a holder of knowledge-base:edit reads the drafts
+    and gets the edit action; a holder of knowledge-base:publish can publish. The server decides every permission again.
+*@
+
+<PageTitle>@(_article?.Title ?? "Knowledge base")</PageTitle>
+
+@if (!IsAuthorizedPermission(KnowledgeBasePermissions.View))
+{
+    <p id="knowledge-base-denied" style="color:var(--db-text-2);">You do not have access to the knowledge base on this site.</p>
+}
+else if (_article is not null)
+{
+    <article id="knowledge-base-article" data-slug="@_article.Slug" style="display:flex;flex-direction:column;gap:0.5rem;">
+        <h3 style="margin:0;">@_article.Title</h3>
+        <p style="margin:0;color:var(--db-text-2);">
+            @(_article.Status == ArticleStatus.Published ? $"Published {_article.PublishedUtc:yyyy-MM-dd}" : "Draft - visible to editors only")
+            @if (CategoryOf(_article) is { } category)
+            {
+                <span> · <a href="@NavigateUrl(PageState.Page.Path, AddUrlParameters("category", category.Slug))">@category.Name</a></span>
+            }
+        </p>
+        <div id="knowledge-base-article-body" style="white-space:pre-wrap;">@_article.Body</div>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+            <a id="knowledge-base-all" href="@NavigateUrl()">All articles</a>
+            @if (_canEdit)
+            {
+                <a id="knowledge-base-edit" class="db-btn" href="@EditUrl("Edit", $"slug={_article.Slug}")">Edit</a>
+            }
+            @if (_canPublish && _article.Status == ArticleStatus.Draft)
+            {
+                <button id="knowledge-base-publish" type="button" class="db-btn" disabled="@_busy" @onclick="PublishAsync">Publish</button>
+            }
+        </div>
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="knowledge-base-message" role="status" style="margin:0;">@_message</p>
+        }
+    </article>
+}
+else
+{
+    <div class="db-knowledge-base" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">@(_category is null ? "Knowledge base" : _category.Name)</h3>
+            <a id="knowledge-base-categories-link" href="@NavigateUrl(PageState.Page.Path + "/categories")">Categories</a>
+            @if (_canEdit)
+            {
+                <a id="knowledge-base-new" class="db-btn" href="@EditUrl("Add")">New article</a>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="knowledge-base-message" role="status" style="margin:0;">@_message</p>
+        }
+
+        @if (_articles is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading the knowledge base…</p>
+        }
+        else if (_articles.Count == 0)
+        {
+            <p id="knowledge-base-no-articles" style="margin:0;color:var(--db-text-2);">No articles yet.</p>
+        }
+        else
+        {
+            <ul id="knowledge-base-articles" style="margin:0;">
+                @foreach (var article in _articles)
+                {
+                    <li data-slug="@article.Slug">
+                        <a href="@NavigateUrl(PageState.Page.Path, AddUrlParameters("article", article.Slug))">@article.Title</a>
+                        @if (article.Status == ArticleStatus.Draft)
+                        {
+                            <span style="color:var(--db-text-2);"> (draft)</span>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+
+        @if (_category is not null)
+        {
+            <a id="knowledge-base-all" href="@NavigateUrl()">All articles</a>
+        }
+    </div>
+}
+
+@code {
+    private List<CategoryModel> _categories = new();
+    private List<ArticleModel>? _articles;
+    private ArticleModel? _article;
+    private CategoryModel? _category;
+    private string? _loadedFor;
+    private bool _canEdit;
+    private bool _canPublish;
+    private bool _busy;
+    private string _message = string.Empty;
+
+    public override string Title => "Knowledge base";
+
+    // /{kind}/{value}: "article" and a slug shows one article, "category" and a slug lists one category's.
+    public override string UrlParametersTemplate { get; set; } = "/{kind}/{value}";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!IsAuthorizedPermission(KnowledgeBasePermissions.View))
+        {
+            return;
+        }
+
+        // The parameters change on the same page when a link is followed, so load again only when they do.
+        var parameters = UrlParameters;
+        var kind = parameters.TryGetValue("kind", out var k) ? k : string.Empty;
+        var value = parameters.TryGetValue("value", out var v) ? v : string.Empty;
+        var key = kind + "/" + value;
+        if (key == _loadedFor)
+        {
+            return;
+        }
+
+        _loadedFor = key;
+        _canEdit = IsAuthorizedPermission(KnowledgeBasePermissions.Edit);
+        _canPublish = IsAuthorizedPermission(KnowledgeBasePermissions.Publish);
+        _message = string.Empty;
+        _article = null;
+        _category = null;
+        try
+        {
+            _categories = await KnowledgeBaseService.ListCategoriesAsync();
+            if (kind == "article" && value.Length > 0)
+            {
+                _article = await KnowledgeBaseService.GetArticleAsync(value);
+                if (_article is null)
+                {
+                    _message = "There is no such article.";
+                    _articles = new List<ArticleModel>();
+                }
+
+                return;
+            }
+
+            _category = kind == "category" ? _categories.FirstOrDefault(category => category.Slug == value) : null;
+            _articles = await KnowledgeBaseService.ListArticlesAsync(_category?.Id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the knowledge base.");
+            _message = "The knowledge base could not be loaded.";
+            _articles = new List<ArticleModel>();
+        }
+    }
+
+    private CategoryModel? CategoryOf(ArticleModel article) =>
+        article.CategoryId is { } id ? _categories.FirstOrDefault(category => category.Id == id) : null;
+
+    private async Task PublishAsync()
+    {
+        if (_article is null)
+        {
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            _article = await KnowledgeBaseService.PublishArticleAsync(_article.Id);
+            _message = "Published.";
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not publish the article.");
+            _message = "The article was not published.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

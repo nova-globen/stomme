@@ -1,0 +1,94 @@
+@namespace Stomme.Modules.Notifications
+@implements Stomme.Interfaces.ISettingsControl
+@inject ISettingService SettingService
+@inject SiteState SiteState
+
+@*
+    The Notifications module's configuration control (BL-78 step 5; ModuleDefinition.ConfigSettingsType), rendered by Admin ->
+    Module Definitions -> Notifications -> "Configure". The three values are SITE settings the server reads per site
+    (NotificationSiteSettingNames / WebhookSsrfGuard.AllowedHostsSettingName), written PRIVATE, for the site the admin is on.
+    Deliberately NOT a ModuleBase (the Configure tab and the installer have no ModuleState).
+
+    In the installer's onboarding step (ModuleDefinitionId -1) it collects NOTHING: the installer persists collected values as
+    MODULE-DEFINITION settings, which the per-site readers never consult - so a value typed there would be silently ignored.
+    It says so instead, and the defaults (no external recipients, 30 days, no allowlist) are the safe ones.
+*@
+
+@if (ModuleDefinitionId <= 0)
+{
+    <p class="db-notifications-settings-install" style="color:var(--db-text-2);">
+        Notifications are configured per site after installation (Admin, Module Definitions, Notifications, Configure).
+        The defaults are safe: no external e-mail recipients, a 30-day request retention, no webhook host allowlist.
+    </p>
+}
+else
+{
+    <div class="db-fields db-notifications-settings">
+        <div class="db-field">
+            <Label For="notifications-external" HelpText="Allow dispatches to literal e-mail addresses that are not users of this site. Off, only site users can be reached." ResourceKey="ExternalRecipients">External e-mail recipients: </Label>
+            <div class="db-field-control">
+                <select id="notifications-external" class="db-input" @bind="_external">
+                    <option value="False">No</option>
+                    <option value="True">Yes</option>
+                </select>
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="notifications-retention" HelpText="Whole days a finished notification request is kept before the hourly pass purges it." ResourceKey="RequestRetention">Request retention (days): </Label>
+            <div class="db-field-control">
+                <input id="notifications-retention" type="number" min="1" max="3650" class="db-input" @bind="_retention" />
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="notifications-webhook-hosts" HelpText="Exact host names or IP literals a webhook channel may reach even when they resolve to a private address. Comma separated." ResourceKey="WebhookAllowedHosts">Webhook host allowlist: </Label>
+            <div class="db-field-control">
+                <input id="notifications-webhook-hosts" class="db-input" maxlength="2000" @bind="_hosts" />
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    // The setting names are the server's (NotificationSiteSettingNames.ExternalRecipients / .RequestRetention and
+    // WebhookSsrfGuard.AllowedHostsSettingName); the Client cannot reference those Server types, so the literals are pinned
+    // against them by NotificationPermissionDeclarationTests.The_client_settings_control_writes_the_setting_names_the_server_reads.
+    public const string ExternalRecipientsSetting = "NotificationExternalRecipients";
+    public const string RequestRetentionSetting = "NotificationRequestRetention";
+    public const string WebhookAllowedHostsSetting = "NotificationWebhookAllowedHosts";
+
+    [Parameter]
+    public int ModuleDefinitionId { get; set; } = -1;
+
+    [Parameter]
+    public Dictionary<string, string> InstallSettings { get; set; }
+
+    private string _external = "False";
+    private int _retention = 30;
+    private string _hosts = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ModuleDefinitionId > 0 && SiteState?.Alias != null)
+        {
+            var settings = await SettingService.GetSiteSettingsAsync(SiteState.Alias.SiteId);
+            _external = string.Equals(SettingService.GetSetting(settings, ExternalRecipientsSetting, "False"), "True", StringComparison.OrdinalIgnoreCase) ? "True" : "False";
+            _retention = int.TryParse(SettingService.GetSetting(settings, RequestRetentionSetting, "30"), out var days) && days > 0 ? days : 30;
+            _hosts = SettingService.GetSetting(settings, WebhookAllowedHostsSetting, "");
+        }
+    }
+
+    public async Task UpdateSettings()
+    {
+        if (ModuleDefinitionId <= 0 || SiteState?.Alias == null)
+        {
+            return; // installer onboarding: nothing to collect (see the note above)
+        }
+
+        var siteId = SiteState.Alias.SiteId;
+        var settings = await SettingService.GetSiteSettingsAsync(siteId);
+        settings = SettingService.SetSetting(settings, ExternalRecipientsSetting, _external == "True" ? "True" : "False", true);
+        settings = SettingService.SetSetting(settings, RequestRetentionSetting, Math.Clamp(_retention, 1, 3650).ToString(System.Globalization.CultureInfo.InvariantCulture), true);
+        settings = SettingService.SetSetting(settings, WebhookAllowedHostsSetting, (_hosts ?? "").Trim(), true);
+        await SettingService.UpdateSiteSettingsAsync(settings, siteId);
+    }
+}

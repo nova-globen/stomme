@@ -1,0 +1,207 @@
+﻿@namespace Stomme.Modules.Admin.Roles
+@inherits ModuleBase
+@inject IRoleService RoleService
+@inject IUserRoleService UserRoleService
+@inject IStringLocalizer<Users> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (userroles == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+
+    <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="role" HelpText="The role you are assigning users to" ResourceKey="Role">Role: </Label>
+                <div class="db-field-control">
+                    <input id="role" class="db-input" @bind="@name" disabled />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="user" HelpText="Select a user" ResourceKey="User">User: </Label>
+                <div class="db-field-control">
+					<AutoComplete Id="user" OnSearch="GetUsers" Placeholder="@Localizer["User.Select"]" @ref="user" />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="effectiveDate" HelpText="The date that this role assignment is active" ResourceKey="EffectiveDate">Effective Date: </Label>
+                <div class="db-field-control">
+                    <input type="date" id="effectiveDate" class="db-input" @bind="@effectivedate" />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="expiryDate" HelpText="The date that this role assignment expires" ResourceKey="ExpiryDate">Expiry Date: </Label>
+                <div class="db-field-control">
+                    <input type="date" id="expiryDate" class="db-input" @bind="@expirydate" />
+                </div>
+            </div>
+            <br /><br />
+            <button type="button" class="db-btn" @onclick="SaveUserRole">@SharedLocalizer["Save"]</button>
+            <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+            <hr class="app-rule" />
+            <div class="db-field">
+                <p align="center">
+                    <Pager Items="@userroles">
+                        <Header>
+                            <th>@Localizer["Users"]</th>
+                            <th>@SharedLocalizer["Username"]</th>
+                            <th>@Localizer["Effective"]</th>
+                            <th>@Localizer["Expiry"]</th>
+                            <th>&nbsp;</th>
+                        </Header>
+                        <Row>
+                            <td>@context.User.DisplayName</td>
+                            <td>@context.User.Username</td>
+                            <td>@context.EffectiveDate</td>
+                            <td>@context.ExpiryDate</td>
+                            <td>
+								<ActionDialog Header="Remove User" Message="@string.Format(Localizer["Confirm.User.DeleteRole"], context.User.DisplayName)" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUserRole(context.UserRoleId))" Disabled="@(context.User.Username == UserNames.Host || context.User.UserId == PageState.User.UserId)" ResourceKey="DeleteUserRole" />
+                            </td>
+                        </Row>
+                    </Pager>
+                </p>
+            </div>
+        </div>
+    </form>
+}
+
+@code {
+	private ElementReference form;
+	private bool validated = false;
+
+	private int roleid;
+	private string name = string.Empty;
+	private AutoComplete user;
+	private DateTime? effectivedate = null;
+	private DateTime? expirydate = null;
+	private List<UserRole> userroles;
+
+	public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			roleid = Int32.Parse(PageState.QueryString["id"]);
+			Role role = await RoleService.GetRoleAsync(roleid);
+			name = role.Name;
+			await GetUserRoles();
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Loading Users {Error}", ex.Message);
+			AddModuleMessage(Localizer["Error.User.Load"], MessageType.Error);
+		}
+	}
+
+	private async Task<Dictionary<string, string>> GetUsers(string filter)
+	{
+		try
+		{
+			var users = await UserRoleService.GetUserRolesAsync(PageState.Site.SiteId, RoleNames.Registered);
+			return users.Where(item => item.User.DisplayName.Contains(filter, StringComparison.OrdinalIgnoreCase))
+				.ToDictionary(item => item.UserId.ToString(), item => item.User.DisplayName);
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Loading Users {filter} {Error}", filter, ex.Message);
+			AddModuleMessage(Localizer["Error.User.Load"], MessageType.Error);
+		}
+		return new Dictionary<string, string>();
+	}
+
+	private async Task GetUserRoles()
+	{
+		try
+		{
+			userroles = await UserRoleService.GetUserRolesAsync(PageState.Site.SiteId, name);
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Loading User Roles {RoleId} {Error}", roleid, ex.Message);
+			AddModuleMessage(Localizer["Error.User.LoadRole"], MessageType.Error);
+		}
+	}
+
+	private async Task SaveUserRole()
+	{
+		validated = true;
+		var interop = new Interop(JSRuntime);
+		if (await interop.FormValid(form))
+		{
+			try
+			{
+				if (!string.IsNullOrEmpty(user.Key) && int.TryParse(user.Key, out int userid))
+				{
+					var userrole = userroles.Where(item => item.UserId == userid && item.RoleId == roleid).FirstOrDefault();
+					if (userrole != null)
+					{
+						userrole.EffectiveDate = effectivedate;
+						userrole.ExpiryDate = expirydate;
+						await UserRoleService.UpdateUserRoleAsync(userrole);
+					}
+					else
+					{
+						userrole = new UserRole();
+						userrole.UserId = userid;
+						userrole.RoleId = roleid;
+						userrole.EffectiveDate = effectivedate;
+						userrole.ExpiryDate = expirydate;
+
+						await UserRoleService.AddUserRoleAsync(userrole);
+					}
+
+					await logger.LogInformation("User Assigned To Role {UserRole}", userrole);
+					AddModuleMessage(Localizer["Success.User.AssignedRole"], MessageType.Success);
+					await GetUserRoles();
+					user.Clear();
+					StateHasChanged();
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.Required.UserSelect"], MessageType.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "Error Saving User Roles {RoleId} {Error}", roleid, ex.Message);
+                AddModuleMessage(Localizer["Error.User.SaveRole"], MessageType.Error);
+            }
+        }
+
+        else
+        {
+            AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+        }
+    }
+
+    private async Task DeleteUserRole(int UserRoleId)
+    {
+        try
+        {
+            var userrole = await UserRoleService.GetUserRoleAsync(UserRoleId);
+            if (userrole.Role.Name == RoleNames.Registered)
+            {
+                userrole.ExpiryDate = DateTime.UtcNow;
+                await UserRoleService.UpdateUserRoleAsync(userrole);
+                await logger.LogInformation("User {Username} Expired From Role {Role}", userrole.User.Username, userrole.Role.Name);
+            }
+            else
+            {
+                await UserRoleService.DeleteUserRoleAsync(UserRoleId);
+                await logger.LogInformation("User {Username} Removed From Role {Role}", userrole.User.Username, userrole.Role.Name);
+            }
+            AddModuleMessage(Localizer["Confirm.User.RoleRemoved"], MessageType.Success);
+            await GetUserRoles();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Removing User From Role {UserRoleId} {Error}", UserRoleId, ex.Message);
+            AddModuleMessage(Localizer["Error.User.RemoveRole"], MessageType.Error);
+        }
+    }
+}

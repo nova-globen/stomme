@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- NOT vendored: written here (BL-93). The contact-surface smoke test - the only engine surface
+         the predecessor platform's pipeline runtime ever called. It references the META project on purpose, because a
+         consumer composes the engine with services.AddEngine(), not by picking projects out of the tree. -->
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\src\Engine\Stomme.Engine\Stomme.Engine.csproj" />
+    </ItemGroup>
+
+</Project>

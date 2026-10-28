@@ -1,0 +1,371 @@
+@namespace Stomme.Modules.Datasets
+@inherits ModuleBase
+@inject IDatasetsService DatasetsService
+
+@*
+    The Datasets page (BL-94 increments 10 and 13, D110): this site's datasets with their origin, classification, row estimate
+    and columns; a schema-and-summary panel per dataset (masked when the data is sensitive); a bounded preview for a
+    holder of datasets:preview (refused, not thrown, for a sensitive dataset); for a datasets:manage holder a register
+    form (name, origin, reference, sample rows as JSON, the classification asserted - the server escalates it), a refresh
+    with fresh rows, and a delete; and (13) an upload section over the framework's FileManager - a CSV, JSON or XLSX file
+    uploaded or selected there is registered as a dataset with every row counted. Every button that appears is decided
+    again by the server when it is pressed.
+*@
+
+<PageTitle>Datasets</PageTitle>
+
+@if (!IsAuthorizedPermission(DatasetPermissions.View))
+{
+    <p class="db-datasets-denied" style="color:var(--db-text-2);">You do not have access to datasets on this site (@DatasetPermissions.View).</p>
+}
+else
+{
+    <div class="db-datasets" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Datasets</h3>
+            <button id="datasets-refresh-list" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (_datasets is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+        }
+        else if (_datasets.Count == 0)
+        {
+            <p id="datasets-empty" style="margin:0;color:var(--db-text-2);">No datasets.</p>
+        }
+        else
+        {
+            <div style="overflow-x:auto;">
+                <table class="db-datasets-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Name</th>
+                            <th style="text-align:left;">Origin</th>
+                            <th style="text-align:left;">Classification</th>
+                            <th style="text-align:left;">Rows</th>
+                            <th style="text-align:left;">Columns</th>
+                            <th style="text-align:left;">Refreshed</th>
+                            <th style="width:1px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dataset in _datasets)
+                        {
+                            <tr id="dataset-@dataset.Id">
+                                <td>@dataset.Name</td>
+                                <td>@dataset.OriginKind @(string.IsNullOrEmpty(dataset.OriginReference) ? "" : $"({dataset.OriginReference})")</td>
+                                <td style="@(dataset.IsSensitive ? "font-weight:600;" : "color:var(--db-text-2);")">@dataset.Classification</td>
+                                <td style="font-family:monospace;">@dataset.Summary.RowCountEstimate</td>
+                                <td style="font-family:monospace;">@dataset.Schema.Columns.Count</td>
+                                <td style="font-family:monospace;">@dataset.LastRefreshedUtc.ToString("u")</td>
+                                <td style="white-space:nowrap;">
+                                    <button type="button" class="db-btn" @onclick="@(() => Select(dataset))" disabled="@_busy">Schema</button>
+                                    @if (_canPreview)
+                                    {
+                                        <button type="button" class="db-btn" @onclick="@(() => PreviewAsync(dataset))" disabled="@_busy">Preview</button>
+                                    }
+                                    @if (_canManage)
+                                    {
+                                        <button type="button" class="db-btn" @onclick="@(() => BeginRefresh(dataset))" disabled="@_busy">Refresh rows</button>
+                                        <ActionDialog Header="Delete Dataset" Message="@($"Delete the dataset '{dataset.Name}'? It cannot be undone.")" Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAsync(dataset))" Disabled="@_busy" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (_selected is not null)
+        {
+            <section id="datasets-schema" style="display:flex;flex-direction:column;gap:0.5rem;">
+                <h3 style="margin:0;">@_selected.Name — schema and summary</h3>
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">Column</th>
+                                <th style="text-align:left;">Type</th>
+                                <th style="text-align:left;">Semantic</th>
+                                <th style="text-align:left;">Samples</th>
+                                <th style="text-align:left;">Min</th>
+                                <th style="text-align:left;">Max</th>
+                                <th style="text-align:left;">Unique</th>
+                                <th style="text-align:left;">Null</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var column in _selected.Schema.Columns)
+                            {
+                                var summary = _selected.Summary.Columns.FirstOrDefault(s => s.Name == column.Name);
+                                <tr>
+                                    <td style="font-family:monospace;">@column.Name</td>
+                                    <td>@column.DataType</td>
+                                    <td style="font-family:monospace;">@(column.SemanticType ?? "—")</td>
+                                    <td style="font-family:monospace;">@(summary is null ? "" : string.Join(", ", summary.Samples))</td>
+                                    <td style="font-family:monospace;">@(summary?.Min ?? "—")</td>
+                                    <td style="font-family:monospace;">@(summary?.Max ?? "—")</td>
+                                    <td style="font-family:monospace;">@summary?.UniqueCount</td>
+                                    <td style="font-family:monospace;">@summary?.NullCount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @if (_selected.IsSensitive)
+                {
+                    <p id="datasets-masked" style="margin:0;color:var(--db-text-2);">This dataset is @_selected.Classification: sample values and min/max are masked, and raw rows are not previewed.</p>
+                }
+                @if (_preview is not null)
+                {
+                    <p style="margin:0;">Preview: @(_preview.Allowed ? "" : _preview.Reason)</p>
+                    @if (_preview.Allowed)
+                    {
+                        <pre id="datasets-preview" style="margin:0;max-height:20rem;overflow:auto;font-size:0.85em;">@_preview.RowsJson</pre>
+                    }
+                }
+            </section>
+        }
+
+        @if (_canManage)
+        {
+            <section id="datasets-upload" style="display:flex;flex-direction:column;gap:0.5rem;max-width:40rem;">
+                <h3 style="margin:0;">Register a dataset from a file</h3>
+                <p style="margin:0;color:var(--db-text-2);">Upload or select a CSV, JSON or XLSX file; every row is counted, the first @DatasetLimits.MaxSampleRows are kept as the sample, and the server decides the classification.</p>
+                <FileManager Filter="csv,json,xlsx" UploadMultiple="false" OnUpload="OnFileUploaded" OnSelectFile="OnFileSelected" />
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <input id="datasets-upload-name" class="db-input" style="flex:1 1 12rem;" placeholder="Name (defaults to the file's name)" @bind="_uploadName" />
+                    <select id="datasets-upload-classification" class="db-input" style="width:auto;" @bind="_uploadClassification">
+                        @foreach (var level in Enum.GetValues<DataClassification>())
+                        {
+                            <option value="@level">@level</option>
+                        }
+                    </select>
+                    <button id="datasets-upload-register" type="button" class="db-btn" @onclick="UploadAsync" disabled="@(_busy || _uploadFileId <= 0)">Register from file</button>
+                </div>
+            </section>
+
+            <section id="datasets-editor" style="display:flex;flex-direction:column;gap:0.5rem;max-width:40rem;">
+                <h3 style="margin:0;">@(_refreshing is null ? "Register a dataset" : $"Refresh '{_refreshing.Name}' with fresh rows")</h3>
+                @if (_refreshing is null)
+                {
+                    <input id="datasets-name" class="db-input" placeholder="Name" @bind="_name" />
+                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                        <select id="datasets-origin" class="db-input" style="width:auto;" @bind="_originKind">
+                            @foreach (var kind in Enum.GetValues<OriginKind>())
+                            {
+                                <option value="@kind">@kind</option>
+                            }
+                        </select>
+                        <input id="datasets-reference" class="db-input" style="flex:1 1 12rem;" placeholder="Origin reference (a pipeline id, a file id, a seed key)" @bind="_originReference" />
+                        <select id="datasets-classification" class="db-input" style="width:auto;" @bind="_classification">
+                            @foreach (var level in Enum.GetValues<DataClassification>())
+                            {
+                                <option value="@level">@level</option>
+                            }
+                        </select>
+                    </div>
+                }
+                <textarea id="datasets-sample" class="db-input" rows="6" placeholder='Sample rows as a JSON array, e.g. [{"sku":"A1","quantity":"10"}]' @bind="_sampleJson"></textarea>
+                <div style="display:flex;gap:0.5rem;">
+                    <button id="datasets-save" type="button" class="db-btn" @onclick="SaveAsync" disabled="@_busy">@(_refreshing is null ? "Register" : "Refresh")</button>
+                    @if (_refreshing is not null)
+                    {
+                        <button type="button" class="db-btn" @onclick="CancelRefresh" disabled="@_busy">Cancel</button>
+                    }
+                </div>
+            </section>
+        }
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="datasets-message" style="margin:0;">@_message</p>
+        }
+    </div>
+}
+
+@code {
+    private List<DatasetDescriptor> _datasets;
+    private DatasetDescriptor _selected;
+    private DatasetPreviewRows _preview;
+    private DatasetDescriptor _refreshing;
+    private bool _busy;
+    private bool _canManage;
+    private bool _canPreview;
+    private string _message = string.Empty;
+
+    private string _name = string.Empty;
+    private OriginKind _originKind = OriginKind.Upload;
+    private string _originReference = string.Empty;
+    private DataClassification _classification = DataClassification.Internal;
+    private string _sampleJson = string.Empty;
+
+    private int _uploadFileId = -1;
+    private string _uploadName = string.Empty;
+    private DataClassification _uploadClassification = DataClassification.Internal;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _canManage = IsAuthorizedPermission(DatasetPermissions.Manage);
+        _canPreview = IsAuthorizedPermission(DatasetPermissions.Preview);
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _datasets = await DatasetsService.ListAsync();
+            if (_selected is not null)
+            {
+                _selected = _datasets.FirstOrDefault(dataset => dataset.Id == _selected.Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the datasets.");
+            _datasets = new List<DatasetDescriptor>();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private void Select(DatasetDescriptor dataset)
+    {
+        _selected = dataset;
+        _preview = null;
+        BringIntoView("datasets-schema"); // below the list (BL-22)
+    }
+
+    private async Task PreviewAsync(DatasetDescriptor dataset)
+    {
+        _selected = dataset;
+        _busy = true;
+        try
+        {
+            _preview = await DatasetsService.PreviewAsync(dataset.Id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not preview dataset {DatasetId}.", dataset.Id);
+            _message = "The preview was not loaded: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        BringIntoView("datasets-schema");
+    }
+
+    private void BeginRefresh(DatasetDescriptor dataset)
+    {
+        _refreshing = dataset;
+        _sampleJson = string.Empty;
+        _message = string.Empty;
+        BringIntoView("datasets-editor"); // the form is at the foot of the page (BL-22)
+    }
+
+    private void CancelRefresh()
+    {
+        _refreshing = null;
+        _sampleJson = string.Empty;
+    }
+
+    private async Task SaveAsync()
+    {
+        _busy = true;
+        try
+        {
+            var saved = _refreshing is null
+                ? await DatasetsService.RegisterAsync(new RegisterDatasetRequest { Name = _name, OriginKind = _originKind, OriginReference = string.IsNullOrWhiteSpace(_originReference) ? null : _originReference, SampleJson = _sampleJson, Classification = _classification })
+                : await DatasetsService.RefreshAsync(_refreshing.Id, new RefreshDatasetRequest { SampleJson = _sampleJson });
+            _message = saved is null ? "The dataset was not saved." : $"'{saved.Name}' saved as {saved.Classification}.";
+            if (saved is not null)
+            {
+                _refreshing = null;
+                _name = _originReference = _sampleJson = string.Empty;
+                _classification = DataClassification.Internal;
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not save the dataset.");
+            _message = "The dataset was not saved: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private void OnFileUploaded(int fileId) => _uploadFileId = fileId;
+
+    private void OnFileSelected(int fileId) => _uploadFileId = fileId;
+
+    private async Task UploadAsync()
+    {
+        if (_uploadFileId <= 0)
+        {
+            _message = "Select or upload a file first.";
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var saved = await DatasetsService.UploadAsync(new UploadDatasetRequest { FileId = _uploadFileId, Name = string.IsNullOrWhiteSpace(_uploadName) ? null : _uploadName, Classification = _uploadClassification });
+            _message = saved is null ? "The file was not registered." : $"'{saved.Name}' registered from the file as {saved.Classification} ({saved.Summary.RowCountEstimate} rows).";
+            if (saved is not null)
+            {
+                _uploadName = string.Empty;
+                _uploadClassification = DataClassification.Internal;
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not register a dataset from file {FileId}.", _uploadFileId);
+            _message = "The file was not registered: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task DeleteAsync(DatasetDescriptor dataset)
+    {
+        _busy = true;
+        try
+        {
+            await DatasetsService.DeleteAsync(dataset.Id);
+            _message = $"'{dataset.Name}' deleted.";
+            if (_selected?.Id == dataset.Id)
+            {
+                _selected = null;
+                _preview = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not delete dataset {DatasetId}.", dataset.Id);
+            _message = "The dataset was not deleted: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+        StateHasChanged(); // called back from the confirmation dialog, not from an event of this page (BL-22)
+    }
+}

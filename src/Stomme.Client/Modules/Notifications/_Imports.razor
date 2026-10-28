@@ -1,0 +1,11 @@
+@* The Notifications module's own imports (BL-78 step 5). Microsoft.AspNetCore.Components.Web is REQUIRED (BL-54): without it
+   @onclick / @bind:event compile as plain HTML attributes, the module builds GREEN and renders, and every click is silently
+   dead with no console error. MEASURED 2026-09-15: for an IN-TREE Client module this line is REDUNDANT - the project-root
+   src/Stomme.Client/_Imports.razor already carries it and Razor imports cascade, so deleting it here changes nothing
+   (NotificationControlClickTests stayed 3/0). It is kept for the day the module leaves the Client project (an external or split
+   module has no root import to inherit), which is exactly the BL-54 shape. The click tests pin the defect itself: a plain
+   onclick attribute makes bUnit's Click() throw MissingEventHandlerException. *@
+@using Microsoft.AspNetCore.Components.Web
+@using Stomme.Models.Notifications
+@using Stomme.Modules.Notifications.Services
+@using Stomme.Notifications

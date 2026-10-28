@@ -1,0 +1,48 @@
+<Solution>
+  <Project Path="src\Stomme.Server\Stomme.Server.csproj" DefaultStartup="true" />
+  <Project Path="src\Stomme.Client\Stomme.Client.csproj" />
+  <Project Path="src\Stomme.Shared\Stomme.Shared.csproj" />
+  <Project Path="src\Stomme.SharedKernel\Stomme.SharedKernel.csproj" />
+  <Project Path="src\Stomme.Tenancy.Domain\Stomme.Tenancy.Domain.csproj" />
+  <Project Path="src\Stomme.Tenancy.Abstractions\Stomme.Tenancy.Abstractions.csproj" />
+  <Project Path="src\Stomme.Persistence.Abstractions\Stomme.Persistence.Abstractions.csproj" />
+  <Project Path="src\Stomme.Persistence\Stomme.Persistence.csproj" />
+  <Project Path="src\Stomme.EventBus\Stomme.EventBus.csproj" />
+  <Project Path="src\Stomme.Infrastructure.EventBus\Stomme.Infrastructure.EventBus.csproj" />
+  <Project Path="src\Stomme.Persistence.EfCore\Stomme.Persistence.EfCore.csproj" />
+  <Project Path="src\Stomme.Persistence.RavenDb\Stomme.Persistence.RavenDb.csproj" />
+  <Project Path="src\Stomme.Persistence.File\Stomme.Persistence.File.csproj" />
+  <Project Path="src\Stomme.Mediator\Stomme.Mediator.csproj" />
+  <Project Path="src\Stomme.Security.Abstractions\Stomme.Security.Abstractions.csproj" />
+  <Project Path="src\Stomme.Authorization\Stomme.Authorization.csproj" />
+  <Project Path="src\Stomme.Infrastructure.Security.Cryptography\Stomme.Infrastructure.Security.Cryptography.csproj" />
+  <Project Path="src\Stomme.FeatureManagement\Stomme.FeatureManagement.csproj" />
+  <Project Path="test\Stomme.Tests\Stomme.Tests.csproj" />
+  <Project Path="test\Stomme.MessageBus.Tests\Stomme.MessageBus.Tests.csproj" />
+  <Project Path="test\Stomme.FeatureManagement.Tests\Stomme.FeatureManagement.Tests.csproj" />
+  <Project Path="test\Stomme.Persistence.Conformance.Tests\Stomme.Persistence.Conformance.Tests.csproj" />
+  <Project Path="test\Stomme.Persistence.Raven.Tests\Stomme.Persistence.Raven.Tests.csproj" />
+  <Project Path="test\Stomme.MessageBus.Live.Tests\Stomme.MessageBus.Live.Tests.csproj" />
+  <Folder Name="/Engine/">
+    <Project Path="src\Engine\Stomme.Engine.Features\Stomme.Engine.Features.csproj" />
+    <Project Path="src\Engine\Stomme.Engine.Mediator\Stomme.Engine.Mediator.csproj" />
+    <Project Path="src\Engine\Stomme.Engine.Common\Stomme.Engine.Common.csproj" />
+    <Project Path="src\Engine\Stomme.Engine.Expressions\Stomme.Engine.Expressions.csproj" />
+    <Project Path="src\Engine\Stomme.Engine.Caching\Stomme.Engine.Caching.csproj" />
+    <Project Path="src\Engine\Stomme.Engine.KeyValues\Stomme.Engine.KeyValues.csproj" />
+    <Project Path="src\Engine\Stomme.Engine.Tenants\Stomme.Engine.Tenants.csproj" />
+    <Project Path="src\Engine\Stomme.Engine.Pipelines\Stomme.Engine.Pipelines.csproj" />
+    <Project Path="src\Engine\Stomme.Engine.Pipelines.Management\Stomme.Engine.Pipelines.Management.csproj" />
+    <Project Path="src\Engine\Stomme.Engine.Pipelines.Runtime\Stomme.Engine.Pipelines.Runtime.csproj" />
+    <Project Path="src\Engine\Stomme.Engine\Stomme.Engine.csproj" />
+    <Project Path="test\Engine\Stomme.Engine.Testing.Shared\Stomme.Engine.Testing.Shared.csproj" />
+    <Project Path="test\Engine\Stomme.Engine.Mediator.Tests\Stomme.Engine.Mediator.Tests.csproj" />
+    <Project Path="test\Engine\Stomme.Engine.Common.Tests\Stomme.Engine.Common.Tests.csproj" />
+    <Project Path="test\Engine\Stomme.Engine.Expressions.Tests\Stomme.Engine.Expressions.Tests.csproj" />
+    <Project Path="test\Engine\Stomme.Engine.Tenants.Tests\Stomme.Engine.Tenants.Tests.csproj" />
+    <Project Path="test\Engine\Stomme.Engine.Pipelines.Tests\Stomme.Engine.Pipelines.Tests.csproj" />
+    <Project Path="test\Engine\Stomme.Engine.Pipelines.Management.Tests\Stomme.Engine.Pipelines.Management.Tests.csproj" />
+    <Project Path="test\Engine\Stomme.Engine.Pipelines.Runtime.Tests\Stomme.Engine.Pipelines.Runtime.Tests.csproj" />
+    <Project Path="test\Engine\Stomme.Engine.Tests\Stomme.Engine.Tests.csproj" />
+  </Folder>
+</Solution>

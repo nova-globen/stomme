@@ -1,0 +1,202 @@
+﻿@namespace Stomme.Modules.Admin.Users
+@inherits ModuleBase
+@inject IRoleService RoleService
+@inject IUserService UserService
+@inject IUserRoleService UserRoleService
+@inject IStringLocalizer<Roles> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (userroles == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    <div class="db-fields">
+        <div class="db-field">
+            <Label For="user" HelpText="The user you are assigning roles to" ResourceKey="User">User: </Label>
+            <div class="db-field-control">
+                <input id="user" class="db-input" @bind="@name" disabled />
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="role" HelpText="Select a role" ResourceKey="Role">Role: </Label>
+            <div class="db-field-control">
+                <select id="role" class="db-select" @bind="@roleid">
+                    <option value="-1">&lt;@Localizer["Role.Select"]&gt;</option>
+                    @foreach (Role role in roles)
+                    {
+                        <option value="@(role.RoleId)">@role.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="effectiveDate" HelpText="The date that this role assignment is active" ResourceKey="EffectiveDate">Effective Date: </Label>
+            <div class="db-field-control">
+                <input type="date" id="effectiveDate" class="db-input" @bind="@_effectivedate" />
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="expiryDate" HelpText="The date that this role assignment expires" ResourceKey="ExpiryDate">Expiry Date: </Label>
+            <div class="db-field-control">
+                <input type="date" id="expiryDate" class="db-input" @bind="@_expirydate" />
+            </div>
+        </div>
+
+    </div>
+    <br />
+    <br />
+    <button type="button" class="db-btn" @onclick="SaveUserRole">@SharedLocalizer["Save"]</button>
+    <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+    <hr class="app-rule" />
+    <p align="center">
+        <Pager Items="@userroles">
+            <Header>
+                <th>@Localizer["Roles"]</th>
+                <th>@Localizer["Effective"]</th>
+                <th>@Localizer["Expiry"]</th>
+                <th>&nbsp;</th>
+            </Header>
+            <Row>
+                <td>@context.Role.Name</td>
+                <td>@Utilities.UtcAsLocalDate(context.EffectiveDate)</td>
+                <td>@Utilities.UtcAsLocalDate(context.ExpiryDate)</td>
+                <td>
+                    <ActionDialog Header="Remove Role" Message="@string.Format(Localizer["Confirm.User.RemoveRole"], context.Role.Name)" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUserRole(context.UserRoleId))" Disabled="@(context.Role.Name == RoleNames.Host && userid == PageState.User.UserId)" ResourceKey="DeleteUserRole" />
+                </td>
+            </Row>
+        </Pager>
+    </p>
+}
+
+@code {
+    private int userid;
+    private string name = string.Empty;
+    private List<Role> roles;
+    private int roleid = -1;
+    private DateTime? _effectivedate = null;
+    private DateTime? _expirydate = null;
+    private List<UserRole> userroles;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            userid = Int32.Parse(PageState.QueryString["id"]);
+            User user = await UserService.GetUserAsync(userid, PageState.Site.SiteId);
+            name = user.DisplayName;
+
+            await GetUserRoles();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Roles {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.LoadRole"], MessageType.Error);
+        }
+    }
+
+    private async Task GetUserRoles()
+    {
+        try
+        {
+            userroles = await UserRoleService.GetUserRolesAsync(PageState.Site.SiteId, userid);
+            if (userroles.Any(item => item.Role.Name == RoleNames.Host))
+            {
+                roles = new List<Role>();
+            }
+            else
+            {
+                if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                {
+                    roles = await RoleService.GetRolesAsync(PageState.Site.SiteId, true);
+                    roles.RemoveAll(item => item.Name == RoleNames.Everyone || item.Name == RoleNames.Unauthenticated);
+                }
+                else
+                {
+                    roles = await RoleService.GetRolesAsync(PageState.Site.SiteId);
+                }
+            }
+            roleid = -1;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading User Roles {UserId} {Error}", userid, ex.Message);
+            AddModuleMessage(Localizer["Error.User.LoadRole"], MessageType.Error);
+        }
+    }
+
+    private async Task SaveUserRole()
+    {
+        try
+        {
+            if (roleid != -1)
+            {
+                if (!Utilities.ValidateEffectiveExpiryDates(_effectivedate, _expirydate))
+                {
+                    AddModuleMessage(SharedLocalizer["Message.EffectiveExpiryDateError"], MessageType.Warning);
+                    return;
+                }
+                var userrole = userroles.Where(item => item.UserId == userid && item.RoleId == roleid).FirstOrDefault();
+                if (userrole != null)
+                {
+                    userrole.EffectiveDate = _effectivedate;
+                    userrole.ExpiryDate = _expirydate;
+                    await UserRoleService.UpdateUserRoleAsync(userrole);
+                }
+                else
+                {
+                    userrole = new UserRole();
+                    userrole.UserId = userid;
+                    userrole.RoleId = roleid;
+                    userrole.EffectiveDate = Utilities.UtcAsLocalDate(_effectivedate);
+                    userrole.ExpiryDate = Utilities.UtcAsLocalDate(_expirydate);
+                    await UserRoleService.AddUserRoleAsync(userrole);
+                }
+
+                await logger.LogInformation("User Assigned To Role {UserRole}", userrole);
+                AddModuleMessage(Localizer["Success.User.AssignRole"], MessageType.Success);
+                await GetUserRoles();
+                StateHasChanged();                    
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.Role"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving User Roles {UserId} {Error}", userid, ex.Message);
+            AddModuleMessage(Localizer["Error.User.SaveRole"], MessageType.Error);
+        }
+    }
+
+    private async Task DeleteUserRole(int UserRoleId)
+    {
+        try
+        {
+            var userrole = await UserRoleService.GetUserRoleAsync(UserRoleId);
+            if (userrole.Role.Name == RoleNames.Registered)
+            {
+                userrole.ExpiryDate = DateTime.UtcNow;
+                await UserRoleService.UpdateUserRoleAsync(userrole);
+                await logger.LogInformation("User {Username} Expired From Role {Role}", userrole.User.Username, userrole.Role.Name);
+            }
+            else
+            {
+                await UserRoleService.DeleteUserRoleAsync(UserRoleId);
+                await logger.LogInformation("User {Username} Removed From Role {Role}", userrole.User.Username, userrole.Role.Name);
+            }
+            AddModuleMessage(Localizer["Success.User.Remove"], MessageType.Success);
+            await GetUserRoles();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Removing User From Role {UserRoleId} {Error}", UserRoleId, ex.Message);
+            AddModuleMessage(Localizer["Error.User.RemoveRole"], MessageType.Error);
+        }
+    }
+}

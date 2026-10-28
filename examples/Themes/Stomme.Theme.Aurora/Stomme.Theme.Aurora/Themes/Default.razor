@@ -1,0 +1,66 @@
+@namespace Stomme.Themes.Aurora
+@inherits ThemeBase
+@inject ISettingService SettingService
+
+@* Aurora — an independent, external GENERAL/PUBLIC theme for Stomme (D87). A teal-accented shell with a
+   clearly labelled banner so a driven render can prove which theme rendered. It names no FluentUI type (BL-192):
+   the host's ThemeBuilder renders FluentUI's providers after every theme, and the theme's colour reaches FluentUI
+   through --db-accent, so one build runs on a FluentUI 4 host and a FluentUI 5 host alike. *@
+
+
+<div class="aurora-shell">
+    <header class="aurora-header">
+        <span class="aurora-brand"><Logo UseSiteNameAsFallback="true" /></span>
+        <span class="aurora-tag" data-theme-marker="aurora-public">Aurora &mdash; Public Theme</span>
+        <nav class="aurora-nav">
+            <Menu MenuType="Stomme.Themes.Controls.MenuHorizontal, Stomme.Client" />
+        </nav>
+        <div class="aurora-actions">
+            <UserProfile ShowRegister="@_register" />
+            <Login ShowLogin="@_login" />
+            <ControlPanel LanguageDropdownAlignment="right" />
+        </div>
+    </header>
+
+    <main role="main" class="aurora-body">
+        <div class="aurora-page">
+            <div class="aurora-panes"><Pane Name="@PaneNames.Default" /></div>
+            <Pane Name="Top Full Width" />
+            <div class="aurora-panes"><Pane Name="Top 100%" /></div>
+            <div class="aurora-cols">
+                <div class="aurora-col"><Pane Name="Left 50%" /></div>
+                <div class="aurora-col"><Pane Name="Right 50%" /></div>
+            </div>
+            <div class="aurora-panes"><Pane Name="Bottom 100%" /></div>
+            <Pane Name="Bottom Full Width" />
+        </div>
+    </main>
+
+    <footer class="aurora-footer">
+        <Pane Name="Footer" />
+    </footer>
+    <CookieConsent />
+</div>
+
+@code {
+    public override string Name => "Aurora Default";
+
+    public override string Panes => PaneNames.Default + ",Top Full Width,Top 100%,Left 50%,Right 50%,Bottom 100%,Bottom Full Width,Footer";
+
+    private bool _login = true;
+    private bool _register = true;
+
+    protected override void OnParametersSet()
+    {
+        try
+        {
+            var settings = SettingService.MergeSettings(PageState.Site.Settings, PageState.Page.Settings);
+            _login = bool.Parse(SettingService.GetSetting(settings, GetType().Namespace + ":Login", "true"));
+            _register = bool.Parse(SettingService.GetSetting(settings, GetType().Namespace + ":Register", "true"));
+        }
+        catch
+        {
+            // error loading theme settings
+        }
+    }
+}

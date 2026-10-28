@@ -1,0 +1,10 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+
+@* BL-229 increment 8: a sticky note - select it to edit it in the inspector; its text drawn as Markdown, as n8n's are
+   (NoteMarkdown: headings, lists, bold, italics, code and links, nothing an author types ever markup). *@
+<div class="db-note @(Node.Color is null ? "" : "db-note--" + Node.Color) @(Node.Selected ? "is-selected" : "")" data-note="@Node.NoteId" data-color="@Node.Color">@if (string.IsNullOrWhiteSpace(Node.Text)) {@("(an empty note)")} else {@NoteMarkdown.Render(Node.Text)}</div>
+
+@code {
+    [Parameter]
+    public NoteNodeModel Node { get; set; }
+}

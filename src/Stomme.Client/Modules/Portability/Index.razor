@@ -1,0 +1,202 @@
+@namespace Stomme.Modules.Portability
+@inherits ModuleBase
+@inject IPortabilityService PortabilityService
+
+@*
+    Data portability (BL-82): configuration packages out of and into this site, and a person's data package on request.
+    Placed for Administrators while Portability:Enabled is on; every action is decided again by the server, per key.
+*@
+
+<PageTitle>Portability</PageTitle>
+
+<div class="db-portability" style="display:flex;flex-direction:column;gap:1.5rem;">
+    <section style="display:flex;flex-direction:column;gap:0.5rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Packages</h3>
+            <button id="portability-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+        @if (_packages is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+        }
+        else if (_packages.Count == 0)
+        {
+            <p id="portability-empty" style="margin:0;color:var(--db-text-2);">No packages yet.</p>
+        }
+        else
+        {
+            <div style="overflow-x:auto;">
+                <table class="db-portability-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Requested (UTC)</th>
+                            <th style="text-align:left;">Kind</th>
+                            <th style="text-align:left;">Status</th>
+                            <th style="text-align:left;">Entities</th>
+                            <th style="text-align:left;">About</th>
+                            <th style="width:1px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var package in _packages)
+                        {
+                            <tr>
+                                <td>@package.CreatedOnUtc.ToString("u")</td>
+                                <td>@(package.Kind == "SubjectData" ? "Personal data" : "Configuration")</td>
+                                <td>@package.Status@(string.IsNullOrEmpty(package.FailureText) ? "" : $" ({package.FailureText})")</td>
+                                <td>@package.EntityCount</td>
+                                <td>@(package.SubjectUserId is null ? "—" : $"#{package.SubjectUserId}")</td>
+                                <td>
+                                    @if (package.CanDownload)
+                                    {
+                                        <a class="db-btn" href="@DownloadUrl(package)" download>Download</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:0.5rem;">
+        <h3 style="margin:0;">Export configuration</h3>
+        <label style="display:flex;gap:0.5rem;align-items:center;">
+            <input id="portability-profiles" type="checkbox" @bind="_exportProfiles" />
+            Profile fields
+        </label>
+        <label style="display:flex;gap:0.5rem;align-items:center;">
+            <input id="portability-modules" type="checkbox" @bind="_exportModules" />
+            Module content (every module that supports export)
+        </label>
+        <div><button id="portability-export" type="button" class="db-btn" @onclick="ExportAsync" disabled="@_busy">Build package</button></div>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:0.5rem;">
+        <h3 style="margin:0;">A person's data</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <label for="portability-username">User name</label>
+            <input id="portability-username" class="db-input" style="width:auto;" @bind="_username" />
+            <button id="portability-subject" type="button" class="db-btn" @onclick="SubjectAsync" disabled="@_busy">Build package</button>
+        </div>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:0.5rem;">
+        <h3 style="margin:0;">Import configuration</h3>
+        <textarea id="portability-import" class="db-input" rows="6" @bind="_importJson" placeholder="Paste a configuration package"></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <label for="portability-strategy">When it already exists</label>
+            <select id="portability-strategy" class="db-select" style="width:auto;" @bind="_strategy">
+                <option value="@ConflictStrategy.Skip">Skip</option>
+                <option value="@ConflictStrategy.Overwrite">Overwrite</option>
+                <option value="@ConflictStrategy.Rename">Import beside it</option>
+            </select>
+            <button id="portability-import-run" type="button" class="db-btn" @onclick="ImportAsync" disabled="@_busy">Import</button>
+        </div>
+        @if (_report is not null)
+        {
+            @if (!_report.Accepted)
+            {
+                <div id="portability-refused" class="db-empty">
+                    Nothing was imported:
+                    <ul>@foreach (var refusal in _report.Refusals) { <li>@refusal</li> }</ul>
+                </div>
+            }
+            else
+            {
+                <ul id="portability-report">
+                    @foreach (var line in _report.Lines)
+                    {
+                        <li>@line.DisplayName (@line.EntityType): @line.Result@(string.IsNullOrEmpty(line.Reason) ? "" : $" - {line.Reason}")</li>
+                    }
+                </ul>
+            }
+        }
+    </section>
+
+    @if (!string.IsNullOrEmpty(_message))
+    {
+        <p id="portability-message" style="margin:0;">@_message</p>
+    }
+</div>
+
+@code {
+    private List<PortabilityPackageView> _packages;
+    private bool _busy;
+    private bool _exportProfiles = true;
+    private bool _exportModules;
+    private string _username = string.Empty;
+    private string _importJson = string.Empty;
+    private ConflictStrategy _strategy = ConflictStrategy.Skip;
+    private PortabilityImportResult _report;
+    private string _message = string.Empty;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private string DownloadUrl(PortabilityPackageView package) => Utilities.TenantUrl(PageState.Alias, $"/api/Portability/{package.Id}/download");
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _packages = await PortabilityService.ListAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the portability packages.");
+            _packages = new List<PortabilityPackageView>();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private Task ExportAsync() => RunAsync(async () =>
+    {
+        var types = new List<string>();
+        if (_exportProfiles) { types.Add("profile-definition"); }
+        if (_exportModules) { types.Add("module-content"); }
+        await PortabilityService.RequestConfigAsync(new PortabilityConfigRequest { EntityTypes = types });
+        _message = "The package is being built; it appears above within a minute.";
+    });
+
+    private Task SubjectAsync() => RunAsync(async () =>
+    {
+        await PortabilityService.RequestSubjectAsync(new PortabilitySubjectRequest { Username = _username });
+        _message = "The person's package is being built; it appears above within a minute.";
+    });
+
+    private Task ImportAsync() => RunAsync(async () =>
+    {
+        _report = await PortabilityService.ImportAsync(_importJson, _strategy);
+        _message = string.Empty;
+    });
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _busy = true;
+        try
+        {
+            await action();
+        }
+        catch (PortabilityRequestRejectedException refused)
+        {
+            // Written for the person asking (BL-82); logging it would only repeat what the page now shows.
+            _message = "The request was refused: " + refused.Message;
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "A portability request failed.");
+            _message = "The request was refused.";
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+}

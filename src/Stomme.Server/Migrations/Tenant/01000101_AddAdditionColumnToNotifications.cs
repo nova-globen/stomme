@@ -1,0 +1,34 @@
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Stomme.Databases.Interfaces;
+using Stomme.Migrations.EntityBuilders;
+using Stomme.Repository;
+
+namespace Stomme.Migrations.Tenant
+{
+    [DbContext(typeof(TenantDBContext))]
+    [Migration("Tenant.01.00.01.01")]
+    public class AddAdditionColumnToNotifications : MultiDatabaseMigration
+    {
+        public AddAdditionColumnToNotifications(IDatabase database) : base(database)
+        {
+        }
+
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            //Add Column to Notification table
+            var notificationEntityBuilder = new NotificationEntityBuilder(migrationBuilder, ActiveDatabase);
+            notificationEntityBuilder.AddDateTimeColumn("SendOn", true);
+
+            //Update new Column
+            notificationEntityBuilder.UpdateData("SendOn", $"{DelimitName(RewriteName("CreatedOn"))}", $"{DelimitName(RewriteName("SendOn"))} IS NULL");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            //Drop Column from Notification table
+            var notificationEntityBuilder = new NotificationEntityBuilder(migrationBuilder, ActiveDatabase);
+            notificationEntityBuilder.DropColumn("SendOn");
+        }
+    }
+}

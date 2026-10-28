@@ -1,0 +1,743 @@
+@namespace Stomme.Modules.Dashboards
+@inherits ModuleBase
+@implements IAsyncDisposable
+@using Stomme.Transport.Realtime
+@using Microsoft.AspNetCore.SignalR.Client
+@using Stomme.Collaboration
+@using Stomme.Modules.Collaboration
+@inject IDashboardsService DashboardsService
+@inject IDatasetsService DatasetsService
+@inject NavigationManager NavigationManager
+@inject IServiceProvider Services
+
+@*
+    The Dashboards page (BL-96 increment 9, D110): this site's boards, listed for a holder of dashboards:view; one board
+    opened as the VIEWER - its widgets on the layout grid, each loading its data through the Datasets catalogue (a chart
+    over ECharts, a grid, a list, a KPI), refreshed by hand or on its interval; and, for a holder of dashboards:manage,
+    the BUILDER beneath it - the add-widget form with the site's datasets as the picker, the widget table with reorder
+    and remove, the rename and the layout - with the publish for a holder of dashboards:publish. Every button that
+    appears is decided again by the server when it is pressed. A chart is drawn only once the session is interactive,
+    and a chart the runtime cannot draw says so in its own cell instead of throwing across the interop boundary.
+*@
+
+<PageTitle>Dashboards</PageTitle>
+
+@if (!IsAuthorizedPermission(DashboardPermissions.View))
+{
+    <p class="db-dashboards-denied" style="color:var(--db-text-2);">You do not have access to dashboards on this site (@DashboardPermissions.View).</p>
+}
+else
+{
+    <div class="db-dashboards" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Dashboards</h3>
+            <button id="dashboards-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (_canManage)
+        {
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:end;">
+                <label style="display:flex;flex-direction:column;gap:0.2rem;font-size:12px;">New dashboard<input id="dashboards-new-name" type="text" @bind="_newName" placeholder="Name" /></label>
+                <button id="dashboards-create" type="button" class="db-btn" @onclick="CreateAsync" disabled="@(_busy || string.IsNullOrWhiteSpace(_newName))">Create</button>
+            </div>
+        }
+
+        @if (_dashboards is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+        }
+        else if (_dashboards.Count == 0)
+        {
+            <p id="dashboards-empty" style="margin:0;color:var(--db-text-2);">No dashboards.</p>
+        }
+        else
+        {
+            <div style="overflow-x:auto;">
+                <table class="db-dashboards-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Name</th>
+                            <th style="text-align:left;">Status</th>
+                            <th style="text-align:left;">Widgets</th>
+                            <th style="text-align:left;">Updated</th>
+                            <th style="width:1px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dashboard in _dashboards)
+                        {
+                            <tr id="dashboard-@dashboard.Id">
+                                <td>@dashboard.Name</td>
+                                <td>@dashboard.Status</td>
+                                <td style="font-family:monospace;">@dashboard.Widgets.Count</td>
+                                <td style="font-family:monospace;">@dashboard.UpdatedUtc.ToString("u")</td>
+                                <td style="white-space:nowrap;">
+                                    <button type="button" class="db-btn" @onclick="@(() => OpenAsync(dashboard))" disabled="@_busy">Open</button>
+                                    @if (_canManage)
+                                    {
+                                        <button type="button" class="db-btn" @onclick="@(() => CloneAsync(dashboard))" disabled="@_busy">Clone</button>
+                                    }
+                                    @if (_canPublish && dashboard.Status == DashboardStatus.Draft)
+                                    {
+                                        <button type="button" class="db-btn" @onclick="@(() => PublishAsync(dashboard))" disabled="@_busy">Publish</button>
+                                    }
+                                    @if (_canManage)
+                                    {
+                                        <ActionDialog Header="Delete Dashboard" Message="Delete this dashboard and its widgets? It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => { await DeleteAsync(dashboard); StateHasChanged(); })" Disabled="@_busy" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (_selected is { } board)
+        {
+            <div id="dashboard-viewer" style="display:flex;flex-direction:column;gap:0.75rem;border-top:1px solid var(--db-border);padding-top:1rem;">
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+                    <h4 style="margin:0;flex:1 1 auto;">@board.Name <span style="font-weight:normal;color:var(--db-text-2);">· @board.Status · @board.Columns columns</span></h4>
+                    <button type="button" class="db-btn" @onclick="ReloadWidgetsAsync" disabled="@_busy">Refresh widgets</button>
+                    @if (_live)
+                    {
+                        <span id="dashboard-live" class="db-live" title="Widgets re-read when a bound dataset changes">live</span>
+                    }
+                    <button type="button" class="db-btn" @onclick="Close" disabled="@_busy">Close</button>
+                </div>
+
+                @if (_canManage)
+                {
+                    @* Two builders of one board (BL-97 increment 12, D114): presence, the advisory lock, and a warning when the other saves.
+                       Keyed by the board, so opening another one leaves this one's session and gives its lock up. *@
+                    <CollaborationPanel @key="board.Id" @ref="_collaboration" ResourceType="@CollaborativeResourceTypes.Dashboard" ResourceId="@board.Id.ToString("D")" ResourceLabel="board"
+                                        Enabled="true" CurrentUserId="@(PageState?.User?.UserId ?? 0)"
+                                        OnReloadRequested="ReloadBoardAsync" />
+                }
+
+                @if (board.Widgets.Count == 0)
+                {
+                    <p id="dashboard-no-widgets" style="margin:0;color:var(--db-text-2);">This dashboard has no widgets yet.</p>
+                }
+                else
+                {
+                    <div class="db-dash-grid" style="@($"--db-dash-cols: {board.Columns}; --db-dash-row-h: {board.RowHeightPx}px;")">
+                        @foreach (var widget in board.Widgets)
+                        {
+                            var data = _data.TryGetValue(widget.Id, out var loaded) ? loaded : null;
+                            var error = _errors.TryGetValue(widget.Id, out var reason) ? reason : null;
+                            <div class="db-widget" id="widget-@widget.Id" style="@($"grid-column: {widget.Column + 1} / span {widget.ColumnSpan}; grid-row: {widget.Row + 1} / span {widget.RowSpan};")" role="region" aria-label="@widget.Title">
+                                <div class="db-widget-head">
+                                    <div class="db-widget-titles">
+                                        <span class="db-widget-kind">@widget.Kind</span>
+                                        <strong class="db-widget-title">@widget.Title</strong>
+                                    </div>
+                                    <div class="db-widget-actions">
+                                        @if (widget.RefreshKind == RefreshKind.Interval)
+                                        {
+                                            <span title="Refreshes on its interval">every @(widget.IntervalSeconds)s</span>
+                                        }
+                                        @if (_loadedAt.TryGetValue(widget.Id, out var at))
+                                        {
+                                            <span>updated @at.ToString("HH:mm:ss")</span>
+                                        }
+                                        <button type="button" class="db-btn" @onclick="@(() => LoadWidgetAsync(board.Id, widget, true))" disabled="@_busy" aria-label="@($"Refresh {widget.Title}")">↻</button>
+                                    </div>
+                                </div>
+                                <div class="db-widget-body">
+                                    <DashboardWidgetBody Widget="widget" Data="data" Error="@error" ChartProblem="@(_chartProblems.TryGetValue(widget.Id, out var problem) ? problem : null)" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                @if (_canManage)
+                {
+                    <div id="dashboard-builder" style="display:flex;flex-direction:column;gap:0.75rem;border-top:1px dashed var(--db-border);padding-top:0.75rem;">
+                        <h4 style="margin:0;">Builder</h4>
+                        <div class="db-dash-form">
+                            <label>Name<input id="builder-name" type="text" @bind="_rename" /></label>
+                            <button type="button" class="db-btn" @onclick="RenameAsync" disabled="@(_busy || string.IsNullOrWhiteSpace(_rename))">Rename</button>
+                            <label>Columns<input id="builder-columns" type="number" min="1" max="48" @bind="_columns" /></label>
+                            <label>Row height (px)<input id="builder-row-height" type="number" min="1" max="1000" @bind="_rowHeight" /></label>
+                            <button type="button" class="db-btn" @onclick="LayoutAsync" disabled="@_busy">Apply layout</button>
+                        </div>
+
+                        <h5 style="margin:0;">Add widget</h5>
+                        <div class="db-dash-form">
+                            <label>Title<input id="widget-title" type="text" @bind="_form.Title" /></label>
+                            <label>Kind
+                                <select id="widget-kind" @bind="_form.Kind">
+                                    @foreach (var kind in Enum.GetValues<WidgetKind>())
+                                    {
+                                        <option value="@kind">@kind</option>
+                                    }
+                                </select>
+                            </label>
+                            <label>Dataset
+                                <select id="widget-dataset" @bind="_form.DatasetId">
+                                    <option value="">— choose —</option>
+                                    @foreach (var dataset in _datasets)
+                                    {
+                                        <option value="@dataset.Id">@dataset.Name (@dataset.Classification)</option>
+                                    }
+                                </select>
+                            </label>
+                            <label>Columns (comma-separated)<input id="widget-columns" type="text" @bind="_form.Columns" /></label>
+                            <label>Column<input type="number" min="0" @bind="_form.Column" /></label>
+                            <label>Row<input type="number" min="0" @bind="_form.Row" /></label>
+                            <label>Width<input type="number" min="1" @bind="_form.ColumnSpan" /></label>
+                            <label>Height<input type="number" min="1" @bind="_form.RowSpan" /></label>
+                            <label>Refresh
+                                <select @bind="_form.RefreshKind">
+                                    @foreach (var refresh in Enum.GetValues<RefreshKind>())
+                                    {
+                                        <option value="@refresh">@refresh</option>
+                                    }
+                                </select>
+                            </label>
+                            @if (_form.RefreshKind == RefreshKind.Interval)
+                            {
+                                <label>Interval (s, at least @DashboardLimits.MinimumRefreshIntervalSeconds)<input type="number" min="@DashboardLimits.MinimumRefreshIntervalSeconds" @bind="_form.IntervalSeconds" /></label>
+                            }
+                            @if (_form.Kind == WidgetKind.Pivot)
+                            {
+                                <p class="db-form-wide" style="margin:0;color:var(--db-text-2);">A pivot groups by the first bound column and sums the second when it is numeric; the count is always shown.</p>
+                            }
+                            @if (_form.Kind == WidgetKind.Chart)
+                            {
+                                <label class="db-form-wide">Chart spec (ECharts JSON, theme-free; "$column" binds a column)<textarea id="widget-chart-spec" rows="4" @bind="_form.ChartSpecJson"></textarea></label>
+                            }
+                        </div>
+                        <div>
+                            <button id="widget-add" type="button" class="db-btn" @onclick="AddWidgetAsync" disabled="@(_busy || !_form.IsValid)">Add widget</button>
+                        </div>
+
+                        @if (board.Widgets.Count > 0)
+                        {
+                            <table class="db-widgets-table" style="width:100%;border-collapse:collapse;">
+                                <thead><tr><th style="text-align:left;">Title</th><th style="text-align:left;">Kind</th><th style="text-align:left;">Position</th><th style="text-align:left;">Refresh</th><th style="width:1px;"></th></tr></thead>
+                                <tbody>
+                                    @foreach (var widget in board.Widgets)
+                                    {
+                                        <tr>
+                                            <td>@widget.Title</td>
+                                            <td>@widget.Kind</td>
+                                            <td style="font-family:monospace;">@widget.Column,@widget.Row · @widget.ColumnSpan×@widget.RowSpan</td>
+                                            <td>@widget.RefreshKind@(widget.IntervalSeconds is { } s ? $" ({s}s)" : "")</td>
+                                            <td style="white-space:nowrap;">
+                                                <button type="button" class="db-btn" @onclick="@(() => ReorderAsync(widget, false))" disabled="@_busy" aria-label="Move back">↑</button>
+                                                <button type="button" class="db-btn" @onclick="@(() => ReorderAsync(widget, true))" disabled="@_busy" aria-label="Move forward">↓</button>
+                                                <button type="button" class="db-btn db-btn-danger" @onclick="@(() => RemoveWidgetAsync(widget))" disabled="@_busy">Remove</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="dashboards-message" style="margin:0;">@_message</p>
+        }
+
+        <p id="dashboards-trademarks" style="margin:0;font-size:0.85em;color:var(--db-text-2);">Product names beside a dataset or a chart identify the external systems the site's data came from and nothing more.</p>
+    </div>
+}
+
+@code {
+    private List<DashboardView> _dashboards;
+    private List<DatasetDescriptor> _datasets = new();
+    private DashboardView _selected;
+    private readonly Dictionary<Guid, WidgetDataView> _data = new();
+    private readonly Dictionary<Guid, string> _errors = new();
+    private readonly Dictionary<Guid, string> _chartProblems = new();
+    private readonly Dictionary<Guid, DateTime> _loadedAt = new();
+    private readonly Dictionary<Guid, System.Timers.Timer> _timers = new();
+    private readonly HashSet<Guid> _chartsToDraw = new();
+    private bool _busy;
+    private bool _canManage;
+    private bool _canPublish;
+    private bool _interactive;
+    private HubConnection _hub;
+    private IDashboardDataSignal _signal;
+    private CollaborationPanel _collaboration;
+    private bool _live;
+    private string _message = string.Empty;
+    private string _newName = string.Empty;
+    private string _rename = string.Empty;
+    private int _columns = 12;
+    private int _rowHeight = 40;
+    private readonly WidgetForm _form = new();
+
+    public override string Title => "Dashboards";
+
+    // The chart runtime (the Apache-2.0 Vizor.ECharts bundle, a static asset), our interop and our styles; loaded by the framework with the control.
+    public override List<Resource> Resources => new List<Resource>
+    {
+        new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Dashboards/dashboards.css" },
+        new Resource { ResourceType = ResourceType.Script, Url = "_content/Vizor.ECharts/js/vizor-echarts-bundle-min.js", Location = ResourceLocation.Body },
+        new Resource { ResourceType = ResourceType.Script, Url = "Modules/Dashboards/dashboards-charts.js", Location = ResourceLocation.Body },
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _canManage = IsAuthorizedPermission(DashboardPermissions.Manage);
+        _canPublish = IsAuthorizedPermission(DashboardPermissions.Publish);
+        await LoadAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _interactive = true; // a chart talks to the browser: drawn only once the session is interactive, never during prerendering
+            if (PageState?.User != null && IsAuthorizedPermission(DashboardPermissions.View))
+            {
+                if (OperatingSystem.IsBrowser())
+                {
+                    await ConnectLiveUpdateAsync();
+                }
+                else
+                {
+                    SubscribeInProcess();
+                }
+            }
+        }
+
+        if (!_interactive || _selected is null || _chartsToDraw.Count == 0)
+        {
+            return;
+        }
+
+        var pending = _chartsToDraw.ToList();
+        _chartsToDraw.Clear();
+        var changed = false;
+        foreach (var widgetId in pending)
+        {
+            var widget = _selected.Widgets.FirstOrDefault(candidate => candidate.Id == widgetId);
+            if (widget is null || widget.Kind != WidgetKind.Chart || !_data.TryGetValue(widgetId, out var data))
+            {
+                continue;
+            }
+
+            try
+            {
+                // The interop answers with a reason instead of throwing: a chart the runtime cannot draw says so in its cell.
+                var problem = await JSRuntime.InvokeAsync<string>("stommeCharts.render", ChartElementId(widgetId), widget.ChartSpecJson ?? string.Empty, widget.Columns, data.RowsAllowed ? data.RowsJson : null);
+                if (problem is null ? _chartProblems.Remove(widgetId) : !_chartProblems.TryGetValue(widgetId, out var previous) || previous != problem)
+                {
+                    if (problem is not null)
+                    {
+                        _chartProblems[widgetId] = problem;
+                    }
+
+                    changed = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _chartProblems[widgetId] = "The chart could not be drawn: " + ex.Message;
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private static string ChartElementId(Guid widgetId) => DashboardWidgetBody.ChartElementId(widgetId);
+
+    // LIVE UPDATE (increment 10): in the browser the page connects to the dashboards hub (HubRoutes.Dashboards, dashboards:view)
+    // and re-reads every widget bound to the dataset the push names - the push is the dataset's id and the kind of change,
+    // never a row. The transport is opt-in (Transport:SignalR); a refused or absent hub degrades silently to the intervals.
+    private async Task ConnectLiveUpdateAsync()
+    {
+        try
+        {
+            _hub = new HubConnectionBuilder()
+                .WithUrl(NavigationManager.ToAbsoluteUri(HubRoutes.Dashboards))
+                .WithAutomaticReconnect()
+                .Build();
+            _hub.On<DashboardDatasetChange>(DashboardHubMethods.DatasetChanged, change => InvokeAsync(async () =>
+            {
+                await OnDatasetChangedAsync(change);
+                StateHasChanged();
+            }));
+            await _hub.StartAsync();
+            _live = true;
+        }
+        catch
+        {
+            await DisposeHubAsync();
+        }
+    }
+
+    // On an Interactive Server circuit there is no browser cookie to open the hub with: the page subscribes to the host's
+    // in-process signal instead (registered by the Server, absent in the browser), scoped to this site's key.
+    private void SubscribeInProcess()
+    {
+        _signal = Services.GetService(typeof(IDashboardDataSignal)) as IDashboardDataSignal;
+        if (_signal is null)
+        {
+            return;
+        }
+
+        _signal.DatasetChanged += OnSignalled;
+        _live = true;
+    }
+
+    private void OnSignalled(string siteKey, DashboardDatasetChange change)
+    {
+        if (SiteState?.Alias is null || siteKey != SiteState.Alias.SiteKey)
+        {
+            return;
+        }
+
+        _ = InvokeAsync(async () =>
+        {
+            await OnDatasetChangedAsync(change);
+            StateHasChanged();
+        });
+    }
+
+    private async Task OnDatasetChangedAsync(DashboardDatasetChange change)
+    {
+        if (_selected is null || change is null)
+        {
+            return;
+        }
+
+        foreach (var widget in _selected.Widgets.Where(candidate => candidate.DatasetId == change.DatasetId).ToList())
+        {
+            await LoadWidgetAsync(_selected.Id, widget, false);
+        }
+    }
+
+    private async Task DisposeHubAsync()
+    {
+        _live = false;
+        if (_signal is not null)
+        {
+            _signal.DatasetChanged -= OnSignalled;
+            _signal = null;
+        }
+
+        if (_hub != null)
+        {
+            try { await _hub.DisposeAsync(); } catch { /* best effort */ }
+            _hub = null;
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _dashboards = await DashboardsService.ListAsync();
+            if (_canManage)
+            {
+                _datasets = await DatasetsService.ListAsync();
+            }
+
+            if (_selected is not null)
+            {
+                _selected = _dashboards.FirstOrDefault(dashboard => dashboard.Id == _selected.Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the dashboards.");
+            _dashboards = new List<DashboardView>();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task CreateAsync()
+    {
+        await GuardAsync("The dashboard was not created", async () =>
+        {
+            var created = await DashboardsService.CreateAsync(new CreateDashboardRequest { Name = _newName.Trim() });
+            _newName = string.Empty;
+            _message = $"'{created.Name}' created.";
+            await LoadAsync();
+            await ShowAsync(created);
+            BringIntoView("dashboard-viewer");
+        });
+    }
+
+    private async Task CloneAsync(DashboardView source) =>
+        await GuardAsync("The dashboard was not cloned", async () =>
+        {
+            var clone = await DashboardsService.CloneAsync(source.Id, new CloneDashboardRequest { NewName = $"{source.Name} (copy)" });
+            _message = $"'{clone.Name}' created as a draft.";
+            await LoadAsync();
+        });
+
+    private async Task PublishAsync(DashboardView dashboard) =>
+        await GuardAsync("The dashboard was not published", async () =>
+        {
+            var published = await DashboardsService.PublishAsync(dashboard.Id);
+            _message = $"'{published.Name}' published.";
+            await LoadAsync();
+        });
+
+    private async Task DeleteAsync(DashboardView dashboard) =>
+        await GuardAsync("The dashboard was not deleted", async () =>
+        {
+            await DashboardsService.DeleteAsync(dashboard.Id);
+            if (_selected?.Id == dashboard.Id)
+            {
+                Close();
+            }
+
+            _message = $"'{dashboard.Name}' deleted.";
+            await LoadAsync();
+        });
+
+    private async Task OpenAsync(DashboardView dashboard)
+    {
+        await ShowAsync(dashboard);
+        BringIntoView("dashboard-viewer"); // below the list (BL-22)
+    }
+
+    // Someone else saved the open board (BL-97 increment 12): read it again. The builder's own form is left as it is.
+    private async Task ReloadBoardAsync()
+    {
+        if (_selected is null)
+        {
+            return;
+        }
+
+        var fresh = await DashboardsService.GetAsync(_selected.Id);
+        if (fresh is not null)
+        {
+            // What the user typed and has not applied is kept; a field they left alone takes the board's new value - else the
+            // stale name would sit in the Rename box, one click from undoing the other editor's change (found driving).
+            var shown = _selected;
+            var (rename, columns, rowHeight) = (_rename, _columns, _rowHeight);
+            await ShowAsync(fresh);
+            _rename = rename != shown.Name ? rename : _rename;
+            _columns = columns != shown.Columns ? columns : _columns;
+            _rowHeight = rowHeight != shown.RowHeightPx ? rowHeight : _rowHeight;
+        }
+
+        StateHasChanged();
+    }
+
+    private Task AnnounceAsync(string descriptor) => _collaboration?.AnnounceAsync(descriptor) ?? Task.CompletedTask;
+
+    private async Task ShowAsync(DashboardView dashboard)
+    {
+        Close();
+        _selected = dashboard;
+        _rename = dashboard.Name;
+        _columns = dashboard.Columns;
+        _rowHeight = dashboard.RowHeightPx;
+        foreach (var widget in dashboard.Widgets)
+        {
+            await LoadWidgetAsync(dashboard.Id, widget, false);
+            StartInterval(dashboard.Id, widget);
+        }
+    }
+
+    private async Task ReloadWidgetsAsync()
+    {
+        if (_selected is null)
+        {
+            return;
+        }
+
+        foreach (var widget in _selected.Widgets)
+        {
+            await LoadWidgetAsync(_selected.Id, widget, false);
+        }
+    }
+
+    private void Close()
+    {
+        foreach (var timer in _timers.Values)
+        {
+            timer.Stop();
+            timer.Dispose();
+        }
+
+        _timers.Clear();
+        _data.Clear();
+        _errors.Clear();
+        _chartProblems.Clear();
+        _loadedAt.Clear();
+        _chartsToDraw.Clear();
+        _selected = null;
+    }
+
+    private async Task LoadWidgetAsync(Guid dashboardId, WidgetView widget, bool announce)
+    {
+        try
+        {
+            _data[widget.Id] = await DashboardsService.GetWidgetDataAsync(dashboardId, widget.Id);
+            _errors.Remove(widget.Id);
+            _loadedAt[widget.Id] = DateTime.Now;
+            if (widget.Kind == WidgetKind.Chart)
+            {
+                _chartsToDraw.Add(widget.Id);
+            }
+
+            if (announce)
+            {
+                _message = $"'{widget.Title}' refreshed.";
+            }
+        }
+        catch (Exception ex)
+        {
+            // A failed refresh keeps the last data on screen when there is one; otherwise the cell says why.
+            await logger.LogError(ex, "Could not load widget {WidgetId}.", widget.Id);
+            if (!_data.ContainsKey(widget.Id))
+            {
+                _errors[widget.Id] = "The widget's data was not loaded: " + ex.Message;
+            }
+        }
+    }
+
+    private void StartInterval(Guid dashboardId, WidgetView widget)
+    {
+        if (widget.RefreshKind != RefreshKind.Interval || widget.IntervalSeconds is not { } seconds || seconds <= 0)
+        {
+            return;
+        }
+
+        var timer = new System.Timers.Timer(seconds * 1000d) { AutoReset = true };
+        timer.Elapsed += async (_, _) => await InvokeAsync(async () =>
+        {
+            await LoadWidgetAsync(dashboardId, widget, false);
+            StateHasChanged();
+        });
+        timer.Start();
+        _timers[widget.Id] = timer;
+    }
+
+    private async Task RenameAsync() =>
+        await GuardAsync("The dashboard was not renamed", async () =>
+        {
+            var renamed = await DashboardsService.RenameAsync(_selected.Id, new RenameDashboardRequest { Name = _rename.Trim() });
+            _message = $"Renamed to '{renamed.Name}'.";
+            await LoadAsync();
+            _selected = renamed;
+            await AnnounceAsync($"renamed the board to '{renamed.Name}'");
+        });
+
+    private async Task LayoutAsync() =>
+        await GuardAsync("The layout was not applied", async () =>
+        {
+            var changed = await DashboardsService.RearrangeLayoutAsync(_selected.Id, new LayoutRequest { Columns = _columns, RowHeightPx = _rowHeight });
+            _message = $"Layout: {changed.Columns} columns, {changed.RowHeightPx}px rows.";
+            await LoadAsync();
+            _selected = changed;
+            await AnnounceAsync($"changed the layout to {changed.Columns} columns");
+        });
+
+    private async Task AddWidgetAsync() =>
+        await GuardAsync("The widget was not added", async () =>
+        {
+            var request = new AddWidgetRequest
+            {
+                Title = _form.Title.Trim(),
+                Kind = _form.Kind,
+                DatasetId = Guid.Parse(_form.DatasetId),
+                Columns = _form.Columns.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList(),
+                Column = _form.Column,
+                Row = _form.Row,
+                ColumnSpan = _form.ColumnSpan,
+                RowSpan = _form.RowSpan,
+                RefreshKind = _form.RefreshKind,
+                IntervalSeconds = _form.RefreshKind == RefreshKind.Interval ? _form.IntervalSeconds : null,
+                ChartSpecJson = _form.Kind == WidgetKind.Chart && !string.IsNullOrWhiteSpace(_form.ChartSpecJson) ? _form.ChartSpecJson : null,
+            };
+            var changed = await DashboardsService.AddWidgetAsync(_selected.Id, request);
+            _message = $"'{request.Title}' added.";
+            _form.Reset();
+            await LoadAsync();
+            await ShowAsync(changed);
+            await AnnounceAsync($"added the widget '{request.Title}'");
+        });
+
+    private async Task ReorderAsync(WidgetView widget, bool forward) =>
+        await GuardAsync("The widget was not moved", async () =>
+        {
+            var changed = await DashboardsService.ReorderWidgetAsync(_selected.Id, widget.Id, new ReorderWidgetRequest { Forward = forward });
+            await LoadAsync();
+            await ShowAsync(changed);
+        });
+
+    private async Task RemoveWidgetAsync(WidgetView widget) =>
+        await GuardAsync("The widget was not removed", async () =>
+        {
+            var changed = await DashboardsService.RemoveWidgetAsync(_selected.Id, widget.Id);
+            _message = $"'{widget.Title}' removed.";
+            await LoadAsync();
+            await ShowAsync(changed);
+        });
+
+    private async Task GuardAsync(string failure, Func<Task> action)
+    {
+        _busy = true;
+        _message = string.Empty;
+        try
+        {
+            await action();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, failure + ".");
+            _message = failure + ": " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Close();
+        await DisposeHubAsync();
+    }
+
+    private sealed class WidgetForm
+    {
+        public string Title { get; set; } = string.Empty;
+        public WidgetKind Kind { get; set; } = WidgetKind.Kpi;
+        public string DatasetId { get; set; } = string.Empty;
+        public string Columns { get; set; } = string.Empty;
+        public int Column { get; set; }
+        public int Row { get; set; }
+        public int ColumnSpan { get; set; } = 4;
+        public int RowSpan { get; set; } = 4;
+        public RefreshKind RefreshKind { get; set; } = RefreshKind.Manual;
+        public int IntervalSeconds { get; set; } = DashboardLimits.MinimumRefreshIntervalSeconds;
+        public string ChartSpecJson { get; set; } = string.Empty;
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(Title) && Guid.TryParse(DatasetId, out _) && ColumnSpan > 0 && RowSpan > 0;
+
+        public void Reset()
+        {
+            Title = string.Empty;
+            Columns = string.Empty;
+            ChartSpecJson = string.Empty;
+            Kind = WidgetKind.Kpi;
+            RefreshKind = RefreshKind.Manual;
+        }
+    }
+}

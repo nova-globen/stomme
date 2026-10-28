@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BL-44 — the production-slim module SDK: the CLIENT compile surface.
+
+    A packaging SHIM (see Stomme.Server.Sdk for the full rationale): packs the ALREADY-BUILT
+    src/Stomme.Client/bin/Release Stomme.Client.dll into lib/net10.0 so a module's Blazor UI can
+    compile against ModuleBase / IModule / ServiceBase / Logger / RenderModeBoundary — without the fat
+    Stomme.Client package's dependency set (FluentUI, gRPC client, SignalR client,
+    WebAssembly.Authentication, Localization...). ModuleBase derives from ComponentBase and injects
+    IJSRuntime, so the Blazor component surface a module actually compiles against is
+    Microsoft.AspNetCore.Components.* + Microsoft.JSInterop — supplied by the Stomme.Sdk.Slim
+    meta-package's Microsoft.AspNetCore.Components.WebAssembly reference, not by this package.
+
+    COMPILE-ONLY by intent: no static web assets, no scoped-CSS bundle — on a WebAssembly site the
+    browser streams the MODULE's assemblies next to the host's own client bundle, which already carries
+    the framework's assets.
+
+    Prerequisite: src/Stomme.Server was built in Release (it builds Stomme.Client transitively;
+    examples/pack-sdk-slim.ps1 does this). Versioning: <Version> flows from examples/Directory.Build.props,
+    -SdkVersion on the pack script revs independently.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <IsPackable>true</IsPackable>
+    <PackageId>Stomme.Client.Sdk</PackageId>
+    <Authors>Nova Globen AB</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/nova-globen/stomme</PackageProjectUrl>
+    <PackageTags>stomme;module;sdk;client;blazor;compile-surface</PackageTags>
+    <Description>Compile-time client surface for Stomme module authors: the Stomme.Client assembly (ModuleBase, IModule, ServiceBase) without the full client dependency set. Consume via the Stomme.Sdk.Slim meta-package; at runtime the module streams into a full Stomme client.</Description>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\src\Stomme.Client\bin\Release\net10.0\Stomme.Client.dll"
+          Pack="true" PackagePath="lib\net10.0\" />
+  </ItemGroup>
+
+
+  <!-- D98: LICENSE and THIRD-PARTY-NOTICES.md at the package root, as the framework's own packages carry them (BL-186). -->
+  <ItemGroup>
+    <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\..\THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
+
+</Project>

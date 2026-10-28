@@ -1,0 +1,162 @@
+@namespace Stomme.Modules.Erasure
+@inherits ModuleBase
+@inject IErasureService ErasureService
+
+@*
+    The site's erasure receipts (BL-116 increment 4, D112): what an operator shows a supervisory authority. A receipt
+    names no person - an opaque erasure id, the stores, the counts, a retention's reason and due date. Host only: the
+    page is placed for the Host role and the server decides every call again. A failed run can be marked for retry.
+*@
+
+<PageTitle>Erasure receipts</PageTitle>
+
+<div class="db-erasure" style="display:flex;flex-direction:column;gap:1rem;">
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+        <h3 style="margin:0;flex:1 1 auto;">Erasure receipts</h3>
+        <button id="erasure-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+    </div>
+
+    @if (_receipts is null)
+    {
+        <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+    }
+    else if (_receipts.Count == 0)
+    {
+        <p id="erasure-empty" style="margin:0;color:var(--db-text-2);">No erasure has been requested on this site.</p>
+    }
+    else
+    {
+        <div style="overflow-x:auto;">
+            <table class="db-erasure-table" style="width:100%;border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align:left;">Erasure id</th>
+                        <th style="text-align:left;">Status</th>
+                        <th style="text-align:left;">Requested (UTC)</th>
+                        <th style="text-align:left;">Erased (UTC)</th>
+                        <th style="text-align:left;">Retained until (UTC)</th>
+                        <th style="text-align:left;">Outcomes</th>
+                        <th style="width:1px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var receipt in _receipts)
+                    {
+                        <tr id="erasure-@receipt.Id">
+                            <td style="font-family:monospace;">@receipt.SubjectErasureId</td>
+                            <td>
+                                @receipt.Status
+                                @if (receipt.Status == "Failed" && !string.IsNullOrEmpty(receipt.LastError))
+                                {
+                                    <div style="color:var(--db-text-2);font-size:0.9em;">@receipt.LastError (attempt @receipt.Attempts)</div>
+                                }
+                            </td>
+                            <td>@receipt.RequestedOnUtc.ToString("u")</td>
+                            <td>@(receipt.ErasedOnUtc?.ToString("u") ?? "—")</td>
+                            <td>@(receipt.RetainedUntilUtc?.ToString("u") ?? "—")</td>
+                            <td>
+                                @if (receipt.Outcomes.Count == 0)
+                                {
+                                    <span style="color:var(--db-text-2);">—</span>
+                                }
+                                else
+                                {
+                                    <details>
+                                        <summary>@receipt.Outcomes.Count store(s): @Summarise(receipt)</summary>
+                                        <table style="border-collapse:collapse;margin-top:0.25rem;">
+                                            <tbody>
+                                                @foreach (var outcome in receipt.Outcomes)
+                                                {
+                                                    <tr>
+                                                        <td style="padding-right:0.75rem;">@outcome.Participant</td>
+                                                        <td style="padding-right:0.75rem;color:var(--db-text-2);">@outcome.Store</td>
+                                                        <td style="padding-right:0.75rem;">@outcome.Handling</td>
+                                                        <td style="padding-right:0.75rem;text-align:right;">@outcome.Affected</td>
+                                                        <td style="color:var(--db-text-2);">@Retention(outcome)</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </details>
+                                }
+                            </td>
+                            <td>
+                                @if (receipt.Status == "Failed")
+                                {
+                                    <button type="button" class="db-btn" @onclick="@(() => RetryAsync(receipt))" disabled="@_busy">Retry</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    private List<ErasureReceiptView> _receipts;
+    private bool _busy;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            _receipts = await ErasureService.GetReceiptsAsync(200);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the site's erasure receipts.");
+            _receipts = new List<ErasureReceiptView>();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task RetryAsync(ErasureReceiptView receipt)
+    {
+        _busy = true;
+        try
+        {
+            await ErasureService.RetryAsync(receipt.Id);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not mark erasure {ErasureId} for retry.", receipt.Id);
+        }
+        finally
+        {
+            _busy = false;
+        }
+
+        await LoadAsync();
+    }
+
+    private static string Summarise(ErasureReceiptView receipt)
+    {
+        var deleted = receipt.Outcomes.Where(o => o.Handling == "Delete").Sum(o => o.Affected);
+        var anonymised = receipt.Outcomes.Where(o => o.Handling == "Anonymise").Sum(o => o.Affected);
+        var retained = receipt.Outcomes.Where(o => o.Handling == "Retain").Sum(o => o.Affected);
+        return $"{deleted} deleted, {anonymised} anonymised, {retained} retained";
+    }
+
+    private static string Retention(ErasureOutcomeView outcome)
+    {
+        if (outcome.Handling != "Retain")
+        {
+            return "";
+        }
+
+        if (outcome.PurgedOnUtc is { } purged)
+        {
+            return $"{outcome.Reason}, purged {purged:u}";
+        }
+
+        return $"{outcome.Reason}, until {outcome.RetainedUntilUtc:u}";
+    }
+}

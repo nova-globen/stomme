@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>
+            Provides services and utility functions common to Stomme modules.
+            For example, it provides a system clock and a memory store implementation.
+        </Description>
+        <PackageTags>stomme module common</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Stomme.Engine.Features\Stomme.Engine.Features.csproj" />
+        <ProjectReference Include="..\Stomme.Engine.Mediator\Stomme.Engine.Mediator.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Cronos" />
+        <PackageReference Include="IronCompress" />
+        <PackageReference Include="LinqKit.Core" />
+        <PackageReference Include="DistributedLock.Core" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+        <PackageReference Include="Snappier" />
+    </ItemGroup>
+
+</Project>

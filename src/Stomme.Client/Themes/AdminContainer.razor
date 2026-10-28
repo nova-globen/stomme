@@ -1,0 +1,28 @@
+@namespace Stomme.Themes
+@inherits ContainerBase
+
+@* Migrated to the --db-* design system (D11, Phase 4). This container hosts EVERY admin Add/Edit
+   page, so it was the last Bootstrap-classed surface every one of them inherited. *@
+<div class="db-admin-modal">
+    <div class="db-admin-modal-dialog" role="dialog" aria-modal="true" tabindex="-1">
+        <div class="db-admin-modal-content">
+            <div class="db-admin-modal-head">
+                <h5 class="db-admin-modal-title"><ModuleTitle /></h5>
+                <a href="@_url" class="db-message-close" aria-label="Close">&times;</a>
+            </div>
+            <div class="db-admin-modal-body">
+                <ModuleInstance />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _url;
+
+    protected override void OnParametersSet()
+    {
+        _url = (!string.IsNullOrEmpty(PageState.ReturnUrl)) ? PageState.ReturnUrl : NavigateUrl();
+    }
+}
+

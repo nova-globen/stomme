@@ -1,0 +1,32 @@
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Stomme.Databases.Interfaces;
+using Stomme.Migrations.EntityBuilders;
+using Stomme.Repository;
+using Stomme.Shared;
+
+namespace Stomme.Migrations.Tenant
+{
+    [DbContext(typeof(TenantDBContext))]
+    [Migration("Tenant.03.00.02.02")]
+    public class UpdateSettingIsPrivate : MultiDatabaseMigration
+    {
+        public UpdateSettingIsPrivate(IDatabase database) : base(database)
+        {
+        }
+
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            var settingEntityBuilder = new SettingEntityBuilder(migrationBuilder, ActiveDatabase);
+            settingEntityBuilder.AddBooleanColumn("IsPrivate", true);
+            settingEntityBuilder.UpdateData("IsPrivate", false);
+            settingEntityBuilder.UpdateData("IsPrivate", true, $"{DelimitName(RewriteName("EntityName"))} = 'Site' AND { DelimitName(RewriteName("SettingName"))} LIKE 'SMTP%'");
+            settingEntityBuilder.DropColumn("IsPublic");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            // not implemented
+        }
+    }
+}

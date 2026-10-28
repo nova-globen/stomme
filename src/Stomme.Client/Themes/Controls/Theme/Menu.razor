@@ -1,0 +1,36 @@
+@namespace Stomme.Themes.Controls
+
+@if (_menuType != null)
+{
+    <DynamicComponent Type="@_menuType" Parameters="@Attributes"></DynamicComponent>
+}
+
+@code{
+    [Parameter]
+    public string Orientation { get; set; }
+
+    [Parameter]
+    public string MenuType { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
+
+    private Type _menuType;
+
+    protected override void OnInitialized()
+    {
+        if (string.IsNullOrEmpty(MenuType) && !string.IsNullOrEmpty(Orientation))
+        {
+            if (Orientation == "Horizontal")
+            {
+                MenuType = "Stomme.Themes.Controls.MenuHorizontal, Stomme.Client";
+            }
+            else
+            {
+                MenuType = "Stomme.Themes.Controls.MenuVertical, Stomme.Client";
+            }
+        }
+
+        _menuType = Type.GetType(MenuType);
+    }
+}

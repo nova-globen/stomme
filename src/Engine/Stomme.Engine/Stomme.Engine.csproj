@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>
+            Bundles the most commonly-used packages when building a Stomme pipelines application.
+        </Description>
+        <PackageTags>stomme bundle</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Logging"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Stomme.Engine.Pipelines\Stomme.Engine.Pipelines.csproj" />
+        <ProjectReference Include="..\Stomme.Engine.Pipelines.Management\Stomme.Engine.Pipelines.Management.csproj" />
+        <ProjectReference Include="..\Stomme.Engine.Pipelines.Runtime\Stomme.Engine.Pipelines.Runtime.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Stomme.Theme.Slate</id>
+        <version>1.2.0</version>
+        <authors>Nova Globen AB</authors>
+        <owners>Nova Globen AB</owners>
+        <title>Slate (Admin)</title>
+        <description>An independent, external admin theme for Stomme, built against the Stomme.Sdk NuGet packages only (D87).</description>
+        <copyright>Nova Globen AB</copyright>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <license type="file">LICENSE</license>
+        <projectUrl>https://github.com/nova-globen/stomme</projectUrl>
+        <icon>icon.png</icon>
+        <tags>stomme theme admin</tags>
+        <releaseNotes>D87: external admin theme, paired with the Aurora public theme + per-site Site.AdminThemeType.</releaseNotes>
+        <packageTypes>
+            <packageType name="Dependency" />
+            <packageType name="Stomme.Framework" version="10.2.1" />
+        </packageTypes>
+    </metadata>
+    <files>
+        <!-- D115: the LICENSE file (PolyForm Noncommercial OR Small Business) at the package root, as every Stomme.* package carries it (BL-187). No target attribute: dotnet pack over a nuspec gives an empty entry name for ANY explicit target, empty included (measured). -->
+        <file src="..\..\..\..\LICENSE" />
+        <!-- Single .Stomme-suffixed assembly under lib/net10.0 (the convention loader requires "Stomme" in
+             the name). Theme.css ships as a static web asset: InstallationManager extracts staticwebassets/ to
+             {webRoot}/_content/Stomme.Theme.Slate/, matching the ThemeInfo stylesheet URL. NO framework
+             DLLs are shipped — they are the running host's own assemblies. -->
+        <file src="..\Stomme.Theme.Slate\bin\Release\net10.0\Stomme.Theme.Slate.Stomme.dll" target="lib\net10.0" />
+        <file src="..\Stomme.Theme.Slate\bin\Release\net10.0\Stomme.Theme.Slate.Stomme.pdb" target="lib\net10.0" />
+        <file src="..\Stomme.Theme.Slate\wwwroot\**\*.*" target="staticwebassets" />
+        <!-- D92 dual-consumable pack: the SDK-generated static-web-asset props make a build-time
+             <PackageReference> consumer SERVE wwwroot (as _content/Stomme.Theme.Slate/), while
+             InstallationManager consumers keep extracting staticwebassets/ (it ignores build*/ roots).
+             The build\{packageId}.props naming is what NuGet auto-imports. -->
+        <file src="..\Stomme.Theme.Slate\obj\Release\net10.0\staticwebassets\msbuild.Stomme.Theme.Slate.Stomme.Microsoft.AspNetCore.StaticWebAssetEndpoints.props" target="build\Microsoft.AspNetCore.StaticWebAssetEndpoints.props" />
+        <file src="..\Stomme.Theme.Slate\obj\Release\net10.0\staticwebassets\msbuild.Stomme.Theme.Slate.Stomme.Microsoft.AspNetCore.StaticWebAssets.props" target="build\Microsoft.AspNetCore.StaticWebAssets.props" />
+        <file src="..\Stomme.Theme.Slate\obj\Release\net10.0\staticwebassets\msbuild.build.Stomme.Theme.Slate.Stomme.props" target="build\Stomme.Theme.Slate.props" />
+        <file src="..\Stomme.Theme.Slate\obj\Release\net10.0\staticwebassets\msbuild.build.Stomme.Theme.Slate.Stomme.props" target="build\Stomme.Theme.Slate.Stomme.props" />
+        <file src="..\Stomme.Theme.Slate\obj\Release\net10.0\staticwebassets\msbuild.buildMultiTargeting.Stomme.Theme.Slate.Stomme.props" target="buildMultiTargeting\Stomme.Theme.Slate.props" />
+        <file src="..\Stomme.Theme.Slate\obj\Release\net10.0\staticwebassets\msbuild.buildMultiTargeting.Stomme.Theme.Slate.Stomme.props" target="buildMultiTargeting\Stomme.Theme.Slate.Stomme.props" />
+        <file src="..\Stomme.Theme.Slate\obj\Release\net10.0\staticwebassets\msbuild.buildTransitive.Stomme.Theme.Slate.Stomme.props" target="buildTransitive\Stomme.Theme.Slate.props" />
+        <file src="icon.png" target="" />
+    </files>
+</package>

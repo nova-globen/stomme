@@ -1,0 +1,83 @@
+using Stomme.Engine.Expressions.Helpers;
+using Stomme.Engine.Expressions.Models;
+using Stomme.Engine.Pipelines;
+
+// ReSharper disable once CheckNamespace
+namespace Stomme.Engine.Extensions;
+
+/// <summary>
+/// Provides extension methods for <see cref="MemoryBlockReference"/>.
+/// </summary>
+public static class MemoryBlockReferenceExtensions
+{
+    /// <summary>
+    /// Gets the value of the memory reference referenced by the specified <see cref="MemoryBlockReference"/>.
+    /// </summary>
+    /// <param name="context">The <see cref="ExpressionExecutionContext"/> to get the value from.</param>
+    /// <param name="blockId">The ID of the memory block to get the value for.</param>
+    /// <returns>The value of the memory reference referenced by the specified block ID.</returns>
+    public static object? Get(this ExpressionExecutionContext context, string blockId)
+    {
+        var matchingContext = context.FindContextContainingBlock(blockId) ?? context;
+        return matchingContext.Memory.TryGetBlock(blockId, out var block) ? block.Value : default;
+    }
+    
+    /// <summary>
+    /// Gets the value of the memory reference referenced by the specified <see cref="MemoryBlockReference"/>.
+    /// </summary>
+    /// <param name="context">The <see cref="StepExecutionContext"/> to get the value from.</param>
+    /// <param name="blockId">The ID of the memory block to get the value for.</param>
+    /// <returns>The value of the memory reference referenced by the specified block ID.</returns>
+    public static object? Get(this StepExecutionContext context, string blockId) => context.ExpressionExecutionContext.Get(blockId);
+
+    /// <param name="reference">The <see cref="MemoryBlockReference"/> to get the value for.</param>
+    extension(MemoryBlockReference reference)
+    {
+        /// <summary>
+        /// Gets the value of the memory reference referenced by the specified <see cref="MemoryBlockReference"/>.
+        /// </summary>
+        /// <param name="context">The <see cref="StepExecutionContext"/> to get the value from.</param>
+        /// <returns>The value of the memory reference referenced by the specified <see cref="MemoryBlockReference"/>.</returns>
+        public object? Get(StepExecutionContext context)
+        {
+            var matchingContext = context.ExpressionExecutionContext.FindContextContainingBlock(reference.Id) ?? context.ExpressionExecutionContext;
+            return reference.Get(matchingContext);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="MemoryBlock"/> of referenced by the specified <see cref="MemoryBlockReference"/>.
+        /// </summary>
+        /// <param name="context">The <see cref="ExpressionExecutionContext"/> to get the reference from.</param>
+        /// <returns>The <see cref="MemoryBlock"/> referenced by the specified <see cref="MemoryBlockReference"/>.</returns>
+        public MemoryBlock GetBlock(ExpressionExecutionContext context)
+        {
+            var matchingContext = context.FindContextContainingBlock(reference.Id) ?? context;
+            return reference.GetBlock(matchingContext.Memory);
+        }
+
+        /// <summary>
+        /// Gets the value of the memory reference referenced by the specified <see cref="MemoryBlockReference"/>.
+        /// </summary>
+        /// <param name="context">The <see cref="StepExecutionContext"/> to get the value from.</param>
+        /// <typeparam name="T">The type of the value to get.</typeparam>
+        /// <returns>The value of the memory reference referenced by the specified <see cref="MemoryBlockReference"/>.</returns>
+        public T? Get<T>(StepExecutionContext context) => reference.Get(context).ConvertTo<T>();
+
+        /// <summary>
+        /// Sets the specified value on the memory referenced by the specified <see cref="MemoryBlockReference"/>.
+        /// If the referenced block doesn't exist in the current scope, an attempt is made to find the block in the first parent scope that references a step that is a variable container.
+        /// If that fails, the root scope is used.
+        /// </summary>
+        /// <param name="context">The <see cref="StepExecutionContext"/> to set the value on.</param>
+        /// <param name="value">The value to set.</param>
+        public void Set(StepExecutionContext context, object? value)
+        {
+            var matchingContext =
+                context.ExpressionExecutionContext.FindContextContainingBlock(reference.Id) 
+                ?? context.FindParentWithVariableContainer()?.ExpressionExecutionContext 
+                ?? context.PipelineExecutionContext.ExpressionExecutionContext!;
+
+            reference.Set(matchingContext, value);
+        }
+    }
+}

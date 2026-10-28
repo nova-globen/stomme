@@ -1,0 +1,57 @@
+.vs/
+bin/
+obj/
+*.user
+artifacts/
+msbuild.binlog
+.vscode/
+*.binlog
+*.nupkg
+*.zip
+
+*.idea
+_ReSharper.Caches
+.DS_Store
+
+Stomme.Server/appsettings.json
+Stomme.Server/Data
+
+Stomme.Server/Properties/PublishProfiles/FolderProfile.pubxml
+Stomme.Server/Content
+Stomme.Server/Packages
+# the line above is anchored to the repository root and so never matched the project in src/: the installer's records
+src/Stomme.Server/Packages/
+Stomme.Server/wwwroot/Content
+Stomme.Server/wwwroot/Packages/*.log
+
+Stomme.Server/wwwroot/_content/*
+!Stomme.Server/wwwroot/_content/Placeholder.txt
+
+Stomme.Server/wwwroot/Modules/*
+!Stomme.Server/wwwroot/Modules/Stomme.Modules.*
+!Stomme.Server/wwwroot/Modules/Templates
+Stomme.Server/wwwroot/Modules/Templates/*
+!Stomme.Server/wwwroot/Modules/Templates/External
+
+Stomme.Server/wwwroot/Themes/*
+!Stomme.Server/wwwroot/Themes/Stomme.Themes.*
+!Stomme.Server/wwwroot/Themes/Templates
+Stomme.Server/wwwroot/Themes/Templates/*
+!Stomme.Server/wwwroot/Themes/Templates/External
+
+docs/drafts/*
+src/Stomme.Server/Content/**/*.*
+src/Stomme.Server/Data/**/*.*
+# Claude Code agent worktrees
+.claude/worktrees/
+
+build-warnings.log
+build*.log
+test*.log
+
+# Playwright MCP session scratch (snapshots/console logs) - never repo content
+.playwright-mcp/
+
+# The template's appsettings.json is the framework's own, written into the package by scripts/pack-template.ps1; the
+# template folder holds no copy of it (an app made from the template commits the one it gets - BL-195).
+src/Stomme.Application/Server/appsettings.json

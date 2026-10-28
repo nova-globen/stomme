@@ -1,0 +1,178 @@
+@namespace Stomme.Themes.Controls
+@inherits ThemeControlBase
+@inject NavigationManager NavigationManager
+@inject IPageService PageService
+@inject ISettingService SettingService
+
+@if (ShowLanguageSwitcher)
+{
+    <LanguageSwitcher ButtonClass="@ButtonClass" DropdownAlignment="@LanguageDropdownAlignment" />
+}
+
+@* Contextual help (BL-84, D103 item 6): its OWN switch, outside the language switcher's @if and outside the admin/editor
+   gate below - help is for the reader of the page. It renders nothing unless a topic resolves, and it carries no
+   @rendermode, so a Static page view opens no circuit for it. *@
+@if (ShowHelp)
+{
+    <HelpLauncher ButtonClass="@ButtonClass" />
+}
+
+@if (ShowEditMode && (_showEditMode || (PageState.Page.IsPersonalizable && PageState.User != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Registered))))
+{
+    <form method="post" class="app-form-inline" @formname="EditModeForm" @onsubmit="@(async () => await ToggleEditMode(PageState.EditMode))" data-enhance>
+        <input type="hidden" name="@Constants.RequestVerificationToken" value="@SiteState.AntiForgeryToken" />
+        @* Migrated to the --db-* header icon button (D11); `active` is a state class, not Bootstrap. *@
+        @if (PageState.EditMode)
+        {
+            <button type="submit" class="app-editmode db-icon-btn @ButtonClass active" aria-pressed="true" autocomplete="off">
+                <span class="oi oi-pencil"></span>
+            </button>
+        }
+        else
+        {
+            <button type="submit" class="app-editmode db-icon-btn @ButtonClass" aria-pressed="false" autocomplete="off">
+                <span class="oi oi-pencil"></span>
+            </button>
+        }
+    </form>
+}
+
+@if (_canViewAdminDashboard || UserSecurity.IsAuthorized(PageState.User, PermissionNames.Edit, PageState.Page.PermissionList))
+{
+    @if (PageState.RenderMode == RenderModes.Interactive)
+    {
+        <ControlPanelInteractive PageState="@_pageState" SiteState="@SiteState" ButtonClass="@ButtonClass" ContainerClass="@ContainerClass" HeaderClass="@HeaderClass" BodyClass="@BodyClass" ShowLanguageSwitcher="@ShowLanguageSwitcher" LanguageDropdownAlignment="@LanguageDropdownAlignment" CanViewAdminDashboard="@_canViewAdminDashboard" />
+    }
+    else
+    {
+        <ControlPanelInteractive PageState="@_pageState" SiteState="@SiteState" ButtonClass="@ButtonClass" ContainerClass="@ContainerClass" HeaderClass="@HeaderClass" BodyClass="@BodyClass" ShowLanguageSwitcher="@ShowLanguageSwitcher" LanguageDropdownAlignment="@LanguageDropdownAlignment" CanViewAdminDashboard="@_canViewAdminDashboard" @rendermode="@InteractiveRenderMode.GetInteractiveRenderMode(PageState.Site.Runtime, false)" />
+    }
+}
+
+@code {
+    [Parameter]
+    public string ButtonClass { get; set; } = "";
+
+    // The drawer chrome is Stomme's own now (D11/D18): these used to default to Bootstrap's
+    // .offcanvas classes, which the supersede layer had to re-implement.
+    [Parameter]
+    public string ContainerClass { get; set; } = "db-drawer db-drawer-end";
+
+    [Parameter]
+    public string HeaderClass { get; set; } = "db-drawer-head";
+
+    [Parameter]
+    public string BodyClass { get; set; } = "db-drawer-body";
+
+    [Parameter]
+    public bool ShowLanguageSwitcher { get; set; } = true;
+
+    /// <summary>Whether the contextual-help launcher may render. It renders nothing anyway unless a topic resolves.</summary>
+    [Parameter]
+    public bool ShowHelp { get; set; } = true;
+
+    [Parameter]
+    public string LanguageDropdownAlignment { get; set; } = string.Empty; // Empty or Left or Right
+
+    /// <summary>
+    /// Ability to hide the Edit Mode toggle button
+    /// </summary>
+    [Parameter]
+    public bool ShowEditMode { get; set; } = true;
+
+    private PageState _pageState;
+    private bool _canViewAdminDashboard = false;
+    private bool _showEditMode = false; // internal state (not the same as ShowEditMode parameter)
+
+    protected override void OnParametersSet()
+    {
+        _canViewAdminDashboard = CanViewAdminDashboard();
+
+        _showEditMode = false;
+        if (UserSecurity.IsAuthorized(PageState.User, PermissionNames.Edit, PageState.Page.PermissionList))
+        {
+            _showEditMode = true;
+        }
+        else
+        {
+            foreach (var module in PageState.Modules)
+            {
+                if (UserSecurity.IsAuthorized(PageState.User, PermissionNames.Edit, module.PermissionList))
+                {
+                    _showEditMode = true;
+                    break;
+                }
+            }
+        }
+
+        // trim PageState to mitigate page bloat caused by Blazor serializing/encrypting state when crossing render mode boundaries
+        // only include properties required by the ControlPanelInteractive component
+        _pageState = new PageState
+        {
+            Alias = PageState.Alias,
+            Site = new Site
+            {
+                SiteId = PageState.Site.SiteId,
+                DefaultContainerType = PageState.Site.DefaultContainerType,
+                Settings = PageState.Site.Settings,
+                Themes = PageState.Site.Themes
+            },
+            Page = PageState.Page,
+            User = PageState.User,
+            Uri = PageState.Uri,
+            Route = PageState.Route,
+            RenderMode = PageState.RenderMode,
+            Runtime = PageState.Runtime
+        };
+    }
+
+    private bool CanViewAdminDashboard()
+    {
+        var admin = PageState.Pages.FirstOrDefault(item => item.Path == "admin");
+        if (admin != null)
+        {
+            foreach (var page in PageState.Pages.Where(item => item.ParentId == admin?.PageId))
+            {
+                if (UserSecurity.IsAuthorized(PageState.User, PermissionNames.View, page.PermissionList))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private async Task ToggleEditMode(bool editMode)
+    {
+        Page page = null;
+        if (PageState.Page.IsPersonalizable && PageState.User != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Registered))
+        {
+            page = await PageService.AddPageAsync(PageState.Page.PageId, PageState.User.UserId);
+            PageState.EditMode = true;
+        }
+
+        if (_showEditMode)
+        {
+            PageState.EditMode = !editMode;
+
+            if (PageState.User != null) 
+            {
+                // preserve edit mode for authenticated users
+                await SettingService.AddOrUpdateSettingAsync(EntityNames.User, PageState.User.UserId, "CP-editmode", (PageState.EditMode) ? PageState.Page.PageId.ToString() : "-1", false);
+            }
+
+            // preserve other querystring parameters
+            if (PageState.QueryString.ContainsKey("edit")) PageState.QueryString.Remove("edit");
+            PageState.QueryString.Add("edit", PageState.EditMode.ToString().ToLower());
+            var url = PageState.Route.AbsolutePath + Utilities.CreateQueryString(PageState.QueryString);
+            NavigationManager.NavigateTo(url);
+        }
+        else
+        {
+            if (PageState.Page.IsPersonalizable && PageState.User != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Registered))
+            {
+                NavigationManager.NavigateTo(NavigateUrl(page.Path, "edit=" + PageState.EditMode.ToString().ToLower()));
+            }
+        }
+    }
+}

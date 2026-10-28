@@ -1,0 +1,121 @@
+@namespace Stomme.Modules.Admin.OpenIddict
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IOpenIddictService OpenIddictService
+@inject IStringLocalizer<Scope> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+    <div class="db-fields">
+        <div class="db-field">
+            <Label For="name" HelpText="The scope identifier a client requests and a resource server validates (e.g. api, invoices.read)." ResourceKey="Name">Name:</Label>
+            <div class="db-field-control">
+                <input id="name" class="db-input" @bind="@_name" maxlength="100" readonly="@_isExisting" required />
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="displayname" HelpText="A human-readable name, shown on the consent screen." ResourceKey="DisplayName">Display Name:</Label>
+            <div class="db-field-control">
+                <input id="displayname" class="db-input" @bind="@_displayName" maxlength="200" />
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="description" HelpText="What this scope grants, shown to the user on an explicit-consent screen." ResourceKey="Description">Description:</Label>
+            <div class="db-field-control">
+                <textarea id="description" class="db-input" rows="3" @bind="@_description"></textarea>
+            </div>
+        </div>
+        <div class="db-field">
+            <Label For="resources" HelpText="Resource identifiers (audiences) that tokens carrying this scope are valid for, one per line." ResourceKey="Resources">Resources:</Label>
+            <div class="db-field-control">
+                <textarea id="resources" class="db-input" rows="3" @bind="@_resources"></textarea>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="db-btn" @onclick="SaveScope">@SharedLocalizer["Save"]</button>
+    <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+</form>
+
+@code {
+    private ElementReference form;
+    private bool validated = false;
+
+    private bool _isExisting;
+    private string _name = string.Empty;
+    private string _displayName = string.Empty;
+    private string _description = string.Empty;
+    private string _resources = string.Empty;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    public override string Title => "Scope";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // One page for add and edit: a "name" parameter means edit (the name is the key, so it is then fixed).
+        var name = PageState.QueryString.ContainsKey("name") ? PageState.QueryString["name"] : string.Empty;
+        if (string.IsNullOrEmpty(name))
+        {
+            return;
+        }
+
+        try
+        {
+            var scopes = await OpenIddictService.GetScopesAsync() ?? new List<OpenIddictScopeSeed>();
+            var scope = scopes.FirstOrDefault(item => item.Name == name);
+            if (scope == null)
+            {
+                AddModuleMessage(Localizer["Error.NotFound"], MessageType.Error);
+                return;
+            }
+
+            _isExisting = true;
+            _name = scope.Name;
+            _displayName = scope.DisplayName;
+            _description = scope.Description;
+            _resources = OpenIddictFormValues.JoinLines(scope.Resources);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading OpenIddict Scope {Scope} {Error}", name, ex.Message);
+            AddModuleMessage(Localizer["Error.Load"], MessageType.Error);
+        }
+    }
+
+    private async Task SaveScope()
+    {
+        validated = true;
+        var interop = new Interop(JSRuntime);
+        if (!await interop.FormValid(form))
+        {
+            AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+            return;
+        }
+
+        var scope = new OpenIddictScopeSeed
+        {
+            Name = _name,
+            DisplayName = _displayName,
+            Description = _description,
+            Resources = OpenIddictFormValues.SplitLines(_resources)
+        };
+
+        try
+        {
+            var saved = await OpenIddictService.SaveScopeAsync(scope);
+            if (saved == null)
+            {
+                AddModuleMessage(Localizer["Error.SaveScope"], MessageType.Error);
+                return;
+            }
+
+            await logger.LogInformation("OpenIddict Scope Saved {Scope}", scope.Name);
+            NavigationManager.NavigateTo(NavigateUrl());
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving OpenIddict Scope {Scope} {Error}", scope.Name, ex.Message);
+            AddModuleMessage(Localizer["Error.SaveScope"], MessageType.Error);
+        }
+    }
+}

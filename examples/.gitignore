@@ -1,0 +1,6 @@
+# D81. The local SDK feed and all build outputs are GENERATED — regenerate with pack-sdk.ps1.
+# Only the sources (nuspec, csproj, module .cs/.razor, nuget.config, props, this script) are tracked.
+bin/
+obj/
+local-feed/
+*.nupkg

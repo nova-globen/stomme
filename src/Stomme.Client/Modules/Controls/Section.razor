@@ -1,0 +1,93 @@
+﻿@namespace Stomme.Modules.Controls
+@inherits LocalizableComponent
+
+@* Migrated to the --db-* design system (D11, Phase 4).
+   Collapsing used to be pure Bootstrap JS (data-bs-toggle="collapse") with no @onclick handler.
+   That JS went away with the CDN in Phase 1 and the compat shim never defined a .collapse rule, so
+   every Section rendered permanently OPEN -- even the ones reporting aria-expanded="false" -- and no
+   header click could ever collapse one. Toggling is now Stomme's own, dual-mode like
+   TabStrip/Pager: Blazor state when interactive, a native <details> element (which needs no script
+   at all) when statically rendered. See D18.
+
+   ChildContent is always rendered and hidden with CSS rather than removed from the render tree:
+   the inputs inside a collapsed section must keep their DOM identity (and stay measurable). *@
+@if (IsVisible)
+{
+    @if (_interactive)
+    {
+        <div class="db-section">
+            @* A <button> rather than an <a href="#...">: the anchor's fragment navigation races
+               @onclick:preventDefault and can escape to "/#<id>" -- the same trap TabStrip hit. *@
+            <button type="button" class="db-section-head" aria-expanded="@_open.ToString().ToLower()"
+                    aria-controls="@Name" @onclick="Toggle">
+                <i class="oi @(_open ? "oi-chevron-bottom" : "oi-chevron-right") db-section-chevron"></i>
+                <h5 class="db-section-title">@_heading</h5>
+            </button>
+            <hr class="db-section-rule" />
+            <div class="db-section-body @(_open ? "open" : "")" id="@Name">
+                @if (ChildContent != null)
+                {
+                    @ChildContent
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <details class="db-section" open="@_open">
+            <summary class="db-section-head">
+                <i class="oi oi-chevron-bottom db-section-chevron"></i>
+                <h5 class="db-section-title">@_heading</h5>
+            </summary>
+            <hr class="db-section-rule" />
+            <div class="db-section-body open" id="@Name">
+                @if (ChildContent != null)
+                {
+                    @ChildContent
+                }
+            </div>
+        </details>
+    }
+}
+
+@code {
+    private string _heading = string.Empty;
+    private bool _open;
+    private bool _initialized;
+    private bool _interactive; // sections collapse via Blazor when interactive, via <details> when static
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null;
+
+    [Parameter]
+    public string Name { get; set; } // required - the name of the section
+
+    [Parameter]
+    public string Heading { get; set; } // optional - will default to Name if not provided
+
+    [Parameter]
+    public string Expanded { get; set; } // optional - will default to false if not provided
+
+    [Parameter]
+    public bool IsVisible { get; set; } = true;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet(); // must be included to call method in LocalizableComponent
+
+        _heading = !string.IsNullOrEmpty(Heading) ? Localize(nameof(Heading), Heading) : Localize(nameof(Name), Name);
+        _interactive = PageState.RenderMode == RenderModes.Interactive || ModuleState.RenderMode == RenderModes.Interactive;
+
+        // Honour Expanded for the initial state only - after that the user's own toggle wins.
+        if (!_initialized)
+        {
+            _open = !string.IsNullOrEmpty(Expanded) && Expanded.ToLower() == "true";
+            _initialized = true;
+        }
+    }
+
+    private void Toggle()
+    {
+        _open = !_open;
+    }
+}

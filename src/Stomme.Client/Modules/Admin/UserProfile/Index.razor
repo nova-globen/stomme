@@ -1,0 +1,960 @@
+@namespace Stomme.Modules.Admin.UserProfile
+@using System.Net
+@using System.Text.RegularExpressions;
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject IProfileService ProfileService
+@inject ISettingService SettingService
+@inject INotificationService NotificationService
+@inject IFileService FileService
+@inject IFolderService FolderService
+@inject ITimeZoneService TimeZoneService
+@inject ILanguageService LanguageService
+@inject IJSRuntime jsRuntime
+@inject IServiceProvider ServiceProvider
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_initialized)
+{
+    @if (PageState.User != null && _photo != null)
+    {
+        <img src="@ImageUrl(_photofileid, 400, 400)" alt="@_displayname" style="max-width: 400px" class="db-avatar">
+    }
+    else
+    {
+        <br />
+    }
+    <TabStrip>
+        <TabPanel Name="Identity" Heading="Identity" ResourceKey="Identity">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="username" HelpText="Your username. Note that this field can not be modified." ResourceKey="Username"></Label>
+                    <div class="db-field-control">
+                        <input id="username" class="db-input" @bind="@_username" readonly />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="email" HelpText="Your email address where you wish to receive notifications" ResourceKey="Email"></Label>
+                    <div class="db-field-control">
+                        <input id="email" class="db-input" @bind="@_email" />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="displayname" HelpText="Your full name" ResourceKey="DisplayName"></Label>
+                    <div class="db-field-control">
+                        <input id="displayname" class="db-input" @bind="@_displayname" />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time Zone:</Label>
+                    <div class="db-field-control">
+                        <select id="timezone" class="db-select" @bind="@_timezoneid">
+                            <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                            @foreach (var timezone in _timezones)
+                            {
+                                <option value="@timezone.Id">@timezone.DisplayName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="culture" HelpText="Your preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language:</Label>
+                    <div class="db-field-control">
+                        <select id="culture" class="db-select" @bind="@_culturecode">
+                            <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                            @foreach (var language in _languages)
+                            {
+                                <option value="@language.Code">@language.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="@_photofileid.ToString()" HelpText="A photo of yourself" ResourceKey="Photo"></Label>
+                    <div class="db-field-control">
+                        <FileManager FileId="@_photofileid" Filter="@PageState.Site.ImageFiles" ShowFolders="false" ShowFiles="true" UploadMultiple="false" FolderId="@_folderid" @ref="_filemanager" />
+                    </div>
+                </div>
+            </div>
+            <br />
+            <button type="button" class="db-btn" @onclick="Save">@SharedLocalizer["Save"]</button>
+            <button type="button" class="db-btn db-btn-neutral" @onclick="Cancel">@SharedLocalizer["Cancel"]</button>
+        </TabPanel>
+        <TabPanel Name="Security" Heading="Security" ResourceKey="Security">
+            <ModuleMessage Message="@_passwordrequirements" Type="MessageType.Info" />
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="password" HelpText="If you wish to change your password you can enter it here. Please choose a sufficiently secure password." ResourceKey="Password"></Label>
+                    <div class="db-field-control">
+                        <div class="db-input-group">
+                            <input id="password" type="@_passwordtype" class="db-input" @bind="@_password" autocomplete="new-password" />
+                            <button type="button" class="db-btn db-btn-neutral" @onclick="@TogglePassword" tabindex="-1">@_togglepassword</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="confirm" HelpText="If you are changing your password you must enter it again to confirm it matches" ResourceKey="Confirm"></Label>
+                    <div class="db-field-control">
+                        <div class="db-input-group">
+                            <input id="confirm" type="@_passwordtype" class="db-input" @bind="@_confirm" autocomplete="new-password" />
+                            <button type="button" class="db-btn db-btn-neutral" @onclick="@TogglePassword" tabindex="-1">@_togglepassword</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <button type="button" class="db-btn" @onclick="Save">@SharedLocalizer["Save"]</button>
+            <button type="button" class="db-btn db-btn-neutral" @onclick="Cancel">@SharedLocalizer["Cancel"]</button>
+            <br /><br />
+            @if (_allowtwofactor)
+            {
+                <Section Name="MFA" Heading="Multi-Factor Authentication" ResourceKey="MFA">
+                    <div class="db-fields">
+                        <div class="db-field">
+                            <Label For="twofactor" HelpText="Indicates if you are using two factor authentication. Two factor authentication requires you to enter a verification code sent via email after you sign in." ResourceKey="TwoFactor"></Label>
+                            <div class="db-field-control">
+                                <select id="twofactor" class="db-select" @bind="@_twofactor" required>
+                                    <option value="True">@SharedLocalizer["Yes"]</option>
+                                    <option value="False">@SharedLocalizer["No"]</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </Section>
+                <br />
+            }
+            @if (_allowpasskeys)
+            {
+                <Section Name="Passkeys" Heading="Passkeys" ResourceKey="Passkeys" Expanded="@((_passkeys.Count > 0).ToString())">
+                    <button type="button" class="db-btn" @onclick="AddPasskey">@SharedLocalizer["Add"]</button>
+                    @if (_passkeys.Count > 0)
+                    {
+                        <Pager Items="@_passkeys">
+                            <Header>
+                                <th style="width: 1px;">&nbsp;</th>
+                                <th style="width: 1px;">&nbsp;</th>
+                                <th>@Localizer["Passkey"]</th>
+                            </Header>
+                            <Row>
+                                @if (context.CredentialId != _passkeyId)
+                                {
+                                    <td><button type="button" class="db-btn" @onclick="@(() => EditPasskey(context))">@SharedLocalizer["Edit"]</button></td>
+                                    <td><ActionDialog Action="Delete" OnClick="@(async () => await DeletePasskey(context))" ResourceKey="DeletePasskey" Class="db-btn db-btn-danger" Header="Delete Passkey" Message="@string.Format(Localizer["Confirm.Passkey.Delete", context.Name])" /></td>
+                                    <td>@context.Name</td>
+                                }
+                                else
+                                {
+                                    <td><button type="button" class="db-btn" @onclick="@(async () => await SavePasskey())">@SharedLocalizer["Save"]</button></td>
+                                    <td><button type="button" class="db-btn db-btn-neutral" @onclick="@(async () => await CancelPasskey())">@SharedLocalizer["Cancel"]</button></td>
+                                    <td><input id="passkeyname" class="db-input" @bind="@_passkeyName" /></td>
+                                }
+                            </Row>
+                        </Pager>
+                    }
+                    else
+                    {
+                        <div class="db-empty">@Localizer["Message.Passkeys.None"]</div>
+                    }
+                </Section>
+                <br />
+            }
+            @if (_allowexternallogin)
+            {
+                <Section Name="Logins" Heading="Logins" ResourceKey="Logins" Expanded="@((_logins.Count > 0).ToString())">
+                    @if (_logins.Count > 0)
+                    {
+                        <Pager Items="@_logins">
+                            <Header>
+                                <th style="width: 1px;">&nbsp;</th>
+                                <th>@Localizer["Login"]</th>
+                            </Header>
+                            <Row>
+                                <td><ActionDialog Action="Delete" OnClick="@(async () => await DeleteLogin(context))" ResourceKey="DeleteLogin" Class="db-btn db-btn-danger" Header="Delete Login" Message="@string.Format(Localizer["Confirm.Login.Delete", context.Name])" /></td>
+                                <td>@context.Name</td>
+                            </Row>
+                        </Pager>
+                    }
+                    else
+                    {
+                        <div class="db-empty">@Localizer["Message.Logins.None"]</div>
+                    }
+                </Section>
+                <br />
+            }
+            <Section Name="Sessions" Heading="Sessions" ResourceKey="Sessions">
+                <Stomme.Modules.Sessions.MySessions />
+            </Section>
+            <Stomme.Modules.Portability.MyData Alias="@PageState.Alias" UserId="@PageState.User.UserId" />
+            <br />
+            <button type="button" class="db-btn db-btn-danger" @onclick="Logout">@Localizer["Logout Everywhere"]</button>
+            <br />
+            @if (!UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+            {
+                <br />
+                <Section Name="DeleteAccount" Heading="Delete My Account" ResourceKey="DeleteAccount">
+                    <p style="margin:0 0 0.5rem 0;color:var(--db-text-2);">@Localizer["DeleteAccount.HelpText"]</p>
+                    <ActionDialog Header="Delete My Account" Message="@Localizer["Confirm.Account.Delete"]" Action="Delete My Account" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAccount())" ResourceKey="DeleteAccount" />
+                </Section>
+                <br />
+            }
+        </TabPanel>
+        <TabPanel Name="Profile" Heading="Profile" ResourceKey="Profile">
+            <div class="db-fields">
+                <div class="db-field">
+                    @foreach (Profile profile in _profiles)
+                    {
+                        var p = profile;
+                        if (!p.IsPrivate || UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
+                        {
+                            if (p.Category != _category)
+                            {
+                                <div class="db-field-category">
+                                    @p.Category
+                                </div>
+                                _category = p.Category;
+                            }
+                            <div class="db-field">
+                                <Label For="@p.Name" HelpText="@p.Description">@p.Title</Label>
+                                <div class="db-field-control">
+                                    @if (!string.IsNullOrEmpty(p.Options))
+                                    {
+                                        @if (!string.IsNullOrEmpty(p.Autocomplete))
+                                        {
+                                            <select id="@p.Name" class="db-select" @onchange="@(e => ProfileChanged(e, p.Name))" autocomplete="@p.Autocomplete">
+                                                @foreach (var option in p.Options.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                                {
+                                                    var values = option.Split(':');
+                                                    var name = values[0];
+                                                    var value = values.Length > 1 ? values[1] : values[0];
+                                                    @if (GetProfileValue(p.Name, "") == name || (GetProfileValue(p.Name, "") == "" && p.DefaultValue == name))
+                                                    {
+                                                        <option value="@name" selected>@value</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@name">@value</option>
+                                                    }
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <select id="@p.Name" class="db-select" @onchange="@(e => ProfileChanged(e, p.Name))">
+                                                @foreach (var option in p.Options.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                                {
+                                                    var values = option.Split(':');
+                                                    var name = values[0];
+                                                    var value = values.Length > 1 ? values[1] : values[0];
+                                                    @if (GetProfileValue(p.Name, "") == name || (GetProfileValue(p.Name, "") == "" && p.DefaultValue == name))
+                                                    {
+                                                        <option value="@name" selected>@value</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@name">@value</option>
+                                                    }
+                                                }
+                                            </select>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @if (p.Rows == 1)
+                                        {
+                                            if (!string.IsNullOrEmpty(p.Autocomplete))
+                                            {
+                                                @if (p.IsRequired)
+                                                {
+                                                    <input id="@p.Name" class="db-input" value="@GetProfileValue(p.Name, p.DefaultValue)" required @onchange="@(e => ProfileChanged(e, p.Name))" autocomplete="@p.Autocomplete"
+                                                    @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)" />
+                                                }
+                                                else
+                                                {
+                                                    <input id="@p.Name" class="db-input" value="@GetProfileValue(p.Name, p.DefaultValue)" @onchange="@(e => ProfileChanged(e, p.Name))" autocomplete="@p.Autocomplete"
+                                                    @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)" />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (p.IsRequired)
+                                                {
+                                                    <input id="@p.Name" class="db-input" value="@GetProfileValue(p.Name, p.DefaultValue)" required @onchange="@(e => ProfileChanged(e, p.Name))"
+                                                    @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)" />
+                                                }
+                                                else
+                                                {
+                                                    <input id="@p.Name" class="db-input" value="@GetProfileValue(p.Name, p.DefaultValue)" @onchange="@(e => ProfileChanged(e, p.Name))"
+                                                    @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)" />
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrEmpty(p.Autocomplete))
+                                            {
+                                                @if (p.IsRequired)
+                                                {
+                                                    <textarea id="@p.Name" class="db-input" rows="@p.Rows" value="@GetProfileValue(p.Name, p.DefaultValue)" required @onchange="@(e => ProfileChanged(e, p.Name))" autocomplete="@p.Autocomplete"
+                                                    @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)"></textarea>
+                                                }
+                                                else
+                                                {
+                                                    <textarea id="@p.Name" class="db-input" rows="@p.Rows" value="@GetProfileValue(p.Name, p.DefaultValue)" @onchange="@(e => ProfileChanged(e, p.Name))" autocomplete="@p.Autocomplete"
+                                                    @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)"></textarea>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (p.IsRequired)
+                                                {
+                                                    <textarea id="@p.Name" class="db-input" rows="@p.Rows" value="@GetProfileValue(p.Name, p.DefaultValue)" required @onchange="@(e => ProfileChanged(e, p.Name))"
+                                                    @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)"></textarea>
+                                                }
+                                                else
+                                                {
+                                                    <textarea id="@p.Name" class="db-input" rows="@p.Rows" value="@GetProfileValue(p.Name, p.DefaultValue)" @onchange="@(e => ProfileChanged(e, p.Name))"
+                                                    @attributes="@(p.MaxLength > 0 ? new Dictionary<string, object> {{"maxlength", p.MaxLength }} : null)"></textarea>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <button type="button" class="db-btn" @onclick="Save">@SharedLocalizer["Save"]</button>
+            <button type="button" class="db-btn db-btn-neutral" @onclick="Cancel">@SharedLocalizer["Cancel"]</button>
+        </TabPanel>
+        <TabPanel Name="Notifications" Heading="Notifications" ResourceKey="Notifications">
+            <ActionLink Action="Add" Text="Send Notification" Security="SecurityAccessLevel.View" EditMode="false" ResourceKey="SendNotification" ReturnUrl="@NavigateUrl(PageState.Page.Path, "tab=Notifications")" />
+            <br />
+            <br />
+            <select class="db-select" @onchange="(e => FilterNotifications(e))">
+                <option value="to">@Localizer["Inbox"]</option>
+                <option value="from">@Localizer["Items.Sent"]</option>
+            </select>
+            <br />
+            @if (_filter == "to")
+            {
+                @if (_notifications.Any())
+                {
+                    <Pager Items="@_notifications">
+                        <Header>
+                            <th style="width: 1px;">&nbsp;</th>
+                            <th style="width: 1px;">&nbsp;</th>
+                            <th>@Localizer["From"]</th>
+                            <th>@Localizer["Subject"]</th>
+                            <th>@Localizer["Received"]</th>
+                        </Header>
+                        <Row>
+                            <td><ActionLink Action="View" Parameters="@($"id=" + context.NotificationId.ToString())" Security="SecurityAccessLevel.View" EditMode="false" ResourceKey="ViewNotification" ReturnUrl="@NavigateUrl(PageState.Page.Path, "tab=Notifications")" /></td>
+                            <td><ActionDialog Header="Delete Notification" Message="Are You Sure You Wish To Delete This Notification?" Action="Delete" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteNotification(context))" EditMode="false" ResourceKey="DeleteNotification" /></td>
+
+                            @if (context.IsRead)
+                            {
+                                <td>@(string.IsNullOrEmpty(context.FromDisplayName) ? SharedLocalizer["System"] : context.FromDisplayName)</td>
+                                <td>@context.Subject</td>
+                                <td>@string.Format("{0:dd-MMM-yyyy HH:mm:ss}", UtcToLocal(context.CreatedOn))</td>
+                            }
+                            else
+                            {
+                                <td><b>@(string.IsNullOrEmpty(context.FromDisplayName) ? SharedLocalizer["System"] : context.FromDisplayName)</b></td>
+                                <td><b>@context.Subject</b></td>
+                                <td><b>@string.Format("{0:dd-MMM-yyyy HH:mm:ss}", UtcToLocal(context.CreatedOn))</b></td>
+                            }
+                        </Row>
+                        <Detail>
+                            <td colspan="2"></td>
+                            <td colspan="3">
+                                @{
+                                    string input = "___";
+                                    if (context.Body.Contains(input))
+                                    {
+                                        context.Body = context.Body.Split(input)[0];
+                                        context.Body = context.Body.Replace("\n", "");
+                                        context.Body = context.Body.Replace("\r", "");
+                                    }
+                                    _notificationSummary = context.Body.Length > 100 ? (context.Body.Substring(0, 97) + "...") : context.Body;
+                                }
+                                @if (context.IsRead)
+                                {
+                                    @_notificationSummary
+                                }
+                                else
+                                {
+                                    <b>@_notificationSummary</b>
+                                }
+                            </td>
+                        </Detail>
+                    </Pager>
+                    <br />
+                    <ActionDialog Header="Clear Notifications" Message="Are You Sure You Wish To Permanently Delete All Notifications ?" Action="Delete All Notifications" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAllNotifications())" ResourceKey="DeleteAllNotifications" />
+                }
+                else
+                {
+                    <div class="no-notifications-text">
+                        @Localizer["NoNotificationsReceived"]
+                    </div>
+                }
+            }
+            else
+            {
+                @if (_notifications.Any())
+                {
+                    <Pager Items="@_notifications">
+                        <Header>
+                            <th style="width: 1px;"></th>
+                            <th style="width: 1px;"></th>
+                            <th>@Localizer["To"]</th>
+                            <th>@Localizer["Subject"]</th>
+                            <th>@Localizer["Sent"]</th>
+                        </Header>
+                        <Row>
+                            <td><ActionLink Action="View" Parameters="@($"id=" + context.NotificationId.ToString())" Security="SecurityAccessLevel.View" EditMode="false" ResourceKey="ViewNotification" ReturnUrl="@NavigateUrl(PageState.Page.Path, "tab=Notifications")" /></td>
+                            <td><ActionDialog Header="Delete Notification" Message="Are You Sure You Wish To Delete This Notification?" Action="Delete" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteNotification(context))" EditMode="false" ResourceKey="DeleteNotification" /></td>
+
+                            @if (context.IsRead)
+                            {
+                                <td>@context.ToDisplayName</td>
+                                <td>@context.Subject</td>
+                                <td>@string.Format("{0:dd-MMM-yyyy HH:mm:ss}", UtcToLocal(context.CreatedOn))</td>
+                            }
+                            else
+                            {
+                                <td><b>@context.ToDisplayName</b></td>
+                                <td><b>@context.Subject</b></td>
+                                <td><b>@string.Format("{0:dd-MMM-yyyy HH:mm:ss}", UtcToLocal(context.CreatedOn))</b></td>
+                            }
+
+                        </Row>
+                        <Detail>
+                            <td colspan="2"></td>
+                            <td colspan="3">
+                                @{
+                                    string input = "___";
+                                    if (context.Body.Contains(input))
+                                    {
+                                        context.Body = context.Body.Split(input)[0];
+                                        context.Body = context.Body.Replace("\n", "");
+                                        context.Body = context.Body.Replace("\r", "");
+                                    }
+                                    _notificationSummary = context.Body.Length > 100 ? (context.Body.Substring(0, 97) + "...") : context.Body;
+                                }
+                                @if (context.IsRead)
+                                {
+                                    @_notificationSummary
+                                }
+                                else
+                                {
+                                    <b>@_notificationSummary</b>
+                                }
+                            </td>
+                        </Detail>
+                    </Pager>
+                    <br />
+                    <ActionDialog Header="Clear Notifications" Message="Are You Sure You Wish To Permanently Delete All Notifications ?" Action="Delete All Notifications" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAllNotifications())" ResourceKey="DeleteAllNotifications" />
+                }
+                else
+                {
+                    <div class="no-notifications-text">
+                        @Localizer["NoNotificationsSent"]
+                    </div>
+                }
+            }
+        </TabPanel>
+    </TabStrip>
+    <br />
+    <br />
+}
+
+@code {
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.View;
+
+    private List<Models.TimeZone> _timezones;
+    private IEnumerable<Language> _languages;
+
+    private bool _initialized = false;
+    private bool _allowtwofactor = false;
+    private bool _allowpasskeys = false;
+    private bool _allowexternallogin = false;
+
+    private string _username = string.Empty;
+    private string _email = string.Empty;
+    private string _displayname = string.Empty;
+    private FileManager _filemanager;
+    private int _folderid = -1;
+    private string _timezoneid = string.Empty;
+    private string _culturecode = string.Empty;
+    private int _photofileid = -1;
+    private File _photo = null;
+    private string _imagefiles = string.Empty;
+
+    private string _passwordrequirements;
+    private string _password = string.Empty;
+    private string _passwordtype = "password";
+    private string _togglepassword = string.Empty;
+    private string _confirm = string.Empty;
+    private string _twofactor = "False";
+    private List<UserPasskey> _passkeys;
+    private byte[] _passkeyId;
+    private string _passkeyName = string.Empty;
+    private List<UserLogin> _logins;
+
+    private List<Profile> _profiles;
+    private Dictionary<string, string> _userSettings;
+    private string _category = string.Empty;
+
+    private string _filter = "to";
+    private List<Notification> _notifications;
+    private string _notificationSummary = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _allowtwofactor = (SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:TwoFactor", "false") == "true");
+            _allowpasskeys = (SettingService.GetSetting(PageState.Site.Settings, "LoginOptions:Passkeys", "false") == "true");
+            _allowexternallogin = (SettingService.GetSetting(PageState.Site.Settings, "ExternalLogin:ProviderType", "") != "") ? true : false;
+
+            if (PageState.User != null)
+            {
+                _timezones = TimeZoneService.GetTimeZones();
+                _languages = await LanguageService.GetLanguagesAsync(PageState.Site.SiteId);
+
+                // identity section
+                _username = PageState.User.Username;
+                _email = PageState.User.Email;
+                _displayname = PageState.User.DisplayName;
+                _timezoneid = PageState.User.TimeZoneId;     
+                _culturecode = PageState.User.CultureCode;
+                var folder = await FolderService.GetFolderAsync(ModuleState.SiteId, PageState.User.FolderPath);
+                if (folder != null)
+                {
+                    _folderid = folder.FolderId;
+                }
+                _imagefiles = SettingService.GetSetting(PageState.Site.Settings, "ImageFiles", Constants.ImageFiles);
+                _imagefiles = (string.IsNullOrEmpty(_imagefiles)) ? Constants.ImageFiles : _imagefiles;
+                if (PageState.User.PhotoFileId != null)
+                {
+                    _photofileid = PageState.User.PhotoFileId.Value;
+                    _photo = await FileService.GetFileAsync(_photofileid);
+                }
+                else
+                {
+                    _photofileid = -1;
+                    _photo = null;
+                }
+
+                // security section
+                _passwordrequirements = await UserService.GetPasswordRequirementsAsync(PageState.Site.SiteId);
+                _togglepassword = SharedLocalizer["ShowPassword"];
+                _twofactor = PageState.User.TwoFactorRequired.ToString();
+                await GetPasskeys();
+                await GetLogins();
+
+                // profile section
+                _profiles = await ProfileService.GetProfilesAsync(ModuleState.SiteId);
+                foreach (var profile in _profiles)
+                {
+                    if (profile.Options.ToLower().StartsWith("entityname:"))
+                    {
+                        var options = await SettingService.GetSettingsAsync(profile.Options.Substring(11), -1);
+                        options.Add("", $"<{SharedLocalizer["Not Specified"]}>");
+                        profile.Options = string.Join(",", options.OrderBy(item => item.Value).Select(kvp => $"{kvp.Key}:{kvp.Value}"));
+                    }
+                }
+                _userSettings = PageState.User.Settings;
+
+                // notification section
+                await LoadNotificationsAsync();
+
+                _initialized = true;
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.User.NoLogIn"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading User Profile {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Profile.Load"], MessageType.Error);
+        }
+    }
+
+    // identity methods
+    private async Task Save()
+    {
+        try
+        {
+            if (_username != string.Empty && _email != string.Empty)
+            {
+                if (_password == _confirm)
+                {
+                    if (ValidateProfiles())
+                    {
+                        var user = PageState.User;
+                        user.Username = _username;
+                        user.Password = _password;
+                        user.TwoFactorRequired = bool.Parse(_twofactor);
+                        user.Email = _email;
+                        user.DisplayName = (_displayname == string.Empty ? _username : _displayname);
+                        user.TimeZoneId = _timezoneid;
+                        user.CultureCode = _culturecode;
+                        user.PhotoFileId = _filemanager.GetFileId();
+                        if (user.PhotoFileId == -1)
+                        {
+                            user.PhotoFileId = null;
+                        }
+                        if (user.PhotoFileId != null)
+                        {
+                            _photofileid = user.PhotoFileId.Value;
+                            _photo = await FileService.GetFileAsync(_photofileid);
+                        }
+                        else
+                        {
+                            _photofileid = -1;
+                            _photo = null;
+                        }
+
+                        user = await UserService.UpdateUserAsync(user);
+                        if (user != null)
+                        {
+                            await SettingService.UpdateUserSettingsAsync(_userSettings, PageState.User.UserId);
+                            await logger.LogInformation("User Profile Saved");
+
+                            if (!string.IsNullOrEmpty(PageState.ReturnUrl))
+                            {
+                                NavigationManager.NavigateTo(PageState.ReturnUrl);
+                            }
+                            else // legacy behavior
+                            {
+                                AddModuleMessage(Localizer["Success.Profile.Update"], MessageType.Success);
+                                StateHasChanged();
+                            }
+                        }
+                        else
+                        {
+                            AddModuleMessage(Localizer["Message.Password.Complexity"], MessageType.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.Password.Invalid"], MessageType.Warning);
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.ProfileInfo"], MessageType.Warning);
+            }
+
+            await ScrollToPageTop();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving User Profile {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Profile.Save"], MessageType.Error);
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo(PageState.ReturnUrl);
+    }
+
+    // security methods
+
+    private void TogglePassword()
+    {
+        if (_passwordtype == "password")
+        {
+            _passwordtype = "text";
+            _togglepassword = SharedLocalizer["HidePassword"];
+        }
+        else
+        {
+            _passwordtype = "password";
+            _togglepassword = SharedLocalizer["ShowPassword"];
+        }
+    }
+
+    private async Task GetPasskeys()
+    {
+        if (_allowpasskeys)
+        {
+            _passkeys = await UserService.GetPasskeysAsync(PageState.User.UserId);
+        }
+    }
+
+    private async Task AddPasskey()
+    {
+        // post back to the Passkey page so that the cookies are set correctly
+        var interop = new Interop(JSRuntime);
+        var fields = new { __RequestVerificationToken = SiteState.AntiForgeryToken, operation = "create", returnurl = NavigateUrl(PageState.Page.Path, "tab=Security") };
+        string url = Utilities.TenantUrl(PageState.Alias, "/pages/passkey/");
+        await interop.SubmitForm(url, fields);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // user has initiated a passkey addition
+            if (PageState.QueryString.ContainsKey("options"))
+            {
+                try
+                {
+                    var interop = new Interop(JSRuntime);
+                    var credential = await interop.CreateCredential(WebUtility.UrlDecode(PageState.QueryString["options"]));
+                    if (!string.IsNullOrEmpty(credential))
+                    {
+                        // post back to the Passkey page so that the cookies are set correctly
+                        var fields = new { __RequestVerificationToken = SiteState.AntiForgeryToken, operation = "validate", credential = credential, returnurl = NavigateUrl(PageState.Page.Path, "tab=Security") };
+                        string url = Utilities.TenantUrl(PageState.Alias, "/pages/passkey/");
+                        await interop.SubmitForm(url, fields);
+                    }
+                    else
+                    {
+                        await logger.LogError("Passkey Could Not Be Created");
+                        AddModuleMessage(Localizer["Error.Passkey.Fail"], MessageType.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await logger.LogError(ex, "Passkey Could Not Be Created");
+                    AddModuleMessage(Localizer["Error.Passkey.Fail"], MessageType.Warning);
+                }
+            }
+        }
+    }
+
+   private void EditPasskey(UserPasskey passkey)
+    {
+        _passkeyId = passkey.CredentialId;
+        _passkeyName = passkey.Name;
+        StateHasChanged();
+    }
+
+    private async Task DeletePasskey(UserPasskey passkey)
+    {
+        await UserService.DeletePasskeyAsync(PageState.User.UserId, passkey.CredentialId);
+        await GetPasskeys();
+        StateHasChanged();
+    }
+
+    private async Task SavePasskey()
+    {
+        if (!string.IsNullOrEmpty(_passkeyName))
+        {
+            await UserService.UpdatePasskeyAsync(new UserPasskey { CredentialId = _passkeyId, Name = _passkeyName, UserId = PageState.User.UserId });
+            await GetPasskeys();
+            _passkeyName = "";
+            StateHasChanged();
+        }
+    }
+
+    private async Task CancelPasskey()
+    {
+        await GetPasskeys();
+        _passkeyName = "";
+        StateHasChanged();
+    }
+
+    private async Task GetLogins()
+    {
+        if (_allowexternallogin)
+        {
+            _logins = await UserService.GetLoginsAsync(PageState.User.UserId);
+        }
+    }
+
+    private async Task DeleteLogin(UserLogin login)
+    {
+        await UserService.DeleteLoginAsync(PageState.User.UserId, login.Provider, login.Key);
+        await GetLogins();
+        StateHasChanged();
+    }
+
+    private async Task Logout()
+    {
+        await logger.LogInformation("User Logout Everywhere For Username {Username}", PageState.User?.Username);
+
+        var url = NavigateUrl(""); // home page
+
+        if (PageState.Runtime == Shared.Runtime.Hybrid)
+        {
+            if (PageState.User != null)
+            {
+                // hybrid apps utilize an interactive logout
+                await UserService.LogoutUserEverywhereAsync(PageState.User);
+                var authstateprovider = (IdentityAuthenticationStateProvider)ServiceProvider.GetService(typeof(IdentityAuthenticationStateProvider));
+                authstateprovider.NotifyAuthenticationChanged();
+                NavigationManager.NavigateTo(url, true);
+            }
+        }
+        else
+        {
+            // post to the Logout page to complete the logout process
+            var fields = new { __RequestVerificationToken = SiteState.AntiForgeryToken, returnurl = url, everywhere = true };
+            var interop = new Interop(jsRuntime);
+            await interop.SubmitForm(Utilities.TenantUrl(PageState.Alias, "/pages/logout/"), fields);
+        }
+    }
+
+    // D112 (BL-116 increment 4): the person's own deletion - the same server path as an administrator's delete,
+    // so the erasure is queued; then this browser's session ends the way Logout does (the API sign-out cannot reach
+    // an interactive circuit's cookie).
+    private async Task DeleteAccount()
+    {
+        try
+        {
+            await UserService.DeleteMyAccountAsync();
+            await logger.LogInformation("User Deleted Their Own Account {Username}", PageState.User?.Username);
+
+            var url = NavigateUrl(""); // home page
+            if (PageState.Runtime == Shared.Runtime.Hybrid)
+            {
+                var authstateprovider = (IdentityAuthenticationStateProvider)ServiceProvider.GetService(typeof(IdentityAuthenticationStateProvider));
+                authstateprovider.NotifyAuthenticationChanged();
+                NavigationManager.NavigateTo(url, true);
+            }
+            else
+            {
+                var fields = new { __RequestVerificationToken = SiteState.AntiForgeryToken, returnurl = url, everywhere = false };
+                var interop = new Interop(jsRuntime);
+                await interop.SubmitForm(Utilities.TenantUrl(PageState.Alias, "/pages/logout/"), fields);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Account {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Account.Delete"], MessageType.Error);
+        }
+    }
+
+    // profile methods
+
+    private string GetProfileValue(string SettingName, string DefaultValue)
+    {
+        string value = SettingService.GetSetting(_userSettings, SettingName, DefaultValue);
+        if (value.Contains("]"))
+        {
+            value = value.Substring(value.IndexOf("]") + 1);
+        }
+        return value;
+    }
+
+    private void ProfileChanged(ChangeEventArgs e, string SettingName)
+    {
+        var value = (string)e.Value;
+        _userSettings = SettingService.SetSetting(_userSettings, SettingName, value);
+    }
+
+    private bool ValidateProfiles()
+    {
+        foreach (Profile profile in _profiles)
+        {
+            var value = GetProfileValue(profile.Name, string.Empty);
+            if (string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(profile.DefaultValue))
+            {
+                _userSettings = SettingService.SetSetting(_userSettings, profile.Name, profile.DefaultValue);
+            }
+            if (!profile.IsPrivate || UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
+            {
+                if (profile.IsRequired && string.IsNullOrEmpty(value))
+                {
+                    AddModuleMessage(string.Format(SharedLocalizer["ProfileRequired"], profile.Title), MessageType.Warning);
+                    return false;
+                }
+                if (!string.IsNullOrEmpty(profile.Validation))
+                {
+                    Regex regex = new Regex(profile.Validation);
+                    bool valid = regex.Match(value).Success;
+                    if (!valid)
+                    {
+                        AddModuleMessage(string.Format(SharedLocalizer["ProfileInvalid"], profile.Title), MessageType.Warning);
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    // notification methods
+
+    private async Task LoadNotificationsAsync()
+    {
+        _notifications = await NotificationService.GetNotificationsAsync(PageState.Site.SiteId, _filter, PageState.User.UserId);
+        _notifications = _notifications.Where(item => item.DeletedBy != PageState.User.Username).ToList();
+    }
+
+    private async void FilterNotifications(ChangeEventArgs e)
+    {
+        _filter = (string)e.Value;
+        await LoadNotificationsAsync();
+        StateHasChanged();
+    }
+
+    private async Task DeleteNotification(Notification Notification)
+    {
+        try
+        {
+            if (!Notification.IsDeleted)
+            {
+                Notification.IsDeleted = true;
+                await NotificationService.UpdateNotificationAsync(Notification);
+            }
+            else
+            {
+                await NotificationService.DeleteNotificationAsync(Notification.NotificationId);
+            }
+
+            await logger.LogInformation("Notification Deleted {Notification}", Notification);
+            await LoadNotificationsAsync();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Notification {Notification} {Error}", Notification, ex.Message);
+            AddModuleMessage(ex.Message, MessageType.Error);
+        }
+    }
+
+    private async Task DeleteAllNotifications()
+    {
+        try
+        {
+            ShowProgressIndicator();
+            foreach(var Notification in _notifications)
+            {
+                if (!Notification.IsDeleted)
+                {
+                    Notification.IsDeleted = true;
+                    await NotificationService.UpdateNotificationAsync(Notification);
+                }
+                else
+                {
+                    await NotificationService.DeleteNotificationAsync(Notification.NotificationId);
+                }
+                await logger.LogInformation("Notification Deleted {Notification}", Notification);
+            }
+            await logger.LogInformation("Notifications Permanently Deleted");
+            await LoadNotificationsAsync();
+            HideProgressIndicator();
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Notifications {Error}", ex.Message);
+            AddModuleMessage(ex.Message, MessageType.Error);
+            HideProgressIndicator();
+        }
+    }
+}

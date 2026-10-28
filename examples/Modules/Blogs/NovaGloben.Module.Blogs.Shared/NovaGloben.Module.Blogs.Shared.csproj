@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BL-13: the SHARED layer of the split (WASM-download-safe) Blogs module — the wire model
+    (BlogPostModel) and the IBlogService contract, and NOTHING else. It is referenced by BOTH the
+    Client and the Server projects, and it STREAMS to the browser on a WebAssembly site: the Client's
+    ModuleDefinition.Dependencies names this assembly, so api/Installation/list includes it and the
+    WASM host loads it beside the Client assembly. It must therefore stay free of any server-only
+    surface — no controllers, no persistence, no Stomme.Server types.
+
+    INDEPENDENT (D81/D82): references Stomme ONLY through a meta-package from the local feed — since
+    BL-44 the SLIM one, Stomme.Sdk.Slim (examples/local-feed, produced by examples/pack-sdk-slim.ps1).
+    ZERO project/source references into the framework.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>NovaGloben.Module.Blogs.Shared.Stomme</AssemblyName>
+    <RootNamespace>NovaGloben.Module.Blogs</RootNamespace>
+    <Version>2.0.0</Version>
+    <Authors>Nova Globen AB</Authors>
+    <Company>Nova Globen AB</Company>
+    <Product>NovaGloben.Module.Blogs</Product>
+    <Description>Shared wire model + service contract for the split Blogs module.</Description>
+    <Copyright>Nova Globen AB</Copyright>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stomme.Sdk.Slim" Version="10.2.2" />
+  </ItemGroup>
+
+  <!--
+    WASM-safety (measured, BL-13): Microsoft.AspNetCore.OpenApi (transitive via Stomme.Sdk ->
+    Stomme.Server) ships a SOURCE GENERATOR that injects interceptor types into every consuming
+    assembly; those types force references to Microsoft.AspNetCore.OpenApi/Microsoft.OpenApi/Mvc.Core
+    and make Assembly.GetTypes() THROW ReflectionTypeLoadException wherever those assemblies are
+    absent — i.e. in the BROWSER, which would silently kill the WASM client's convention registration
+    (Program.cs swallows the exception). Dropping the analyzer from the compilation keeps this
+    browser-bound assembly free of server-only references; the Server project keeps the generator —
+    OpenApi is server-only surface. (ExcludeAssets="all" on a direct reference does NOT stop the
+    transitive analyzer — measured — so the analyzer item is removed here instead.)
+  -->
+  <Target Name="RemoveOpenApiSourceGenerator" AfterTargets="ResolveReferences" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" Condition="$([System.String]::Copy('%(Analyzer.Identity)').Contains('Microsoft.AspNetCore.OpenApi.SourceGenerators'))" />
+    </ItemGroup>
+  </Target>
+
+</Project>

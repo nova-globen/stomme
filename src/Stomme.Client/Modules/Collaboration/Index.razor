@@ -1,0 +1,149 @@
+@namespace Stomme.Modules.Collaboration
+@inherits ModuleBase
+@inject ICollaborationService CollaborationService
+
+@*
+    The collaboration overview (BL-97 increment 11, D114): for a holder of collaboration:manage, this site's live advisory
+    locks - who holds which pipeline or dashboard, until when - and its open editing sessions with who is in them. An
+    administrator may take a lock over (it is released, and the release recorded) or end a session (every presence and
+    its participants' locks released). Every answer comes from api/Collaboration, and the server decides every permission.
+*@
+
+<PageTitle>Collaboration</PageTitle>
+
+@if (!IsAuthorizedPermission(CollaborationPermissions.Manage))
+{
+    <p id="collaboration-denied" style="color:var(--db-text-2);">You do not have access to the collaboration overview on this site.</p>
+}
+else
+{
+    <div class="db-collaboration" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">
+            <h3 style="margin:0;flex:1 1 auto;">Collaboration</h3>
+            <button id="collaboration-refresh" type="button" class="db-btn" @onclick="LoadAsync" disabled="@_busy">Refresh</button>
+        </div>
+
+        @if (_refusal is not null)
+        {
+            <p id="collaboration-refusal" style="margin:0;color:var(--db-bad);" role="alert">@_refusal.Message</p>
+        }
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="collaboration-message" style="margin:0;" role="status">@_message</p>
+        }
+
+        @if (_overview is null)
+        {
+            <p style="margin:0;color:var(--db-text-2);">Loading…</p>
+        }
+        else
+        {
+            <h4 style="margin:0;">Locks</h4>
+            @if (_overview.Locks.Count == 0)
+            {
+                <p id="collaboration-no-locks" style="margin:0;color:var(--db-text-2);">Nobody holds a lock on this site.</p>
+            }
+            else
+            {
+                <table id="collaboration-locks" class="db-health-table" style="border-collapse:collapse;">
+                    <thead><tr><th>Resource</th><th>Scope</th><th>Held by</th><th>Until (UTC)</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var held in _overview.Locks)
+                        {
+                            var request = new LockRequest(held.ResourceType, held.ResourceId, held.Scope);
+                            <tr data-resource="@(held.ResourceType + "/" + held.ResourceId)">
+                                <td>@held.ResourceType @held.ResourceId</td>
+                                <td>@held.Scope</td>
+                                <td>@held.HolderDisplayName</td>
+                                <td>@held.ExpiresUtc.ToString("u")</td>
+                                <td><button type="button" class="db-btn collaboration-take-over" @onclick="() => TakeOverAsync(request)" disabled="@_busy">Take over</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <h4 style="margin:0;">Open sessions</h4>
+            @if (_overview.Sessions.Count == 0)
+            {
+                <p id="collaboration-no-sessions" style="margin:0;color:var(--db-text-2);">No editor is open on this site.</p>
+            }
+            else
+            {
+                <table id="collaboration-sessions" class="db-health-table" style="border-collapse:collapse;">
+                    <thead><tr><th>Resource</th><th>Present</th><th>Changes</th><th>Since (UTC)</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var session in _overview.Sessions)
+                        {
+                            var sessionId = session.Id;
+                            <tr data-session="@sessionId">
+                                <td>@session.ResourceType @session.ResourceId</td>
+                                <td>@string.Join(", ", session.Participants.Select(participant => participant.DisplayName))</td>
+                                <td>@session.Changes.Count</td>
+                                <td>@session.StartedUtc.ToString("u")</td>
+                                <td><button type="button" class="db-btn collaboration-close" @onclick="() => CloseAsync(sessionId)" disabled="@_busy">End session</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+    </div>
+}
+
+@code {
+    private CollaborationOverviewView _overview;
+    private CollaborationRefusalView _refusal;
+    private string _message;
+    private bool _busy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsAuthorizedPermission(CollaborationPermissions.Manage))
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _busy = true;
+        try
+        {
+            var outcome = await CollaborationService.OverviewAsync();
+            _refusal = outcome.Refusal;
+            _overview = outcome.Value ?? _overview ?? new CollaborationOverviewView(Array.Empty<LockView>(), Array.Empty<EditSessionView>());
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task TakeOverAsync(LockRequest request)
+    {
+        _message = null;
+        var outcome = await CollaborationService.TakeOverAsync(request);
+        _refusal = outcome.Refusal;
+        if (outcome.Succeeded)
+        {
+            _message = $"The lock on {request.ResourceType} {request.ResourceId} was released.";
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task CloseAsync(Guid sessionId)
+    {
+        _message = null;
+        var outcome = await CollaborationService.CloseSessionAsync(sessionId);
+        _refusal = outcome.Refusal;
+        if (outcome.Succeeded)
+        {
+            _message = "The session was ended.";
+        }
+
+        await LoadAsync();
+    }
+}

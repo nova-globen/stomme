@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Stomme.FeatureManagement</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.FeatureManagement" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The BL-39 evaluator cache is internal; its write-race (version-stamp) and TTL semantics are pinned
+         by direct unit tests, which need to construct it. -->
+    <InternalsVisibleTo Include="Stomme.FeatureManagement.Tests" />
+  </ItemGroup>
+
+  <!-- No relational provider is referenced here on purpose: the host picks it and passes it to
+       AddFeatureManagement(configureStore), so the module stays provider-agnostic (and does not drag a
+       provider's native SQLite assets into every consumer). -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stomme.SharedKernel\Stomme.SharedKernel.csproj" />
+    <!-- The feature-contributor contract is compiled there (and forwarded from here) so a module on the slim SDK can
+         declare a flag without this project's EF Core closure - BL-86 increment 4. -->
+    <ProjectReference Include="..\Stomme.Security.Abstractions\Stomme.Security.Abstractions.csproj" />
+    <ProjectReference Include="..\Stomme.Persistence.Abstractions\Stomme.Persistence.Abstractions.csproj" />
+    <ProjectReference Include="..\Stomme.Persistence.EfCore\Stomme.Persistence.EfCore.csproj" />
+    <ProjectReference Include="..\Stomme.Tenancy.Domain\Stomme.Tenancy.Domain.csproj" />
+    <ProjectReference Include="..\Stomme.Tenancy.Abstractions\Stomme.Tenancy.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

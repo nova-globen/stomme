@@ -1,0 +1,364 @@
+﻿@namespace Stomme.Modules.Admin.Sites
+@using Stomme.Interfaces
+@using System.Text.RegularExpressions
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject ITenantService TenantService
+@inject IAliasService AliasService
+@inject ISiteService SiteService
+@inject ISiteTemplateService SiteTemplateService
+@inject IUserService UserService
+@inject IInstallationService InstallationService
+@inject IDatabaseService DatabaseService
+@inject IStringLocalizer<Add> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_tenants == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="name" HelpText="Enter the name of the site" ResourceKey="Name">Site Name: </Label>
+                <div class="db-field-control">
+                    <input id="name" class="db-input" @bind="@_name" maxlength="200" required />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="alias" HelpText="The primary url for the site. This can be a domain name (ie. domain.com), subdomain (ie. sub.domain.com) or a virtual folder (ie. domain.com/folder)." ResourceKey="Aliases">Url: </Label>
+                <div class="db-field-control">
+                    <input id="alias" class="db-input" @bind="@_urls" required></input>
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="siteTemplate" HelpText="Select the site template" ResourceKey="SiteTemplate">Site Template: </Label>
+                <div class="db-field-control">
+                    <select id="siteTemplate" class="db-select" @bind="@_sitetemplatetype" required>
+                        <option value="-">&lt;@Localizer["SiteTemplate.Select"]&gt;</option>
+                        @foreach (SiteTemplate siteTemplate in _siteTemplates)
+                        {
+                            <option value="@siteTemplate.TypeName">@siteTemplate.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="tenant" HelpText="Select the database for the site" ResourceKey="Tenant">Database: </Label>
+                <div class="db-field-control">
+                    <select id="tenant" class="db-select" value="@_tenantid" @onchange="(e => TenantChanged(e))" required>
+                        <option value="-">&lt;@Localizer["Tenant.Select"]&gt;</option>
+                        <option value="+">&lt;@Localizer["Tenant.Add"]&gt;</option>
+                        @foreach (Tenant tenant in _tenants)
+                        {
+                            <option value="@tenant.TenantId">@tenant.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            @if (_tenantid == "+")
+            {
+                <div class="db-field">
+                    <hr class="app-rule" />
+                </div>
+                <div class="db-field">
+                    <Label For="name" HelpText="Enter the name for the database. Note that this will be the tenant name which is used within the framework to identify the database." ResourceKey="TenantName">Name: </Label>
+                    <div class="db-field-control">
+                        <input id="name" class="db-input" @bind="@_tenantName" maxlength="100" required />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="databaseType" HelpText="Select the database type" ResourceKey="DatabaseType">Type: </Label>
+                    <div class="db-field-control">
+                        @if (_databases != null)
+                        {
+                            <div class="db-input-group">
+                                <select id="databaseType" class="db-select" value="@_databaseName" @onchange="(e => DatabaseChanged(e))" required>
+                                    @foreach (var database in _databases)
+                                    {
+                                        <option value="@database.Name">@Localizer[@database.Name]</option>
+                                    }
+                                </select>
+                                @if (!_showConnectionString)
+                                {
+                                    <button type="button" class="db-btn db-btn-neutral" @onclick="ToggleConnectionString">@Localizer["EnterConnectionString"]</button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="db-btn db-btn-neutral" @onclick="ToggleConnectionString">@Localizer["EnterConnectionParameters"]</button>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (!_showConnectionString)
+                {
+                    if (_databaseConfigType != null)
+                    {
+                        @DatabaseConfigComponent
+                    }
+                }
+                else
+                {
+                    <div class="db-field">
+                        <Label For="connectionstring" HelpText="Enter a complete connection string including all parameters and delimiters" ResourceKey="ConnectionString">Settings:</Label>
+                        <div class="db-field-control">
+                            <textarea id="connectionstring" class="db-input" @bind="@_connectionString" rows="3"></textarea>
+                        </div>
+                    </div>
+                }
+                <div class="db-field">
+                    <Label For="hostUsername" HelpText="Enter the username of an existing host user" ResourceKey="HostUsername">Host Username:</Label>
+                    <div class="db-field-control">
+                        <input id="hostUsername" class="db-input" @bind="@_hostusername" required />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="hostPassword" HelpText="Enter the password of an existing host user" ResourceKey="HostPassword">Host Password:</Label>
+                    <div class="db-field-control">
+                        <input id="hostPassword" type="password" class="db-input" @bind="@_hostpassword" autocomplete="new-password" required />
+                    </div>
+                </div>
+            }
+        </div>
+        <br />
+        <br />
+        <button type="button" class="db-btn" @onclick="SaveSite">@SharedLocalizer["Save"]</button>
+        <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
+    </form>
+}
+
+@code {
+    private List<Database> _databases;
+    private ElementReference form;
+    private bool validated = false;
+    private string _databaseName;
+    private Type _databaseConfigType;
+    private object _databaseConfig;
+    private RenderFragment DatabaseConfigComponent { get; set; }
+    private bool _showConnectionString = false;
+    private string _connectionString = string.Empty;
+
+    private List<SiteTemplate> _siteTemplates;
+    private List<Tenant> _tenants;
+    private string _tenantid = "-";
+
+    private string _tenantName = string.Empty;
+
+    private string _hostusername = string.Empty;
+    private string _hostpassword = string.Empty;
+
+    private string _name = string.Empty;
+    private string _urls = string.Empty;
+    private string _sitetemplatetype = "-";
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _tenants = await TenantService.GetTenantsAsync();
+        if (_tenants.Any(item => item.Name == TenantNames.Master))
+        {
+            _tenantid = _tenants.First(item => item.Name == TenantNames.Master).TenantId.ToString();
+        }
+        _urls = PageState.Alias.Name + "/sitename";
+        _siteTemplates = await SiteTemplateService.GetSiteTemplatesAsync();
+        if (_siteTemplates.Any(item => item.TypeName == Constants.EmptySiteTemplate))
+        {
+            _sitetemplatetype = Constants.EmptySiteTemplate;
+        }
+
+        _databases = await DatabaseService.GetDatabasesAsync();
+        if (_databases.Exists(item => item.IsDefault))
+        {
+            _databaseName = _databases.Find(item => item.IsDefault).Name;
+        }
+        else
+        {
+            _databaseName = Constants.DefaultDBName;
+        }
+        LoadDatabaseConfigComponent();
+    }
+
+    private void DatabaseChanged(ChangeEventArgs eventArgs)
+    {
+        try
+        {
+            _databaseName = (string)eventArgs.Value;
+            _showConnectionString = false;
+            LoadDatabaseConfigComponent();
+        }
+        catch
+        {
+            AddModuleMessage(Localizer["Error.Database.LoadConfig"], MessageType.Error);
+        }
+    }
+
+    private void LoadDatabaseConfigComponent()
+    {
+        var database = _databases.SingleOrDefault(d => d.Name == _databaseName);
+        if (database != null)
+        {
+            _databaseConfigType = Type.GetType(database.ControlType);
+            DatabaseConfigComponent = builder =>
+            {
+                builder.OpenComponent(0, _databaseConfigType);
+                builder.AddComponentReferenceCapture(1, inst => { _databaseConfig = Convert.ChangeType(inst, _databaseConfigType); });
+                builder.CloseComponent();
+            };
+        }
+    }
+
+    private void TenantChanged(ChangeEventArgs e)
+    {
+        _tenantid = (string)e.Value;
+        if (string.IsNullOrEmpty(_tenantName))
+        {
+            _tenantName = _name;
+        }
+        StateHasChanged();
+    }
+
+    private async Task SaveSite()
+    {
+        validated = true;
+        var interop = new Interop(JSRuntime);
+        if (await interop.FormValid(form))
+        {
+            if (_tenantid != "-" && _name != string.Empty && _urls != string.Empty && _sitetemplatetype != "-")
+            {
+                _urls = Regex.Replace(_urls, @"\r\n?|\n", ",");
+                var duplicates = new List<string>();
+                var aliases = await AliasService.GetAliasesAsync();
+                foreach (string name in _urls.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (aliases.Exists(item => item.Name == name))
+                    {
+                        duplicates.Add(name);
+                    }
+                }
+
+                if (duplicates.Count == 0)
+                {
+                    InstallConfig config = new InstallConfig();
+
+                    if (_tenantid == "+")
+                    {
+                        if (!string.IsNullOrEmpty(_tenantName) && !_tenants.Exists(item => item.Name == _tenantName))
+                        {
+                            // validate host credentials
+                            var user = new User();
+                            user.SiteId = PageState.Site.SiteId;
+                            user.Username = _hostusername;
+                            user.Password = _hostpassword;
+                            user.LastIPAddress = PageState.RemoteIPAddress;
+                            user = await UserService.LoginUserAsync(user, false, false);
+                            if (user.IsAuthenticated)
+                            {
+                                var database = _databases.SingleOrDefault(d => d.Name == _databaseName);
+                                var connectionString = String.Empty;
+                                if (_showConnectionString)
+                                {
+                                    connectionString = _connectionString;
+                                }
+                                else
+                                {
+                                    if (_databaseConfig is IDatabaseConfigControl databaseConfigControl)
+                                    {
+                                        connectionString = databaseConfigControl.GetConnectionString();
+                                    }
+                                }
+
+                                if (connectionString != "")
+                                {
+                                    config.TenantName = _tenantName;
+                                    config.DatabaseType = database.DBType;
+                                    config.ConnectionString = connectionString;
+                                    config.HostUsername = _hostusername;
+                                    config.HostPassword = _hostpassword;
+                                    config.HostEmail = user.Email;
+                                    config.HostName = user.DisplayName;
+                                    config.IsNewTenant = true;
+                                }
+                                else
+                                {
+                                    AddModuleMessage(Localizer["Error.Required.ServerDatabase"], MessageType.Error);
+                                }
+                            }
+                            else
+                            {
+                                AddModuleMessage(Localizer["Error.InvalidPassword"], MessageType.Error);
+                            }
+                        }
+                        else
+                        {
+                            AddModuleMessage(Localizer["Error.TenantName.Exists"], MessageType.Error);
+                        }
+                    }
+                    else
+                    {
+                        var tenant = _tenants.FirstOrDefault(item => item.TenantId == int.Parse(_tenantid));
+                        if (tenant != null)
+                        {
+                            config.TenantName = tenant.Name;
+                            config.DatabaseType = tenant.DBType;
+                            config.ConnectionString = tenant.DBConnectionString;
+                            config.IsNewTenant = false;
+                            config.HostEmail = PageState.User.Email;
+                            config.HostName = PageState.User.DisplayName;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(config.TenantName))
+                    {
+                        config.SiteName = _name;
+                        config.Aliases = _urls;
+                        config.DefaultTheme = Constants.DefaultTheme;
+                        config.DefaultContainer = Constants.DefaultContainer;
+                        config.DefaultAdminContainer = "";
+                        config.SiteTemplate = _sitetemplatetype;
+                        config.RenderMode = RenderModes.Static;
+                        config.Runtime = Runtimes.Server;
+
+                        ShowProgressIndicator();
+
+                        var installation = await InstallationService.Install(config);
+                        if (installation.Success)
+                        {
+                            var aliasname = config.Aliases.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                            NavigationManager.NavigateTo(PageState.Uri.Scheme + "://" + aliasname, true);
+                        }
+                        else
+                        {
+                            await logger.LogError("Error Creating Site {Error}", installation.Message);
+                            AddModuleMessage(installation.Message, MessageType.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    AddModuleMessage(string.Format(Localizer["Message.SiteName.InUse"], string.Join(", ", duplicates.ToArray())), MessageType.Warning);
+                }
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.Required.Tenant"], MessageType.Warning);
+            }
+        }
+        else
+        {
+            AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+        }
+    }
+
+	private void ToggleConnectionString()
+	{
+		if (_databaseConfig is IDatabaseConfigControl databaseConfigControl)
+		{
+			_connectionString = databaseConfigControl.GetConnectionString();
+		}
+		_showConnectionString = !_showConnectionString;
+	}
+}

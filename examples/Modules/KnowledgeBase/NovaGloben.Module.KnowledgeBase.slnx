@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="NovaGloben.Module.KnowledgeBase.Shared/NovaGloben.Module.KnowledgeBase.Shared.csproj" />
+  <Project Path="NovaGloben.Module.KnowledgeBase.Client/NovaGloben.Module.KnowledgeBase.Client.csproj" />
+  <Project Path="NovaGloben.Module.KnowledgeBase.Server/NovaGloben.Module.KnowledgeBase.Server.csproj" />
+  <Project Path="KnowledgeBase.Tests/NovaGloben.Module.KnowledgeBase.Tests.csproj" />
+</Solution>

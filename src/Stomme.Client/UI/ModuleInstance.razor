@@ -1,0 +1,81 @@
+@namespace Stomme.UI
+@inject SiteState SiteState
+
+@if (PageState.ModuleId == -1)
+{
+    @((MarkupString)ModuleState.Header)
+}
+@if (_comment != null)
+{
+    @((MarkupString)_comment)
+    @if (PageState.RenderMode == RenderModes.Interactive || ModuleState.RenderMode == RenderModes.Static)
+    {
+        <RenderModeBoundary ModuleState="@ModuleState" PageState="@_pageState" SiteState="@SiteState" />
+    }
+    else
+    {
+        <RenderModeBoundary ModuleState="@ModuleState" PageState="@_pageState" SiteState="@SiteState" @rendermode="InteractiveRenderMode.GetInteractiveRenderMode(PageState.Site.Runtime, _prerender)" />
+    }
+}
+@if (PageState.ModuleId == -1)
+{
+    @((MarkupString)ModuleState.Footer)
+}
+
+
+@code {
+    [CascadingParameter]
+    protected PageState PageState { get; set; }
+
+    [CascadingParameter]
+    private Module ModuleState { get; set; }
+
+    private bool _prerender;
+    private string _comment;
+    private PageState _pageState;
+
+    protected override void OnParametersSet()
+    {
+        _prerender = ModuleState.Prerender ?? PageState.Site.Prerender;
+
+        _comment = "<!-- rendermode: ";
+        if (PageState.RenderMode == RenderModes.Static && ModuleState.RenderMode == RenderModes.Static)
+        {
+            _comment += RenderModes.Static;
+        }
+        else
+        {
+            _comment += $"{RenderModes.Interactive}:{PageState.Runtime} - prerender: {_prerender}";
+        }
+        _comment += " -->";
+
+        _pageState = PageState.Clone();
+        if (PageState.RenderMode == RenderModes.Static && ModuleState.RenderMode == RenderModes.Interactive)
+        {
+            // trim PageState to mitigate page bloat caused by Blazor serializing/encrypting state when crossing render mode boundaries
+            // please note that this performance optimization results in the PageState.Pages property not being available for use in downstream Interactive components
+            _pageState.Site.Pages = new List<Page>();
+        }
+    }
+
+
+    [Obsolete("AddModuleMessage is deprecated. Use AddModuleMessage in ModuleBase instead.", false)]
+    public void AddModuleMessage(string message, MessageType type)
+    {
+    }
+
+    [Obsolete("AddModuleMessage is deprecated. Use ModuleBase.AddModuleMessage instead.", false)]
+    public void AddModuleMessage(string message, MessageType type, string position)
+    {
+    }
+
+    [Obsolete("ShowProgressIndicator is deprecated. Use ShowProgressIndicator in ModuleBase instead.", false)]
+    public void ShowProgressIndicator()
+    {
+    }
+
+    [Obsolete("HideProgressIndicator is deprecated. Use HideProgressIndicator in ModuleBase instead.", false)]
+    public void HideProgressIndicator()
+    {
+    }
+}

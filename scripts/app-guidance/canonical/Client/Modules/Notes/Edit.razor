@@ -1,0 +1,112 @@
+@namespace Stomme.Application.Modules.Notes
+@inherits ModuleBase
+@inject INotesService NotesService
+@inject NavigationManager NavigationManager
+
+@if (_loading)
+{
+    <p class="db-muted">Loading...</p>
+}
+else
+{
+    <form @onsubmit="SaveAsync" @onsubmit:preventDefault novalidate>
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="note-title" HelpText="A short name, shown in the list">Title:</Label>
+                <div class="db-field-control">
+                    <input id="note-title" class="db-input" @bind="_title" maxlength="120" required />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="note-body" HelpText="The text of the note">Note:</Label>
+                <div class="db-field-control">
+                    <textarea id="note-body" class="db-input" @bind="_body" rows="6" maxlength="4000"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="db-form-actions">
+            <button type="submit" class="db-btn" disabled="@_busy">Save</button>
+            <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">Cancel</NavLink>
+        </div>
+    </form>
+}
+
+@code {
+    private Guid _id = Guid.Empty;
+    private string _title = string.Empty;
+    private string _body = string.Empty;
+    private bool _loading = true;
+    private bool _busy;
+
+    // View, not Edit: who may write is the notes:edit key, decided on the server; Edit would mean "edits the page".
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.View;
+
+    public override string Actions => "Add,Edit";
+
+    public override string Title => "Note";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (PageState.QueryString.ContainsKey("id") && Guid.TryParse(PageState.QueryString["id"], out var id))
+            {
+                var note = await NotesService.GetAsync(id);
+                if (note == null)
+                {
+                    AddModuleMessage("This note no longer exists. Go back to the list to see the current notes.", MessageType.Warning);
+                }
+                else
+                {
+                    _id = note.Id;
+                    _title = note.Title;
+                    _body = note.Body;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not load the note {Error}", ex.Message);
+            AddModuleMessage("The note could not be loaded. Close this dialog and try again.", MessageType.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_title))
+        {
+            AddModuleMessage("Give the note a title.", MessageType.Warning);
+            return;
+        }
+
+        _busy = true;
+        try
+        {
+            var request = new SaveNoteRequest { Title = _title.Trim(), Body = _body ?? string.Empty };
+            if (_id == Guid.Empty)
+            {
+                await NotesService.CreateAsync(request);
+            }
+            else
+            {
+                await NotesService.EditAsync(_id, request);
+            }
+
+            await logger.LogInformation("Note saved {NoteId}", _id);
+            NavigationManager.NavigateTo(NavigateUrl());
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Could not save the note {Error}", ex.Message);
+            AddModuleMessage("The note was not saved: " + WebUtility.HtmlEncode(ex.Message), MessageType.Error);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

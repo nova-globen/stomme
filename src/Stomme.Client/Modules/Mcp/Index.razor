@@ -1,0 +1,208 @@
+@namespace Stomme.Modules.Mcp
+@inherits ModuleBase
+@inject IMcpService McpService
+
+@*
+    External MCP servers this SITE has registered (BL-80 / D101 items 5 and 7) - mcp:manage.
+
+    Two things this page deliberately does NOT do. It does not DIAL on registration: a new server is Unverified with no tools
+    until an operator presses Refresh, because dialling a typed address and showing the answer is an SSRF oracle. And it never
+    shows an API key: the key is sent once to the server's per-site secret store under a name derived from the row, and the only
+    thing anything will say about it afterwards is whether it exists.
+*@
+
+<PageTitle>MCP servers</PageTitle>
+
+@if (!IsAuthorizedPermission(McpPermissions.Manage))
+{
+    <p class="db-mcp-denied" style="color:var(--db-text-2);">You do not have access to MCP server registrations.</p>
+}
+else
+{
+    <div class="db-mcp-servers" style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+            <h3 style="margin:0;flex:1 1 auto;">External MCP servers</h3>
+            <button id="mcp-server-new" type="button" class="db-btn" @onclick="New">Register a server</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p id="mcp-servers-message" style="margin:0;">@_message</p>
+        }
+
+        @if (_servers.Count == 0)
+        {
+            <p id="mcp-servers-empty" style="margin:0;color:var(--db-text-2);">This site has not registered any external MCP server.</p>
+        }
+        else
+        {
+            <table class="table db-mcp-server-table">
+                <thead><tr><th>Name</th><th>Endpoint</th><th>State</th><th>Tools</th><th>Key</th><th>Last refreshed</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var item in _servers)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td style="word-break:break-all;">@item.Endpoint</td>
+                            <td>@(item.Enabled ? item.TrustState : item.TrustState + " (disabled)")</td>
+                            <td>@item.Tools.Count</td>
+                            <td>@(item.HasApiKey ? "Set" : "-")</td>
+                            <td>@(item.LastRefreshedOnUtc?.ToString("u") ?? "never")</td>
+                            <td>
+                                <button type="button" class="db-btn" @onclick="@(() => RefreshAsync(item))">Refresh</button>
+                                <button type="button" class="db-btn" @onclick="@(() => ToggleAsync(item))">@(item.Enabled ? "Disable" : "Enable")</button>
+                                <button type="button" class="db-btn" @onclick="@(() => KeyAsync(item))">Set key</button>
+                                <button type="button" class="db-btn" @onclick="@(() => RemoveAsync(item))">Remove</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (_registering)
+        {
+            <section class="db-card" style="padding:0.75rem 1rem;display:flex;flex-direction:column;gap:0.5rem;max-width:560px;">
+                <label>Name <input id="mcp-server-name" class="db-input" maxlength="100" @bind="_name" @bind:event="oninput" /></label>
+                <label>
+                    Endpoint
+                    <input id="mcp-server-endpoint" class="db-input" placeholder="https://mcp.example.com/mcp" @bind="_endpoint" @bind:event="oninput" />
+                </label>
+                <label>Requests per minute (optional) <input id="mcp-server-rpm" class="db-input" type="number" min="1" @bind="_rpm" /></label>
+                <p style="margin:0;color:var(--db-text-2);font-size:0.9em;">
+                    Registering does not contact the server. Press Refresh afterwards to discover what it offers. An address this
+                    install may not reach - a loopback, private or link-local address - is refused when it is dialled, and an
+                    operator can allow a host in the site setting <code>McpClientAllowedHosts</code>.
+                </p>
+                <div style="display:flex;gap:0.5rem;">
+                    <button id="mcp-server-save" type="button" class="db-btn" @onclick="RegisterAsync">Register</button>
+                    <button type="button" class="db-btn" @onclick="Cancel">Cancel</button>
+                </div>
+            </section>
+        }
+
+        @if (_keyingId is not null)
+        {
+            <section class="db-card" style="padding:0.75rem 1rem;display:flex;flex-direction:column;gap:0.5rem;max-width:560px;">
+                <label>API key for @_keyingName <input id="mcp-server-key" class="db-input" type="password" @bind="_apiKey" @bind:event="oninput" /></label>
+                <p style="margin:0;color:var(--db-text-2);font-size:0.9em;">
+                    Stored in this site's secret store and never shown again. Leave it empty to remove the stored key.
+                </p>
+                <div style="display:flex;gap:0.5rem;">
+                    <button id="mcp-server-key-save" type="button" class="db-btn" @onclick="SaveKeyAsync">Save key</button>
+                    <button type="button" class="db-btn" @onclick="CancelKey">Cancel</button>
+                </div>
+            </section>
+        }
+    </div>
+}
+
+@code {
+    private List<McpServerRegistrationView> _servers = new();
+    private bool _registering;
+    private string _name = "";
+    private string _endpoint = "";
+    private int? _rpm;
+    private Guid? _keyingId;
+    private string _keyingName = "";
+    private string _apiKey = "";
+    private string _message = "";
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        if (IsAuthorizedPermission(McpPermissions.Manage))
+        {
+            try
+            {
+                _servers = await McpService.GetServersAsync() ?? new();
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "The MCP servers could not be listed.");
+                _servers = new();
+                _message = ex.Message;
+            }
+        }
+    }
+
+    private void New()
+    {
+        _registering = true;
+        _name = "";
+        _endpoint = "";
+        _rpm = null;
+        _message = "";
+    }
+
+    private void Cancel() => _registering = false;
+
+    private void CancelKey()
+    {
+        _keyingId = null;
+        _apiKey = "";
+    }
+
+    private async Task RegisterAsync()
+    {
+        try
+        {
+            await McpService.RegisterServerAsync(new McpServerRegistrationRequest { Name = _name, Endpoint = _endpoint, MaxRequestsPerMinute = _rpm });
+            _registering = false;
+            _message = "Registered. It has not been contacted - press Refresh to discover what it offers.";
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            // The server's refusal is the operator's to read: a name already used on this site, a name that is too long,
+            // an address that is not an absolute http(s) URL, or one carrying a user name or password.
+            _message = ex.Message;
+        }
+    }
+
+    private async Task RefreshAsync(McpServerRegistrationView item)
+    {
+        try
+        {
+            await McpService.RefreshServerAsync(item.Id);
+            _message = $"Refreshed {item.Name}.";
+        }
+        catch (Exception ex)
+        {
+            _message = ex.Message;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task ToggleAsync(McpServerRegistrationView item)
+    {
+        await McpService.SetServerEnabledAsync(item.Id, !item.Enabled);
+        await LoadAsync();
+    }
+
+    private void KeyAsync(McpServerRegistrationView item)
+    {
+        _keyingId = item.Id;
+        _keyingName = item.Name;
+        _apiKey = "";
+    }
+
+    private async Task SaveKeyAsync()
+    {
+        var id = _keyingId!.Value;
+        await McpService.SetApiKeyAsync(id, _apiKey);
+        CancelKey();
+        _message = "The key was stored. It is not shown again.";
+        await LoadAsync();
+    }
+
+    private async Task RemoveAsync(McpServerRegistrationView item)
+    {
+        // Removing the registration removes its stored key with it - a secret whose row is gone can never be reached.
+        await McpService.RemoveServerAsync(item.Id);
+        _message = $"Removed {item.Name} and its stored key.";
+        await LoadAsync();
+    }
+}

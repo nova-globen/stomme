@@ -1,0 +1,1454 @@
+@namespace Stomme.Modules.Admin.Site
+@inherits ModuleBase
+@using System.Text.RegularExpressions
+@using Microsoft.Extensions.DependencyInjection
+@inject NavigationManager NavigationManager
+@inject ISiteService SiteService
+@inject IPageService PageService
+@inject ITenantService TenantService
+@inject IDatabaseService DatabaseService
+@inject IAliasService AliasService
+@inject IThemeService  ThemeService
+@inject ISettingService  SettingService
+@inject ITimeZoneService TimeZoneService
+@inject ILocalizationService LocalizationService
+@inject IServiceProvider ServiceProvider
+@inject IStringLocalizer<Index> Localizer
+@inject INotificationService NotificationService
+@inject IJobService JobService
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@inject IOutputCacheService CacheService
+@inject ISiteGroupService SiteGroupService
+@inject ISiteGroupMemberService SiteGroupMemberService
+
+@if (_initialized)
+{
+    <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+        <div class="db-fields">
+            <div class="db-field">
+                <Label For="name" HelpText="Enter the site name" ResourceKey="Name">Name: </Label>
+                <div class="db-field-control">
+                    <input id="name" class="db-input" @bind="@_name" maxlength="200" required />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="timezone" HelpText="The default time zone for the site" ResourceKey="TimeZone">Time Zone:</Label>
+                <div class="db-field-control">
+                    <select id="timezone" class="db-select" @bind="@_timezoneid">
+                        <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                        @foreach (var timezone in _timezones)
+                        {
+                            <option value="@timezone.Id">@timezone.DisplayName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="culture" HelpText="The default language of the site's content" ResourceKey="Culture">Language:</Label>
+                <div class="db-field-control">
+                    <select id="culture" class="db-select" @bind="@_culturecode">
+                        <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                        @foreach (var culture in _cultures)
+                        {
+                            <option value="@culture.Name">@culture.DisplayName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+            {
+                <div class="db-field">
+                    <Label For="isDeleted" HelpText="Is this site deleted?" ResourceKey="IsDeleted">Deleted? </Label>
+                    <div class="db-field-control">
+                        <select id="isDeleted" class="db-select" @bind="@_isdeleted" required>
+                            <option value="True">@SharedLocalizer["Yes"]</option>
+                            <option value="False">@SharedLocalizer["No"]</option>
+                        </select>
+                    </div>
+                </div>
+            }
+            <div class="db-field">
+                <Label For="sitemap" HelpText="The site map url for this site which can be submitted to search engines for indexing. The sitemap is cached for 5 minutes and the cache can be manually cleared." ResourceKey="SiteMap">Site Map: </Label>
+                <div class="db-field-control">
+                    <div class="db-input-group">
+                        <input id="sitemap" class="db-input" @bind="@_sitemap" disabled />
+                        <a href="@_sitemap" class="db-btn db-btn-neutral" target="_new">@Localizer["Browse"]</a>
+                        <button type="button" class="db-btn db-btn-danger" @onclick="EvictSitemapOutputCache">@Localizer["SiteMap.EvictCache"]</button>
+                    </div>
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="siteguid" HelpText="The Unique Identifier For The Site" ResourceKey="SiteGuid">ID: </Label>
+                <div class="db-field-control">
+                    <input id="siteguid" class="db-input" @bind="@_siteguid" required disabled />
+                </div>
+            </div>
+            <div class="db-field">
+                <Label For="version" HelpText="The site version (for site content migrations)" ResourceKey="Version">Version: </Label>
+                <div class="db-field-control">
+                    <input id="version" class="db-input" @bind="@_version" required disabled />
+                </div>
+            </div>
+        </div>
+        <br />
+        <Section Name="Theme" Heading="Theme" ResourceKey="Theme">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="defaultTheme" HelpText="Select the sites default theme" ResourceKey="DefaultTheme">Default Theme: </Label>
+                    <div class="db-field-control">
+                        <select id="defaultTheme" class="db-select" value="@_themetype" @onchange="(e => ThemeChanged(e))" required>
+                            @foreach (var theme in _themes)
+                            {
+                                <option value="@theme.TypeName">@theme.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="defaultContainer" HelpText="Select the default container for the site" ResourceKey="DefaultContainer">Default Container: </Label>
+                    <div class="db-field-control">
+                        <select id="defaultContainer" class="db-select" @bind="@_containertype" required>
+                            @if (_containers != null)
+                            {
+                                @foreach (var container in _containers)
+                                {
+                                    <option value="@container.TypeName">@container.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="defaultAdminContainer" HelpText="Select the default admin container for the site" ResourceKey="DefaultAdminContainer">Default Admin Container: </Label>
+                    <div class="db-field-control">
+                        <select id="defaultAdminContainer" class="db-select" @bind="@_admincontainertype" required>
+                            <option value="@Constants.DefaultAdminContainer">&lt;@Localizer["DefaultAdminContainer"]&gt;</option>
+                            @if (_containers != null)
+                            {
+                                @foreach (var container in _containers)
+                                {
+                                    <option value="@container.TypeName">@container.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="adminTheme" HelpText="Select the theme used for admin pages. Leave as the default theme to render admin pages in the site's default theme." ResourceKey="AdminTheme">Admin Theme: </Label>
+                    <div class="db-field-control">
+                        <select id="adminTheme" class="db-select" @bind="@_adminthemetype">
+                            <option value="">&lt;@Localizer["DefaultTheme"]&gt;</option>
+                            @foreach (var theme in _themes)
+                            {
+                                <option value="@theme.TypeName">@theme.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="cookieconsent" HelpText="Specify if cookie consent is enabled on this site. Please note this option must be used in conjunction with a Theme which supports cookie consent." ResourceKey="CookieConsent">Cookie Consent: </Label>
+                    <div class="db-field-control">
+                        <select id="cookieconsent" class="db-select" @bind="@_cookieconsent">
+                            <option value="">@SharedLocalizer["Disabled"]</option>
+                            <option value="optin">@Localizer["OptIn"]</option>
+                            <option value="optout">@Localizer["OptOut"]</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </Section>
+        <Section Name="Appearance" Heading="Appearance" ResourceKey="Appearance">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="logo" HelpText="Specify a logo for the site" ResourceKey="Logo">Logo: </Label>
+                    <div class="db-field-control">
+                        <FileManager Id="logo" FileId="@_logofileid" Filter="@_imagefiles" @ref="_logofilemanager" />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="favicon" HelpText="Specify a Favicon" ResourceKey="FavoriteIcon">Favicon: </Label>
+                    <div class="db-field-control">
+                        <FileManager Id="favicon" FileId="@_faviconfileid" Filter="ico,png,gif" @ref="_faviconfilemanager" />
+                    </div>
+                </div>
+            </div>
+        </Section>
+        <Section Name="Functionality" Heading="Functionality" ResourceKey="Functionality">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="textEditor" HelpText="Select the text editor for the site" ResourceKey="TextEditor">Text Editor: </Label>
+                    <div class="db-field-control">
+                        <select id="textEditor" class="db-select" @bind="@_textEditor" required>
+                            @if (_textEditors != null)
+                            {
+                                @foreach (var textEditor in _textEditors)
+                                {
+                                    <option value="@textEditor.Value">@textEditor.Key</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </Section>
+        <Section Name="PageContent" Heading="Page Content" ResourceKey="PageContent">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="headcontent" HelpText="Optionally enter content to be included in the page head (ie. meta, link, or script tags)" ResourceKey="HeadContent">Head Content: </Label>
+                    <div class="db-field-control">
+                        <textarea id="headcontent" class="db-input" @bind="@_headcontent" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="bodycontent" HelpText="Optionally enter content to be included in the page body (ie. script tags)" ResourceKey="BodyContent">Body Content: </Label>
+                    <div class="db-field-control">
+                        <textarea id="bodycontent" class="db-input" @bind="@_bodycontent" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </Section>
+        <Section Name="SMTP" Heading="SMTP Settings" ResourceKey="SMTPSettings">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="smtpenabled" HelpText="Specify if SMTP is enabled for this site" ResourceKey="SmtpEnabled">Enabled? </Label>
+                    <div class="db-field-control">
+                        <select id="smtpenabled" class="db-select" value="@_smtpenabled" @onchange="(e => SMTPEnabledChanged(e))">
+                            <option value="True">@SharedLocalizer["Yes"]</option>
+                            <option value="False">@SharedLocalizer["No"]</option>
+                        </select>
+                    </div>
+                </div>
+                @if (_smtpenabled == "True" && UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                {
+                    <div class="db-field">
+                        <Label For="host" HelpText="Enter the host name of the SMTP server" ResourceKey="Host">Host: </Label>
+                        <div class="db-field-control">
+                            <input id="host" class="db-input" @bind="@_smtphost" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="port" HelpText="Enter the port number for the SMTP server. Please note this field is required if you provide a host name." ResourceKey="Port">Port: </Label>
+                        <div class="db-field-control">
+                            <input id="port" class="db-input" @bind="@_smtpport" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="smtpssl" HelpText="Specify the type of SSL connection for your SMTP server" ResourceKey="SmtpSSL">SSL Options: </Label>
+                        <div class="db-field-control">
+                            <select id="smtpssl" class="db-select" @bind="@_smtpssl">
+                                <option value="None">@Localizer["None"]</option>
+                                <option value="Auto">@Localizer["Auto"]</option>
+                                <option value="StartTls">@Localizer["StartTls"]</option>
+                                <option value="SslOnConnect">@Localizer["SslOnConnect"]</option>
+                                <option value="StartTlsWhenAvailable">@Localizer["StartTlsWhenAvailable"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="smtpauthentication" HelpText="Specify the SMTP authentication type" ResourceKey="SMTPAuthentication">Authentication: </Label>
+                        <div class="db-field-control">
+                            <select id="smtpauthentication" class="db-select" value="@_smtpauthentication" @onchange="(e => SMTPAuthenticationChanged(e))">
+                                <option value="Basic">@Localizer["Basic"]</option>
+                                <option value="OAuth2">@Localizer["OAuth2"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    @if (_smtpauthentication == "Basic")
+                    {
+                        <div class="db-field">
+                            <Label For="username" HelpText="Enter the username for your SMTP account" ResourceKey="SmtpUsername">Username: </Label>
+                            <div class="db-field-control">
+                                <input id="username" class="db-input" @bind="@_smtpusername" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="password" HelpText="Enter the password for your SMTP account" ResourceKey="SmtpPassword">Password: </Label>
+                            <div class="db-field-control">
+                                <div class="db-input-group">
+                                    <input id="password" type="@_smtppasswordtype" class="db-input" @bind="@_smtppassword" autocomplete="off" />
+                                    <button type="button" class="db-btn db-btn-neutral" @onclick="@ToggleSMTPPassword" tabindex="-1">@_togglesmtppassword</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="db-field">
+                            <Label For="smtpauthority" HelpText="The Authority Url for the SMTP provider" ResourceKey="SmtpAuthority">Authority Url:</Label>
+                            <div class="db-field-control">
+                                <input id="smtpauthority" class="db-input" @bind="@_smtpauthority" />
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="smtpclientid" HelpText="The Client ID for the SMTP provider" ResourceKey="SmtpClientID">Client ID:</Label>
+                            <div class="db-field-control">
+                                <input id="smtpclientid" class="db-input" @bind="@_smtpclientid" />
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="smtpclientsecret" HelpText="The Client Secret for the SMTP provider" ResourceKey="SmtpClientSecret">Client Secret:</Label>
+                            <div class="db-field-control">
+                                <div class="db-input-group">
+                                    <input type="@_smtpclientsecrettype" id="smtpclientsecret" class="db-input" @bind="@_smtpclientsecret" />
+                                    <button type="button" class="db-btn db-btn-neutral" @onclick="@ToggleSmtpClientSecret">@_togglesmtpclientsecret</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="smtpscopes" HelpText="A list of Scopes for the SMTP provider (separated by commas)" ResourceKey="SmtpScopes">Scopes:</Label>
+                            <div class="db-field-control">
+                                <input id="smtpscopes" class="db-input" @bind="@_smtpscopes" />
+                            </div>
+                        </div>
+                    }
+                    <div class="db-field">
+                        <Label For="sender" HelpText="Enter the email address which emails will be sent from. Please note that this email address usually needs to be authorized with the SMTP provider." ResourceKey="SmtpSender">Email Sender: </Label>
+                        <div class="db-field-control">
+                            <input id="sender" class="db-input" @bind="@_smtpsender" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="retention" HelpText="Number of days of notifications to retain" ResourceKey="Retention">Retention (Days): </Label>
+                        <div class="db-field-control">
+                            <input id="retention" class="db-input" type="number" min="0" step="1" @bind="@_retention" />
+                        </div>
+                    </div>
+                    <button type="button" class="db-btn db-btn-neutral" @onclick="SendEmail">@Localizer["Smtp.TestConfig"]</button>
+                    <br /><br />
+                }
+            </div>
+        </Section>
+        <Section Name="PWA" Heading="Progressive Web Application Settings" ResourceKey="PWASettings">
+            <div class="db-fields">
+                <div class="db-field">
+                    <Label For="isEnabled" HelpText="Select whether you would like this site to be available as a Progressive Web Application (PWA)" ResourceKey="EnablePWA">Is Enabled? </Label>
+                    <div class="db-field-control">
+                        <select id="isEnabled" class="db-select" @bind="@_pwaisenabled" required>
+                            <option value="True">@SharedLocalizer["Yes"]</option>
+                            <option value="False">@SharedLocalizer["No"]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="appIcon" HelpText="Include an application icon for your PWA. It should be a PNG which is 192 X 192 pixels in dimension." ResourceKey="PwaApplicationIcon">App Icon: </Label>
+                    <div class="db-field-control">
+                        <FileManager Id="appIcon" FileId="@_pwaappiconfileid" Filter="png" @ref="_pwaappiconfilemanager" />
+                    </div>
+                </div>
+                <div class="db-field">
+                    <Label For="splashIcon" HelpText="Include a splash icon for your PWA. It should be a PNG which is 512 X 512 pixels in dimension." ResourceKey="PwaSplashIcon">Splash Icon: </Label>
+                    <div class="db-field-control">
+                        <FileManager Id="splashIcon" FileId="@_pwasplashiconfileid" Filter="png" @ref="_pwasplashiconfilemanager" />
+                    </div>
+                </div>
+            </div>
+        </Section>
+        @if (_aliases != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+        {
+            <Section Name="Hosting" Heading="Hosting Model" ResourceKey="Hosting">
+                <div class="db-fields">
+                    <div class="db-field">
+                        <Label For="rendermode" HelpText="The default render mode for the site" HelpTopic="stomme:site.rendermode" ResourceKey="Rendermode">Render Mode: </Label>
+                        <div class="db-field-control">
+                            <select id="rendermode" class="db-select" value="@_rendermode" @onchange="(e => RenderModeChanged(e))" required>
+                                <option value="@RenderModes.Interactive">@(SharedLocalizer["RenderMode" + @RenderModes.Interactive])</option>
+                                <option value="@RenderModes.Static">@(SharedLocalizer["RenderMode" + @RenderModes.Static])</option>
+                                <option value="@RenderModes.Headless">@(SharedLocalizer["RenderMode" + @RenderModes.Headless])</option>
+                            </select>
+                        </div>
+                    </div>
+                    @if (_rendermode == RenderModes.Static)
+                    {
+                        <div class="db-field">
+                            <Label For="enhancednavigation" HelpText="Indicates if enhanced navigation should be used with static rendering" ResourceKey="EnhancedNavigation">Enhanced Navigation: </Label>
+                            <div class="db-field-control">
+                                <select id="enhancednavigation" class="db-select" @bind="@_enhancednavigation" required>
+                                    <option value="True">@SharedLocalizer["Yes"]</option>
+                                    <option value="False">@SharedLocalizer["No"]</option>
+                                </select>
+                            </div>
+                        </div>
+                    }
+                    <div class="db-field">
+                        <Label For="runtime" HelpText="The hosting model for UI components which require interactivity" ResourceKey="Runtime">Interactivity: </Label>
+                        <div class="db-field-control">
+                            <select id="runtime" class="db-select" @bind="@_runtime" required>
+                                <option value="@Runtimes.Server">@(SharedLocalizer["Runtime" + @Runtimes.Server])</option>
+                                <option value="@Runtimes.WebAssembly">@(SharedLocalizer["Runtime" + @Runtimes.WebAssembly])</option>
+                                <option value="@Runtimes.Auto">@(SharedLocalizer["Runtime" + @Runtimes.Auto])</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="prerender" HelpText="Specifies if interactive components should prerender their output on the server" ResourceKey="Prerender">Prerender: </Label>
+                        <div class="db-field-control">
+                            <select id="prerender" class="db-select" @bind="@_prerender" required>
+                                <option value="True">@SharedLocalizer["Yes"]</option>
+                                <option value="False">@SharedLocalizer["No"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="hybrid" HelpText="Specifies if the site can be integrated with an external .NET MAUI hybrid application" ResourceKey="Hybrid">Hybrid? </Label>
+                        <div class="db-field-control">
+                            <select id="hybrid" class="db-select" @bind="@_hybrid" required>
+                                <option value="True">@SharedLocalizer["Yes"]</option>
+                                <option value="False">@SharedLocalizer["No"]</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </Section>
+            <Section Name="Aliases" Heading="Urls" ResourceKey="Aliases">
+                <div class="db-fields">
+                    @if (!_addAlias)
+                    {
+                        <div class="db-field">
+                            <Label For="aliases" HelpText="The urls for this site. This can include domain names (ie. domain.com), subdomains (ie. sub.domain.com) or virtual folders (ie. domain.com/folder)." ResourceKey="Aliases">Urls: </Label>
+                            <div class="db-field-control">
+                                <div class="db-input-group">
+                                    <select id="aliases" class="db-select" value="@_aliasid" @onchange="(e => AliasChanged(e))">
+                                        <option value="-1">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                                        @foreach (var alias in _aliases)
+                                        {
+                                            <option value="@alias.AliasId">@alias.Name @((alias.IsDefault) ? "(" + Localizer["Default"] + ")" : "")</option>
+                                        }
+                                    </select>
+                                    @if (!_addAlias)
+                                    {
+                                        <button type="button" class="db-btn" @onclick="AddAlias">@SharedLocalizer["Add"]</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (_aliasid != -1 || _addAlias)
+                    {
+                        <div class="db-field">
+                            <Label For="aliasname" HelpText="A url for this site. This can include domain names (ie. domain.com), subdomains (ie. sub.domain.com) or virtual folders (ie. domain.com/folder)." ResourceKey="AliasName">Url: </Label>
+                            <div class="db-field-control">
+                                <input id="aliasname" class="db-input" @bind="@_aliasname" />
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="defaultalias" HelpText="The default alias for the site. Requests for non-default aliases will be redirected to the default alias." ResourceKey="DefaultAlias">Default? </Label>
+                            <div class="db-field-control">
+                                <select id="defaultalias" class="db-select" @bind="@_defaultalias">
+                                    <option value="True">@SharedLocalizer["Yes"]</option>
+                                    <option value="False">@SharedLocalizer["No"]</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    }
+                    <div class="db-field">
+                        <div class="db-field-label"></div>
+                        <div class="db-field-control">
+                            @if (_aliasid != -1 || _addAlias)
+                            {
+                                <button type="button" class="db-btn" @onclick="SaveAlias">@SharedLocalizer["Save"]</button>
+                            }
+                            @if (_aliasid != -1 && !_addAlias)
+                            {
+                                <ActionDialog Action="Delete" OnClick="@(async () => await DeleteAlias())" ResourceKey="DeleteAlias" Class="db-btn db-btn-danger" Header="Delete Alias" Message="@string.Format(Localizer["Confirm.Alias.Delete", _aliasname])" />
+                            }
+                            @if (_addAlias)
+                            {
+                                <button type="button" class="db-btn db-btn-neutral" @onclick="CancelAlias">@SharedLocalizer["Cancel"]</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </Section>
+            <Section Name="SiteGroupMembers" Heading="Site Groups" ResourceKey="SiteGroupMembers">
+                <div class="db-fields">
+                    @if (!_addSiteGroup)
+                    {
+                        <div class="db-field">
+                            <Label For="group" HelpText="The site groups in this tenant (database)" ResourceKey="SiteGroupMembers">Group: </Label>
+                            <div class="db-field-control">
+                                <div class="db-input-group">
+                                    <select id="group" class="db-select" value="@_siteGroupId" @onchange="(e => SiteGroupChanged(e))">
+                                        <option value="-1">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                                        @foreach (var siteGroup in _siteGroups)
+                                        {
+                                            <option value="@siteGroup.SiteGroupId">@siteGroup.Name</option>
+                                        }
+                                    </select>
+                                    @if (!_addSiteGroup)
+                                    {
+                                        <button type="button" class="db-btn" @onclick="AddSiteGroup">@SharedLocalizer["Add"]</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (_siteGroupId != -1 || _addSiteGroup)
+                    {
+                        <div class="db-field">
+                            <Label For="groupname" HelpText="Name of the site group" ResourceKey="GroupName">Name: </Label>
+                            <div class="db-field-control">
+                                <input id="groupname" class="db-input" @bind="@_groupName" />
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="grouptype" HelpText="Defines the specific behavior of the site group" ResourceKey="GroupType">Type: </Label>
+                            <div class="db-field-control">
+                                <select id="grouptype" class="db-select" @bind="@_groupType">
+                                    <option value="@SiteGroupTypes.Synchronization">@Localizer[@SiteGroupTypes.Synchronization]</option>
+                                    <option value="@SiteGroupTypes.ChangeDetection">@Localizer[@SiteGroupTypes.ChangeDetection]</option>
+                                    <option value="@SiteGroupTypes.Localization">@Localizer[SiteGroupTypes.Localization]</option>
+                                </select>
+                            </div>
+                        </div>
+                    }
+                    @if (_siteGroupId != -1)
+                    {
+                        <div class="db-field">
+                            <Label For="site" HelpText="The sites which are members of this site group" ResourceKey="Site">Members: </Label>
+                            <div class="db-field-control">
+                                <div class="db-input-group">
+                                    <select id="site" class="db-select" value="@_siteId" @onchange="(e => SiteChanged(e))">
+                                        <option value="-1">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
+                                        @foreach (var site in _sites)
+                                        {
+                                            <option value="@site.SiteId">@site.Name</option>
+                                        }
+                                    </select>
+                                    @if (!_addSiteGroupMember)
+                                    {
+                                        <button type="button" class="db-btn" @onclick="AddSiteGroupMember">@SharedLocalizer["Add"]</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="db-btn" @onclick="AddSiteGroupMember">@SharedLocalizer["Select"]</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (_siteGroupId != -1 && _siteId != -1)
+                    {
+                        <div class="db-field">
+                            <Label For="primary" HelpText="Indicates if the selected member is the primary site of the site group" ResourceKey="Primary">Primary? </Label>
+                            <div class="db-field-control">
+                                <select id="primary" class="db-select" @bind="@_primary">
+                                    <option value="False">@SharedLocalizer["No"]</option>
+                                    <option value="True">@SharedLocalizer["Yes"]</option>
+                                </select>
+                            </div>
+                        </div>
+                        @if (_primary == "False" && !string.IsNullOrEmpty(_synchronized) && (_groupType == SiteGroupTypes.Synchronization || _groupType == SiteGroupTypes.ChangeDetection))
+                        {
+                            <div class="db-field">
+                                <Label For="synchronized" HelpText="The date/time when the site was last synchronized" ResourceKey="Synchronized">Synchronized: </Label>
+                                <div class="db-field-control">
+                                    <div class="db-input-group">
+                                        <input id="synchronized" class="db-input" @bind="@_synchronized" disabled />
+                                        @if (!string.IsNullOrEmpty(_synchronized))
+                                        {
+                                            <button type="button" class="db-btn" @onclick="ResetSiteGroupMember">@SharedLocalizer["Reset"]</button>
+                                        }
+                                </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div class="db-field">
+                        <div class="db-field-label"></div>
+                        <div class="db-field-control">
+                            @if ((_siteGroupId != -1 || _addSiteGroup))
+                            {
+                                <button type="button" class="db-btn" @onclick="SaveSiteGroupMember">@SharedLocalizer["Save"]</button>
+                            }
+                            @if (_siteGroupId != -1 && !_addSiteGroup && _siteId != -1 && !_addSiteGroupMember)
+                            {
+                                <ActionDialog Action="Delete" OnClick="@(async () => await DeleteSiteGroupMember())" ResourceKey="DeleteSiteGroupMember" Class="db-btn db-btn-danger" Header="Delete Site Group" Message="@Localizer["Confirm.SiteGroupMember.Delete"]" />
+                            }
+                            @if (_addSiteGroup)
+                            {
+                                <button type="button" class="db-btn db-btn-neutral" @onclick="CancelSiteGroupMember">@SharedLocalizer["Cancel"]</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </Section>
+            <Section Name="TenantInformation" Heading="Database" ResourceKey="TenantInformation">
+                <div class="db-fields">
+                    <div class="db-field">
+                        <Label For="tenant" HelpText="The name of the database used for the site. Note that this is not the physical database name but rather the tenant name which is used within the framework to identify a database." ResourceKey="Tenant">Database: </Label>
+                        <div class="db-field-control">
+                            <input id="tenant" class="db-input" @bind="@_tenant" readonly />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="database" HelpText="The type of database" ResourceKey="Database">Type: </Label>
+                        <div class="db-field-control">
+                            <input id="database" class="db-input" @bind="@_database" readonly />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="connectionstring" HelpText="The name of the connection string in appsettings.json which will be used to connect to the database" ResourceKey="ConnectionString">Connection: </Label>
+                        <div class="db-field-control">
+                            <input id="connectionstring" class="db-input" @bind="@_connectionstring" readonly />
+                        </div>
+                    </div>
+                </div>
+            </Section>
+        }
+        <br />
+        <button type="button" class="db-btn" @onclick="SaveSite">@SharedLocalizer["Save"]</button>
+        <ActionDialog Header="Delete Site" Message="@Localizer["Confirm.DeleteSite"]" Action="Delete" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteSite())" ResourceKey="DeleteSite" />
+        <br />
+        <br />
+        <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon" DeletedBy="@_deletedby" DeletedOn="@_deletedon"></AuditInfo>
+    </form>
+}
+
+@code {
+    private ElementReference form;
+    private bool validated = false;
+    private bool _initialized = false;
+    private List<ThemeControl> _themes = new List<ThemeControl>();
+    private List<ThemeControl> _containers = new List<ThemeControl>();
+    private List<Page> _pages;
+    private List<Models.TimeZone> _timezones;
+    private IEnumerable<Models.Culture> _cultures;
+
+    private string _name = string.Empty;
+    private string _timezoneid = string.Empty;
+    private string _culturecode = string.Empty;
+    private string _isdeleted;
+    private string _sitemap = "";
+    private string _siteguid = "";
+    private string _version = "";
+
+    private int _logofileid = -1;
+    private FileManager _logofilemanager;
+    private int _faviconfileid = -1;
+    private FileManager _faviconfilemanager;
+    private string _themetype = "";
+    private string _containertype = "";
+    private string _admincontainertype = "";
+    private string _adminthemetype = "";
+    private string _cookieconsent = "";
+
+    private Dictionary<string, string> _textEditors = new Dictionary<string, string>();
+    private string _textEditor = "";
+    private string _imagefiles = string.Empty;
+
+    private string _headcontent = string.Empty;
+    private string _bodycontent = string.Empty;
+
+    private string _smtpenabled = "False";
+    private string _smtpauthentication = "Basic";
+    private string _smtphost = string.Empty;
+    private string _smtpport = string.Empty;
+    private string _smtpssl = "Auto";
+    private string _smtpusername = string.Empty;
+    private string _smtppassword = string.Empty;
+    private string _smtppasswordtype = "password";
+    private string _togglesmtppassword = string.Empty;
+    private string _smtpauthority = string.Empty;
+    private string _smtpclientid = string.Empty;
+    private string _smtpclientsecret = string.Empty;
+    private string _smtpclientsecrettype = "password";
+    private string _togglesmtpclientsecret = string.Empty;
+    private string _smtpscopes = string.Empty;
+    private string _smtpsender = string.Empty;
+    private int _retention = 30;
+
+    private string _pwaisenabled;
+    private int _pwaappiconfileid = -1;
+    private FileManager _pwaappiconfilemanager;
+    private int _pwasplashiconfileid = -1;
+    private FileManager _pwasplashiconfilemanager;
+
+    private string _rendermode = RenderModes.Interactive;
+    private string _enhancednavigation = "True";
+    private string _runtime = Runtimes.Server;
+    private string _prerender = "True";
+    private string _hybrid = "False";
+
+    private List<Alias> _aliases;
+    private int _aliasid = -1;
+    private string _aliasname;
+    private string _defaultalias;
+    private bool _addAlias = false;
+
+    private List<SiteGroup> _siteGroups = new List<SiteGroup>();
+    private List<Site> _sites = new List<Site>();
+    private int _siteGroupId = -1;
+    private int _siteId;
+    private string _groupName = string.Empty;
+    private string _groupType = SiteGroupTypes.Synchronization;
+    private string _primary = "True";
+    private string _synchronized = string.Empty;
+    private bool _addSiteGroup = false;
+    private bool _addSiteGroupMember = false;
+
+    private string _tenant = string.Empty;
+    private string _database = string.Empty;
+    private string _connectionstring = string.Empty;
+
+    private string _createdby;
+    private DateTime _createdon;
+    private string _modifiedby;
+    private DateTime _modifiedon;
+    private string _deletedby;
+    private DateTime? _deletedon;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Admin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (PageState.QueryString.ContainsKey("updated"))
+            {
+                AddModuleMessage(Localizer["Success.Settings.SaveSite"], MessageType.Success);
+            }
+
+            Site site = await SiteService.GetSiteAsync(PageState.Site.SiteId);
+            if (site != null)
+            {
+                _timezones = TimeZoneService.GetTimeZones();
+                _cultures = await LocalizationService.GetNeutralCulturesAsync();
+                var settings = await SettingService.GetSiteSettingsAsync(site.SiteId);
+
+                _pages = await PageService.GetPagesAsync(PageState.Site.SiteId);
+
+                _name = site.Name;
+                _timezoneid = site.TimeZoneId;
+                _culturecode = site.CultureCode;
+                _isdeleted = site.IsDeleted.ToString();
+                _sitemap = PageState.Alias.Protocol + PageState.Alias.Name + "/sitemap.xml";
+                _siteguid = site.SiteGuid;
+                _version = site.Version;
+
+                // appearance
+                if (site.LogoFileId != null)
+                {
+                    _logofileid = site.LogoFileId.Value;
+                }
+
+                if (site.FaviconFileId != null)
+                {
+                    _faviconfileid = site.FaviconFileId.Value;
+                }
+                var themes = new List<Theme>();
+                foreach (var theme in PageState.Site.Themes)
+                {
+                    if (UserSecurity.IsAuthorized(PageState.User, PermissionNames.Utilize, theme.PermissionList))
+                    {
+                        themes.Add(theme);
+                    }
+                }
+                _themes = ThemeService.GetThemeControls(themes);
+                _themetype = (!string.IsNullOrEmpty(site.DefaultThemeType)) ? site.DefaultThemeType : Constants.DefaultTheme;
+                _containers = ThemeService.GetContainerControls(themes, _themetype);
+                _containertype = (!string.IsNullOrEmpty(site.DefaultContainerType)) ? site.DefaultContainerType : Constants.DefaultContainer;
+                _admincontainertype = (!string.IsNullOrEmpty(site.AdminContainerType)) ? site.AdminContainerType : Constants.DefaultAdminContainer;
+                _adminthemetype = site.AdminThemeType ?? "";
+                _cookieconsent = SettingService.GetSetting(settings, "CookieConsent", string.Empty);
+
+                // functionality
+                var textEditors = ServiceProvider.GetServices<ITextEditor>();
+                foreach (var textEditor in textEditors)
+                {
+                    _textEditors.Add(textEditor.Name, Utilities.GetFullTypeName(textEditor.GetType().AssemblyQualifiedName));
+                }
+                _textEditor = SettingService.GetSetting(settings, "TextEditor", Constants.DefaultTextEditor);
+                _imagefiles = SettingService.GetSetting(settings, "ImageFiles", Constants.ImageFiles);
+                _imagefiles = (string.IsNullOrEmpty(_imagefiles)) ? Constants.ImageFiles : _imagefiles;
+
+                // page content
+                _headcontent = site.HeadContent;
+                _bodycontent = site.BodyContent;
+
+                // SMTP
+                _smtpenabled = SettingService.GetSetting(settings, "SMTPEnabled", "False");
+                if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                {
+                    _smtphost = SettingService.GetSetting(settings, "SMTPHost", string.Empty);
+                    _smtpport = SettingService.GetSetting(settings, "SMTPPort", string.Empty);
+                    _smtpssl = SettingService.GetSetting(settings, "SMTPSSL", "Auto");
+                    if (_smtpssl == "True") _smtpssl = "SslOnConnect";
+                    if (_smtpssl == "False") _smtpssl = "StartTlsWhenAvailable";
+                    _smtpauthentication = SettingService.GetSetting(settings, "SMTPAuthentication", "Basic");
+                    _smtpusername = SettingService.GetSetting(settings, "SMTPUsername", string.Empty);
+                    _smtppassword = SettingService.GetSetting(settings, "SMTPPassword", string.Empty);
+                    _togglesmtppassword = SharedLocalizer["ShowPassword"];
+                    _smtpauthority = SettingService.GetSetting(settings, "SMTPAuthority", string.Empty);
+                    _smtpclientid = SettingService.GetSetting(settings, "SMTPClientId", string.Empty);
+                    _smtpclientsecret = SettingService.GetSetting(settings, "SMTPClientSecret", string.Empty);
+                    _togglesmtpclientsecret = SharedLocalizer["ShowPassword"];
+                    _smtpscopes = SettingService.GetSetting(settings, "SMTPScopes", string.Empty);
+                    _smtpsender = SettingService.GetSetting(settings, "SMTPSender", string.Empty);
+                    _retention = int.Parse(SettingService.GetSetting(settings, "NotificationRetention", "30"));
+                }
+
+                // PWA
+                _pwaisenabled = site.PwaIsEnabled.ToString();
+                if (site.PwaAppIconFileId != null)
+                {
+                    _pwaappiconfileid = site.PwaAppIconFileId.Value;
+                }
+                if (site.PwaSplashIconFileId != null)
+                {
+                    _pwasplashiconfileid = site.PwaSplashIconFileId.Value;
+                }
+
+                // aliases
+                await LoadAliases();
+
+                // hosting model
+                _rendermode = site.RenderMode;
+                _enhancednavigation = site.EnhancedNavigation.ToString();
+                _runtime = site.Runtime;
+                _prerender = site.Prerender.ToString();
+                _hybrid = site.Hybrid.ToString();
+
+                // database
+                if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                {
+                    var tenants = await TenantService.GetTenantsAsync();
+                    var _databases = await DatabaseService.GetDatabasesAsync();
+                    var tenant = tenants.Find(item => item.TenantId == PageState.Alias.TenantId);
+                    if (tenant != null)
+                    {
+                        _tenant = tenant.Name;
+                        // hack - there are 3 providers with SqlServerDatabase DBTypes - so we are choosing the last one in alphabetical order
+                        _database = _databases.Where(item => item.DBType == tenant.DBType).OrderBy(item => item.Name).Last()?.Name;
+                        _connectionstring = tenant.DBConnectionString;
+                    }
+                }
+
+                // site groups
+                if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                {
+                    await LoadSiteGroups();
+                }
+
+                // audit
+                _createdby = site.CreatedBy;
+                _createdon = site.CreatedOn;
+                _modifiedby = site.ModifiedBy;
+                _modifiedon = site.ModifiedOn;
+                _deletedby = site.DeletedBy;
+                _deletedon = site.DeletedOn;
+
+                _initialized = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Site {SiteId} {Error}", PageState.Site.SiteId, ex.Message);
+            AddModuleMessage(ex.Message, MessageType.Error);
+        }
+    }
+
+    private async void ThemeChanged(ChangeEventArgs e)
+    {
+        try
+        {
+            _themetype = (string)e.Value;
+            _containers = ThemeService.GetContainerControls(PageState.Site.Themes, _themetype);
+            _containertype = _containers.First().TypeName;
+            _admincontainertype = Constants.DefaultAdminContainer;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Containers For Theme {ThemeType} {Error}", _themetype, ex.Message);
+            AddModuleMessage(Localizer["Error.Theme.LoadPane"], MessageType.Error);
+        }
+    }
+
+    private void RenderModeChanged(ChangeEventArgs e)
+    {
+        _rendermode = (string)e.Value;
+        switch (_rendermode)
+        {
+            case RenderModes.Interactive:
+                _prerender = "True";
+                break;
+            case RenderModes.Static:
+                _prerender = "False";
+                break;
+            case RenderModes.Headless:
+                _prerender = "False";
+                break;
+        }
+    }
+
+    private async Task SaveSite()
+    {
+        validated = true;
+        var interop = new Interop(JSRuntime);
+        if (await interop.FormValid(form))
+        {
+            try
+            {
+                if (_name != string.Empty && _themetype != "-" && _containertype != "-")
+                {
+                    var site = await SiteService.GetSiteAsync(PageState.Site.SiteId);
+                    if (site != null)
+                    {
+                        site.Name = _name;
+                        site.TimeZoneId = _timezoneid;
+                        site.CultureCode = _culturecode;
+                        site.IsDeleted = (_isdeleted == null ? true : Boolean.Parse(_isdeleted));
+
+                        // appearance
+                        site.LogoFileId = null;
+                        var logofileid = _logofilemanager.GetFileId();
+                        if (logofileid != -1)
+                        {
+                            site.LogoFileId = logofileid;
+                            if (logofileid != _logofileid)
+                            {
+                                _logofileid = logofileid;
+                            }
+                        }
+                        int? faviconFieldId = _faviconfilemanager.GetFileId();
+                        if (faviconFieldId == -1) faviconFieldId = null;
+                        if (site.FaviconFileId != faviconFieldId)
+                        {
+                            site.FaviconFileId = faviconFieldId;
+                        }
+                        if (site.DefaultThemeType != _themetype)
+                        {
+                            site.DefaultThemeType = _themetype;
+                        }
+                        if (site.DefaultContainerType != _containertype)
+                        {
+                            site.DefaultContainerType = _containertype;
+                        }
+                        site.AdminContainerType = _admincontainertype;
+                        site.AdminThemeType = _adminthemetype;
+
+                        // page content
+                        if (site.HeadContent != _headcontent)
+                        {
+                            site.HeadContent = _headcontent;
+                        }
+                        if (site.BodyContent != _bodycontent)
+                        {
+                            site.BodyContent = _bodycontent;
+                        }
+
+                        // PWA
+                        if (site.PwaIsEnabled.ToString() != _pwaisenabled)
+                        {
+                            site.PwaIsEnabled = Boolean.Parse(_pwaisenabled);
+                        }
+                        int? pwaappiconfileid = _pwaappiconfilemanager.GetFileId();
+                        if (pwaappiconfileid == -1) pwaappiconfileid = null;
+                        if (site.PwaAppIconFileId != pwaappiconfileid)
+                        {
+                            site.PwaAppIconFileId = pwaappiconfileid;
+                        }
+                        int? pwasplashiconfileid = _pwasplashiconfilemanager.GetFileId();
+                        if (pwasplashiconfileid == -1) pwasplashiconfileid = null;
+                        if (site.PwaSplashIconFileId != pwasplashiconfileid)
+                        {
+                            site.PwaSplashIconFileId = pwasplashiconfileid;
+                        }
+
+                        // hosting model
+                        if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                        {
+                            site.RenderMode = _rendermode;
+                            site.EnhancedNavigation = bool.Parse(_enhancednavigation);
+                            site.Runtime = _runtime;
+                            site.Prerender = bool.Parse(_prerender);
+                            site.Hybrid = bool.Parse(_hybrid);
+                        }
+
+                        site = await SiteService.UpdateSiteAsync(site);
+
+                        // SMTP
+                        var settings = await SettingService.GetSiteSettingsAsync(site.SiteId);
+                        settings = SettingService.SetSetting(settings, "SMTPEnabled", _smtpenabled, true);
+                        if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                        {
+                            settings = SettingService.SetSetting(settings, "SMTPHost", _smtphost, true);
+                            settings = SettingService.SetSetting(settings, "SMTPPort", _smtpport, true);
+                            settings = SettingService.SetSetting(settings, "SMTPSSL", _smtpssl, true);
+                            settings = SettingService.SetSetting(settings, "SMTPAuthentication", _smtpauthentication, true);
+                            settings = SettingService.SetSetting(settings, "SMTPUsername", _smtpusername, true);
+                            settings = SettingService.SetSetting(settings, "SMTPPassword", _smtppassword, true);
+                            settings = SettingService.SetSetting(settings, "SMTPAuthority", _smtpauthority, true);
+                            settings = SettingService.SetSetting(settings, "SMTPClientId", _smtpclientid, true);
+                            settings = SettingService.SetSetting(settings, "SMTPClientSecret", _smtpclientsecret, true);
+                            settings = SettingService.SetSetting(settings, "SMTPScopes", _smtpscopes, true);
+                            settings = SettingService.SetSetting(settings, "SMTPSender", _smtpsender, true);
+                            settings = SettingService.SetSetting(settings, "NotificationRetention", _retention.ToString(), true);
+
+                            if (_smtpenabled == "True")
+                            {
+                                var jobs = await JobService.GetJobsAsync();
+                                var job = jobs.FirstOrDefault(item => item.JobType == "Stomme.Infrastructure.NotificationJob, Stomme.Server");
+                                if (job != null && !job.IsEnabled)
+                                {
+                                    job.IsEnabled = true;
+                                    await JobService.UpdateJobAsync(job);
+                                }
+                            }
+                        }
+
+                        //cookie consent
+                        settings = SettingService.SetSetting(settings, "CookieConsent", _cookieconsent);
+
+                        // functionality
+                        settings = SettingService.SetSetting(settings, "TextEditor", _textEditor);
+
+                        settings = SettingService.SetSetting(settings, "SiteGuid", _siteguid, true);
+                        await SettingService.UpdateSiteSettingsAsync(settings, site.SiteId);
+
+                        await logger.LogInformation("Site Settings Saved {Site}", site);
+
+                        NavigationManager.NavigateTo(NavigateUrl(PageState.Page.Path, "updated=true"), true); // reload
+                    }
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.Required.SiteName"], MessageType.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "Error Saving Site {SiteId} {Error}", PageState.Site.SiteId, ex.Message);
+                AddModuleMessage(Localizer["Error.SaveSite"], MessageType.Error);
+            }
+        }
+        else
+        {
+            AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+        }
+    }
+
+    private async Task DeleteSite()
+    {
+        try
+        {
+            var aliases = await AliasService.GetAliasesAsync();
+            if (aliases.Any(item => item.SiteId != PageState.Site.SiteId || item.TenantId != PageState.Alias.TenantId))
+            {
+                await SiteService.DeleteSiteAsync(PageState.Site.SiteId);
+                await logger.LogInformation("Site Deleted {SiteId}", PageState.Site.SiteId);
+
+                foreach (Alias alias in aliases.Where(item => item.SiteId == PageState.Site.SiteId && item.TenantId == PageState.Alias.TenantId))
+                {
+                    await AliasService.DeleteAliasAsync(alias.AliasId);
+                }
+
+                var redirect = aliases.First(item => item.SiteId != PageState.Site.SiteId || item.TenantId != PageState.Alias.TenantId);
+                NavigationManager.NavigateTo(PageState.Uri.Scheme + "://" + redirect.Name, true);
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.FailAuth.DeleteSite"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Site {SiteId} {Error}", PageState.Site.SiteId, ex.Message);
+            AddModuleMessage(Localizer["Error.DeleteSite"], MessageType.Error);
+        }
+    }
+
+    private void SMTPAuthenticationChanged(ChangeEventArgs e)
+    {
+        _smtpauthentication = (string)e.Value;
+        StateHasChanged();
+    }
+
+    private void SMTPEnabledChanged(ChangeEventArgs e)
+    {
+        _smtpenabled = (string)e.Value;
+        StateHasChanged();
+    }
+
+    private void ToggleSMTPPassword()
+    {
+        if (_smtppasswordtype == "password")
+        {
+            _smtppasswordtype = "text";
+            _togglesmtppassword = SharedLocalizer["HidePassword"];
+        }
+        else
+        {
+            _smtppasswordtype = "password";
+            _togglesmtppassword = SharedLocalizer["ShowPassword"];
+        }
+    }
+
+    private void ToggleSmtpClientSecret()
+    {
+        if (_smtpclientsecrettype == "password")
+        {
+            _smtpclientsecrettype = "text";
+            _togglesmtpclientsecret = SharedLocalizer["HidePassword"];
+        }
+        else
+        {
+            _smtpclientsecrettype = "password";
+            _togglesmtpclientsecret = SharedLocalizer["ShowPassword"];
+        }
+    }
+
+    private async Task SendEmail()
+    {
+        if (_smtphost != "" && _smtpport != "" && _smtpsender != "")
+        {
+            try
+            {
+                _smtpenabled = "True";
+
+                var settings = await SettingService.GetSiteSettingsAsync(PageState.Site.SiteId);
+                settings = SettingService.SetSetting(settings, "SMTPEnabled", _smtpenabled, true);
+                settings = SettingService.SetSetting(settings, "SMTPHost", _smtphost, true);
+                settings = SettingService.SetSetting(settings, "SMTPPort", _smtpport, true);
+                settings = SettingService.SetSetting(settings, "SMTPSSL", _smtpssl, true);
+                settings = SettingService.SetSetting(settings, "SMTPAuthentication", _smtpauthentication, true);
+                settings = SettingService.SetSetting(settings, "SMTPUsername", _smtpusername, true);
+                settings = SettingService.SetSetting(settings, "SMTPPassword", _smtppassword, true);
+                settings = SettingService.SetSetting(settings, "SMTPAuthority", _smtpauthority, true);
+                settings = SettingService.SetSetting(settings, "SMTPClientId", _smtpclientid, true);
+                settings = SettingService.SetSetting(settings, "SMTPClientSecret", _smtpclientsecret, true);
+                settings = SettingService.SetSetting(settings, "SMTPScopes", _smtpscopes, true);
+                settings = SettingService.SetSetting(settings, "SMTPSender", _smtpsender, true);
+                await SettingService.UpdateSiteSettingsAsync(settings, PageState.Site.SiteId);
+                await logger.LogInformation("Site SMTP Settings Saved");
+
+                var jobs = await JobService.GetJobsAsync();
+                var job = jobs.FirstOrDefault(item => item.JobType == "Stomme.Infrastructure.NotificationJob, Stomme.Server");
+                if (job != null && !job.IsEnabled)
+                {
+                    job.IsEnabled = true;
+                    await JobService.UpdateJobAsync(job);
+                }
+
+                await NotificationService.AddNotificationAsync(new Notification(PageState.Site.SiteId, PageState.User, PageState.Site.Name + " SMTP Configuration Test", "SMTP Server Is Configured Correctly."));
+                AddModuleMessage(Localizer["Info.Smtp.SaveSettings"], MessageType.Info);
+                await ScrollToPageTop();
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "Error Testing SMTP Configuration");
+                AddModuleMessage(Localizer["Error.Smtp.TestConfig"], MessageType.Error);
+            }
+        }
+        else
+        {
+            AddModuleMessage(Localizer["Message.Required.Smtp"], MessageType.Warning);
+        }
+    }
+
+    private async Task LoadAliases()
+    {
+        _aliases = await AliasService.GetAliasesAsync();
+        _aliases = _aliases.Where(item => item.SiteId == PageState.Site.SiteId && item.TenantId == PageState.Alias.TenantId).OrderBy(item => item.AliasId).ToList();
+        _aliasid = -1;
+        _addAlias = false;
+    }
+
+    private async void AliasChanged(ChangeEventArgs e)
+    {
+        _aliasid = int.Parse(e.Value.ToString());
+        if (_aliasid != -1)
+        {
+            var alias = _aliases.FirstOrDefault(item => item.AliasId == _aliasid);
+            if (alias != null)
+            {
+                _aliasname = alias.Name;
+                _defaultalias = alias.IsDefault.ToString();
+            }
+        }
+        else
+        {
+            _aliasname = "";
+            _defaultalias = "False";
+        }
+        StateHasChanged();
+    }
+
+    private void AddAlias()
+    {
+        _aliasid = -1;
+        _aliasname = "";
+        _defaultalias = "False";
+        _addAlias = true;
+        StateHasChanged();
+    }
+
+    private async Task DeleteAlias()
+    {
+        await AliasService.DeleteAliasAsync(_aliasid);
+        await LoadAliases();
+        StateHasChanged();
+    }
+
+    private async Task SaveAlias()
+    {
+        if (!string.IsNullOrEmpty(_aliasname))
+        {
+            var aliases = await AliasService.GetAliasesAsync();
+
+            int protocolIndex = _aliasname.IndexOf("://", StringComparison.OrdinalIgnoreCase);
+            if (protocolIndex != -1)
+            {
+                _aliasname = _aliasname.Substring(protocolIndex + 3);
+            }
+
+            var alias = aliases.FirstOrDefault(item => item.Name == _aliasname);
+
+            bool unique = (alias == null || alias.AliasId == _aliasid);
+
+            if (unique)
+            {
+                if (_aliasid == -1)
+                {
+                    alias = new Alias { SiteId = PageState.Site.SiteId, TenantId = PageState.Alias.TenantId, Name = _aliasname, IsDefault = bool.Parse(_defaultalias) };
+                    await AliasService.AddAliasAsync(alias);
+                }
+                else
+                {
+                    alias = _aliases.SingleOrDefault(item => item.AliasId == _aliasid);
+                    if (alias != null)
+                    {
+                        alias.Name = _aliasname;
+                        alias.IsDefault = bool.Parse(_defaultalias);
+                        await AliasService.UpdateAliasAsync(alias);
+                    }
+                }
+
+                await LoadAliases();
+                _aliasid = -1;
+                _aliasname = "";
+                StateHasChanged();
+            }
+            else // Duplicate alias
+            {
+                AddModuleMessage(Localizer["Message.Aliases.Taken"], MessageType.Warning);
+                await ScrollToPageTop();
+            }
+        }
+    }
+
+    private async Task CancelAlias()
+    {
+        await LoadAliases();
+        _aliasid = -1;
+        _aliasname = "";
+        StateHasChanged();
+    }
+
+    private async Task EvictSitemapOutputCache() {
+        await CacheService.EvictByTag(Constants.SitemapOutputCacheTag);
+        AddModuleMessage(Localizer["Success.SiteMap.CacheEvicted"], MessageType.Success);
+    }
+
+    private async Task LoadSiteGroups()
+    {
+        _siteGroups = await SiteGroupService.GetSiteGroupsAsync();
+        _siteGroupId = -1;
+        _addSiteGroup = false;
+        StateHasChanged();
+    }
+
+    private async Task SiteGroupChanged(ChangeEventArgs e)
+    {
+        _siteGroupId = int.Parse(e.Value.ToString());
+        if (_siteGroupId != -1)
+        {
+            var group = _siteGroups.FirstOrDefault(item => item.SiteGroupId == _siteGroupId);
+            if (group != null)
+            {
+                _groupName = group.Name;
+                _groupType = group.Type;
+                _siteId = -1;
+                _primary = "False";
+                _addSiteGroupMember = false;
+
+                await LoadSites();
+            }
+        }
+        StateHasChanged();
+    }
+
+    private async Task LoadSites()
+    {
+        var siteGroupMembers = await SiteGroupMemberService.GetSiteGroupMembersAsync(-1, _siteGroupId);
+
+        _sites = await SiteService.GetSitesAsync();
+        if (_addSiteGroupMember)
+        {
+            // include sites which are not members
+            _sites = _sites.ExceptBy(siteGroupMembers.Select(item => item.SiteId), item => item.SiteId).ToList();
+        }
+        else
+        {
+            // include sites which are members
+            _sites = _sites.Where(item => siteGroupMembers.Any(item2 => item2.SiteId == item.SiteId)).ToList();
+            var group = _siteGroups.FirstOrDefault(item => item.SiteGroupId == _siteGroupId);
+            foreach (var site in _sites)
+            {
+                if (group.PrimarySiteId == site.SiteId)
+                {
+                    site.Name += $" ({Localizer["Primary"]})";
+                }
+                else
+                {
+                    site.Name += $" ({Localizer["Secondary"]})";
+                }                
+            }
+
+            var siteGroupMember = siteGroupMembers.FirstOrDefault(item => item.SiteId == _siteId);
+            if (siteGroupMember != null)
+            {
+                _primary = (siteGroupMember.SiteGroup.PrimarySiteId == _siteId) ? "True" : "False";
+                _synchronized = UtcToLocal(siteGroupMember.SynchronizedOn).ToString();
+            }
+        }
+    }
+
+    private async Task SiteChanged(ChangeEventArgs e)
+    {
+        _siteId = int.Parse(e.Value.ToString());
+        var siteGroupMember = await SiteGroupMemberService.GetSiteGroupMemberAsync(_siteId, _siteGroupId);
+        if (siteGroupMember != null)
+        {
+            _primary = (siteGroupMember.SiteGroup.PrimarySiteId == _siteId) ? "True" : "False";
+            _synchronized = UtcToLocal(siteGroupMember.SynchronizedOn).ToString();
+        }
+        StateHasChanged();
+    }
+
+    private async Task AddSiteGroup()
+    {
+        _groupName = "";
+        _siteId = PageState.Site.SiteId;
+        _primary = "True";
+        _synchronized = "";
+        _addSiteGroup = true;
+    }
+
+    private async Task AddSiteGroupMember()
+    {
+        _addSiteGroupMember = !_addSiteGroupMember;
+        _siteId = -1;
+        await LoadSites();
+    }
+
+    private async Task SaveSiteGroupMember()
+    {
+        if (string.IsNullOrEmpty(_groupName))
+        {
+            AddModuleMessage(Localizer["Message.Required.GroupName"], MessageType.Warning);
+            await ScrollToPageTop();
+            return;
+        }
+
+        SiteGroup siteGroup = null;
+
+        if (_siteGroupId == -1)
+        {
+            siteGroup = new SiteGroup
+            {
+                Name = _groupName,
+                Type = _groupType,
+                PrimarySiteId = _siteId,
+                Synchronize = false
+            };
+            siteGroup = await SiteGroupService.AddSiteGroupAsync(siteGroup);
+        }
+        else
+        {
+            siteGroup = _siteGroups.FirstOrDefault(item => item.SiteGroupId == _siteGroupId);
+            if (siteGroup != null)
+            {
+                siteGroup.Name = _groupName;
+                siteGroup.Type = _groupType;
+                siteGroup.PrimarySiteId = (_primary == "True") ? _siteId : siteGroup.PrimarySiteId;
+                siteGroup = await SiteGroupService.UpdateSiteGroupAsync(siteGroup);
+            }
+            else
+            {
+                siteGroup = null;
+            }
+        }
+
+        if (siteGroup != null)
+        {
+            if (_siteId != -1)
+            {
+                var siteGroupMember = await SiteGroupMemberService.GetSiteGroupMemberAsync(_siteId, siteGroup.SiteGroupId);
+                if (siteGroupMember == null)
+                {
+                    siteGroupMember = new SiteGroupMember
+                    {
+                        SiteGroupId = siteGroup.SiteGroupId,
+                        SiteId = _siteId
+                    };
+                    await SiteGroupMemberService.AddSiteGroupMemberAsync(siteGroupMember);
+                }
+                else
+                {
+                    siteGroupMember.SynchronizedOn = string.IsNullOrEmpty(_synchronized) ? null : siteGroupMember.SynchronizedOn;
+                    await SiteGroupMemberService.UpdateSiteGroupMemberAsync(siteGroupMember);
+                }
+            }
+
+            if (siteGroup.Type == SiteGroupTypes.Synchronization)
+            {
+                // enable synchronization job if it is not enabled already
+                var jobs = await JobService.GetJobsAsync();
+                var job = jobs.FirstOrDefault(item => item.JobType == "Stomme.Infrastructure.SynchronizationJob, Stomme.Server");
+                if (job != null && !job.IsEnabled)
+                {
+                    job.IsEnabled = true;
+                    await JobService.UpdateJobAsync(job);
+                }
+            }
+
+            await LoadSiteGroups();
+        }
+    }
+
+    private async Task CancelSiteGroupMember()
+    {
+        _groupName = "";
+        await LoadSiteGroups();
+    }
+
+    private async Task DeleteSiteGroupMember()
+    {
+        if (_siteGroupId != -1)
+        {
+            if (_siteId != -1)
+            {
+                var siteGroupMember = await SiteGroupMemberService.GetSiteGroupMemberAsync(_siteId, _siteGroupId);
+                if (siteGroupMember != null)
+                {
+                    await SiteGroupMemberService.DeleteSiteGroupMemberAsync(siteGroupMember.SiteGroupMemberId);
+                }
+            }
+
+            var siteGroupMembers = await SiteGroupMemberService.GetSiteGroupMembersAsync(-1, _siteGroupId);
+            if (!siteGroupMembers.Any())
+            {
+                await SiteGroupService.DeleteSiteGroupAsync(_siteGroupId);
+            }
+
+            await LoadSiteGroups();
+        }
+    }
+
+    private async Task ResetSiteGroupMember()
+    {
+        _synchronized = "";
+    }
+}

@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <RootNamespace>Stomme.MessageBus.Live.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <!--
+    Live durable-transport round-trip tests over the RavenDB transport. GATED in Stomme.slnx since
+    BL-15 (2026-08-03), fail-not-skip per D46: needs a live RavenDB server and FAILS loudly when the one
+    named by RAVENDB_TEST_URL (default: the infra UAT tier, http://192.168.10.20:8081) is unreachable.
+
+    The RabbitMQ round-trip moved to test/Stomme.MessageBus.RabbitMq.Live.Tests (deliberately UNGATED:
+    no broker exists in this environment — see that csproj's header for the rationale + revisit trigger).
+  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Stomme.EventBus\Stomme.EventBus.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Infrastructure.EventBus\Stomme.Infrastructure.EventBus.csproj" />
+    <ProjectReference Include="..\..\src\Stomme.Persistence.RavenDb\Stomme.Persistence.RavenDb.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Stomme.Persistence.RavenDb</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RavenDB.Client" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <!-- Messaging/: the custom Rebus RavenDB transport + centralized subscription storage + DLQ.
+         There is no first-party Rebus RavenDB transport, so Stomme ships its own (see D9). -->
+    <PackageReference Include="Rebus" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stomme.Persistence.Abstractions\Stomme.Persistence.Abstractions.csproj" />
+    <ProjectReference Include="..\Stomme.Tenancy.Abstractions\Stomme.Tenancy.Abstractions.csproj" />
+    <!-- IDeadLetterQueue: the RavenDB transport backs the DLQ admin port with its queue documents. -->
+    <ProjectReference Include="..\Stomme.EventBus\Stomme.EventBus.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Stomme.Persistence.Raven.Tests" />
+    <InternalsVisibleTo Include="Stomme.MessageBus.Tests" />
+  </ItemGroup>
+
+</Project>

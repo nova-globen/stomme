@@ -1,0 +1,201 @@
+@namespace Stomme.Modules.Admin.Themes
+@using System.Net
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IThemeService ThemeService
+@inject IPackageService PackageService
+@inject ISiteService SiteService
+@inject IStringLocalizer<Index> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_themes == null)
+{
+    <p><em>@SharedLocalizer["Loading"]</em></p>
+}
+else
+{
+    @* Migrated to the --db-* design system (D11, Phase 4): the action row uses db-page-head's
+       gap instead of Bootstrap ms-* spacing utilities. *@
+    <div class="db-page-head-actions">
+        <ActionLink Action="Add" Text="Install Theme" ResourceKey="InstallTheme" />
+        <ActionLink Action="Create" Text="Create Theme" ResourceKey="CreateTheme" Class="db-btn db-btn-neutral" />
+        <FluentButton Appearance="ButtonAppearance.Default" OnClick="Synchronize">@Localizer["Synchronize"]</FluentButton>
+    </div>
+
+    <Pager Items="@_themes">
+        <Header>
+            <th style="width: 1px;">&nbsp;</th>
+            <th style="width: 1px;">&nbsp;</th>
+            <th>@SharedLocalizer["Name"]</th>
+            <th>@SharedLocalizer["Version"]</th>
+            <th>@Localizer["Enabled"]</th>
+            <th>@SharedLocalizer["Support"]</th>
+            <th>@SharedLocalizer["Expires"]</th>
+            <th>&nbsp;</th>
+        </Header>
+        <Row>
+            <td><ActionLink Action="Edit" Text="Edit" Parameters="@($"id=" + context.ThemeId.ToString())" ResourceKey="EditTheme" /></td>
+            <td>
+				@if (context.AssemblyName != Constants.ClientId)
+                {
+                    <ActionDialog Header="Delete Theme" Message="@string.Format(Localizer["Confirm.Theme.Delete"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteTheme(context))" ResourceKey="DeleteTheme" />
+                }
+            </td>
+            <td>@context.Name</td>
+            <td>@context.Version</td>
+            <td>
+                @if (context.IsEnabled)
+                {
+                    <span>@SharedLocalizer["Yes"]</span>
+                }
+                else
+                {
+                    <span>@SharedLocalizer["No"]</span>
+                }
+            </td>
+            <td>
+                @((MarkupString)SupportLink(context.PackageName, context.Version))
+            </td>
+            <td>
+                @((MarkupString)PurchaseLink(context.PackageName))
+            </td>
+            <td>
+				@{ 
+					var version = UpgradeAvailable(context.PackageName, context.Version);
+				} 
+                @if (version != context.Version)
+                {
+                    <button type="button" class="db-btn" @onclick=@(async () => await DownloadTheme(context.PackageName, version))>@SharedLocalizer["Upgrade"]</button>
+                }
+            </td>
+        </Row>
+    </Pager>
+}
+
+@code {
+    private List<Theme> _themes;
+    private List<Package> _packages;
+
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Host;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            _themes = await ThemeService.GetThemesAsync(PageState.Site.SiteId);
+            _packages = await PackageService.GetPackageUpdatesAsync("theme");
+        }
+        catch (Exception ex)
+        {
+            if (_themes == null)
+            {
+                await logger.LogError(ex, "Error Loading Themes {Error}", ex.Message);
+                AddModuleMessage(Localizer["Error.Theme.Load"], MessageType.Error);
+            }
+        }
+    }
+
+    private string PurchaseLink(string packagename)
+    {
+        string link = "";
+        if (!string.IsNullOrEmpty(packagename) && _packages != null)
+        {
+            var package = _packages.Where(item => item.PackageId == packagename).FirstOrDefault();
+            if (package != null)
+            {
+                if (package.ExpiryDate != null && package.ExpiryDate.Value.Date != DateTime.MaxValue.Date)
+                { 
+                    if (string.IsNullOrEmpty(package.PaymentUrl))
+                    {
+                        link = "<span>" + package.ExpiryDate.Value.Date.ToString("MMM dd, yyyy") + "</span>";
+                    }
+                    else
+                    {
+                        link = "<a class=\"btn btn-primary\" style=\"text-decoration: none !important\" href=\"" + package.PaymentUrl + "\" target=\"_new\">" + package.ExpiryDate.Value.Date.ToString("MMM dd, yyyy") + "</a>";
+                    }
+                }
+            }
+        }
+        return link;
+    }
+
+    private string SupportLink(string packagename, string version)
+    {
+        string link = "";
+        if (!string.IsNullOrEmpty(packagename) && _packages != null)
+        {
+            var package = _packages.Where(item => item.PackageId == packagename).FirstOrDefault();
+            if (package != null && !string.IsNullOrEmpty(package.SupportUrl))
+            {
+                link += "<a class=\"btn btn-info\" style=\"text-decoration: none !important\" href=\"" + package.SupportUrl.Replace("{Version}", version) + "\" target=\"_new\">" + SharedLocalizer["Help"] + "</a>";
+            }
+        }
+        return link;
+    }
+
+	private string UpgradeAvailable(string packagename, string version)
+	{
+		if (!string.IsNullOrEmpty(packagename) && _packages != null)
+		{
+			var package = _packages.Where(item => item.PackageId == packagename).FirstOrDefault();
+			if (package != null && Version.Parse(package.Version).CompareTo(Version.Parse(version)) > 0)
+			{
+				return package.Version;
+			}
+        }
+        return version;
+    }
+
+    private async Task DownloadTheme(string packagename, string version)
+    {
+        try
+        {
+            await PackageService.DownloadPackageAsync(packagename, version);
+            await logger.LogInformation("Theme Downloaded {ThemeName} {Version}", packagename, version);
+            AddModuleMessage(string.Format(Localizer["Success.Theme.Install"], NavigateUrl("admin/system")), MessageType.Success);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Downloading Theme {ThemeName} {Version} {Error}", packagename, version, ex.Message);
+            AddModuleMessage(Localizer["Error.Theme.Download"], MessageType.Error);
+        }
+    }
+
+    private async Task DeleteTheme(Theme Theme)
+    {
+        try
+        {
+            await ThemeService.DeleteThemeAsync(Theme.ThemeId, PageState.Site.SiteId);
+            AddModuleMessage(Localizer["Success.Theme.Delete"], MessageType.Success);
+            NavigationManager.NavigateTo(NavigateUrl(PageState.Page.Path, true));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting Theme {Theme} {Error}", Theme, ex.Message);
+            AddModuleMessage(Localizer["Error.Theme.Delete"], MessageType.Error);
+        }
+    }
+
+    private async Task Synchronize()
+    {
+        try
+        {
+            ShowProgressIndicator();
+            foreach (var theme in _themes)
+            {
+                if (!string.IsNullOrEmpty(theme.PackageName) && !_packages.Any(item => item.PackageId == theme.PackageName))
+                {
+                    await PackageService.GetPackageAsync(theme.PackageName, theme.Version, false);
+                }
+            }
+            HideProgressIndicator();
+            AddModuleMessage(Localizer["Success.Theme.Synchronize"], MessageType.Success);
+            NavigationManager.NavigateTo(NavigateUrl(PageState.Page.Path, true));
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Synchronizing Themes {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Theme.Synchronize"], MessageType.Error);
+        }
+    }
+}

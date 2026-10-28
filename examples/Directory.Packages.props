@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Standalone consumers pin versions on the PackageReference itself (as a downstream app does). -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+</Project>

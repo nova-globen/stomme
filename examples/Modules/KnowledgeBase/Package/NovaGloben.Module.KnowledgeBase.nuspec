@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>NovaGloben.Module.KnowledgeBase</id>
+        <version>1.0.0</version>
+        <authors>Nova Globen AB</authors>
+        <owners>Nova Globen AB</owners>
+        <title>Knowledge Base</title>
+        <description>The Stomme exemplar module: a site's knowledge base, split Client/Server/Shared, storage-blind, built against the Stomme SDK packages only - the reference for every extension point a module can use.</description>
+        <copyright>Nova Globen AB</copyright>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <license type="file">LICENSE</license>
+        <projectUrl>https://github.com/nova-globen/stomme</projectUrl>
+        <icon>icon.png</icon>
+        <tags>stomme module exemplar knowledge-base storage-blind cqrs ddd webassembly</tags>
+        <releaseNotes>BL-86 increment 1: the scaffold - the two tenant-owned aggregates on the installation's store, the keys, the list page.</releaseNotes>
+        <!--
+            The Stomme.Framework package type (with the minimum framework version) is how the InstallationManager
+            recognises a Stomme module and gates it on the running framework's version.
+        -->
+        <packageTypes>
+            <packageType name="Dependency" />
+            <packageType name="Stomme.Framework" version="10.73.2" />
+        </packageTypes>
+    </metadata>
+    <files>
+        <!-- D115: the LICENSE file (PolyForm Noncommercial OR Small Business) at the package root, as every Stomme.* package carries it (BL-187). No target attribute: dotnet pack over a nuspec gives an empty entry name for ANY explicit target, empty included (measured). -->
+        <file src="..\..\..\..\LICENSE" />
+        <!--
+            The three .Stomme-suffixed assemblies under lib/net10.0: the InstallationManager extracts lib/net*/ into the
+            host's /bin, where the convention loader loads them. No framework DLL ships - they are the host's own.
+        -->
+        <file src="..\NovaGloben.Module.KnowledgeBase.Client\bin\Release\net10.0\NovaGloben.Module.KnowledgeBase.Client.Stomme.dll" target="lib\net10.0" />
+        <file src="..\NovaGloben.Module.KnowledgeBase.Client\bin\Release\net10.0\NovaGloben.Module.KnowledgeBase.Client.Stomme.pdb" target="lib\net10.0" />
+        <file src="..\NovaGloben.Module.KnowledgeBase.Server\bin\Release\net10.0\NovaGloben.Module.KnowledgeBase.Server.Stomme.dll" target="lib\net10.0" />
+        <file src="..\NovaGloben.Module.KnowledgeBase.Server\bin\Release\net10.0\NovaGloben.Module.KnowledgeBase.Server.Stomme.pdb" target="lib\net10.0" />
+        <file src="..\NovaGloben.Module.KnowledgeBase.Shared\bin\Release\net10.0\NovaGloben.Module.KnowledgeBase.Shared.Stomme.dll" target="lib\net10.0" />
+        <file src="..\NovaGloben.Module.KnowledgeBase.Shared\bin\Release\net10.0\NovaGloben.Module.KnowledgeBase.Shared.Stomme.pdb" target="lib\net10.0" />
+        <file src="icon.png" target="" />
+    </files>
+</package>

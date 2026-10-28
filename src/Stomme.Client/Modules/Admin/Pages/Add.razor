@@ -1,0 +1,520 @@
+﻿@namespace Stomme.Modules.Admin.Pages
+@inherits ModuleBase
+@inject NavigationManager NavigationManager
+@inject IPageService PageService
+@inject IThemeService  ThemeService
+@inject ISystemService SystemService
+@inject IStringLocalizer<Add> Localizer
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@if (_initialized)
+{
+    <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
+        <TabStrip Refresh="@_refresh">
+            <TabPanel Name="Settings" ResourceKey="Settings" Heading="Settings">
+                <div class="db-fields">
+                    <div class="db-field">
+                        <Label For="name" HelpText="Enter the page name" ResourceKey="Name">Name: </Label>
+                        <div class="db-field-control">
+                            <input id="name" class="db-input" @bind="@_name" maxlength="100" required />
+                        </div>
+                    </div>
+                    @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
+                    {
+                        <div class="db-field">
+                            <Label For="parent" HelpText="Select the parent for the page in the site hierarchy" ResourceKey="Parent">Parent: </Label>
+                            <div class="db-field-control">
+                                <select id="parent" class="db-select" value="@_parentid" @onchange="(e => ParentChanged(e))" required>
+                                    <option value="-1">&lt;@Localizer["SiteRoot"]&gt;</option>
+                                    @foreach (Page page in _pages)
+                                    {
+                                        if (UserSecurity.IsAuthorized(PageState.User, PermissionNames.View, page.PermissionList))
+                                        {
+                                            <option value="@(page.PageId)">@(new string('-', page.Level * 2))@(page.Name)</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="insert" HelpText="Select the location where you would like the page to be inserted in relation to other pages" ResourceKey="Insert">Insert: </Label>
+                            <div class="db-field-control">
+                                <select id="insert" class="db-select" @bind="@_insert" required>
+                                    @if (_children != null && _children.Count > 0)
+                                    {
+                                        <option value="<<">@Localizer["AtBeginning"]</option>
+                                        <option value="<">@Localizer["Before"]</option>
+                                        <option value=">">@Localizer["After"]</option>
+                                    }
+                                    <option value=">>">@Localizer["AtEnd"]</option>
+                                </select>
+                                @if (_children != null && _children.Count > 0 && (_insert == "<" || _insert == ">"))
+                                {
+                                    <select class="db-select" @bind="@_childid">
+                                        <option value="-1">&lt;@Localizer["Page.Select"]&gt;</option>
+                                        @foreach (Page page in _children)
+                                        {
+                                            <option value="@(page.PageId)">@(page.Name)</option>
+                                        }
+                                    </select>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="db-field">
+                            <Label For="parent" HelpText="Select the parent for the page in the site hierarchy" ResourceKey="Parent">Parent: </Label>
+                            <div class="db-field-control">
+                                <select id="parent" class="db-select" @onchange="(e => ParentChanged(e))" required>
+                                    <option value="@(_parent.PageId)">@(new string('-', _parent.Level * 2))@(_parent.Name)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="insert" HelpText="Select the location where you would like the page to be inserted in relation to other pages" ResourceKey="Insert">Insert: </Label>
+                            <div class="db-field-control">
+                                <select id="insert" class="db-select" @bind="@_insert" required>
+                                    <option value=">>">@Localizer["AtEnd"]</option>
+                                </select>
+                            </div>
+                        </div>
+                    }
+                    <div class="db-field">
+                        <Label For="title" HelpText="Optionally enter the page title. If you do not provide a page title, the page name will be used." ResourceKey="Title">Title: </Label>
+                        <div class="db-field-control">
+                            <input id="title" class="db-input" @bind="@_title" maxlength="200" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="path" HelpText="Optionally enter a url path for this page (ie. home ). If you do not provide a url path, the page name will be used. If the page is intended to be the root path specify '/'." ResourceKey="UrlPath">Url Path: </Label>
+                        <div class="db-field-control">
+                            <input id="path" class="db-input" @bind="@_path" maxlength="256" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="url" HelpText="Optionally enter a url which this page should redirect to when a user navigates to it" ResourceKey="Redirect">Redirect: </Label>
+                        <div class="db-field-control">
+                            <input id="url" class="db-input" @bind="@_url" maxlength="500" />
+                        </div>
+                    </div>
+                    <div class="db-field">
+                        <Label For="personalizable" HelpText="Select whether you would like users to be able to personalize this page with their own content" ResourceKey="Personalizable">Personalizable? </Label>
+                        <div class="db-field-control">
+                            <select id="personalizable" class="db-select" @bind="@_ispersonalizable" required>
+                                <option value="True">@SharedLocalizer["Yes"]</option>
+                                <option value="False">@SharedLocalizer["No"]</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <Section Name="Theme" Heading="Theme" ResourceKey="Theme">
+                    <div class="db-fields">
+                        <div class="db-field">
+                            <Label For="theme" HelpText="Select the theme for this page" ResourceKey="Theme">Theme: </Label>
+                            <div class="db-field-control">
+                                <select id="theme" class="db-select" value="@_themetype" @onchange="(e => ThemeChanged(e))" required>
+                                    @foreach (var theme in _themes)
+                                    {
+                                        @if (theme.TypeName == PageState.Site.DefaultThemeType)
+                                        {
+                                            <option value="@theme.TypeName">*@theme.Name*</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@theme.TypeName">@theme.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="container" HelpText="Select the default container for the page" ResourceKey="DefaultContainer">Default Container: </Label>
+                            <div class="db-field-control">
+                                <select id="container" class="db-select" @bind="@_containertype" required>
+                                    @foreach (var container in _containers)
+                                    {
+                                        <option value="@container.TypeName">@container.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </Section>
+                <Section Name="Appearance" Heading="Appearance" ResourceKey="Appearance">
+                    <div class="db-fields">
+                        <div class="db-field">
+                            <Label For="icon" HelpText="Optionally provide an icon class name for this page which will be displayed in the site navigation" ResourceKey="Icon">Icon: </Label>
+                            <div class="db-field-control">
+                                <InputList Id="icon" Value="@_icon" ValueChanged="IconChanged" DataList="@_icons" ResourceKey="Icon" ResourceType="@_iconresources" />
+                            </div>
+                            <div class="db-icon-preview">
+                                <i class="@_icon"></i>
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="navigation" HelpText="Select whether the page is part of the site navigation or hidden" ResourceKey="Navigation">Navigation? </Label>
+                            <div class="db-field-control">
+                                <select id="navigation" class="db-select" @bind="@_isnavigation" required>
+                                    <option value="True">@SharedLocalizer["Yes"]</option>
+                                    <option value="False">@SharedLocalizer["No"]</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="clickable" HelpText="Select whether the link in the site navigation is enabled or disabled" ResourceKey="Clickable">Clickable? </Label>
+                            <div class="db-field-control">
+                                <select id="clickable" class="db-select" @bind="@_isclickable" required>
+                                    <option value="True">@SharedLocalizer["Yes"]</option>
+                                    <option value="False">@SharedLocalizer["No"]</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="effectiveDate" HelpText="The date that this page is active" ResourceKey="EffectiveDate">Effective Date: </Label>
+                            <div class="db-field-control">
+                                <input type="date" id="effectiveDate" class="db-input" @bind="@_effectivedate" />
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="expiryDate" HelpText="The date that this page expires" ResourceKey="ExpiryDate">Expiry Date: </Label>
+                            <div class="db-field-control">
+                                <input type="date" id="expiryDate" class="db-input" @bind="@_expirydate" />
+                            </div>
+                        </div>
+                    </div>
+                </Section>
+                <Section Name="PageContent" ResourceKey="PageContent" Heading=@Localizer["PageContent.Heading"]>
+                    <div class="db-fields">
+                        <div class="db-field">
+                            <Label For="headcontent" HelpText="Optionally enter content to be included in the page head (ie. meta, link, or script tags)" ResourceKey="HeadContent">Head Content: </Label>
+                            <div class="db-field-control">
+                                <textarea id="headcontent" class="db-input" @bind="@_headcontent" rows="3" maxlength="4000"></textarea>
+                            </div>
+                        </div>
+                        <div class="db-field">
+                            <Label For="bodycontent" HelpText="Optionally enter content to be included in the page body (ie. script tags)" ResourceKey="BodyContent">Body Content: </Label>
+                            <div class="db-field-control">
+                                <textarea id="bodycontent" class="db-input" @bind="@_bodycontent" rows="3" maxlength="4000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </Section>
+            </TabPanel>
+            <TabPanel Name="Permissions" ResourceKey="Permissions" Heading=@Localizer["Permissions.Heading"]>
+                <div class="db-fields">
+                    <div class="db-field">
+                        <PermissionGrid EntityName="@EntityNames.Page" Permissions="@_permissions" @ref="_permissionGrid" />
+                    </div>
+                </div>
+            </TabPanel>
+        </TabStrip>
+        <br />
+        <button type="button" class="db-btn" @onclick="SavePage">@SharedLocalizer["Save"]</button>
+        <button type="button" class="db-btn db-btn-neutral" @onclick="Cancel">@SharedLocalizer["Cancel"]</button>
+    </form>
+}
+
+@code {
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.View;
+
+    private bool _initialized = false;
+    private ElementReference form;
+    private bool validated = false;
+    private List<ThemeControl> _themes = new List<ThemeControl>();
+    private List<ThemeControl> _containers = new List<ThemeControl>();
+    private List<Page> _pages;
+    private int _pageId;
+    private string _name;
+    private string _parentid = "-1";
+    private string _insert = ">>";
+    private List<Page> _children;
+    private int _childid = -1;
+    private string _isnavigation = "True";
+    private string _isclickable = "True";
+    private string _path = string.Empty;
+    private string _url;
+    private string _ispersonalizable = "False";
+    private string _title;
+    private string _icon = string.Empty;
+    private string _themetype = string.Empty;
+    private string _containertype = string.Empty;
+    private string _headcontent;
+    private string _bodycontent;
+    private string _permissions = null;
+    private PermissionGrid _permissionGrid;
+    private bool _refresh = false;
+    protected Page _parent = null;
+    protected Dictionary<string, string> _icons;
+    private string _iconresources = "";
+    private DateTime? _effectivedate = null;
+    private DateTime? _expirydate = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _pages = await PageService.GetPagesAsync(PageState.Site.SiteId);
+
+            if (PageState.QueryString.ContainsKey("id"))
+            {
+                _pageId = Int32.Parse(PageState.QueryString["id"]);
+                _parent = await PageService.GetPageAsync(_pageId);
+                if (_parent != null)
+                {
+                    _parentid = _parent.PageId.ToString();
+                }
+            }
+            _icons = await SystemService.GetIconsAsync();
+            _iconresources = typeof(IconResources).FullName;
+
+            // if admin or user has edit access to parent page
+            if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin) || (_parent != null && UserSecurity.IsAuthorized(PageState.User, PermissionNames.Edit, _parent.PermissionList)))
+            {
+                _themetype = PageState.Site.DefaultThemeType;
+                var themes = new List<Theme>();
+                foreach (var theme in PageState.Site.Themes)
+                {
+                    if (UserSecurity.IsAuthorized(PageState.User, PermissionNames.Utilize, theme.PermissionList))
+                    {
+                        themes.Add(theme);
+                    }
+                }
+                _themes = ThemeService.GetThemeControls(themes);
+                _containers = ThemeService.GetContainerControls(themes, _themetype);
+                _containertype = PageState.Site.DefaultContainerType;
+                _children = new List<Page>();
+                foreach (Page p in _pages.Where(item => (_parentid == "-1" && item.ParentId == null) || (item.ParentId == int.Parse(_parentid))))
+                {
+                    if (UserSecurity.IsAuthorized(PageState.User, PermissionNames.View, p.PermissionList))
+                    {
+                        _children.Add(p);
+                    }
+                }
+                _effectivedate = Utilities.UtcAsLocalDate(PageState.Page.EffectiveDate);
+                _expirydate = Utilities.UtcAsLocalDate(PageState.Page.ExpiryDate);
+                _initialized = true;
+            }
+            else
+            {
+                await logger.LogWarning("Error Loading Page {ParentId}", _parentid);
+                AddModuleMessage(Localizer["Error.Page.Load"], MessageType.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Page {Error}", ex.Message);
+            AddModuleMessage(Localizer["Error.Page.Load"], MessageType.Error);
+        }
+    }
+
+    private async void ParentChanged(ChangeEventArgs e)
+    {
+        try
+        {
+            _parentid = (string)e.Value;
+            _children = new List<Page>();
+            foreach (Page p in _pages.Where(item => (_parentid == "-1" && item.ParentId == null) || (item.ParentId == int.Parse(_parentid))))
+            {
+                if (UserSecurity.IsAuthorized(PageState.User, PermissionNames.View, p.PermissionList))
+                {
+                    _children.Add(p);
+                }
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Child Pages For Parent {PageId} {Error}", _parentid, ex.Message);
+            AddModuleMessage(Localizer["Error.ChildPage.Load"], MessageType.Error);
+            await ScrollToPageTop();
+        }
+    }
+
+    private async Task ThemeChanged(ChangeEventArgs e)
+    {
+        _themetype = (string)e.Value;
+        _containers = ThemeService.GetContainerControls(PageState.Site.Themes, _themetype);
+        _containertype = _containers.First().TypeName;
+        StateHasChanged();
+
+        // if theme chosen is different than default site theme, display warning message to user
+        if (ThemeService.GetTheme(PageState.Site.Themes, _themetype)?.ThemeName != ThemeService.GetTheme(PageState.Site.Themes, PageState.Site.DefaultThemeType)?.ThemeName)
+        {
+            AddModuleMessage(Localizer["ThemeChanged.Message"], MessageType.Warning);
+            await ScrollToPageTop();
+        }
+    }
+
+    private async Task SavePage()
+    {
+        validated = true;
+        var interop = new Interop(JSRuntime);
+        if (await interop.FormValid(form))
+        {
+            Page page = null;
+            try
+            {
+                if (!Utilities.ValidateEffectiveExpiryDates(_effectivedate, _expirydate))
+                {
+                    AddModuleMessage(SharedLocalizer["Message.EffectiveExpiryDateError"], MessageType.Warning);
+                    await ScrollToPageTop();
+                    return;
+                }
+                if (!string.IsNullOrEmpty(_themetype) && !string.IsNullOrEmpty(_containertype))
+                {
+                    page = new Page();
+                    page.SiteId = PageState.Page.SiteId;
+                    page.Name = _name;
+
+                    if (_parentid == "-1")
+                    {
+                        page.ParentId = null;
+                    }
+                    else
+                    {
+                        page.ParentId = Int32.Parse(_parentid);
+                    }
+                    
+                    if (string.IsNullOrEmpty(_path))
+                    {
+                        _path = _name;
+                    }
+
+                    if (_path.Contains("/"))
+                    {
+                        if (_path.EndsWith("/") && _path != "/")
+                        {
+                            _path = _path.Substring(0, _path.Length - 1);
+                        }
+                        _path = _path.Substring(_path.LastIndexOf("/") + 1);
+                    }
+                    if (_parentid == "-1")
+                    {
+                        page.Path = Utilities.GetFriendlyUrl(_path);
+                    }
+                    else
+                    {
+                        Page parent = _pages.FirstOrDefault(item => item.PageId == page.ParentId);
+                        if (parent.Path == string.Empty)
+                        {
+                            page.Path = Utilities.GetFriendlyUrl(parent.Name) + "/" + Utilities.GetFriendlyUrl(_path);
+                        }
+                        else
+                        {
+                            page.Path = parent.Path + "/" + Utilities.GetFriendlyUrl(_path);
+                        }
+                    }
+
+                    if (_pages.Any(item => item.Path == page.Path))
+                    {
+                        AddModuleMessage(string.Format(Localizer["Message.Page.Exists"], _path), MessageType.Warning);
+                        await ScrollToPageTop();
+                        return;
+                    }
+
+                    if (page.ParentId == null && Constants.ReservedRoutes.Contains(page.Name.ToLower()))
+                    {
+                        AddModuleMessage(string.Format(Localizer["Message.Page.Reserved"], page.Name), MessageType.Warning);
+                        await ScrollToPageTop();
+                        return;
+                    }
+
+                    Page child;
+                    switch (_insert)
+                    {
+                        case "<<":
+                            page.Order = 0;
+                            break;
+                        case "<":
+                            child = _pages.Where(item => item.PageId == _childid).FirstOrDefault();
+                            page.Order = child.Order - 1;
+                            break;
+                        case ">":
+                            child = _pages.Where(item => item.PageId == _childid).FirstOrDefault();
+                            page.Order = child.Order + 1;
+                            break;
+                        case ">>":
+                            page.Order = int.MaxValue;
+                            break;
+                    }
+
+                    page.IsNavigation = (_isnavigation == null ? true : Boolean.Parse(_isnavigation));
+                    page.IsClickable = (_isclickable == null ? true : Boolean.Parse(_isclickable));
+                    page.Url = _url;
+                    page.IsPersonalizable = (_ispersonalizable == null ? false : Boolean.Parse(_ispersonalizable));
+                    page.EffectiveDate = Utilities.LocalDateAndTimeAsUtc(_effectivedate);
+                    page.ExpiryDate = Utilities.LocalDateAndTimeAsUtc(_expirydate);
+                    page.UserId = null;
+
+                    // appearance
+                    page.Title = _title;
+                    page.Icon = (_icon == null ? string.Empty : _icon);
+                    page.ThemeType = _themetype;
+                    if (!string.IsNullOrEmpty(page.ThemeType) && page.ThemeType == PageState.Site.DefaultThemeType)
+                    {
+                        page.ThemeType = string.Empty;
+                    }
+                    page.DefaultContainerType = _containertype;
+                    if (!string.IsNullOrEmpty(page.DefaultContainerType) && page.DefaultContainerType == PageState.Site.DefaultContainerType)
+                    {
+                        page.DefaultContainerType = string.Empty;
+                    }
+
+                    // page content
+                    page.HeadContent = _headcontent;
+                    page.BodyContent = _bodycontent;
+
+                    // permissions
+                    page.PermissionList = _permissionGrid.GetPermissionList();
+
+                    page = await PageService.AddPageAsync(page);
+                    await PageService.UpdatePageOrderAsync(page.SiteId, page.PageId, page.ParentId);
+
+                    await logger.LogInformation("Page Added {Page}", page);
+                    if (!string.IsNullOrEmpty(PageState.ReturnUrl))
+                    {
+                        NavigationManager.NavigateTo(NavigateUrl(page.Path), true); // redirect to page added and reload
+                    }
+                    else
+                    {
+                        NavigationManager.NavigateTo(NavigateUrl()); // redirect to page management
+                    }
+                }
+                else
+                {
+                    AddModuleMessage(Localizer["Message.Required.PageInfo"], MessageType.Warning);
+                    await ScrollToPageTop();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "Error Saving Page {Page} {Error}", page, ex.Message);
+                AddModuleMessage(Localizer["Error.Page.Save"], MessageType.Error);
+                await ScrollToPageTop();
+            }
+        }
+        else
+        {
+            AddModuleMessage(SharedLocalizer["Message.InfoRequired"], MessageType.Warning);
+            await ScrollToPageTop();
+        }
+    }
+
+    private void Cancel()
+    {
+        if (!string.IsNullOrEmpty(PageState.ReturnUrl))
+        {
+            NavigationManager.NavigateTo(PageState.ReturnUrl);
+        }
+        else
+        {
+            NavigationManager.NavigateTo(NavigateUrl());
+        }
+    }
+    private void IconChanged(string NewIcon)
+    {
+        _icon = NewIcon;
+    }
+}

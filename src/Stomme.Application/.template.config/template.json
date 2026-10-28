@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Nova Globen AB",
+  "classifications": [
+    "Web",
+    "ASP.NET",
+    "Blazor",
+    "Stomme"
+  ],
+  "name": "Nova Globen Stomme Application Template",
+  "shortName": [ "stomme-app" ],
+  "defaultName": "MyCompany.MyProject",
+  "identity": "Stomme.Application.Template",
+  "tags": {
+    "language": "C#",
+    "type": "solution",
+    "editorTreatAs":"solution"
+  },
+  "sourceName": "Stomme.Application",
+  "preferNameDirectory": true,
+  "sources": [
+    {
+      "exclude": [ "**/[Bb]in/**", "**/[Oo]bj/**", ".template.config/**/*", "**/*.filelist", "**/*.user", "**/*.lock.json", "icon.png" ],
+      "copyOnly": [ "README.md" ]
+    }
+  ],
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "description": "The target framework for the project",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "net10.0",
+          "description": "Target net10.0"
+        }
+      ],
+      "replaces": "net10.0",
+      "defaultValue": "net10.0"
+    },
+    "HttpPort": {
+      "type": "parameter",
+      "datatype": "integer",
+      "description": "Port number to use for the HTTP endpoint in launchSettings.json."
+    },
+    "HttpPortGenerated": {
+      "type": "generated",
+      "generator": "port"
+    },
+    "HttpPortReplacer": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": {
+        "sourceVariableName": "HttpPort",
+        "fallbackVariableName": "HttpPortGenerated"
+      },
+      "replaces": "44358"
+    },
+    "HttpsPort": {
+      "type": "parameter",
+      "datatype": "integer",
+      "description": "Port number to use for the HTTPS endpoint in launchSettings.json."
+    },
+    "HttpsPortGenerated": {
+      "type": "generated",
+      "generator": "port",
+      "parameters": {
+        "low": 44300,
+        "high": 44399
+      }
+    },
+    "HttpsPortReplacer": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": {
+        "sourceVariableName": "HttpsPort",
+        "fallbackVariableName": "HttpsPortGenerated"
+      },
+      "replaces": "44359"
+    }
+  },
+  "primaryOutputs": [
+    {
+      "path": "Stomme.Application.slnx"
+    }
+  ]
+}

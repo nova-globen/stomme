@@ -1,0 +1,8 @@
+@* The Data Export module's own imports. Microsoft.AspNetCore.Components.Web is REQUIRED (BL-54): without it
+   @onclick / @bind:event compile as plain HTML attributes, the module builds GREEN and renders, and every click is
+   silently dead with no console error. Redundant for an in-tree Client module (the project-root _Imports.razor carries
+   it and Razor imports cascade); kept for the day the module leaves the Client project. *@
+@using Microsoft.AspNetCore.Components.Web
+@using Stomme.Export
+@using Stomme.Models.Export
+@using Stomme.Modules.DataExport.Services

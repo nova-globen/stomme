@@ -1,0 +1,97 @@
+@namespace Stomme.Modules.Pipelines.Canvas
+@using Blazor.Diagrams.Components.Renderers
+@using Blazor.Diagrams.Core.Models
+
+@* The node's visual is ours; the library only positions it and renders its ports. *@
+<div class="db-step-node db-step-node--shade-@Node.CategoryShade @(Node.Selected ? "is-selected" : "") @(Node.Entry is null ? "is-unknown" : "") @(Node.RunStatus is null ? "" : "is-run-" + Node.RunStatus) @(Node.ProblemSeverity is null ? "" : "is-problem-" + Node.ProblemSeverity) @(Node.Disabled ? "is-disabled" : "") @(Node.Change is null ? "" : "is-change-" + Node.Change)" data-run="@Node.RunStatus" data-problems="@Node.ProblemSeverity" data-change="@Node.Change" @ondblclick="() => Node.Opened?.Invoke(Node)"
+     @oncontextmenu="e => Node.Menu?.Invoke(Node, e.ClientX, e.ClientY)" @oncontextmenu:preventDefault="@(Node.Menu is not null)" @oncontextmenu:stopPropagation="true">
+    @* BL-229 - n8n's buttons over a step, on hover or while it is selected: test it, switch it off or on, delete it, open it. A
+       press here is the button's, never the canvas's - no drag, no double-click. *@
+    @if (Node.Toggle is not null)
+    {
+        <div class="db-step-node__actions" role="toolbar" aria-label="@("Step " + Node.DisplayName)"
+             @onpointerdown:stopPropagation="true" @onmousedown:stopPropagation="true" @ondblclick:stopPropagation="true">
+            @if (Node.Test is not null && Node.Entry is not null)
+            {
+                <button type="button" class="db-step-node__action db-step-node__action--test" title="Test this step on its own - for real, storing nothing" aria-label="@("Test " + Node.DisplayName)" @onclick="() => Node.Test(Node)" @onclick:stopPropagation="true">▶</button>
+            }
+            <button type="button" class="db-step-node__action db-step-node__action--toggle" title="@(Node.Disabled ? "Switch it back on (D)" : "Switch it off - skipped when the pipeline runs (D)")" aria-label="@((Node.Disabled ? "Switch on " : "Switch off ") + Node.DisplayName)" aria-pressed="@(Node.Disabled ? "true" : "false")" @onclick="() => Node.Toggle(Node)" @onclick:stopPropagation="true">⏻</button>
+            <button type="button" class="db-step-node__action db-step-node__action--delete" title="Delete this step (Delete)" aria-label="@("Delete " + Node.DisplayName)" @onclick="() => Node.Delete(Node)" @onclick:stopPropagation="true">✕</button>
+            <button type="button" class="db-step-node__action db-step-node__action--open" title="Open it in the wide view (Enter, or double-click)" aria-label="@("Open " + Node.DisplayName)" @onclick="() => Node.Opened?.Invoke(Node)" @onclick:stopPropagation="true">⤢</button>
+        </div>
+    }
+    @* BL-229 increment 4: what is wrong with the step, or in its bodies - on hover, the whole of it. *@
+    @if (Node.ProblemSeverity is not null)
+    {
+        <div class="db-step-node__problems" title="@Node.ProblemNote">⚠ @Node.ProblemBadge</div>
+    }
+    @* BL-229: a version compared with the canvas - whether the step is new since it or changed, and on hover what changed. *@
+    @if (Node.Change is not null)
+    {
+        <div class="db-step-node__change" title="@Node.ChangeNote">@Node.ChangeBadge</div>
+    }
+    <div class="db-step-node__head">
+        <span class="db-step-node__category">@(Node.Entry?.Category ?? "Unknown")</span>
+        <span class="db-step-node__type" title="@Node.Type">@(Node.Entry?.DisplayName ?? Node.Type)</span>
+    </div>
+    <div class="db-step-node__title">@Node.DisplayName</div>
+    @if (Node.Disabled)
+    {
+        <div class="db-step-node__disabled" title="Skipped when the pipeline runs (D switches it back on)">switched off</div>
+    }
+    @* BL-229 increment 9: what happens when it fails, in a word. *@
+    @if (!string.IsNullOrEmpty(Node.ReliabilityNote))
+    {
+        <div class="db-step-node__reliability">@Node.ReliabilityNote</div>
+    }
+    @* BL-229 increment 8: the author's comment, for whoever reads the pipeline. *@
+    @if (Node.PinnedResult is not null)
+    {
+        <div class="db-step-node__pinned" title="A test hands its pinned result on in place of running it; a run runs it">pinned</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Node.Comment))
+    {
+        <div class="db-step-node__comment" title="@Node.Comment">@Node.Comment</div>
+    }
+    @* BL-229: the step's discussion still open - select the step to read it. *@
+    @if (Node.OpenComments > 0)
+    {
+        <div class="db-step-node__discussion" title="Select the step to read its discussion">@Node.OpenComments open @(Node.OpenComments == 1 ? "comment" : "comments")</div>
+    }
+    @if (Node.OpenCommentsInside > 0)
+    {
+        <div class="db-step-node__discussion db-step-node__discussion--inside" title="On steps its bodies hold - open a body to read them, or see the pipeline's whole discussion with nothing selected">@Node.OpenCommentsInside open inside</div>
+    }
+    @* BL-95: a step that holds others names its bodies; select it and open one from the inspector. *@
+    @if (Node.Entry?.Bodies is { Count: > 0 } bodies)
+    {
+        <div class="db-step-node__bodies">holds: @string.Join(", ", bodies)</div>
+    }
+    @* BL-229 increment 2: the run shown on the canvas, on the step. *@
+    @if (Node.RunStatus is not null)
+    {
+        <div class="db-step-node__run">@Node.RunNote</div>
+    }
+    <PortRenderer Port="Node.InputPort" Class="db-step-port db-step-port--in" />
+    <div class="db-step-node__outcomes">
+        @foreach (var port in Node.OutputPorts)
+        {
+            <div class="db-step-node__outcome">
+                <span class="db-step-node__outcome-label">@port.Label</span>
+                <PortRenderer Port="port" Class="db-step-port db-step-port--out" />
+                @if (Node.AddAfter is not null && port.Links.Count == 0)
+                {
+                    @* BL-229 - n8n's + after a node: the next step, connected from this outcome. *@
+                    var from = port;
+                    var after = string.IsNullOrEmpty(port.Label) || Node.OutputPorts.Count() < 2 ? Node.DisplayName : Node.DisplayName + " - " + port.Label;
+                    <button type="button" class="db-step-node__add" title="@("Add the next step after " + after)" aria-label="@("Add the next step after " + after)" @onclick="() => Node.AddAfter(Node, from)" @onclick:stopPropagation="true">+</button>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public StepNodeModel Node { get; set; }
+}

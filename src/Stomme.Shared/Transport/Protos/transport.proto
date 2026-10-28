@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package stomme.transport.v1;
+
+option csharp_namespace = "Stomme.Transport.V1";
+
+// The reference gRPC-Web module surface for Stomme's opt-in typed transport (brief 04 / D10). The
+// .proto is the single source of truth: Grpc.Tools generates the server base and the typed client the
+// WASM UI, MAUI, and server-side callers share. A real module owns its own .proto in this same shape —
+// see IModuleEndpointContributor for how a module maps its generated service onto the host.
+//
+// Two shapes are demonstrated end-to-end:
+//   * Echo      — a typed unary request/response round-trip.
+//   * Heartbeat — a server-stream (the gRPC replacement for a polling/one-shot-over-HTTP read, and the
+//                 typed twin of a SignalR push when the producer, not the client, drives the cadence).
+service TransportDemo {
+  // Typed unary round-trip.
+  rpc Echo (EchoRequest) returns (EchoReply);
+
+  // Server-streaming: the server emits `count` heartbeats then completes the stream.
+  rpc Heartbeat (HeartbeatRequest) returns (stream HeartbeatReply);
+}
+
+message EchoRequest {
+  string message = 1;
+}
+
+message EchoReply {
+  string message = 1;
+  string server_time = 2; // ISO-8601 (round-trip "O") stamp from the server
+}
+
+message HeartbeatRequest {
+  int32 count = 1; // number of heartbeats to stream (clamped server-side)
+}
+
+message HeartbeatReply {
+  int32 sequence = 1;     // 1-based position in the stream
+  string server_time = 2; // ISO-8601 (round-trip "O") stamp for this beat
+}

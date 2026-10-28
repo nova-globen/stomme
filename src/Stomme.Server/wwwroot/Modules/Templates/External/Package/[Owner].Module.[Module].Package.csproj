@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Packs the module: `dotnet pack` builds the three projects (the references below order the build) and packs the nuspec,
+    so no tool outside the .NET SDK is needed. The package is what an operator installs - dropped into a host's Packages
+    folder, or through the host's module management - and what the InstallationManager unpacks into the host's /bin.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NuspecFile>[Owner].Module.[Module].nuspec</NuspecFile>
+    <NuspecProperties>configuration=$(Configuration)</NuspecProperties>
+    <PackageOutputPath>$(MSBuildProjectDirectory)</PackageOutputPath>
+    <NoWarn>$(NoWarn);NU5100;NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Client\[Owner].Module.[Module].Client.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Server\[Owner].Module.[Module].Server.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Shared\[Owner].Module.[Module].Shared.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+</Project>
