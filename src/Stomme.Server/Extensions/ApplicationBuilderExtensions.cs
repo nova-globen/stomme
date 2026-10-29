@@ -111,7 +111,9 @@ namespace Stomme.Extensions
             }));
             app.UseExceptionMiddleWare();
             app.UseServerPipelineStage(ServerPipelineStage.BeforeTenantResolution, pipelineHooks, environment);
-            app.UseWhen(context => !isHealthEndpoint(context.Request.Path), tenants => tenants.UseTenantResolution());
+            // M2 row 8: a folder site's framework cookies are its own (named and scoped to its path) - right after the alias
+            // is known and before anything reads or writes a cookie.
+            app.UseWhen(context => !isHealthEndpoint(context.Request.Path), tenants => tenants.UseTenantResolution().UseMiddleware<FolderSiteCookieMiddleware>());
             Stomme.Infrastructure.Files.TenantContentRedirect.UseTenantContentRedirect(app);
             // BL-55: ensure the resolved tenant's dedicated OpenIddict store EXISTS before authentication —
             // OpenIddict validates token requests against its store inside the auth stage. No-op unless
@@ -149,6 +151,10 @@ namespace Stomme.Extensions
             {
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
+
+                // M2 row 3: modules' plain HTTP endpoints, on every install (no transport needed), except an assembly a host
+                // switched off (module.<id>.enabled=false, row 14).
+                MapModuleHttpEndpoints(endpoints, configuration);
 
                 // BL-210: an api/ request no endpoint takes - a route a switched-off feature's controller declines at selection
                 // (its ActionMethodSelectorAttribute), or one that does not exist - ends here as a bare 404. It fell through to
@@ -331,6 +337,24 @@ namespace Stomme.Extensions
             });
 
             return app;
+        }
+
+        /// <summary>Maps every <see cref="IModuleHttpEndpointContributor"/> of a module assembly this host has not switched off.</summary>
+        internal static void MapModuleHttpEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpoints, IConfiguration configuration)
+        {
+            var switches = Stomme.FeatureManagement.Infrastructure.FeatureConfigurationSources.FromConfiguration(configuration);
+            foreach (var assembly in AppDomain.CurrentDomain.GetStommeAssemblies())
+            {
+                if (!assembly.GetTypes(typeof(IModuleHttpEndpointContributor)).Any() || ModuleFeatureFlags.IsSwitchedOff(switches, assembly))
+                {
+                    continue;
+                }
+
+                foreach (var contributor in assembly.GetInstances<IModuleHttpEndpointContributor>())
+                {
+                    contributor.MapEndpoints(endpoints);
+                }
+            }
         }
 
         static bool ShouldSkipStatusCodeReExecution(string path)

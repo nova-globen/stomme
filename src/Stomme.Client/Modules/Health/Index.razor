@@ -174,7 +174,7 @@ else
         try
         {
             _hub = new HubConnectionBuilder()
-                .WithUrl(NavigationManager.ToAbsoluteUri(HubRoutes.Health))
+                .WithUrl(NavigationManager.ToAbsoluteUri(Utilities.SiteUrl(PageState.Alias.Path, HubRoutes.Health)))
                 .WithAutomaticReconnect()
                 .Build();
             _hub.On<object>(LiveMethod, _ => InvokeAsync(async () =>

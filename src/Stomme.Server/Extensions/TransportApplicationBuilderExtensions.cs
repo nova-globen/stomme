@@ -60,6 +60,15 @@ namespace Stomme.Extensions
             TransportRequirements.LogUnsatisfied(
                 Repository.ModuleDefinitionRepository.GetModuleDefinitionsFromAssemblies(), options, logger);
 
+            // M2 (ruling C33): a module assembly switched off on this host (module.<id>.enabled=false) maps no endpoints, and
+            // its hosted services were never registered; say so once, by name, so a missing hub is never a mystery.
+            var switches = Stomme.FeatureManagement.Infrastructure.FeatureConfigurationSources.FromConfiguration(configuration);
+            foreach (var off in endpoints.ServiceProvider.GetServices<Infrastructure.SwitchedOffModuleAssembly>())
+            {
+                logger.LogInformation("Module assembly {Assembly} is switched off on this host ({Keys}): its hosted services are not started and its endpoints are not mapped.",
+                    off.AssemblyName, string.Join(", ", off.SwitchIds.Select(Infrastructure.ModuleFeatureFlags.FeatureKey)));
+            }
+
             if (options.Grpc.Enabled || options.SignalR.Enabled)
             {
                 // Boot Phase 2 (endpoints): each effective module maps its own transport endpoints through the
@@ -69,6 +78,8 @@ namespace Stomme.Extensions
                 // SignalR-only install). The reference TransportDemoEndpoints is one such contributor.
                 var contributors = AppDomain.CurrentDomain
                     .GetStommeAssemblies()
+                    .Where(assembly => !assembly.GetTypes(typeof(IModuleEndpointContributor)).Any()
+                        || !Infrastructure.ModuleFeatureFlags.IsSwitchedOff(switches, assembly))
                     .SelectMany(assembly => assembly.GetInstances<IModuleEndpointContributor>());
 
                 foreach (var contributor in contributors)

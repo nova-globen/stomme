@@ -47,7 +47,16 @@ namespace Stomme.Modules.Backup.Domain
             return new StorageLocation(trimmed);
         }
 
-        public static StorageLocation ForSnapshot(Guid id) => Create($"{id:N}.dcbak");
+        /// <summary>A Stomme backup archive's extension (BL-261; since 10.75.0).</summary>
+        public const string ArchiveExtension = ".stbak";
+
+        /// <summary>
+        /// The extension archives had before 10.75.0 (BL-261: it carried the old product name). Still READ: every snapshot row
+        /// keeps the name it was stored under, so an archive taken earlier is listed, restored, downloaded and retained as before.
+        /// </summary>
+        public const string LegacyArchiveExtension = ".dcbak";
+
+        public static StorageLocation ForSnapshot(Guid id) => Create($"{id:N}{ArchiveExtension}");
 
         internal static bool IsFileName(string name) =>
             name.Length > 0 && char.IsAsciiLetterOrDigit(name[0]) && name.All(c => char.IsAsciiLetterOrDigit(c) || c is '.' or '-' or '_') && !name.Contains("..", StringComparison.Ordinal);

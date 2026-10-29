@@ -85,7 +85,7 @@ namespace Stomme.Modules.Backup.Services
         {
             var form = new MultipartFormDataContent
             {
-                { new StreamContent(archive), "archive", "archive.dcbak" },
+                { new StreamContent(archive), "archive", "archive.stbak" },
                 { new StringContent(passphrase ?? string.Empty), "passphrase" },
             };
             return SendAsync(HttpMethod.Post, $"{ApiUrl}/import", form);

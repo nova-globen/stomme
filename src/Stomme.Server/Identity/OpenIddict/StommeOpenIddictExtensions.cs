@@ -428,6 +428,14 @@ namespace Stomme.Identity.OpenIddict
                     var userName = await userManager.GetUserNameAsync(user);
                     claims[Claims.Name] = userName;
                     claims[Claims.PreferredUsername] = userName;
+
+                    // M2 row 2 (ruling C34): the user's role names ON THE SITE the issuer belongs to - effective, unexpired,
+                    // Host implying Administrators and Registered Users - so a relying party (Fravashi's broker) can entitle by
+                    // role. Always an array, empty for a user without roles there.
+                    var alias = await context.RequestServices.GetRequiredService<Stomme.Infrastructure.ITenantManager>().GetAliasAsync();
+                    var siteUser = alias is null ? null
+                        : await context.RequestServices.GetRequiredService<Stomme.Managers.IUserManager>().GetUserAsync(userName, alias.SiteId);
+                    claims[Claims.Role] = (siteUser?.Roles ?? string.Empty).Split(';', StringSplitOptions.RemoveEmptyEntries).Distinct().ToArray();
                 }
                 if (context.User.HasScope(Scopes.Email))
                 {

@@ -194,11 +194,16 @@ proxy's public name) as an alias, or requests to it get a 404.
 - **A sign-in belongs to one site.** The sign-in cookie carries the site key it was issued for; on another site of the
   same tenant the user's roles are re-read for that site. Never cache "is administrator" across sites.
 - **Host names decide the tenant.** `X-Forwarded-Host` is believed only from a proxy (see
-  [security-posture.md](security-posture.md)), but on a one-site installation every host name a request carries - in
-  `Host`, or forwarded by the proxy - that matches no alias is stored as a new alias of the site. Keep the app behind a
-  proxy that passes only the site's real host names.
+  [security-posture.md](security-posture.md)). A request whose host name matches no alias gets a plain 404 and writes
+  nothing (since 10.74.0; it used to become a new alias of a one-site installation); `/healthz` and `/readyz` answer for
+  any host.
 - **A virtual-folder alias (`example.com/shop`) has no OpenID Connect authority of its own.** See
   [authentication-options.md](authentication-options.md).
+- **A site in a folder keeps the framework's cookies to itself** (since 10.75.0). The sign-in cookies, the antiforgery
+  cookie and the release marker it sets are named `<name>-<folder>` and scoped to `Path=/<folder>`, and a same-named
+  cookie another site on the host set at a wider path is never read there - so a sign-in at `example.com` is not a
+  sign-in at `example.com/shop`, and the reverse. The culture cookie keeps its name and takes the folder's path
+  (`Utilities.SitePath(alias.Path)`). A module that sets a cookie of its own scopes it the same way.
 
 ## Related
 

@@ -10,7 +10,7 @@ namespace Stomme.Shared
         /// framework-version check compare, so it is always numeric. A preview package of a release carries that release's
         /// number here and its label in <see cref="PackageVersion"/> (BL-192).
         /// </summary>
-        public static readonly string Version = "10.74.2";
+        public static readonly string Version = "10.75.0";
 
         /// <summary>
         /// The version this build's packages carry on the feed: <see cref="Version"/>, plus a prerelease label on a preview
@@ -31,7 +31,7 @@ namespace Stomme.Shared
             return plus >= 0 ? informational.Substring(0, plus) : informational;
         }
 
-        public const string ReleaseVersions = "1.0.0,1.0.1,1.0.2,1.0.3,1.0.4,2.0.0,2.0.1,2.0.2,2.1.0,2.2.0,2.3.0,2.3.1,3.0.0,3.0.1,3.0.2,3.0.3,3.1.0,3.1.1,3.1.2,3.1.3,3.1.4,3.2.0,3.2.1,3.3.0,3.3.1,3.4.0,3.4.1,3.4.2,3.4.3,4.0.0,4.0.1,4.0.2,4.0.3,4.0.4,4.0.5,4.0.6,5.0.0,5.0.1,5.0.2,5.0.3,5.1.0,5.1.1,5.1.2,5.2.0,5.2.1,5.2.2,5.2.3,5.2.4,6.0.0,6.0.1,6.1.0,6.1.1,6.1.2,6.1.3,6.1.4,6.1.5,6.2.0,6.2.1,10.0.0,10.0.1,10.0.2,10.0.3,10.0.4,10.1.0,10.1.1,10.1.2,10.2.0,10.2.1,10.2.2,10.3.0,10.4.0,10.4.1,10.5.0,10.5.1,10.5.2,10.6.0,10.7.0,10.8.0,10.9.0,10.10.0,10.11.0,10.12.0,10.13.0,10.14.0,10.15.0,10.16.0,10.17.0,10.18.0,10.19.0,10.20.0,10.21.0,10.22.0,10.23.0,10.24.0,10.25.0,10.26.0,10.27.0,10.28.0,10.29.0,10.30.0,10.31.0,10.32.0,10.33.0,10.34.0,10.35.0,10.36.0,10.37.0,10.38.0,10.39.0,10.40.0,10.41.0,10.42.0,10.43.0,10.44.0,10.45.0,10.46.0,10.47.0,10.48.0,10.49.0,10.50.0,10.51.0,10.52.0,10.53.0,10.54.0,10.55.0,10.56.0,10.57.0,10.58.0,10.59.0,10.60.0,10.61.0,10.62.0,10.63.0,10.64.0,10.65.0,10.66.0,10.67.0,10.68.0,10.69.0,10.70.0,10.71.0,10.72.0,10.73.0,10.73.1,10.73.2,10.74.0,10.74.1,10.74.2";
+        public const string ReleaseVersions = "1.0.0,1.0.1,1.0.2,1.0.3,1.0.4,2.0.0,2.0.1,2.0.2,2.1.0,2.2.0,2.3.0,2.3.1,3.0.0,3.0.1,3.0.2,3.0.3,3.1.0,3.1.1,3.1.2,3.1.3,3.1.4,3.2.0,3.2.1,3.3.0,3.3.1,3.4.0,3.4.1,3.4.2,3.4.3,4.0.0,4.0.1,4.0.2,4.0.3,4.0.4,4.0.5,4.0.6,5.0.0,5.0.1,5.0.2,5.0.3,5.1.0,5.1.1,5.1.2,5.2.0,5.2.1,5.2.2,5.2.3,5.2.4,6.0.0,6.0.1,6.1.0,6.1.1,6.1.2,6.1.3,6.1.4,6.1.5,6.2.0,6.2.1,10.0.0,10.0.1,10.0.2,10.0.3,10.0.4,10.1.0,10.1.1,10.1.2,10.2.0,10.2.1,10.2.2,10.3.0,10.4.0,10.4.1,10.5.0,10.5.1,10.5.2,10.6.0,10.7.0,10.8.0,10.9.0,10.10.0,10.11.0,10.12.0,10.13.0,10.14.0,10.15.0,10.16.0,10.17.0,10.18.0,10.19.0,10.20.0,10.21.0,10.22.0,10.23.0,10.24.0,10.25.0,10.26.0,10.27.0,10.28.0,10.29.0,10.30.0,10.31.0,10.32.0,10.33.0,10.34.0,10.35.0,10.36.0,10.37.0,10.38.0,10.39.0,10.40.0,10.41.0,10.42.0,10.43.0,10.44.0,10.45.0,10.46.0,10.47.0,10.48.0,10.49.0,10.50.0,10.51.0,10.52.0,10.53.0,10.54.0,10.55.0,10.56.0,10.57.0,10.58.0,10.59.0,10.60.0,10.61.0,10.62.0,10.63.0,10.64.0,10.65.0,10.66.0,10.67.0,10.68.0,10.69.0,10.70.0,10.71.0,10.72.0,10.73.0,10.73.1,10.73.2,10.74.0,10.74.1,10.74.2,10.75.0";
         public const string PackageId = "Stomme.Framework";
         public const string ClientId = "Stomme.Client";
         public const string UpdaterPackageId = "Stomme.Updater";
@@ -53,7 +53,9 @@ namespace Stomme.Shared
         public const string ActionToken = "{Action}";
         public const string DefaultAction = "Index";
 
-        public static readonly string[] ReservedRoutes = { "api", "pages", "files" };
+        // "hubs" (M2 row 7): a module's SignalR hub at /hubs/<name> answers under a folder site too (/lek/hubs/<name>), the
+        // folder's prefix stripped and the site resolved; so no site or top-level page may be named "hubs" either.
+        public static readonly string[] ReservedRoutes = { "api", "pages", "files", "hubs" };
         public const string ModuleDelimiter = "*";
         public const string UrlParametersDelimiter = "!";
 

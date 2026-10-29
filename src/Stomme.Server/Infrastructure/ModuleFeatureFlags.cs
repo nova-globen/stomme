@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Stomme.FeatureManagement.Application;
 
 namespace Stomme.Infrastructure
@@ -23,6 +26,9 @@ namespace Stomme.Infrastructure
     /// install-time seeding.)
     /// </para>
     /// </summary>
+    /// <summary>A module assembly whose hosted services this host did not register (<c>module.&lt;id&gt;.enabled=false</c>).</summary>
+    public sealed record SwitchedOffModuleAssembly(string AssemblyName, IReadOnlyList<string> SwitchIds);
+
     public static class ModuleFeatureFlags
     {
         public const string KeyPrefix = "module.";
@@ -53,6 +59,43 @@ namespace Stomme.Infrastructure
             }
 
             return source.GetConfiguredState(FeatureKey(moduleName)) == false;
+        }
+
+        /// <summary>
+        /// The switch ids of a module assembly (M2, ruling C33): its <see cref="Stomme.Modules.ModuleSwitchAttribute"/>
+        /// ids, or, without one, the names of the modules it declares. Empty for an assembly that is neither - the host's
+        /// own and the framework's, which no switch can turn off.
+        /// </summary>
+        public static IReadOnlyList<string> SwitchIds(Assembly assembly)
+        {
+            ArgumentNullException.ThrowIfNull(assembly);
+            var declared = assembly.GetCustomAttributes<Stomme.Modules.ModuleSwitchAttribute>().Select(attribute => attribute.Id).ToList();
+            if (declared.Count > 0)
+            {
+                return declared;
+            }
+
+            try
+            {
+                return assembly.GetInstances<Stomme.Modules.IModule>().Select(module => module.ModuleDefinition?.Name)
+                    .Where(name => !string.IsNullOrWhiteSpace(name)).ToList();
+            }
+            catch (Exception)
+            {
+                return Array.Empty<string>(); // an assembly whose types cannot be listed declares no module we can name
+            }
+        }
+
+        /// <summary>
+        /// True when configuration switches a module assembly OFF on this host: it has switch ids and EVERY one of them is
+        /// <c>module.&lt;id&gt;.enabled=false</c>. The host then registers none of its hosted services and calls none of its
+        /// endpoint contributors. Silent configuration, or <c>true</c>, leaves it on - a stock host is unchanged.
+        /// </summary>
+        public static bool IsSwitchedOff(IFeatureConfigurationSource source, Assembly assembly)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            var ids = SwitchIds(assembly);
+            return ids.Count > 0 && ids.All(id => IsDisabledByConfig(source, id));
         }
 
         private static string Normalize(string moduleName)

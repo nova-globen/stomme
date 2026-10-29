@@ -1,11 +1,12 @@
 var Stomme = Stomme || {};
 
 Stomme.Interop = {
-    setCookie: function (name, value, days, secure, sameSite) {
+    setCookie: function (name, value, days, secure, sameSite, path) {
         var d = new Date();
         d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
         var expires = "expires=" + d.toUTCString();
-        var cookieString = name + "=" + value + ";" + expires + ";path=/";
+        // A site in a folder passes its own path, so its cookie is not the root site's (M2 row 8).
+        var cookieString = name + "=" + value + ";" + expires + ";path=" + (path || "/");
         if (secure) {
             cookieString += "; secure";
         }

@@ -110,7 +110,8 @@
     <section style="display:flex;flex-direction:column;gap:0.5rem;">
         <h3 style="margin:0;">Import an archive</h3>
         <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
-            <InputFile id="backup-import-file" OnChange="PickArchive" accept=".dcbak" />
+            @* .stbak since 10.75.0; .dcbak, the earlier name, is still read (BL-261) *@
+            <InputFile id="backup-import-file" OnChange="PickArchive" accept=".stbak,.dcbak" />
             <label for="backup-import-passphrase">Passphrase</label>
             <input id="backup-import-passphrase" type="password" class="db-input" style="width:auto;" autocomplete="off" @bind="_importPassphrase" />
             <button id="backup-import" type="button" class="db-btn" @onclick="ImportAsync" disabled="@(_busy || _archive is null)">Import</button>

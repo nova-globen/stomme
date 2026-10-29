@@ -55,7 +55,8 @@ namespace Stomme.Tests
             },
             HostPasswordAvailable: hostPassword,
             DataDirectory: dataDirectory ?? Path.GetTempPath(),
-            DefaultDatabaseType: "Stomme.Database.Sqlite.SqliteDatabase, Stomme.Server");
+            DefaultDatabaseType: "Stomme.Database.Sqlite.SqliteDatabase, Stomme.Server",
+            RootPagePaths: new Dictionary<string, IReadOnlyCollection<string>>(StringComparer.OrdinalIgnoreCase) { [Root] = new[] { "products" } });
 
         [Fact]
         public void A_valid_list_plans_every_missing_site_and_skips_one_that_exists()
@@ -86,6 +87,8 @@ namespace Stomme.Tests
         [InlineData("no-password", "needs the host account's password")]
         [InlineData("database-type", "is not a database type this host knows")]
         [InlineData("unwritable", "cannot be written")]
+        [InlineData("reserved-folder", "which the host reserves")]
+        [InlineData("hides-a-page", "would hide the root site's page '/Products'")]
         public void An_invalid_entry_is_refused_by_name(string fault, string expected)
         {
             var blocker = Path.Combine(Path.GetTempPath(), "stomme-sites-blocker-" + Guid.NewGuid().ToString("N"));
@@ -104,6 +107,8 @@ namespace Stomme.Tests
                     "site-name" => new ConfiguredSite { Name = "Default Site", Aliases = Folder },
                     "no-password" => new ConfiguredSite { Name = "Shop", Aliases = Shop, Tenant = "Shop", ConnectionString = "Data Source=|DataDirectory|/shop.db;" },
                     "database-type" => new ConfiguredSite { Name = "Shop", Aliases = Shop, Tenant = "Shop", ConnectionString = "x", DatabaseType = "No.Such.Database, Nowhere" },
+                    "reserved-folder" => new ConfiguredSite { Name = "Hubs", Aliases = Root + "/hubs" },
+                    "hides-a-page" => new ConfiguredSite { Name = "Products", Aliases = Root + "/Products/se" },
                     "unwritable" => new ConfiguredSite { Name = "Shop", Aliases = Shop, Tenant = "Shop", ConnectionString = $"Data Source={Path.Combine(blocker, "shop.db")};" },
                     _ => new ConfiguredSite { Name = "Svenska Two", Aliases = Folder } // "duplicate": the same alias as entry 0
                 };

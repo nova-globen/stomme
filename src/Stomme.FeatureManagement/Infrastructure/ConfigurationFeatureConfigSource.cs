@@ -25,6 +25,17 @@ namespace Stomme.FeatureManagement.Infrastructure;
 ///   an empty <c>EnabledFor</c> array (schema v1), which Microsoft defines as an explicitly-off flag.</item>
 /// </list>
 /// </summary>
+/// <summary>
+/// The configuration-backed source for a caller that runs before any container exists - a host deciding at composition
+/// time which module assemblies to start (<c>module.&lt;id&gt;.enabled</c>, ruling C33). The same reading as the
+/// registered source.
+/// </summary>
+public static class FeatureConfigurationSources
+{
+    public static IFeatureConfigurationSource FromConfiguration(IConfiguration configuration) =>
+        new ConfigurationFeatureConfigSource(configuration);
+}
+
 internal sealed class ConfigurationFeatureConfigSource : IFeatureConfigurationSource
 {
     /// <summary>Microsoft.FeatureManagement's default configuration section name.</summary>

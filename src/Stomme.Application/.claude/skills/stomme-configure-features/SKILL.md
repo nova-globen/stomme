@@ -146,6 +146,13 @@ In `Server/features.json`, under `FeatureManagement` (a key outside that section
 removed. Stomme then does not place the module on any page it creates from templates (a new site's pages, and the
 module's own page templates processed at start). A module already on a page stays there, and its assembly still loads.
 
+The same `false` keeps the module's background work off on that host: none of its server assembly's hosted services
+start and none of its endpoint contributors (hubs, gRPC) are mapped, and the log says so once at start. The server
+assembly names its switch with `[assembly: Stomme.Modules.ModuleSwitch("<id>")]` (the module template has it); without
+it, the ids are the module names that assembly declares. Per host, in its environment:
+`FeatureManagement__module.<id>.enabled=false`. Verify: the start-up log line "Module assembly ... is switched off on this
+host", and the module's hub route answering 404.
+
 ## Verify
 
 - Start the app and read the log: no configuration error at start.

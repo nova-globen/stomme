@@ -58,7 +58,14 @@ counts as "no opinion" and falls through to the stored flag.
 The key `module.<id>.enabled` is special: `false` stops a module from being placed on the pages Stomme creates from
 templates (a new site's pages, and the module's own page templates processed at start); `true` or absent places it as
 usual. A module already on a page stays there. `<id>` is the module's name lower-cased with spaces removed
-(`Knowledge Base` -> `module.knowledgebase.enabled`). The assembly is loaded either way. Declaring and checking flags
+(`Knowledge Base` -> `module.knowledgebase.enabled`). The assembly is loaded either way.
+
+`false` also turns a module's background work OFF on that host, so one image can carry a module that runs on one host
+only: the host registers none of the module assembly's hosted services (`IHostedService`, jobs) and calls none of its
+endpoint contributors (hubs, gRPC services), and logs once at start which assembly it switched off. A module's SERVER
+assembly names its switch with `[assembly: Stomme.Modules.ModuleSwitch("<id>")]` (the module template does); several
+assemblies may share one id. Without the attribute the ids are the names of the modules the assembly declares. Set it
+per host, for example in a compose file: `FeatureManagement__module.lek.enabled=false`. Declaring and checking flags
 of your own: the [stomme-configure-features](../../.claude/skills/stomme-configure-features/SKILL.md) skill.
 
 ## Using it from an app

@@ -100,6 +100,11 @@ the app react without the publisher knowing it; use a domain event when the reac
   site's cookie; `Context.User.SiteKey()` (`Stomme.Extensions`) gives `"{tenantId}:{siteId}"` for grouping by site.
 - A WebAssembly page connects with `Microsoft.AspNetCore.SignalR.Client`'s `HubConnectionBuilder` (the `Stomme.Client`
   package brings it) and should fall back to polling when the connection fails, because the transport may be off.
+- **Map a hub under `/hubs/...` and build its URL with the site's path** (since 10.75.0):
+  `NavigationManager.ToAbsoluteUri(Utilities.SiteUrl(PageState.Alias.Path, "/hubs/notes"))`. On a site in a folder
+  (`example.com/shop`) that is `/shop/hubs/notes`; the host strips the folder from a `hubs/` URL, as from `api/`, `pages/`
+  and `files/`, and resolves the folder's site, so the hub sees that site's user and tenant. A root site gets
+  `/hubs/notes` as before. Do not use a relative URL: the page's `<base href>` is the host's root.
 - **Push is per instance.** A hub or signal on instance A does not reach a browser connected to instance B. The framework's
   own live features (collaboration notices, dashboard refreshes, pipeline event triggers) publish an integration event when
   the bus is on and deliver in-process when it is off - and with the bus on they currently reach no handler (see Rules and
@@ -238,6 +243,9 @@ host then logs an error naming the module and the missing switch at startup.
   survive independently goes on the bus.
 - **No outbox.** Do not look for one or enable one; it is not supported.
 - **Guard every `MapHub` with `transports.SignalR.Enabled`** and resolve `IHubContext<T>` only when the transport is on.
+- **A hub outside `/hubs/` is root-only.** Mapped elsewhere, a site in a folder reaches it only at the host's root, with the
+  ROOT site resolved - another site's users and tenant. Map under `/hubs/` and connect with `Utilities.SiteUrl`.
+- **`hubs` is reserved** like `api`, `pages` and `files`: no site and no top-level page may be named `hubs`.
 - **Push and signals are per instance.** Several instances need the bus (with a broker) to fan a change out to every instance.
 - `ISyncManager` is not a message bus: it never leaves the process.
 

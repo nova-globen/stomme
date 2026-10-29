@@ -58,7 +58,9 @@ namespace Stomme.Modules.Backup.Controllers
         // GET api/Backup/{id}/download - the archive itself, still encrypted
         [HttpGet("{id:guid}/download")]
         public Task<IActionResult> Download(Guid id) => RefusableAsync(async () =>
-            await _backup.OpenArchiveAsync(id) is { } archive ? File(archive, "application/octet-stream", $"{id:N}.dcbak") : NotFound());
+            await _backup.OpenArchiveAsync(id) is { } archive
+                ? File(archive, "application/octet-stream", $"{id:N}{Stomme.Modules.Backup.Domain.StorageLocation.ArchiveExtension}")
+                : NotFound());
 
         // POST api/Backup/import - multipart: the archive file and the passphrase (never in the URL)
         [HttpPost("import")]

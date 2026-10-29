@@ -299,6 +299,13 @@ the action. The host answers a refusal with 429. Not driven by the authors of th
   `/` and leave the site. The framework's own sign-in pages refuse them since 10.73.0 and send the person home. In your
   own code pass any return address through `Utilities.LocalReturnUrl(returnUrl)` (`Stomme.Shared`, the rules of
   ASP.NET Core's `Url.IsLocalUrl`, except that a `~/` path is refused too) before redirecting to it.
+- **A test project over your Server project declares the web framework.** A plain `Microsoft.NET.Sdk` project (an
+  xUnit project, a class library) that references the Server project, or the `Stomme.Server` package, does not have
+  the ASP.NET Core shared framework, so NuGet resolves packages the server never loads - which is how 10.74.1's
+  consumers inherited System.Drawing.Common 4.7.0 (GHSA-rxg9-xrhp-64gj, NU1904; 10.74.2 depends on the patched
+  version). Add `<FrameworkReference Include="Microsoft.AspNetCore.App" />` to such a project: it then restores what the
+  app runs on, and NuGet's audit warns about what actually ships. Keep `NuGetAudit` on, and consider
+  `<WarningsAsErrors>NU1903;NU1904</WarningsAsErrors>` so a high or critical advisory fails your build, as Stomme's does.
 
 ## Related
 

@@ -6,6 +6,7 @@ using Stomme.Extensions;
 using Stomme.Infrastructure;
 using Stomme.Models;
 using Stomme.Repository;
+using Stomme.Shared;
 
 namespace Stomme.Identity.OpenIddict
 {
@@ -47,12 +48,14 @@ namespace Stomme.Identity.OpenIddict
 
         private readonly ITenantManager _tenantManager;
         private readonly IConfigurationRoot _config;
+        private readonly IConfigManager _configManager;
 
         public TenantOpenIddictDbContext(DbContextOptions<TenantOpenIddictDbContext> options, IDBContextDependencies dependencies)
             : base(options)
         {
             _tenantManager = dependencies.TenantManager;
             _config = dependencies.Config;
+            _configManager = dependencies.ConfigManager;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -71,7 +74,14 @@ namespace Stomme.Identity.OpenIddict
             // outside the test suite — nothing writes it) a DEDICATED sibling store is DERIVED from the
             // tenant's own connection string, so the authority works storage-blind with zero provisioning.
             // D61's per-tenant isolation is preserved: the derived store is never the tenant's own database.
-            var connectionString = OpenIddictConnectionStrings.Resolve(tenant, _config);
+            // THIS host's data directory replaces the |DataDirectory| token, as the tenant's own context does (BL-153). It
+            // was left in (found driving M2 row 2, 2026-10-29): every install whose tenant string uses the token - every
+            // install the installer writes - opened "|DataDirectory|\x_OpenIddict.db" literally, which Windows refuses
+            // ("unable to open database file") and Linux creates beside the app, OFF the data volume, so an unattended
+            // container lost every authorization and refresh token at its next recreate. The suites set absolute paths.
+            var connectionString = OpenIddictConnectionStrings.Resolve(tenant, _config).Replace(
+                $"|{Constants.DataDirectory}|",
+                _configManager?.GetDataDirectory() ?? AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString());
 
             var database = Activator.CreateInstance(Type.GetType(tenant.DBType)) as IDatabase;
             if (database is IRelationalDatabase relationalDatabase)

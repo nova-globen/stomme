@@ -87,6 +87,15 @@ With `OpenIddict:Enabled` the installation is an OpenID Connect provider - an au
   issued here with its subject and scopes.
 - Grants: authorization code with PKCE (PKCE is required server-wide), client credentials, refresh token. Scopes:
   `openid`, `email`, `profile`, `offline_access`, `api`.
+- **Userinfo** (`/connect/userinfo`) answers `sub`; with `profile` also `name`, `preferred_username` and `role` - the
+  user's role names on the issuer's site, an array, unexpired ones only, `Host` implying `Administrators` and
+  `Registered Users` (since 10.75.0) - so a relying party can entitle by role; with `email` also `email`. The tokens
+  themselves carry no roles.
+- **Where its store lives.** Without an explicit `ConnectionStrings:{tenant}_OpenIddict`, each tenant's store is a
+  sibling of the tenant's database (`root.db` -> `root_OpenIddict.db` beside it, in the data directory; a named database
+  gets `_OpenIddict`). Before 10.75.0 an install whose connection string used `|DataDirectory|` - every install the
+  installer writes - put that file under a folder literally named `|DataDirectory|` beside the app on Linux, off the
+  data volume, and failed on Windows.
 - **Per tenant, per host name.** No issuer is configured; it is inferred from the request's host name, and clients,
   authorizations and tokens live in a store of their own per tenant (never the tenant's main database). A token issued at
   one host name is rejected at another. The host name is the one the request carries after forwarded headers - an

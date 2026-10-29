@@ -45,7 +45,10 @@ namespace Stomme.Infrastructure
         IReadOnlyDictionary<string, IReadOnlyCollection<string>> SiteNamesByTenant,
         bool HostPasswordAvailable,
         string DataDirectory,
-        string DefaultDatabaseType);
+        string DefaultDatabaseType,
+        // M2 row 12: the top-level page paths of the root site at each host name a folder entry names - a folder site
+        // there would hide the root's page of the same name (the longest alias wins). Null: none read.
+        IReadOnlyDictionary<string, IReadOnlyCollection<string>> RootPagePaths = null);
 
     /// <summary>
     /// Checks <c>Installation:Sites</c> as a WHOLE before anything is written: an entry whose first alias already names a
@@ -122,6 +125,23 @@ namespace Stomme.Infrastructure
                     {
                         problems.Add($"{at}: the alias '{alias}' already exists on this installation (another site's, or one left by a site that was never completed).");
                     }
+
+                    // M2 row 12, the collision rule: a folder's first segment that the host reserves would never reach the
+                    // site, and one that names a top-level page of the root site there would hide that page.
+                    var (host, folder) = SplitFolder(alias);
+                    if (folder is null)
+                    {
+                        continue;
+                    }
+                    if (Constants.ReservedRoutes.Contains(folder, StringComparer.OrdinalIgnoreCase) || folder == Constants.ModuleDelimiter)
+                    {
+                        problems.Add($"{at}: the alias '{alias}' starts with '{folder}', which the host reserves ({string.Join(", ", Constants.ReservedRoutes)}); choose another folder.");
+                    }
+                    else if (state.RootPagePaths is not null && state.RootPagePaths.TryGetValue(host, out var pages) &&
+                        pages.Contains(folder, StringComparer.OrdinalIgnoreCase))
+                    {
+                        problems.Add($"{at}: the alias '{alias}' would hide the root site's page '/{folder}' at {host} (a site in a folder wins over a page of the same name); rename one of them.");
+                    }
                 }
 
                 var tenant = entry.TenantName;
@@ -176,6 +196,24 @@ namespace Stomme.Infrastructure
 
             return (toCreate, problems);
         }
+
+        /// <summary>An alias's host name and first folder segment (<c>example.com/shop/se</c> -> <c>example.com</c>, <c>shop</c>); null folder for a root alias.</summary>
+        internal static (string Host, string Folder) SplitFolder(string alias)
+        {
+            var slash = alias.IndexOf('/');
+            if (slash < 0)
+            {
+                return (alias, null);
+            }
+
+            var folder = alias[(slash + 1)..].Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            return (alias[..slash], string.IsNullOrEmpty(folder) ? null : folder);
+        }
+
+        /// <summary>The host names the entries' folder aliases name - where the root site's pages are read for the collision rule.</summary>
+        internal static IReadOnlyCollection<string> FolderHosts(IReadOnlyList<ConfiguredSite> entries) =>
+            entries.SelectMany(entry => entry.AliasNames).Select(SplitFolder).Where(split => split.Folder != null)
+                .Select(split => split.Host).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
 
         // The folder a SQLite connection string's file lives in, if it cannot be created or written; null when it can.
         // A connection string is never echoed: it may carry a password.

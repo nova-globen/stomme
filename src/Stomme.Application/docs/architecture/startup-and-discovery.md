@@ -375,12 +375,44 @@ namespace Stomme.Application.Server.Startup
 validation for `api/...` too (when that is switched on). The same move at `BeforeRouting` is too late for a site JWT:
 the request stays anonymous.
 
+**A hook sees every request on every site of the host.** One app often serves several sites (a root site and sites in
+folders), so a module's middleware that rewrites, authenticates or limits scopes itself to its own site (since 10.75.0):
+`app.UseWhenSitePath("shop", branch => branch.UseMiddleware<ShopOnly>())` runs only for the site at `host/shop` (on every
+host name; `""` is a root site), `app.UseWhenSite(alias => ..., branch => ...)` takes any test on the resolved
+`Alias`, and a filter or an endpoint asks `HttpContext.IsSitePath("shop")` (namespace `Stomme.Extensions`). They read
+the site the request was resolved to, so use them at `BeforeJwt` or `BeforeRouting`, never at the two earlier stages,
+where no site is known yet and they match nothing.
+
+### Plain HTTP endpoints of a module
+
+A module that needs a route of its own outside its controllers - a minimal API, a redirect, a manifest - implements
+`Stomme.Infrastructure.IModuleHttpEndpointContributor` (since 10.75.0). It is found the same way (a public class with a
+parameterless constructor in a `*.Stomme` assembly) and mapped on every install, beside the controllers; no transport is
+needed (`Stomme.Transport.IModuleEndpointContributor` is for hubs and gRPC, and runs only while one is on). Switching
+the module off on a host (`module.<id>.enabled=false`) leaves its endpoints unmapped.
+
+```csharp
+public sealed class UpdateEndpoints : IModuleHttpEndpointContributor
+{
+    public void MapEndpoints(IEndpointRouteBuilder endpoints)
+    {
+        endpoints.MapGet("/myproduct/updates/latest.json", () => Results.Redirect("https://github.com/acme/myproduct/releases/latest/download/latest.json"));
+    }
+}
+```
+
+The routes are host-wide and the request is resolved to a site first (`/myproduct/...` resolves the root site). The
+host's own routes come first: `/healthz`, `/readyz`, `/connect/*`, `/.well-known/*` and `/api/*` are taken. Authorize
+what needs it yourself (`RequireAuthorization()`, or a check of your own for a cookie-less API).
+
 ## Configuration
 
 There is no switch for discovery itself. Two settings change what is discovered:
 
-- A module bundled by package reference is always loaded; the `FeatureManagement` key `module.<id>.enabled` only decides
-  whether Stomme places it on the pages it creates from templates. See [Configuration](configuration.md#feature-flags).
+- A module bundled by package reference is always loaded; the `FeatureManagement` key `module.<id>.enabled` decides
+  whether Stomme places it on the pages it creates from templates, and, `false`, keeps the module assembly's hosted
+  services and endpoint contributors from starting on that host (its `[assembly: ModuleSwitch("<id>")]`). See
+  [Configuration](configuration.md#feature-flags).
 - Configuration-gated features (MCP, pipelines, the message bus and others) decide at composition time whether to
   register their services. Changing one needs a restart. See [Configuration](configuration.md#switched-capabilities).
 

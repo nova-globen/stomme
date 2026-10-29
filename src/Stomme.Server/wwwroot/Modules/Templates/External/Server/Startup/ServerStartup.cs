@@ -9,6 +9,10 @@ using [Owner].Module.[Module].Domain;
 using [Owner].Module.[Module].Persistence;
 using [Owner].Module.[Module].Services;
 
+// The switch a host turns this module's background work off with: FeatureManagement "module.<id>.enabled": false (the
+// module's name, lower-cased) and none of this assembly's hosted services start and none of its endpoints are mapped.
+[assembly: Stomme.Modules.ModuleSwitch("[Module]")]
+
 namespace [Owner].Module.[Module].Startup
 {
     /// <summary>

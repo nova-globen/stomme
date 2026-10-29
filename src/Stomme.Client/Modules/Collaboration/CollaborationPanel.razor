@@ -260,7 +260,7 @@
             try
             {
                 _hub = new HubConnectionBuilder()
-                    .WithUrl(NavigationManager.ToAbsoluteUri(HubRoutes.Collaboration))
+                    .WithUrl(NavigationManager.ToAbsoluteUri(Utilities.SiteUrl(SiteState?.Alias?.Path, HubRoutes.Collaboration)))
                     .WithAutomaticReconnect()
                     .Build();
                 _hub.On<CollaborationNotice>(CollaborationHubMethods.Changed, notice => InvokeAsync(() => OnNoticeAsync(notice)));

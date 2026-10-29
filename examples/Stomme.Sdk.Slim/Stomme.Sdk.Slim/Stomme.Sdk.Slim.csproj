@@ -47,24 +47,24 @@
          framework lib pins below (which stay at the app version the assemblies were built from). -->
     <PackageReference Include="Stomme.Server.Sdk" Version="$(Version)" />
     <PackageReference Include="Stomme.Client.Sdk" Version="$(Version)" />
-    <PackageReference Include="Stomme.Shared" Version="10.74.2" />
-    <PackageReference Include="Stomme.SharedKernel" Version="10.74.2" />
-    <PackageReference Include="Stomme.Mediator" Version="10.74.2" />
+    <PackageReference Include="Stomme.Shared" Version="10.75.0" />
+    <PackageReference Include="Stomme.SharedKernel" Version="10.75.0" />
+    <PackageReference Include="Stomme.Mediator" Version="10.75.0" />
     <!-- D99/BL-99: Stomme.Security.Abstractions — [Requires], IAccessGuard, ICurrentUser, IFeatureEvaluator.
          A lifted module DECLARES its gates against these four contracts, so they belong in the slim compile
          surface; the enforcement side (Stomme.Authorization's behavior + AddStommeAuthorization) is the
          HOST's composition and stays out, exactly like the persistence providers. Deps-only, no third party. -->
-    <PackageReference Include="Stomme.Security.Abstractions" Version="10.74.2" />
+    <PackageReference Include="Stomme.Security.Abstractions" Version="10.75.0" />
     <!-- BL-86: the TENANCY contracts. BL-111 made a storage-blind aggregate tenant-owned by contract (ITenantOwned, stamped
          from the ambient ITenantContext's TenantId), and an external module's aggregate that is not is NAMED at startup -
          yet the slim surface carried none of the three, so a slim-built module could not honour the contract (found
          building the exemplar). Deps-only, BCL plus SharedKernel. -->
-    <PackageReference Include="Stomme.Tenancy.Domain" Version="10.74.2" />
-    <PackageReference Include="Stomme.Tenancy.Abstractions" Version="10.74.2" />
-    <PackageReference Include="Stomme.Persistence.Abstractions" Version="10.74.2" />
+    <PackageReference Include="Stomme.Tenancy.Domain" Version="10.75.0" />
+    <PackageReference Include="Stomme.Tenancy.Abstractions" Version="10.75.0" />
+    <PackageReference Include="Stomme.Persistence.Abstractions" Version="10.75.0" />
     <!-- BL-86 increment 3: the BUS contract (IEventBus, IntegrationEvent, IIntegrationEventHandler) - a module announces
          across contexts through the host's opt-in bus; dependency-free. -->
-    <PackageReference Include="Stomme.EventBus" Version="10.74.2" />
+    <PackageReference Include="Stomme.EventBus" Version="10.75.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
   </ItemGroup>
 

@@ -24,11 +24,20 @@ namespace Stomme.UI
 
         public Task SetCookie(string name, string value, int days, bool secure, string sameSite)
         {
+            return SetCookie(name, value, days, secure, sameSite, "/");
+        }
+
+        /// <summary>
+        /// Sets a cookie for <paramref name="path"/> - a site in a folder passes its own (<c>/didin</c>), so its cookie is not
+        /// the root site's (M2 row 8).
+        /// </summary>
+        public Task SetCookie(string name, string value, int days, bool secure, string sameSite, string path)
+        {
             try
             {
                 _jsRuntime.InvokeVoidAsync(
                     "Stomme.Interop.setCookie",
-                    name, value, days, secure, sameSite);
+                    name, value, days, secure, sameSite, string.IsNullOrWhiteSpace(path) ? "/" : path);
                 return Task.CompletedTask;
             }
             catch

@@ -301,7 +301,7 @@ namespace Stomme.Infrastructure
             }
 
             var (hostPassword, hostPasswordError) = await UnattendedInstall.ReadHostPasswordAsync(_configManager);
-            var state = await ReadConfiguredSitesStateAsync(!string.IsNullOrEmpty(hostPassword) && hostPasswordError == null);
+            var state = await ReadConfiguredSitesStateAsync(!string.IsNullOrEmpty(hostPassword) && hostPasswordError == null, entries);
             var (toCreate, problems) = ConfiguredSites.Plan(entries, state);
             if (problems.Count > 0)
             {
@@ -353,7 +353,7 @@ namespace Stomme.Infrastructure
             return new Installation { Success = true, Message = string.Empty };
         }
 
-        private async Task<ConfiguredSitesState> ReadConfiguredSitesStateAsync(bool hostPasswordAvailable)
+        private async Task<ConfiguredSitesState> ReadConfiguredSitesStateAsync(bool hostPasswordAvailable, IReadOnlyList<ConfiguredSite> entries)
         {
             List<Alias> aliases;
             List<Tenant> tenants;
@@ -379,13 +379,31 @@ namespace Stomme.Infrastructure
                     .Select(site => site.Name).ToList();
             }
 
+            // M2 row 12: the root site's top-level page paths at each host name a folder entry names (the collision rule),
+            // each read in a fresh scope entered through that root alias.
+            var rootPages = new Dictionary<string, IReadOnlyCollection<string>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var host in ConfiguredSites.FolderHosts(entries))
+            {
+                var root = aliases.FirstOrDefault(item => item.SiteId > 0 && item.Name.Equals(host, StringComparison.OrdinalIgnoreCase));
+                if (root == null)
+                {
+                    continue;
+                }
+                using var scope = _serviceScopeFactory.CreateScope();
+                await scope.ServiceProvider.GetRequiredService<ITenantManager>().SetAliasAsync(root);
+                rootPages[host] = (await scope.ServiceProvider.GetRequiredService<IPageRepository>().GetPagesAsync(root.SiteId))
+                    .Where(page => page.ParentId == null && !page.IsDeleted && !string.IsNullOrEmpty(page.Path))
+                    .Select(page => page.Path.Split('/')[0]).ToList();
+            }
+
             return new ConfiguredSitesState(
                 aliases.Select(alias => (alias.Name, alias.SiteId)).ToList(),
                 tenants.Select(tenant => tenant.Name).ToList(),
                 siteNames,
                 hostPasswordAvailable,
                 _config.GetDataDirectory(),
-                _config.GetDatabaseType());
+                _config.GetDatabaseType(),
+                rootPages);
         }
 
         private async Task<Installation> CreateDatabaseAsync(InstallConfig install)

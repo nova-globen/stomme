@@ -121,7 +121,9 @@ production use `https://`.
      `response_mode=form_post`).
    Exchanging the code (with `code_verifier`) at `/connect/token` answers `access_token`, `id_token` and, with
    `offline_access`, `refresh_token`. The ID token carries `sub` (the user's identity id), `name`,
-   `preferred_username` and `email`, no roles. `/connect/userinfo` with the access token answers the same claims.
+   `preferred_username` and `email`, no roles. `/connect/userinfo` with the access token answers the same claims and,
+   for a token with the `profile` scope, `role`: the user's role names on the issuer's site, an array (since 10.75.0;
+   a Host holds `Host`, `Administrators` and `Registered Users`).
    The refresh token gets new tokens. `GET /connect/endsession?id_token_hint=...&post_logout_redirect_uri=...`
    answers 302 to the registered post-logout URI, and the next authorize request asks for the login again.
 4. Sign in to the other application through Stomme (another Stomme site can be that application - the

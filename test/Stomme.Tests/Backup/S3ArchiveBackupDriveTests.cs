@@ -79,7 +79,7 @@ namespace Stomme.Tests.Backup
                 await SignAsync(first, "after the snapshot");
                 var staged = await Engine(first).StageRestoreAsync(snapshot, Passphrase);
                 Assert.True(staged.Ok, string.Join("; ", staged.Problems));
-                Assert.Equal(2, bucket.Objects.Keys.Count(k => k.EndsWith(".dcbak", StringComparison.Ordinal)));   // the safety snapshot went there too
+                Assert.Equal(2, bucket.Objects.Keys.Count(k => k.EndsWith(".stbak", StringComparison.Ordinal)));   // the safety snapshot went there too
                 Assert.Empty(LocalArchives(config));
             }
             finally

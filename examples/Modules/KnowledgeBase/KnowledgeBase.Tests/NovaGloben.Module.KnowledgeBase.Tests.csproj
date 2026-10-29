@@ -26,4 +26,11 @@
     <ProjectReference Include="..\NovaGloben.Module.KnowledgeBase.Server\NovaGloben.Module.KnowledgeBase.Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- BL-260: a plain-SDK test project over a module built on Stomme.Server restores what the host runs on - the ASP.NET
+         Core shared framework - instead of packages the server never loads (10.74.1's consumers inherited the
+         System.Drawing.Common 4.7.0 advisory that way). -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
 </Project>

@@ -364,7 +364,7 @@ else
         try
         {
             _hub = new HubConnectionBuilder()
-                .WithUrl(NavigationManager.ToAbsoluteUri(HubRoutes.Dashboards))
+                .WithUrl(NavigationManager.ToAbsoluteUri(Utilities.SiteUrl(PageState.Alias.Path, HubRoutes.Dashboards)))
                 .WithAutomaticReconnect()
                 .Build();
             _hub.On<DashboardDatasetChange>(DashboardHubMethods.DatasetChanged, change => InvokeAsync(async () =>

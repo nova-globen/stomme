@@ -577,6 +577,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var hostedServiceType = typeof(IHostedService);
 
+            // M2 (ruling C33): module.<id>.enabled=false switches a module assembly's hosted services off on this host, so one
+            // image can carry a module that runs on one host only. Read straight from configuration (the FeatureManagement
+            // section): this runs before any container exists. Silent configuration leaves everything on.
+            var configuration = HostConfiguration.Resolve(services);
+            var switches = configuration is null ? null : Stomme.FeatureManagement.Infrastructure.FeatureConfigurationSources.FromConfiguration(configuration);
+
             var assemblies = AppDomain.CurrentDomain.GetStommeAssemblies();
             foreach (var assembly in assemblies)
             {
@@ -618,6 +624,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 // the previous "ServiceType == concrete type" guard could never match and never prevented the
                 // double registration it was written for.
                 var serviceTypes = assembly.GetTypes(hostedServiceType);
+                var runsSomething = serviceTypes.Any() || assembly.GetTypes(typeof(Stomme.Transport.IModuleEndpointContributor)).Any()
+                    || assembly.GetTypes(typeof(IModuleHttpEndpointContributor)).Any();
+                if (switches is not null && runsSomething && ModuleFeatureFlags.IsSwitchedOff(switches, assembly))
+                {
+                    services.AddSingleton(new SwitchedOffModuleAssembly(assembly.GetName().Name, ModuleFeatureFlags.SwitchIds(assembly)));
+                    serviceTypes = Enumerable.Empty<Type>();
+                }
+
                 foreach (var serviceType in serviceTypes)
                 {
                     services.TryAddEnumerable(ServiceDescriptor.Singleton(hostedServiceType, serviceType));

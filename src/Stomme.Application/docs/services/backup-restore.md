@@ -23,7 +23,8 @@ What is carried, by the participants Stomme registers:
 | `identity:openiddict` | The OpenID Connect provider's applications and scopes per tenant. A restore deletes every token and authorization, so every client signs in again. | Only with `OpenIddict:Enabled` |
 | `pipelines:engine` and the pipeline files | Pipeline definitions, versions, runs and the engine's stores. | Only with `Pipelines:Enabled` |
 
-The archive (`.dcbak`) is encrypted with AES-GCM under a key derived from the operator's passphrase (at least 12
+The archive (`.stbak`; an archive taken before 10.75.0 is `.dcbak` and is still listed, restored, downloaded and
+imported as before) is encrypted with AES-GCM under a key derived from the operator's passphrase (at least 12
 characters) with PBKDF2. The passphrase is never stored. An archive restores on another host - it does not depend on the
 host's data-protection keys - but **a lost passphrase makes the archive unreadable**.
 

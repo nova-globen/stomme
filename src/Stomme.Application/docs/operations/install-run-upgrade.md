@@ -166,7 +166,9 @@ is left alone, so a restart never duplicates a site and an entry added later app
 
 The whole list is checked before anything is written. A missing name or alias, an alias listed twice or already on the
 installation, a tenant that does not exist (or a new one named like an existing one), an unknown database type, a
-SQLite folder that cannot be written: the app logs `Installation:Sites is not valid, so no site was created:` with each
+SQLite folder that cannot be written, a folder alias whose folder the host reserves (`api`, `pages`, `files`, `hubs`)
+or that would hide a top-level page of the root site at the same host name (since 10.75.0; a site in a folder wins
+over a page of the same name, so `example.com/products` would make the root's `/products` page unreachable): the app logs `Installation:Sites is not valid, so no site was created:` with each
 problem by its entry (`Installation:Sites:1: the alias 'shop.example.com' is also listed by Installation:Sites:0.`)
 and does not serve. A connection string is never written to the log.
 

@@ -33,7 +33,7 @@ namespace Stomme.Tests.Backup
             var snapshot = Started();
             Assert.Equal(BackupSnapshotStatus.Creating, snapshot.Status);
             Assert.Null(snapshot.GetChecksum());
-            Assert.Equal($"{snapshot.Id:N}.dcbak", snapshot.StorageLocation.Value);
+            Assert.Equal($"{snapshot.Id:N}.stbak", snapshot.StorageLocation.Value); // BL-261; a row stored as .dcbak keeps its name
             Assert.Equal(("10.2.3", Now, 0L), (snapshot.FrameworkVersion, snapshot.CreatedOnUtc, snapshot.SizeBytes));
             Assert.Throws<ArgumentNullException>(() => BackupSnapshotAggregate.Start(Guid.NewGuid(), null!, "10.2.3", Now));
             Assert.Throws<ArgumentException>(() => BackupSnapshotAggregate.Start(Guid.NewGuid(), RetentionTag.Manual, " ", Now));

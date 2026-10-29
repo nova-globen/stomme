@@ -102,6 +102,32 @@ namespace Stomme.Shared
             return (urlparameters, querystring, fragment);
         }
 
+        /// <summary>
+        /// The site's base path on its host: <c>/</c> for a root site, <c>/didin</c> for a site at <c>host/didin</c>. A
+        /// module builds its own URLs under it (its API, streams, hubs: <c>SitePath(alias.Path) + "/api/..."</c>, or the
+        /// browser's <c>NavigationManager.BaseUri</c>, which already ends with it), and a cookie a site sets for itself takes
+        /// it as its path (M2 rows 7 and 8).
+        /// </summary>
+        public static string SitePath(string aliasPath)
+        {
+            var path = (aliasPath ?? string.Empty).Trim('/');
+            return path.Length == 0 ? "/" : "/" + path;
+        }
+
+        /// <summary>
+        /// A root-relative URL of the site's own: <c>SiteUrl("didin", "/api/stream/7")</c> is <c>/didin/api/stream/7</c>, and
+        /// the same call for a root site is <c>/api/stream/7</c>. For a module's API, its streams and its hubs
+        /// (<c>NavigationManager.ToAbsoluteUri(Utilities.SiteUrl(PageState.Alias.Path, "/hubs/game"))</c>): the host strips the
+        /// folder from <c>api/</c>, <c>pages/</c>, <c>files/</c> and <c>hubs/</c> URLs and resolves the folder's site (M2 row 7).
+        /// The page's <c>&lt;base href&gt;</c> is the host's root, so a relative URL would NOT carry the folder.
+        /// </summary>
+        public static string SiteUrl(string aliasPath, string rootRelativePath)
+        {
+            var site = SitePath(aliasPath);
+            var path = "/" + (rootRelativePath ?? string.Empty).TrimStart('/');
+            return site == "/" ? path : site + path;
+        }
+
         public static string NavigateUrl(string alias, string path, string parameters)
         {
             string querystring = "";
