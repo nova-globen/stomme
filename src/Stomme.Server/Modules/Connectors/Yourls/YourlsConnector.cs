@@ -109,7 +109,7 @@ namespace Stomme.Modules.Connectors.Yourls
             {
                 var url = Values.Get(p, "url") ?? throw new InvalidOperationException("Give the URL to shorten - https://kafe.example/menu (url).");
                 form["action"] = "shorturl";
-                form["url"] = url.Length <= 8000 && Uri.TryCreate(url, UriKind.Absolute, out var link) && link.Scheme is "https" or "http" && link.Host.Length > 0 && link.UserInfo.Length == 0
+                form["url"] = url.Length <= 8000 && Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var link) && link.Scheme is "https" or "http" && link.Host.Length > 0 && link.UserInfo.Length == 0
                     ? url
                     : throw new InvalidOperationException($"'{(url.Length > 60 ? url[..60] + "..." : url)}' is not a web address - https://kafe.example/menu (url).");
                 if (Values.Get(p, "keyword") is { } keyword)
@@ -180,7 +180,7 @@ namespace Stomme.Modules.Connectors.Yourls
                 return given;
             }
 
-            return Uri.TryCreate(given, UriKind.Absolute, out var link) && link.Scheme is "https" or "http" && link.Query.Length == 0 && link.UserInfo.Length == 0
+            return Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var link) && link.Scheme is "https" or "http" && link.Query.Length == 0 && link.UserInfo.Length == 0
                 && LookupPattern.IsMatch(link.AbsolutePath.Trim('/'))
                 ? given
                 : throw new InvalidOperationException($"'{given}' is not a short URL - its keyword (meny1) or its whole address, https://sho.rt/meny1 (short_url).");

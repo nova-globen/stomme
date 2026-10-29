@@ -63,7 +63,7 @@ namespace Stomme.Modules.Backup.Infrastructure
         /// </summary>
         public string? Problem()
         {
-            if (string.IsNullOrWhiteSpace(Endpoint) || !Uri.TryCreate(Endpoint.Trim(), UriKind.Absolute, out var endpoint) || (endpoint.Scheme != Uri.UriSchemeHttp && endpoint.Scheme != Uri.UriSchemeHttps))
+            if (string.IsNullOrWhiteSpace(Endpoint) || !Stomme.Shared.Utilities.TryCreateAbsoluteUri(Endpoint.Trim(), out var endpoint) || (endpoint.Scheme != Uri.UriSchemeHttp && endpoint.Scheme != Uri.UriSchemeHttps))
             {
                 return "Backup:Archive:S3:Endpoint is not an http(s) address.";
             }

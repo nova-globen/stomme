@@ -50,7 +50,7 @@ namespace Stomme.Modules.Pipelines.Steps
 
         /// <summary>Whether an address is one a form may send a person on to: absolute, http or https.</summary>
         public static bool IsRedirect(string? address) =>
-            Uri.TryCreate(address?.Trim(), UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp);
+            Stomme.Shared.Utilities.TryCreateAbsoluteUri(address?.Trim(), out var uri) && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp);
 
         protected override object GetTriggerPayload(TriggerIndexingContext context)
         {

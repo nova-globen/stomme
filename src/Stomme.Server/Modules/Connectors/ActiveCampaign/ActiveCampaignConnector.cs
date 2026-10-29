@@ -858,7 +858,7 @@ namespace Stomme.Modules.Connectors.ActiveCampaign
 
                             if (Values.Get(p, "url") is { } url)
                             {
-                                account["accountUrl"] = Uri.TryCreate(url, UriKind.Absolute, out var site) && (site.Scheme == Uri.UriSchemeHttp || site.Scheme == Uri.UriSchemeHttps) ? url : throw new InvalidOperationException($"'{url}' is not a website's address - https://acme.example.");
+                                account["accountUrl"] = Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var site) && (site.Scheme == Uri.UriSchemeHttp || site.Scheme == Uri.UriSchemeHttps) ? url : throw new InvalidOperationException($"'{url}' is not a website's address - https://acme.example.");
                             }
 
                             if (Values.Get(p, "fields") is { } fields)

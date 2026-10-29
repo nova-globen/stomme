@@ -381,7 +381,7 @@ namespace Stomme.Modules.Connectors.Supabase
         // The project's REST API: its own address, /rest/v1.
         private static string Api(string endpoint)
         {
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var project) || (project.Scheme != Uri.UriSchemeHttps && project.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var project) || (project.Scheme != Uri.UriSchemeHttps && project.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not a Supabase project's address - https://your-project.supabase.co.");
             }

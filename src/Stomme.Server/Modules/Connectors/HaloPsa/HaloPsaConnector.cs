@@ -221,7 +221,7 @@ namespace Stomme.Modules.Connectors.HaloPsa
         private static string ApiOf(string? endpoint)
         {
             var given = (endpoint ?? "").Trim().TrimEnd('/');
-            return Uri.TryCreate(given, UriKind.Absolute, out var uri) && uri.Scheme is "https" or "http" && uri.Query.Length == 0 && uri.Fragment.Length == 0 && uri.UserInfo.Length == 0
+            return Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var uri) && uri.Scheme is "https" or "http" && uri.Query.Length == 0 && uri.Fragment.Length == 0 && uri.UserInfo.Length == 0
                 && (uri.AbsolutePath is "/" or "" || uri.AbsolutePath.Equals("/api", StringComparison.OrdinalIgnoreCase))
                 ? uri.GetLeftPart(UriPartial.Authority) + "/api"
                 : throw new InvalidOperationException("Give HaloPSA's address - https://kafe.halopsa.com (its resource server, /api, forgiven).");

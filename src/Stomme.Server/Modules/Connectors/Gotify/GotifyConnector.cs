@@ -126,7 +126,7 @@ namespace Stomme.Modules.Connectors.Gotify
 
             // Everything held to its shape before anything is sent.
             var max = Values.Get(p, "max") is { } most ? int.TryParse(most, NumberStyles.None, CultureInfo.InvariantCulture, out var n) && n > 0 ? n : throw new InvalidOperationException($"'{most}' is not a number above 0 (max).") : DefaultMax;
-            string? AddressOf(string name) => Values.Get(p, name) is { } given ? Uri.TryCreate(given, UriKind.Absolute, out _) ? given : throw new InvalidOperationException($"'{given}' is not an address ({name}).") : null;
+            string? AddressOf(string name) => Values.Get(p, name) is { } given ? Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out _) ? given : throw new InvalidOperationException($"'{given}' is not an address ({name}).") : null;
             JsonObject? body = null;
             string? id = null;
             switch (operation)

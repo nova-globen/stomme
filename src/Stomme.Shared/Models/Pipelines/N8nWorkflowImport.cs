@@ -5565,7 +5565,7 @@ namespace Stomme.Models.Pipelines
         {
             Set(step, "Operation", operation);
             var owner = Locator(p, "owner");
-            if (Uri.TryCreate(owner, UriKind.Absolute, out var ownerAddress) && ownerAddress.AbsolutePath.Trim('/') is { Length: > 0 } ownerPath)
+            if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(owner, out var ownerAddress) && ownerAddress.AbsolutePath.Trim('/') is { Length: > 0 } ownerPath)
             {
                 owner = ownerPath.Split('/')[0]; // its address mode: https://github.com/acme
             }

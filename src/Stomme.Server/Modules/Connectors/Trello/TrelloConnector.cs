@@ -293,7 +293,7 @@ namespace Stomme.Modules.Connectors.Trello
         private static string Id(string? given, string what, bool longOnly = false)
         {
             var value = given?.Trim() ?? throw new InvalidOperationException($"Name the {what}.");
-            if (Uri.TryCreate(value, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
+            if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(value, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
             {
                 var segments = address.AbsolutePath.Trim('/').Split('/');
                 value = segments.Length >= 2 && segments[0] is "c" or "b" ? segments[1] : value; // trello.com/c/{shortLink}/... or /b/{shortLink}/...

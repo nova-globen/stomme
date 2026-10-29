@@ -216,7 +216,7 @@ namespace Stomme.Modules.Connectors.FlexNetManager
             }
 
             var url = endpoint.Trim();
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 throw new InvalidOperationException($"The endpoint '{endpoint}' is not an absolute http(s) URL.");
             }

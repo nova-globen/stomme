@@ -276,7 +276,7 @@ namespace Stomme.Modules.Connectors.UrlScanIo
         }
 
         private static string Link(string given, string name) =>
-            given.Length <= 2048 && Uri.TryCreate(given, UriKind.Absolute, out var link) && link.Scheme is "https" or "http" && link.Host.Length > 0 && link.UserInfo.Length == 0
+            given.Length <= 2048 && Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var link) && link.Scheme is "https" or "http" && link.Host.Length > 0 && link.UserInfo.Length == 0
                 ? given
                 : throw new InvalidOperationException($"'{given}' is not a web address - https://kassa.example/login ({name}).");
 

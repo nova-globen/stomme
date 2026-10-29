@@ -338,7 +338,7 @@ namespace Stomme.Modules.Connectors.Intercom
 
                         if (Values.Get(p, "website") is { } website)
                         {
-                            body["website"] = Uri.TryCreate(website, UriKind.Absolute, out var site) && (site.Scheme == Uri.UriSchemeHttp || site.Scheme == Uri.UriSchemeHttps) ? website : throw new InvalidOperationException($"'{website}' is not a website's address - https://acme.example.");
+                            body["website"] = Stomme.Shared.Utilities.TryCreateAbsoluteUri(website, out var site) && (site.Scheme == Uri.UriSchemeHttp || site.Scheme == Uri.UriSchemeHttps) ? website : throw new InvalidOperationException($"'{website}' is not a website's address - https://acme.example.");
                         }
 
                         if (Values.Get(p, "size") is { } size)

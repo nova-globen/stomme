@@ -28,7 +28,7 @@ namespace Stomme.Tests
     {
         private static readonly TimeSpan BuildTimeout = TimeSpan.FromMinutes(8);
 
-        [Fact]
+        [WindowsFact("the MAUI solution targets net10.0-windows, which builds only on Windows")]
         public async Task The_Maui_solution_builds()
         {
             var root = FindRepoRoot();

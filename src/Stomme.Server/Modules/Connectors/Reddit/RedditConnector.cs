@@ -257,7 +257,7 @@ namespace Stomme.Modules.Connectors.Reddit
                         if (url is not null)
                         {
                             form.Add(new("kind", "link"));
-                            form.Add(new("url", Uri.TryCreate(url, UriKind.Absolute, out var link) && (link.Scheme == Uri.UriSchemeHttps || link.Scheme == Uri.UriSchemeHttp) ? url : throw new InvalidOperationException($"'{url}' is not a link - https://example.com/fika.")));
+                            form.Add(new("url", Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var link) && (link.Scheme == Uri.UriSchemeHttps || link.Scheme == Uri.UriSchemeHttp) ? url : throw new InvalidOperationException($"'{url}' is not a link - https://example.com/fika.")));
                             form.Add(new("resubmit", Values.Get(p, "resubmit") is { } again && Flag(again, "resubmit") ? "true" : "false"));
                         }
                         else

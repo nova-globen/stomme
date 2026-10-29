@@ -174,7 +174,7 @@ namespace Stomme.Modules.Connectors.Bitly
             var group = Values.Get(p, "group") is { } named ? GroupGuid.IsMatch(named) ? named : throw new InvalidOperationException($"'{named}' is not a group's id.") : null;
             JsonArray? Tags() => Values.Get(p, "tags") is { } tags ? new JsonArray(tags.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(tag => (JsonNode?)JsonValue.Create(tag)).ToArray()) : null;
             JsonArray? Deeplinks() => Values.Get(p, "deeplinks") is { } json ? Parse(json) is JsonArray { Count: > 0 } list && list.All(item => item is JsonObject) ? list : throw new InvalidOperationException("The deep links are not a JSON list of objects - [{\"app_id\": \"com.example\", \"app_uri_path\": \"/item/1\"}].") : null;
-            string LongUrl(string given) => Uri.TryCreate(given, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp) ? given : throw new InvalidOperationException($"'{given}' is not an address - https://example.com/a/long/path.");
+            string LongUrl(string given) => Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp) ? given : throw new InvalidOperationException($"'{given}' is not an address - https://example.com/a/long/path.");
 
             using var client = session.Client;
             switch (operation)

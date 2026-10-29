@@ -63,9 +63,9 @@ namespace Stomme.Modules.Health.Infrastructure
         /// <para>
         /// The pipeline asks this BEFORE tenant resolution and skips it for these paths. Neither endpoint needs a tenant,
         /// and resolving one for them did harm: a container healthcheck or an external monitor sends a Host that names no
-        /// site (<c>127.0.0.1:8080</c>), and on an installation whose aliases all point at ONE site,
-        /// <c>AliasRepository.GetAliasAsync(url)</c> registers any unknown host as a new alias - so every probe from a new
-        /// address wrote an alias row (measured, <c>HealthEndpointAnyHostTests</c>).
+        /// site (<c>127.0.0.1:8080</c>). Tenant resolution answers such a Host with a 404 (<c>UnknownHostTests</c>); before
+        /// that, on an installation whose aliases all point at ONE site, it registered any unknown host as a new alias - so
+        /// every probe from a new address wrote an alias row (measured, <c>HealthEndpointAnyHostTests</c>).
         /// </para>
         /// <para>
         /// It also exempts them from the HTTPS redirect (<c>Installation:UseHttpsRedirection</c>): a probe of

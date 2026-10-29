@@ -358,7 +358,7 @@ namespace Stomme.Modules.Connectors.Okta
         {
             foreach (Match match in Link.Matches(link ?? ""))
             {
-                if (Regex.IsMatch(match.Groups["attributes"].Value, "rel=\"next\"") && Uri.TryCreate(match.Groups["url"].Value, UriKind.Absolute, out var address))
+                if (Regex.IsMatch(match.Groups["attributes"].Value, "rel=\"next\"") && Stomme.Shared.Utilities.TryCreateAbsoluteUri(match.Groups["url"].Value, out var address))
                 {
                     var after = address.Query.TrimStart('?').Split('&').Select(pair => pair.Split('=', 2)).FirstOrDefault(pair => pair[0] == "after");
                     return after is { Length: 2 } && after[1].Length > 0 ? Uri.UnescapeDataString(after[1]) : null;

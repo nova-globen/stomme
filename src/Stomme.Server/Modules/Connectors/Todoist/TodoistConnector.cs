@@ -517,7 +517,7 @@ namespace Stomme.Modules.Connectors.Todoist
                 return DefaultEndpoint;
             }
 
-            if (!Uri.TryCreate(endpoint.Trim(), UriKind.Absolute, out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint.Trim(), out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not Todoist's API address - {DefaultEndpoint}.");
             }
@@ -532,7 +532,7 @@ namespace Stomme.Modules.Connectors.Todoist
         private static string Id(string? given, string what)
         {
             var value = given?.Trim() ?? "";
-            if (Uri.TryCreate(value, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
+            if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(value, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
             {
                 var last = address.AbsolutePath.TrimEnd('/').Split('/')[^1];
                 value = last.Contains('-', StringComparison.Ordinal) ? last[(last.LastIndexOf('-') + 1)..] : last;

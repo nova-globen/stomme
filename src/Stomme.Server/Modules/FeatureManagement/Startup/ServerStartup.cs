@@ -60,7 +60,8 @@ namespace Stomme.Modules.FeatureManagement.Startup
             if (FrameworkStoreProviderSelection.IsRelationalProvider(databaseType))
             {
                 var connectionString = ResolveConnectionString(services, configuration);
-                services.AddFeatureManagement(options => options.UseSqlite(connectionString));
+                services.AddFeatureManagement(options => options.UseSqlite(connectionString,
+                    sqlite => sqlite.CommandTimeout(Stomme.Database.Sqlite.SqliteDatabase.BusyTimeoutSeconds(connectionString))));
                 AddBackupParticipants(services);
             }
             else

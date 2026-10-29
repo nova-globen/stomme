@@ -382,7 +382,7 @@ namespace Stomme.Modules.Connectors.Imap
 
             if (text.Contains("://", StringComparison.Ordinal))
             {
-                if (!Uri.TryCreate(text, UriKind.Absolute, out var uri) || uri.Scheme is not ("imap" or "imaps") || uri.Host.Length == 0 || uri.AbsolutePath.Trim('/').Length > 0 || uri.UserInfo.Length > 0)
+                if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(text, out var uri) || uri.Scheme is not ("imap" or "imaps") || uri.Host.Length == 0 || uri.AbsolutePath.Trim('/').Length > 0 || uri.UserInfo.Length > 0)
                 {
                     throw new InvalidOperationException($"'{text}' is not an IMAP server: {Expected}.");
                 }

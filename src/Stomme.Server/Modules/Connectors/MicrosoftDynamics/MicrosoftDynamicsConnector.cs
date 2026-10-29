@@ -251,7 +251,7 @@ namespace Stomme.Modules.Connectors.MicrosoftDynamics
                 given = given[..at];
             }
 
-            return Uri.TryCreate(given.TrimEnd('/'), UriKind.Absolute, out var uri) && uri.Scheme is "https" or "http" && uri.AbsolutePath == "/" && uri.Query.Length == 0
+            return Stomme.Shared.Utilities.TryCreateAbsoluteUri(given.TrimEnd('/'), out var uri) && uri.Scheme is "https" or "http" && uri.AbsolutePath == "/" && uri.Query.Length == 0
                 ? uri.GetLeftPart(UriPartial.Authority)
                 : throw new InvalidOperationException("Give the environment's address - https://kafe.crm4.dynamics.com (Power Platform admin center > the environment > Environment URL).");
         }

@@ -243,7 +243,7 @@ namespace Stomme.Modules.Connectors.Sftp
             }
 
             var address = given.Contains("://", StringComparison.Ordinal) ? given : "ssh://" + given;
-            if (!Uri.TryCreate(address, UriKind.Absolute, out var uri) || uri.Scheme is not ("sftp" or "ssh") || uri.DnsSafeHost.Length == 0)
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(address, out var uri) || uri.Scheme is not ("sftp" or "ssh") || uri.DnsSafeHost.Length == 0)
             {
                 throw new InvalidOperationException($"'{given}' is not an {protocol} server's address - {example}.");
             }

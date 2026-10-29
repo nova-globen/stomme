@@ -359,7 +359,7 @@ namespace Stomme.Modules.Connectors.ClickUp
         private static string TaskOf(string? given)
         {
             var value = given?.Trim() ?? throw new InvalidOperationException("Name the task.");
-            if (Uri.TryCreate(value, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
+            if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(value, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
             {
                 var segments = address.AbsolutePath.Trim('/').Split('/');
                 value = segments.Length >= 2 && segments[^2] == "t" ? segments[^1] : value;

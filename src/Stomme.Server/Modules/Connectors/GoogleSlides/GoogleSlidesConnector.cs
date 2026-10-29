@@ -400,7 +400,7 @@ namespace Stomme.Modules.Connectors.GoogleSlides
             /// </summary>
             public async Task<long> SaveAsync(string address, string file, IConnectorFiles files, CancellationToken cancellationToken)
             {
-                if (!Uri.TryCreate(address, UriKind.Absolute, out var uri) || (uri.Scheme != Uri.UriSchemeHttps && !string.Equals(uri.Host, new Uri(api).Host, StringComparison.OrdinalIgnoreCase)) || uri.UserInfo.Length > 0)
+                if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(address, out var uri) || (uri.Scheme != Uri.UriSchemeHttps && !string.Equals(uri.Host, new Uri(api).Host, StringComparison.OrdinalIgnoreCase)) || uri.UserInfo.Length > 0)
                 {
                     throw new InvalidOperationException("Google Slides answered with a thumbnail address that is not one to fetch - an https address.");
                 }

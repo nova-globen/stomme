@@ -409,7 +409,7 @@ namespace Stomme.Modules.Connectors.Monday
         // monday.com's GraphQL endpoint: its own address (a stand-in's as given), /v2; a monday.com page taken to the API.
         private static string Api(string endpoint)
         {
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not monday.com's API address - https://api.monday.com.");
             }

@@ -13,6 +13,7 @@ namespace Stomme.Shared
         public const string DefaultAliasKey = "DefaultAlias";
         public const string HostUsernameKey = "HostUsername";
         public const string HostPasswordKey = "HostPassword";
+        public const string HostPasswordFileKey = "HostPasswordFile"; // a file holding the host password (a container secret)
         public const string HostEmailKey = "HostEmail";
         public const string HostNameKey = "HostName";
         public const string SiteTemplateKey = "SiteTemplate";

@@ -194,7 +194,7 @@ namespace Stomme.Modules.Connectors.Grafana
                 var given = Values.Get(p, "dashboard") ?? throw new InvalidOperationException("Give the dashboard - its uid or address.");
                 if (given.StartsWith("http", StringComparison.OrdinalIgnoreCase))
                 {
-                    var match = Uri.TryCreate(given, UriKind.Absolute, out var address) ? Regex.Match(address.AbsolutePath, "/d/([^/]+)") : Match.Empty;
+                    var match = Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var address) ? Regex.Match(address.AbsolutePath, "/d/([^/]+)") : Match.Empty;
                     given = match.Success ? Uri.UnescapeDataString(match.Groups[1].Value) : throw new InvalidOperationException($"'{given}' is not a dashboard's address - https://grafana.example.com/d/abc123/sales (dashboard).");
                 }
 

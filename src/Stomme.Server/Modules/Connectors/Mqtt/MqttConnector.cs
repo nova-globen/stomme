@@ -242,7 +242,7 @@ namespace Stomme.Modules.Connectors.Mqtt
                     given = "mqtt://" + given;
                 }
 
-                if (!Uri.TryCreate(given, UriKind.Absolute, out var uri) || uri.Host.Length == 0)
+                if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var uri) || uri.Host.Length == 0)
                 {
                     throw new ArgumentException($"'{endpoint}' is not an MQTT address - mqtt://broker.example.com:1883, or mqtts:// for TLS.");
                 }

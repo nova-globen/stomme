@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
@@ -82,6 +83,17 @@ namespace Stomme.Server
             }
             var configuration = configurationBuilder.Build();
 
+            // A tenant Installation:Sites creates resolves its database by the name ConnectionStrings:<Tenant>. The entry's own
+            // ConnectionString supplies it, at the LOWEST precedence, so a container recreated from its image (whose files the
+            // install wrote to are gone) still finds it in its environment - measured: without this the host refused to start.
+            var siteConnectionStrings = ConfiguredSites.ConnectionStrings(configuration);
+            if (siteConnectionStrings.Count > 0)
+            {
+                (configuration as IDisposable)?.Dispose();
+                configurationBuilder.Sources.Insert(0, new MemoryConfigurationSource { InitialData = siteConnectionStrings });
+                configuration = configurationBuilder.Build();
+            }
+
             builder.Services.AddStomme(configuration, builder.Environment);
 
             var app = builder.Build();
@@ -143,6 +155,18 @@ namespace Stomme.Server
                     install.Success = false;
                     install.Message = $"A staged restore of backup {report.SnapshotId} failed and so did its safety snapshot ({report.Reason}); " +
                         "the installation is in maintenance and will not serve. See the log, and restore a snapshot by hand.";
+                }
+            }
+
+            // The sites Installation:Sites lists beyond the first, created on any boot that finds one missing. An invalid
+            // list refuses to serve, by name, with nothing created.
+            if (install.Success && string.IsNullOrEmpty(install.Message))
+            {
+                var sites = await databaseManager.ReconcileConfiguredSitesAsync();
+                if (!sites.Success)
+                {
+                    install.Success = false;
+                    install.Message = sites.Message;
                 }
             }
 

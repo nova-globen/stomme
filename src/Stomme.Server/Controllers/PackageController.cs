@@ -113,7 +113,7 @@ namespace Stomme.Controllers
                 {
                     // BL-109: a package the registry names without a usable address used to reach GetAsync(null) and throw
                     // outside any try - an unhandled 500.
-                    if (!Uri.TryCreate(package.PackageUrl, UriKind.Absolute, out var packageUri) || (packageUri.Scheme != Uri.UriSchemeHttps && packageUri.Scheme != Uri.UriSchemeHttp))
+                    if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(package.PackageUrl, out var packageUri) || (packageUri.Scheme != Uri.UriSchemeHttps && packageUri.Scheme != Uri.UriSchemeHttp))
                     {
                         _logger.Log(LogLevel.Error, this, LogFunction.Create, "Package {PackageId} {Version} Has No Download Address", packageid, version);
                         HttpContext.Response.StatusCode = FailedDependency;

@@ -188,7 +188,7 @@ namespace Stomme.Modules.Connectors.Ftp
             }
 
             var address = given.Contains("://", StringComparison.Ordinal) ? given : "ftp://" + given;
-            if (!Uri.TryCreate(address, UriKind.Absolute, out var uri) || uri.Scheme is not ("ftp" or "ftps") || uri.DnsSafeHost.Length == 0)
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(address, out var uri) || uri.Scheme is not ("ftp" or "ftps") || uri.DnsSafeHost.Length == 0)
             {
                 throw new InvalidOperationException($"'{given}' is not an FTP server's address - ftp://ftp.kafe.example:21.");
             }

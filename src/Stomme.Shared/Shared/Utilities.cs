@@ -17,6 +17,23 @@ namespace Stomme.Shared
     public static class Utilities
     {
         /// <summary>
+        /// <c>Uri.TryCreate(value, UriKind.Absolute, out uri)</c> that refuses a bare path. On Linux and macOS .NET reads
+        /// <c>/relative/only</c> as the absolute <c>file:///relative/only</c> (measured 2026-10-28; Windows refuses it), so a
+        /// path passed every absolute-URL check on the platform the product is hosted on. An explicit <c>file:</c> URI is still
+        /// absolute. Use this, never the bare call: <c>AbsoluteUriGateTests</c> fails the build on one.
+        /// </summary>
+        public static bool TryCreateAbsoluteUri(string value, out Uri uri)
+        {
+            if (Uri.TryCreate(value, UriKind.Absolute, out uri)
+                && !(uri.IsFile && !value.TrimStart().StartsWith("file:", StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+            uri = null;
+            return false;
+        }
+
+        /// <summary>
         /// The release number of a package's version, for a framework-version comparison: <c>10.5.0-preview.1</c> and
         /// <c>10.5.0+5f2a</c> are <c>10.5.0</c>. <see cref="System.Version"/> refuses a label, and a package built against a
         /// preview names the preview as its framework (BL-192); a preview of a release requires that release.

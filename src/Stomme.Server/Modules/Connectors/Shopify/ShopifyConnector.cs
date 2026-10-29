@@ -655,7 +655,7 @@ namespace Stomme.Modules.Connectors.Shopify
                 given = "https://" + given;
             }
 
-            if (!Uri.TryCreate(given, UriKind.Absolute, out var shop) || (shop.Scheme != Uri.UriSchemeHttps && shop.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var shop) || (shop.Scheme != Uri.UriSchemeHttps && shop.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not a shop's address - https://your-store.myshopify.com.");
             }
@@ -683,7 +683,7 @@ namespace Stomme.Modules.Connectors.Shopify
             {
                 value = value["gid://shopify/".Length..][(kind.Length + 1)..];
             }
-            else if (Uri.TryCreate(value, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
+            else if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(value, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
             {
                 value = address.AbsolutePath.TrimEnd('/').Split('/')[^1];
             }

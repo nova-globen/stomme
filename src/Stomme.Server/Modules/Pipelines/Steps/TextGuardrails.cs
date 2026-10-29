@@ -287,7 +287,7 @@ namespace Stomme.Modules.Pipelines.Steps
                 var address = value.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? "https://" + value : value;
                 var scheme = address[..address.IndexOf(':')].ToLowerInvariant();
                 var allowed = schemes.Contains(scheme);
-                if (allowed && Uri.TryCreate(address, UriKind.Absolute, out var uri))
+                if (allowed && Stomme.Shared.Utilities.TryCreateAbsoluteUri(address, out var uri))
                 {
                     if (patterns.BlockUserInfo && uri.UserInfo.Length > 0)
                     {
@@ -324,7 +324,7 @@ namespace Stomme.Modules.Pipelines.Steps
                 return string.Empty;
             }
 
-            return Uri.TryCreate(value.Contains("://", StringComparison.Ordinal) ? value : "https://" + value, UriKind.Absolute, out var uri) ? uri.Host.ToLowerInvariant() : value.ToLowerInvariant();
+            return Stomme.Shared.Utilities.TryCreateAbsoluteUri(value.Contains("://", StringComparison.Ordinal) ? value : "https://" + value, out var uri) ? uri.Host.ToLowerInvariant() : value.ToLowerInvariant();
         }
 
         private static string Digits(string text) => new(text.Where(char.IsAsciiDigit).ToArray());

@@ -561,7 +561,7 @@ namespace Stomme.Modules.Connectors.WooCommerce
             if (Values.Get(parameters, "images") is { } images)
             {
                 product["images"] = new JsonArray(images.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .Select(image => (JsonNode)new JsonObject { ["src"] = Uri.TryCreate(image, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp) ? image : throw new InvalidOperationException($"'{image}' is not an image's address - https://...") }).ToArray());
+                    .Select(image => (JsonNode)new JsonObject { ["src"] = Stomme.Shared.Utilities.TryCreateAbsoluteUri(image, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp) ? image : throw new InvalidOperationException($"'{image}' is not an image's address - https://...") }).ToArray());
             }
 
             if (Values.Get(parameters, "meta_data") is { } meta)
@@ -708,7 +708,7 @@ namespace Stomme.Modules.Connectors.WooCommerce
         // /wp-json/wc/v3.
         private static string Api(string endpoint)
         {
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var store) || (store.Scheme != Uri.UriSchemeHttps && store.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var store) || (store.Scheme != Uri.UriSchemeHttps && store.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not a store's address - https://shop.example.com.");
             }

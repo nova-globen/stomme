@@ -109,7 +109,7 @@ namespace Stomme.Modules.Connectors.Shared
         /// </summary>
         public async Task<JsonNode?> FetchJsonAsync(string address, CancellationToken cancellationToken)
         {
-            if (!Uri.TryCreate(address, UriKind.Absolute, out var uri) || (uri.Scheme != Uri.UriSchemeHttps && !string.Equals(uri.Host, new Uri(api).Host, StringComparison.OrdinalIgnoreCase)) || uri.UserInfo.Length > 0)
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(address, out var uri) || (uri.Scheme != Uri.UriSchemeHttps && !string.Equals(uri.Host, new Uri(api).Host, StringComparison.OrdinalIgnoreCase)) || uri.UserInfo.Length > 0)
             {
                 throw new InvalidOperationException($"{name} answered with an address that is not one to fetch - an https address.");
             }

@@ -404,7 +404,7 @@ namespace Stomme.Modules.Connectors.GoogleBusinessProfile
         }
 
         private static string Link(string given, string name) =>
-            Uri.TryCreate(given, UriKind.Absolute, out var link) && link.Scheme is "https" or "http" ? given : throw new InvalidOperationException($"'{given}' is not a web address - https://kafe.example ({name}).");
+            Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var link) && link.Scheme is "https" or "http" ? given : throw new InvalidOperationException($"'{given}' is not a web address - https://kafe.example ({name}).");
 
         // An id from the step, or from the connection's setting - by its name (accounts/1) or bare.
         private static string Id(IReadOnlyDictionary<string, string> p, IReadOnlyDictionary<string, string>? settings, string name, Regex shape, string what)

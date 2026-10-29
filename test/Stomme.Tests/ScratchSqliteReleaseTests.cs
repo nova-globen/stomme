@@ -28,7 +28,7 @@ namespace Stomme.Tests
             Directory.CreateDirectory(_directory);
         }
 
-        [Fact]
+        [WindowsFact("it observes a pool through Windows' lock on an open file; Linux lets an open file be deleted, so there is nothing to observe")]
         public void A_pooled_connection_holds_the_file_until_its_own_pool_is_released()
         {
             var path = Path.Combine(_directory, "held.db");
@@ -46,7 +46,7 @@ namespace Stomme.Tests
             _output.WriteLine("[released] the targeted ClearPool freed the file");
         }
 
-        [Fact]
+        [WindowsFact("it observes a pool through Windows' lock on an open file; Linux lets an open file be deleted, so there is nothing to observe")]
         public void Releasing_one_database_leaves_another_ones_pool_alone()
         {
             // The whole reason for the row: teardown in one test class must not reach into a class that is still
@@ -69,7 +69,7 @@ namespace Stomme.Tests
             ScratchSqlite.Release(theirs);
         }
 
-        [Fact]
+        [WindowsFact("it observes a pool through Windows' lock on an open file; Linux lets an open file be deleted, so there is nothing to observe")]
         public void A_release_aimed_at_a_different_connection_string_releases_nothing()
         {
             // Why every converted fixture passes the string it actually used, rather than rebuilding one that
@@ -90,7 +90,7 @@ namespace Stomme.Tests
             Assert.True(CanDelete(path), "the fixture's own connection string should release its own pool");
         }
 
-        [Theory]
+        [WindowsTheory("it observes a pool through Windows' lock on an open file; Linux lets an open file be deleted, so there is nothing to observe")]
         [InlineData("Data Source={0}", "Data Source={0};")]           // a trailing semicolon
         [InlineData("Data Source={0}", "data source={0}")]            // keyword casing
         [InlineData("Data Source={0}", "Data Source = {0}")]          // spacing round the equals
@@ -124,7 +124,7 @@ namespace Stomme.Tests
             Assert.True(CanDelete(path), "the exact connection string should release its own pool");
         }
 
-        [Fact]
+        [WindowsFact("it observes a pool through Windows' lock on an open file; Linux lets an open file be deleted, so there is nothing to observe")]
         public void ReleaseInstall_frees_every_database_under_the_content_root_however_it_was_spelled()
         {
             // The shape of a scratch install, and the shape of the defect this caught. ReleaseInstall used to

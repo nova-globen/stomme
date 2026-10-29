@@ -194,7 +194,7 @@ namespace Stomme.Modules.Connectors.RestApi
 
         private static bool TryTarget(string endpoint, string? path, out Uri target, out string problem)
         {
-            if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint, out var uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 target = null!;
                 problem = "Endpoint must be an absolute http(s) URL.";

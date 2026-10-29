@@ -99,7 +99,8 @@ will move; setting or changing it later signs everyone out once and makes secret
 - `/healthz` answers `200 alive` whenever the process serves requests, installed or not. Use it for liveness and
   container health checks. It answers for **any** `Host` header, also one that names no site (`127.0.0.1:8080`, an
   external monitor's own name) and on an installation with several sites. The two health paths skip site resolution
-  and the HTTPS redirect, so a probe never registers its host name as an alias and is never redirected.
+  and the HTTPS redirect, so a probe answers where any other path from an unknown host gets a 404, and is never
+  redirected.
 - `/readyz` answers `200 ready` only after the health probe job has run and found the host ready; before that, before
   the installation exists, and always when `Health:Enabled` is `false`, it answers `503 not-ready`. Do not use it as a
   liveness check: a fresh deployment would be restarted before anyone could open the installer.
@@ -242,9 +243,11 @@ uploads must pass the proxy.
 Open the public address and run the installer there, so the site's first alias is the public host name; or install
 unattended with `Installation:DefaultAlias` set to it
 ([Install, run and upgrade](install-run-upgrade.md#unattended-install)). Supply secrets through environment variables
-(`ConnectionStrings__DefaultConnection`, `Installation__HostPassword`) or the override file on the mounted `Data`
-volume, never baked into the image. A connection string supplied as an environment variable is not copied into the
-override file by the install, so it must stay set for every later start.
+(`ConnectionStrings__DefaultConnection`; the host password best as a file, `Installation__HostPasswordFile=/run/secrets/host-password`)
+or the override file on the mounted `Data` volume, never baked into the image. A connection string supplied as an
+environment variable is not copied into the override file by the install, so it must stay set for every later start.
+Once the `Installation` section asks for an unattended install, the browser installer is refused, so a stranger who
+reaches the host before the install completes cannot claim it.
 
 ## Configuration
 
@@ -265,13 +268,12 @@ override file by the install, so it must stay set for every later start.
 - **A publish can carry your local installation.** Without `<Content Remove="Data\**" />` in the Server project (the template has it since 10.73.0), the
   local `Server/Data/appsettings.override.json` (connection string, host password) is published, and the deployed app
   installs from it instead of opening the installer. Check the publish folder for `Data` before shipping it.
-- **Never expose the app port directly.** A client reaching it from a public address cannot claim a host name or a
-  scheme by header, but every host name it sends in `Host` is one a single-site installation registers as an alias
-  (any page request does; the health endpoints do not).
+- **Never expose the app port directly.** Put the TLS-terminating proxy in front; a client reaching the port itself
+  cannot claim a host name or a scheme by header, and a `Host` that is no alias gets a 404.
 - **Behind a proxy outside the private networks, links and sign-in break.** Its forwarded headers are not believed, so
   the app sees `http` and the proxy's address. Name it in `ForwardedHeaders:KnownProxies` or
   `ForwardedHeaders:KnownNetworks`.
-- **The site answers only on its aliases.** A request whose host name matches none of a site's aliases is not served by that site. Add the public host
+- **The site answers only on its aliases.** A request whose host name matches no alias gets a plain 404. Add the public host
   name under **Admin > Site Settings > Site Urls** before switching DNS.
 - **A restart from the admin pages is an exit.** Without a supervisor that restarts on a clean exit, the app stays down.
 - **More than one instance needs more than a load balancer.** The default cache is in memory per instance, Stomme's

@@ -10,12 +10,13 @@
 # such a class goes RED here, quickly, instead of quietly using the shared servers and making the tier slow.
 #
 #   pwsh scripts/test-fast.ps1                 # the whole solution's fast tier
-#   pwsh scripts/test-fast.ps1 -NoBuild        # after a build
+#   pwsh scripts/test-fast.ps1 -NoBuild        # after a build (of the same -Configuration, Debug by default; CI builds Release)
 #   pwsh scripts/test-fast.ps1 -Log fast.log   # keep the full log (the default is under %TEMP%)
 param(
     [switch]$NoBuild,
-    [string]$Log = (Join-Path $env:TEMP 'stomme-fast-tier.log'),
-    [int]$MaxCpu = 8
+    [string]$Log = (Join-Path ([IO.Path]::GetTempPath()) 'stomme-fast-tier.log'),
+    [int]$MaxCpu = 8,
+    [string]$Configuration = 'Debug'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -77,7 +78,7 @@ $env:METABASE_TEST_PASSWORD = 'closed-port'
 $env:METABASE_TEST_API_KEY = 'closed-port'
 
 # Capped, and no reusable MSBuild nodes left behind (see scripts/gate.ps1).
-$arguments = @('test', (Join-Path $root 'Stomme.slnx'), '--nologo', '--filter', 'Category!=ExternalDatabase', "-m:$MaxCpu", '-nodeReuse:false')
+$arguments = @('test', (Join-Path $root 'Stomme.slnx'), '--nologo', '--configuration', $Configuration, '--filter', 'Category!=ExternalDatabase', "-m:$MaxCpu", '-nodeReuse:false')
 if ($NoBuild) { $arguments += '--no-build' }
 
 $timer = [Diagnostics.Stopwatch]::StartNew()
@@ -86,6 +87,9 @@ $exit = $LASTEXITCODE
 
 Select-String -Path $Log -Pattern '^\s*(Passed!|Failed!)' | ForEach-Object { $_.Line.Trim() }
 Select-String -Path $Log -Pattern '^\s+Failed ' | ForEach-Object { $_.Line.Trim() }
+# A run that died before any test (no build of this configuration, a restore failure) prints no summary: show why, so
+# a CI log says it rather than only "exit 1".
+if ($exit -ne 0 -and -not (Select-String -Path $Log -Pattern '^\s*(Passed!|Failed!)' -Quiet)) { Get-Content $Log -Tail 40 }
 "fast tier: exit $exit in $([int]$timer.Elapsed.TotalSeconds) s - full log: $Log"
 "Not enough for a tag: run 'pwsh scripts/gate.ps1 -Full' before one."
 exit $exit

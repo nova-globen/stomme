@@ -176,7 +176,7 @@ namespace Stomme.Modules.Connectors.PostHog
                             var properties = Object(p, "properties");
                             if (Values.Get(p, "url") is { } url)
                             {
-                                properties["$current_url"] = Uri.TryCreate(url, UriKind.Absolute, out var page) && (page.Scheme == Uri.UriSchemeHttps || page.Scheme == Uri.UriSchemeHttp) ? url : throw new InvalidOperationException($"'{url}' is not a page's address - https://kafe.example/meny (url).");
+                                properties["$current_url"] = Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var page) && (page.Scheme == Uri.UriSchemeHttps || page.Scheme == Uri.UriSchemeHttp) ? url : throw new InvalidOperationException($"'{url}' is not a page's address - https://kafe.example/meny (url).");
                             }
 
                             if (Values.Get(p, "name") is { } title)

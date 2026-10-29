@@ -341,7 +341,7 @@ namespace Stomme.Modules.Connectors.Salesforce
         // The org's REST API: its own address, /services/data/v{version}.
         private static string Api(string endpoint, IReadOnlyDictionary<string, string> settings)
         {
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var org) || (org.Scheme != Uri.UriSchemeHttps && org.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var org) || (org.Scheme != Uri.UriSchemeHttps && org.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not an org's address - https://your-domain.my.salesforce.com.");
             }

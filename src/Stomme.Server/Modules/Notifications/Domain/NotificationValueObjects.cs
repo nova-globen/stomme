@@ -186,7 +186,7 @@ namespace Stomme.Modules.Notifications.Domain
             }
 
             if (kind == ChannelKind.Webhook
-                && (!Uri.TryCreate(endpoint, UriKind.Absolute, out var uri)
+                && (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint, out var uri)
                     || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)))
             {
                 throw new ArgumentException("A webhook channel requires an absolute http(s) endpoint URL.", nameof(endpoint));

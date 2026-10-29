@@ -220,7 +220,7 @@ namespace Stomme.Modules.Connectors.Notion
         private static string Id(string? given, string what)
         {
             var text = given?.Trim() ?? throw new InvalidOperationException($"Name the {what} - its id or its address.");
-            var candidate = Uri.TryCreate(text, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp)
+            var candidate = Stomme.Shared.Utilities.TryCreateAbsoluteUri(text, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp)
                 ? Hex32.Matches(address.AbsolutePath).LastOrDefault()?.Value
                 : text.Replace("-", "", StringComparison.Ordinal);
             if (candidate is null || !BareId.IsMatch(candidate))

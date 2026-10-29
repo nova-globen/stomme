@@ -236,7 +236,7 @@ namespace Stomme.Modules.Landing.Domain
             }
 
             var sitePath = url.StartsWith('/') && !url.StartsWith("//", StringComparison.Ordinal) && !url.Contains('\\');
-            var web = Uri.TryCreate(url, UriKind.Absolute, out var absolute) && (absolute.Scheme == Uri.UriSchemeHttps || absolute.Scheme == Uri.UriSchemeHttp);
+            var web = Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var absolute) && (absolute.Scheme == Uri.UriSchemeHttps || absolute.Scheme == Uri.UriSchemeHttp);
             return sitePath || web ? url : throw new ArgumentException($"'{url}' is not a link a landing page can carry: use a site path such as /about, or an http(s) address.");
         }
 

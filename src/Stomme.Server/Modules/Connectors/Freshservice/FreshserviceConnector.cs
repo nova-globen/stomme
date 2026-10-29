@@ -218,7 +218,7 @@ namespace Stomme.Modules.Connectors.Freshservice
                 given = given[..at];
             }
 
-            return Uri.TryCreate(given.TrimEnd('/'), UriKind.Absolute, out var uri) && uri.Scheme is "https" or "http" && uri.AbsolutePath == "/" && uri.Query.Length == 0
+            return Stomme.Shared.Utilities.TryCreateAbsoluteUri(given.TrimEnd('/'), out var uri) && uri.Scheme is "https" or "http" && uri.AbsolutePath == "/" && uri.Query.Length == 0
                 ? uri.GetLeftPart(UriPartial.Authority) + "/api/v2"
                 : throw new InvalidOperationException("Give the desk's address - https://kafe.freshservice.com.");
         }

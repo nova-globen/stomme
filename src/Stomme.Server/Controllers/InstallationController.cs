@@ -85,7 +85,11 @@ namespace Stomme.Controllers
         {
             var installation = new Installation { Success = false, Message = "" };
 
-            if (ModelState.IsValid && (User.IsInRole(RoleNames.Host) || string.IsNullOrEmpty(_configManager.GetSetting($"{SettingKeys.ConnectionStringsSection}:{SettingKeys.ConnectionStringKey}", ""))))
+            // Anyone may run the browser wizard on a host that is neither installed nor configured for an unattended install;
+            // after that only the Host (who adds sites through this call).
+            var wizardOpen = string.IsNullOrEmpty(_configManager.GetSetting($"{SettingKeys.ConnectionStringsSection}:{SettingKeys.ConnectionStringKey}", ""))
+                && !UnattendedInstall.IsConfigured(_configManager);
+            if (ModelState.IsValid && (User.IsInRole(RoleNames.Host) || wizardOpen))
             {
                 installation = await _databaseManager.InstallAsync(config);
             }

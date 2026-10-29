@@ -48,7 +48,7 @@ namespace Stomme.Modules.AiAssistant.Application
                 .Must(provider => names.Contains(provider, StringComparer.OrdinalIgnoreCase))
                 .WithMessage(command => $"'{command.Provider}' is not a provider this installation offers ({string.Join(", ", names)}).");
             RuleFor(command => command.Endpoint).NotEmpty().MaximumLength(500)
-                .Must(endpoint => Uri.TryCreate(endpoint, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp) && string.IsNullOrEmpty(uri.UserInfo))
+                .Must(endpoint => Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint, out var uri) && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp) && string.IsNullOrEmpty(uri.UserInfo))
                 .WithMessage("The endpoint is an absolute http or https address, with no credentials in it.");
             RuleFor(command => command.Model).MaximumLength(200);
             RuleFor(command => command.Model).NotEmpty().When(command => command.Enabled).WithMessage("Name the model before switching the assistant on.");

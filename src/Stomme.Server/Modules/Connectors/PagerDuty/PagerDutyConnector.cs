@@ -395,7 +395,7 @@ namespace Stomme.Modules.Connectors.PagerDuty
 
                     if (Values.Get(p, "conference_url") is { } url)
                     {
-                        bridge["conference_url"] = Uri.TryCreate(url, UriKind.Absolute, out var link) && (link.Scheme == Uri.UriSchemeHttps || link.Scheme == Uri.UriSchemeHttp) ? url : throw new InvalidOperationException($"'{url}' is not an address - https://meet.example.com/ops (conference_url).");
+                        bridge["conference_url"] = Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var link) && (link.Scheme == Uri.UriSchemeHttps || link.Scheme == Uri.UriSchemeHttp) ? url : throw new InvalidOperationException($"'{url}' is not an address - https://meet.example.com/ops (conference_url).");
                     }
 
                     incident["conference_bridge"] = bridge;

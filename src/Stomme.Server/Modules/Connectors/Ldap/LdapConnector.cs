@@ -359,7 +359,7 @@ namespace Stomme.Modules.Connectors.Ldap
                 given = "ldap://" + given;
             }
 
-            if (!Uri.TryCreate(given, UriKind.Absolute, out var uri) || uri.Scheme is not ("ldap" or "ldaps") || uri.Host.Length == 0)
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var uri) || uri.Scheme is not ("ldap" or "ldaps") || uri.Host.Length == 0)
             {
                 throw new InvalidOperationException($"'{endpoint}' is not a directory's address - ldap://dir.kafe.example:389, or ldaps://.");
             }

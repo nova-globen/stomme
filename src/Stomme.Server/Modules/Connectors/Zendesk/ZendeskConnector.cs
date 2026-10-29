@@ -546,7 +546,7 @@ namespace Stomme.Modules.Connectors.Zendesk
         // The account's Support API: its own address, /api/v2.
         private static string Api(string endpoint)
         {
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var account) || (account.Scheme != Uri.UriSchemeHttps && account.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var account) || (account.Scheme != Uri.UriSchemeHttps && account.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not a Zendesk account's address - https://your-subdomain.zendesk.com.");
             }

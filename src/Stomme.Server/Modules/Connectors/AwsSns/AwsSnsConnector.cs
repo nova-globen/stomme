@@ -271,7 +271,7 @@ namespace Stomme.Modules.Connectors.AwsSns
                         var endpoint = Values.Get(p, "endpoint") ?? throw new InvalidOperationException("Give the endpoint - its address.");
                         var fits = protocol switch
                         {
-                            "http" or "https" => Uri.TryCreate(endpoint, UriKind.Absolute, out var url) && url.Scheme == protocol,
+                            "http" or "https" => Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint, out var url) && url.Scheme == protocol,
                             "email" or "email-json" => endpoint.IndexOf('@') > 0 && endpoint.IndexOf('@') == endpoint.LastIndexOf('@') && endpoint.IndexOf('@') < endpoint.Length - 1 && !endpoint.Any(char.IsWhiteSpace),
                             "sms" => Phone.IsMatch(endpoint),
                             _ => endpoint.StartsWith("arn:", StringComparison.Ordinal) && !endpoint.Any(char.IsWhiteSpace),

@@ -344,7 +344,7 @@ namespace Stomme.Modules.Connectors.Asana
         private static string Id(string? given, string what)
         {
             var value = given?.Trim() ?? throw new InvalidOperationException($"Name the {what}.");
-            if (Uri.TryCreate(value, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
+            if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(value, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
             {
                 var segments = address.AbsolutePath.Trim('/').Split('/').Where(segment => segment != "f").ToList();
                 var named = segments.IndexOf(what);

@@ -180,7 +180,7 @@ namespace Stomme.Modules.Connectivity.Domain
 
             if (kind == ConnectorEndpointKind.Url)
             {
-                if (!Uri.TryCreate(trimmed, UriKind.Absolute, out var uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+                if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(trimmed, out var uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
                 {
                     throw new ArgumentException("A URL endpoint must be an absolute http or https URL.", nameof(value));
                 }

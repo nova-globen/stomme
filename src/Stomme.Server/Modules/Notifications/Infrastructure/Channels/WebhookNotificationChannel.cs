@@ -76,7 +76,7 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
         public async Task<IReadOnlyList<string>> ValidateSettingsAsync(int siteId, TransportSettings settings, CancellationToken ct = default)
         {
             ArgumentNullException.ThrowIfNull(settings);
-            if (!Uri.TryCreate(settings.Endpoint, UriKind.Absolute, out var endpoint))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(settings.Endpoint, out var endpoint))
             {
                 return ["A webhook channel requires an absolute http(s) endpoint URL."];
             }
@@ -90,7 +90,7 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
         {
             ArgumentNullException.ThrowIfNull(request);
             var transport = request.Channel.Transport;
-            if (!Uri.TryCreate(transport.Endpoint, UriKind.Absolute, out var endpoint)
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(transport.Endpoint, out var endpoint)
                 || (endpoint.Scheme != Uri.UriSchemeHttp && endpoint.Scheme != Uri.UriSchemeHttps))
             {
                 return ChannelDeliveryResult.Fail("The webhook channel has no absolute http(s) endpoint URL.");

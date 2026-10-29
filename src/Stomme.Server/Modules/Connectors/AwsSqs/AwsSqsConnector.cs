@@ -376,7 +376,7 @@ namespace Stomme.Modules.Connectors.AwsSqs
         private static string QueueOf(string? given)
         {
             var queue = given ?? throw new InvalidOperationException("Give the queue - its URL or its name.");
-            if (Uri.TryCreate(queue, UriKind.Absolute, out var url) && (url.Scheme == Uri.UriSchemeHttps || url.Scheme == Uri.UriSchemeHttp))
+            if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(queue, out var url) && (url.Scheme == Uri.UriSchemeHttps || url.Scheme == Uri.UriSchemeHttp))
             {
                 var path = url.AbsolutePath.TrimEnd('/');
                 return path.Count(c => c == '/') == 2 && QueueName.IsMatch(path[(path.LastIndexOf('/') + 1)..]) ? queue.TrimEnd('/') : throw new InvalidOperationException($"'{queue}' is not a queue's URL - https://sqs.eu-north-1.amazonaws.com/123456789012/orders.");

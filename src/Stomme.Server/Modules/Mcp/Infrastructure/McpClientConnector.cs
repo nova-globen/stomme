@@ -74,7 +74,7 @@ namespace Stomme.Modules.Mcp.Infrastructure
 
             // The transport VO already refuses anything that is not an absolute http(s) URL, so this cannot normally
             // fail - it is the second half of the same rule, for a row written before that refusal existed.
-            if (!Uri.TryCreate(registration.Transport.Value, UriKind.Absolute, out var endpoint) || !OutboundConnectGuard.IsPermittedScheme(endpoint))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(registration.Transport.Value, out var endpoint) || !OutboundConnectGuard.IsPermittedScheme(endpoint))
             {
                 return McpDiscoveryResult.Denied("The registered address is not an absolute http or https URL.");
             }

@@ -618,7 +618,7 @@ namespace Stomme.Modules.Connectors.Freshdesk
         // The helpdesk's API: its own address (any page of it cut back), /api/v2.
         private static string Api(string endpoint)
         {
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var helpdesk) || (helpdesk.Scheme != Uri.UriSchemeHttps && helpdesk.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var helpdesk) || (helpdesk.Scheme != Uri.UriSchemeHttps && helpdesk.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not a Freshdesk helpdesk's address - https://your-domain.freshdesk.com.");
             }

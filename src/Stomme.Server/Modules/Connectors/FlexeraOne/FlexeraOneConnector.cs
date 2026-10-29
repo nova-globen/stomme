@@ -156,7 +156,7 @@ namespace Stomme.Modules.Connectors.FlexeraOne
         }
 
         private static string ResolveNextUrl(string baseUrl, string nextLink) =>
-            Uri.TryCreate(nextLink, UriKind.Absolute, out var absolute)
+            Stomme.Shared.Utilities.TryCreateAbsoluteUri(nextLink, out var absolute)
                 ? $"{baseUrl}{absolute.PathAndQuery}"
                 : $"{baseUrl}{(nextLink.StartsWith('/') ? nextLink : "/" + nextLink)}";
 

@@ -22,7 +22,7 @@ namespace Stomme.Modules.Connectors.Shared
         public static (List<ConnectorRecord> Records, string? NextLink) Read(string payload, string current)
         {
             var (records, nextLink) = Read(payload);
-            if (nextLink is not null && !(Uri.TryCreate(nextLink, UriKind.Absolute, out var next) && Uri.TryCreate(current, UriKind.Absolute, out var page)
+            if (nextLink is not null && !(Stomme.Shared.Utilities.TryCreateAbsoluteUri(nextLink, out var next) && Stomme.Shared.Utilities.TryCreateAbsoluteUri(current, out var page)
                 && next.Scheme == page.Scheme && string.Equals(next.Authority, page.Authority, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(next.AbsolutePath, page.AbsolutePath, StringComparison.OrdinalIgnoreCase) && nextLink != current))
             {
@@ -209,7 +209,7 @@ namespace Stomme.Modules.Connectors.Shared
         public static string BaseUrl(string endpoint, string fallback)
         {
             var baseUrl = string.IsNullOrWhiteSpace(endpoint) ? fallback : endpoint.Trim().TrimEnd('/');
-            if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(baseUrl, out var uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 throw new InvalidOperationException($"The endpoint '{endpoint}' is not an absolute http(s) URL.");
             }

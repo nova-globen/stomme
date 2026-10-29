@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -174,7 +175,9 @@ namespace Stomme.Tests
                 await app.StartAsync();
                 var databases = await GetCatalogAsync(app);
 
-                Assert.Equal(6, databases.Count);
+                // Six defaults; off Windows the catalog drops LocalDB, which runs only there (DatabaseController).
+                Assert.Equal(OperatingSystem.IsWindows() ? 6 : 5, databases.Count);
+                Assert.Equal(OperatingSystem.IsWindows(), databases.Any(d => d.Name == "LocalDB"));
                 Assert.Contains(databases, d => d.Name == "RavenDB");
                 Assert.All(databases, d => Assert.EndsWith(", Stomme.Server", d.DBType));
             }

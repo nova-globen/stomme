@@ -53,7 +53,7 @@ per-site quotas that a module records against and checks before it consumes.
   - `/healthz` - `alive`, from the process only. Answers even before installation, and for any `Host` header - also
     one that names no site, on an installation with several sites. Use it as the container liveness / restart check.
   - Both paths (also when moved with `Health:LivenessPath` / `Health:ReadinessPath`) skip site resolution and the HTTPS
-    redirect: a probe from an unknown host is not registered as an alias and is not redirected.
+    redirect: a probe from an unknown host answers (any other path from that host gets a 404) and is not redirected.
   - `/readyz` - the **last completed tick's** verdict from memory: `ready` (200) when it was Healthy or Degraded,
     `not-ready` (503) when it was Unhealthy **or when no tick has completed yet** (not installed, just started, or health
     probing switched off). Neither endpoint runs a probe.

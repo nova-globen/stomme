@@ -27,9 +27,9 @@ exactly one of three scopes - the installation, a tenant, or a site - and code t
    (`HttpContext.GetAlias()`, in `Stomme.Extensions`).
 3. The tenant named by the alias is resolved and remembered for the scope, so every database context opened later in the
    request is routed to that tenant's database.
-4. When no alias matches: an uninstalled host runs the installer. On an installation with ONE site, the unknown host
-   name is registered on the spot as a new, non-default alias of that site (and the request is then redirected to the
-   default alias). With two or more sites, the host answers a page that says no matching alias exists.
+4. When no alias matches: an uninstalled host runs the installer. An installed host answers a plain 404 with an empty
+   body and writes nothing - only configured host names are aliases (`Installation:DefaultAlias` at install, then
+   **Admin > Site Management**). The health endpoints are the exception: they answer for any host.
 
 ### What lives where
 
@@ -172,8 +172,12 @@ Database list offers the existing tenants (the first install's tenant is `Master
 creates a new tenant with its own database. A site added on an existing tenant shares that tenant's database and its
 user accounts. On RavenDB a new tenant's database must live on the installation's own RavenDB server.
 
-Once a second site exists, an unknown host name no longer becomes an alias of the first site; add every host name a
-site answers to as an alias.
+The same sites can come from configuration instead, for a host deployed unattended: `Installation:Sites` lists them
+(name, aliases, and a tenant with its own connection string for a new tenant), and each start creates any that are
+missing. See [More sites from configuration](../operations/install-run-upgrade.md#more-sites-from-configuration-installationsites).
+
+An unknown host name never becomes an alias: add every host name a site answers to (`www.` and the bare name, a reverse
+proxy's public name) as an alias, or requests to it get a 404.
 
 ## Rules and pitfalls
 

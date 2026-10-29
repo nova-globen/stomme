@@ -127,7 +127,7 @@ namespace Stomme.Modules.Pipelines.Steps
         {
             var options = context.GetService<IOptions<PipelineStepOptions>>()?.Value.Http ?? new HttpStepOptions();
             var url = Required(context, Url, "Url");
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var uri))
             {
                 await FailAsync(context, "INVALID_URL", $"'{url}' is not an absolute URL.").ConfigureAwait(false);
                 return;

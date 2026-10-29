@@ -326,22 +326,17 @@ namespace Stomme.Tests
             Assert.Equal(7, root.SiteId);
         }
 
-        // The auto-register branch of the routing lookup: when every alias shares one tenant/site and none matches, a
-        // root-domain alias is created on the fly through AddAliasAsync (a store write) and returned.
+        // Only configured hosts are aliases: on a one-site installation the harvested lookup registered any unmatched
+        // host as a new alias of that site (a store write). Now an unmatched request resolves no alias and writes nothing.
         [Fact]
-        public async Task The_routing_lookup_auto_registers_a_root_alias_for_a_single_tenant_site()
+        public async Task The_routing_lookup_registers_no_alias_for_an_unknown_host_on_a_single_tenant_site()
         {
             await NewAliases().AddAliasAsync(new Alias { Name = "stomme.me", TenantId = 3, SiteId = 7, IsDefault = true });
 
-            var resolved = await NewAliases().GetAliasAsync("newhost.example/some/path");
-            Assert.NotNull(resolved);
-            Assert.Equal("newhost.example", resolved!.Name); // root domain of the unmatched request
-            Assert.Equal(3, resolved.TenantId);
-            Assert.Equal(7, resolved.SiteId);
+            Assert.Null(await NewAliases().GetAliasAsync("newhost.example/some/path"));
 
-            // It was persisted, not just returned in memory.
             await using var session = new TestMasterSessions(NewContext).OpenQuerySession();
-            Assert.Contains(session.Query<AliasAggregate>().ToList(), item => item.Name == "newhost.example");
+            Assert.Equal(new[] { "stomme.me" }, session.Query<AliasAggregate>().Select(item => item.Name).ToList());
         }
 
         // UpdateAliasAsync (D19: the harvested _db.Entry(alias).State = Modified becomes a store Update) plus GetById

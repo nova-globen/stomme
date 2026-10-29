@@ -185,7 +185,7 @@ namespace Stomme.Modules.Connectors.LinkedIn
                         {
                             var article = new JsonObject
                             {
-                                ["source"] = url is not null && Uri.TryCreate(url, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp) ? url
+                                ["source"] = url is not null && Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp) ? url
                                     : throw new InvalidOperationException(url is null ? "Give the article's address." : $"'{url}' is not an article's address - https://example.com/post."),
                                 ["title"] = title is not null ? OneLine(title, "article's title", 400) : throw new InvalidOperationException("Give the article's title."),
                             };

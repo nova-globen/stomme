@@ -63,7 +63,7 @@ namespace Stomme.Infrastructure
 
             if (configured.Length > 0)
             {
-                if (Uri.TryCreate(configured, UriKind.Absolute, out var given) && given.Scheme is "http" or "https" && string.IsNullOrEmpty(given.UserInfo))
+                if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(configured, out var given) && given.Scheme is "http" or "https" && string.IsNullOrEmpty(given.UserInfo))
                 {
                     _resolved = new Box(new Uri(given.GetLeftPart(UriPartial.Authority) + "/"));
                     return _resolved.Address;

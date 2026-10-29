@@ -175,7 +175,7 @@ namespace Stomme.Modules.Connectors.Pushover
 
                         if (Values.Get(p, "url") is { } url)
                         {
-                            Add("url", Uri.TryCreate(url, UriKind.Absolute, out _) ? url : throw new InvalidOperationException($"'{url}' is not an address (url)."));
+                            Add("url", Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out _) ? url : throw new InvalidOperationException($"'{url}' is not an address (url)."));
                         }
 
                         Add("url_title", Values.Get(p, "url_title"));

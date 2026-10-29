@@ -37,4 +37,11 @@
     <ProjectReference Include="..\..\..\..\src\Stomme.Client\Stomme.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The folder's own restore configuration, not content of the theme: the host references both stock themes, and their two
+         nuget.config files collided in its publish output (NETSDK1152, measured 2026-10-28). -->
+    <Content Update="nuget.config" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+    <None Update="nuget.config" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
 </Project>

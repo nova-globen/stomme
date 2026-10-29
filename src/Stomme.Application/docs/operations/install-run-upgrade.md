@@ -108,7 +108,17 @@ Put the database and the host account in configuration before the first start, f
 - `ConnectionStrings:DefaultConnection`, `Installation:DefaultAlias`, `Installation:HostEmail` and
   `Installation:HostPassword` are required; with the connection string set and any of the others missing, the app logs
   one `fail` line naming the missing keys, "The installation did not complete: Error Installing Master Database For
-  DefaultConnection: an automated installation also needs Installation:HostEmail, Installation:HostPassword.", and exits.
+  DefaultConnection: an automated installation also needs Installation:HostEmail, Installation:HostPassword (or
+  HostPasswordFile).", and exits.
+- **The password from a file** (a container secret): set `Installation:HostPasswordFile` to the file's path in place of
+  `Installation:HostPassword` (`Installation__HostPasswordFile=/run/secrets/host-password`). The file's trailing line
+  break is ignored. A missing or empty file, or both keys set, stops the install with a `fail` line naming the key and
+  the path, never the password.
+- **No browser wizard once the `Installation` section asks for an unattended install**: when any of
+  `Installation:DefaultAlias`, `HostEmail`, `HostPassword` or `HostPasswordFile` is set and the install has not
+  completed (the connection string is missing, say), the home page says the host is configured for an unattended
+  installation and points at the log, and the install API refuses anyone but the Host. A stranger who reaches a public
+  host first cannot claim it.
 - The values may come from any configuration source, environment variables included
   (`ConnectionStrings__DefaultConnection`, `Installation__HostPassword`, ...). The install writes `InstallationId` to the
   override file, but **not** a connection string or database type it read from an environment variable: keep those
@@ -118,6 +128,10 @@ Put the database and the host account in configuration before the first start, f
   `Stomme.Database.Sqlite.SqliteDatabase, Stomme.Server`,
   `Stomme.Database.PostgreSQL.PostgreSQLDatabase, Stomme.Server`,
   `Stomme.Database.RavenDb.RavenDatabase, Stomme.Server`. Left empty it means SQL Server.
+- **SQLite's busy timeout**: a command waits 30 seconds for a file another connection has locked, then fails with
+  `SQLite Error 5: 'database is locked'`. Set another wait in the connection string, `Default Timeout=60;` (seconds);
+  it applies to every SQLite store the host opens with that string (each file runs in WAL, so readers never block the
+  writer).
 - Connection string shapes the installer itself builds: SQLite `Data Source=|DataDirectory|/name.db;`;
   PostgreSQL `Server=host;Port=5432;Database=name;Integrated Security=true;` (with **Custom**
   security, `User ID=user;Password=secret;` in place of `Integrated Security=true;`);
@@ -132,7 +146,44 @@ Put the database and the host account in configuration before the first start, f
   render mode, runtime and prerendering come from the top-level `RenderMode`, `Runtime` and `Prerender` keys.
 - The unattended path creates the database too, the same way the wizard does.
 
-After the install, remove `Installation:HostPassword` from the file; the account exists in the database.
+After the install, remove `Installation:HostPassword` from the file (or the secret `HostPasswordFile` names); the account
+exists in the database.
+
+### More sites from configuration: `Installation:Sites`
+
+`Installation:Sites` lists the sites beyond the first. On every start of an installed host, each entry whose first alias
+does not name a site yet is created, the way **Admin > Site Management > Add Site** creates one; an entry that exists
+is left alone, so a restart never duplicates a site and an entry added later appears on the next start. Each entry:
+
+| Key | Required | Meaning |
+|---|---|---|
+| `Name` | yes | The site's name. |
+| `Aliases` | yes | Its host names, comma-separated; the first is its primary alias. A folder site: `example.com/sv`. |
+| `Tenant` | with `ConnectionString` | The tenant. Absent: the installation's own (`Master`). |
+| `ConnectionString` | no | Creates `Tenant` as a NEW tenant with this database of its own (a SQLite file in the data directory: see the example below). The host account is created in it, so the host password (`HostPassword` or `HostPasswordFile`) must be set on that start. |
+| `DatabaseType` | no | The new tenant's database type; default `Database:DefaultDBType`. |
+| `SiteTemplate`, `DefaultTheme`, `DefaultContainer`, `RenderMode`, `Runtime` | no | As for the first site. |
+
+The whole list is checked before anything is written. A missing name or alias, an alias listed twice or already on the
+installation, a tenant that does not exist (or a new one named like an existing one), an unknown database type, a
+SQLite folder that cannot be written: the app logs `Installation:Sites is not valid, so no site was created:` with each
+problem by its entry (`Installation:Sites:1: the alias 'shop.example.com' is also listed by Installation:Sites:0.`)
+and does not serve. A connection string is never written to the log.
+
+Every value is a plain string, so the list can be given entirely as environment variables, as a compose file would:
+
+```yaml
+environment:
+  Installation__DefaultAlias: example.com
+  Installation__HostEmail: host@example.com
+  Installation__HostPasswordFile: /run/secrets/host-password
+  Installation__Sites__0__Name: Svenska
+  Installation__Sites__0__Aliases: example.com/sv
+  Installation__Sites__1__Name: Shop
+  Installation__Sites__1__Aliases: shop.example.com
+  Installation__Sites__1__Tenant: Shop
+  Installation__Sites__1__ConnectionString: Data Source=|DataDirectory|/shop.db;
+```
 
 ### Start again from nothing (development, SQLite)
 

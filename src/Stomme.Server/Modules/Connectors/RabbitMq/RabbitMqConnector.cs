@@ -299,7 +299,7 @@ namespace Stomme.Modules.Connectors.RabbitMq
             {
                 throw new ConnectorEgressDeniedException("A RabbitMQ connection names ONE broker; a list of brokers cannot be pinned to a checked address.");
             }
-            if (!Uri.TryCreate(given, UriKind.Absolute, out var uri) || uri.Scheme is not ("amqp" or "amqps") || uri.Host.Length == 0)
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var uri) || uri.Scheme is not ("amqp" or "amqps") || uri.Host.Length == 0)
             {
                 throw new ArgumentException($"'{endpoint}' is not an AMQP address - amqp://rabbit.example.com:5672/kassa, or amqps:// for TLS.");
             }

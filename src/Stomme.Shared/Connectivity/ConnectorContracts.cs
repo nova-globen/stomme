@@ -207,7 +207,7 @@ namespace Stomme.Connectivity
                     case ConnectorConfigFieldType.Boolean when !bool.TryParse(value, out _):
                         errors.Add($"Setting '{field.Name}' must be true or false.");
                         break;
-                    case ConnectorConfigFieldType.Url when !Uri.TryCreate(value, UriKind.Absolute, out _):
+                    case ConnectorConfigFieldType.Url when !Stomme.Shared.Utilities.TryCreateAbsoluteUri(value, out _):
                         errors.Add($"Setting '{field.Name}' must be an absolute URL.");
                         break;
                     case ConnectorConfigFieldType.Duration when !IsDuration(value):

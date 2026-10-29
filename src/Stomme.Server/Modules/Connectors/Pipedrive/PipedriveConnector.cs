@@ -408,7 +408,7 @@ namespace Stomme.Modules.Connectors.Pipedrive
         private static string Origin(string endpoint)
         {
             var given = string.IsNullOrWhiteSpace(endpoint) ? DefaultEndpoint : endpoint.Trim();
-            return Uri.TryCreate(given, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp)
+            return Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp)
                 ? address.GetLeftPart(UriPartial.Authority)
                 : throw new InvalidOperationException($"'{endpoint}' is not Pipedrive's address - {DefaultEndpoint}.");
         }

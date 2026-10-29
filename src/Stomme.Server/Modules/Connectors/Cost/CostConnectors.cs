@@ -60,7 +60,7 @@ namespace Stomme.Modules.Connectors.Cost
             }
 
             var endpoint = string.IsNullOrWhiteSpace(context.Endpoint) ? DefaultEndpoint! : context.Endpoint.Trim();
-            if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var baseUri) || (baseUri.Scheme != Uri.UriSchemeHttp && baseUri.Scheme != Uri.UriSchemeHttps))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint, out var baseUri) || (baseUri.Scheme != Uri.UriSchemeHttp && baseUri.Scheme != Uri.UriSchemeHttps))
             {
                 return ConnectionTestResult.Fail("Endpoint must be an absolute http(s) URL.");
             }

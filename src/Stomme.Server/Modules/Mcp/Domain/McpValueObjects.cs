@@ -45,7 +45,7 @@ namespace Stomme.Modules.Mcp.Domain
         {
             var trimmed = (value ?? string.Empty).Trim();
             if (trimmed.Length == 0 || trimmed.Length > MaxLength
-                || !Uri.TryCreate(trimmed, UriKind.Absolute, out var uri)
+                || !Stomme.Shared.Utilities.TryCreateAbsoluteUri(trimmed, out var uri)
                 || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 throw new ArgumentException($"An MCP server endpoint is an absolute http(s) URL of at most {MaxLength} characters.", nameof(value));

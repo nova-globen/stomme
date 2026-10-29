@@ -155,7 +155,7 @@ namespace Stomme.Modules.Connectors.Vonage
 
             if (Values.Get(p, "callback") is { } callback)
             {
-                form.Add(new("callback", callback.Length <= MostReference && Uri.TryCreate(callback, UriKind.Absolute, out var link) && link.Scheme is "https" or "http"
+                form.Add(new("callback", callback.Length <= MostReference && Stomme.Shared.Utilities.TryCreateAbsoluteUri(callback, out var link) && link.Scheme is "https" or "http"
                     ? callback
                     : throw new InvalidOperationException($"'{callback}' is not a web address of at most {MostReference} characters - https://kafe.example/sms/kvitto (callback).")));
             }

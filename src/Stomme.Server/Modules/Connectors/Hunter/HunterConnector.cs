@@ -270,7 +270,7 @@ namespace Stomme.Modules.Connectors.Hunter
             if (Values.Get(p, "domain") is { } domain)
             {
                 var plain = domain.Trim().ToLowerInvariant();
-                plain = Uri.TryCreate(plain, UriKind.Absolute, out var site) && site.Scheme is "http" or "https" ? site.Host : plain; // n8n's users give a site's address too
+                plain = Stomme.Shared.Utilities.TryCreateAbsoluteUri(plain, out var site) && site.Scheme is "http" or "https" ? site.Host : plain; // n8n's users give a site's address too
                 query.Add(("domain", Domain.IsMatch(plain) ? plain : throw new InvalidOperationException($"'{domain}' is not a domain - kafe.example (domain).")));
             }
             else

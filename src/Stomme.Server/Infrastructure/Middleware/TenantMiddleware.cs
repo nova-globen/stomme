@@ -27,6 +27,14 @@ namespace Stomme.Infrastructure
                 var tenantManager = context.RequestServices.GetService(typeof(ITenantManager)) as ITenantManager;
                 var alias = await tenantManager.GetAliasAsync();
 
+                // A Host that is no configured alias gets a plain 404 and nothing is written: no alias is
+                // registered for it and no page, API or asset of any site is served under it.
+                if (alias == null)
+                {
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    return;
+                }
+
                 if (alias != null)
                 {
                     // save alias in HttpContext

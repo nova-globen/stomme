@@ -524,7 +524,7 @@ namespace Stomme.Modules.Connectors.GitLab
         private static string Instance(string? endpoint)
         {
             var given = string.IsNullOrWhiteSpace(endpoint) ? DefaultEndpoint : endpoint.Trim();
-            if (!Uri.TryCreate(given, UriKind.Absolute, out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not a GitLab instance's address - https://gitlab.com.");
             }
@@ -541,7 +541,7 @@ namespace Stomme.Modules.Connectors.GitLab
                 return project;
             }
 
-            if (Uri.TryCreate(project, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
+            if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(project, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
             {
                 var path = address.AbsolutePath.Trim('/');
                 var cut = path.IndexOf("/-/", StringComparison.Ordinal);

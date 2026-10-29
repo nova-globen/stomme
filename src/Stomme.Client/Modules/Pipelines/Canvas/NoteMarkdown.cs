@@ -131,7 +131,7 @@ namespace Stomme.Modules.Pipelines.Canvas
                 else if (match.Groups["link"].Success)
                 {
                     var url = match.Groups["url"].Value;
-                    if (Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https" or "mailto")
+                    if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var uri) && uri.Scheme is "http" or "https" or "mailto")
                     {
                         builder.OpenElement(14, "a");
                         builder.AddAttribute(15, "href", uri.AbsoluteUri);

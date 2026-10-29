@@ -614,7 +614,7 @@ namespace Stomme.Modules.Connectors.Mailchimp
         // the key's refused; any other address (a stand-in's) as given, /3.0 added.
         private static string Api(string endpoint, string key)
         {
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not a Mailchimp API address - https://us21.api.mailchimp.com.");
             }

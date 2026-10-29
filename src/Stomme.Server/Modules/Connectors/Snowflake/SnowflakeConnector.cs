@@ -267,7 +267,7 @@ namespace Stomme.Modules.Connectors.Snowflake
         private static string ApiOf(string? endpoint)
         {
             var given = (endpoint ?? "").Trim().TrimEnd('/');
-            return Uri.TryCreate(given, UriKind.Absolute, out var uri) && uri.Scheme is "https" or "http" && uri.AbsolutePath is "/" or "" && uri.Query.Length == 0 && uri.Fragment.Length == 0 && uri.UserInfo.Length == 0
+            return Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var uri) && uri.Scheme is "https" or "http" && uri.AbsolutePath is "/" or "" && uri.Query.Length == 0 && uri.Fragment.Length == 0 && uri.UserInfo.Length == 0
                 ? uri.GetLeftPart(UriPartial.Authority)
                 : throw new InvalidOperationException("Give the account's address - https://kafe-analytics.snowflakecomputing.com.");
         }

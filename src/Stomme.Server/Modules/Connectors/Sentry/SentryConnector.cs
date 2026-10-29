@@ -414,7 +414,7 @@ namespace Stomme.Modules.Connectors.Sentry
 
                     if (Values.Get(p, "url") is { } url)
                     {
-                        body["url"] = Uri.TryCreate(url, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttp || address.Scheme == Uri.UriSchemeHttps) ? url : throw new InvalidOperationException($"'{url}' is not an http(s) address (url).");
+                        body["url"] = Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var address) && (address.Scheme == Uri.UriSchemeHttp || address.Scheme == Uri.UriSchemeHttps) ? url : throw new InvalidOperationException($"'{url}' is not an http(s) address (url).");
                     }
 
                     if (Values.Get(p, "date_released") is { } date)

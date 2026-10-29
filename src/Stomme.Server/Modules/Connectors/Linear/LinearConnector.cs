@@ -284,7 +284,7 @@ namespace Stomme.Modules.Connectors.Linear
 
             if (Is(operation, AddLinkOperation))
             {
-                var url = Values.Get(parameters, "url") is { } given && Uri.TryCreate(given, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp)
+                var url = Values.Get(parameters, "url") is { } given && Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp)
                     ? given : throw new InvalidOperationException($"'{Values.Get(parameters, "url")}' is not a link's address - https://...");
                 var data = await QueryAsync(client, key, api, "mutation AttachmentLinkUrl($issueId: String!, $url: String!, $title: String) { attachmentLinkURL(issueId: $issueId, url: $url, title: $title) { success attachment { id url title } } }",
                     new JsonObject { ["issueId"] = issue, ["url"] = url, ["title"] = Values.Get(parameters, "title") is { } title ? OneLine(title, "title") : null }, cancellationToken);
@@ -437,7 +437,7 @@ namespace Stomme.Modules.Connectors.Linear
         // Linear's GraphQL endpoint: its own address (a stand-in's as given), /graphql; a page of the app taken to the API.
         private static string Api(string endpoint)
         {
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not Linear's API address - https://api.linear.app.");
             }

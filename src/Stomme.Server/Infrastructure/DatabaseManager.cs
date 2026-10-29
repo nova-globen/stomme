@@ -30,6 +30,7 @@ namespace Stomme.Infrastructure
         Task<Installation> IsInstalledAsync();
         Task<Installation> InstallAsync();
         Task<Installation> InstallAsync(InstallConfig install);
+        Task<Installation> ReconcileConfiguredSitesAsync();
     }
 
     public class DatabaseManager : IDatabaseManager
@@ -144,11 +145,18 @@ namespace Stomme.Infrastructure
                 {
                     install.Aliases = GetInstallationConfig(SettingKeys.DefaultAliasKey, string.Empty);
                     install.HostUsername = GetInstallationConfig(SettingKeys.HostUsernameKey, UserNames.Host);
-                    install.HostPassword = GetInstallationConfig(SettingKeys.HostPasswordKey, string.Empty);
+                    // Installation:HostPassword, or the file Installation:HostPasswordFile names (a container secret)
+                    var (hostPassword, hostPasswordError) = await UnattendedInstall.ReadHostPasswordAsync(_configManager);
+                    install.HostPassword = hostPassword;
                     install.HostEmail = GetInstallationConfig(SettingKeys.HostEmailKey, string.Empty);
                     install.HostName = GetInstallationConfig(SettingKeys.HostNameKey, UserNames.Host);
 
-                    if (!string.IsNullOrEmpty(install.ConnectionString) && !string.IsNullOrEmpty(install.Aliases) && !string.IsNullOrEmpty(install.HostPassword) && !string.IsNullOrEmpty(install.HostEmail))
+                    if (hostPasswordError != null)
+                    {
+                        result.Message = $"Error Installing Master Database For {SettingKeys.ConnectionStringKey}: {hostPasswordError}";
+                        install.ConnectionString = "";
+                    }
+                    else if (!string.IsNullOrEmpty(install.ConnectionString) && !string.IsNullOrEmpty(install.Aliases) && !string.IsNullOrEmpty(install.HostPassword) && !string.IsNullOrEmpty(install.HostEmail))
                     {
                         // automated install
                         install.SiteTemplate = GetInstallationConfig(SettingKeys.SiteTemplateKey, Constants.DefaultSiteTemplate);
@@ -163,7 +171,7 @@ namespace Stomme.Infrastructure
                         {
                             // automated installation is missing required information - named, never the connection string itself,
                             // which carries the database password into the log
-                            var missing = new[] { (Name: "DefaultAlias", Value: install.Aliases), (Name: "HostEmail", Value: install.HostEmail), (Name: "HostPassword", Value: install.HostPassword) }
+                            var missing = new[] { (Name: "DefaultAlias", Value: install.Aliases), (Name: "HostEmail", Value: install.HostEmail), (Name: "HostPassword (or HostPasswordFile)", Value: install.HostPassword) }
                                 .Where(setting => string.IsNullOrEmpty(setting.Value)).Select(setting => setting.Name);
                             result.Message = $"Error Installing Master Database For {SettingKeys.ConnectionStringKey}: an automated installation also needs Installation:{string.Join(", Installation:", missing)}.";
                         }
@@ -276,6 +284,108 @@ namespace Stomme.Infrastructure
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Creates every <c>Installation:Sites</c> entry that does not exist yet, through the same path the admin's Add Site
+        /// takes. Runs on every boot of an installed host, so a site added to the list appears on the next start and a
+        /// restart never duplicates one. The whole list is checked first (<see cref="ConfiguredSites.Plan"/>): any problem
+        /// refuses the boot by name with nothing created.
+        /// </summary>
+        public async Task<Installation> ReconcileConfiguredSitesAsync()
+        {
+            var entries = _configManager.GetSection(ConfiguredSites.Section).Get<List<ConfiguredSite>>() ?? new List<ConfiguredSite>();
+            if (entries.Count == 0)
+            {
+                return new Installation { Success = true, Message = string.Empty };
+            }
+
+            var (hostPassword, hostPasswordError) = await UnattendedInstall.ReadHostPasswordAsync(_configManager);
+            var state = await ReadConfiguredSitesStateAsync(!string.IsNullOrEmpty(hostPassword) && hostPasswordError == null);
+            var (toCreate, problems) = ConfiguredSites.Plan(entries, state);
+            if (problems.Count > 0)
+            {
+                return new Installation { Success = false, Message = $"{ConfiguredSites.Section} is not valid, so no site was created: {string.Join(" ", problems)}" };
+            }
+
+            foreach (var (index, entry) in toCreate)
+            {
+                Tenant existing = null;
+                if (!entry.CreatesTenant)
+                {
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    existing = (await scope.ServiceProvider.GetRequiredService<ITenantRepository>().GetTenantsAsync())
+                        .First(tenant => tenant.Name.Equals(entry.TenantName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                var install = new InstallConfig
+                {
+                    TenantName = existing?.Name ?? entry.TenantName,
+                    IsNewTenant = entry.CreatesTenant,
+                    DatabaseType = existing?.DBType ?? (string.IsNullOrWhiteSpace(entry.DatabaseType) ? _config.GetDatabaseType() : entry.DatabaseType),
+                    ConnectionString = existing?.DBConnectionString ?? entry.ConnectionString,
+                    SiteName = entry.Name.Trim(),
+                    Aliases = string.Join(",", entry.AliasNames),
+                    SiteTemplate = entry.SiteTemplate,
+                    DefaultTheme = entry.DefaultTheme,
+                    DefaultContainer = entry.DefaultContainer,
+                    DefaultAdminContainer = "",
+                    RenderMode = entry.RenderMode,
+                    Runtime = entry.Runtime,
+                    HostEmail = GetInstallationConfig(SettingKeys.HostEmailKey, string.Empty),
+                    HostName = GetInstallationConfig(SettingKeys.HostNameKey, UserNames.Host)
+                };
+                if (entry.CreatesTenant)
+                {
+                    // A new tenant has an identity store of its own, so the host account is created in it (as Add Site does).
+                    install.HostUsername = GetInstallationConfig(SettingKeys.HostUsernameKey, UserNames.Host);
+                    install.HostPassword = hostPassword;
+                }
+
+                var created = await InstallAsync(install);
+                if (!created.Success)
+                {
+                    return new Installation { Success = false, Message = $"{ConfiguredSites.Section}:{index} ('{install.SiteName}') could not be created: {created.Message}" };
+                }
+                _filelogger.LogInformation("Created site {Site} from {Entry} ({Aliases})", install.SiteName, $"{ConfiguredSites.Section}:{index}", install.Aliases);
+            }
+
+            return new Installation { Success = true, Message = string.Empty };
+        }
+
+        private async Task<ConfiguredSitesState> ReadConfiguredSitesStateAsync(bool hostPasswordAvailable)
+        {
+            List<Alias> aliases;
+            List<Tenant> tenants;
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                aliases = (await scope.ServiceProvider.GetRequiredService<IAliasRepository>().GetAliasesAsync()).ToList();
+                tenants = (await scope.ServiceProvider.GetRequiredService<ITenantRepository>().GetTenantsAsync()).ToList();
+            }
+
+            // Each tenant's site names, read in a FRESH scope entered through one of its aliases (BL-205: a scope binds its
+            // store to the first tenant it serves).
+            var siteNames = new Dictionary<string, IReadOnlyCollection<string>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var tenant in tenants)
+            {
+                var alias = aliases.FirstOrDefault(item => item.TenantId == tenant.TenantId && item.SiteId > 0);
+                if (alias == null)
+                {
+                    continue;
+                }
+                using var scope = _serviceScopeFactory.CreateScope();
+                await scope.ServiceProvider.GetRequiredService<ITenantManager>().SetAliasAsync(alias);
+                siteNames[tenant.Name] = (await scope.ServiceProvider.GetRequiredService<ISiteRepository>().GetSitesAsync())
+                    .Select(site => site.Name).ToList();
+            }
+
+            return new ConfiguredSitesState(
+                aliases.Select(alias => (alias.Name, alias.SiteId)).ToList(),
+                tenants.Select(tenant => tenant.Name).ToList(),
+                siteNames,
+                hostPasswordAvailable,
+                _config.GetDataDirectory(),
+                _config.GetDatabaseType());
         }
 
         private async Task<Installation> CreateDatabaseAsync(InstallConfig install)

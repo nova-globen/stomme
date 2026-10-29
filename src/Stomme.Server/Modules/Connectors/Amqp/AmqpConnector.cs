@@ -286,7 +286,7 @@ namespace Stomme.Modules.Connectors.Amqp
             public static Broker Of(string endpoint, IReadOnlyDictionary<string, string> credentials)
             {
                 var given = (endpoint ?? string.Empty).Trim();
-                if (!Uri.TryCreate(given, UriKind.Absolute, out var uri) || uri.Scheme is not ("amqp" or "amqps") || uri.Host.Length == 0)
+                if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(given, out var uri) || uri.Scheme is not ("amqp" or "amqps") || uri.Host.Length == 0)
                 {
                     throw new ArgumentException($"'{endpoint}' is not an AMQP address - amqp://broker.kafe.example:5672, or amqps:// for TLS.");
                 }

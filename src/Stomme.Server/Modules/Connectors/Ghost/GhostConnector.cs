@@ -411,7 +411,7 @@ namespace Stomme.Modules.Connectors.Ghost
             public static Session Of(string endpoint, IReadOnlyDictionary<string, string> credentials, IConnectorEgress egress, TimeSpan timeout)
             {
                 // The site's address - its admin's pasted from the browser too, /ghost/... cut off.
-                if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
+                if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
                 {
                     throw new InvalidOperationException($"'{endpoint}' is not a Ghost site's address - https://example.ghost.io.");
                 }

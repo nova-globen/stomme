@@ -354,7 +354,7 @@ namespace Stomme.Infrastructure
 
         public async Task<FileIngestionResult> DownloadAsync(FileIngestionTarget target, string url, string fileName, CancellationToken cancellationToken)
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || !OutboundConnectGuard.IsPermittedScheme(uri))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var uri) || !OutboundConnectGuard.IsPermittedScheme(uri))
             {
                 return FileIngestionResult.Refused(FileIngestionRefusalReason.Destination, "Only an absolute http or https URL can be downloaded.");
             }

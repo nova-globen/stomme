@@ -70,8 +70,8 @@ namespace Stomme.Models.Notifications
 
         private static bool IsOnSite(string address, string? siteOrigin) =>
             !string.IsNullOrEmpty(siteOrigin)
-            && Uri.TryCreate(address, UriKind.Absolute, out var uri)
-            && Uri.TryCreate(siteOrigin, UriKind.Absolute, out var origin)
+            && Stomme.Shared.Utilities.TryCreateAbsoluteUri(address, out var uri)
+            && Stomme.Shared.Utilities.TryCreateAbsoluteUri(siteOrigin, out var origin)
             && string.Equals(uri.GetLeftPart(UriPartial.Authority), origin.GetLeftPart(UriPartial.Authority), StringComparison.OrdinalIgnoreCase);
     }
 }

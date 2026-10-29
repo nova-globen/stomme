@@ -59,7 +59,7 @@ namespace Stomme.Modules.Connectors.Messaging
         public static bool TryUnder(string endpoint, string path, out Uri target)
         {
             target = null!;
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var root) || (root.Scheme != Uri.UriSchemeHttps && root.Scheme != Uri.UriSchemeHttp)
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var root) || (root.Scheme != Uri.UriSchemeHttps && root.Scheme != Uri.UriSchemeHttp)
                 || !string.IsNullOrEmpty(root.Query) || !string.IsNullOrEmpty(root.Fragment))
             {
                 return false;

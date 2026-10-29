@@ -462,7 +462,7 @@ namespace Stomme.Modules.Connectors.Splunk
         private static ConnectorRecord Record(JsonObject entry)
         {
             var fields = entry.Where(pair => pair.Key is not "content" and not "links" and not "link").ToDictionary(pair => pair.Key, pair => Value(pair.Value), StringComparer.Ordinal);
-            if (Text(entry["id"]) is { } address && Uri.TryCreate(address, UriKind.Absolute, out var url))
+            if (Text(entry["id"]) is { } address && Stomme.Shared.Utilities.TryCreateAbsoluteUri(address, out var url))
             {
                 fields["entryUrl"] = address;
                 fields["id"] = Uri.UnescapeDataString(url.Segments[^1].TrimEnd('/'));

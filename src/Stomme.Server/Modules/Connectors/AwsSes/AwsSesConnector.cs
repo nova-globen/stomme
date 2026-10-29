@@ -326,7 +326,7 @@ namespace Stomme.Modules.Connectors.AwsSes
                             {
                                 "from" => Address(value, "sender"),
                                 "subject" => OneLine(value, "subject"),
-                                "success_url" or "failure_url" => Uri.TryCreate(value, UriKind.Absolute, out var url) && (url.Scheme == Uri.UriSchemeHttps || url.Scheme == Uri.UriSchemeHttp) ? value : throw new InvalidOperationException($"'{value}' is not an address ({what}) - https://example.com/thanks."),
+                                "success_url" or "failure_url" => Stomme.Shared.Utilities.TryCreateAbsoluteUri(value, out var url) && (url.Scheme == Uri.UriSchemeHttps || url.Scheme == Uri.UriSchemeHttp) ? value : throw new InvalidOperationException($"'{value}' is not an address ({what}) - https://example.com/thanks."),
                                 _ => value,
                             };
                         }

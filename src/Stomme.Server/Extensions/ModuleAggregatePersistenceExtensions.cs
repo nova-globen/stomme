@@ -276,7 +276,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
                 else
                 {
-                    options.UseSqlite(connectionString);
+                    options.UseSqlite(connectionString, sqlite => sqlite.CommandTimeout(Stomme.Database.Sqlite.SqliteDatabase.BusyTimeoutSeconds(connectionString)));
                 }
 
                 // Key the model cache on the mapped aggregate set, so a second container in the same process

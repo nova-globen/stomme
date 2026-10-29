@@ -78,12 +78,16 @@ and [Configuration](../../../docs/architecture/configuration.md).
 ## Common mistakes
 
 - **The app exits right after start with "The installation did not complete: Error Installing Master Database For
-  DefaultConnection: an automated installation also needs Installation:HostPassword"** (or whichever of
-  `Installation:DefaultAlias`, `Installation:HostEmail` and `Installation:HostPassword` are missing). Cause: a connection
-  string is set but those are not. Fix: add them, or remove the connection string to use the web installer.
-- **The site does not open at the address you browse to.** Cause: the installed alias is a different host or port (the
-  installer records the address it was opened at; unattended uses `DefaultAlias`). Fix: browse to the installed
-  address and add the new one under **Admin > Site Settings > Site Urls**, or reset (step 6).
+  DefaultConnection: an automated installation also needs Installation:HostPassword (or HostPasswordFile)"** (or
+  whichever of `Installation:DefaultAlias`, `Installation:HostEmail` and the password are missing). Cause: a connection
+  string is set but those are not. Fix: add them (the password may be a file: `Installation:HostPasswordFile`).
+- **The home page says "Configured For An Unattended Installation" instead of showing the installer.** Cause: the
+  `Installation` section sets `DefaultAlias`, `HostEmail`, `HostPassword` or `HostPasswordFile`, so the browser wizard is
+  refused, but the unattended install did not run (no connection string, or a bad password file - the log says which).
+  Fix: complete the configuration, or clear those keys to use the web installer.
+- **The address you browse to answers a blank 404.** Cause: it is not an alias - only configured host names are (the
+  installer records the address it was opened at; unattended uses `DefaultAlias`), and any other host gets a 404. Fix:
+  browse to the installed address and add the new one under **Admin > Site Settings > Site Urls**, or reset (step 6).
 - **The installer's secrets ended up in `Server/appsettings.json`.** Cause: `Server/Program.cs` lost its
   `KeepInstallStateOutOfAppSettings` call, which creates `appsettings.override.json` (in `Data`, or in the directory
   `STOMME_APPSETTINGS_PATH` names) before the host starts; without that file the installer writes to

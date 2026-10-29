@@ -192,7 +192,7 @@ namespace Stomme.Modules.Pipelines.Steps
         private static async Task<(string? Text, string? Code, string? Refusal)> FetchAsync(StepExecutionContext context, string url)
         {
             var options = context.GetService<IOptions<PipelineStepOptions>>()?.Value.Http ?? new HttpStepOptions();
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var target))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var target))
             {
                 return (null, "INVALID_URL", $"'{url}' is not an absolute URL.");
             }

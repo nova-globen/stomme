@@ -177,7 +177,7 @@ namespace Stomme.Modules.Connectors.Shared
 
         private async Task<string> AcquireAsync(IConnectorEgress egress, string tokenUrl, IReadOnlyList<KeyValuePair<string, string>> form, TimeSpan? timeout, CancellationToken cancellationToken, string? basic = null, string? userAgent = null)
         {
-            if (!Uri.TryCreate(tokenUrl, UriKind.Absolute, out var tokenUri) || (tokenUri.Scheme != Uri.UriSchemeHttp && tokenUri.Scheme != Uri.UriSchemeHttps))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(tokenUrl, out var tokenUri) || (tokenUri.Scheme != Uri.UriSchemeHttp && tokenUri.Scheme != Uri.UriSchemeHttps))
             {
                 throw new InvalidOperationException($"The token-url '{tokenUrl}' is not an absolute http(s) URL.");
             }

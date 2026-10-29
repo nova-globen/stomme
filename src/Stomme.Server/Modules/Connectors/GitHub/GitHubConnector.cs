@@ -509,7 +509,7 @@ namespace Stomme.Modules.Connectors.GitHub
         {
             var owner = Values.Get(parameters, "owner");
             var name = Values.Get(parameters, "repository") ?? throw new InvalidOperationException("Name the repository.");
-            if (Uri.TryCreate(name, UriKind.Absolute, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
+            if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(name, out var address) && (address.Scheme == Uri.UriSchemeHttps || address.Scheme == Uri.UriSchemeHttp))
             {
                 var segments = address.AbsolutePath.Trim('/').Split('/');
                 (owner, name) = segments.Length >= 2 ? (segments[0], segments[1]) : (owner, name);

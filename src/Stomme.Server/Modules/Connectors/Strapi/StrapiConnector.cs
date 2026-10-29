@@ -348,7 +348,7 @@ namespace Stomme.Modules.Connectors.Strapi
             public static Session Of(string endpoint, IReadOnlyDictionary<string, string> credentials, IReadOnlyDictionary<string, string> settings, IConnectorEgress egress, TimeSpan timeout)
             {
                 // The Strapi's address - its admin's pasted from the browser too, /admin... cut off - and its API under /api.
-                if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
+                if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var address) || (address.Scheme != Uri.UriSchemeHttps && address.Scheme != Uri.UriSchemeHttp))
                 {
                     throw new InvalidOperationException($"'{endpoint}' is not a Strapi's address - https://cms.example.com.");
                 }

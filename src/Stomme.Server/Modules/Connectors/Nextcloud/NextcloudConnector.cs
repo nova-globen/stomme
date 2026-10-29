@@ -811,7 +811,7 @@ namespace Stomme.Modules.Connectors.Nextcloud
                 foreach (var item in document.Root?.Elements(Dav + "response") ?? Enumerable.Empty<XElement>())
                 {
                     var href = (string?)item.Element(Dav + "href") ?? string.Empty;
-                    var absolute = Uri.UnescapeDataString(Uri.TryCreate(href, UriKind.Absolute, out var full) && full.Scheme.StartsWith("http", StringComparison.Ordinal) ? full.AbsolutePath : href);
+                    var absolute = Uri.UnescapeDataString(Stomme.Shared.Utilities.TryCreateAbsoluteUri(href, out var full) && full.Scheme.StartsWith("http", StringComparison.Ordinal) ? full.AbsolutePath : href);
                     var relative = absolute.StartsWith(root, StringComparison.OrdinalIgnoreCase) ? absolute[root.Length..] : absolute.TrimStart('/');
 
                     // The properties Nextcloud has: the propstat that says 200 - the others name those it has not.

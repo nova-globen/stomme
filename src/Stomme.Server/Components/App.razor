@@ -372,6 +372,12 @@
                 _message = "Site Not Configured Correctly - No Matching Alias Exists For Host Name";
             }
         }
+        else if (Stomme.Infrastructure.UnattendedInstall.IsConfigured(ConfigManager))
+        {
+            // The Installation section asks for an unattended install that has not completed: the browser wizard is refused,
+            // so a stranger cannot claim the host. Why it did not complete is in the log, never on this public page.
+            _message = "Installation Not Complete - This Host Is Configured For An Unattended Installation. See The Log.";
+        }
         _initialized = true;
     }
 

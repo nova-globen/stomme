@@ -148,17 +148,9 @@ namespace Stomme.Repository
                 }
             }
 
-            // auto register alias if there is only a single tenant/site
-            if (alias == null && aliases.Select(item => new { item.TenantId, item.SiteId }).Distinct().Count() == 1)
-            {
-                alias = new Alias();
-                alias.TenantId = aliases.First().TenantId;
-                alias.SiteId = aliases.First().SiteId;
-                alias.Name = segments[0]; // root domain
-                alias.IsDefault = false;
-                alias = await AddAliasAsync(alias);
-            }
-
+            // No match is no alias. Only configured hosts are aliases (the install config and the admin UI); the
+            // harvested code registered ANY unknown host as a new alias on a one-site installation, so a request with a
+            // forged Host header wrote a row.
             return alias;
         }
 

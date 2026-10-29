@@ -29,7 +29,7 @@ namespace Stomme.Tests
     /// </para>
     /// <para>
     /// <b>The alias half.</b> On an installation whose aliases all point at ONE site, <c>AliasRepository.GetAliasAsync(url)</c>
-    /// registers any unknown host as a new alias of that site - so before the fix every healthcheck with
+    /// registered any unknown host as a new alias of that site (it no longer does, <c>UnknownHostTests</c>) - so before the fix every healthcheck with
     /// <c>Host: 127.0.0.1:8080</c> wrote an alias row <c>127.0.0.1:8080</c> (measured). Tenant resolution is now skipped
     /// for the health paths, which need no tenant: they answer from the process and from an in-memory snapshot.
     /// </para>

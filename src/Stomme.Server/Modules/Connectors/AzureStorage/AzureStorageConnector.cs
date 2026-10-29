@@ -277,7 +277,7 @@ namespace Stomme.Modules.Connectors.AzureStorage
                             throw new InvalidOperationException(given == 0 ? "Give the file in the site's pipeline folder to store, text or a URL." : "Give one of the file, the text and the URL.");
                         }
 
-                        if (url is not null && (!Uri.TryCreate(url, UriKind.Absolute, out var from) || from.Scheme is not ("https" or "http")))
+                        if (url is not null && (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(url, out var from) || from.Scheme is not ("https" or "http")))
                         {
                             throw new InvalidOperationException($"'{url}' is not an http(s) address (url).");
                         }

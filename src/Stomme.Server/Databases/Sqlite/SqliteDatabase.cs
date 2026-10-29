@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -116,8 +117,42 @@ namespace Stomme.Database.Sqlite
         {
             EnsureWalJournal(connectionString);
 
-            return optionsBuilder.UseSqlite(connectionString)
+            return optionsBuilder.UseSqlite(connectionString, sqlite => sqlite.CommandTimeout(BusyTimeoutSeconds(connectionString)))
                 .ReplaceService<IHistoryRepository, HistoryRepository>();
+        }
+
+        /// <summary>The busy timeout when the connection string does not set one: how long a command waits on a locked file.</summary>
+        public const int DefaultBusyTimeoutSeconds = 30;
+
+        /// <summary>
+        /// How long a command waits for a SQLite file another connection has locked before it fails with
+        /// <c>SQLite Error 5: 'database is locked'</c>: the connection string's own <c>Default Timeout</c> when it sets one,
+        /// otherwise <see cref="DefaultBusyTimeoutSeconds"/>.
+        /// </summary>
+        /// <remarks>
+        /// <c>Microsoft.Data.Sqlite</c> retries a busy file for the COMMAND's timeout, so the wait is applied to every command
+        /// - EF's <c>CommandTimeout</c> and the raw commands below - rather than by rewriting the connection string, which
+        /// keys the connection pool (see <see cref="EnsureWalJournal"/>). Configure it in the connection string:
+        /// <c>Data Source=...;Default Timeout=60;</c>. Every SQLite store the host opens (the tenant stores, the module
+        /// aggregates, the feature store, the pipeline engine) uses it. Pinned by <c>SqliteBusyTimeoutTests</c>.
+        /// </remarks>
+        public static int BusyTimeoutSeconds(string connectionString)
+        {
+            try
+            {
+                // The plain builder holds only the keys the string WRITES (SqliteConnectionStringBuilder.ContainsKey answers
+                // true for every keyword it knows); "Command Timeout" is the same setting's other name.
+                var written = new DbConnectionStringBuilder { ConnectionString = connectionString };
+                if (!written.ContainsKey("Default Timeout") && !written.ContainsKey("Command Timeout"))
+                {
+                    return DefaultBusyTimeoutSeconds;
+                }
+                return new SqliteConnectionStringBuilder(connectionString).DefaultTimeout;
+            }
+            catch (ArgumentException)
+            {
+                return DefaultBusyTimeoutSeconds;
+            }
         }
 
         /// <summary>
@@ -147,6 +182,9 @@ namespace Stomme.Database.Sqlite
         /// <c>SqliteConnectionStringBuilder.DefaultTimeout</c> is 30 seconds with nothing set. An earlier note
         /// beside the test harness read as though its explicit <c>Default Timeout=30</c> supplied that wait; it
         /// restates the default and changes nothing. Recorded so the next reader does not add a third copy of it.
+        /// <b>CORRECTION 2026-10-28:</b> the wait is now EXPLICIT - <see cref="BusyTimeoutSeconds"/> applies it to every
+        /// command, 30 seconds unless the connection string's <c>Default Timeout</c> says otherwise - and pinned by a test,
+        /// so it no longer rests on the library's default staying 30.
         /// </para>
         /// <para>
         /// Best effort by construction: an in-memory database, a read-only connection, or a file that cannot be
@@ -217,6 +255,7 @@ namespace Stomme.Database.Sqlite
             cmd.Connection = conn;
             cmd.CommandText = query;
             cmd.CommandType = CommandType.Text;
+            cmd.CommandTimeout = BusyTimeoutSeconds(conn.ConnectionString);
         }
     }
 }

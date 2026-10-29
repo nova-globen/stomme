@@ -234,7 +234,7 @@ namespace Stomme.Identity.OpenIddict
 
             foreach (var uri in seed.RedirectUris ?? Enumerable.Empty<string>())
             {
-                if (Uri.TryCreate(uri?.Trim(), UriKind.Absolute, out var redirect))
+                if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(uri?.Trim(), out var redirect))
                 {
                     descriptor.RedirectUris.Add(redirect);
                 }
@@ -242,7 +242,7 @@ namespace Stomme.Identity.OpenIddict
 
             foreach (var uri in seed.PostLogoutRedirectUris ?? Enumerable.Empty<string>())
             {
-                if (Uri.TryCreate(uri?.Trim(), UriKind.Absolute, out var postLogout))
+                if (Stomme.Shared.Utilities.TryCreateAbsoluteUri(uri?.Trim(), out var postLogout))
                 {
                     descriptor.PostLogoutRedirectUris.Add(postLogout);
                 }

@@ -387,7 +387,7 @@ namespace Stomme.Modules.Connectors.Jira
         // The site's address, its own: an https URL, its path dropped (a pasted issue's address forgiven down to the site).
         private static string Site(string endpoint)
         {
-            if (!Uri.TryCreate(endpoint?.Trim(), UriKind.Absolute, out var site) || (site.Scheme != Uri.UriSchemeHttps && site.Scheme != Uri.UriSchemeHttp))
+            if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint?.Trim(), out var site) || (site.Scheme != Uri.UriSchemeHttps && site.Scheme != Uri.UriSchemeHttp))
             {
                 throw new InvalidOperationException($"'{endpoint}' is not a Jira site's address - https://your-site.atlassian.net.");
             }

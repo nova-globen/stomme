@@ -59,7 +59,7 @@ namespace Stomme.Extensions
             app.UseStommeLocalization();
 
             // The health endpoints answer for ANY Host and need no tenant: they are exempt from the HTTPS redirect and from
-            // tenant resolution, which on a one-site installation registers an unknown host as an alias (HealthEndpoints.Matcher).
+            // tenant resolution, which answers a Host that names no alias with a 404 (HealthEndpoints.Matcher).
             var isHealthEndpoint = HealthEndpoints.Matcher(configuration);
 
             var installation = configuration.GetSection("Installation");

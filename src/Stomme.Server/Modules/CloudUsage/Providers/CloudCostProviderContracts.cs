@@ -93,7 +93,7 @@ namespace Stomme.Modules.CloudUsage.Providers
         internal static bool TryCreateHttpUri(string? endpoint, out Uri uri)
         {
             uri = null!;
-            return Uri.TryCreate(endpoint, UriKind.Absolute, out uri!) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+            return Stomme.Shared.Utilities.TryCreateAbsoluteUri(endpoint, out uri!) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
         }
 
         private static string SubstituteWindow(string template, CloudCostQuery query) =>

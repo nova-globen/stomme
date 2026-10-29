@@ -78,7 +78,7 @@ namespace Stomme.Tests
 
         private static bool IsOffSite(string location) =>
             string.IsNullOrEmpty(location) is false &&
-            (location.StartsWith("//", StringComparison.Ordinal) || location.StartsWith("/\\", StringComparison.Ordinal) || Uri.TryCreate(location, UriKind.Absolute, out var absolute) && absolute.Host != Host);
+            (location.StartsWith("//", StringComparison.Ordinal) || location.StartsWith("/\\", StringComparison.Ordinal) || Stomme.Shared.Utilities.TryCreateAbsoluteUri(location, out var absolute) && absolute.Host != Host);
 
         private async Task<(HttpStatusCode Status, string Location)> PostLogoutAsync(HttpClient client, System.Net.CookieContainer cookies, string returnUrl, string label)
         {

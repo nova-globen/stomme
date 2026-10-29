@@ -106,7 +106,7 @@ namespace Stomme.Modules.Pipelines.Persistence
                 }
                 else
                 {
-                    options.UseSqlite(connectionString);
+                    options.UseSqlite(connectionString, sqlite => sqlite.CommandTimeout(Stomme.Database.Sqlite.SqliteDatabase.BusyTimeoutSeconds(connectionString)));
                 }
             });
             services.AddScoped(sp => sp.GetRequiredService<IDbContextFactory<EngineDbContext>>().CreateDbContext());
