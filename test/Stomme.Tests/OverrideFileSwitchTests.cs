@@ -188,6 +188,71 @@ namespace Stomme.Tests
         }
 
         [Theory]
+        [InlineData(null, 2)]
+        [InlineData(1, 2)]
+        [InlineData(15, 1)]
+        [InlineData(0, 0)]
+        public async Task The_mail_server_probe_interval_obeys_the_override_file(int? minutes, int expectedConnects)
+        {
+            // A relay that counts connections locked a three-site host out of all mail on the job's per-minute connects
+            // (Infrastructure BL-262). Two ticks back to back, against a listener that counts what reaches it.
+            var health = new JsonObject { ["Enabled"] = true };
+            if (minutes is not null)
+            {
+                health["MailServerProbeIntervalMinutes"] = minutes;
+            }
+
+            var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            listener.Start();
+            var connects = 0;
+            using var stop = new System.Threading.CancellationTokenSource();
+            var accepting = Task.Run(async () =>
+            {
+                while (!stop.IsCancellationRequested)
+                {
+                    using var client = await listener.AcceptTcpClientAsync(stop.Token);
+                    System.Threading.Interlocked.Increment(ref connects);
+                }
+            });
+
+            try
+            {
+                await WithInstallAsync(new JsonObject { ["Health"] = health }, async app =>
+                {
+                    await GateDrive.InTenantAsync(app, Host, async (sp, alias) =>
+                    {
+                        var settings = sp.GetRequiredService<ISettingRepository>();
+                        foreach (var (name, value) in new[] { ("SMTPHost", "127.0.0.1"), ("SMTPPort", ((System.Net.IPEndPoint)listener.LocalEndpoint).Port.ToString(System.Globalization.CultureInfo.InvariantCulture)) })
+                        {
+                            await settings.AddSettingAsync(new Stomme.Models.Setting { EntityName = Stomme.Shared.EntityNames.Site, EntityId = alias.SiteId, SettingName = name, SettingValue = value, IsPrivate = true });
+                        }
+
+                        return true;
+                    });
+
+                    var first = await RunJobAsync(app, scopes => new HealthProbeJob(scopes));
+                    var second = await RunJobAsync(app, scopes => new HealthProbeJob(scopes));
+                    _output.WriteLine($"[{HealthSettings.MailServerProbeIntervalKey}={minutes?.ToString() ?? "absent"}] {first} | {second}");
+                });
+
+                // A connect completes before it is accepted; give the accept loop its moment.
+                for (var waited = 0; waited < 20 && System.Threading.Volatile.Read(ref connects) < expectedConnects; waited++)
+                {
+                    await Task.Delay(100);
+                }
+
+                await Task.Delay(200);
+                Assert.Equal(expectedConnects, System.Threading.Volatile.Read(ref connects));
+            }
+            finally
+            {
+                stop.Cancel();
+                listener.Stop();
+                await Task.WhenAny(accepting, Task.Delay(1000));
+            }
+        }
+
+        [Theory]
         [InlineData(true)]
         [InlineData(false)]
         public async Task The_health_alert_sink_obeys_the_override_file(bool alerting)

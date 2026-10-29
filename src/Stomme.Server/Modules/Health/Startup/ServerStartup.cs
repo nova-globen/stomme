@@ -106,6 +106,9 @@ namespace Stomme.Modules.Health.Startup
             // Run-now: the only live probing besides the job, health:manage only, ONE in flight per site. The gate
             // is a singleton so every request scope of this process shares it.
             services.TryAddSingleton<HealthRunNowGate>();
+
+            // When the job last connected to each site's mail server (Health:MailServerProbeIntervalMinutes).
+            services.TryAddSingleton<HealthMailServerSchedule>();
             services.AddScoped<IRequestHandler<RunHealthProbesNowCommand, HealthRunNowResult>, RunHealthProbesNowCommandHandler>();
 
             // The module's server IService (dispatches via IMediator). Explicit AddTransient so it wins over the

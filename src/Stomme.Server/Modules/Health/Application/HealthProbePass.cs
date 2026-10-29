@@ -76,11 +76,16 @@ namespace Stomme.Modules.Health.Application
         /// <summary>
         /// Runs every probe of <paramref name="scope"/> for <paramref name="siteId"/> and records the outcome.
         /// </summary>
+        /// <param name="includeMailServer">
+        /// False leaves the mail-server probe out of this pass: the job's way of spacing out its connects
+        /// (<see cref="HealthSettings.MailServerProbeIntervalMinutes"/>). Nothing is recorded for it, so its last state stands.
+        /// </param>
         public async Task<HealthPassResult> RunAsync(
             TenantId tenantId,
             HealthProbeScope scope,
             int siteId,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            bool includeMailServer = true)
         {
             var now = _clock.GetUtcNow().UtcDateTime;
             var context = new HealthProbeContext(siteId);
@@ -101,7 +106,7 @@ namespace Stomme.Modules.Health.Application
 
             foreach (var contributor in _contributors)
             {
-                var probes = await ApplicableAsync(contributor, scope, siteId).ConfigureAwait(false);
+                var probes = await ApplicableAsync(contributor, scope, siteId, includeMailServer).ConfigureAwait(false);
                 if (probes.Count == 0)
                 {
                     continue;
@@ -131,7 +136,7 @@ namespace Stomme.Modules.Health.Application
         }
 
         /// <summary>The probes of this contributor that belong to this scope AND apply to this site.</summary>
-        private static async Task<IReadOnlyList<IHealthProbe>> ApplicableAsync(IHealthContributor contributor, HealthProbeScope scope, int siteId)
+        private static async Task<IReadOnlyList<IHealthProbe>> ApplicableAsync(IHealthContributor contributor, HealthProbeScope scope, int siteId, bool includeMailServer)
         {
             var inScope = contributor.Probes.Where(probe => probe.Scope == scope).ToList();
             if (inScope.Count == 0 || contributor is not StommeDependencyContributor framework)
@@ -145,6 +150,11 @@ namespace Stomme.Modules.Health.Application
             var applicable = new List<IHealthProbe>(inScope.Count);
             foreach (var probe in inScope)
             {
+                if (!includeMailServer && probe.Name == StommeDependencyContributor.SmtpProbe)
+                {
+                    continue;
+                }
+
                 if (await framework.AppliesAsync(probe, siteId).ConfigureAwait(false))
                 {
                     applicable.Add(probe);

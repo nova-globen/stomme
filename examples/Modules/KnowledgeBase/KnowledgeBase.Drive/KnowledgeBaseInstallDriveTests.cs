@@ -607,7 +607,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                     var cookies = await LoginAsync(app, client);
                     var hostId = await UserIdAsync(app, HostUsername);
                     var created = await Send<JsonObject>(app, client, cookies, hostId, "/api/ModuleDefinition",
-                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.75.3", moduleDefinitionName = "[Owner].Module.[Module]" },
+                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.75.4", moduleDefinitionName = "[Owner].Module.[Module]" },
                         HttpStatusCode.OK);
                     Assert.Equal("Acme.Module.FieldNotes.Manager.FieldNotesManager, Acme.Module.FieldNotes.Server.Stomme", (string?)created["serverManagerType"]);
                 }
@@ -623,7 +623,11 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
 
                 // The generated module restores the slim SDK from the framework's feed; this drive points it at the SDK packed
                 // from THIS tree (examples/local-feed), so it builds against the framework under test and needs no network feed.
-                File.WriteAllText(Path.Combine(module, "nuget.config"), generatedConfig.Replace(frameworkSource, $"<add key=\"stomme\" value=\"{Path.Combine(repository, "examples", "local-feed")}\" />"));
+                // Restored into the examples' own packages folder: the local feed's packages carry release version numbers, and
+                // the machine-wide cache must only ever hold the published bytes under one.
+                File.WriteAllText(Path.Combine(module, "nuget.config"), generatedConfig
+                    .Replace(frameworkSource, $"<add key=\"stomme\" value=\"{Path.Combine(repository, "examples", "local-feed")}\" />")
+                    .Replace("<configuration>", $"<configuration>{Environment.NewLine}  <config>{Environment.NewLine}    <add key=\"globalPackagesFolder\" value=\"{Path.Combine(repository, "examples", ".nuget-local")}\" />{Environment.NewLine}  </config>"));
 
                 // ---- it builds and packs with nothing but the .NET SDK -----------------------------------------------------------
                 var (exit, log) = await RunAsync("dotnet", "pack Package/Acme.Module.FieldNotes.Package.csproj -c Release -nologo -nodeReuse:false", module, TimeSpan.FromMinutes(6));

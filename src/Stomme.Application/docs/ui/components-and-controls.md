@@ -36,6 +36,7 @@ in light and dark.
 | `FileManager` | Picking or uploading a file in the site's folders. | `Id`, `Folder` or `FolderId`, `FileId`, `Filter` (`"jpg,png"`), `ShowFiles`, `ShowFolders`, `ShowUpload`, `ShowImage`, `UploadMultiple`, `MaxUploadFileSize` (MB), `OnSelectFile`, `OnUpload`, `OnDelete` (`EventCallback<int>`). Methods: `GetFileId()`, `GetFolderId()`, `GetFile()`, `Refresh()`. |
 | `AutoComplete` | A text box that searches as the user types. | `OnSearch` (`Func<string, Task<Dictionary<string, string>>>`, required), `Characters` (default 3), `Rows`, `Placeholder`, `Value`, `Key`, `Required`, `Id`. |
 | `InputList` | A text input with suggestions from a fixed list. | `Value`/`ValueChanged`, `DataList` (`Dictionary<string, string>`), `Id`. |
+| `TimeZonePicker` | A time zone, searched by typing a city, region or offset (a text input over a datalist of the zones `ITimeZoneService` lists; arrow keys and Enter pick). What is typed becomes the list's IANA id when it names one (any case, an older tzdb name such as `Asia/Calcutta`, a city alone such as `Stockholm`, or a part of exactly one city such as `toky`), otherwise it stays as typed: check it with `TimeZoneMatcher.Match(value, picker.Zones)` (null = not a zone) before saving. | `Value`/`ValueChanged`, `Id`, `Placeholder`, `Class`, `UseBrowserTimeZone` (once interactive, replace the value with the browser's zone when it is in the list and the person has not typed yet; the Register page uses it, so a new account starts in the visitor's zone, else the site's). |
 | `TriStateCheckBox` | Yes / No / not set. | `Value` (`bool?`), `Disabled`, `OnChange` (`Func<bool?, bool?>`). |
 | `PermissionGrid` | Editing role and user permissions on an entity. | `EntityName`, `PermissionNames`, `PermissionList`. |
 | `AuditInfo` | Created / modified / deleted by and on. | `CreatedBy`, `CreatedOn`, `ModifiedBy`, `ModifiedOn`, `DeletedBy`, `DeletedOn`, `IsDeleted`, `DateTimeFormat`. |
@@ -48,7 +49,8 @@ Messages, progress and titles come from `ModuleBase` (namespace `Stomme.Modules`
   shown as an alert. `ClearModuleMessage()` removes it.
 - `ShowProgressIndicator()` / `HideProgressIndicator()`.
 - `SetModuleTitle(string)`, `SetPageTitle(string)`; Blazor's `<PageTitle>` also works (the host mounts a `HeadOutlet`).
-- `UtcToLocal(DateTime?)` / `LocalToUtc(DateTime?)` convert with the user's time zone, else the site's.
+- `UtcToLocal(DateTime?)` / `LocalToUtc(DateTime?)` convert with the user's time zone, else the site's. The browser's
+  own zone is `await new Interop(JSRuntime).GetTimeZone()` (an IANA name, empty when none; interactive only).
 - `BringIntoView(string elementId)` scrolls an element into view after the next render (for an editor that opens below a
   long list). Call it after the awaits in your handler.
 
@@ -119,7 +121,7 @@ Use these classes for Stomme-styled markup. They exist in every theme because th
 | Purpose | Classes |
 |---|---|
 | Buttons | `db-btn` (primary, the theme's accent), `db-btn db-btn-neutral` (secondary, Cancel), `db-btn db-btn-danger` (destructive), `db-icon-btn` (icon only), `db-text-btn`; groups: `db-btn-row`, `db-form-actions` |
-| Forms | `db-fields` (wrapper), `db-field` (label left, control right; stacks below 640px), `db-field-control`, `db-input` (input and textarea), `db-select`, `db-input-group`, `db-radio-group`, `db-radio`; filter bars: `db-filters`, `db-filter` |
+| Forms | `db-fields` (wrapper), `db-field` (label left, control right; stacks below 640px; a button as the row's third item, such as a password's Show, sits beside the control at every width), `db-field-control`, `db-input` (input and textarea), `db-select`, `db-input-group`, `db-radio-group`, `db-radio`; filter bars: `db-filters`, `db-filter` |
 | Tables | `db-table-wrap` (horizontal scroll on narrow screens), `db-table`, `db-col-action`, `db-actions` |
 | Surfaces | `db-card`, `db-grid` (responsive card grid), `db-note`, `db-note-warn`, `db-banner` |
 | States | `db-empty` + `db-empty-title` (empty list), `db-status-pill` with `online`, `standby`, `warning`, `offline` or `muted` |

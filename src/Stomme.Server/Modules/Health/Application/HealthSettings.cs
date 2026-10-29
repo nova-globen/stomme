@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -138,5 +139,62 @@ namespace Stomme.Modules.Health.Application
         /// </remarks>
         public static bool ProbingEnabled(IConfiguration? configuration) =>
             !bool.TryParse(configuration?["Health:Enabled"], out var enabled) || enabled;
+
+        /// <summary>The config key that spaces out the probe job's mail-server connects.</summary>
+        public const string MailServerProbeIntervalKey = "Health:MailServerProbeIntervalMinutes";
+
+        /// <summary>
+        /// How often, in minutes, the probe JOB connects to each site's mail server (config, not a Setting row).
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Every connect is a connection to the relay, and a relay may count them: a host with three sites made 180 an
+        /// hour before sending any mail, and a relay capped at 120 an hour locked that host out of all mail. The store
+        /// and cache probes cost nobody anything, so this spaces out the mail server alone, and an operator no longer
+        /// has to turn all of health off (<c>Health:Enabled</c>) to spare the relay.
+        /// </para>
+        /// <para>
+        /// Absent, unreadable or negative is 1, every tick, as before. 0 means the job never probes the mail server.
+        /// An operator's Run now always probes it: that is one connect per click, and it is what the operator asked for.
+        /// </para>
+        /// </remarks>
+        public static int MailServerProbeIntervalMinutes(IConfiguration? configuration) =>
+            int.TryParse(configuration?[MailServerProbeIntervalKey], NumberStyles.Integer, CultureInfo.InvariantCulture, out var minutes) && minutes >= 0
+                ? minutes
+                : 1;
+    }
+
+    /// <summary>
+    /// When the probe job last connected to each site's mail server, so <see cref="HealthSettings.MailServerProbeIntervalMinutes"/>
+    /// can space the connects out.
+    /// </summary>
+    /// <remarks>
+    /// A singleton held in memory: after a restart the first tick probes every mail server once, which is the right answer
+    /// for a host that has just come up. Ticks drift by a few seconds, so a probe is due half a minute early rather than a
+    /// whole interval late.
+    /// </remarks>
+    public sealed class HealthMailServerSchedule
+    {
+        private static readonly TimeSpan Slack = TimeSpan.FromSeconds(30);
+
+        private readonly ConcurrentDictionary<(Guid Tenant, int Site), DateTime> _last = new();
+
+        /// <summary>Whether the job probes this site's mail server on this tick; a yes is recorded as the probe's time.</summary>
+        public bool TakeIfDue(Guid tenant, int site, DateTime now, int intervalMinutes)
+        {
+            if (intervalMinutes == 0)
+            {
+                return false;
+            }
+
+            var key = (tenant, site);
+            if (intervalMinutes > 1 && _last.TryGetValue(key, out var last) && now - last < TimeSpan.FromMinutes(intervalMinutes) - Slack)
+            {
+                return false;
+            }
+
+            _last[key] = now;
+            return true;
+        }
     }
 }

@@ -36,7 +36,9 @@ if ($SdkVersion) { $sdkVersionArgs = @("-p:Version=$SdkVersion") }
 #    GLOBAL CACHE before any source, so repacking the SAME version (the norm here — everything is
 #    props-versioned) would otherwise leave every consumer restoring a STALE package. Measured: a pack-sdk
 #    run on this machine restored a stomme.client 10.2.1 cached from an older tree.
-$gpf = Join-Path $env:USERPROFILE '.nuget\packages'
+# The examples' own packages folder (each local-feed nuget.config sets globalPackagesFolder), never the machine-wide
+# cache, where a release version must mean the published bytes.
+$gpf = Join-Path $PSScriptRoot '.nuget-local'
 foreach ($id in @('stomme.shared', 'stomme.sharedkernel', 'stomme.mediator', 'stomme.security.abstractions',
                   'stomme.tenancy.domain', 'stomme.tenancy.abstractions', 'stomme.persistence.abstractions', 'stomme.eventbus',
                   'stomme.server.sdk', 'stomme.client.sdk', 'stomme.sdk.slim')) {

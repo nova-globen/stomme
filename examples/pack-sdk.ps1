@@ -24,7 +24,9 @@ if ($LASTEXITCODE -ne 0) { throw 'pack failed: the framework' }
 # script does the same, pack-sdk-slim.ps1 step 0).
 [xml]$props = Get-Content -LiteralPath (Join-Path $root 'Directory.Build.props')
 $version = @($props.Project.PropertyGroup.Version | Where-Object { $_ })[0]
-$gpf = if ($env:NUGET_PACKAGES) { $env:NUGET_PACKAGES } else { Join-Path $env:USERPROFILE '.nuget\packages' }
+# The examples restore the local feed into a packages folder of their own (each local-feed nuget.config sets
+# globalPackagesFolder), never the machine-wide cache, where a release version must mean the published bytes.
+$gpf = Join-Path $PSScriptRoot '.nuget-local'
 Get-ChildItem $feed -Filter "Stomme.*.$version.nupkg" | ForEach-Object {
     $id = $_.Name.Substring(0, $_.Name.Length - ".$version.nupkg".Length).ToLowerInvariant()
     $cached = Join-Path $gpf (Join-Path $id $version)

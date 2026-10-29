@@ -296,6 +296,13 @@ Stomme.Interop = {
             }
         }
     },
+    getTimeZone: function () {
+        try {
+            return Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+        } catch (e) {
+            return "";
+        }
+    },
     getElementByName: function (name) {
         var elements = document.getElementsByName(name);
         if (elements.length) {

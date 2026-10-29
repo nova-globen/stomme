@@ -101,6 +101,11 @@ namespace Stomme.Modules.Health.Infrastructure
             // answering the operator 500. The tick skips what a run-now holds; a run-now is refused (409) while the tick holds it.
             var gate = provider.GetRequiredService<HealthRunNowGate>();
 
+            // The mail-server probe connects to the relay, so it runs on its own interval (Health:MailServerProbeIntervalMinutes).
+            var mailInterval = HealthSettings.MailServerProbeIntervalMinutes(HostConfiguration.Resolve(provider));
+            var mailSchedule = provider.GetRequiredService<HealthMailServerSchedule>();
+            var now = DateTime.UtcNow;
+
             // The wider scopes run once per tenant, against site 0 - not once per site. That is what makes a
             // shared store going down one alert rather than one for every site standing on it.
             if (gate.TryEnter(tenantId.Value, 0))
@@ -141,7 +146,8 @@ namespace Stomme.Modules.Health.Infrastructure
                 HealthPassResult? result;
                 try
                 {
-                    result = await RunScopeAsync(scopes, tenant!, tenantId, HealthProbeScope.Site, site.SiteId, logger, budget.Token, site.Name).ConfigureAwait(false);
+                    var includeMailServer = mailSchedule.TakeIfDue(tenantId.Value, site.SiteId, now, mailInterval);
+                    result = await RunScopeAsync(scopes, tenant!, tenantId, HealthProbeScope.Site, site.SiteId, logger, budget.Token, site.Name, includeMailServer).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -199,7 +205,8 @@ namespace Stomme.Modules.Health.Infrastructure
             int siteId,
             ILogger logger,
             CancellationToken cancellationToken,
-            string? siteName = null)
+            string? siteName = null,
+            bool includeMailServer = true)
         {
             using var siteScope = scopes.CreateScope();
             try
@@ -217,7 +224,7 @@ namespace Stomme.Modules.Health.Infrastructure
                 }
 
                 var pass = siteScope.ServiceProvider.GetRequiredService<HealthProbePass>();
-                return await pass.RunAsync(tenantId, scope, siteId, cancellationToken).ConfigureAwait(false);
+                return await pass.RunAsync(tenantId, scope, siteId, cancellationToken, includeMailServer).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

@@ -1,0 +1,79 @@
+@namespace Stomme.Modules.Controls
+@inherits ModuleControlBase
+@inject ITimeZoneService TimeZoneService
+
+@* A text input over a datalist: the browser filters the zones as the person types, by name or by offset, and the arrow
+   keys and Enter pick one. The full list as a select was over 400 rows with no way to search it. *@
+<input id="@Id" type="text" class="db-input @Class" list="@_listId" value="@Value" placeholder="@Placeholder"
+       autocomplete="off" spellcheck="false" @onchange="OnChangeAsync" />
+<datalist id="@_listId">
+    @foreach (var zone in _zones)
+    {
+        <option value="@zone.Id">@zone.DisplayName</option>
+    }
+</datalist>
+
+@code {
+    private string _listId;
+    private List<Models.TimeZone> _zones = new();
+    private bool _changed;
+
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public string Id { get; set; } // the input's id, so a Label's For names it
+
+    [Parameter]
+    public string Placeholder { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    /// <summary>
+    /// Replace the value with the browser's own time zone once the page is interactive, when the browser reports one that
+    /// is in the list and the person has not changed the field yet; otherwise the value given stays.
+    /// </summary>
+    [Parameter]
+    public bool UseBrowserTimeZone { get; set; }
+
+    /// <summary>The zones offered, for a page that checks what was typed (<see cref="TimeZoneMatcher.Match"/>).</summary>
+    public IReadOnlyList<Models.TimeZone> Zones => _zones;
+
+    protected override void OnInitialized()
+    {
+        _listId = "TimeZones_" + Guid.NewGuid().ToString("N");
+        _zones = TimeZoneService.GetTimeZones();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender && UseBrowserTimeZone)
+        {
+            var browser = await new Interop(JSRuntime).GetTimeZone();
+            var id = TimeZoneMatcher.Match(browser, _zones);
+            if (id != null && !_changed && id != Value)
+            {
+                Value = id;
+                await ValueChanged.InvokeAsync(id);
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task OnChangeAsync(ChangeEventArgs e)
+    {
+        _changed = true;
+        var text = e.Value?.ToString() ?? string.Empty;
+
+        // A name typed in another case, or an older tzdb name, becomes the list's own entry; anything else is kept as typed
+        // so the page can say it is not a time zone.
+        Value = TimeZoneMatcher.Match(text, _zones) ?? text.Trim();
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

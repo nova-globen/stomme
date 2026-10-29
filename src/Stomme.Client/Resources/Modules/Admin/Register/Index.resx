@@ -186,6 +186,12 @@
   <data name="TimeZone.HelpText" xml:space="preserve">
     <value>Your time zone</value>
   </data>
+  <data name="TimeZone.Placeholder" xml:space="preserve">
+    <value>Type a city or region to search</value>
+  </data>
+  <data name="Message.TimeZone.Unknown" xml:space="preserve">
+    <value>The time zone is not one in the list. Type part of a city or region name and pick it from the suggestions, or leave the field empty.</value>
+  </data>
   <data name="CultureCode.Text" xml:space="preserve">
     <value>Language:</value>
   </data>

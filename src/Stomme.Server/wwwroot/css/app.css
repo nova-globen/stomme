@@ -402,6 +402,9 @@ a:hover { color: var(--db-accent); }
 .db-field { display: grid; grid-template-columns: minmax(180px, 240px) 1fr; align-items: center; gap: 0.5rem 1rem; padding: 0.35rem 0; }
 .db-field > label, .db-field > .db-field-label { font-size: 13px; font-weight: 600; color: var(--db-text-2); margin: 0; }
 .db-field-control { width: 100%; max-width: 32rem; }
+/* A button as a row's third item (a password's Show) sits beside its control: on a two-column grid it wrapped under
+   the label as a full-width block. */
+.db-field:has(> :is(button, fluent-button, .db-btn):nth-child(3):last-child) { grid-template-columns: minmax(180px, 240px) auto auto; justify-content: start; }
 /* A Label is not always inside a .db-field (filter bars render one in a .db-filter), so the hook
    also has a standalone rule. Inherited from bootstrap-compat.css when that file was deleted;
    the .db-field > ... rules above are more specific and still win inside a field row. */
@@ -511,6 +514,9 @@ a:hover { color: var(--db-accent); }
 .db-permission-adduser > :first-child { flex: 1 1 auto; min-width: 0; }
 @media (max-width: 640px) {
     .db-field { grid-template-columns: 1fr; gap: 0.25rem; }
+    /* Stacked, the label takes its own line and the control and its button share the next. */
+    .db-field:has(> :is(button, fluent-button, .db-btn):nth-child(3):last-child) { grid-template-columns: minmax(0, 1fr) auto; column-gap: 0.5rem; }
+    .db-field:has(> :is(button, fluent-button, .db-btn):nth-child(3):last-child) > :first-child { grid-column: 1 / -1; }
     /* The installer centres everything (logo, headings, buttons) and so centres a stacked label - but a field is capped
        at 32rem and would sit LEFT-aligned under it. Centre the capped field under its label. */
     .db-installer .db-field { justify-items: center; }

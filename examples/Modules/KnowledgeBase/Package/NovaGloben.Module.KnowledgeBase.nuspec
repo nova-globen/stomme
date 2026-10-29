@@ -20,7 +20,7 @@
         -->
         <packageTypes>
             <packageType name="Dependency" />
-            <packageType name="Stomme.Framework" version="10.75.3" />
+            <packageType name="Stomme.Framework" version="10.75.4" />
         </packageTypes>
     </metadata>
     <files>

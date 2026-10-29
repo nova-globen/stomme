@@ -43,6 +43,7 @@ per-site quotas that a module records against and checks before it consumes.
   site's mail server, files missing from disk) use the same interface.
 - **The tick.** The **Health Probe Job** runs every minute: per tenant, the Installation and Tenant probes, then each site's
   Site probes, the whole tick bounded at 45 seconds and each probe bounded by a timeout (it is abandoned if it overruns).
+  The mail-server probe runs on its own interval, `Health:MailServerProbeIntervalMinutes` (every tick by default).
   Results are stored as per-subject alert state and rollups; the **Health Rollup Job** rolls them up hourly. A latency above
   the degraded threshold makes one of the framework's own healthy probes `Degraded`; a contributed probe's state is
   recorded as the probe returns it.
@@ -249,6 +250,7 @@ services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Health.IHealthContribu
 | `Logging:FileLogger:LogLevel:Default` | `Error` | Lowest level written to `Content/Log/error.log`. |
 | `Health:Enabled` | `true` when absent | Runs the Health Probe and Health Rollup jobs. Off: nothing is probed and `/readyz` answers 503 until it is on again. Does not remove the page or the endpoints. |
 | `Health:Alerting` | `false` | Sends alert and recovery notifications. |
+| `Health:MailServerProbeIntervalMinutes` | `1` when absent | How often the probe job connects to each site's mail server (`SMTPHost:SMTPPort`): every tick at 1, at most once per N minutes above it, never at 0. Each probe is a connection to the relay, so raise it when the relay counts connections. Run now always probes it. The store and cache probes still run every minute. |
 | `Health:LivenessPath` | `/healthz` | Path of the liveness endpoint (read at startup). |
 | `Health:ReadinessPath` | `/readyz` | Path of the readiness endpoint (read at startup). |
 | `Metering:Enabled` | `false` | Runs the two metering jobs. Recording and quota checks work either way. |

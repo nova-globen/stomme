@@ -3,4 +3,5 @@
 bin/
 obj/
 local-feed/
+.nuget-local/
 *.nupkg

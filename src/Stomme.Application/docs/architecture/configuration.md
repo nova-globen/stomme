@@ -191,6 +191,7 @@ at the next start. Restart after changing any switch unless you know its reader 
 |---|---|---|---|
 | Health probing job and the health page's data | `Health:Enabled` | `true` (also when absent) | Off: the probe job does nothing, and `/readyz` answers 503 for ever. `/healthz` is always mapped. Paths: `Health:LivenessPath` (`/healthz`), `Health:ReadinessPath` (`/readyz`). |
 | Health alerts to the site's operators | `Health:Alerting` | `false` | |
+| How often the health job probes each site's mail server | `Health:MailServerProbeIntervalMinutes` | `1` (every tick) | `0` never; N at most once per N minutes. Each probe is one connection to the relay. |
 | AI assistant (chat, agents, the landing designer) | `AiAssistant:Enabled` | `false` | Also needs the site's own settings (endpoint, model, key). `AiAssistant:RateLimitPerMinute` (30), `AiAssistant:RequestTimeoutSeconds` (120). See [AI assistant](../ai/ai-assistant.md). |
 | MCP server (the site's modules as tools and resources) | `Mcp:Server:Enabled` | `false` | Restart. `Mcp:Server:Path` (`/mcp/v1`, must start with `/`), `Mcp:Server:RequestsPerMinute` (60). Signed-in callers only (the session cookie; no antiforgery token is checked on this route); an anonymous `POST` gets `401`. See [MCP server](../ai/mcp-server.md). |
 | MCP client (register external MCP servers and discover their tools; nothing calls those tools yet) | `Mcp:Enabled` | `false` | Restart. `Mcp:Client:HostAllowlist`. See [MCP client](../ai/mcp-client.md). |

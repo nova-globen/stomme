@@ -218,6 +218,19 @@ namespace Stomme.UI
             }
         }
 
+        /// <summary>The browser's time zone as an IANA name (Europe/Stockholm), or empty when it reports none.</summary>
+        public ValueTask<string> GetTimeZone()
+        {
+            try
+            {
+                return _jsRuntime.InvokeAsync<string>("Stomme.Interop.getTimeZone");
+            }
+            catch
+            {
+                return new ValueTask<string>(Task.FromResult(string.Empty));
+            }
+        }
+
         public Task SubmitForm(string path, object fields)
         {
             try

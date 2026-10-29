@@ -4,7 +4,6 @@
 @inject NavigationManager NavigationManager
 @inject IUserService UserService
 @inject ISettingService SettingService
-@inject ITimeZoneService TimeZoneService
 @inject ILanguageService LanguageService
 @inject IStringLocalizer<Index> Localizer
 @inject IStringLocalizer<SharedResources> SharedLocalizer
@@ -49,13 +48,7 @@
                         </div>
                         <div class="db-field">
                             <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time Zone:</Label>
-                            <FluentSelect id="timezone" TOption="string" TValue="string" @bind-Value="_timezoneid" class="db-field-control">
-                                <FluentOption TValue="string" Value="@string.Empty">&lt;@SharedLocalizer["Not Specified"]&gt;</FluentOption>
-                                @foreach (var timezone in _timezones)
-                                {
-                                    <FluentOption TValue="string" Value="@timezone.Id">@timezone.DisplayName</FluentOption>
-                                }
-                            </FluentSelect>
+                            <TimeZonePicker @ref="_timezonepicker" Id="timezone" @bind-Value="_timezoneid" UseBrowserTimeZone="true" Placeholder="@Localizer["TimeZone.Placeholder"]" Class="db-field-control" />
                         </div>
                         <div class="db-field">
                             <Label For="culture" HelpText="Your preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language:</Label>
@@ -91,7 +84,7 @@
 
 @code {
     private bool _initialized = false;
-    private List<Models.TimeZone> _timezones;
+    private TimeZonePicker _timezonepicker;
     private IEnumerable<Models.Language> _languages;
 
     private string _passwordrequirements;
@@ -116,7 +109,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _timezones = TimeZoneService.GetTimeZones();
         _languages = await LanguageService.GetLanguagesAsync(PageState.Site.SiteId);            
 
         _passwordrequirements = await UserService.GetPasswordRequirementsAsync(PageState.Site.SiteId); 
@@ -141,7 +133,12 @@
             {
                 bool _isEmailValid = Utilities.IsValidEmail(_email);
 
-                if (_isEmailValid)
+                // The field is free text over a list, so what was typed may name no time zone at all.
+                if (!string.IsNullOrWhiteSpace(_timezoneid) && TimeZoneMatcher.Match(_timezoneid, _timezonepicker.Zones) == null)
+                {
+                    AddModuleMessage(Localizer["Message.TimeZone.Unknown"], MessageType.Warning);
+                }
+                else if (_isEmailValid)
                 {
                     if (_password == _confirm)
                     {
