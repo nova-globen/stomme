@@ -24,7 +24,15 @@
     <Copyright>Nova Globen AB</Copyright>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+    <!-- D115: the licence travels inside the package as a file - see the Aurora csproj (the root props do not reach examples/). -->
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\LICENSE" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\..\..\THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- BL-70: Stomme.Client, NOT the Stomme.Sdk meta — the meta's Stomme.Server depends on the

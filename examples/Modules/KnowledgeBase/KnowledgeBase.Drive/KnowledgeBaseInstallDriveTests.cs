@@ -607,7 +607,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                     var cookies = await LoginAsync(app, client);
                     var hostId = await UserIdAsync(app, HostUsername);
                     var created = await Send<JsonObject>(app, client, cookies, hostId, "/api/ModuleDefinition",
-                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.74.0", moduleDefinitionName = "[Owner].Module.[Module]" },
+                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.74.1", moduleDefinitionName = "[Owner].Module.[Module]" },
                         HttpStatusCode.OK);
                     Assert.Equal("Acme.Module.FieldNotes.Manager.FieldNotesManager, Acme.Module.FieldNotes.Server.Stomme", (string?)created["serverManagerType"]);
                 }

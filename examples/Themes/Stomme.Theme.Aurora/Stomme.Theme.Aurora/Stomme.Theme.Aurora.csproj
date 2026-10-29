@@ -24,7 +24,16 @@
     <Copyright>Nova Globen AB</Copyright>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+    <!-- D115: the licence travels inside the package as a file. examples/Directory.Build.props stops the walk to the root
+         props (D81), so this csproj - packed by scripts/pack-framework.ps1 as part of Stomme.Server's closure - states it. -->
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\LICENSE" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\..\..\THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- BL-70: Stomme.Client, NOT the Stomme.Sdk meta. The meta includes Stomme.Server, which since

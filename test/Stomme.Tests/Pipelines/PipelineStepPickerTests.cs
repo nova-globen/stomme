@@ -3427,6 +3427,8 @@ namespace Stomme.Tests.Pipelines
             // "Add a step here": the step chosen next lands on that spot, connected to nothing.
             var stepAt = Diagram().GetRelativeMousePoint(700, 500);
             cut.Find("#pipelines-editor-canvas").ContextMenu(new MouseEventArgs { ClientX = 700, ClientY = 500 });
+            // Waited for like the two menus above: under the gate's load the item was not rendered yet (2026-10-29, once in 6,393).
+            cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll("#pipelines-editor-menu-add-step")));
             cut.Find("#pipelines-editor-menu-add-step").Click();
             cut.Find("#pipelines-editor-step-search").Input("csv");
             cut.Find("#pipelines-editor-step-search").KeyDown(new KeyboardEventArgs { Key = "Enter" });

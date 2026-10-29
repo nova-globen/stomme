@@ -1,9 +1,9 @@
 name: ci
 
-# Build and test on GitHub's hosted runners. Every job runs in the PUBLIC repository (free minutes there); the fast job
-# also runs in the private working repository, so a change to the workflow or the fast tier is proven on the same Ubuntu
-# runner before a snapshot carries it out (its minutes are counted there, so the database jobs stay public-only). Every
-# commit is also gated locally with `pwsh scripts/gate.ps1`.
+# Build and test on GitHub's hosted runners. Every job runs in the PUBLIC repository on push, pull request and dispatch
+# (free minutes there). In the private working repository only the fast job runs, and only when dispatched (the owner's
+# D45, 2026-10-29: its minutes are counted, so a Linux run there is started when a Linux proof is needed - a change to
+# the workflow or the fast tier before a snapshot carries it out). Commits are gated locally by risk.
 #
 #   fast      - build, every test without the ExternalDatabase trait (scripts/test-fast.ps1), the licence gate
 #   postgres  - the render guard (D30: PostgreSQL is the only provider that reproduces the renderer deadlock class) and
@@ -32,7 +32,7 @@ env:
 
 jobs:
   fast:
-    if: github.repository == 'nova-globen/stomme' || github.repository == 'nova-globen/stomme-dev'
+    if: github.repository == 'nova-globen/stomme' || (github.repository == 'nova-globen/stomme-dev' && github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -73,7 +73,7 @@ jobs:
         with:
           name: fast-tier-log
           path: ${{ runner.temp }}/fast-tier.log
-          retention-days: 7
+          retention-days: 3
       - name: Licence gate (permissive-only, D2)
         if: always()
         shell: pwsh
