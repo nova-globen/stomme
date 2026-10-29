@@ -32,8 +32,8 @@ namespace Stomme.Tests
     /// <b>The defect class this pins.</b> The per-site materialisation of a module definition's permissions runs
     /// only when that definition has NO rows on the site yet (<c>ModuleDefinitionRepository</c>: "permissions for
     /// module definition do not exist for this site"). Ship a release that adds a key and every existing site is
-    /// missing its row forever - and because the guard DENIES when a key has no rows (the no-fallback overload,
-    /// D99 point 5), the new capability is dead for everyone, administrators included. This is the admin-page
+    /// missing its row forever - and because the guard DENIES when a key has no rows (the no-fallback overload
+    /// never admits by role membership), the new capability is dead for everyone, administrators included. This is the admin-page
     /// upgrade class exactly (<see cref="AdminPageUpgradeReconciliationTests"/>), which is why it is driven the
     /// same way: TWO hosts over ONE database, never a fresh install.
     /// </para>

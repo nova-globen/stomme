@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// The HARNESS SWAP for the predecessor platform's two CQRS suites (<c>AddInMemoryPersistence</c> + <c>AddMediator(assembly)</c> +
+    /// The harness for the CQRS suites, in place of an in-memory setup (<c>AddInMemoryPersistence</c> + <c>AddMediator(assembly)</c> +
     /// <c>ValidationBehavior</c> + <c>new NotificationsModule().ConfigureServices</c>): the module's own <c>ServerStartup</c> on the
     /// in-process FILE store (<see cref="NotificationPipelineHarness"/>), the mediator with the SAME behavior order the host
     /// composes (authorization outermost, validation innermost), fake e-mail + webhook transports (no DNS, no network), a
@@ -25,7 +25,7 @@ namespace Stomme.Tests.Notifications
     /// <remarks>
     /// The guard is ALLOW-ALL here: these suites pin what the handlers DO. What the keys DECIDE is pinned where it can mean
     /// something - reflectively and over real HTTP on an installed host (<c>NotificationPermissionDeclarationTests</c>). The
-    /// mediator is registered HERE, not by the module (F13: <c>AddMediator</c> is additive and Guestbook's startup already
+    /// mediator is registered HERE, not by the module (<c>AddMediator</c> is additive and Guestbook's startup already
     /// calls it in the host).
     /// </remarks>
     internal static class NotificationCqrsHarness

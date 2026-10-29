@@ -13,8 +13,8 @@ namespace Stomme.Tests.Fixtures.DispatchTestModule
     /// A STUB DEPENDENT of the Notifications module: it references ONLY the published port in
     /// <c>Stomme.Shared</c> - <see cref="INotificationDispatcher"/> and its DTOs - and never a Notifications-module type.
     /// <c>NotificationDispatcherContractTests</c> asserts that reflectively (member signatures) and syntactically (this
-    /// folder's source), then drives it to a fake channel. Its four methods are the four producer SHAPES the survey found
-    /// in the predecessor platform's dependents: a HealthCheck alert, a DataExport export-ready note, ControlFlow's runtime-PARSED request
+    /// folder's source), then drives it to a fake channel. Its four methods are the four producer shapes that real modules use:
+    /// a HealthCheck alert, a DataExport export-ready note, a flow module's runtime-parsed request
     /// (built from untyped input) and a CloudUsage threshold warning.
     /// </summary>
     public sealed class DispatchTestProducers

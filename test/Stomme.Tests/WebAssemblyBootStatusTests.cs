@@ -15,15 +15,15 @@ namespace Stomme.Tests
     /// A WebAssembly site that is not prerendered shows a loading status until its page renders, never a blank page.
     /// </summary>
     /// <remarks>
-    /// Measured on UAT (2026-10-02): the home page's body is one WebAssembly root component and nothing else - prerendering
-    /// is off there for BL-57's reason - so a visitor saw NOTHING until the client had downloaded and started: 238 files,
-    /// 57.4 MB decoded (17.3 MB over the wire on that load), 4.7 seconds on a warm cache, the owner's "5-10 seconds of blank"
+    /// Measured: the home page's body is one WebAssembly root component and nothing else - prerendering
+    /// is off, so a visitor saw NOTHING until the client had downloaded and started: 238 files,
+    /// 57.4 MB decoded (17.3 MB over the wire on that load), 4.7 seconds on a warm cache, "5-10 seconds of blank"
     /// on a cold one. The page now carries a status, hidden by app.css once the root component has rendered its wrapper. Not
     /// by the JS initializer's afterWebAssemblyStarted: Blazor calls it when the client's Main first yields (its boot code,
     /// measured in blazor.web.js 10.0.12), before Stomme's Main has streamed the module assemblies and long before a
     /// render. A Server site, whose first byte already carries the page, carries none, and nor does a prerendered WebAssembly
     /// site - checked on a real host, because under this harness's TestServer a prerendered WebAssembly home page answers an
-    /// empty 500 that nothing logs (measured 2026-10-03; the same settings under <c>dotnet run</c> render it, 200 and 100 KB).
+    /// empty 500 that nothing logs (the same settings under <c>dotnet run</c> render it, 200 and 100 KB).
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     public sealed class WebAssemblyBootStatusTests(ITestOutputHelper output)

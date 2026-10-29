@@ -18,7 +18,7 @@ namespace Stomme.Modules.DataExport.Domain
     /// Why an export failed - the ONLY thing about a failure a requester is shown.
     /// </summary>
     /// <remarks>
-    /// the predecessor platform stored <c>ex.Message</c> on the job and rendered it to the requester, which hands connection
+    /// A failure message is never stored on the job: rendering <c>ex.Message</c> to the requester would hand connection
     /// strings, file paths and SQL fragments to whoever asked for the export. The text goes to the log; the row
     /// carries a code. Stored as its integer value; never renumber.
     /// </remarks>
@@ -47,7 +47,7 @@ namespace Stomme.Modules.DataExport.Domain
     }
 
     /// <summary>
-    /// The export domain's UTC rule (D108 refutation 13).
+    /// The export domain's UTC rule.
     /// </summary>
     /// <remarks>
     /// Inputs are REQUIRED to be <see cref="DateTimeKind.Utc"/>; persisted values are re-stamped UTC on read,

@@ -12,13 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Answers "may this happen?" before it happens - the pre-consumption entry point the predecessor platform never had.
+    /// Answers "may this happen?" before it happens - the pre-consumption entry point.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The subject is always the CALLER: no user id crosses this port, so a producer cannot ask about (or charge)
-    /// somebody else's allowance. the predecessor platform's guard took an optional user id and counted only that user's rows, so
-    /// passing an unknown id returned "consumed 0, allowed" - a check that answered yes to anyone who asked the
+    /// somebody else's allowance. A guard that took an optional user id and counted only that user's rows would, for
+    /// an unknown id, return "consumed 0, allowed" - a check that answered yes to anyone who asked the
     /// right way.
     /// </para>
     /// <para>

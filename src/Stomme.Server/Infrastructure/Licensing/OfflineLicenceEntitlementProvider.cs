@@ -26,7 +26,7 @@ namespace Stomme.Infrastructure.Licensing
         DateTimeOffset? Expires);
 
     /// <summary>
-    /// The offline licence ring's <see cref="IEntitlementProvider"/> (D105 design item 7), registered SCOPED and only under
+    /// The offline licence ring's <see cref="IEntitlementProvider"/>, registered SCOPED and only under
     /// <c>Deployment:Mode=OnPrem</c> (<see cref="LicensingServiceCollectionExtensions.AddStommeLicensing"/>). A capability
     /// is granted iff a <see cref="LicenceKeyReason.Valid"/> key's <c>ent</c> contains it, ordinally — so several keys union.
     /// </summary>
@@ -45,8 +45,8 @@ namespace Stomme.Infrastructure.Licensing
     /// reports <see cref="LicenceKeyReason.LidMismatch"/>. Keys are never logged by this class — it has no logger at all.
     /// </para>
     /// <para>
-    /// Does NOT implement <c>IMeteredLimitProvider</c>: that port does not exist yet (D102 text only), so the numeric half is
-    /// booked into BL-79's DoD (§J.BL-79 correction) rather than ported ahead of it.
+    /// Does NOT implement <c>IMeteredLimitProvider</c>: that port does not exist yet, so the numeric half is
+    /// left to the metering work rather than ported ahead of it.
     /// </para>
     /// </remarks>
     internal sealed class OfflineLicenceEntitlementProvider : IEntitlementProvider

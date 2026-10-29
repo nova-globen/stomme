@@ -26,12 +26,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// STEP-5 (Goal-2) DIVERGENCE DRIVE — OBSERVE, on REAL PostgreSQL and REAL RavenDB, seam behaviour behind
+    /// STEP-5 DIVERGENCE DRIVE — OBSERVE, on REAL PostgreSQL and REAL RavenDB, seam behaviour behind
     /// the persistence seam rather than infer it from the code path.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The seam's promise (MISSION Goal-2) is IDENTICAL observable behaviour across providers. This installs a
+    /// The seam's promise is IDENTICAL observable behaviour across providers. This installs a
     /// real site on each provider through the production host and drives the real repositories against it — the
     /// same host <see cref="Program.Main"/> serves, only the transport swapped for TestServer — so what it
     /// records is the live provider's answer, not a fixture's.
@@ -39,30 +39,30 @@ namespace Stomme.Tests
     /// <list type="number">
     /// <item><b>Un-normalized string <c>==</c> equality (case sensitivity) — NOW FIXED AND ASSERTED AS
     /// AGREEMENT.</b> <c>UrlMapping.Url</c> WAS looked up with a bare <c>item.Url == url</c>. PostgreSQL's
-    /// <c>=</c> is case-SENSITIVE under the column collation; RavenDB's is case-INSENSITIVE — DRIVEN here in a
-    /// prior increment (a row stored <c>"Foo/Bar"</c> and looked up <c>"foo/bar"</c> MISSED on PostgreSQL and
-    /// HIT on RavenDB). D57 normalizes the DATA (a lowercase <c>UrlNormalized</c> column) and the ARGUMENT (in
+    /// <c>=</c> is case-SENSITIVE under the column collation; RavenDB's is case-INSENSITIVE — DRIVEN earlier
+    /// (a row stored <c>"Foo/Bar"</c> and looked up <c>"foo/bar"</c> MISSED on PostgreSQL and
+    /// HIT on RavenDB). The fix normalizes the DATA (a lowercase <c>UrlNormalized</c> column) and the ARGUMENT (in
     /// <see cref="UrlMappingRepository.GetUrlMappingAsync(int, string, string)"/>), so both providers now HIT.
     /// This test asserts that AGREEMENT: store <c>"Foo/Bar"</c>, look up <c>"foo/bar"</c>, both providers return
     /// the row (case-INSENSITIVE, matching the Folder/File precedent).</item>
     /// <item><b>Page.Path un-normalized <c>==</c> equality — NOW FIXED AND ASSERTED AS AGREEMENT.</b>
     /// The direct analog of item 1: <c>PageRepository.GetPageAsync(path, siteId)</c> filtered
     /// <c>item.Path == path</c> raw on the render RESOLVE fallback (<c>SiteRouter.razor</c>, reached when the
-    /// in-memory <c>OrdinalIgnoreCase</c> match misses) and the admin page lookup. D58 adds a lowercase
+    /// in-memory <c>OrdinalIgnoreCase</c> match misses) and the admin page lookup. The fix adds a lowercase
     /// <c>PathNormalized</c> column and normalizes the argument, so a page stored <c>Foo/Bar</c> is found by
     /// <c>foo/bar</c> on BOTH providers. Asserted as agreement.</item>
     /// <item><b>Folder.Path un-normalized <c>==</c> equality — STILL A DIVERGENCE, DELIBERATELY, and
     /// OBSERVED here as an accepted gap.</b> <c>FolderRepository.GetFolderAsync(siteId, path)</c> filters
     /// <c>item.Path == path</c> raw and is documented as case-SENSITIVE on purpose (its callers pass the
     /// STORED case of well-known folders). PostgreSQL honours that intent (a mismatched-case lookup MISSES);
-    /// RavenDB's <c>==</c> is case-INSENSITIVE and cannot (it HITS). Not fixed here — see the D58 evidence
-    /// doc for why closing it would override D48/D49's deliberate choice. Pinned as an observation.</item>
+    /// RavenDB's <c>==</c> is case-INSENSITIVE and cannot (it HITS). Not fixed here — closing it would
+    /// override the deliberate case-sensitive choice for Folder.Path. Pinned as an observation.</item>
     /// <item><b>The <see cref="IDeletable"/> delete-stamp — NOW FIXED AND ASSERTED AS AGREEMENT.</b> On a
     /// soft delete (<c>IsDeleted = true</c> + Update) the relational path stamps <c>DeletedBy</c>/<c>DeletedOn</c>
     /// in <c>DbContextUtils.SaveChanges</c>. This WAS relational-only — <c>RavenAuditListener</c> stamped
     /// <see cref="IAuditable"/> ONLY and <see cref="Notification"/> is <see cref="IDeletable"/>-only, so RavenDB
-    /// stamped nothing (DRIVEN here in a prior increment: <c>IsDeleted=true</c> on both, <c>DeletedOn</c> only on
-    /// PostgreSQL). D59 ports the rule to the document path (<c>AuditStamp.StampDeleted</c>, keyed on
+    /// stamped nothing (DRIVEN here earlier: <c>IsDeleted=true</c> on both, <c>DeletedOn</c> only on
+    /// PostgreSQL). The fix ports the rule to the document path (<c>AuditStamp.StampDeleted</c>, keyed on
     /// <c>IsDeleted == true &amp;&amp; DeletedOn == null</c>, no DB load), so both providers now read back
     /// <c>IsDeleted = true</c> AND a populated <c>DeletedOn</c> AND the same <c>DeletedBy</c> (<c>''</c> under the
     /// unauthenticated host). This test asserts that AGREEMENT.</item>
@@ -143,7 +143,7 @@ namespace Stomme.Tests
             // ---- DIVERGENCE 4 verdict — Folder.Path RAW == is DELIBERATELY case-sensitive --
             // OBSERVED and PINNED, not fixed: PostgreSQL honours the case-sensitive intent (MISS on a
             // mismatched-case lookup); RavenDB's == is case-INSENSITIVE and cannot honour it (HIT). This is the
-            // remaining accepted gap the D58 evidence doc raises for an owner decision. If either half flips,
+            // remaining accepted gap, deliberately left open. If either half flips,
             // the divergence has changed and this fires so the record stays honest.
             Assert.False(pg.FolderSessionHit,
                 "PostgreSQL matched 'users/zzz/' against stored 'Users/Zzz/' via a RAW item.Path == — expected a " +
@@ -165,13 +165,13 @@ namespace Stomme.Tests
             Assert.Equal("Foo/Bar", raven.UrlMappingStoredCase);
 
             // The real product method (GetUrlMappingAsync, which normalizes its argument) must return the row on
-            // BOTH — this is the render 404 path that was silently provider-dependent before D57.
+            // BOTH — this is the render 404 path that was silently provider-dependent before normalization.
             Assert.True(pg.UrlMappingRepoHit, "PostgreSQL repository lookup returned NULL for 'foo/bar' — the render-path read still diverges.");
             Assert.True(raven.UrlMappingRepoHit, "RavenDB repository lookup returned NULL for 'foo/bar'.");
 
-            // ---- AGREEMENT 2 verdict (D59 FIX) — the IDeletable soft-delete stamp now AGREES -------------
-            // Before D59: PostgreSQL stamped DeletedBy(='')/DeletedOn via DbContextUtils, RavenDB stamped
-            // NOTHING (RavenAuditListener was IAuditable-only, and Notification is IDeletable-only). D59 ported
+            // ---- AGREEMENT 2 verdict — the IDeletable soft-delete stamp now AGREES ------------------------
+            // Before the fix: PostgreSQL stamped DeletedBy(='')/DeletedOn via DbContextUtils, RavenDB stamped
+            // NOTHING (RavenAuditListener was IAuditable-only, and Notification is IDeletable-only). The fix ported
             // the rule to the document path (AuditStamp.StampDeleted, keyed on IsDeleted==true && DeletedOn==null,
             // no DB load), so both providers now stamp identically. IsDeleted was always mapped on both.
             Assert.True(pg.NotificationIsDeleted, "PostgreSQL did not persist IsDeleted=true on soft delete.");
@@ -228,8 +228,8 @@ namespace Stomme.Tests
                 if (postgresDatabase != null)
                 {
                     // This suite was the ONE PostgreSQL-installing test with no drop — every gate
-                    // run left one stomme_step5_* database on the SHARED infra instance (11 found by
-                    // BL-16's hygiene check; the Raven side always dropped). Same best-effort shape as the
+                    // run left one stomme_step5_* database on the shared server (11 of them found by
+                    // a hygiene check; the Raven side always dropped). Same best-effort shape as the
                     // eight sibling suites that already call DropDatabase.
                     BestEffortDropPostgres(postgresDatabase);
                 }
@@ -259,7 +259,7 @@ namespace Stomme.Tests
             });
 
             // 2) Look it up with a DIFFERENT case through the seam's own read session — the repository's EXACT
-            //    read expression after D57 (UrlMappingRepository.GetUrlMappingAsync: item.UrlNormalized ==
+            //    read expression (UrlMappingRepository.GetUrlMappingAsync: item.UrlNormalized ==
             //    Normalize(url)), with NO side effects. Both providers must HIT, and the stored case survives.
             await InTenantScopeAsync(app, alias, async sp =>
             {
@@ -324,7 +324,7 @@ namespace Stomme.Tests
             });
 
             // 2) Look it up with a DIFFERENT case through the seam's own read session — the repository's EXACT
-            //    read expression after D58 (PageRepository.GetPageAsync: item.PathNormalized == Normalize(path)),
+            //    read expression (PageRepository.GetPageAsync: item.PathNormalized == Normalize(path)),
             //    with NO side effects. Both providers must HIT, and the stored case survives.
             await InTenantScopeAsync(app, alias, async sp =>
             {
@@ -364,9 +364,9 @@ namespace Stomme.Tests
         // Unlike Page/UrlMapping, FolderRepository.GetFolderAsync(siteId, path) filters item.Path RAW and is
         // documented as case-SENSITIVE on purpose (its callers pass the STORED case of well-known folders).
         // That intent is honoured on PostgreSQL (case-SENSITIVE ==) but CANNOT be honoured on RavenDB, whose
-        // == is case-INSENSITIVE — the exact divergence D48 measured and "reported, not fixed". This drive
+        // == is case-INSENSITIVE — the exact divergence, observed and deliberately left unfixed. This drive
         // OBSERVES and pins the remaining gap; it is NOT a fix, because making them agree case-INSENSITIVELY
-        // would override D48/D49's deliberate choice (see the D58 evidence doc). Store 'Users/Zzz/', look up
+        // would override the deliberate case-sensitive choice. Store 'Users/Zzz/', look up
         // 'users/zzz/'.
         private async Task DriveFolderDivergenceAsync(WebApplication app, Alias alias, int siteId, Observation observation)
         {
@@ -519,7 +519,7 @@ namespace Stomme.Tests
             }
             catch
             {
-                // best effort — but on SHARED infra a leftover is not harmless; the janitorial sweep is manual
+                // best effort — but on a shared server a leftover is not harmless; the janitorial sweep is manual
             }
         }
 
@@ -578,7 +578,7 @@ namespace Stomme.Tests
         }
 
         // A throwaway content root plus the override the installer's self-writes land in, so the repository's
-        // appsettings.json is never touched — the isolation the render guard and the D54 tests share.
+        // appsettings.json is never touched — the isolation the render guard and the install tests share.
         private sealed class ScratchInstallation : IDisposable
         {
             private readonly string? _previousOverridePath;

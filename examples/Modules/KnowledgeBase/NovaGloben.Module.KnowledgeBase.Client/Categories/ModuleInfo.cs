@@ -11,7 +11,7 @@ namespace NovaGloben.Module.KnowledgeBase.Categories
     /// page templates place it under their parent page, so the parent is always created first.
     /// </summary>
     /// <remarks>
-    /// <b>It DOES declare the knowledge base's keys</b> (increment 6, found by clicking it in a browser). The rows are the
+    /// <b>It DOES declare the knowledge base's keys</b> (found by clicking it in a browser). The rows are the
     /// site's, but a placement carries them only when its OWN definition declares them - the host attaches declared key rows
     /// to a module instance's permission list from its definition - so without this line every visitor of the nested page was
     /// told "You do not have access", while the API behind it admitted them. No HTTP drive could see it: the page's content is

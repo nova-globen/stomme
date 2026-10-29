@@ -9,15 +9,13 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Mcp.Domain
 {
     /// <summary>
-    /// One line of the MCP audit ledger: who asked this install's MCP endpoint for what, and how it ended (D101
-    /// item 6).
+    /// One line of the MCP audit ledger: who asked this install's MCP endpoint for what, and how it ended.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>A durable row, not a log line.</b> the predecessor platform audited through the logger - and Stomme's <c>LogManager</c> DROPS
-    /// entries below <c>Logging:LogLevel:Default</c> and diverts to the file logger under load, so that "audit" could be
-    /// switched off in configuration and thinned out by traffic. It also never recorded <c>resources/read</c> at all.
-    /// Both verbs are written here, by the catalog, on every outcome including a refusal.
+    /// <b>A durable row, not a log line.</b> Auditing through the logger would not do - Stomme's <c>LogManager</c> DROPS
+    /// entries below <c>Logging:LogLevel:Default</c> and diverts to the file logger under load, so such an "audit" could be
+    /// switched off in configuration and thinned out by traffic. Both verbs (<c>tools/call</c> and <c>resources/read</c>) are written here, by the catalog, on every outcome including a refusal.
     /// </para>
     /// <para>
     /// <b>The arguments are NOT kept - their SHA-256 and their length are.</b> Tool arguments are whatever a caller

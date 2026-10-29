@@ -27,10 +27,10 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // Live end-to-end proof for brief 04 / D10: stands up a real Kestrel host with the opt-in transports
+    // Live end-to-end proof: stands up a real Kestrel host with the opt-in transports
     // enabled and drives them over the wire — a typed gRPC unary call + a gRPC server-stream, and a SignalR
     // channel push gated by an authorization policy. Nothing is mocked: real sockets, the real interceptor,
-    // the real hub. These are the Definition-of-Done checks the brief calls out.
+    // the real hub. Between them these prove both transports work end to end.
     public class TransportSmokeTests : IAsyncLifetime
     {
         private WebApplication _app = null!;

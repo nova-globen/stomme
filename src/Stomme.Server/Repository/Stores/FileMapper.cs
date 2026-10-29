@@ -8,7 +8,7 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// <see cref="Models.File.Folder"/> and <see cref="Models.File.Url"/> are deliberately absent: both are
     /// <c>[NotMapped]</c> view state the repository populates AFTER this mapper has run — the folder from
-    /// <see cref="IFolderRepository"/> (D48 severed the navigation), the url computed from it. Round-tripping a
+    /// <see cref="IFolderRepository"/> (the navigation is severed), the url computed from it. Round-tripping a
     /// File through here LOSES both by design. Pinned by
     /// <c>The_mapper_does_not_round_trip_the_unmapped_view_state</c>.
     /// </para>

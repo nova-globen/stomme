@@ -11,8 +11,7 @@ namespace Stomme.AiAssistant.Persistence
 {
     /// <summary>
     /// The conversations, read by site and user. A read by id is answered only for the conversation's own site and user:
-    /// another user's conversation - or another site's - gets the same "not found" as one that does not exist (the §J.BL-80
-    /// item 4 precedent), so ids cannot be probed.
+    /// another user's conversation - or another site's - gets the same "not found" as one that does not exist, so ids cannot be probed.
     /// </summary>
     public interface IAssistantConversationRepository : IRepository<AssistantConversationAggregate, Guid>
     {

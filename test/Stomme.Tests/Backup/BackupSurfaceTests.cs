@@ -24,7 +24,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (gates <c>BackupHostOnlySurfaceTests</c> and <c>BackupDisabledSurfaceTests</c>) - the backup surface
+    /// <c>BackupHostOnlySurfaceTests</c> and <c>BackupDisabledSurfaceTests</c> - the backup surface
     /// over REAL HTTP on an installed host: the Host reaches it, an Administrator is refused (403) and so is an anonymous
     /// caller, and NO permission key mentions backup (refutation 8); the Host takes a snapshot (queued - 202, then Available),
     /// downloads the archive, imports it back (verified before it is listed; the wrong passphrase refused and nothing listed)

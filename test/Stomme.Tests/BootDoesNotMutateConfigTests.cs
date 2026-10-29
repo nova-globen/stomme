@@ -105,7 +105,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// A config whose <c>AvailableDatabases</c> carries the pre-6.1.5 <c>, Stomme.Database.</c>
-        /// namespace must NOT be rewritten by boot — the catalog is resolved on READ (the D32 pattern
+        /// namespace must NOT be rewritten by boot — the catalog is resolved on READ (the pattern
         /// <c>GetDatabaseType</c> already uses), so the wizard still sees the migrated entries.
         /// </summary>
         [Fact]
@@ -147,7 +147,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// BL-20 (a), missing-section case: a config with NO <c>AvailableDatabases</c> at all boots without a
+        /// The missing-section case: a config with NO <c>AvailableDatabases</c> at all boots without a
         /// write, and the catalog read serves the stock six defaults.
         /// </summary>
         [Fact]

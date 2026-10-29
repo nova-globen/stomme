@@ -6,7 +6,7 @@ namespace Stomme.Engine.Pipelines;
 /// </summary>
 /// <remarks>
 /// In-house replacement for the <c>ShortGuid</c> package: its 2.0.1 nuspec declares no licence at
-/// all, so it cannot be carried under D2 (permissive-only). The encoding is byte-for-byte the one that
+/// all, so it cannot be carried under the permissive-only licence rule. The encoding is byte-for-byte the one that
 /// package produced - measured against <c>DEDrake.ShortGuid</c> 2.0.1 on 200 random guids plus five fixed
 /// vectors, 0 mismatches - so identifiers already generated keep their shape and stay valid.
 /// </remarks>

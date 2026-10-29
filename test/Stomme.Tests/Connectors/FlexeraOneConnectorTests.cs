@@ -11,7 +11,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 3 - the predecessor platform's FlexeraOneConnectorTests (10) by name over the port: the bare refresh-token grant, bounded cycle-guarded paging, the error property outranking a missing values array.</summary>
+    /// <summary>The FlexeraOneConnectorTests cases (10), kept by name over the port: the bare refresh-token grant, bounded cycle-guarded paging, the error property outranking a missing values array.</summary>
     public sealed class FlexeraOneConnectorTests
     {
         private const string PageOne = """

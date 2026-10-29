@@ -86,8 +86,8 @@ namespace Stomme.Tests
 
         /// <summary>
         /// The Visitor branch authorizes the visitor id in the site's visitor cookie, and the bulk door's body decided the
-        /// rest. When this was found the cookie was the id in plain text, so a caller who wrote it themselves passed; since
-        /// BL-185 only a cookie the host issued does (<see cref="VisitorCookieDriveTests"/> drives the forgery). The body-
+        /// rest. When this was found the cookie was the id in plain text, so a caller who wrote it themselves passed; now
+        /// only a cookie the host issued does (<see cref="VisitorCookieDriveTests"/> drives the forgery). The body-
         /// versus-route binding is still proven here, with a genuine cookie: an anonymous visitor writes their own settings
         /// and nothing else.
         /// </summary>

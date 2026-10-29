@@ -35,7 +35,7 @@ namespace Stomme.Repository
     /// <remarks>
     /// <c>GetSettingValue(IEnumerable&lt;Setting&gt;, ...)</c> lives here rather than on
     /// <see cref="ISettingRepository"/> because it is a <see cref="Enumerable.FirstOrDefault{T}"/> over a
-    /// list the caller passes in — it performs no I/O and has nothing to await. D32 bans sync members on
+    /// list the caller passes in — it performs no I/O and has nothing to await. The convention bans sync members on
     /// store-touching interfaces; the honest response for genuinely synchronous work is to take it OFF the
     /// store-touching interface, not to wrap it in <c>Task.FromResult</c> and call it async. An extension on
     /// <see cref="ISettingRepository"/> keeps every existing call site (<c>_settings.GetSettingValue(settings,
@@ -82,7 +82,7 @@ namespace Stomme.Repository
     /// because <see cref="ISettingRepository"/> is depended on by nearly every other repository (Site, Page,
     /// Module, Role, Folder, the module ecosystem…): those are INBOUND edges, and a cycle needs an outbound
     /// one. Keeping this a leaf is what makes it safe for everything else to depend on it — do not inject
-    /// another repository here without re-running the cycle check per edge (D22 rule 8).
+    /// another repository here without re-running the cycle check per edge.
     /// </para>
     /// </remarks>
     public class SettingRepository : ISettingRepository

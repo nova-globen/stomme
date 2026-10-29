@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Routing;
 namespace Stomme.Transport
 {
     /// <summary>
-    /// Optional module capability (brief 04 / D10, generalized): a module implements this to
+    /// Optional module capability: a module implements this to
     /// contribute its own endpoints — its generated gRPC-Web services and/or SignalR hubs — during host
     /// startup, so the composition root maps nothing per-module. The transport pipeline discovers every
     /// implementor across the loaded Stomme assemblies (the same reflection seam that drives
@@ -13,7 +13,7 @@ namespace Stomme.Transport
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Adopted from the predecessor platform's <c>IModuleEndpointContributor</c>. Kept off the core <c>IModule</c> contract
+    /// Kept off the core <c>IModule</c> contract
     /// because it needs <see cref="IEndpointRouteBuilder"/> (a host-only dependency); service registration
     /// still belongs in the module's <c>IServerStartup.ConfigureServices</c> — only endpoint mapping lives
     /// here. Implementations must have a public parameterless constructor (the discovery seam activates them
@@ -22,7 +22,7 @@ namespace Stomme.Transport
     /// <para>
     /// History: this seam originally lived in <c>Stomme.Transport.Grpc</c> and the pipeline invoked it
     /// only inside the gRPC gate, so a module's SignalR hub was silently never mapped on a SignalR-only
-    /// install (BL-53a — masked because every transport test enabled both flags). The contract below is the
+    /// install (masked because every transport test enabled both flags). The contract below is the
     /// one the original doc comment already promised: the loop runs when ANY transport is enabled, and the
     /// per-transport branch belongs to the contributor, which now has the options in hand to make it.
     /// </para>

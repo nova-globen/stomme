@@ -173,7 +173,7 @@ namespace Stomme.Controllers
             return package;
         }
 
-        // BL-109 (2026-10-22, found on UAT): a failed download answers 424, Failed Dependency - not 502 or 503, which the
+        // A failed download answers 424, Failed Dependency - not 502 or 503, which the
         // Cloudflare edge in front of a deployed site replaces with its own "Bad gateway" page, so the client never read why.
         private const int FailedDependency = 424;
 

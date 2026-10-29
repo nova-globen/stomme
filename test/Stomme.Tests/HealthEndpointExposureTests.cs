@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// What the two anonymous health endpoints may and may not do (D104 binding items 4, 5 and 15).
+    /// What the two anonymous health endpoints may and may not do.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -66,9 +66,9 @@ namespace Stomme.Tests
 
         /// <summary>
         /// The probe job OFF, through the override file the host reads. Probing ships ON (<c>Health:Enabled</c> in the
-        /// shipped appsettings.json since BL-83 closed), so on a host left at its defaults the job's first tick races the
-        /// first request: it ran the counting probe once and made readiness 200 before the test asked
-        /// (BL-186's gate). These cases are about what a REQUEST may do, and what the host says before any tick,
+        /// shipped appsettings.json), so on a host left at its defaults the job's first tick races the
+        /// first request: it ran the counting probe once and made readiness 200 before the test asked.
+        /// These cases are about what a REQUEST may do, and what the host says before any tick,
         /// so no tick may happen - the job itself is driven by <c>HealthProbeJobGateTests</c> and <c>OverrideFileSwitchTests</c>.
         /// </summary>
         private static Task<ScratchGateInstall> CloneWithProbingOffAsync(ITestOutputHelper output) =>
@@ -138,7 +138,7 @@ namespace Stomme.Tests
                 // WHAT THIS DOES NOT PROVE, measured rather than assumed: it is not the status-code skip-list
                 // entry that makes this pass. Mutating that entry away leaves this green, because
                 // UseStatusCodePagesWithReExecute does not re-execute a response that has already written a body
-                // and this endpoint writes one. D104 binding item 15 assumed the re-execute applied here; it does
+                // and this endpoint writes one. The design assumed the re-execute applied here; it does
                 // not. The entry is kept as belt-and-braces for a future body-less response, and this test is
                 // honest about covering the behaviour rather than that entry.
                 Assert.Equal(HttpStatusCode.ServiceUnavailable, ready.StatusCode);

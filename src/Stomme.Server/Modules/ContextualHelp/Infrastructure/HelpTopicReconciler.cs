@@ -18,19 +18,18 @@ namespace Stomme.Modules.ContextualHelp.Infrastructure
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Why it is an <see cref="ISiteContentReconciler"/> and nothing else</b> (D103 refutations 1 and 2). The runner
+    /// <b>Why it is an <see cref="ISiteContentReconciler"/> and nothing else</b>. The runner
     /// enters the site's TENANT scope before it creates the DI scope this reconciler is resolved in, and contains a
-    /// throw to this reconciler on this site. <c>DatabaseManager.InitializeSitesAsync</c>'s own loop did neither until
-    /// BL-205: one DI scope for every tenant (tenant 2's rows would land under tenant 1 - its OWN page writes
-    /// did, on UAT) and one catch for the whole loop.
+    /// throw to this reconciler on this site. A plain loop over the sites would do neither:
+    /// one DI scope for every tenant (tenant 2's rows would land under tenant 1) and one catch for the whole loop.
     /// </para>
     /// <para>
     /// <b>What it writes, per contributed topic - and it is the ONLY thing that writes on a boot:</b>
     /// absent row → seeded and published; a row still SEEDED by the SAME contributor whose text CHANGED → updated
     /// (<see cref="HelpTopicAggregate.TryApplySeedUpdate"/>). Everything else is left exactly as it is: an operator's
     /// edit (no longer seeded), a hand-authored topic or draft, an unchanged seed (no write, so its
-    /// <c>ContentVersion</c> and its cache key survive the boot - refutation 7), and a row seeded by ANOTHER
-    /// contributor (refutation 6 - an ownership change is an operator's "reset to seed", never a boot). A key rejected
+    /// <c>ContentVersion</c> and its cache key survive the boot), and a row seeded by ANOTHER
+    /// contributor (an ownership change is an operator's "reset to seed", never a boot). A key rejected
     /// as a collision is not in the registry at all, so its existing row is untouched and none is created.
     /// </para>
     /// <para>
@@ -38,13 +37,13 @@ namespace Stomme.Modules.ContextualHelp.Infrastructure
     /// second boot finds what the first wrote. No provider has a unique index to fall back on.
     /// </para>
     /// <para>
-    /// A site can be excluded with <c>module.contextualhelp.enabled = false</c> (the D85 knob); the feature as a whole is
+    /// A site can be excluded with <c>module.contextualhelp.enabled = false</c> (the per-module switch); the feature as a whole is
     /// <c>Help:Enabled</c>, and while that is off this type is not even registered.
     /// </para>
     /// </remarks>
     public sealed class HelpTopicReconciler : ISiteContentReconciler
     {
-        /// <summary>The module name the D85 knob is keyed on: <c>module.contextualhelp.enabled</c>.</summary>
+        /// <summary>The module name the per-module switch is keyed on: <c>module.contextualhelp.enabled</c>.</summary>
         public const string ModuleName = "ContextualHelp";
 
         private readonly HelpTopicContributorRegistry _registry;

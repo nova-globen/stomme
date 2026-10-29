@@ -111,7 +111,7 @@ namespace Stomme.Extensions
             }));
             app.UseExceptionMiddleWare();
             app.UseServerPipelineStage(ServerPipelineStage.BeforeTenantResolution, pipelineHooks, environment);
-            // M2 row 8: a folder site's framework cookies are its own (named and scoped to its path) - right after the alias
+            // A folder site's framework cookies are its own (named and scoped to its path) - right after the alias
             // is known and before anything reads or writes a cookie.
             app.UseWhen(context => !isHealthEndpoint(context.Request.Path), tenants => tenants.UseTenantResolution().UseMiddleware<FolderSiteCookieMiddleware>());
             Stomme.Infrastructure.Files.TenantContentRedirect.UseTenantContentRedirect(app);
@@ -152,8 +152,8 @@ namespace Stomme.Extensions
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
 
-                // M2 row 3: modules' plain HTTP endpoints, on every install (no transport needed), except an assembly a host
-                // switched off (module.<id>.enabled=false, row 14).
+                // Modules' plain HTTP endpoints, on every install (no transport needed), except an assembly a host
+                // switched off (module.<id>.enabled=false).
                 MapModuleHttpEndpoints(endpoints, configuration);
 
                 // An api/ request no endpoint takes - a route a switched-off feature's controller declines at selection
@@ -168,7 +168,7 @@ namespace Stomme.Extensions
                     return Task.CompletedTask;
                 }).WithDisplayName("api/ not found");
 
-                // D61 spike: per-tenant OpenIddict authority endpoints (/connect/token, /connect/whoami).
+                // Per-tenant OpenIddict authority endpoints (/connect/token, /connect/whoami).
                 // No-op unless OpenIddict:Enabled=true.
                 endpoints.MapStommeOpenIddict(configuration);
 
@@ -364,7 +364,7 @@ namespace Stomme.Extensions
                 path.StartsWith("/_content/", StringComparison.OrdinalIgnoreCase) ||
                 // The health endpoints must keep their status code and their one-word body.
                 //
-                // MEASURED 2026-09-20, and it refutes D104 binding item 15: this entry is NOT currently what makes
+                // MEASURED: this entry is NOT currently what makes
                 // that true. Removing it leaves /readyz answering 503 "not-ready" exactly as before, because
                 // UseStatusCodePagesWithReExecute does not re-execute a response that has already WRITTEN A BODY,
                 // and both endpoints write one. The entry is kept as belt-and-braces - it is what would keep a

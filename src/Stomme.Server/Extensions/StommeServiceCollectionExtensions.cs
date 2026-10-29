@@ -89,7 +89,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // setup HttpClient for server side in a client side compatible fashion ( with auth cookie )
             services.AddHttpClients();
 
-            // BL-100 F1: the ONE file-ingestion guard every FileController path runs through, its guarded
+            // The ONE file-ingestion guard every FileController path runs through, its guarded
             // download client, and the null scanner (TryAdd - a scanner registered before AddStomme wins).
             services.AddStommeFileIngestion();
 
@@ -108,7 +108,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // The connector catalog: every IConnector a module startup or a /bin package registers
             // is in it, by type key, and a key published twice refuses the composition when the catalog is first resolved.
             Stomme.Infrastructure.Connectivity.ConnectorCatalogServiceExtensions.AddConnectorCatalog(services);
-            // ...and the egress a connector runs with (increment 4): the framework's one outbound guard, with the site's
+            // ...and the egress a connector runs with: the framework's one outbound guard, with the site's
             // ConnectivityAllowedHosts on every request. Scoped: it reads the site's settings.
             services.AddScoped<Stomme.Infrastructure.Connectivity.IConnectorEgressFactory, Stomme.Infrastructure.Connectivity.SiteSettingConnectorEgressFactory>();
 
@@ -122,7 +122,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // then makes the provider actually resolved for each contract a resolve-time decision keyed on the
             // configured database type — necessary because the type is written mid-install, after this container
             // is built (a composition-time branch would only ever see the empty fresh-boot config's relational
-            // default). Both extensions still register every twin, so D42's reflective gate stays green.
+            // default). Both extensions still register every twin, so the reflective registration gate stays green.
             // On a RavenDB install a tenant's rows live in the database its connection string names (the master
             // tenant's is the installation's own). The host's resolver REPLACES the one-shared-database default that
             // AddRavenFrameworkStore and the module store's Raven registration add with TryAdd.
@@ -141,9 +141,9 @@ namespace Microsoft.Extensions.DependencyInjection
             // inside the module's exception boundary instead of before it. Pinned by AuthorizationBehaviorOrderingTests.
             services.AddStommeAuthorization<PermissionRowAccessGuard, StommeCurrentUser, FeatureEvaluatorBridge>();
 
-            // The shared per-site secret store (BL-78 CORRECTION / D101 - one seam for notifications, MCP):
+            // The shared per-site secret store (one seam for notifications, MCP):
             // private Site setting rows whose values are protected through ISecretProtector (ASP.NET Data Protection).
-            // UNCONDITIONAL, like the bridge above. The key ring is kept where a redeploy does not lose it (BL-248,
+            // UNCONDITIONAL, like the bridge above. The key ring is kept where a redeploy does not lose it (see
             // DataProtectionKeyRing): a key ring lost made every secret stored before it Unreadable.
             Stomme.Infrastructure.Security.DataProtectionKeyRing.Configure(services, configuration, HostDataDirectory.Resolve(services));
             services.AddSecretProtection();
@@ -183,7 +183,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddDefaultTokenProviders()
                 .AddClaimsPrincipalFactory<ClaimsPrincipalFactory<IdentityUser>>(); // role claims
 
-            // D54b: make IUserStore<IdentityUser> a resolve-time choice between EF's UserStore (bound to
+            // Make IUserStore<IdentityUser> a resolve-time choice between EF's UserStore (bound to
             // TenantDBContext above) and the hand-written RavenIdentityUserStore, keyed on the configured
             // database type — the same mechanism SelectFrameworkStoreProviderByConfig uses for the framework
             // store. A relational install resolves EF's store exactly as before; a RavenDB install resolves the
@@ -200,7 +200,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddAuthorization();
 
             // Capture the AuthenticationBuilder here — AddTwoFactorUserIdCookie() returns an OptionsBuilder,
-            // which would break the chain for the D65 external-scheme registration below.
+            // which would break the chain for the external-scheme registration below.
             var authenticationBuilder = services.AddAuthentication(options =>
             {
                 options.DefaultScheme = Constants.AuthenticationScheme;
@@ -214,14 +214,14 @@ namespace Microsoft.Extensions.DependencyInjection
             // Installation-wide, config-gated SAML2 + Windows/Negotiate consumer schemes. OFF by default,
             // so a stock install registers neither and DefaultScheme stays the Identity cookie above. Both are
             // challenged ONLY explicitly by their login pages (never a default/global challenge — that would
-            // force Windows auth on every request and break the D30 render guard). A successful assertion/
+            // force Windows auth on every request and break the installed-site render guard). A successful assertion/
             // handshake routes through the same ValidateUser link-or-create bridge the OIDC consumer uses.
             authenticationBuilder.AddStommeExternalSchemes(configuration);
 
             services.ConfigureStommeCookieOptions();
             services.ConfigureStommeAuthenticationOptions(configuration);
 
-            // D61 spike: per-tenant OpenIddict authority, co-hosted in this pipeline. No-op unless
+            // Per-tenant OpenIddict authority, co-hosted in this pipeline. No-op unless
             // OpenIddict:Enabled=true, so a stock relational/Raven install is unaffected.
             services.AddStommeOpenIddict(configuration, environment);
 
@@ -429,7 +429,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<IFolderRepository, FolderRepository>();
 
-            // Take the Everyone View grant off user folders created before BL-115 closed the seed. This
+            // Take the Everyone View grant off user folders created before the seed was closed. This
             // is the FRAMEWORK's first ISiteContentReconciler, so the shared runner now has work on a stock
             // install - it walks each site once per boot, reads that site's user folders, and writes only where
             // the exposing row is still there.
@@ -484,7 +484,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Fronts the persistence seam's tenancy ports onto Stomme's real tenancy model — Alias -> Site ->
         /// Tenant, database-per-tenant — so a building block written against the seam (the flag store today;
         /// the framework store, identity, and the bus next) sees the tenant the request actually resolved to,
-        /// instead of the single-tenant fallback. See D16 and src/Stomme.Server/README.md (the tenancy adapter).
+        /// instead of the single-tenant fallback. See src/Stomme.Server/README.md (the tenancy adapter).
         /// </summary>
         public static IServiceCollection AddStommeTenancy(this IServiceCollection services)
         {
@@ -577,7 +577,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var hostedServiceType = typeof(IHostedService);
 
-            // M2 (ruling C33): module.<id>.enabled=false switches a module assembly's hosted services off on this host, so one
+            // module.<id>.enabled=false switches a module assembly's hosted services off on this host, so one
             // image can carry a module that runs on one host only. Read straight from configuration (the FeatureManagement
             // section): this runs before any container exists. Silent configuration leaves everything on.
             var configuration = HostConfiguration.Resolve(services);
@@ -590,7 +590,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 // own DI explicitly via an Add*() extension the host calls, usually behind a config gate
                 // (Messaging:Enabled, Transport:*:Enabled). Convention-registering their hosted services
                 // would activate them regardless of that gate while their dependencies stay unregistered,
-                // which breaks container construction. See docs/decisions.md D13.
+                // which breaks container construction.
                 if (assembly.IsStommeFrameworkLibrary())
                 {
                     continue;
@@ -697,8 +697,8 @@ namespace Microsoft.Extensions.DependencyInjection
             }.InitializeStommeStore();
 
             // The document provider has no change tracker to decide "is this an insert?", so audit stamps come
-            // from a store-level listener. The context is the REQUEST's (found by the erasure drive
-            // 2026-09-27): until then the listener carried SystemAuditContext(string.Empty), so a RavenDB install
+            // from a store-level listener. The context is the REQUEST's (found by the erasure drive):
+            // until then the listener carried SystemAuditContext(string.Empty), so a RavenDB install
             // stamped every row with an empty author for its whole life while the relational path stamped the
             // signed-in name - measured, a page POSTed by a signed-in administrator came back CreatedBy "". With no
             // request (install, jobs) the stamp is the empty string, exactly what DbContextUtils writes then, and
@@ -796,8 +796,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.Events.OnRedirectToLogin = context =>
                 {
                     // A bare 403 is the right answer for the SPA: its callers are XHR, and an HTML login page
-                    // in a fetch() response is useless. But BL-71 measured what that costs the ONE challenge
-                    // that IS a browser navigation — the D64 interactive OIDC hop. An external client sending
+                    // in a fetch() response is useless. But measurement showed what that costs the ONE challenge
+                    // that IS a browser navigation — the interactive OIDC hop. An external client sending
                     // a user to /connect/authorize got 403 + the SPA shell and rendered a blank window, so no
                     // external relying party could ever complete an interactive login.
                     if (IsInteractiveAuthorizeRequest(context.Request))
@@ -810,7 +810,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     // the wrong answer to "you have not authenticated". HTTP says 401 means authenticate and 403 means
                     // you may not, and an MCP client cannot tell "sign in" from "this is not for you" out of a 403 -
                     // it is the status the protocol's own authorization flow keys on. No WWW-Authenticate header is
-                    // invented here: Wave 1 admits the Identity cookie only, and advertising Bearer with an RFC 9728
+                    // invented here: the current release admits the Identity cookie only, and advertising Bearer with an RFC 9728
                     // resource_metadata URL that does not exist would send every client to a 404. That header belongs
                     // with the OAuth story, not with this.
                     if (context.HttpContext.GetEndpoint()?.Metadata.GetMetadata<Stomme.Modules.Mcp.Server.McpEndpointMarker>() is not null)
@@ -891,7 +891,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         /// The cache's default entry options from the <c>Caching</c> section (managed in System Info), each value defaulting on
-        /// its own: <c>Duration</c> 10 minutes when absent or not positive, <c>FailSafe</c> on when absent. BL-251: a PARTIAL
+        /// its own: <c>Duration</c> 10 minutes when absent or not positive, <c>FailSafe</c> on when absent. A PARTIAL
         /// section - <c>{"Caching": {"Distributed": true}}</c> - read the missing Duration as 0 and FailSafe as off, so
         /// nothing was cached at all.
         /// </summary>

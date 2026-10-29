@@ -9,8 +9,8 @@ namespace Stomme.Tests.Formats
 {
     /// <summary>
     /// The compiled presets: at least thirty, all system-scoped, deterministic and unique ids,
-    /// unique names within a kind, no two rendering the same way (the epoch preset the predecessor platform shipped duplicated the ISO UTC
-    /// preset and is dropped), every example rendering, a preset found by id.
+    /// unique names within a kind, no two rendering the same way (an epoch preset that renders the same instant as the ISO UTC
+    /// preset is not in the set), every example rendering, a preset found by id.
     /// </summary>
     public sealed class SystemFormatsTests
     {

@@ -30,7 +30,7 @@ namespace Stomme.Tests.Formats
     /// PostgreSQL and RavenDB: a preset by id and two site definitions by name (saved through the Formats API), rendered
     /// by the real queue into a CSV the requester downloads. The date column reads as the preset renders it, the amount as
     /// the site's currency definition renders it, a formatted negative number is quoted (a formatter's output is a string,
-    /// D108 refutation 11), and an unformatted negative number is not (a genuine scalar is exempt).
+    /// so it is neutralised like any other cell), and an unformatted negative number is not (a genuine scalar is exempt).
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

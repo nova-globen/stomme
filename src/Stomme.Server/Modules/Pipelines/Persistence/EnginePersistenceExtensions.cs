@@ -31,7 +31,7 @@ namespace Stomme.Modules.Pipelines.Persistence
     }
 
     /// <summary>
-    /// The engine's nine store contracts on Stomme persistence (BL-95 increment (a)). The provider is read
+    /// The engine's nine store contracts on Stomme persistence. The provider is read
     /// from <c>Database:DefaultDBType</c> at composition time exactly as the storage-blind modules read it: the three
     /// relational providers get the EF Core stores in the module store's database, RavenDB gets the document
     /// stores, and any other provider fails LOUD here rather than leaving the engine on its in-memory stores - a
@@ -96,7 +96,7 @@ namespace Stomme.Modules.Pipelines.Persistence
         private static void AddRelationalStores(IServiceCollection services, string databaseType)
         {
             // The module store's database: co-located when ConnectionStrings:ModuleAggregates names one, the SQLite
-            // sidecar otherwise (the same resolution the storage-blind modules use, BL-153-safe).
+            // sidecar otherwise (the same resolution the storage-blind modules use).
             var (provider, connectionString) = ModuleAggregatePersistenceExtensions.ResolveModuleAggregateStore(services, databaseType);
             services.AddDbContextFactory<EngineDbContext>(options =>
             {
@@ -125,7 +125,7 @@ namespace Stomme.Modules.Pipelines.Persistence
             services.TryAddScoped<EfKeyValueStore>();
         }
 
-        // The engine's rows and documents in an installation's backup, on either store family; BL-233: and the site
+        // The engine's rows and documents in an installation's backup, on either store family, and the site
         // folders the file steps read and write.
         private static void AddBackup(IServiceCollection services)
         {

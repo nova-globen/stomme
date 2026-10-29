@@ -61,7 +61,7 @@ namespace Stomme.Modules.Health.Startup
 
             // The thresholds, read once per scope from the Host-scope Setting rows with defensive fallbacks. It is
             // an ACCESSOR rather than a resolved HealthSettings because reading settings is asynchronous and a
-            // factory is not: blocking here would be sync-over-async, which D33 fails the build on.
+            // factory is not: blocking here would be sync-over-async, which a build gate fails.
             services.TryAddScoped<HealthSettingsAccessor>();
 
             services.TryAddSingleton(sp => new HealthProbeRunner());
@@ -97,7 +97,7 @@ namespace Stomme.Modules.Health.Startup
 
             // The gated read surface. Handlers are registered EXPLICITLY - never AddMediator() here:
             // an earlier module startup already composed the mediator, and a second call would double every
-            // pipeline behaviour (BL-78 F13). Nothing on the JOB path carries [Requires]: a job has no HttpContext
+            // pipeline behaviour. Nothing on the JOB path carries [Requires]: a job has no HttpContext
             // and would be denied by its own authorization behaviour.
             services.AddScoped<IRequestHandler<GetHealthDashboardQuery, HealthDashboard>, GetHealthDashboardQueryHandler>();
             services.AddScoped<IRequestHandler<ListHealthRollupsQuery, IReadOnlyList<HealthRollupView>>, ListHealthRollupsQueryHandler>();

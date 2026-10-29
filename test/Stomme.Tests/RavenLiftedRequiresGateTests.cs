@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The RavenDB leg of the BL-99 driven gate: the SAME scenario
+    /// The RavenDB leg of the driven gate: the SAME scenario
     /// (<see cref="LiftedRequiresGateTests.RunAsync"/>) against a DOCUMENT store.
     /// </summary>
     /// <remarks>
@@ -19,7 +19,7 @@ namespace Stomme.Tests
     /// </para>
     /// <para>
     /// FAIL-NOT-SKIP. An unreachable RavenDB fails this test with a named message; it never quietly disappears.
-    /// Point <c>RAVENDB_TEST_URL</c> at a reachable node (the shared infra UAT tier, unsecured on-LAN).
+    /// Point <c>RAVENDB_TEST_URL</c> at a reachable node (a shared node on the LAN, unsecured).
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]

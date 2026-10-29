@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Connectivity.Application
 {
     /// <summary>
-    /// Runs a connector's test for a connection - the one path the Test command and, in
-    /// increment 11, the health probe share: the connector from the catalog, the credentials from the per-site secret
+    /// Runs a connector's test for a connection - the one path the Test command and
+    /// the health probe share: the connector from the catalog, the credentials from the per-site secret
     /// store, the HOST's egress for the connection's site, the connection's timeout, and a CATEGORY back. The
     /// connector's message is discarded (it may echo the endpoint, a user name, a password); an exception is
     /// classified and logged by TYPE only.

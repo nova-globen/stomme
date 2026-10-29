@@ -23,7 +23,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// here, which would catch a cluster added with no fixture — but it could not distinguish a cluster with real
 /// query coverage from one with a factory and nothing else, so it would gate the cheap half and certify the
 /// expensive half untested. The gate that actually holds is the registration one, which is reflective and
-/// cannot be satisfied without a working store on both providers. See D42.
+/// cannot be satisfied without a working store on both providers.
 /// </para>
 /// <para>
 /// <b>Every query below is copied from a real repository, deliberately.</b> A conformance test that invents
@@ -223,14 +223,14 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// The D58 cross-provider AGREEMENT guard for <c>Page.Path</c>, mirroring
+    /// The cross-provider AGREEMENT guard for <c>Page.Path</c>, mirroring
     /// <see cref="A_url_mapping_lookup_is_case_insensitive_on_every_provider"/> and
     /// <see cref="A_normalized_column_filter_is_identical_on_every_provider"/>.
     /// <para>
     /// A row stored with a MIXED-CASE path (<c>Foo/Bar</c>) is found by a lowercased lookup (<c>foo/bar</c>)
     /// through the repository's exact read expression — <c>item.PathNormalized == "foo/bar"</c> — on EVERY
-    /// provider. Before D58 <c>PageRepository.GetPageAsync(path, siteId)</c> filtered <c>item.Path</c> raw:
-    /// DRIVEN on the real hosts, that MISSED on PostgreSQL (case-SENSITIVE) and HIT on RavenDB
+    /// provider. The earlier code filtered <c>item.Path</c> raw in <c>PageRepository.GetPageAsync(path, siteId)</c>:
+    /// Driven on the real hosts, the raw filter MISSED on PostgreSQL (case-SENSITIVE) and HIT on RavenDB
     /// (case-INSENSITIVE). Normalizing the DATA and the ARGUMENT collapses that divergence, because for two
     /// lowercase strings ordinal and case-insensitive equality are the same relation. The stored case
     /// survives untouched.
@@ -259,7 +259,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     // --- Modules ---
 
     /// <summary>
-    /// ModuleRepository.GetModules(siteId) — <c>Where(item =&gt; item.SiteId == siteId)</c>. D21's severed
+    /// ModuleRepository.GetModules(siteId) — <c>Where(item =&gt; item.SiteId == siteId)</c>. The severed
     /// navigation: PageModule used to reach Module.SiteId through an Include; the filter must stay in the
     /// DATABASE rather than becoming an in-memory join, so this proves the provider filters it server-side.
     /// </summary>
@@ -334,7 +334,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
 
     /// <summary>
     /// UserRoleRepository.GetUserRoles(userId, siteId) — <c>Where(item =&gt; item.UserId == userId)</c> then
-    /// <c>Where(item =&gt; roleIds.Contains(item.RoleId))</c>. D22 §4: the role-id set is resolved first and
+    /// <c>Where(item =&gt; roleIds.Contains(item.RoleId))</c>. The role-id set is resolved first and
     /// the fan-in must stay server-side. A stale/empty result here means an authenticated user silently holds
     /// no roles.
     /// </summary>
@@ -383,7 +383,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// <b>D23's whole point, and the test that discriminates it.</b> Setting is the ONE framework-store
+    /// <b>The point of the split, and the test that discriminates it.</b> Setting is the ONE framework-store
     /// aggregate mapped in BOTH databases: SettingRepository routes Host/Job/ModuleDefinition/Theme/master:*
     /// to the master store and everything else to the tenant store, then merges the two in memory.
     /// <para>
@@ -499,7 +499,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// JobLogRepository.GetJobLogsAsync(jobId) — the log list for one job AND the <c>-1</c> "all" overload,
     /// COMPOSED IN C# rather than pushed into the predicate.
     /// <para>
-    /// <b>This is the D45 hazard, applied to this cluster.</b> The harvested query was
+    /// <b>This is the sentinel hazard, applied to this cluster.</b> The original query was
     /// <c>Where(item =&gt; item.JobId == jobId || jobId == -1)</c>. EF folds <c>-1 == -1</c> to true and drops
     /// the arm; RavenDB does NOT, and would compile the wildcard arm into RQL matching NOTHING — returning 0
     /// logs for the "all" call while passing on EF. The repository (and this test) compose the filter in C# so
@@ -542,8 +542,8 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
 
     /// <summary>
     /// JobLogRepository.PopulateJobsAsync — <c>Where(item =&gt; jobIds.Contains(item.Id))</c> over
-    /// <see cref="JobAggregate"/>, the second query that replaces the severed <c>.Include(item =&gt; item.Job)</c>
-    /// (D45). The Admin &gt; Jobs &gt; Log screen dereferences <c>log.Job.Name</c> and <c>log.Job.IsExecuting</c>,
+    /// <see cref="JobAggregate"/>, the second query that replaces the removed <c>.Include(item =&gt; item.Job)</c>
+    /// The Admin &gt; Jobs &gt; Log screen dereferences <c>log.Job.Name</c> and <c>log.Job.IsExecuting</c>,
     /// so a provider that cannot serve this key lookup hands every row a null Job and NREs the screen.
     /// <para>
     /// Note this is a KEY lookup — <c>item.Id</c>, which each provider maps differently (an int column on the
@@ -1281,9 +1281,9 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// UrlMappingRepository.GetUrlMappingsAsync(siteId, isMapped) — the table split on
     /// <c>string.IsNullOrEmpty(item.MappedUrl)</c>, in BOTH directions.
     /// <para>
-    /// <b>This is the D45-shaped hazard of this increment, and the reason it is here rather than only in the
+    /// <b>This is the sentinel-shaped hazard, and the reason it is here rather than only in the
     /// EF tests.</b> <c>string.IsNullOrEmpty(x)</c> is not a comparison — it is a METHOD CALL that each
-    /// provider must recognize and rewrite (EF emits <c>x IS NULL OR x = ''</c>). D45's <c>-1 == -1</c> proved
+    /// provider must recognize and rewrite (EF emits <c>x IS NULL OR x = ''</c>). The <c>-1 == -1</c> fold proved
     /// that a shape EF folds silently is not a shape RavenDB folds, and it returned 0 of 2 rows while passing
     /// on EF. The failure here would be just as quiet and just as total: the admin's redirect list and the
     /// broken-link report are the two halves of this one predicate, so a provider that mistranslates it serves
@@ -1331,7 +1331,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// <para>
     /// An EXACT match on the NORMALIZED lookup key — not StartsWith. The url is stored without its
     /// leading slash and truncated to 750 characters by the repository before it gets here; a provider that
-    /// matched loosely would redirect one URL to another's target. Before D57 the read filtered <c>Url</c>
+    /// matched loosely would redirect one URL to another's target. Before the normalized column, the read filtered <c>Url</c>
     /// raw, which case-diverged behind the seam (see
     /// <see cref="A_url_mapping_lookup_is_case_insensitive_on_every_provider"/>).
     /// </para>
@@ -1354,12 +1354,12 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// The D57 cross-provider AGREEMENT guard for <c>UrlMapping.Url</c>, mirroring
+    /// The cross-provider AGREEMENT guard for <c>UrlMapping.Url</c>, mirroring
     /// <see cref="A_normalized_column_filter_is_identical_on_every_provider"/> for Folder/File.
     /// <para>
     /// A row stored with a MIXED-CASE url (<c>Foo/Bar</c>) is found by a lowercased lookup (<c>foo/bar</c>)
     /// through the repository's exact read expression — <c>item.UrlNormalized == "foo/bar"</c> — on EVERY
-    /// provider. Before D57 the read filtered <c>item.Url</c> raw: DRIVEN on the real hosts, that MISSED on
+    /// provider. The earlier read filtered <c>item.Url</c> raw: driven on the real hosts, it MISSED on
     /// PostgreSQL (case-SENSITIVE) and HIT on RavenDB (case-INSENSITIVE). Normalizing the DATA and the
     /// ARGUMENT collapses that divergence, because for two lowercase strings ordinal and case-insensitive
     /// equality are the same relation. The stored case survives untouched.
@@ -1391,7 +1391,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// PageModuleRepository.GetPageModulesAsync(siteId) — <c>Where(item =&gt; moduleIds.Contains(item.ModuleId))</c>.
     /// <para>
     /// <b>THE RENDER PATH'S OWN READ.</b> Every page render enumerates its page's module instances through
-    /// this. D21 severed PageModule.Module, so the site filter can no longer ride a join: the repository
+    /// this. PageModule.Module is no longer navigable, so the site filter can no longer ride a join: the repository
     /// resolves the site's module ids first and fans in on <c>ModuleId IN (...)</c>, which MUST stay in the
     /// database — on a shared tenant database (many sites, one database) an in-memory filter would read every
     /// other site's page modules on every request. A provider that cannot serve Contains over a key list
@@ -1431,8 +1431,8 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// <c>db.PageModule.CountAsync(...)</c> — a database COUNT. The seam's IRepository has no count primitive,
     /// so the tempting port is <c>.Where(...).ToList().Count</c>, which fetches every instance of the module to
     /// measure the list. <c>Count(predicate)</c> over the session's IQueryable composes into each provider's
-    /// own query instead — but "both providers translate Count" is exactly the kind of assumption D45's
-    /// sentinel punished, so it is asserted here rather than assumed. A provider that mistranslates the
+    /// own query instead — but "both providers translate Count" is exactly the kind of assumption the sentinel fold punished
+    /// so it is asserted here rather than assumed. A provider that mistranslates the
     /// predicate reports the wrong instance count, and IsShared flips: a shared module is offered for deletion
     /// as if it were on one page.
     /// </para>
@@ -1603,7 +1603,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
 
     /// <summary>
     /// <b>THE MEASUREMENT THAT KEPT THE FILE CLUSTER OFF THE SEAM, run against both providers. It still
-    /// passes, and D49 did NOT make it obsolete — read the note at the end.</b>
+    /// passes, and the normalizing change did NOT make it obsolete — read the note at the end.</b>
     /// <para>
     /// <c>FileRepository</c>'s two name lookups filter with <c>.ToLower()</c> on a COLUMN. That is not a
     /// stylistic choice: the live database stores mixed-case names and paths (<c>Public/</c>, <c>Users/1/</c>,
@@ -1614,15 +1614,15 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// The relational providers translate it. <b>RavenDB throws</b> —
     /// <c>NotSupportedException: Cannot understand how to translate method 'ToLower' of 'System.String'
     /// type</c> — and it is asserted here rather than described, because a described limitation decays into
-    /// folklore and a measured one does not. Note the failure mode is LOUD, which makes it better than D45's
-    /// sentinel (silent, 0 of 2 rows) and is why this could be caught before shipping rather than after.
+    /// folklore and a measured one does not. Note the failure mode is LOUD, which makes it better than the -1 fold's
+    /// that returned 0 of 2 rows silently and is why this could be caught before shipping rather than after.
     /// </para>
     /// <para>
-    /// <b>D49 moved the File cluster anyway, and this test still passes — which is the point.</b> The gap
+    /// <b>The File cluster was moved anyway, and this test still passes — which is the point.</b> The gap
     /// measured here is REAL and was never closed: <c>.ToLower()</c> still does not translate on RavenDB, and
-    /// plain <c>==</c> still means two different things. D49 routed AROUND it by normalizing the data
+    /// plain <c>==</c> still means two different things. The move routed AROUND it by normalizing the data
     /// (see <see cref="A_normalized_column_filter_is_identical_on_every_provider"/>) rather than teaching
-    /// <c>RavenLinqRewriting</c> to fold <c>.ToLower()</c> — the option D48 left open, rejected because its
+    /// <c>RavenLinqRewriting</c> to fold <c>.ToLower()</c> — the option left open earlier, rejected because its
     /// equivalence silently depends on every caller passing a lowercase right-hand side, which the seam cannot
     /// see or enforce. So this stays as the standing measurement of a live provider gap. If it ever starts
     /// failing, the gap itself has moved and that is worth knowing regardless.
@@ -1669,7 +1669,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// <b>THE MEASUREMENT THAT LET THE FILE CLUSTER ONTO THE SEAM, run against both providers. This is
     /// the load-bearing evidence for the whole decision.</b>
     /// <para>
-    /// The test above proves the seam has no portable way to SAY "match case-insensitively". D49's answer was
+    /// The test above proves the seam has no portable way to SAY "match case-insensitively". The answer was
     /// not to invent one — it was to make the question unnecessary by normalizing the DATA, exactly as ASP.NET
     /// Identity does with <c>NormalizedUserName</c>. Store a lowercase copy; filter it with the plain
     /// <c>==</c> that every provider already agrees on.
@@ -1701,7 +1701,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         await using var session = FrameworkSessions.OpenQuerySession();
 
         // --- the folder half of FileRepository.GetFolderIdsByPathAsync, verbatim ---
-        // The render path lowercased 'Public/' out of the URL into 'public/'. Before D49 this was
+        // The render path lowercased 'Public/' out of the URL into 'public/'. Before the normalized column this was
         // item.Path.ToLower() == folderPath, which the test above shows RavenDB throws on.
         var folders = session.Query<FolderAggregate>()
             .Where(item => item.SiteId == siteId && item.PathNormalized == "public/")
@@ -1721,13 +1721,13 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         // --- AND THE LIMIT OF THE GUARANTEE, MEASURED RATHER THAN ASSUMED ---
         //
         // The column alone does NOT make the providers agree. It makes them agree only when BOTH SIDES are
-        // normalized. Hand this same column an argument that is not lowercase and the original D48 divergence
+        // normalized. Hand this same column an argument that is not lowercase and the original divergence
         // is back, in full: EF Core's ordinal == misses, RavenDB's case-insensitive == HITS. Same expression,
         // same data, two answers.
         //
-        // This is the whole reason D49 normalizes arguments INSIDE FileRepository instead of asking callers to
+        // This is the whole reason arguments are normalized INSIDE FileRepository instead of asking callers to
         // pre-lowercase. A caller convention would be exactly the invisible, unenforceable rule that got the
-        // RavenLinqRewriting option rejected — and it had already been broken in production, by
+        // RavenLinqRewriting option rejected — and it had already been broken in a real deployment, by
         // SynchronizationJob.ResolveFileIdAsync. Observed here, first run, not reasoned about.
         var unnormalizedArgument = session.Query<FolderAggregate>()
             .Where(item => item.SiteId == siteId && item.PathNormalized == "Public/")
@@ -1749,7 +1749,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// The EF half runs the harvested query: a two-level join, <c>GROUP BY</c> over every SearchContent column
     /// and <c>Sum(SearchContentWord.Count)</c>, all in SQL. The RavenDB half runs a query-time FACET
     /// (<c>AggregateBy(...).SumOn(...)</c>) over a static <c>LoadDocument</c> index. Different mechanisms,
-    /// and the assertions below are identical — which is the entire claim D50 makes.
+    /// and the assertions below are identical — which is the entire claim this section makes.
     /// </para>
     /// <para>
     /// <b>The data is shaped to catch the specific ways this can go wrong.</b> Content 1 holds
@@ -1922,7 +1922,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// the caller's keywords — and the sum here is over the MATCHED words only.
     /// </para>
     /// <para>
-    /// Asserted rather than described, for the reason D48 gives: a described limitation decays into folklore
+    /// Asserted rather than described, for the reason given earlier: a described limitation decays into folklore
     /// and a measured one does not. The failure is LOUD, never a wrong answer. <b>If this ever starts failing
     /// on RavenDB, the blocker has lifted and the cluster can cross</b> — which is exactly what this test is
     /// for.
@@ -1967,7 +1967,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
 
         if (grouped is null)
         {
-            // The relational half: the aggregation happens in the database, which is where D50 requires the EF
+            // The relational half: the aggregation happens in the database, which is where the EF
             // implementation to keep it. Two of the three rows match the non-key arm; NewVisitor sets Visits = 1.
             Assert.Equal(2, Assert.Single(Grouped(session, siteId)));
         }
@@ -1988,23 +1988,23 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// <para>
     /// The keyword arm of the search read — <c>SearchWord.Word.StartsWith(keyword)</c>, composed into an OR
     /// chain by <c>QueryableExtensions.FilterByItems</c>'s expression tree — was expected to be the portability
-    /// problem, following D48's <c>.ToLower()</c>. <b>It is not.</b> Both providers translate <c>StartsWith</c>
+    /// problem, following the earlier <c>.ToLower()</c> finding. <b>It is not.</b> Both providers translate <c>StartsWith</c>
     /// and both keep it in the store (EF Core emits <c>LIKE 'run%'</c>). So the prefix arm is NOT what blocks
     /// the cluster; the grouped aggregation above is. Recorded because a negative that is assumed decays the
     /// same way a limitation that is described does.
     /// </para>
     /// <para>
-    /// <b>The latent hazard it also pins, and it is WIDER than D48's.</b> <c>StartsWith</c>'s case semantics
+    /// <b>The latent hazard it also pins, and it is WIDER than the earlier finding.</b> <c>StartsWith</c>'s case semantics
     /// diverge THREE ways, not two, and <see cref="ProviderStringEqualityIsOrdinal"/> does NOT describe them —
     /// that property is about <c>==</c>, a different operator. EF Core translates <c>StartsWith</c> to
     /// <c>LIKE</c>, and <b>SQLite's <c>LIKE</c> is case-INSENSITIVE for ASCII while PostgreSQL's is
     /// case-SENSITIVE</b> (measured: <c>SELECT 'running' LIKE 'RUN%'</c> returns <c>f</c> on
-    /// stomme-pg-44357). RavenDB's is case-INSENSITIVE. So two RELATIONAL providers — which D48 and D49 both
+    /// the PostgreSQL test server). RavenDB's is case-INSENSITIVE. So two RELATIONAL providers, which the earlier findings both
     /// treat as one behaviour class — disagree with each other here.
     /// </para>
     /// <para>
     /// <b>Which this suite structurally cannot see, and that is the finding.</b> Both EF fixtures are SQLite
-    /// (D46), so the EF half reports SQLite's answer and PostgreSQL — what the product actually runs on, and
+    /// so the EF half reports SQLite's answer and PostgreSQL — what the product actually runs on, and
     /// what the render guard uses — is not represented. <see cref="ProviderPrefixFilterIsOrdinal"/> is
     /// therefore a fact about THIS FIXTURE, not about "EF Core".
     /// </para>
@@ -2012,7 +2012,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// The search cluster does not currently depend on any of it, and that is design rather than luck, though
     /// nobody wrote it down: <c>DatabaseSearchProvider.GetWords</c> lowercases every word it indexes and
     /// <c>SearchUtils.GetKeywords</c> lowercases every keyword it queries, so both sides are already normalized
-    /// and all three relations coincide — D49's argument, arrived at for free and years earlier. Anything that
+    /// and all three relations coincide — the normalizing argument, arrived at for free earlier. Anything that
     /// stores a non-lowercase <c>SearchWord.Word</c> breaks the coincidence silently, and this is where it
     /// surfaces.
     /// </para>
@@ -2064,8 +2064,8 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// </summary>
     /// <remarks>
     /// Declared as a provider fact rather than discovered per test, because it is one: it is the divergence
-    /// D48 measured, it applies to EVERY string equality on this seam (Page.Path, User.Username,
-    /// UrlMapping.Url), and D49 neither introduced nor fixed it. What D49 did was stop DEPENDING on it, by
+    /// measured, it applies to EVERY string equality on this seam (Page.Path, User.Username,
+    /// UrlMapping.Url), and the normalizing change neither introduced nor fixed it. What it did was stop DEPENDING on it, by
     /// normalizing both sides so the two relations coincide. This property exists so that the one test which
     /// probes the edge of that guarantee can state the difference out loud instead of asserting one provider's
     /// behaviour and skipping on the other.
@@ -2073,7 +2073,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     protected abstract bool ProviderStringEqualityIsOrdinal { get; }
 
     /// <summary>
-    /// The cardinality D49 promised to preserve: the <c>(site_id, path)</c> unique index is case-SENSITIVE and
+    /// The cardinality the normalizing change promised to preserve: the <c>(site_id, path)</c> unique index is case-SENSITIVE and
     /// was deliberately NOT moved onto the normalized column, so <c>Docs/</c> and <c>docs/</c> may still
     /// coexist — and a lookup for <c>docs/</c> must therefore return BOTH.
     /// </summary>
@@ -2201,14 +2201,14 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         // table, and one surviving instance per database is a blank site.
         //
         // Each UrlMapping below gets a DISTINCT Url so the relational UNIQUE index on (SiteId, Url) is not what
-        // makes the test pass — the same care D45 took with SiteGroupMember's unique index.
+        // makes the test pass — the same care as with SiteGroupMember's unique index.
         await AssertTwoSurvive(() => NewVisitor(4242, "10.0.0." + Interlocked.Increment(ref _visitorAddress) % 255, DateTime.UtcNow), NewVisitors);
         await AssertTwoSurvive(() => NewUrlMapping(4242, "u-" + Guid.NewGuid().ToString("N"), ""), NewUrlMappings);
         await AssertTwoSurvive(() => NewPageModule(4242, 4242, "Content", 1), NewPageModules);
 
         // Folder. Each folder below gets a DISTINCT path so the relational UNIQUE index on
-        // (site_id, path) is not what makes the test pass — the same care D45 took with SiteGroupMember's and
-        // D47 with UrlMapping's. A blind upsert to Folder/0 would leave one folder per database, which is a
+        // (site_id, path) is not what makes the test pass — the same care as with SiteGroupMember's and
+        // with UrlMapping's. A blind upsert to Folder/0 would leave one folder per database, which is a
         // site with no content directories at all: every file upload and every file read resolves through one.
         await AssertTwoSurvive(() => NewFolder(4242, "f-" + Guid.NewGuid().ToString("N") + "/"), NewFolders);
         await AssertTwoSurvive(() => NewFile(4242, "f-" + Guid.NewGuid().ToString("N") + ".png"), NewFiles);
@@ -2230,20 +2230,20 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
             NewSearchContentProperties);
     }
 
-    // Distinct ids per row created by the D25 guard, so the relational UNIQUE indexes on
+    // Distinct ids per row created by the guard, so the relational UNIQUE indexes on
     // (search_content_id, search_word_id) and (search_content_id, name) are not what make it pass.
     private static int _searchWordId = 600000;
     private static int _searchPropertyContentId = 700000;
 
-    // A distinct IP per visitor created by the D25 guard. Visitor has no unique index, so this is not required
+    // A distinct IP per visitor created by the guard. Visitor has no unique index, so this is not required
     // for correctness — it is here so the two rows are visibly distinct when the guard reports a failure.
     private static int _visitorAddress = 0;
 
-    // A distinct SiteId per member created by the D25 guard — see there. Static because the guard creates its
+    // A distinct SiteId per member created by the guard — see there. Static because the guard creates its
     // members through a Func the helper calls twice, and both calls must differ.
     private static int _siteGroupMemberSiteId = 500000;
 
-    // A distinct JobId per JobLog created by the D25 guard. JobLog has no unique index, so this is not required
+    // A distinct JobId per JobLog created by the guard. JobLog has no unique index, so this is not required
     // for correctness — it is here so the two rows are visibly distinct when the guard reports a failure.
     private static int _jobLogJobId = 800000;
 

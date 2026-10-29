@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-100 O1 (spec refutation 16): the SystemInfo Caching section's "Clear All" -
+    /// The SystemInfo Caching section's "Clear All" -
     /// <c>POST /api/System/cache/clear</c>, Host only - empties the framework cache for real.
     /// </summary>
     /// <remarks>
@@ -31,7 +31,7 @@ namespace Stomme.Tests
     /// pins <c>ClearAsync(allowFailSafe: false)</c>, and was observed RED against the default overload.
     /// </para>
     /// <para>
-    /// <b>Not covered:</b> the L2 distributed cache and the backplane. No Redis exists locally or on the infra tier,
+    /// <b>Not covered:</b> the L2 distributed cache and the backplane. No Redis server is available to the suite,
     /// so a scale-out clear (every node, and the distributed entries) is unverified here.
     /// </para>
     /// </remarks>

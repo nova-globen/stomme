@@ -22,7 +22,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (gate <c>BackupScheduleJobTests</c>) - the scheduled job on an INSTALLED host, run exactly as
+    /// <c>BackupScheduleJobTests</c> - the scheduled job on an INSTALLED host, run exactly as
     /// <c>HostedServiceBase</c> runs it (per tenant: its tenant scope, a DI scope, <c>SetTenant</c>): off twice by default; with
     /// TWO tenants a due schedule is taken ONCE per tick, not twice; without the configured passphrase nothing is taken and the
     /// passphrase never reaches a note; the lease skips while a snapshot is being taken and fails an abandoned one; retention
@@ -64,7 +64,7 @@ namespace Stomme.Tests.Backup
         [Fact]
         public async Task The_passphrase_file_wins_over_the_setting_and_a_named_file_that_is_missing_refuses_naming_it()
         {
-            // Infra's deployed sites give a secret as a FILE (2026-09-29): Backup:Schedule:PassphraseFile wins over Passphrase.
+            // A deployed site may give its secret as a FILE: Backup:Schedule:PassphraseFile wins over Passphrase.
             var file = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "stomme-passphrase-" + Guid.NewGuid().ToString("N") + ".secret");
             await System.IO.File.WriteAllTextAsync(file, Passphrase + "\n");   // a secret file usually ends with a line break
             try
@@ -194,7 +194,7 @@ namespace Stomme.Tests.Backup
                 var manual = await RowAsync(app, RetentionTag.Manual, now.AddDays(-30));
                 var indefinite = await RowAsync(app, RetentionTag.Indefinite, now.AddDays(-30));
                 var preRestore = await RowAsync(app, RetentionTag.PreRestore, now.AddDays(-10));
-                var preUpgrade = await RowAsync(app, RetentionTag.PreUpgrade, now.AddDays(-10));           // BL-172
+                var preUpgrade = await RowAsync(app, RetentionTag.PreUpgrade, now.AddDays(-10));
                 var preUpgradeRecent = await RowAsync(app, RetentionTag.PreUpgrade, now.AddDays(-1));
                 var failed = await RowAsync(app, RetentionTag.Scheduled, now.AddDays(-10), fail: true);
 

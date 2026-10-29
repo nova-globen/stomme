@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// The predecessor platform's <c>AdvisorAnalyzerTests</c> by name (17 cases): the fixtures and assertions are
+    /// The <c>AdvisorAnalyzerTests</c> cases, ported by name (17 cases): the fixtures and assertions are
     /// unchanged but for the options instance; the binding and registration cases CHANGED as marked.
     /// </summary>
     public sealed class AdvisorAnalyzerTests
@@ -210,7 +210,7 @@ namespace Stomme.Tests.CostOptimization
 
         // --- Options binding + registration ---
 
-        // CHANGED: the section is CostOptimization:Advisor (the predecessor platform's the predecessor platform: prefix dropped), read from the HOST's configuration.
+        // CHANGED: the section is CostOptimization:Advisor (the section prefix is dropped), read from the HOST's configuration.
         [Fact]
         public void AdvisorOptions_BindFromTheAdvisorSection()
         {

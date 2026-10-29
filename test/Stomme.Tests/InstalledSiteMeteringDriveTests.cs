@@ -34,7 +34,7 @@ namespace Stomme.Tests
     /// Notifications module behaves identically on its own page. That is not vacuous reasoning: the same request
     /// pipeline DOES render module content, which <see cref="The_transport_can_render_module_content_at_all"/>
     /// proves with HtmlText's seeded text. So the control layer of these modules is reachable only by a REAL
-    /// BROWSER, and the BL-54 class of defect (a module <c>_Imports.razor</c> missing
+    /// BROWSER, and the dead-click class of defect (a module <c>_Imports.razor</c> missing
     /// <c>@using Microsoft.AspNetCore.Components.Web</c>, which compiles green, renders, and leaves every
     /// <c>@onclick</c> silently dead) stays OPEN for this module - recorded in its README, not papered over.
     /// </para>
@@ -162,7 +162,7 @@ namespace Stomme.Tests
         /// </summary>
         /// <remarks>
         /// HtmlText's seeded "Welcome To Stomme" can only appear if a module was discovered, its content read and
-        /// its component rendered - the same assertion the D30 render guard leans on.
+        /// its component rendered - the same assertion the render guard leans on.
         /// </remarks>
         [Fact]
         public async Task The_transport_can_render_module_content_at_all()

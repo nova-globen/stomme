@@ -97,7 +97,7 @@ namespace Stomme.Tests
         public void The_pool_key_is_the_raw_string_so_even_cosmetic_differences_miss(
             string writtenFormat, string releasedFormat)
         {
-            // MEASURED, 2026-09-20, and sharper than expected: the pool is keyed by the connection string as
+            // MEASURED, and sharper than expected: the pool is keyed by the connection string as
             // WRITTEN, not by its parsed meaning. A trailing semicolon, a lower-cased keyword and a space either
             // side of the equals each address a DIFFERENT pool and release nothing - silently, because ClearPool
             // on an unknown key is not an error.

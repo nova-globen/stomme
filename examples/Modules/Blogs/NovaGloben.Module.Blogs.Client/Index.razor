@@ -53,7 +53,7 @@
     private bool _busy;
 
     // Prerender the module so its list + form appear in the server-rendered HTML (the drive asserts on that
-    // markup). Safe against the D29 renderer-deadlock class: the module's data path is its own module-aggregate
+    // markup). Safe against the renderer-deadlock hazard: the module's data path is its own module-aggregate
     // store, whose async surface completes synchronously on SQLite.
     public override bool? Prerender => true;
 

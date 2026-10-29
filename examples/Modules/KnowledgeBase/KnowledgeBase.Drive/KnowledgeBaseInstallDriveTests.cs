@@ -33,18 +33,18 @@ using Xunit.Abstractions;
 namespace NovaGloben.Module.KnowledgeBase.Drive
 {
     /// <summary>
-    /// BL-86 increments 1-2 - the exemplar through the REAL host, on each store an installation can choose: the packed module
+    /// The exemplar through the REAL host, on each store an installation can choose: the packed module
     /// is unpacked by the InstallationManager, discovered by convention, placed on its page and - its second module - on a
     /// page NESTED under it, and driven over HTTP: anonymously (the pages carry the modules; a visitor reads only what is
     /// published and cannot write) and as the host (a category and an article created through the API, stamped with the
     /// signed-in author, a duplicate slug refused, re-read by any casing of its slug; the draft invisible to a visitor until
     /// it is published; an edit that never moves its address; a second publish refused; the publish metered and the site's
     /// administrators notified through the module's template, and a quota of one refusing the next publish with 429), its
-    /// tables on the relational stores. Increment 4, the discovery seams: the module's help topics resolved by a visitor, its
+    /// tables on the relational stores. The discovery seams: the module's help topics resolved by a visitor, its
     /// published article found by the site's search and listed in the sitemap (the draft in neither), and its MCP surface
-    /// absent until an operator turns its flag on, then reading and searching the published articles only. Increment 5, the
-    /// data duties, in a second test of its own: see <see cref="The_exemplar_takes_part_in_the_hosts_data_duties"/>; increment 6,
-    /// the operations, in a third: see <see cref="The_exemplar_takes_part_in_the_hosts_operations"/>. Increment 7, the host's
+    /// absent until an operator turns its flag on, then reading and searching the published articles only. The
+    /// data duties, in a second test of its own: see <see cref="The_exemplar_takes_part_in_the_hosts_data_duties"/>;
+    /// the operations, in a third: see <see cref="The_exemplar_takes_part_in_the_hosts_operations"/>. The host's
     /// module template, in a fourth: see <see cref="The_host_creates_a_module_from_its_template_that_builds_installs_and_answers"/>.
     /// PostgreSQL and RavenDB FAIL rather than skip when unreachable: a drive that quietly shrinks proves nothing.
     /// </summary>
@@ -105,20 +105,20 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
 
                 // ---- anonymous: the page carries the module; the API answers no data -------------------------------------------
                 // The site renders modules interactively without prerendering, so the page's HTML carries the module's container
-                // and title but not its content (measured) - the content is the API's to prove here, and a browser's (increment 2).
+                // and title but not its content (measured) - the content is the API's to prove here, and a browser's.
                 var anonymousPage = await client.GetAsync("/knowledge-base");
                 var anonymousHtml = await anonymousPage.Content.ReadAsStringAsync();
                 Assert.Equal(HttpStatusCode.OK, anonymousPage.StatusCode);
                 Assert.Contains("<span class=\"app-moduletitle\">Knowledge Base</span>", anonymousHtml);
                 Assert.Contains("rendermode: Interactive", anonymousHtml);
 
-                // The NESTED page carries the package's second module and sits under the flat one (increment 2).
+                // The NESTED page carries the package's second module and sits under the flat one.
                 var nestedHtml = await (await client.GetAsync("/knowledge-base/categories")).Content.ReadAsStringAsync();
                 Assert.Contains("<span class=\"app-moduletitle\">Categories</span>", nestedHtml);
                 var (parentId, childParentId) = await PagesAsync(app);
                 Assert.Equal(parentId, childParentId);
                 // Both placements carry the package's keys, so each page's own checks see them - the nested page's did not until
-                // increment 6 (its definition declared no keys; found by clicking it in a browser, invisible to this HTTP drive).
+                // its definition declared no keys; found by clicking it in a browser, invisible to this HTTP drive).
                 Assert.True(await PlacementCarriesKeyAsync(app, "NovaGloben.Module.KnowledgeBase,", "knowledge-base", "view"), "The flat page's module carries no knowledge-base:view row.");
                 Assert.True(await PlacementCarriesKeyAsync(app, "NovaGloben.Module.KnowledgeBase.Categories,", "knowledge-base", "view"), "The nested page's module carries no knowledge-base:view row.");
 
@@ -149,7 +149,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                 Assert.Equal(HttpStatusCode.OK, (await GetAsync(client, cookies, "/api/KnowledgeBase/articles/RESET-Your-Password")).Status);
                 Assert.Equal(HttpStatusCode.NotFound, (await GetAsync(client, cookies, "/api/KnowledgeBase/articles/no-such-article")).Status);
 
-                // ---- increment 2: a draft is the editors' until it is published; an edit never moves the address ---------------
+                // ---- a draft is the editors' until it is published; an edit never moves the address ---------------
                 Assert.Equal("[]", await AnonymousGetAsync(client, "/api/KnowledgeBase/articles", HttpStatusCode.OK));
                 await AnonymousGetAsync(client, "/api/KnowledgeBase/articles/reset-your-password", HttpStatusCode.NotFound);
                 var articleId = (string)article["id"]!;
@@ -163,7 +163,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                 Assert.Contains("Resetting a forgotten password", await AnonymousGetAsync(client, "/api/KnowledgeBase/articles", HttpStatusCode.OK));
                 Assert.Contains("Choose Forgot password", await AnonymousGetAsync(client, "/api/KnowledgeBase/articles/reset-your-password", HttpStatusCode.OK));
 
-                // ---- increment 3: the publish was metered, the administrators told, and a quota refuses the next one ---------------
+                // ---- the publish was metered, the administrators told, and a quota refuses the next one ---------------
                 var (template, notified, metered) = await PublishEvidenceAsync(app, Guid.Parse(articleId));
                 Assert.True(template, "The module's notification template was not contributed to the site.");
                 Assert.Equal(hostId, Assert.Single(notified));
@@ -173,7 +173,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                 await Send<JsonObject>(app, client, cookies, hostId, HttpMethod.Post, $"/api/KnowledgeBase/articles/{(string)second["id"]!}/publish", new { }, (HttpStatusCode)429);
                 Assert.DoesNotContain("Change your e-mail address", await AnonymousGetAsync(client, "/api/KnowledgeBase/articles", HttpStatusCode.OK));
 
-                // ---- increment 4: the discovery seams ---------------------------------------------------------------------------
+                // ---- the discovery seams ---------------------------------------------------------------------------
                 // The second article is a draft (the quota refused its publish): it must reach none of them.
                 const string publishedUrl = "/knowledge-base/!/article/reset-your-password";
                 const string draftSlug = "change-your-e-mail-address";
@@ -207,7 +207,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                 Assert.Contains("<loc>http://" + Host + publishedUrl + "</loc>", sitemap);
                 Assert.DoesNotContain(draftSlug, sitemap);
 
-                // MCP (BL-80's seam): the flag is off by default, so the host's catalog carries nothing of the module's...
+                // MCP: the flag is off by default, so the host's catalog carries nothing of the module's...
                 Assert.DoesNotContain("search_knowledge_base", await McpToolNamesAsync(client, cookies, "tools, flag off"));
                 // ...until an operator turns it on (the host's feature API), and then only the PUBLISHED articles are read.
                 await Send<JsonObject>(app, client, cookies, hostId, "/api/Feature/knowledge-base.mcp", new { enabled = true }, HttpStatusCode.OK);
@@ -666,7 +666,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
         }
 
         /// <summary>
-        /// BL-86 increment 7 (the Blogs example's BL-13 proof, carried by the exemplar now): on a WebAssembly site the host
+        /// On a WebAssembly site the host
         /// streams the module's Client assembly (the definition's AssemblyName) and its Shared one (its Dependencies) to the
         /// browser, byte for byte what the host loaded - and NEVER the Server assembly.
         /// </summary>
@@ -1235,10 +1235,10 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                 {
                     ["Database"] = new JsonObject { ["DefaultDBType"] = store.DatabaseType },
                     ["ConnectionStrings"] = connectionStrings,
-                    // Contextual help and the MCP server half are each off by default; the drive turns both on (increment 4).
+                    // Contextual help and the MCP server half are each off by default; the drive turns both on.
                     ["Help"] = new JsonObject { ["Enabled"] = true },
                     ["Mcp"] = new JsonObject { ["Server"] = new JsonObject { ["Enabled"] = true } },
-                    // The data duties, each off by default (increment 5); erasure has no switch.
+                    // The data duties, each off by default; erasure has no switch.
                     ["DataExport"] = new JsonObject { ["Enabled"] = true },
                     ["Portability"] = new JsonObject { ["Enabled"] = true },
                     ["Backup"] = new JsonObject { ["Enabled"] = true },

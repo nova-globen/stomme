@@ -20,7 +20,7 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// <b>This cluster was migrated LAST of its group and it is the only one that already had both its
     /// references severed.</b> <see cref="PageId"/> and <see cref="ModuleId"/> are references BY ID
-    /// and have been since D19 (Page) and D21 (Module) took those tables onto the seam — the
+    /// and have been since the Page and Module tables moved onto the seam — the
     /// <c>.Include(item =&gt; item.Page)</c> / <c>.Include(item =&gt; item.Module)</c> eager loads became second
     /// queries then, and <see cref="PageModuleRepository"/> has stitched the contract's Page and Module members
     /// on by hand ever since. So the navigations were not this increment's problem; only the row itself moved.

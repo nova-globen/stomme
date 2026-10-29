@@ -13,10 +13,10 @@ namespace Stomme.Modules.DataExport.Domain
     /// <remarks>
     /// <para>
     /// <b>The lease is a state transition, not a lock.</b> The host registers no <c>IDistributedLock</c> on any
-    /// provider (D108 refutation 2), so what stops two drains rendering one job is <see cref="Claim"/> moving
+    /// provider, so what stops two drains rendering one job is <see cref="Claim"/> moving
     /// Queued to Rendering and the store's concurrency check rejecting the second writer. A claim carries a lease
     /// expiry; a render that is still alive renews it with <see cref="Heartbeat"/>, and only a lease that ran out
-    /// with no heartbeat may be taken over by <see cref="Reclaim"/> (refutation 9) - a fixed timeout alone would
+    /// with no heartbeat may be taken over by <see cref="Reclaim"/> - a fixed timeout alone would
     /// reclaim a healthy long export while it was still writing.
     /// </para>
     /// <para>
@@ -26,7 +26,7 @@ namespace Stomme.Modules.DataExport.Domain
     /// methods for that reason.
     /// </para>
     /// <para>
-    /// <b>Every instant is UTC and re-stamped on read</b> (refutation 13): a relational provider hands a DateTime
+    /// <b>Every instant is UTC and re-stamped on read</b>: a relational provider hands a DateTime
     /// back with no kind, and <c>DateTime</c> equality ignores the kind, so an unstamped value passes every
     /// round-trip assertion and then shifts by the host offset the first time it is converted.
     /// </para>

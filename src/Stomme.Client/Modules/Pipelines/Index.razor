@@ -4,7 +4,7 @@
 @inject NavigationManager NavigationManager
 
 @*
-    The site's pipelines (BL-95 increment (b)): the latest version of each, whether it is published, and the actions
+    The site's pipelines: the latest version of each, whether it is published, and the actions
     a key allows. Every action is decided again by the server, per key, on the request's site. Starting a run navigates
     to the run's page, which POLLS the run - a run is dispatched and observed, never awaited in a handler.
 *@

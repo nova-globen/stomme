@@ -124,7 +124,7 @@ namespace Stomme.Identity.OpenIddict.Raven
             // random base64url), and the EF OpenIddict store's `==` matches it case-sensitively. RavenDB's `==`
             // is case-INSENSITIVE, so a bare Raven query could resolve the WRONG token for a differently-cased
             // identifier (a real security divergence). Query the selective field on the server, then post-filter
-            // in memory with an ORDINAL comparison so Raven matches EF (D49/D64 pattern; `.ToLower()` THROWS on
+            // in memory with an ORDINAL comparison so Raven matches EF (`.ToLower()` THROWS on
             // Raven and is not used).
             var candidates = await session.Query<OpenIddictRavenToken>().Customize(c => c.WaitForNonStaleResults())
                 .Where(t => t.ReferenceId == identifier).ToListAsync(cancellationToken);

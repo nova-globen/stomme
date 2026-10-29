@@ -20,10 +20,10 @@ namespace Stomme.Repository.Stores
     /// </summary>
     /// <remarks>
     /// The context is created per store instance from <see cref="IDbContextFactory{TContext}"/> rather than
-    /// resolved from the container. That is not incidental. <b>(Premise corrected 2026-09-20; the conclusion
+    /// resolved from the container. That is not incidental. <b>(An earlier premise no longer holds; the conclusion
     /// stands.)</b> This used to say <c>HostedServiceBase</c> runs every scheduled job for every tenant inside
-    /// ONE DI scope, calling <c>ITenantManager.SetTenant(...)</c> between tenants. Since <c>ff19714</c> (BL-107,
-    /// 2026-09-17) it does not - each tenant gets its own ambient tenant scope AND its own DI scope. The rule
+    /// ONE DI scope, calling <c>ITenantManager.SetTenant(...)</c> between tenants. Now
+    /// it does not - each tenant gets its own ambient tenant scope AND its own DI scope. The rule
     /// here is KEPT regardless, because it does not depend on that caller being well behaved: a scoped/cached
     /// <see cref="DbContext"/> binds to the FIRST tenant's connection it sees, so any caller that reuses a scope
     /// across tenants would silently read tenant #1's data. <see cref="TenantDBContext"/> resolves its
@@ -256,9 +256,9 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The relational (EF Core) <see cref="ISettingStore"/> — the TENANT half of the Setting cluster
-    /// (D23). Transient, owning a per-instance context, for the tenant-correctness reason documented on
+    /// Transient, owning a per-instance context, for the tenant-correctness reason documented on
     /// <see cref="EfSiteStore"/>. That reason is at its sharpest here: <c>NotificationJob</c> and friends read
-    /// site settings for every tenant of a run. (They each get their own DI scope since BL-107 / <c>ff19714</c>;
+    /// site settings for every tenant of a run. (They each get their own DI scope now;
     /// the per-instance context is what makes this store correct even when a caller does not.)
     /// </summary>
     internal sealed class EfSettingStore : ISettingStore, IDisposable
@@ -296,13 +296,13 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The relational (EF Core) <see cref="IMasterSettingStore"/> — the MASTER half of the Setting cluster
-    /// (D23), over a <see cref="MasterDBContext"/> instead of a <see cref="TenantDBContext"/>.
+    /// over a <see cref="MasterDBContext"/> instead of a <see cref="TenantDBContext"/>.
     /// </summary>
     /// <remarks>
     /// The same per-instance-context rule applies, for a different reason: <see cref="MasterDBContext"/>'s
     /// connection is installation-wide, so there is no cross-tenant hazard here — but the harvested
     /// <c>SettingRepository</c> held ONE long-lived master context and both read and wrote through it, which
-    /// is precisely the tracked-read/detached-write shape D19 was written about. A fresh context per store
+    /// is precisely the tracked-read/detached-write shape that causes identity-map conflicts. A fresh context per store
     /// instance, with reads routed through <see cref="IMasterStoreSessionFactory"/>, removes that.
     /// </remarks>
     internal sealed class EfMasterSettingStore : IMasterSettingStore, IDisposable
@@ -390,13 +390,13 @@ namespace Stomme.Repository.Stores
     /// tenant-correctness reason documented at length on <see cref="EfSiteStore"/>: a cached context binds to
     /// the first tenant's connection it sees, so any caller that reuses one DI scope across tenants would serve
     /// tenant #1's data to every later tenant. Transient stores plus a per-instance context is what keeps the
-    /// seam tenant-correct without depending on the caller. (<c>HostedServiceBase</c> was that caller until
-    /// BL-107 / <c>ff19714</c>, 2026-09-17; it now scopes each tenant properly, and this still holds.)
+    /// seam tenant-correct without depending on the caller. (<c>HostedServiceBase</c> was that caller once, but
+    /// it now scopes each tenant properly, and this still holds.)
     /// </para>
     /// <para>
     /// <b>The nine stores above predate this base and are deliberately left alone.</b> They are proven code on
     /// the render path; rewriting them onto this base would be a mechanical change to working clusters for
-    /// readability alone, which is not what D44 is for. New clusters use this; the old ones can be folded in
+    /// readability alone, which is not worth the churn. New clusters use this; the old ones can be folded in
     /// by whoever next has a reason to touch them.
     /// </para>
     /// </remarks>
@@ -572,9 +572,9 @@ namespace Stomme.Repository.Stores
     /// </summary>
     /// <remarks>
     /// A fresh context per store instance, with reads routed through <see cref="IMasterStoreSessionFactory"/>,
-    /// removes the tracked-read/detached-write shape D19 was written about — the same reason
+    /// removes the tracked-read/detached-write shape that causes identity-map conflicts — the same reason
     /// <see cref="EfMasterSettingStore"/> states. The master connection is installation-wide, so there is no
-    /// cross-tenant hazard here; the per-instance context is about D19, not tenancy.
+    /// cross-tenant hazard here; the per-instance context is about identity-map conflicts, not tenancy.
     /// </remarks>
     internal abstract class EfMasterFrameworkStore<TAggregate> : IRepository<TAggregate, int>, IDisposable
         where TAggregate : AggregateRoot<int>
@@ -670,7 +670,7 @@ namespace Stomme.Repository.Stores
     /// include/exclude arms.
     /// </para>
     /// <para>
-    /// <b>It is NOT verbatim, and the difference is a bug fix D50 owns.</b> The harvested code's two
+    /// <b>It is NOT verbatim, and the difference is a bug fix.</b> The harvested code's two
     /// <c>SearchQuery.Properties</c> arms THREW on EF Core: <c>.Include()</c> after a <c>GroupBy().Select()</c>
     /// projection ("Include has been applied after 'Select'"), and <c>.Any()</c> on the projected entity
     /// ("could not be translated"). Nothing in-tree populates <c>Properties</c>, but
@@ -797,7 +797,7 @@ namespace Stomme.Repository.Stores
 
         /// <summary>
         /// The <c>SearchQuery.Properties</c> arm, as ONE session query over
-        /// <see cref="SearchContentPropertyAggregate"/> rather than the two expressions that threw (D50 §7).
+        /// <see cref="SearchContentPropertyAggregate"/> rather than the two expressions that threw.
         /// Narrows <paramref name="results"/> in place and populates each survivor's
         /// <c>SearchContentProperties</c>, which is what the harvested <c>.Include()</c> was reaching for.
         /// </summary>

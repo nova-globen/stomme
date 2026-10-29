@@ -16,7 +16,7 @@ namespace Stomme.Modules.Datasets.Mcp
     /// <summary>The Datasets module's feature flags, declared to the catalog by discovery (a public parameterless constructor).</summary>
     public sealed class DatasetsFeatureContributor : IFeatureContributor
     {
-        /// <summary>Exposing datasets as MCP resources and the <c>query_dataset</c> tool. DEFAULT OFF (D110 Q6; the predecessor platform shipped it on).</summary>
+        /// <summary>Exposing datasets as MCP resources and the <c>query_dataset</c> tool. DEFAULT OFF.</summary>
         public const string Mcp = "datasets.mcp";
 
         public IReadOnlyCollection<FeatureDescriptor> Features { get; } = new[]
@@ -26,13 +26,13 @@ namespace Stomme.Modules.Datasets.Mcp
     }
 
     /// <summary>
-    /// The datasets' MCP surface (over BL-80's contributor seam): two resources - the site's datasets
+    /// The datasets' MCP surface (over the MCP contributor seam): two resources - the site's datasets
     /// and one dataset's classification-masked summary - and one tool, <c>query_dataset</c>, which returns the bounded,
     /// classification-gated preview and nothing else. Every gate names BOTH the feature flag (<c>datasets.mcp</c>, off
     /// by default) and a key: the resources <c>datasets:view</c>, the tool <c>datasets:preview</c> (raw rows are the
-    /// higher privilege). Every read goes through the module's mediator messages, so the D99 keys decide a second time
+    /// higher privilege). Every read goes through the module's mediator messages, so the permission keys decide a second time
     /// behind the MCP gates, and the catalog's site scoping makes another site's id not found. The tool is
-    /// <see cref="McpToolApproval.Auto"/>: it changes nothing (Q6).
+    /// <see cref="McpToolApproval.Auto"/>: it changes nothing.
     /// </summary>
     public sealed class DatasetsMcpContributor(IMediator mediator) : IMcpContributor, IMcpResourceReader
     {

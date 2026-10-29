@@ -13,11 +13,11 @@ using Stomme.Transport.Realtime;
 namespace Stomme.Extensions
 {
     /// <summary>
-    /// Pipeline wiring for Stomme's opt-in transports (brief 04 / D10). Split into a middleware step
+    /// Pipeline wiring for Stomme's opt-in transports. Split into a middleware step
     /// (<see cref="UseStommeTransport"/>, the gRPC-Web request translation) and an endpoint-mapping step
     /// (<see cref="MapStommeTransport"/>, the module contributors + hubs). Neither maps anything when the
     /// corresponding transport is disabled, so the middleware/endpoint pipeline is unchanged for a deployment
-    /// that opts into neither — the one thing that always runs is the BL-53c transport-requirement check,
+    /// that opts into neither — the one thing that always runs is the transport-requirement check,
     /// which logs (never throws) when a module declares a transport the install has not enabled.
     /// </summary>
     public static class TransportApplicationBuilderExtensions
@@ -60,7 +60,7 @@ namespace Stomme.Extensions
             TransportRequirements.LogUnsatisfied(
                 Repository.ModuleDefinitionRepository.GetModuleDefinitionsFromAssemblies(), options, logger);
 
-            // M2 (ruling C33): a module assembly switched off on this host (module.<id>.enabled=false) maps no endpoints, and
+            // A module assembly switched off on this host (module.<id>.enabled=false) maps no endpoints, and
             // its hosted services were never registered; say so once, by name, so a missing hub is never a mystery.
             var switches = Stomme.FeatureManagement.Infrastructure.FeatureConfigurationSources.FromConfiguration(configuration);
             foreach (var off in endpoints.ServiceProvider.GetServices<Infrastructure.SwitchedOffModuleAssembly>())
@@ -71,10 +71,10 @@ namespace Stomme.Extensions
 
             if (options.Grpc.Enabled || options.SignalR.Enabled)
             {
-                // Boot Phase 2 (endpoints): each effective module maps its own transport endpoints through the
-                // loader (brief 04). The loop runs when ANY transport is enabled — the per-transport branch
-                // belongs to the contributor, which receives the effective options (BL-53a fixed the old shape,
-                // where the loop sat inside the gRPC gate and module SignalR hubs never mapped on a
+                // Endpoint mapping: each effective module maps its own transport endpoints through the
+                // loader. The loop runs when ANY transport is enabled — the per-transport branch
+                // belongs to the contributor, which receives the effective options (an earlier shape
+                // had the loop sit inside the gRPC gate and module SignalR hubs never mapped on a
                 // SignalR-only install). The reference TransportDemoEndpoints is one such contributor.
                 var contributors = AppDomain.CurrentDomain
                     .GetStommeAssemblies()

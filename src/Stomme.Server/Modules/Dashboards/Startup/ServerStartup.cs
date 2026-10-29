@@ -25,7 +25,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Dashboards.Startup
 {
     /// <summary>
-    /// The Dashboards module's composition (BL-96 increments 8 to 10): the storage-blind, tenant-owned aggregate on
+    /// The Dashboards module's composition: the storage-blind, tenant-owned aggregate on
     /// whichever store the install chose, its closed repository, the commands and queries, the Datasets delete
     /// guard the boards answer, the page's service, and the real-time signal over the bus and the opt-in hub.
     /// </summary>
@@ -80,7 +80,7 @@ namespace Stomme.Modules.Dashboards.Startup
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Export.IExportSource, DashboardGridExportSource>());
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Export.IExportSource, DashboardReportExportSource>());
 
-            // Real-time refresh (increment 10): a dataset's refresh or schema change, raised in the request's scope, becomes one
+            // Real-time refresh: a dataset's refresh or schema change, raised in the request's scope, becomes one
             // integration event whose handler pushes to the site's hub group. The push is the SignalR adapter only while the
             // transport is on (resolved at runtime, so a host with it off validates and boots); a no-op otherwise, and the page polls.
             services.TryAddSingleton<IDashboardDataSignal, DashboardDataSignal>();
@@ -90,7 +90,7 @@ namespace Stomme.Modules.Dashboards.Startup
                 ? new DashboardRealtimePush(sp.GetRequiredService<IHubContext<DashboardHub>>())
                 : new NoDashboardRealtimePush());
 
-            // Demo content (increment 11): one published board over the demo datasets per site on the boot path, ONLY while
+            // Demo content: one published board over the demo datasets per site on the boot path, ONLY while
             // DemoContent:Enabled is true (default off) - while it is off the reconciler is not even registered.
             if (DemoContentSettings.Enabled(HostCompositionConfiguration(services)))
             {
@@ -98,7 +98,7 @@ namespace Stomme.Modules.Dashboards.Startup
                 services.AddScoped<ISiteContentReconciler, DashboardsDemoContentReconciler>();
             }
 
-            // The MCP surface (increment 11): needs the mediator, so registered here rather than discovered; its flag is
+            // The MCP surface: needs the mediator, so registered here rather than discovered; its flag is
             // discovered. Registered ONLY while the MCP server half is composed (Mcp:Server:Enabled, read at composition
             // from the host's root), as the Datasets contributor is.
             if (Stomme.Modules.Mcp.Startup.McpSettings.ServerEnabled(HostCompositionConfiguration(services)))

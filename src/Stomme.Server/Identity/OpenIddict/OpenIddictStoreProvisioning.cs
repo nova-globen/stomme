@@ -18,7 +18,7 @@ namespace Stomme.Identity.OpenIddict
     /// An explicit <c>ConnectionStrings:{tenant.DBConnectionString}_OpenIddict</c> key always wins. When the
     /// key is ABSENT — which is every install done outside the test suite, because nothing writes it — the
     /// connection string is DERIVED from the tenant's own, into a DEDICATED store (a sibling database or
-    /// sibling file suffixed <c>_OpenIddict</c>). D61's fail-closed rule was aimed at silently SHARING one
+    /// sibling file suffixed <c>_OpenIddict</c>). The fail-closed rule was aimed at silently SHARING one
     /// authority store across tenants; a derived per-tenant sibling store preserves that isolation while
     /// removing the undocumented provisioning burden, so OpenIddict works on whatever database the install
     /// chose (storage-blind). The derivation is deterministic, so every boot resolves the same store.
@@ -156,8 +156,7 @@ namespace Stomme.Identity.OpenIddict
     /// <remarks>
     /// The RavenDB side has always had this (<see cref="Raven.RavenOpenIddictDocumentStoreCache"/> creates
     /// the database idempotently at session open); the relational side's <c>EnsureCreated</c> lived only in
-    /// the TEST suite — so the suites were green while a deployed install could not issue a token (the
-    /// D47/BL-52 class). This interface is the storage-blind seam: callers (the provisioning middleware, a
+    /// the TEST suite — so the suites were green while a deployed install could not issue a token. This interface is the storage-blind seam: callers (the provisioning middleware, a
     /// programmatic registration path) call it without knowing the provider; the relational implementation
     /// runs <c>EnsureCreated</c> once per tenant per process, the RavenDB implementation is a no-op because
     /// its session provider already ensures.
@@ -204,8 +203,7 @@ namespace Stomme.Identity.OpenIddict
             }
 
             // Deliberately NOT the request's cancellation token: EnsureCreated no-ops when ANY table exists,
-            // so a DDL run aborted midway would leave a half-created schema that never completes (the exact
-            // BL-52 trap). Success-only caching: a failed attempt (store unreachable) retries on the next
+            // so a DDL run aborted midway would leave a half-created schema that never completes. Success-only caching: a failed attempt (store unreachable) retries on the next
             // request rather than wedging the tenant until restart.
             await _context.Database.EnsureCreatedAsync(CancellationToken.None);
             _cache.MarkProvisioned(tenant.TenantId);

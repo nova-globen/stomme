@@ -9,7 +9,7 @@ namespace Stomme.Help
     /// <remarks>
     /// <para>
     /// <b>The per-key <c>Declare</c> overload is not a convenience here, it is the whole reason these three keys are
-    /// safe</b> (D103 refutation 15). The UNIFORM overload applies one role segment to EVERY key and always appends
+    /// safe</b>. The UNIFORM overload applies one role segment to EVERY key and always appends
     /// Administrators - so declaring these with <c>Everyone</c> would seed <c>help:manage</c> to All Users, and
     /// <c>UserSecurity.IsAuthorized</c> admits All Users at userId -1. An ANONYMOUS visitor would author and manage
     /// help. A gate asserts an anonymous principal holds <see cref="View"/> and nothing else.
@@ -17,7 +17,7 @@ namespace Stomme.Help
     /// <para>
     /// <b><see cref="View"/> really is for Everyone, and that is deliberate.</b> Help on a public page is for the
     /// reader of that page, who may not have an account. The alternative - Registered Users - was considered and
-    /// rejected in D103's defaults: it would make the launcher render nothing for exactly the visitor most likely to
+    /// rejected: it would make the launcher render nothing for exactly the visitor most likely to
     /// need it. Nothing gated on <see cref="View"/> returns anything but PUBLISHED topics of the current site.
     /// </para>
     /// </remarks>

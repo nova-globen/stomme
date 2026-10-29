@@ -22,15 +22,15 @@ namespace Stomme.Models.Pipelines
     /// <item><c>variable/{id}</c> - its name (structured), <c>variable/{id}/type</c>, <c>variable/{id}/value</c> (structured),
     /// <c>variable/{id}/test-value</c> - its pinned test value (text)</item>
     /// <item><c>step/{id}/input-variable/{name}</c> and <c>step/{id}/output/{name}</c> - the variable's id (structured)</item>
-    /// <item><c>step/{id}/input-expression/{name}</c> - the input's template (text: BL-229 increment 5)</item>
-    /// <item><c>step/{id}/input-script/{name}</c> - the input's JavaScript (text: BL-229 increment 5b)</item>
+    /// <item><c>step/{id}/input-expression/{name}</c> - the input's template (text)</item>
+    /// <item><c>step/{id}/input-script/{name}</c> - the input's JavaScript (text)</item>
     /// <item><c>step/{id}/input-condition/{name}</c> - the input's condition, and <c>step/{id}/cases</c> - a Switch's cases, each as JSON
-    /// (structured: BL-229 increment 10 - two editors changing one condition is a conflict)</item>
+    /// (structured: two editors changing one condition is a conflict)</item>
     /// <item><c>step/{id}/retry</c>, <c>step/{id}/continue-on-error</c>, <c>step/{id}/failed-path</c> and <c>step/{id}/failure-variable</c>
-    /// - what happens when it fails (structured: BL-229 increment 9, and n8n's error output)</item>
-    /// <item><c>step/{id}/pinned</c> - the result pinned for its tests (text, BL-229, n8n's pinned data)</item>
+    /// - what happens when it fails (structured; n8n's error output)</item>
+    /// <item><c>step/{id}/pinned</c> - the result pinned for its tests (text; n8n's pinned data)</item>
     /// <item><c>step/{id}/comment</c> (text), and a sticky note: <c>note/{id}</c> - <c>1</c> (structured), <c>note/{id}/text</c> and
-    /// <c>note/{id}/position</c> (text), <c>note/{id}/parent</c> (structured) - BL-229 increment 8</item>
+    /// <c>note/{id}/position</c> (text), <c>note/{id}/parent</c> (structured)</item>
     /// <item><c>step/{id}/parent</c> - <c>{parent}/{port}</c>, the body the step sits in (structured); absent for a step of the
     /// pipeline itself, so a graph with no bodies has exactly the fields it always had</item>
     /// <item><c>pipeline/runs-at-once</c> - how many runs may go at once (structured); absent for any number</item>

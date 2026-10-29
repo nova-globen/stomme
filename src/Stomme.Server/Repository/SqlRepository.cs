@@ -155,7 +155,7 @@ namespace Stomme.Repository
     /// <remarks>
     /// <c>GetScriptFromAssembly</c> lives here rather than on <see cref="ISqlRepository"/> because it does
     /// not touch a database at all — it is <see cref="Assembly.GetManifestResourceStream(string)"/> over an
-    /// already-loaded assembly, i.e. a read from memory-mapped metadata. D32 bans sync members on
+    /// already-loaded assembly, i.e. a read from memory-mapped metadata. The convention bans sync members on
     /// store-touching interfaces; the honest response for genuinely synchronous work is to take it OFF the
     /// store-touching interface, not to wrap it in <c>Task.FromResult</c> and call it async. An extension on
     /// <see cref="ISqlRepository"/> keeps the existing call site

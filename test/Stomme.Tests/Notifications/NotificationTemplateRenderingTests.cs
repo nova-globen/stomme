@@ -19,11 +19,11 @@ namespace Stomme.Tests.Notifications
     /// envelope); a parameter value is data, never re-evaluated; a runaway loop is a render ERROR (MaxSteps), not an
     /// exception; an undeclared placeholder is rejected at save; <c>{% include %}</c> reads no file.
     /// <para>
-    /// Reconciliation of the predecessor platform <c>LiquidTemplateRendererTests</c> (4 in / 4 accounted for):
+    /// Reconciliation of the earlier renderer tests (4 in / 4 accounted for):
     /// <c>Validate_DeclaredPlaceholders_PassesClean</c>, <c>Validate_UndeclaredPlaceholder_ReportsError</c> - carried;
     /// <c>Render_SubstitutesValues</c> - carried, async, through a render target;
-    /// <c>Catalogue_BuiltIns_AreConsistentAndDistinct</c> - CHANGED: the catalogue is <c>generic.message</c> only (D100
-    /// point 5), per site.
+    /// <c>Catalogue_BuiltIns_AreConsistentAndDistinct</c> - CHANGED: the catalogue is <c>generic.message</c> only,
+    /// per site.
     /// </para>
     /// </summary>
     public sealed class NotificationTemplateRenderingTests
@@ -43,7 +43,7 @@ namespace Stomme.Tests.Notifications
             return result.Payload;
         }
 
-        // ---- ported from the predecessor platform --------------------------------------------------------------------------------
+        // ---- renderer facts ------------------------------------------------------------------------------------------------------
 
         [Fact]
         public void Validate_DeclaredPlaceholders_PassesClean()
@@ -103,7 +103,7 @@ namespace Stomme.Tests.Notifications
                 Parameters(("subject", Script), ("body", Script)), target);
 
             // The subject is text wherever it is shown (an e-mail header; a line the app escapes itself): never HTML-encoded,
-            // or an apostrophe reads "&#x27;" in every inbox (2026-10-10). The body is HTML and is encoded.
+            // or an apostrophe reads "&#x27;" in every inbox. The body is HTML and is encoded.
             Assert.Equal("Re: " + Script, payload.Subject);
             Assert.DoesNotContain("<script>", payload.Body);
             Assert.Contains("&lt;script&gt;", payload.Body);
@@ -165,9 +165,9 @@ namespace Stomme.Tests.Notifications
         [Fact]
         public async Task A_huge_literal_range_is_refused_BEFORE_it_is_built()
         {
-            // BL-155, measured: Fluid builds a range's whole array before the loop takes a step, so MaxSteps cannot stop
+            // Measured: Fluid builds a range's whole array before the loop takes a step, so MaxSteps cannot stop
             // (1..100000000) - it cost gigabytes per render (out of memory under a 4 GB heap limit). Refused from the tree.
-            // The counter is the PROCESS's, so tests running beside this one add to it (2026-10-06: 51.7 MB in a gate run, under
+            // The counter is the PROCESS's, so tests running beside this one add to it (51.7 MB seen in one gate run, under
             // the budget when run alone). They only ever add: the smallest of three renders is this render's own cost.
             var allocated = long.MaxValue;
             for (var attempt = 0; attempt < 3; attempt++)
@@ -244,7 +244,7 @@ namespace Stomme.Tests.Notifications
 
             var errors = _renderer.Validate(template.Contents, template.Placeholders);
 
-            // {{- (whitespace control) is still an output tag: the predecessor platform's regex missed it.
+            // {{- (whitespace control) is still an output tag; a check that matched only plain {{ missed it.
             Assert.Contains(errors, error => error.Contains("secretToken"));
             Assert.Throws<ArgumentException>(() => _renderer.EnsureValidForSave(template));
         }
@@ -255,7 +255,7 @@ namespace Stomme.Tests.Notifications
             var broken = new List<LocalizedContent> { new(new Locale("en"), new Content("s", "{% if %}")) };
             Assert.NotEmpty(_renderer.Validate(broken, new PlaceholderSchema([])));
 
-            // {% %} tags are not placeholder-validated (as the predecessor platform documents).
+            // {% %} tags are not placeholder-validated.
             var loop = new List<LocalizedContent> { new(new Locale("en"), new Content("s", "{% for x in items %}.{% endfor %}")) };
             Assert.Empty(_renderer.Validate(loop, new PlaceholderSchema([])));
         }
@@ -275,7 +275,7 @@ namespace Stomme.Tests.Notifications
         [Fact]
         public async Task Measured_fluid_with_a_null_FileProvider_on_include()
         {
-            // F15 characterisation of the THIRD-PARTY behaviour the renderer is built around (not of the renderer).
+            // Characterisation of the third-party behaviour the renderer is built around (not of the renderer).
             var options = new TemplateOptions { FileProvider = null };
             Assert.True(new FluidParser().TryParse("a{% include 'x' %}b", out var template, out _));
 

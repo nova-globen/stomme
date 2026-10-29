@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Every mediator handler the server declares is REGISTERED by a startup (found 2026-10-05 driving BL-229 increment 2).
+    /// Every mediator handler the server declares is REGISTERED by a startup.
     /// </summary>
     /// <remarks>
     /// The modules register their handlers one by one (<c>services.AddScoped&lt;IRequestHandler&lt;TRequest, TResponse&gt;, THandler&gt;()</c>);
@@ -35,7 +35,7 @@ namespace Stomme.Tests
                 .ToList();
 
             var handlers = Handlers(trees);
-            // Not vacuous: the server declares dozens of handlers (64 on 2026-10-05).
+            // Not vacuous: the server declares dozens of handlers (64 when this was written).
             Assert.True(handlers.Count >= 60, $"The scan found only {handlers.Count} handlers - is it still reading the server's source?");
 
             var registered = Registered(trees);

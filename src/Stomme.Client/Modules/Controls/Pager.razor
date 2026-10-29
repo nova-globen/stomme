@@ -654,7 +654,7 @@
         return PageState.Route.AbsolutePath + Utilities.CreateQueryString(parameters);
     }
 
-    // Enter searches on an interactive page (BL-22's depth-2 pass). The box's value binds on its change event,
+    // Enter searches on an interactive page. The box's value binds on its change event,
     // which fires AFTER keydown, so a keydown handler read the search before the text had arrived and the first Enter did
     // nothing - driven: "Drive" typed, Enter pressed, the list unfiltered until the Search button. FluentUI commits the value
     // first and then raises this.

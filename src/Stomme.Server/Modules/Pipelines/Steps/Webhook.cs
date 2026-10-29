@@ -37,7 +37,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// An inbound webhook as an engine TRIGGER (BL-95 increment (e)): a published pipeline that starts with it is
+    /// An inbound webhook as an engine TRIGGER: a published pipeline that starts with it is
     /// indexed by the engine under the webhook's name, and the receiver (<c>POST api/Pipelines/webhooks/{name}</c>,
     /// behind <c>Pipelines:Webhooks:Enabled</c>, HMAC-verified, rate-limited) fires it through the engine's stimulus
     /// dispatcher on the request's site. The result is the request body as text - a form-encoded one as a JSON object of
@@ -89,8 +89,8 @@ namespace Stomme.Modules.Pipelines.Steps
 
         /// <summary>
         /// A form-encoded body (<c>a=1&amp;b=2</c>) as n8n hands it on: a JSON object of its fields, each one's text, a
-        /// field given more than once a list - so <c>{{ request.a }}</c> reads it as it reads a JSON body's field. (Found on UAT
-        /// 2026-10-07: 10.18.0 accepted a signed form-encoded call, and the pipeline could read none of its fields.)
+        /// field given more than once a list - so <c>{{ request.a }}</c> reads it as it reads a JSON body's field.
+        /// Without it, a signed form-encoded call is accepted while the pipeline can read none of its fields.
         /// </summary>
         public static string FormAsJson(string body)
         {

@@ -33,7 +33,7 @@ namespace Stomme.Modules.Portability.Services
     /// <summary>The BROWSER side: HTTP to <c>api/Portability</c>. A download is a plain link to <c>api/Portability/{id}/download</c>.</summary>
     public class PortabilityService : ServiceBase, IPortabilityService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
+        /// <summary>A refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public PortabilityService(HttpClient http, SiteState siteState) : base(http, siteState) { }

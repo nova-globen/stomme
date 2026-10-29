@@ -15,18 +15,18 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Help.Persistence
 {
     /// <summary>
-    /// The help topics' closed read surface (D103 refutation 13).
+    /// The help topics' closed read surface.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>No method here takes a site.</b> D103 refutation 13 refuted "SiteId closes item 74 in ~5 lines": the
+    /// <b>No method here takes a site.</b> A plain SiteId filter is not enough: the
     /// persistence seam's automatic isolation is TENANT-only, and the default install puts every site in one tenant,
     /// so a site parameter would be a caller's chance to get it wrong. The site comes from the resolved alias, once,
     /// here - and a gate with two sites in ONE tenant drives every method.
     /// </para>
     /// <para>
     /// <b>The only <c>FindAsync</c> is on the site id, an int.</b> Resolution is a by-id read on a deterministic id
-    /// (D103 refutation 9): a <c>FindAsync</c> over anchor and locale would be a string comparison, and this
+    /// - a <c>FindAsync</c> over anchor and locale would be a string comparison, and this
     /// repository has measured three different answers to that across its providers.
     /// </para>
     /// <para>
@@ -85,7 +85,7 @@ namespace Stomme.Help.Persistence
             var siteId = SiteId;
             if (siteId <= 0 || !HelpKeys.TryNormalizeAnchor(anchor, out var normalizedAnchor) || !HelpKeys.TryNormalizeLocale(locale, out var normalizedLocale))
             {
-                // Not an exception: the anchor comes from the wire, and "no topic" is the answer (D103 refutation 10).
+                // Not an exception: the anchor comes from the wire, and "no topic" is the answer.
                 return null;
             }
 

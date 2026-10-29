@@ -15,8 +15,8 @@ namespace Stomme.Tests
     /// A deployment that lost its content folder gets the SEEDED logo back on the next boot, and nothing else is touched.
     /// </summary>
     /// <remarks>
-    /// UAT's and production's containers lost every file when they were recreated after infra BL-134's mounts, while the
-    /// database still listed them: the logo answered 404 on both sites (measured on the hosting server, 2026-10-02). Driven through the
+    /// Deployed containers lost every file when they were recreated with fresh volume mounts, while the
+    /// database still listed them: the logo answered 404 (measured on the hosting server). Driven through the
     /// boot path on an installed SQLite host: the seeded file deleted comes back; a file present is never overwritten; a logo
     /// the operator uploaded under another name, whose file is gone, is not invented.
     /// </remarks>

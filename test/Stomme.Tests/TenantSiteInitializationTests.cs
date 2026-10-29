@@ -22,8 +22,8 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>The defect, measured on UAT (2026-10-02).</b> The admin dashboard showed every module's admin page three times.
-    /// UAT has a second tenant whose alias points at site 1 of its own database; on each boot that reconciled pages, the
+    /// <b>The defect.</b> The admin dashboard showed every module's admin page three times. A second tenant whose
+    /// alias points at site 1 of its own database is all it takes: on each boot that reconciled pages, the
     /// second tenant's pass read its own database, found the pages missing and created them - in the FIRST tenant's
     /// database. <c>DatabaseManager.InitializeSitesAsync</c> walked every tenant and site inside ONE DI scope, so the page
     /// store held by the scope's <c>PageRepository</c> was bound to the first tenant's connection by its first write,

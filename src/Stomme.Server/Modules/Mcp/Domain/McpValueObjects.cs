@@ -13,20 +13,20 @@ namespace Stomme.Modules.Mcp.Domain
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Reshaped from the predecessor platform's <c>McpServerTransport</c>, a multi-field <c>ValueObject</c> the shared module context
-    /// REFUSES (only a string value object maps by convention). Canonical <see cref="Value"/>: the URL itself.
+    /// A single-string value object, because the shared module context REFUSES a multi-field
+    /// <c>ValueObject</c> (only a string value object maps by convention). Canonical <see cref="Value"/>: the URL itself.
     /// </para>
     /// <para>
-    /// <b>There is no stdio transport, and that is a decision, not an omission.</b> the predecessor platform's second transport launched
-    /// an administrator-supplied COMMAND on the host - and seeded a demo of it. It does not travel, and
+    /// <b>There is no stdio transport, and that is a decision, not an omission.</b> A stdio transport launches
+    /// an administrator-supplied COMMAND on the host. It is not offered, and
     /// this type has nowhere to put one: a value that is not an http(s) URL cannot be constructed, so it cannot be
     /// stored, so nothing downstream ever has to refuse it.
     /// </para>
     /// <para>
     /// This says the URL is WELL-FORMED. It says nothing about whether it is SAFE to dial - a name that resolves to a
     /// private address is a perfectly good URL. That is decided where the connection is made, against the address
-    /// actually being connected to (the connect-time guard of a later increment); a check here would be the pre-flight
-    /// DNS look-up D101 falsified as TOCTOU.
+    /// actually being connected to (the connect-time guard); a check here would be a pre-flight
+    /// DNS look-up, which is open to a time-of-check/time-of-use race.
     /// </para>
     /// </remarks>
     public sealed class McpServerTransport : ValueObject, IStringValueObject
@@ -74,8 +74,8 @@ namespace Stomme.Modules.Mcp.Domain
     /// <c>"rpm=60"</c>, or <c>"rpm=-"</c> for no cap.
     /// </summary>
     /// <remarks>
-    /// Reshaped from a predecessor platform record. Its second field, <c>AllowSensitivePayloads</c>, is NOT here: it configured the
-    /// egress/PII guard, which does not travel in Wave 1, and a flag nothing reads is a switch an operator can
+    /// A second field, <c>AllowSensitivePayloads</c>, is NOT here: it would configure an
+    /// egress/PII guard, which does not exist yet, and a flag nothing reads is a switch an operator can
     /// turn believing it does something. The canonical string is a <c>key=value</c> list precisely so that a later
     /// release can add one without a schema step.
     /// </remarks>
@@ -138,7 +138,7 @@ namespace Stomme.Modules.Mcp.Domain
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Reshaped from a predecessor platform collection property, which the shared context would have handed to EF's conventions
+    /// Kept as a value object rather than a collection property, which the shared context would hand to EF's conventions
     /// inside a swallowed initializer. <see cref="Tools"/> is a METHOD: both document resolvers serialise read-only
     /// properties, so a computed property would be written into the document.
     /// </para>
@@ -146,8 +146,8 @@ namespace Stomme.Modules.Mcp.Domain
     /// <b>Everything in here was said by SOMEBODY ELSE'S SERVER.</b> So it is bounded before it is kept: at most
     /// <see cref="MaximumTools"/> tools, a name of at most <see cref="MaximumNameLength"/>, a description cut to
     /// <see cref="MaximumDescriptionLength"/>, and a schema over <see cref="MaximumSchemaLength"/> DROPPED rather than
-    /// cut (half a JSON schema is not a schema). the predecessor platform kept whatever arrived; a server answering with a million tools,
-    /// or one ten-megabyte schema, would have been written into the row and rendered on the admin page. A name that
+    /// cut (half a JSON schema is not a schema). Keeping whatever arrived would mean a server answering with a million tools,
+    /// or one ten-megabyte schema, was written into the row and rendered on the admin page. A name that
     /// repeats, ignoring case, is refused outright - two tools one name is how a caller is pointed at the wrong one.
     /// </para>
     /// </remarks>

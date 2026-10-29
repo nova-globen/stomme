@@ -21,7 +21,7 @@ using Stomme.Pipelines;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// One pipeline run's execution log as an export (re-booked from BL-85; the predecessor platform had no such source): key
+    /// One pipeline run's execution log as an export: key
     /// <c>pipelines.run-log</c>, arguments <c>{"runId": "..."}</c>, one table - sequence, time, step, step type, event,
     /// message - every line of the run, in order, under <c>pipelines:view</c>.
     /// </summary>

@@ -31,14 +31,14 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// DRIVES the feature-flag seeder across a REAL install lifecycle on PostgreSQL, because that is the
-    /// only place the survey's open question can be answered: on a fresh WIZARD install — where the host boots
+    /// only place this question can be answered: on a fresh WIZARD install — where the host boots
     /// uninstalled, the seeder runs and fails at StartAsync (no master DB yet), the install then completes at
     /// runtime, and only a subsequent host start re-runs the seeder — do the flags actually end up seeded and
     /// evaluable, or do they stay silently OFF? <see cref="FeatureEvaluator"/> answers <c>false</c> for any
     /// flag missing from the store, so a seeding failure is not an error, it is every capability silently off.
     /// <para>
-    /// Two orderings are driven against the real production host (<see cref="Program.BuildAppAsync"/>, TestServer
-    /// transport only), on PostgreSQL (the shared infra UAT instance by default; see <see cref="PostgresTestEndpoint"/>):
+    /// Two orderings are driven against the real host (<see cref="Program.BuildAppAsync"/>, TestServer
+    /// transport only), on PostgreSQL (the shared test instance by default; see <see cref="PostgresTestEndpoint"/>):
     /// </para>
     /// <list type="bullet">
     /// <item><b>Automated install</b> (config prefilled): <c>InstallAsync</c> runs BEFORE the host's hosted
@@ -113,8 +113,8 @@ namespace Stomme.Tests
                 await boot1.StartAsync();
 
                 // The seeder ran during StartAsync. Its failure to reach a not-yet-installed master must be
-                // QUIET: an Error here is the "benign pre-install failure mistaken for a real one" noise D68
-                // exists to remove.
+                // QUIET: an Error here is the "benign pre-install failure mistaken for a real one" noise
+                // that the seeder must not make.
                 var seederErrors = boot1Logs.Entries
                     .Where(e => e.Level >= LogLevel.Error && e.Category.Contains("FeatureSeeder"))
                     .ToList();

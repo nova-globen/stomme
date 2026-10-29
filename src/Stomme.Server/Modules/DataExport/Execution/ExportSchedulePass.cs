@@ -17,7 +17,7 @@ namespace Stomme.Modules.DataExport.Execution
     public sealed record ExportScheduleResult(int Queued, int Paused, int ClaimedElsewhere);
 
     /// <summary>
-    /// Runs a site's due export schedules (D108's correction of 2026-10-05), in the export queue job's per-site scope
+    /// Runs a site's due export schedules, in the export queue job's per-site scope
     /// - before the drain, so a run is rendered in the same tick.
     /// </summary>
     /// <remarks>

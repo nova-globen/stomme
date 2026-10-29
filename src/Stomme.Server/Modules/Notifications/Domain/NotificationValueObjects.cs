@@ -12,19 +12,19 @@ using Stomme.SharedKernel.Domain;
 
 namespace Stomme.Modules.Notifications.Domain
 {
-    // The eight notification value objects, lifted from the predecessor platform NotificationValueObjects.cs and reshaped per
+    // The eight notification value objects.
     // Each is an IStringValueObject with a canonical Value and a public static Create(string), so EF
-    // (a plain string column, the D79 convention), RavenDB and the File store all persist the SAME scalar and
+    // (a plain string column), RavenDB and the File store all persist the SAME scalar and
     // rebuild through the SAME factory - no per-provider converter, no fragile private-constructor binding. The
-    // public constructors the predecessor platform exposed are kept (the domain API is unchanged); Create(string) parses the
+    // public constructors are kept for the domain API; Create(string) parses the
     // canonical form and then runs the same constructor, so a persisted value cannot bypass an invariant.
 
     /// <summary>
     /// A delivery target: a site user (by int id), a literal e-mail address, or a literal endpoint.
     /// <para>
     /// Canonical <see cref="Value"/>: <c>"{Kind}:{Address}"</c> - <c>"User:42"</c>, <c>"Email:ops@example.com"</c>.
-    /// The kind is split at the FIRST colon, so an address may itself contain colons. the predecessor platform's <c>Value</c> (the
-    /// bare address) is <see cref="Address"/> here, because <c>Value</c> is the persistence contract.
+    /// The kind is split at the FIRST colon, so an address may itself contain colons. The bare address is
+    /// <see cref="Address"/>, because <c>Value</c> is the persistence contract.
     /// </para>
     /// </summary>
     public sealed class Recipient : ValueObject, IStringValueObject
@@ -45,7 +45,7 @@ namespace Stomme.Modules.Notifications.Domain
             if (kind == RecipientKind.User
                 && (!int.TryParse(trimmed, NumberStyles.None, CultureInfo.InvariantCulture, out var userId) || userId <= 0))
             {
-                // Stomme users are int-keyed (BL-78 F10); the predecessor platform addressed a user by Guid.
+                // Stomme users are int-keyed.
                 throw new ArgumentException("A user recipient must be a positive int user id.", nameof(address));
             }
 
@@ -126,15 +126,15 @@ namespace Stomme.Modules.Notifications.Domain
     /// <summary>
     /// Kind-specific transport configuration for a <see cref="NotificationChannelAggregate"/>.
     /// <para>
-    /// <b>No inline secret (kept from the predecessor platform).</b> An option key that looks like a secret is rejected and the type
-    /// carries no field for a raw credential. A credential lives in the shared per-site secret store (D101,
-    /// <c>ISiteSecretStore</c>); the transport stores only its REFERENCE KEY (<see cref="SecretReference"/>, e.g.
+    /// <b>No inline secret.</b> An option key that looks like a secret is rejected and the type
+    /// carries no field for a raw credential. A credential lives in the shared per-site secret store
+    /// (<c>ISiteSecretStore</c>); the transport stores only its REFERENCE KEY (<see cref="SecretReference"/>, e.g.
     /// <c>notifications.channel.{id:N}.credential</c>), which must be a well-formed reference key - so a pasted token
     /// or a <c>vault://</c> URI in that slot is rejected too.
     /// </para>
     /// <para>
-    /// <b>Relaxed.</b> the predecessor platform REQUIRED a vault reference for Email and SMS, which a credential-free
-    /// e-mail channel (the existing SMTP queue) cannot supply. The requirement now belongs to the channel PROVIDER
+    /// <b>Relaxed.</b> Requiring a vault reference for Email and SMS would exclude a credential-free
+    /// e-mail channel (the existing SMTP queue). The requirement belongs to the channel PROVIDER
     /// that declares it (webhook optional, e-mail none); the domain requires a reference for no kind. Webhook still
     /// requires an absolute http(s) endpoint.
     /// </para>
@@ -340,8 +340,8 @@ namespace Stomme.Modules.Notifications.Domain
     /// deterministic; DST-aware zones are a later refinement (the booked quiet-hours residue).
     /// <para>
     /// Canonical <see cref="Value"/>: <c>"HH:mm-HH:mm{+|-}hh:mm"</c> - <c>"22:00-07:00+02:00"</c>. Minute precision
-    /// is therefore an invariant the string form adds (the predecessor platform accepted seconds). Instants are UTC
-    /// <see cref="DateTime"/>s (the predecessor platform took <c>DateTimeOffset</c>).
+    /// is therefore an invariant the string form adds. Instants are UTC
+    /// <see cref="DateTime"/>s.
     /// </para>
     /// </summary>
     public sealed class QuietHours : ValueObject, IStringValueObject

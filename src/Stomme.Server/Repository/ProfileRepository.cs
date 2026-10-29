@@ -29,7 +29,7 @@ namespace Stomme.Repository
     /// <see cref="SiteRepository"/> takes <see cref="IProfileRepository"/> to seed a new site's eight default
     /// profile properties — which puts this cluster on the site-creation path (i.e. the installer). The edge
     /// cannot close a container cycle because this repository takes no repository at all, only a store and a
-    /// session factory (D22 rule 8). Do not add one without re-running that check.
+    /// session factory. Do not add one without re-running that check.
     /// </para>
     /// <para>
     /// These are profile property DEFINITIONS, not users' values for them — the values are Settings
@@ -108,7 +108,7 @@ namespace Stomme.Repository
         /// <b>The parameter is kept and deliberately ignored.</b> It existed to let
         /// <c>ProfileController.Put</c> read a profile to authorize the request and then write a DIFFERENT
         /// instance of the same row back, without EF complaining that two instances share a key —
-        /// <c>tracking: false</c> was the workaround for exactly the D19 conflict this seam removes
+        /// <c>tracking: false</c> was the workaround for exactly the tracked-instance conflict this seam removes
         /// structurally. Every read here now goes through a query session with its own context, so nothing
         /// this repository returns is ever tracked and both call sites are safe by construction.
         /// </para>

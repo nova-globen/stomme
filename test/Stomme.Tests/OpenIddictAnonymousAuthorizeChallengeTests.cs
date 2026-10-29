@@ -29,12 +29,12 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The defect, reported by the Fravashi integration and reproduced on the UAT host: the D64
+    /// The defect, reported by the Fravashi integration and reproduced on a deployed host: the
     /// authorize endpoint correctly issues <c>Results.Challenge</c> on the Identity cookie scheme for an
     /// anonymous user, but <c>ConfigureStommeCookieOptions</c> overrides
     /// <c>Events.OnRedirectToLogin</c> to a BARE 403 for EVERY challenge (the SPA/XHR behaviour). That
     /// override swallowed the interactive OIDC hop, so an external client's browser window received 403 +
-    /// the SPA shell and rendered blank. The D64 comment's "its configured login path" was never reached.
+    /// the SPA shell and rendered blank. The code comment's "its configured login path" was never reached.
     /// </para>
     /// <para>
     /// Both directions are pinned here, because the fix is a CARVE-OUT and a carve-out can be too wide:
@@ -45,7 +45,7 @@ namespace Stomme.Tests
     /// <para>
     /// PROVIDER DIMENSION — deliberately SQLite only. The defect and its fix live entirely in the cookie
     /// authentication events (an ASP.NET Core middleware concern); no store is consulted on the path under
-    /// test, so a second provider would re-measure the same code. This is NOT a D46 parity surface.
+    /// test, so a second provider would re-measure the same code. This is NOT a provider-parity surface.
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -136,7 +136,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// One installed host for the whole class: a real Stomme host (the real pipeline, transport swapped
-        /// for TestServer) with the D64 authority enabled and the Fravashi-shaped PUBLIC PKCE client declared
+        /// for TestServer) with the authority enabled and the Fravashi-shaped PUBLIC PKCE client declared
         /// in config, so the boot-path seeder registers it in the tenant store exactly as an operator's would.
         /// </summary>
         public sealed class AuthorityFixture : IAsyncLifetime

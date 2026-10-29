@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The predecessor platform's OAuth2TokenProviderTests (13) by name over the port, plus what the port adds: the token
+    /// These tests cover the token
     /// call rides the EGRESS's client (the provider has no client of its own), the field names are the scheme's, and a cached
     /// token is served only to an egress that admits the token host.
     /// </summary>

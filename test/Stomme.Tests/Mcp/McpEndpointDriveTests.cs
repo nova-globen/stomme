@@ -24,7 +24,7 @@ namespace Stomme.Tests.Mcp
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>The first thing it drives is the thing D101 said to drive first:</b> that the SDK's per-request scope sees
+    /// <b>The first thing it drives is the thing the design said to drive first:</b> that the SDK's per-request scope sees
     /// Stomme's resolved alias. The SDK owns the scope the handlers run in; Stomme's tenant resolution puts the
     /// alias in a SCOPED SiteState. If those are not the same scope the catalog's caller check returns null and
     /// everything denies - the safe direction, and completely silent. So the FIRST assertion is that an authenticated
@@ -165,7 +165,7 @@ namespace Stomme.Tests.Mcp
                 Assert.Equal(ran, McpTestContributor.Invocations);
 
                 // ...and the carve-out is EXACTLY one endpoint: every other unauthenticated request still gets this
-                // host's 403, so BL-71's decision is intact rather than quietly widened.
+                // host's 403, so that decision is intact rather than quietly widened.
                 // A genuinely GATED endpoint - api/McpTest is deliberately ungated, so it answers 200 with an empty
                 // list and would prove nothing.
                 var elsewhere = await GateDrive.GetAsync(anonymousClient, null, Host, "/api/GateTest/manage", _output, storeName + " anonymous elsewhere");

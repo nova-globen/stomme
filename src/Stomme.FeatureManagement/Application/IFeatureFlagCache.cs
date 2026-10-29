@@ -35,7 +35,7 @@ internal sealed record FeatureFlagSnapshot(
 /// jobs, which run in their own scopes over this same singleton.
 /// <para>
 /// <b>What is cached — and what deliberately is NOT.</b> Only the DB flag rows (per tenant) are cached.
-/// The D84 precedence (config → DB → catalog default) is untouched: the config source is consulted LIVE on
+/// The precedence (config → DB → catalog default) is untouched: the config source is consulted LIVE on
 /// every evaluation (an in-memory <c>IConfiguration</c> read — already cheap, and hot-reloadable), and the
 /// entitlement provider is consulted live too. The cache therefore cannot change any answer; it only makes
 /// the DB leg of an unchanged evaluation cheaper.
@@ -43,7 +43,7 @@ internal sealed record FeatureFlagSnapshot(
 /// <para>
 /// <b>The key is the tenant.</b> Entries are keyed by the SAME tenant identity the store's tenant query
 /// filter reads by (<c>ITenantContext.CurrentTenantId</c>), so a cache hit can never serve one tenant's
-/// flags to another — the BL-41 class of defect, inverted. System-scope and null-tenant reads are never
+/// flags to another. System-scope and null-tenant reads are never
 /// cached (the evaluator bypasses the cache for them), so no cross-tenant flag list ever enters the cache.
 /// </para>
 /// <para>

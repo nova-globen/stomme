@@ -10,10 +10,9 @@ namespace Stomme.Tests
     /// The quota's own rules, asserted on the aggregate.
     /// </summary>
     /// <remarks>
-    /// Written while reconciling the predecessor platform's <c>UsageMeteringTests</c> and <c>AiUsageRecorderTests</c> BY NAME: the drives
-    /// here prove the wiring on three stores, and nothing at all asserted Reset, Unlimited, a window rolling over, an
-    /// override lapsing, or Suspended - every one a rule an operator relies on. Each case takes its clock as an
-    /// argument, which is why none of them needs a host.
+    /// Written to cover what the drives here leave unasserted: they prove the wiring on three stores, and nothing at
+    /// all asserted Reset, Unlimited, a window rolling over, an override lapsing, or Suspended - every one a rule an
+    /// operator relies on. Each case takes its clock as an argument, which is why none of them needs a host.
     /// </remarks>
     public class QuotaAggregateBehaviourTests
     {

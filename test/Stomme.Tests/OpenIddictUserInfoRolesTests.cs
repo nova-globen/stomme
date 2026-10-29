@@ -21,8 +21,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// M2 row 2 (ruling C34): <c>/connect/userinfo</c> answers a <c>profile</c>-scoped access token with the user's role
-    /// names on the issuer's site (<c>role</c>, an array), so Fravashi's broker can entitle by role instead of a hand-kept
+    /// <c>/connect/userinfo</c> answers a <c>profile</c>-scoped access token with the user's role
+    /// names on the issuer's site (<c>role</c>, an array), so Fravashi can entitle by role instead of a hand-kept
     /// allow-list. Driven as the studio does it: a public PKCE client configured by environment variables on an installed
     /// host, a cookie sign-in, authorize, the code exchanged at the token endpoint, then userinfo with the bearer token.
     /// </summary>

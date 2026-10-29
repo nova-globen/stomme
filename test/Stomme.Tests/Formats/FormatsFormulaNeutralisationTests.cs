@@ -22,7 +22,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Formats
 {
     /// <summary>
-    /// BL-94 increment 8 (D108 refutation 11) - a Formats pattern whose literal output starts with a formula leader
+    /// A Formats pattern whose literal output starts with a formula leader
     /// (<c>=</c>, <c>+</c>, <c>-</c>, <c>@</c>) comes out neutralised in CSV and in XLSX, because a formatter's output is
     /// a string like any other cell. Both directions: every spreadsheet renderer the module ships neutralises a
     /// formatter's formula, and a PLANTED renderer that writes the formatter's text raw is caught by the same check.
@@ -143,7 +143,7 @@ namespace Stomme.Tests.Formats
             public string? Format(object? value, ExportColumn column) => "=EVIL()";
         }
 
-        /// <summary>the predecessor platform's shape: the formatter's text written as it came.</summary>
+        /// <summary>A renderer that writes the formatter's text as it came.</summary>
         private sealed class PlantedRawCsvRenderer : ITabularRenderer
         {
             public ExportFormat Format => ExportFormat.Csv;

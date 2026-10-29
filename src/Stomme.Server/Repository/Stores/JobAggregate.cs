@@ -7,9 +7,7 @@ namespace Stomme.Repository.Stores
     /// <summary>
     /// The Job aggregate root — the persistence-side model of the framework store's <c>Job</c> table,
     /// reachable only through <see cref="IJobStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads).
-    /// See <c>docs/decisions.md</c> D52 (the master-bookkeeping wave) for the cluster boundary.
-    /// (Corrected 2026-07-21: this previously pointed at a per-cluster PHASE3-JOBS plan file "(if present)"
-    /// under the persistence plans folder — no such file has ever existed in this repository's history.)
+    /// It belongs to the master-bookkeeping cluster (Job and JobLog).
     /// </summary>
     /// <remarks>
     /// <para>

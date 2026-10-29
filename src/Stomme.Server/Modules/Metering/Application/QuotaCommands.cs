@@ -15,8 +15,8 @@ namespace Stomme.Modules.Metering.Application
 {
     // Every command below carries [Requires(Manage)], names NO site or tenant, and reaches an existing quota only
     // through GetForCurrentSiteAsync - so a by-id command against another site's quota is refused with exactly the
-    // answer an unknown id gets. the predecessor platform's GrantAiQuotaOverrideCommand carried no key at all and took the tenant
-    // from the request body; that shape does not survive the lift.
+    // answer an unknown id gets. A command that carried no key at all and took the tenant
+    // from the request body would let a caller reach another tenant's quota; that shape is refused here.
 
     /// <summary>Defines a quota for a metric and window, or redefines the one that exists.</summary>
     [Requires(MeteringPermissions.Manage)]

@@ -18,11 +18,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.AiAssistant.Startup
 {
     /// <summary>
-    /// Wires the AI assistant (BL-97 increments 9-10): the conversation (storage-blind, tenant-owned), the installation
+    /// Wires the AI assistant: the conversation (storage-blind, tenant-owned), the installation
     /// switch and limits, the OpenAI-compatible provider, the per-site model access with its metered and quota-gated client,
     /// the guardrail, the erasure participant; then the agents over the workspace gateways, the appliers and the conversation
-    /// service. Everything is OFF until <c>AiAssistant:Enabled</c> and the site's own switch are on; with either off nothing
-    /// reaches a model. The gated requests, <c>api/AiAssistant</c> and the <c>admin/assistant</c> chat panel are increment 10b.
+    /// service, and the gated requests behind <c>api/AiAssistant</c> and the <c>admin/assistant</c> chat panel. Everything is OFF
+    /// until <c>AiAssistant:Enabled</c> and the site's own switch are on; with either off nothing reaches a model.
     /// </summary>
     public class ServerStartup : IServerStartup
     {
@@ -62,12 +62,12 @@ namespace Stomme.Modules.AiAssistant.Startup
             services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, AssistantConversationErasure>();
             services.AddScoped<Stomme.Portability.ISubjectDataContributor, AssistantConversationSubjectContributor>();
 
-            // The agents (increment 10): they read and write ONLY through the owning modules' gated requests, as the user.
+            // The agents: they read and write ONLY through the owning modules' gated requests, as the user.
             services.TryAddScoped<IAssistantQueryGateway, MediatorAssistantQueryGateway>();
             services.TryAddScoped<IAssistantCommandGateway, MediatorAssistantCommandGateway>();
             services.TryAddScoped<IWidgetSpecGenerator, WidgetGeneratorAgent>();
 
-            // The Landing module's designer (BL-98 increments 3-4): registered over the module's "none composed" default - a
+            // The Landing module's designer: registered over the module's "none composed" default - a
             // plain Add, so it wins whichever startup runs first. It needs the landing sanitizer, which the Landing module owns.
             services.TryAddSingleton<Stomme.Modules.Landing.Infrastructure.LandingHtmlSanitizer>();
             services.AddScoped<Stomme.Modules.Landing.Application.ILandingPageDesigner, LandingPageDesignerAgent>();
@@ -96,7 +96,7 @@ namespace Stomme.Modules.AiAssistant.Startup
             services.TryAddScoped<DashboardArtifactApplier>();
             services.TryAddScoped<AssistantConversationService>();
 
-            // The surface (increment 10b): every request under assistant:use, decided before a handler runs.
+            // The surface: every request under assistant:use, decided before a handler runs.
             services.AddScoped<IRequestHandler<StartConversationCommand, AssistantConversationView>, StartConversationCommandHandler>();
             services.AddScoped<IRequestHandler<ListConversationsQuery, System.Collections.Generic.IReadOnlyList<AssistantConversationSummary>>, ListConversationsQueryHandler>();
             services.AddScoped<IRequestHandler<GetConversationQuery, AssistantConversationView?>, GetConversationQueryHandler>();

@@ -25,12 +25,12 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// D54/D55a drove RavenDB through the AUTOMATED path only: appsettings pre-fills
+    /// The earlier install drives took RavenDB through the AUTOMATED path only: appsettings pre-fills
     /// <c>ConnectionStrings:DefaultConnection</c>, so the lazy <c>IDocumentStore</c> reads it on first resolve. The
     /// INTERACTIVE wizard does not — it hands the connection string to <c>IDatabaseManager.InstallAsync(InstallConfig)</c>
     /// and only persists it to config inside <c>MigrateMasterAsync</c>, which runs AFTER <c>CreateDatabaseAsync</c>
-    /// first resolves the store. Before D56's fix that first resolve reads EMPTY config and throws (the D54a ordering
-    /// finding), so a wizard-driven RavenDB install fails while the automated one succeeds.
+    /// first resolves the store. Without the ordering fix that first resolve reads EMPTY config and throws,
+    /// so a wizard-driven RavenDB install fails while the automated one succeeds.
     /// </para>
     /// <para>
     /// This test reproduces the wizard EXACTLY: it boots with NO <c>DefaultConnection</c> / <c>DefaultDBType</c> in
@@ -121,7 +121,7 @@ namespace Stomme.Tests
                 var install = await installTask;
                 _output.WriteLine($"[wizard install] Success={install.Success} Message={Truncate(install.Message)}");
 
-                // Without D56's ordering fix, CreateDatabaseAsync resolves the lazy store against empty config and throws,
+                // Without the ordering fix, CreateDatabaseAsync resolves the lazy store against empty config and throws,
                 // so this is Success=false with the "An Error Occurred Creating The Database" message.
                 Assert.True(install.Success,
                     $"The interactive wizard did not report success installing RavenDB: {install.Message}");

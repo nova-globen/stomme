@@ -21,7 +21,7 @@ namespace Stomme.DataExport.Persistence
     /// Every filter stays inside the <c>FindAsync</c> SAFE SET - <c>int</c> ids, a <see cref="Guid"/>, an enum
     /// and UTC <see cref="DateTime"/> ranges. No string appears in a predicate: bare string equality is
     /// case-sensitive on EF and case-insensitive on RavenDB. On the File store every one of these is a full
-    /// scan filtered in memory (D108 refutation 15) - acceptable for a per-minute queue on a single-host store,
+    /// scan filtered in memory - acceptable for a per-minute queue on a single-host store,
     /// and stated rather than hidden.
     /// </para>
     /// </remarks>

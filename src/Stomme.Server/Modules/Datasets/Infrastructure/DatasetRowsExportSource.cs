@@ -12,14 +12,14 @@ using Stomme.Modules.DataExport.Sources;
 namespace Stomme.Modules.Datasets.Infrastructure
 {
     /// <summary>
-    /// A dataset's rows as an export (the predecessor platform's <c>DatasetExportSourceResolver</c> on D108's contract):
+    /// A dataset's rows as an export:
     /// key <c>datasets.rows</c>, one table named after the dataset, its columns the published schema in order or the
-    /// request's projection, each typed from the schema and carrying the column's format for the D108 cell formatter.
+    /// request's projection, each typed from the schema and carrying the column's format for the export cell formatter.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>The data permission is <c>datasets:preview</c></b>, the same raw-row key the Datasets API asks - the engine checks
-    /// it for the requester when the request is made and again when the job runs (the predecessor platform checked it inside the resolver).
+    /// it for the requester when the request is made and again when the job runs.
     /// </para>
     /// <para>
     /// <b>Everything goes through the catalogue</b> (<see cref="IDatasetCatalog"/>): the site is the job's resolved alias, so

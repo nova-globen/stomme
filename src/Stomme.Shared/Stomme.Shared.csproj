@@ -9,7 +9,7 @@
     <PackageReference Include="NodaTime" />
   </ItemGroup>
 
-  <!-- Transport (brief 04 / D10): the .proto contracts are the single source of truth for the typed
+  <!-- Transport: the .proto contracts are the single source of truth for the typed
        gRPC surface. Grpc.Tools generates client + server stubs at build time; the generated code only
        needs the lightweight Grpc.Core.Api + Google.Protobuf runtimes (no ASP.NET dependency), so both
        the WASM client and the server host consume the same contract assembly. Opt-in transport packages

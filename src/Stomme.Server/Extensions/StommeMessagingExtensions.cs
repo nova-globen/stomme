@@ -12,7 +12,7 @@ using Rebus.Transport;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Host wiring for the Stomme integration message bus (see docs/decisions.md D9).
+    /// Host wiring for the Stomme integration message bus.
     ///
     /// The bus is the cross-context ASYNC integration pipeline — not the in-process mediator. It is
     /// opt-in: with no <c>Messaging</c> section (or <c>Messaging:Enabled</c> false) nothing is

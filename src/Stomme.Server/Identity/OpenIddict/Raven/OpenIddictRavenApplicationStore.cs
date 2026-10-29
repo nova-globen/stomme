@@ -87,8 +87,8 @@ namespace Stomme.Identity.OpenIddict.Raven
             // (case-sensitive on SQLite/PostgreSQL). RavenDB's `==` is case-INSENSITIVE, so a bare Raven query
             // diverges from EF for a mixed-case client_id (Raven matches where EF misses). Query the selective
             // field on the server (Raven may return case-insensitive candidates), then post-filter in memory with
-            // an ORDINAL (case-sensitive) comparison so Raven matches EF — the D49/D64 "run the query, filter in
-            // memory" pattern. `.ToLower()` is NOT used: it THROWS on Raven.
+            // an ORDINAL (case-sensitive) comparison so Raven matches EF: run the query, filter in
+            // memory. `.ToLower()` is NOT used: it THROWS on Raven.
             var candidates = await session.Query<OpenIddictRavenApplication>().Customize(c => c.WaitForNonStaleResults())
                 .Where(a => a.ClientId == identifier).ToListAsync(cancellationToken);
             return candidates.FirstOrDefault(a => string.Equals(a.ClientId, identifier, StringComparison.Ordinal));

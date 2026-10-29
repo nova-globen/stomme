@@ -10,8 +10,7 @@ namespace Stomme.Tests
     /// <summary>
     /// A delete asks first. The framework's own admin pages delete through <c>ActionDialog</c>, which asks before it acts;
     /// twelve buttons across the module pages and the file manager deleted on ONE click - a backup snapshot and its archive, a
-    /// pipeline with its versions, a connection with its stored credentials, a licence key (found in BL-94's click-through,
-    /// 2026-10-01, for Formats, Connections and Datasets, and swept 2026-10-03). This gate reads every page and control: a
+    /// pipeline with its versions, a connection with its stored credentials, a licence key. This gate reads every page and control: a
     /// button whose click handler deletes is refused, by name and file.
     /// </summary>
     public sealed class DeleteConfirmationGateTests

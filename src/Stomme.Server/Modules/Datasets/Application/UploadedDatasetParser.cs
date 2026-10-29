@@ -30,8 +30,8 @@ namespace Stomme.Modules.Datasets.Application
     public sealed class DatasetUploadRefusedException(string message) : Exception(message);
 
     /// <summary>
-    /// Converts an uploaded file into the sample rows dataset inference consumes (D110 refutation 6,
-    /// ported from the predecessor platform and HARDENED): the format is decided by the ZIP signature plus the extension (an XLSX renamed
+    /// Converts an uploaded file into the sample rows dataset inference consumes (hardened against hostile files):
+    /// the format is decided by the ZIP signature plus the extension (an XLSX renamed
     /// <c>.csv</c> is refused, whatever it was served as); JSON is read through a byte cap before parsing, with a depth
     /// cap; CSV is streamed line by line, materialising only the sample while counting every row; XLSX is checked as a
     /// ZIP first (a part count, a declared-size and a compression-ratio cap), then read through OpenXml's SAX reader with

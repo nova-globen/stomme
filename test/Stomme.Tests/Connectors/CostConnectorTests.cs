@@ -11,9 +11,9 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The predecessor platform's six cost connector suites (47 cases) by name over the port, one class per connector as
-    /// the predecessor platform had them. CHANGED: the token is the Bearer scheme's <c>token</c> field (the predecessor platform read its legacy single
-    /// credential), so the missing-credential message names the field; the schema still declares no secret.
+    /// The six cost connector suites (47 cases), kept by name over the port, one class per connector. CHANGED: the token
+    /// is the Bearer scheme's <c>token</c> field (the earlier shape read a single credential), so the missing-credential
+    /// message names the field; the schema still declares no secret.
     /// </summary>
     internal static class CostProbe
     {

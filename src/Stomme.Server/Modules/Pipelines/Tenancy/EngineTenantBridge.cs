@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Tenancy
 {
     /// <summary>
-    /// Enters the engine tenant of a Stomme site for the current flow (BL-95 increment (a), the tenant bridge).
+    /// Enters the engine tenant of a Stomme site for the current flow.
     /// The engine keeps its current tenant in an ambient accessor that follows the async flow, and its background
     /// dispatcher carries that tenant's id to the worker as a command header - where the Tenants feature's middleware
     /// restores it ONLY if the engine's tenant service can find the id. So entering a site is two steps, and the split

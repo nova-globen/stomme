@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The assistant's meter bridge (D113 over D102), as a <see cref="DelegatingChatClient"/> around the
+    /// The assistant's meter bridge, as a <see cref="DelegatingChatClient"/> around the
     /// provider's client, so no agent can make an unmetered call: BEFORE a call the site's AI quota is asked - the calls
     /// metric for one more call, the tokens metric for any budget left - and a spent quota or an unreachable meter REFUSES
     /// the call (fail-closed); AFTER it the call is recorded through <see cref="IAiUsageRecorder"/>, which prices it
@@ -21,14 +21,14 @@ namespace Stomme.Modules.AiAssistant.Application
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>CHANGED from the predecessor platform's <c>AiUsageAssistantMeter</c>.</b> It mapped provider and agent names onto closed enums
-    /// (unknown values became <c>Unknown</c>) and passed the caller's user id; D102's recorder takes both as strings it
-    /// normalises itself, and derives the user from the request - so the mapping is gone, not ported. the predecessor platform's meter had no
-    /// pre-call check at all; the quota gate is new with D113.
+    /// Provider and agent names are not mapped onto closed enums (which would turn unknown values into <c>Unknown</c>), and the
+    /// caller's user id is not passed: the recorder takes both names as strings it
+    /// normalises itself, and derives the user from the request. The pre-call quota gate is what keeps a spent
+    /// quota from being called past.
     /// </para>
     /// <para>
     /// <b>A recording failure after a completed call is logged at ERROR and does not fail the reply</b> - the tokens are
-    /// already spent, and D102 leaves that choice to the producer; a lost row is reported, never silent. A failure BEFORE the
+    /// already spent, and the recorder leaves that choice to the producer; a lost row is reported, never silent. A failure BEFORE the
     /// call (the quota cannot be asked) refuses it.
     /// </para>
     /// </remarks>
@@ -72,7 +72,7 @@ namespace Stomme.Modules.AiAssistant.Application
                 await RecordAsync(ModelOf(options), 0, 0, timer.ElapsedMilliseconds, AiCallStatus.Error);
                 if (IsEgressDenial(ex))
                 {
-                    // BL-180, found driving it: the site's outbound guard refused the endpoint's address. That is a refusal to
+                    // Found by driving it: the site's outbound guard refused the endpoint's address. That is a refusal to
                     // show the user, not a fault - the chat panel crashed and the API answered 500 on it.
                     throw new AssistantUnavailableException(AssistantUnavailableReason.EndpointNotPermitted,
                         "The model endpoint is on a private, loopback or internal address this site may not reach. A Host user can allow its host under Private hosts on the Connections page.", ex);
@@ -187,7 +187,7 @@ namespace Stomme.Modules.AiAssistant.Application
 
         /// <summary>
         /// A response the cache answered: no call reached the model, so it is recorded here as
-        /// <see cref="AiCallStatus.Cached"/> with the original counts - D102 bills a cached call at nothing.
+        /// <see cref="AiCallStatus.Cached"/> with the original counts - a cached call is billed at nothing.
         /// </summary>
         public Task RecordCachedAsync(Stomme.CostOptimization.CachedModelResponse response, CancellationToken cancellationToken = default)
         {

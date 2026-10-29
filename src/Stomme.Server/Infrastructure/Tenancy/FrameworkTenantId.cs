@@ -7,7 +7,7 @@ namespace Stomme.Infrastructure.Tenancy
     /// <summary>
     /// Translates between Stomme's framework tenant key (<see cref="Models.Tenant.TenantId"/> — an int
     /// identity column on the master store) and the persistence seam's <see cref="TenantId"/> (a GUID value
-    /// object). The seam was lifted from the predecessor platform, which keys tenants by GUID; Stomme's harvested framework
+    /// object). The seam keys tenants by GUID; Stomme's framework
     /// keys them by int. The adapter has to bridge the two, and how it bridges them is load-bearing.
     /// <para>
     /// <b>The encoding:</b> the int is written big-endian into the last four bytes of an otherwise-zero GUID.

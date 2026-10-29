@@ -450,7 +450,7 @@ namespace Stomme.Tests
         }
     }
 
-    // Rule (g)/D19/D22 rule 6: deleting the DbSet is NOT enough — EF rediscovers CLR types through
+    // Deleting the DbSet is NOT enough — EF rediscovers CLR types through
     // navigations. An entity that navigates into a migrated aggregate's CONTRACT resurrects it as a second
     // entity type on the same table and breaks the model at STARTUP:
     //
@@ -464,13 +464,13 @@ namespace Stomme.Tests
     {
         // The unmigrated neighbours, as TenantDBContext still holds them.
         //
-        // PageModule, Visitor and UrlMapping stood here until D47 put all three on the seam. Listing them now
+        // PageModule, Visitor and UrlMapping stood here until they moved onto the seam. Listing them now
         // would map each table twice — the aggregate via ConfigureFrameworkStore and the contract via the
-        // DbSet — and every test in this class would fail with the D19 blocker on a table this class does not
+        // DbSet — and every test in this class would fail with the double-mapping error on a table this class does not
         // test. Folder and File are the neighbours that are still genuinely unmigrated.
         private sealed class TenantLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
-            // Folder stood here until D48, File until D49, and the SearchContent family until D50 —
+            // Folder, File and the SearchContent family stood here until each moved onto the seam —
             // declaring any of them now would map its table twice and break the model.
             //
             // THIS CONTEXT IS NOW EMPTY, and that is the END OF THE PATTERN rather than a gap. The neighbour
@@ -480,7 +480,7 @@ namespace Stomme.Tests
             // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
-            // protection now, and it needed no edit across D47, D48, D49 or D50.
+            // protection now, and it needed no edit as those stores moved onto the seam.
 
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureFrameworkStore(database);
         }
@@ -626,7 +626,7 @@ namespace Stomme.Tests
     /// cluster's own discriminating tests.
     /// </summary>
     /// <remarks>
-    /// The D19 pair below is the reason this base exists rather than five copies: both tests are about the
+    /// The read-then-write pair below is the reason this base exists rather than five copies: both tests are about the
     /// SEAM's contract, not about any one cluster, and all five repositories have the read-then-write shape
     /// that walks into it (LanguageRepository.UpdateLanguage un-defaults siblings, ProfileController.Put and
     /// NotificationController.Put read to authorize then write, SiteTaskJob reads the queue then completes
@@ -645,7 +645,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// Rebuilds a DETACHED aggregate carrying <paramref name="id"/> and a CHANGED persisted value, as the
-        /// repository's mapper does for an update. The change is what makes the D19 pair below evidence rather
+        /// repository's mapper does for an update. The change is what makes the read-then-write pair below evidence rather
         /// than ceremony: an update that persists nothing still leaves the row present, so a test that only
         /// asserts the row exists proves nothing at all.
         /// </summary>
@@ -741,7 +741,7 @@ namespace Stomme.Tests
             Assert.Empty(verifyContext.Set<TAggregate>());
         }
 
-        // THE D19 PAIR, first half. This is the bug that made Pages' PUT return 200 and persist NOTHING, and
+        // THE READ-THEN-WRITE PAIR, first half. This is the bug that made Pages' PUT return 200 and persist NOTHING, and
         // every one of these five repositories has the shape that walks into it: read, then write the same row
         // back, on ONE repository instance — one store, one context.
         [Fact]
@@ -761,7 +761,7 @@ namespace Stomme.Tests
             await Assert.ThrowsAsync<InvalidOperationException>(() => store.UpdateAsync(rebuilt));
         }
 
-        // THE D19 PAIR, second half: the shape the repositories actually use — read through a SESSION (its own
+        // THE READ-THEN-WRITE PAIR, second half: the shape the repositories actually use — read through a SESSION (its own
         // context), write through the store — persists.
         [Fact]
         public async Task A_session_read_then_a_store_write_persists()
@@ -938,7 +938,7 @@ namespace Stomme.Tests
         protected override LogAggregate NewAggregate() => NewLog(1, "Error", DateTime.UtcNow);
 
         // ILogRepository has no update path at all, so this mutation is hypothetical for the product — it
-        // exists to exercise the SEAM's contract, which is what the D19 pair in the base is about. Level is
+        // exists to exercise the SEAM's contract, which is what the read-then-write pair in the base is about. Level is
         // chosen because it is a filter column: if it failed to persist, the viewer's Level filter would
         // silently disagree with the row it is filtering.
         protected override LogAggregate RebuildMutated(int id)
@@ -1083,7 +1083,7 @@ namespace Stomme.Tests
         protected override ProfileAggregate NewAggregate() => NewProfile(1, "Address");
 
         // IsRequired false -> true: the write ProfileController.Put makes after reading to authorize, i.e.
-        // exactly the read-then-write pair the D19 tests are about.
+        // exactly the read-then-write pair the read-then-write tests are about.
         protected override ProfileAggregate RebuildMutated(int id)
         {
             var model = ProfileMapper.ToModel(NewAggregate());
@@ -1172,7 +1172,7 @@ namespace Stomme.Tests
         protected override SiteTaskAggregate NewAggregate() => NewSiteTask(1, "Reindex", isCompleted: false, DateTime.UtcNow);
 
         // IsCompleted false -> true: THE write SiteTaskJob makes, and the one that must persist or the job
-        // re-runs the same task forever. It is also the exact read-then-write shape D19 is about — the job
+        // re-runs the same task forever. It is also the exact read-then-write shape the shared pair is about — the job
         // reads the pending queue, runs each task, then writes it back completed.
         protected override SiteTaskAggregate RebuildMutated(int id)
         {
@@ -1276,7 +1276,7 @@ namespace Stomme.Tests
         protected override NotificationAggregate NewAggregate() => NewNotification(1, "subject");
 
         // IsDelivered false -> true: THE write NotificationJob makes after sending, and the one that must
-        // persist or the notification is delivered again on every run. Read-then-write, i.e. the D19 shape.
+        // persist or the notification is delivered again on every run. Read-then-write, the shape the shared pair covers.
         protected override NotificationAggregate RebuildMutated(int id)
         {
             var model = NotificationMapper.ToModel(NewAggregate());

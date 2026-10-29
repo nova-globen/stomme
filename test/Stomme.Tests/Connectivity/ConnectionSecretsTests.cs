@@ -25,7 +25,7 @@ namespace Stomme.Tests.Connectivity
     /// PostgreSQL and RavenDB: the declared fields are stored under the closed key grammar and resolved by name; a blank
     /// value leaves a field as it was; an undeclared field is refused BEFORE anything is written; a row whose protected value
     /// no longer unprotects reads as Unreadable, typed, never a throw; a delete removes every key; and the settings API - the
-    /// door BL-147 closed - neither lists nor overwrites nor deletes a connection secret for the Host (ConnectionSecretSettingApiBypassTests).
+    /// door that was once open - neither lists nor overwrites nor deletes a connection secret for the Host (ConnectionSecretSettingApiBypassTests).
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

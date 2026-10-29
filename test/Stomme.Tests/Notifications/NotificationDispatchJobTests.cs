@@ -27,7 +27,7 @@ namespace Stomme.Tests.Notifications
     /// pipeline is authoritative. Queued -&gt; delivered; a failing channel backs off (30 s, then 60 s) on the scalar retry
     /// state; retries stop at 3 and the request completes Failed; quiet hours re-arm <c>NextAttemptOn</c> without consuming
     /// a retry; a digest hold is flushed by the hourly pass; the retention purge removes only terminal requests older than
-    /// the site setting. Carries the 6 facts ported from the predecessor platform <c>NotificationDigestJobTests.cs</c> (harness swapped: the
+    /// the site setting. Carries 6 digest facts (the
     /// File store + the job's per-site pass for the mediator command and <c>NotificationDigestJob</c>). The last case
     /// DRIVES the real <see cref="NotificationDispatchJob"/> on installed SQLite, PostgreSQL and RavenDB hosts.
     /// </summary>
@@ -307,7 +307,7 @@ namespace Stomme.Tests.Notifications
             Assert.Single(webhook.Sent);
         }
 
-        // ---- ported: the predecessor platform NotificationDigestJobTests (6) -------------------------------------------------------
+        // ---- digest facts (6) -------------------------------------------------------------------------------------------------------
 
         [Fact]
         public async Task DigestMode_SuppressesImmediateDelivery_RecordsDigestQueuedAndKeepsQueued()
@@ -322,9 +322,9 @@ namespace Stomme.Tests.Notifications
 
             // Provider must not have been called.
             Assert.Empty(webhook.Sent);
-            // Outcome signals digest queuing (harness swap: the pass result, not the predecessor platform's DeliveryOutcome).
+            // Outcome signals digest queuing (the pass result, not a per-delivery outcome).
             Assert.Equal(1, result.DigestHeld);
-            // No retry consumed (the predecessor platform: no retry message scheduled).
+            // No retry consumed (no retry is scheduled).
             var request = (await harness.GetAsync<NotificationRequestAggregate>(id))!;
             Assert.Equal(0, request.AttemptCount);
             // Request is still Queued with a DigestQueued attempt recorded, and held for the flush.
@@ -346,7 +346,7 @@ namespace Stomme.Tests.Notifications
             await harness.RunSiteAsync();
             Assert.Empty(webhook.Sent);
 
-            // Run the digest flush (harness swap: the next hourly pass of the dispatch job).
+            // Run the digest flush (the next hourly pass of the dispatch job).
             harness.Clock.Advance(TimeSpan.FromHours(1));
             var result = await harness.RunSiteAsync();
 
@@ -475,7 +475,7 @@ namespace Stomme.Tests.Notifications
             return (harness, webhook);
         }
 
-        // the predecessor platform's BuildHost: the capturing webhook provider only; SeedAsync adds the template, channel and preferences.
+        // The capturing webhook provider only; SeedAsync adds the template, channel and preferences.
         private static Task<(NotificationPipelineHarness Harness, FakeTransportChannel Webhook)> BuildHostAsync() =>
             StartAsync(seedTemplate: false, seedChannel: false);
 
@@ -514,7 +514,7 @@ namespace Stomme.Tests.Notifications
     }
 
     /// <summary>
-    /// The real <see cref="NotificationDispatchJob"/> DRIVEN on an installed host per store (D30 bar): a Shared-port
+    /// The real <see cref="NotificationDispatchJob"/> driven on an installed host per store: a Shared-port
     /// dispatch through the production dispatcher with the production recipient constraint (the site's REAL users and
     /// settings), then <c>ExecuteJobAsync</c> exactly as <c>HostedServiceBase</c> calls it (a job scope with the tenant set,
     /// no <c>HttpContext</c>, no <c>IEventBus</c>) delivers over the SHIPPED in-app channel into the inherited mailbox,

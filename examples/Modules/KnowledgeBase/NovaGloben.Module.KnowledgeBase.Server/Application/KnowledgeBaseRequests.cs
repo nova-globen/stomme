@@ -159,7 +159,7 @@ namespace NovaGloben.Module.KnowledgeBase.Application
     ///   <item>an INTEGRATION EVENT goes out on the host's bus when messaging is on.</item>
     /// </list>
     /// The publish is committed at step 2, so a meter, a notification or a bus that fails afterwards is logged and does not
-    /// undo it - the producer's decision D102 leaves to it.
+    /// undo it; the producer decides that.
     /// </summary>
     [Requires(KnowledgeBasePermissions.Publish)]
     public sealed record PublishArticleCommand(Guid ArticleId) : ICommand<ArticleModel>;

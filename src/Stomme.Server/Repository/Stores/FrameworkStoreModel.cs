@@ -8,8 +8,7 @@ namespace Stomme.Repository.Stores
     /// Maps the framework store's aggregates onto the harvested tenant schema. The aggregates share
     /// <see cref="TenantDBContext"/> with the not-yet-migrated entities, so a migrated cluster and an
     /// unmigrated one keep using the same per-request connection, the same audit hooks
-    /// (<see cref="DbContextUtils"/>) and the same migration set — no schema change, no data migration
-    /// (D3).
+    /// (<see cref="DbContextUtils"/>) and the same migration set — no schema change, no data migration.
     /// </summary>
     public static class FrameworkStoreModel
     {
@@ -80,7 +79,7 @@ namespace Stomme.Repository.Stores
             // authentication path. There is no conflict to resolve: Identity maps IdentityUser and friends to
             // the AspNetUser* tables, these map Stomme's own User/Role/UserRole tables, and no navigation
             // crosses between the two models. Do not "unify" them here — that is an identity cutover, a
-            // separate owner-level decision.
+            // separate, deliberate decision.
             builder.Entity<UserAggregate>(entity =>
             {
                 entity.ToTable(database.RewriteName("User"));
@@ -222,7 +221,7 @@ namespace Stomme.Repository.Stores
             //
             // These two are NOT leaves and that is the whole point. SiteGroupMember.SiteGroup was a MAPPED
             // navigation into the SiteGroup CONTRACT, so mapping SiteGroupAggregate here while that navigation
-            // stayed mapped made EF rediscover SiteGroup through it and claim this very table — the D19
+            // stayed mapped made EF rediscover SiteGroup through it and claim this very table — the model-rediscovery
             // blocker, OBSERVED for this cluster rather than quoted:
             //
             //   "The entity type 'SiteGroup' cannot be added to the model because a type with the same name
@@ -265,11 +264,11 @@ namespace Stomme.Repository.Stores
             // Visitor, UrlMapping and PageModule. Tenant-side only, like Permission, the leaf
             // clusters and the SiteGroup pair.
             //
-            // These three needed NO navigation severed, and that is what made them a group: D22 already cut
-            // Visitor.User, and D19/D21 already cut PageModule.Page and PageModule.Module while deliberately
-            // leaving the PageModule ROW behind. UrlMapping never had one. So unlike D45, mapping these
-            // aggregates could not re-open the D19 blocker from a contract that still carried a navigation —
-            // the [NotMapped] attributes those decisions added are what make this increment a row move and
+            // These three needed NO navigation severed, and that is what made them a group: Visitor.User,
+            // PageModule.Page and PageModule.Module had already been cut while deliberately
+            // leaving the PageModule ROW behind. UrlMapping never had one. So unlike the SiteGroup pair, mapping these
+            // aggregates could not re-open the model-rediscovery blocker from a contract that still carried a navigation —
+            // the [NotMapped] attributes already in place are what make this a row move and
             // nothing more. The blockers stay pinned reflectively (see the *MustNotBeResurrected* tests).
             builder.Entity<VisitorAggregate>(entity =>
             {
@@ -308,18 +307,18 @@ namespace Stomme.Repository.Stores
                 // NOTE what is NOT configured: a HasOne(...).WithMany() to PageAggregate or ModuleAggregate.
                 // The database keeps both foreign keys — fk_page_module_page (cascade) and fk_page_module_module
                 // (no action) — but the MODEL references both by id only. Mapping either
-                // relationship would put a navigation back and re-open the blocker D19 and D21 closed.
+                // relationship would put a navigation back and re-open the blocker that severing those navigations closed.
                 entity.Ignore(item => item.Version);
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
             // Folder. Tenant-side only, like Permission, the leaf clusters, the SiteGroup
-            // pair and the D47 three.
+            // pair and the Visitor/UrlMapping/PageModule three.
             //
             // Folder is NOT a leaf, and File.Folder was the reason — a MAPPED navigation from the File
             // CONTRACT into the Folder contract. While it stayed mapped, mapping FolderAggregate here made EF
-            // rediscover Folder through it and claim this very table, exactly as D45's SiteGroupMember.SiteGroup
-            // did. OBSERVED for this cluster rather than inherited from D45's write-up:
+            // rediscover Folder through it and claim this very table, exactly as SiteGroupMember.SiteGroup
+            // did. OBSERVED for this cluster rather than inherited from another cluster's write-up:
             //
             //   "The entity type 'Folder' cannot be added to the model because a type with the same name
             //    already exists ... 'folder' cannot be used for entity type 'FolderAggregate' since it is being
@@ -331,7 +330,7 @@ namespace Stomme.Repository.Stores
             // production places, including the render path (Pages/Files.cshtml.cs). See
             // src/Stomme.Server/README.md (persistence seam).
             //
-            // The FILE row followed in D49 — see ConfigureFileAggregate below. Until then it stayed a DbSet on
+            // The FILE row followed later — see ConfigureFileAggregate below. Until then it stayed a DbSet on
             // TenantDBContext because its .ToLower() reads had no portable spelling (src/Stomme.Server/README.md persistence seam).
             builder.Entity<FolderAggregate>(entity =>
             {
@@ -351,7 +350,7 @@ namespace Stomme.Repository.Stores
             // which is the compiler's proof that it moved.
             //
             // NOTE there is no navigation to configure in EITHER direction, and that is what made this
-            // mapping trivial where Folder's was not: D48 had already severed File.Folder to [NotMapped] at
+            // mapping trivial where Folder's was not: File.Folder had already been severed to [NotMapped] at
             // the CONTRACT, because while it stayed mapped EF rediscovered the Folder contract through it and
             // claimed the table FolderAggregate owns. FileRepository stitches the member on by hand.
             //
@@ -372,10 +371,10 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // The SearchContent cluster — Phase 3's last. FOUR tables, tenant-side only, so none of them
+            // The SearchContent cluster — the last to cross. FOUR tables, tenant-side only, so none of them
             // is mapped by ConfigureMasterFrameworkStore and none should be.
             //
-            // NONE of the four is IAuditable and none is IDeletable, and unlike D44/D48/D49 that was not a
+            // NONE of the four is IAuditable and none is IDeletable, and unlike the clusters before it that was not a
             // correction to a lying EntityBuilder — all four builders extend BaseEntityBuilder and the live
             // PostgreSQL tables match them exactly (13/4/6/3 columns, zero dropped stubs in pg_attribute).
             // The created_on/modified_on columns below are PLAIN columns the application sets, not stamps:
@@ -385,7 +384,7 @@ namespace Stomme.Repository.Stores
             //
             // The three contract navigations that would otherwise resurrect these types through the tenant
             // model — SearchContent.SearchContentProperties, SearchContentWord.SearchWord and
-            // SearchContentWord.SearchContent — are [NotMapped] on the contracts (D45's mechanism).
+            // SearchContentWord.SearchContent — are [NotMapped] on the contracts (the same mechanism as the other severed navigations).
             builder.Entity<SearchContentAggregate>(entity =>
             {
                 entity.ToTable(database.RewriteName("SearchContent"));
@@ -495,7 +494,7 @@ namespace Stomme.Repository.Stores
                 // NOTE what is NOT configured: a HasOne(...).WithMany() to JobAggregate. The database keeps its
                 // cascading foreign key on job_id — the migration created it and nothing here drops it — but the
                 // MODEL references the job by id only. Mapping the relationship would put a navigation
-                // back and let EF rediscover Job through JobLog.Job (D45's blocker), which is why that navigation
+                // back and let EF rediscover Job through JobLog.Job (the model-rediscovery blocker), which is why that navigation
                 // is [NotMapped] on the contract.
                 entity.Ignore(item => item.Version);
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
@@ -563,11 +562,11 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // Tenant + Alias — the routing core, and the FINAL master-bookkeeping cluster of the wave. MASTER-
+            // Tenant + Alias — the routing core, and the FINAL master-bookkeeping cluster. MASTER-
             // side ONLY like Theme, ModuleDefinition and the Job/JobLog pair: the harvested MasterDBContext held
             // DbSet<Tenant> and DbSet<Alias>, the master migration set creates both tables, and no tenant database
             // has them. So they are mapped HERE and NOT in ConfigureFrameworkStore. When these land, the compiler's
-            // proof that D52 is complete is that MasterDBContext holds ZERO content DbSets.
+            // proof that the move is complete is that MasterDBContext holds ZERO content DbSets.
             //
             // Both verified column-for-column against the live migrated PostgreSQL database (stomme-pg-44357, host
             // 45432), where the two EntityBuilders LIE by omission:
@@ -583,7 +582,7 @@ namespace Stomme.Repository.Stores
             // No navigation is mapped in either direction: the relational FK_Alias_Tenant stays in the DB (the
             // migration created it, nothing here drops it) but the MODEL references the tenant by id only.
             // Alias has no Tenant/Site navigation on its contract, so — unlike SiteGroup or Folder/File
-            // (D48/D49) — there was no mapped navigation to sever and no D19 model-rediscovery blocker to hit.
+            // pairs — there was no mapped navigation to sever and no model-rediscovery blocker to hit.
             builder.Entity<TenantAggregate>(entity =>
             {
                 entity.ToTable(database.RewriteName("Tenant"));

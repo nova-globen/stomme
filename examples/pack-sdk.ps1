@@ -1,9 +1,9 @@
 #!/usr/bin/env pwsh
-# Reliable-modularity Phase 4: INDEPENDENCE packaging.
+# Independence packaging: the module-facing SDK packed to a local feed.
 #
 # Packs the Stomme module-facing SDK to a LOCAL NuGet feed (examples/local-feed), then restores +
 # builds the storage-blind smoke module (examples/_sdk-smoke) against PACKAGES ONLY — proving a module
-# can compile with ZERO source/project references to Stomme (the owner's bar #1).
+# can compile with ZERO source/project references to Stomme.
 #
 # All packages are versioned off Directory.Build.props (<Version>). No dotnet clean / no obj deletion
 # (BLAZOR106). Run from the repo root: pwsh examples/pack-sdk.ps1
@@ -15,7 +15,7 @@ New-Item -ItemType Directory -Force -Path $feed | Out-Null
 
 # Stomme.Server and its WHOLE project closure, computed from the project references: the hand-kept list that
 # stood here held 17 of 28 projects and missed the engine and the cryptography library, so the packed Stomme.Server
-# could not be restored from this feed (measured 2026-09-30).
+# could not be restored from this feed (measured).
 & pwsh -NoProfile -File (Join-Path $root 'scripts/pack-framework.ps1') -Output $feed
 if ($LASTEXITCODE -ne 0) { throw 'pack failed: the framework' }
 

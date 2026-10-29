@@ -30,7 +30,7 @@ namespace Stomme.Modules.Sessions.Services
     /// <summary>The BROWSER side: HTTP to <c>api/Session</c>.</summary>
     public class SessionService : ServiceBase, ISessionService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
+        /// <summary>A refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public SessionService(HttpClient http, SiteState siteState) : base(http, siteState) { }

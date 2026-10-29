@@ -17,8 +17,8 @@
     <icon>icon.png</icon>
     <tags>stomme</tags>
     <!-- This group mirrors Stomme.Client.csproj's PackageReferences at the versions in
-         Directory.Packages.props. Reconciled 2026-08-02: Radzen.Blazor dropped (removed from the
-         code at D11) and the five references the csproj had since gained added — the drift had left a
+         Directory.Packages.props. Radzen.Blazor is not listed (it was removed from the
+         code) and the five references the csproj gained since are — the drift had left a
          consumer restoring a DLL whose FluentUI/gRPC/SignalR references no package satisfied. NOTE the
          LIVE packaging path (examples/pack-sdk.ps1) runs `dotnet pack` on the csproj and generates
          its dependencies; this hand nuspec serves the legacy release.cmd path only. -->

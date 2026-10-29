@@ -6,7 +6,7 @@ using Stomme.Shared;
 // FILE NAME containing "Stomme" (AssemblyExtensions.IsStommeAssembly), so shipping
 // Stomme.Persistence.RavenDb.dll into the host's /bin subjects every type in it to
 // AddStommeServices() — which would register this library's hosted services and Rebus transport in every
-// host, whether or not the RavenDB provider was ever selected. See docs/decisions.md D13.
+// host, whether or not the RavenDB provider was ever selected.
 [assembly: StommeFrameworkLibrary]
 
 namespace Stomme.Shared;

@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 12 (D110 Q6) - the datasets over the real MCP endpoint on an installed host, on PostgreSQL and
+    /// The datasets over the real MCP endpoint on an installed host, on PostgreSQL and
     /// RavenDB with <c>Mcp:Server:Enabled</c> and the <c>datasets.mcp</c> flag turned on through configuration: the Host
     /// sees the resources and the tool, reads the list and one summary (metadata only), queries an open dataset's rows
     /// and is refused a Restricted one's; a registered user sees neither the tool nor a way to call it. With the flag at

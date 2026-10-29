@@ -49,9 +49,9 @@ namespace Stomme.Modules.FeatureManagement.Startup
             // SQLite (EF Core) side-car on a relational install, the install's RavenDB document store on a
             // document install, so a Raven site keeps its flags in its document store rather than a stray SQLite
             // file that a document install never provisions. This is a COMPOSITION-time decision (read once here),
-            // exactly as D62 selects the OpenIddict store provider: the open-generic IRepository<,> this module
+            // exactly as the OpenIddict store provider is selected: the open-generic IRepository<,> this module
             // owns cannot be swapped per-resolve the way a single closed store interface can (MS.DI has no
-            // open-generic factory registration). Consequence — the SAME honest limit D62 carries: the provider
+            // open-generic factory registration). Consequence — the same limit applies here: the provider
             // must be persisted in config by the time the host boots, which is true for every POST-INSTALL boot
             // (the wizard restarts the host after writing DefaultDBType). Pre-install the seeder defers anyway
             // (the master store is not ready), so no flag is read on the fresh-boot pass that still sees the
@@ -73,7 +73,7 @@ namespace Stomme.Modules.FeatureManagement.Startup
                 // in the composition root BEFORE this module startup ran — so the flags land in the install's
                 // document store, collection-namespaced (FeatureFlags/*, FeatureFlagAudits/*) and tenant-filtered
                 // by the TenantId field, exactly the SCOPE the EF model has (one installation-wide store, tenant
-                // query filter). This is the re-point D28 forbids the FRAMEWORK store extension from doing (it
+                // query filter). This is the re-point the FRAMEWORK store extension must not do (it
                 // would clobber the feature flags) but is precisely what the FEATURE module wants on a Raven
                 // install: the module owns this open generic, so pointing it at RavenRepository swaps only its
                 // own flags, never the framework's closed stores.
@@ -82,7 +82,7 @@ namespace Stomme.Modules.FeatureManagement.Startup
 
                 if (ModuleRepositoryProviderRegistry.ResolvesTo<Stomme.Database.File.FileDatabase>(databaseType))
                 {
-                    // BL-110 (b), MEASURED: on the File store the branch above composed RavenRepository<,> with no RavenDB
+                    // Measured: on the File store the branch above composed RavenRepository<,> with no RavenDB
                     // store, so the FIRST flag evaluation threw ("Unable to resolve service for type IDocumentStore").
                     // The File store is the storage-blind module provider, so the two aggregates take the same
                     // path every storage-blind module takes: CLOSED registrations (which win over the open generic
@@ -110,7 +110,7 @@ namespace Stomme.Modules.FeatureManagement.Startup
 
         /// <summary>
         /// The configured database provider type, read from config the same way
-        /// <c>ConfigManager.GetDatabaseType()</c> and D62's OpenIddict branch read it (empty resolves to the
+        /// <c>ConfigManager.GetDatabaseType()</c> and the OpenIddict branch read it (empty resolves to the
         /// SqlServer default; the pre-6.1.5 <c>, Stomme.Database.*</c> namespace is rewritten to
         /// <c>, Stomme.Server</c>). Read at composition time so the flag store provider matches the database
         /// provider.

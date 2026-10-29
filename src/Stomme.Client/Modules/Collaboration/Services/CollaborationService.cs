@@ -23,7 +23,7 @@ namespace Stomme.Modules.Collaboration.Services
 
         Task<CollaborationOutcome<bool>> CloseSessionAsync(Guid sessionId);
 
-        // ---- an editor's calls (increment 12): the panel the pipeline editor and the dashboard builder host ----------------
+        // ---- an editor's calls: the panel the pipeline editor and the dashboard builder host ----------------
 
         /// <summary>Opens or joins the resource's session; a refusal (switched off, not editable) means: no collaboration here.</summary>
         Task<CollaborationOutcome<EditSessionView>> JoinAsync(string resourceType, string resourceId);

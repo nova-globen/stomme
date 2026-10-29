@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Licensing
 {
     /// <summary>
-    /// D105 design item 9, DRIVEN over real HTTP on an installed SQLite site: a paid feature is a
+    /// Driven over real HTTP on an installed SQLite site: a paid feature is a
     /// <see cref="FeatureDescriptor"/> with a required entitlement, a <c>[Requires(Feature)]</c> on the mediator REQUEST, and
     /// a controller that merely dispatches it (<see cref="PaidFeatureTestController"/>). The paywall is the mediator's
     /// <c>AuthorizationBehavior</c> -&gt; <c>PermissionRowAccessGuard</c> -&gt; <c>FeatureEvaluatorBridge</c> -&gt;

@@ -62,7 +62,7 @@ namespace Stomme.Repository.Stores
         /// <b>This column is why the two providers agree on the page-path fallback lookup.</b>
         /// <see cref="PageRepository.GetPageAsync(string, int)"/> filtered <see cref="Path"/> raw with
         /// <c>==</c>, which means DIFFERENT things behind the seam — case-SENSITIVE on PostgreSQL,
-        /// case-INSENSITIVE on RavenDB (the D48/D57 mechanism). That read is the render RESOLVE fallback
+        /// case-INSENSITIVE on RavenDB. That read is the render RESOLVE fallback
         /// (<c>SiteRouter.razor</c>, reached when the in-memory <c>OrdinalIgnoreCase</c> match at line 227
         /// misses) and the API page lookup (<c>PageController.Get</c>). The repository now normalizes its
         /// argument and filters THIS column with plain <c>==</c>, which says the same thing on both providers.

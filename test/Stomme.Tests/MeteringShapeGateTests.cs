@@ -27,7 +27,7 @@ namespace Stomme.Tests
     /// module never declared (so no row exists and the bridge denies for ever, or - worse - a bare two-segment key
     /// that <c>PermissionKeys.Declare</c> silently ignores); a type outside the module reaching into its domain,
     /// which is what makes the port swappable; a second <c>IHostedService</c> that the assembly scan would register
-    /// as a singleton and run once for whichever tenant happened to be ambient - the shape the predecessor platform's QuotaSeeder had.
+    /// as a singleton and run once for whichever tenant happened to be ambient - the shape an earlier version's QuotaSeeder had.
     /// </remarks>
     public class MeteringShapeGateTests
     {

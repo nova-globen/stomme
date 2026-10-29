@@ -20,7 +20,7 @@ using Microsoft.Extensions.Options;
 
 namespace Stomme.Modules.Pipelines.Steps
 {
-    /// <summary>The target type of a mapped field (the predecessor platform's <c>FieldType</c>).</summary>
+    /// <summary>The target type of a mapped field.</summary>
     public enum MappedFieldType
     {
         String,
@@ -35,19 +35,19 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// the predecessor platform's Transformations as one engine step: field mappings with typed conversion and defaults, computed
+    /// Field transformations as one engine step: field mappings with typed conversion and defaults, computed
     /// fields as Liquid templates over the record (Fluid, bounded by the Notifications renderer's options - no host
     /// access by construction), pass-through of unmapped fields, and an error threshold the step fails above (the
     /// partial output stays in the result for diagnosis). The template aggregate is not ported: the mappings
-    /// ARE the step's inputs; the predecessor platform's Format references (a separate module) and its JavaScript computed fields are
-    /// not carried in this increment.
+    /// ARE the step's inputs; Format references (a separate module) are
+    /// not carried.
     /// <para>
     /// <b>Mappings</b>, one per line: <c>source.path =&gt; destination : Type = default</c>, the type one of
     /// <see cref="MappedFieldType"/> (String when omitted), the default optional and used when the source is absent
     /// or does not convert. <b>Computed</b>, one per line: <c>destination = {{ liquid over the record's fields }}</c>,
     /// or <c>destination = js: expression</c> over the same fields in the bounded JavaScript sandbox - refused as an
     /// error unless <c>Pipelines:Scripts:Enabled</c>. A computed field is text unless it names a type, as a mapping does
-    /// (<c>total : Number = js: price * quantity</c>, BL-229 - n8n's Edit Fields types every field it sets): the result
+    /// (<c>total : Number = js: price * quantity</c>, as n8n's Edit Fields types every field it sets): the result
     /// converted, a result that does not convert an error, and one that is empty no value. <b>Leave out</b> names the fields
     /// passed through that are not (n8n's "all input fields except"; with a mapping from the old name, its Rename Keys).
     /// </para>

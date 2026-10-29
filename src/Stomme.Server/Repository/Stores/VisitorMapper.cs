@@ -8,7 +8,7 @@ namespace Stomme.Repository.Stores
     /// live schema actually has are mapped.
     /// </summary>
     /// <remarks>
-    /// <see cref="Visitor.User"/> is deliberately absent: it is <c>[NotMapped]</c> view state that D22 severed
+    /// <see cref="Visitor.User"/> is deliberately absent: it is <c>[NotMapped]</c> view state that was severed
     /// from an EF navigation to an id, and <see cref="VisitorRepository.GetVisitorsAsync"/> re-populates it
     /// from the User aggregate after this mapper has run. Round-tripping a Visitor through here LOSES User by
     /// design — <see cref="Visitor.UserId"/> is the persisted reference. Pinned by

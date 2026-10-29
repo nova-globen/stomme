@@ -62,7 +62,7 @@ namespace Stomme.Models
         /// </summary>
         /// <remarks>
         /// <para>
-        /// <b>[NotMapped] since D48: this is VIEW STATE, not an EF navigation.</b> The Folder cluster is on the
+        /// <b>[NotMapped]: this is VIEW STATE, not an EF navigation.</b> The Folder cluster is on the
         /// persistence seam and <see cref="FolderId"/> is the persisted reference. While this stayed a
         /// mapped navigation, EF rediscovered the <see cref="Folder"/> contract through it and claimed the
         /// table <c>FolderAggregate</c> owns, breaking the model at startup:
@@ -74,7 +74,7 @@ namespace Stomme.Models
         /// <para>
         /// <b>It is still POPULATED on every read path</b> — <c>FileRepository</c> fetches the folder by id and
         /// stitches it on, exactly as <c>SiteGroupMemberRepository</c> does for SiteGroupMember.SiteGroup
-        /// (D45) and <c>PageModuleRepository</c> does for PageModule.Page/Module. It has to be:
+        /// and <c>PageModuleRepository</c> does for PageModule.Page/Module. It has to be:
         /// roughly thirty production reads dereference it, including the render path
         /// (<c>Pages/Files.cshtml.cs</c> reads <c>file.Folder.SiteId</c>, <c>.PermissionList</c>,
         /// <c>.ImageSizes</c> and <c>.CacheControl</c> to serve every static file). Pinned by

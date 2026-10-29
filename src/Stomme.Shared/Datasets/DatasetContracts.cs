@@ -28,10 +28,10 @@ namespace Stomme.Datasets
     }
 
     /// <summary>
-    /// The ONE classification order (D110 Q1): <c>Public &lt; Internal &lt; Confidential &lt; Restricted</c> - Restricted is
+    /// The ONE classification order: <c>Public &lt; Internal &lt; Confidential &lt; Restricted</c> - Restricted is
     /// PII, the top. A classification only ever ESCALATES on a refresh. For BOTH top levels raw rows are refused on
-    /// preview, as an export source and over MCP, and summaries are masked (the predecessor platform refused rows for Confidential alone
-    /// and ranked Restricted below it).
+    /// preview, as an export source and over MCP, and summaries are masked (refusing rows for Confidential alone
+    /// and ranking Restricted below it would leave PII exposed).
     /// </summary>
     public enum DataClassification
     {

@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.CloudUsage.Startup
 {
     /// <summary>
-    /// The CloudUsage module's composition (BL-97 increments 2 to 5): the three storage-blind, tenant-owned aggregates on
+    /// The CloudUsage module's composition: the three storage-blind, tenant-owned aggregates on
     /// whichever store the install chose, their closed repositories, the cost normaliser, the per-source cost
     /// adapters over the connection-backed payload source, the connection resolver over Connectivity, the sync, the
     /// commands and queries, the alert service with its two notification templates, the page's service, CloudUsage's side
@@ -58,7 +58,7 @@ namespace Stomme.Modules.CloudUsage.Startup
             services.AddScoped<ICloudCostAlertMarkerRepository, CloudCostAlertMarkerRepository>();
             services.TryAddSingleton<ICloudCostNormalizer, CloudCostNormalizer>();
 
-            // The adapters (increment 3): the three clouds' native payloads, and one SaaS/generic-REST adapter per source,
+            // The adapters: the three clouds' native payloads, and one SaaS/generic-REST adapter per source,
             // all over the connection-backed payload source - which reaches the network only through the query's host egress.
             services.TryAddSingleton<ICloudCostPayloadSource, ConnectorCostPayloadSource>();
             services.TryAddEnumerable(ServiceDescriptor.Singleton<ICloudCostProvider, AzureCostProvider>());
@@ -73,7 +73,7 @@ namespace Stomme.Modules.CloudUsage.Startup
             services.TryAddSingleton<ICloudCostProviderRegistry, CloudCostProviderRegistry>();
             services.AddScoped<ICloudCostConnectionResolver, CloudCostConnectionResolver>();
 
-            // The application (increment 4): the one sync path, the commands and queries, the alerts and their templates.
+            // The application: the one sync path, the commands and queries, the alerts and their templates.
             services.AddScoped<ICloudCostSyncService, CloudCostSyncService>();
             services.AddScoped<IRequestHandler<SyncCloudCostsCommand, CloudCostSyncView>, SyncCloudCostsCommandHandler>();
             services.AddScoped<IRequestHandler<SetCloudBudgetCommand, CloudBudgetView>, SetCloudBudgetCommandHandler>();
@@ -90,10 +90,10 @@ namespace Stomme.Modules.CloudUsage.Startup
             // Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).
             services.AddTransient<ICloudUsageService, ServerCloudUsageService>();
 
-            // CostOptimization's cloud-cost read port (increment 5): the module that holds the ledger implements it.
+            // CostOptimization's cloud-cost read port: the module that holds the ledger implements it.
             services.AddScoped<ICloudCostSignalSource, CloudUsageCloudCostSignalSource>();
 
-            // The "Cloud Cost Analytics" board (increment 5): per site on the boot path, ONLY while DemoContent:Enabled is true
+            // The "Cloud Cost Analytics" board: per site on the boot path, ONLY while DemoContent:Enabled is true
             // (default off) - while it is off the reconciler is not even registered, so a stock install is untouched.
             if (DemoContentSettings.Enabled(HostCompositionConfiguration(services)))
             {

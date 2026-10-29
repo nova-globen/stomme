@@ -35,8 +35,8 @@ namespace Stomme.Tests
     /// discovers every <c>IIntegrationEventHandler</c> in loaded Stomme assemblies (this test assembly
     /// included), and a constructor dependency on a test-local type breaks
     /// <c>HostCompositionTests</c>' <c>ValidateOnBuild</c> composition (measured).
-    /// In-memory transport (the <c>Messaging:Enabled</c> default): the transport leg is BL-36(a)'s
-    /// proven ground; this test's subject is the PRODUCER.
+    /// In-memory transport (the <c>Messaging:Enabled</c> default): the transport leg is covered by the
+    /// transport's own tests; this test's subject is the PRODUCER.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     public class GuestbookIntegrationEventLiveTests

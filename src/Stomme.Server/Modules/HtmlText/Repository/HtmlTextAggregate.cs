@@ -9,12 +9,12 @@ namespace Stomme.Modules.HtmlText.Repository
     /// The HtmlText aggregate root — the persistence-side model of the module's <c>html_text</c> table, reachable
     /// only through <see cref="IHtmlTextStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads). The
     /// module's LEAF cluster on the persistence seam, mapped onto the EXISTING table the EF migration creates
-    /// (D3 — no schema change), so a relational install and a document install serve the same content with no data
+    /// (no schema change), so a relational install and a document install serve the same content with no data
     /// migration between them.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is the <c>Permission</c>/D24 aggregate+mapper pattern, NOT a "move a DbSet" job: HtmlText's wire model
+    /// This is the <c>Permission</c> aggregate+mapper pattern, NOT a "move a DbSet" job: HtmlText's wire model
     /// (<see cref="Models.HtmlText"/>) is a SHARED contract (<c>src/Stomme.Shared</c>) the client and controllers
     /// exchange, so the persisted shape is a separate type mapped at the <see cref="HtmlTextRepository"/> boundary
     /// exactly as <c>PermissionAggregate</c> is.
@@ -24,7 +24,7 @@ namespace Stomme.Modules.HtmlText.Repository
     /// (<c>HtmlTextEntityBuilder</c>) extends <c>AuditableBaseEntityBuilder</c> and calls
     /// <c>AddAuditableColumns</c> — the audit quartet only; there is no <c>is_deleted</c>. <c>DbContextUtils</c>
     /// decides which stamps to apply by RUNTIME TYPE TEST, so declaring <see cref="IDeletable"/> here would compile
-    /// and then write columns that do not exist (the D44 trap). One module keeps MANY versioned rows
+    /// and then write columns that do not exist. One module keeps MANY versioned rows
     /// (<c>Versions</c> setting, default 5); the current content is the most recent by <see cref="CreatedOn"/>.
     /// </para>
     /// </remarks>

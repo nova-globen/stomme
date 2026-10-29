@@ -9,19 +9,19 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Env-overridable, defaulting to the <b>shared INFRA TIER UAT</b> instance
+    /// Env-overridable, defaulting to the <b>shared</b> instance
     /// (<c>192.168.10.20:5433</c>, password from <c>DEFAULT_PASSWORD</c>). The local <c>postgresql-x64-18</c>
-    /// Windows service was RETIRED 2026-07-23.
+    /// Windows service was retired.
     /// </para>
     /// <para>
     /// Overrides (each optional): <c>POSTGRES_TEST_HOST</c>, <c>POSTGRES_TEST_PORT</c>,
     /// <c>POSTGRES_TEST_USER</c>, <c>POSTGRES_TEST_PASSWORD</c>. The password falls back to <c>DEFAULT_PASSWORD</c>
-    /// (the infra credential, kept out of source) and finally to the retired local default, so a machine still
+    /// (a credential kept out of source) and finally to the retired local default, so a machine still
     /// running local PG keeps working with a single <c>POSTGRES_TEST_HOST=127.0.0.1</c> / <c>PORT=5432</c>.
     /// </para>
     /// <para>
     /// The account must be able to <c>CREATE DATABASE</c> — the render guard and several drives create a fresh
-    /// throwaway database per run (and drop it in teardown). The infra <c>postgres</c> superuser satisfies this.
+    /// throwaway database per run (and drop it in teardown). The <c>postgres</c> superuser satisfies this.
     /// </para>
     /// </remarks>
     internal static class PostgresTestEndpoint
@@ -62,8 +62,8 @@ namespace Stomme.Tests
         /// Best-effort force-drop of a throwaway database created by a test. Connects to the maintenance
         /// <c>postgres</c> database (you cannot drop the database you are connected to) and issues
         /// <c>DROP DATABASE ... WITH (FORCE)</c> (terminates lingering sessions; PostgreSQL 13+). A leftover
-        /// database is harmless, so any failure here is swallowed — never fail a test on cleanup. Against the
-        /// SHARED infra instance this matters more: a missed drop leaves a scratch DB others can see.
+        /// database is harmless, so any failure here is swallowed — never fail a test on cleanup. Against a
+        /// shared instance this matters more: a missed drop leaves a scratch DB others can see.
         /// </summary>
         public static void DropDatabase(string database)
         {

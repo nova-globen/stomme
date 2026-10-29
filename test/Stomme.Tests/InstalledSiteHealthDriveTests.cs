@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The D30 bar for BL-83: install a site on a REAL store, run a real probe pass, and serve the pages.
+    /// Install a site on a REAL store, run a real probe pass, and serve the pages.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -36,10 +36,10 @@ namespace Stomme.Tests
     /// mail server configured, so a Site-scope pass correctly runs nothing.
     /// </para>
     /// <para>
-    /// <b>What it does NOT assert, and why:</b> the module control's own markup. BL-79 measured that a clean-arch
+    /// <b>What it does NOT assert, and why:</b> the module control's own markup. Measured: a clean-arch
     /// Client module control emits nothing through the TestServer transport — the sibling Notifications module is
     /// absent the same way, while HtmlText's seam-module content renders on the same pipeline — so asserting it
-    /// here would fail for a reason that has nothing to do with this module. The BL-54 dead-click class therefore
+    /// here would fail for a reason that has nothing to do with this module. The dead-click class therefore
     /// remains un-excluded for this module's control and only a real browser can exclude it.
     /// </para>
     /// </remarks>
@@ -112,7 +112,7 @@ namespace Stomme.Tests
                 _output.WriteLine($"[{storeName}] minute row: subject={minute.Subject.Value} checks={minute.Checks} avail={minute.AvailabilityPercent} at={minute.PeriodStartUtc:o}");
 
                 // The value object came back as a value object, and the instant came back as UTC - the two things
-                // that differ per provider and that D102 measured going wrong.
+                // that differ per provider and that were measured going wrong.
                 Assert.Equal("stomme:store", minute.Subject.Value);
                 Assert.Equal(1, minute.Checks);
                 Assert.Equal(100d, minute.AvailabilityPercent);

@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// The help topic aggregate. Every case answers a measured refutation.
+    /// The help topic aggregate. Every case pins a behaviour that an earlier design got wrong.
     /// </summary>
     public class HelpTopicDomainTests
     {
@@ -42,7 +42,7 @@ namespace Stomme.Tests.Help
         [Fact]
         public void The_same_site_anchor_and_locale_in_TWO_TENANTS_are_two_different_rows()
         {
-            // BL-151's class, caught before it shipped: every tenant database numbers its sites from 1 and the module
+            // A tenant-scoping defect, caught before it shipped: every tenant database numbers its sites from 1 and the module
             // store is ONE store for the install, so a key without the tenant gives two tenants' topics one primary key.
             var other = TenantId.From(Guid.Parse("22222222-2222-2222-2222-222222222222"));
             var contribution = new HelpTopicContribution("page:admin/users", "en", "Users", "Manage users.");
@@ -74,7 +74,7 @@ namespace Stomme.Tests.Help
                 HelpTopicAggregate.Author(Tenant, 4, "page:x", "en", "T", new string('x', HelpTopicContribution.MaximumMarkdownCharacters + 1), Now));
         }
 
-        // ---- D103 refutation 7: an UNCHANGED seed writes NOTHING -------------------------------------------------
+        // ---- An UNCHANGED seed writes NOTHING -------------------------------------------------
 
         [Fact]
         public void An_unchanged_seed_update_changes_nothing_and_says_so()
@@ -85,7 +85,7 @@ namespace Stomme.Tests.Help
 
             Assert.False(topic.TryApplySeedUpdate(Contribution("Users", "Manage users."), Contributor, Now.AddDays(1)));
 
-            // the predecessor platform bumped BOTH on every call, so every boot rewrote every seeded row - and ContentVersion is part
+            // an earlier version bumped BOTH on every call, so every boot rewrote every seeded row - and ContentVersion is part
             // of the cache key, so every boot also invalidated every topic's cache.
             Assert.Equal(version, topic.ContentVersion);
             Assert.Equal(updated, topic.UpdatedOnUtc);
@@ -107,14 +107,14 @@ namespace Stomme.Tests.Help
             Assert.Equal(3, topic.ContentVersion);
         }
 
-        // ---- D103 refutation 6: a seed update is the OWNER'S alone -----------------------------------------------
+        // ---- A seed update belongs to the seed's contributor alone -----------------------------------------------
 
         [Fact]
         public void ANOTHER_contributor_cannot_update_a_seeded_topic()
         {
             var topic = Seeded();
 
-            // the predecessor platform's TryApplySeedUpdate never read SeedContributorId, so any contributor could rewrite any other's
+            // an earlier TryApplySeedUpdate never read SeedContributorId, so any contributor could rewrite any other's
             // topic - including a third-party package rewriting a framework one.
             Assert.False(topic.TryApplySeedUpdate(Contribution("Hijacked", "Somebody else's text."), "someone-else", Now.AddDays(1)));
             Assert.Equal("Users", topic.Title);
@@ -182,7 +182,7 @@ namespace Stomme.Tests.Help
         [Fact]
         public void Every_property_is_a_SCALAR_because_the_shared_context_maps_nothing_else()
         {
-            // D103 refutation 11: the predecessor platform's three "value objects" are plain records, so they fall through to EF's
+            // Three "value objects" declared as plain records, so they fall through to EF's
             // conventions inside an initializer whose error is SWALLOWED - a missed reshape would read as EMPTY
             // rather than fail. Zero value objects and zero collections is the shape that cannot go wrong quietly.
             var scalar = new[] { typeof(string), typeof(int), typeof(bool), typeof(Guid), typeof(DateTime), typeof(DateTime?), typeof(TenantId) };
@@ -226,7 +226,7 @@ namespace Stomme.Tests.Help
         [Fact]
         public void An_edit_bumps_the_version_and_UNPUBLISHING_returns_a_topic_to_a_draft()
         {
-            // the predecessor platform's UpdateContent_IncrementsVersion and Unpublish_RevertsToDraft, reconciled by name: the version is
+            // The behaviours of the earlier implementation's content-update and unpublish tests, reconciled by name: the version is
             // the cache key's moving part, so an edit that did not bump it would serve the old text.
             var topic = Seeded();
             Assert.Equal(1, topic.ContentVersion);

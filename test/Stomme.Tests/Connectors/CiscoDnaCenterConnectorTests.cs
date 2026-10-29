@@ -12,7 +12,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 4 - the predecessor platform's CiscoDnaCenterConnectorTests (8) by name over the port.</summary>
+    /// <summary>The CiscoDnaCenterConnectorTests cases (8), kept by name over the port.</summary>
     public sealed class CiscoDnaCenterConnectorTests
     {
         private const string Appliance = "https://dnac.example.com";

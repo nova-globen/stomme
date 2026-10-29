@@ -22,7 +22,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// The first sheet of a spreadsheet in the site's pipeline folder as RECORDS (BL-95's residue "XLSX file shapes"):
+    /// The first sheet of a spreadsheet in the site's pipeline folder as RECORDS:
     /// read by the parser the Datasets upload path already trusts - the package checked before it is opened (part count,
     /// declared sizes, the compression ratio), then read by SAX, the first row the column names, dates as dates - so a
     /// spreadsheet bomb is refused here exactly as it is at an upload. A <c>.csv</c> is read the same way. The records are the

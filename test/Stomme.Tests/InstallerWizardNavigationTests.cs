@@ -22,11 +22,11 @@ namespace Stomme.Tests
     /// WITHOUT an interactive &lt;Router&gt; — step changes set the internal <c>_step</c> field and update the
     /// URL cosmetically via <c>history.pushState</c> through JSInterop, because a
     /// <c>NavigationManager.NavigateTo</c> would REMOUNT the component and WIPE every collected wizard value
-    /// (measured in D86: Back reset the DB choice and re-ran OnInitialized). Nothing else pins this; a green
+    /// (measured: Back reset the DB choice and re-ran OnInitialized). Nothing else pins this; a green
     /// build cannot see the regression. These tests render the REAL Installer (with the REAL SqliteConfig DB
     /// control resolved reflectively from the ControlType string, exactly as the product does), drive the
     /// wizard Database → Account → Configure and back, and assert the three-part invariant:
-    ///   (a) collected field state survives Back/Back (the D86 wipe regression),
+    ///   (a) collected field state survives Back/Back (the wipe regression),
     ///   (b) bUnit's navigation manager recorded ZERO navigations — the load-bearing invariant, and
     ///   (c) the history.pushState/replaceState JSInterop calls WERE observed (the URL mechanism really ran).
     /// Validated in both directions: swapping GoToStep's pushState for NavigationManager.NavigateTo makes
@@ -104,7 +104,7 @@ namespace Stomme.Tests
             Assert.Equal("ConfigureModules", cut.Find("h2").TextContent.Trim());
             Assert.Contains("NoModulesToConfigure", cut.Markup);
 
-            // --- Back to Account: every collected account value must still be present (the D86 wipe
+            // --- Back to Account: every collected account value must still be present (the wipe
             // regression — a NavigateTo-based step change would have remounted and reset all of these).
             ClickButton(cut, "Back");
             Assert.Equal("ApplicationAdmin", cut.Find("h2").TextContent.Trim());
@@ -175,7 +175,7 @@ namespace Stomme.Tests
             cut.Find("input[maxlength='50']").Change(HostFullName); // full name (the sole 50-char field)
         }
 
-        // The email input carries the id its label names since BL-22's label sweep; before it, this found the
+        // The email input carries the id its label names since the label sweep; before it, this found the
         // one maxlength-256 account input without an id.
         private static AngleSharp.Dom.IElement FindEmailInput(IRenderedComponent<InstallerComponent> cut)
         {

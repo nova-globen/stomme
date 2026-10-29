@@ -48,10 +48,10 @@ public sealed class SystemAuditContext(string username = "") : IAuditContext
 /// <c>CreatedOn</c>/<c>ModifiedBy</c>. An aggregate implementing it would not be stamped at all.
 /// </para>
 /// <para>
-/// <b>Scope.</b> This covers <c>IAuditable</c> (<c>Created*/Modified*</c>) AND, since <b>D59</b>,
+/// <b>Scope.</b> This covers <c>IAuditable</c> (<c>Created*/Modified*</c>) AND
 /// <c>IDeletable</c> (<c>DeletedBy</c>/<c>DeletedOn</c>) via <see cref="StampDeleted"/>. The legacy
 /// <c>DbContextUtils</c> decides the delete transition by comparing the incoming <c>IsDeleted</c> against the
-/// value currently in the database — a load a document store avoids. D59's port reproduces the SAME observable
+/// value currently in the database — a load a document store avoids. This port reproduces the SAME observable
 /// outcome WITHOUT that load: the first transition to deleted is identified by
 /// <c>IsDeleted == true &amp;&amp; DeletedOn == null</c> (the stamp is written exactly once, then
 /// <c>DeletedOn</c> being set suppresses re-stamping on later saves), and a restore by

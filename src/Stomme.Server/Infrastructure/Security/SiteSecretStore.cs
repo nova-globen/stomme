@@ -12,9 +12,9 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// THE shared per-site secret store (BL-78 CORRECTION / D101 - one seam, not four): a credential a site-scoped
-    /// feature needs at runtime - a notification channel's webhook token, an MCP server's API key, BL-81's
-    /// and BL-96's credentials - is written here once, by REFERENCE KEY, and the feature's own aggregate stores only
+    /// THE shared per-site secret store (one seam, not four): a credential a site-scoped
+    /// feature needs at runtime - a notification channel's webhook token, an MCP server's API key, other features'
+    /// credentials - is written here once, by REFERENCE KEY, and the feature's own aggregate stores only
     /// that key, never the secret.
     /// </summary>
     /// <remarks>
@@ -92,7 +92,7 @@ namespace Stomme.Infrastructure.Security
     /// <summary>The Setting-backed <see cref="ISiteSecretStore"/>.</summary>
     public sealed class SiteSecretStore : ISiteSecretStore
     {
-        /// <summary>The <c>setting_name</c> column bound (200, verified on a live migrated PostgreSQL 2026-09-14).</summary>
+        /// <summary>The <c>setting_name</c> column bound (200, verified on a live migrated PostgreSQL).</summary>
         public const int MaxReferenceKeyLength = 200;
 
         // Lower-case, dotted, at least two segments; a segment is [a-z0-9] runs joined by single hyphens:

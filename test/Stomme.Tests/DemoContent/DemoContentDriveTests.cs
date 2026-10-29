@@ -14,8 +14,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DemoContent
 {
     /// <summary>
-    /// BL-94 increment 14 (D110 Q7) - the demo set over HTTP on installed hosts on PostgreSQL and RavenDB, across a
-    /// restart: the two connections listed with their connector installed (BL-96 increment 1 brought `rest` and
+    /// The demo set over HTTP on installed hosts on PostgreSQL and RavenDB, across a
+    /// restart: the two connections listed with their connector installed (the demo types install `rest` and
     /// `postgresql`), the PostgreSQL one refused for its never-stored password (a verdict the restart keeps) and the
     /// REST one left Untested (a Test would reach the internet); the three datasets listed with the customers set
     /// Restricted, no address in the body and its preview refused, the sales set previewed; the second boot adding nothing.
@@ -66,7 +66,7 @@ namespace Stomme.Tests.DemoContent
 
             var connections = JsonSerializer.Deserialize<List<ConnectionView>>((await GateDrive.GetAsync(client, cookies, Host, "/api/Connections", output, label + " connections")).Body, Json)!;
             Assert.Equal(new[] { "Demo PostgreSQL", "Demo REST API" }, connections.Select(c => c.Name).OrderBy(n => n, System.StringComparer.Ordinal));
-            // BL-96 increment 1 installed the two demo types: the connectors are there, and a Test is decided by the runner, not "not installed".
+            // The two demo types install their connectors, so a Test is decided by the runner, not by "not installed".
             Assert.All(connections, c => Assert.True(c.ConnectorInstalled, c.Name));
             var rest = connections.Single(c => c.Name == "Demo REST API");
             var postgres = connections.Single(c => c.Name == "Demo PostgreSQL");

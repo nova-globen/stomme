@@ -17,7 +17,7 @@ namespace Stomme.Tests
     /// A config-gated controller declines its routes at route selection (an <c>ActionMethodSelectorAttribute</c>), so the
     /// router answers 404 instead of the authorization policy's 403 (the DataExport posture). For a GET that held. A POST fell
     /// through to the Blazor page endpoint, which refuses a JSON body: 400, "The request has an incorrect Content-type" -
-    /// found walking the pipeline editor on a WebAssembly site with Collaboration off (2026-10-02), its panel hiding on the
+    /// found while using the pipeline editor on a WebAssembly site with Collaboration off, its panel hiding on the
     /// refusal and the browser's console carrying the 400. An unmatched <c>api/</c> request now ends at an endpoint of its own,
     /// a bare 404, never the site's page.
     /// </remarks>
@@ -90,7 +90,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// BL-223 (found on UAT): a POST carrying a valid antiforgery token to a path nothing serves - the dashboards
+        /// A POST carrying a valid antiforgery token to a path nothing serves - the dashboards
         /// hub with the real-time transport off, a made-up path - answered 500 from the page endpoint. It is a 404.
         /// </summary>
         [Fact]
@@ -119,7 +119,7 @@ namespace Stomme.Tests
                 output.WriteLine($"form POST /nosuch/form -> {(int)formResponse.StatusCode}");
                 Assert.True((int)formResponse.StatusCode is >= 400 and < 500, $"a form POST to a page without that form answered {(int)formResponse.StatusCode}");
 
-                // BL-227 (measured on UAT on 10.7.0): the same requests WITHOUT an antiforgery token - what a bot or a stray
+                // As observed on 10.7.0: the same requests WITHOUT an antiforgery token - what a bot or a stray
                 // client sends. Every POST above carries a valid token, so this suite could not see that the fallback's
                 // HasFormContentType threw on the invalid token feature: 500, and an Error in the event log, for each.
                 foreach (var (path, contentType) in new[]

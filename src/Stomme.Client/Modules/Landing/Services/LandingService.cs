@@ -17,7 +17,7 @@ namespace Stomme.Modules.Landing.Services
     /// </summary>
     public class LandingService : ServiceBase, ILandingService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason, which this module's page shows.</summary>
+        /// <summary>A refusal throws with the server's reason, which this module's page shows.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public LandingService(HttpClient http, SiteState siteState) : base(http, siteState)

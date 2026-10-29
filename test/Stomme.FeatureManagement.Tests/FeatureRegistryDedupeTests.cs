@@ -4,8 +4,8 @@ using Xunit;
 namespace Stomme.FeatureManagement.Tests;
 
 /// <summary>
-/// Pins the feature catalog's union/dedupe/lookup rules (BL-100 FM1, ported from the predecessor platform's
-/// <c>FeatureRegistryTests</c> <c>Known_UnionsContributors_DedupesByKeyFirstWins_AndOrders</c> and
+/// Pins the feature catalog's union/dedupe/lookup rules, as the cases
+/// <c>Known_UnionsContributors_DedupesByKeyFirstWins_AndOrders</c> and
 /// <c>Find_IsCaseInsensitive_TrimsAndMissesUnknown</c>): <see cref="IFeatureRegistry.Known"/> unions every
 /// contributor ordered by key, the FIRST contributor to declare a key wins (a module cannot silently redefine
 /// another's flag), and <see cref="IFeatureRegistry.Find"/> is case-insensitive, trims, and misses unknown and

@@ -11,8 +11,8 @@ namespace Stomme.Modules.DataExport.Domain
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Written by the application code at each transition, never by a domain-event handler.</b> the predecessor platform's
-    /// audit handler called <c>SaveChangesAsync</c> from inside a domain-event handler, which D40 forbids - a
+    /// <b>Written by the application code at each transition, never by a domain-event handler.</b> An audit
+    /// handler that called <c>SaveChangesAsync</c> from inside a domain-event handler would break the rule that a
     /// handler stages work and never manages the unit of work. So nothing here raises an event; the command or
     /// the job that moves a job also adds its entry.
     /// </para>

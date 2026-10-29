@@ -15,9 +15,9 @@ namespace Stomme.Health
     /// its controls with it, the Server's requests and controller carry it.
     /// </para>
     /// <para>
-    /// <b>Two keys, and no <c>ops:*</c> key anywhere.</b> the predecessor platform declared <c>health:view</c> and
-    /// <c>health:manage</c> — of which <c>manage</c> gated nothing at all — and separately gated its realtime hub on
-    /// <c>ops:view</c>, a key with no declaration and no producer. D109 settled that direction: every operations
+    /// <b>Two keys, and no <c>ops:*</c> key anywhere.</b> Declaring <c>health:view</c> and
+    /// <c>health:manage</c> where <c>manage</c> gates nothing, and separately gating a realtime hub on
+    /// <c>ops:view</c>, a key with no declaration and no producer, are the traps avoided here: every operations
     /// surface maps to the Host role and no <c>ops:*</c> key exists. Here <see cref="View"/> reads this site's
     /// health, and <see cref="Manage"/> is the key that can actually do something — acknowledge an alert, change a
     /// threshold, run the probes now.

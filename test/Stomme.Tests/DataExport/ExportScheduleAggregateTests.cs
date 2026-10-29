@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Stomme.Tests.DataExport
 {
-    /// <summary>BL-95: a recurring export's rules - a five-field UTC cron at least 15 minutes apart, missed runs collapsed into one, paused never catching up.</summary>
+    /// <summary>A recurring export's rules - a five-field UTC cron at least 15 minutes apart, missed runs collapsed into one, paused never catching up.</summary>
     public sealed class ExportScheduleAggregateTests
     {
         private static readonly TenantId Tenant = TenantId.From(Guid.Parse("7e6a1d3c-0000-4000-8000-000000000001"));

@@ -27,7 +27,7 @@ namespace Stomme.Modules.Pipelines.Canvas
             Refresh();
         }
 
-        /// <summary>BL-229 - n8n's note colours: one of <see cref="PipelineNoteColors.All"/>, or null for the theme's accent.</summary>
+        /// <summary>n8n's note colours: one of <see cref="PipelineNoteColors.All"/>, or null for the theme's accent.</summary>
         public string Color { get; private set; }
 
         public void Paint(string color)

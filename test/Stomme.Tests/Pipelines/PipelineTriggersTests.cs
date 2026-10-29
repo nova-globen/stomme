@@ -37,7 +37,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95 increment (e): the schedule and webhook TRIGGERS through the engine as the host composes it - a published
+    /// The schedule and webhook TRIGGERS through the engine as the host composes it - a published
     /// pipeline that starts with one is indexed into the trigger store, the schedules task fires a due cron exactly
     /// once per occurrence against a controlled clock (anchored on first sight, so publishing replays nothing; a missed
     /// occurrence fires once), and a webhook stimulus starts the pipeline with the body as the trigger's result.
@@ -184,7 +184,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(_clock.UtcNow.ToString("O"), _services.GetRequiredService<ResultSink>().Value);
         }
 
-        // BL-229, n8n's trigger rules: a schedule of several cron lines is indexed under each, and each fires on its own time; the
+        // n8n's trigger rules: a schedule of several cron lines is indexed under each, and each fires on its own time; the
         // lines are held to the rules at the save, the second one's problem named, and at most ten.
         [Fact]
         public async Task A_schedule_of_several_lines_fires_on_each_and_a_bad_line_is_refused()
@@ -511,7 +511,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("{\"order\":42}", _services.GetRequiredService<ResultSink>().Value);
             Assert.Equal("order-42", instance.CorrelationId);
 
-            // A form-encoded body is its fields, as a JSON object - a field given twice a list (found on UAT: none could be read).
+            // A form-encoded body is its fields, as a JSON object - a field given twice a list (before that, none of them could be read).
             await sender.SendAsync("Stomme.Webhook", new WebhookStimulus("orders"), new StimulusMetadata
             {
                 CorrelationId = "order-43",

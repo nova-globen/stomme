@@ -18,8 +18,7 @@ namespace Stomme.Modules.Notifications.Application
         int Delivered, int Deferred, int DigestHeld, int Retried, int Failed, int Flushed, int Purged, bool HourlyPassRan);
 
     /// <summary>
-    /// The Job-backed delivery pipeline for ONE site - the policy the predecessor platform spread over
-    /// <c>NotificationDelivery</c>, the send/retry commands, the bus consumers and <c>NotificationDigestJob</c>, made scalar
+    /// The Job-backed delivery pipeline for ONE site - the delivery policy, scalar
     /// and pull-based: <c>NotificationDispatchJob</c> calls <see cref="RunSiteAsync"/> per site per minute.
     /// </summary>
     /// <remarks>
@@ -41,11 +40,11 @@ namespace Stomme.Modules.Notifications.Application
     /// </para>
     /// <para>
     /// <b>One write per request per pass</b>: every mutation of a request lands in ONE <c>UpdateAsync</c> + unit-of-work
-    /// save, on the instance this scope loaded - never a second instance with the same id (the BL-11 identity-map class).
-    /// No <c>[Requires]</c> anywhere on this path (BL-78 F3: there is no <c>HttpContext</c> in a job).
+    /// save, on the instance this scope loaded - never a second instance with the same id (the identity-map class).
+    /// No <c>[Requires]</c> anywhere on this path (there is no <c>HttpContext</c> in a job).
     /// </para>
     /// <para>
-    /// <b>The render budget</b> (BL-78 F1): <c>HostedServiceBase.ExecuteJobAsync</c> passes no cancellation token, so each
+    /// <b>The render budget</b>: <c>HostedServiceBase.ExecuteJobAsync</c> passes no cancellation token, so each
     /// render gets its own <see cref="NotificationTemplateRenderer.CreateRenderCancellation"/> on top of Fluid's
     /// <c>MaxSteps</c>/<c>MaxRecursion</c>.
     /// </para>
@@ -252,8 +251,8 @@ namespace Stomme.Modules.Notifications.Application
             {
                 // Another writer changed the request since this pass loaded it. The erasure of its recipient deletes or scrubs
                 // the row from its own job, and a second pass is the other candidate. That write wins; this pass leaves the
-                // request to it and goes on with the site's other requests. Before BL-188 the conflict escaped
-                // the pass, so one erased request stopped every other delivery of the site for the minute, logged as an
+                // request to it and goes on with the site's other requests. Letting the conflict escape
+                // the pass would stop every other delivery of the site for the minute, logged as an
                 // Error. A failed write leaves nothing to poison the next one: EfRepository discards it and the RavenDB
                 // repository writes through a session of its own. The File store checks no concurrency and never raises this.
                 _logger.LogInformation("Notification request {RequestId} on site {SiteId} was changed by another writer during the pass; it is left to that write.",
@@ -263,7 +262,7 @@ namespace Stomme.Modules.Notifications.Application
             return outcome;
         }
 
-        /// <summary>The delivery pass itself (lifted from the predecessor platform <c>NotificationDelivery.DeliverAsync</c>); mutates the request only.</summary>
+        /// <summary>The delivery pass itself; mutates the request only.</summary>
         private async Task<DeliveryOutcome> DeliverAsync(NotificationRequestAggregate request, bool isDigestFlush, DateTime now, CancellationToken ct)
         {
             bool Resolved(ChannelKind kind) =>

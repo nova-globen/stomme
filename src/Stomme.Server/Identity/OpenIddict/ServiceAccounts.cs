@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 namespace Stomme.Identity.OpenIddict
 {
     /// <summary>
-    /// BL-224 (D61's correction and its amendment): a client-credentials application's SERVICE ACCOUNT - the Stomme user a
+    /// A client-credentials application's SERVICE ACCOUNT - the Stomme user a
     /// token with no person behind it signs in on <c>api/*</c>, judged by its own roles and permission rows. The binding is
     /// the account's NAME, derived from the client id here, and its LOCKOUT, which only <see cref="LockOutForGoodAsync"/> sets
     /// and no admin page can: an account of that name that is not locked out for good (a person who registered the name) is

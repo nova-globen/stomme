@@ -11,7 +11,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Notifications.Application
 {
     /// <summary>
-    /// The one place the module's domain types become its Shared wire contract (and back) - BL-78 step 5. The enum casts are
+    /// The one place the module's domain types become its Shared wire contract (and back). The enum casts are
     /// safe by construction: the Shared mirrors carry the domain enums' numeric values, pinned by
     /// <c>NotificationValueObjectCanonicalFormTests</c> and <c>NotificationPreferenceCqrsTests.The_wire_enums_mirror_the_domain_enums_by_name_and_value</c>.
     /// </summary>

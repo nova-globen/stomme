@@ -117,7 +117,7 @@ namespace Stomme.Modules.Formats.Domain
     }
 
     /// <summary>
-    /// The pattern a kind renders with. Capped at <see cref="MaxLength"/> (the predecessor platform's was unbounded), and proven renderable
+    /// The pattern a kind renders with. Capped at <see cref="MaxLength"/> (an unbounded pattern is refused), and proven renderable
     /// under the culture at creation so a stored pattern never throws later. Empty for the Locale kind.
     /// </summary>
     public sealed class FormatPattern : ValueObject, IStringValueObject

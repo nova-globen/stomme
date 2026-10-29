@@ -3,10 +3,10 @@
 @inject IMeteringService MeteringService
 
 @*
-    The site's quotas (D102 items 8 and 11). Reading needs metering:view; every write needs metering:manage and the
+    The site's quotas. Reading needs metering:view; every write needs metering:manage and the
     write buttons are not rendered without it - and the server decides again, by the action's key AND the request's.
     No control here can name a site or a tenant: the server resolves both from the request's own alias, which is why
-    the predecessor platform's override command taking a tenant from the body has no counterpart.
+    there is no override that takes a tenant from the request body.
 *@
 
 <PageTitle>Quotas</PageTitle>

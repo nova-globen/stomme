@@ -8,8 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The D78 FindAsync conformance suite against the RELATIONAL (EF Core) store — a throwaway SQLite FILE,
-    /// composed exactly as a module composes its clean-arch store on a relational install (the D76 helper selects
+    /// The FindAsync conformance suite against the RELATIONAL (EF Core) store — a throwaway SQLite FILE,
+    /// composed exactly as a module composes its clean-arch store on a relational install (the shared helper selects
     /// the EF branch and binds the closed <c>IRepository&lt;ProbeAggregate, Guid&gt;</c> to <c>EfRepository</c>).
     /// This is the baseline the live RavenDB run must match member for member on the SAFE predicates, and whose
     /// case-SENSITIVE bare <c>==</c> the string-boundary test pins.

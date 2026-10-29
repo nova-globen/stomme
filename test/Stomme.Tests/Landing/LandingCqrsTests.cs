@@ -30,7 +30,7 @@ namespace Stomme.Tests.Landing
     /// <summary>
     /// The Landing requests through the module's real startup and the mediator's authorization behaviour,
     /// on the file store: a visitor sees nothing until a manager makes AND publishes the page, a draft is the managers', a visitor
-    /// cannot write, a site's page is its own. Increment 2: a dashboard page shows only a published dashboard of the site the
+    /// cannot write, a site's page is its own. A dashboard page shows only a published dashboard of the site the
     /// manager may read, and only to a viewer who may read dashboards - the Dashboards module's own request is scripted here
     /// (its site scoping is the Dashboards suite's), behind the real authorization behaviour.
     /// </summary>
@@ -187,7 +187,7 @@ namespace Stomme.Tests.Landing
             Assert.Equal(board.Id, (await SendAsync(new GetLandingPageQuery()))!.DashboardId); // the manager still sees what is there
         }
 
-        // ---- BL-98 increments 3-4: the AI mode and the edit mode ----------------------------------------------------------
+        // ---- The AI mode and the edit mode ----------------------------------------------------------
 
         private const string Designed = "<section data-section=\"hero\"><h1>Welcome</h1></section><section data-section=\"contact\"><p>Write to us.</p></section>";
 

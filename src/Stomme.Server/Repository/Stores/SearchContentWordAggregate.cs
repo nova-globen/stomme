@@ -24,10 +24,10 @@ namespace Stomme.Repository.Stores
     /// <b>THE TWO NAVIGATIONS ARE SEVERED AT THE CONTRACT.</b> <c>SearchContentWord.SearchWord</c>
     /// and <c>SearchContentWord.SearchContent</c> are mapped navigations on the wire contract; with
     /// <see cref="SearchWordAggregate"/> and <see cref="SearchContentAggregate"/> mapped onto the same tables,
-    /// EF would rediscover those contracts THROUGH the navigations and break the model at startup — the
-    /// mechanism D45 observed and D48 met again. They are <c>[NotMapped]</c> now, and this aggregate carries
+    /// EF would rediscover those contracts THROUGH the navigations and break the model at startup — a
+    /// mechanism seen on other clusters too. They are <c>[NotMapped]</c> now, and this aggregate carries
     /// only the two ids. <c>SearchContentRepository.GetSearchContentWordsAsync</c> stitches the
-    /// <c>SearchWord</c> member back on from a second query, exactly as D45's
+    /// <c>SearchWord</c> member back on from a second query, exactly as
     /// <c>PopulateSiteGroups</c> does — and it is load-bearing, because
     /// <c>DatabaseSearchProvider.AnalyzeSearchContentAsync</c> reads <c>existing.SearchWord?.Word</c> to decide
     /// insert-vs-update for every word of every indexed document.
@@ -38,7 +38,7 @@ namespace Stomme.Repository.Stores
     /// the caller's keywords. RavenDB serves a dynamic <c>GroupBy</c>+<c>Sum</c> only while every filter arm
     /// touches the group-by key, and this one does not. Hence <see cref="ISearchQueryStore"/>: EF keeps the
     /// <c>GROUP BY</c>/<c>SUM</c> in SQL, RavenDB does the same work with a query-time FACET
-    /// (<c>AggregateBy</c>/<c>SumOn</c>) over a static index. Same numbers, different mechanism. See D50.
+    /// (<c>AggregateBy</c>/<c>SumOn</c>) over a static index. Same numbers, different mechanism.
     /// </para>
     /// </remarks>
     public class SearchContentWordAggregate : AggregateRoot<int>

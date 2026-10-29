@@ -12,8 +12,7 @@ using Xunit;
 namespace Stomme.FeatureManagement.Tests;
 
 /// <summary>
-/// Pins the evaluator's flag-dependency semantics (BL-100 FM1, ported from the predecessor platform's
-/// <c>Dependency_RequiresTheOtherFlag_AndToleratesCycles</c>): a flag with a <c>RequiredFlag</c> is on only while
+/// Pins the evaluator's flag-dependency semantics: a flag with a <c>RequiredFlag</c> is on only while
 /// that flag is on, and a dependency CYCLE (a requires b, b requires a) evaluates to OFF without throwing.
 /// </summary>
 /// <remarks>
@@ -140,7 +139,7 @@ public sealed class FeatureEvaluatorDependencyCycleTests
 
     private static void DropDb(string databasePath)
     {
-        // Targeted: only this test's pool lets go of its file (BL-104 - never ClearAllPools).
+        // Targeted: only this test's pool lets go of its file (never ClearAllPools).
         using (var connection = new SqliteConnection(ConnectionString(databasePath)))
         {
             SqliteConnection.ClearPool(connection);

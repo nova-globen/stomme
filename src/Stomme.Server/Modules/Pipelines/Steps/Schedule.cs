@@ -21,15 +21,15 @@ namespace Stomme.Modules.Pipelines.Steps
     /// </remarks>
     public sealed record ScheduleStimulus(string Cron);
 
-    /// <summary>BL-229: the stimulus a schedule read in a time zone is indexed and fired by - the cron, and the zone's name.</summary>
+    /// <summary>the stimulus a schedule read in a time zone is indexed and fired by - the cron, and the zone's name.</summary>
     public sealed record ZonedScheduleStimulus(string Cron, string TimeZone);
 
     /// <summary>
-    /// A cron schedule as an engine TRIGGER (BL-95 increment (e)): a published pipeline that starts with it is indexed
+    /// A cron schedule as an engine TRIGGER: a published pipeline that starts with it is indexed
     /// by the engine into its trigger store, and <c>ScheduledPipelinesTask</c> (a recurring task the engine runs per
     /// site tenant) fires every schedule that is due through the engine's stimulus sender - which starts every
     /// pipeline indexed under that cron at once. The result is the fire time (UTC, ISO 8601). Five-field cron
-    /// (minute hour day month weekday, UTC); an expression that does not parse is refused at publish. BL-229, n8n's trigger
+    /// (minute hour day month weekday, UTC); an expression that does not parse is refused at publish. Following n8n's trigger
     /// rules: several crons, one per line, each its own time - the trigger is indexed under each (the engine's many payloads),
     /// so each fires on its own; a schedule of ONE cron is indexed exactly as before, its hash unchanged.
     /// </summary>
@@ -96,7 +96,7 @@ namespace Stomme.Modules.Pipelines.Steps
             return moments.Take(most).ToList();
         }
 
-        /// <summary>BL-229 (n8n's schedule trigger has one): the zone the cron is read in. Empty is UTC.</summary>
+        /// <summary>The zone the cron is read in. Empty is UTC.</summary>
         [Input(DisplayName = "Time zone", Description = "The time zone the schedule is read in - an IANA name such as Europe/Stockholm or America/New_York. Empty is UTC. Daylight saving is followed: '0 6 * * *' is six in the morning there all year.")]
         public Input<string?> TimeZone { get; set; } = null!;
 

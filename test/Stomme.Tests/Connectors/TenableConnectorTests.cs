@@ -13,7 +13,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 5 - the predecessor platform's TenableConnectorTests (8) by name over the port: the export flow through the egress's client, the poll delay a seam. CHANGED: the key pair fields are the scheme's, access-key and secret-key.</summary>
+    /// <summary>The Tenable connector cases (8), carried over by name over the port: the export flow through the egress's client, the poll delay a seam. CHANGED: the key pair fields are the scheme's, access-key and secret-key.</summary>
     public sealed class TenableConnectorTests
     {
         private const string Finished = """{"status":"FINISHED","chunks_available":[1,2]}""";

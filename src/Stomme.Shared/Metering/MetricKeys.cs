@@ -14,8 +14,8 @@ namespace Stomme.Metering
     /// </para>
     /// <para>
     /// <c>Source</c> gets the same treatment for a different reason: it is producer-written free text that lands in
-    /// an append-only ledger kept for months. the predecessor platform filled it with a composed "provider:model:agent" key, but
-    /// nothing stopped a caller putting an email address, a file name or a prompt fragment there - which is how a
+    /// an append-only ledger kept for months. it may hold a composed "provider:model:agent" key, but
+    /// nothing would stop a caller putting an email address, a file name or a prompt fragment there - which is how a
     /// usage ledger quietly becomes a personal-data store.
     /// </para>
     /// </remarks>
@@ -51,10 +51,10 @@ namespace Stomme.Metering
                     nameof(source));
 
         /// <summary>
-        /// The normalized twin of a raw value, for the D49 pair (raw kept for display, normalized for filtering).
+        /// The normalized twin of a raw value, for the raw/normalized pair (raw kept for display, normalized for filtering).
         /// </summary>
         /// <remarks>
-        /// D49 is a PAIR, not a replacement: lower-casing in place would destroy the spelling a vendor uses
+        /// It is a PAIR, not a replacement: lower-casing in place would destroy the spelling a vendor uses
         /// ("gpt-4o-mini", "Claude-Sonnet-4.5") on the very dashboard that renders it. Filters use this twin;
         /// the UI renders the raw value.
         /// </remarks>

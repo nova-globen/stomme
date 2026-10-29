@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace Stomme.Infrastructure.Licensing
 {
     /// <summary>
-    /// The signed payload of an <c>SLK1</c> offline licence key (D105 "The key"). The wire form is
+    /// The signed payload of an <c>SLK1</c> offline licence key. The wire form is
     /// <c>SLK1.&lt;base64url(payload JSON)&gt;.&lt;base64url(P1363 ECDSA P-256/SHA-256 signature)&gt;</c>, the signature
     /// taken over the ASCII bytes of <c>SLK1.&lt;payloadB64&gt;</c> exactly as issued — the payload is PARSED from those
     /// bytes and never re-serialised for verification.
@@ -46,13 +46,13 @@ namespace Stomme.Infrastructure.Licensing
         public const int SignatureBytes = 64;
 
         /// <summary>
-        /// The canonical capability charset, as D105 words it. <see cref="IsCanonicalCapability"/> does NOT evaluate this
+        /// The canonical capability charset. <see cref="IsCanonicalCapability"/> does NOT evaluate this
         /// with <c>Regex.IsMatch</c>: .NET's <c>$</c> also matches before a trailing <c>\n</c>, so the regex as written
         /// would accept <c>"blogs.pro\n"</c> — a key that could never equal a descriptor value. The check is a char loop.
         /// </summary>
         public const string CanonicalCapabilityPattern = "^[a-z0-9._:-]+$";
 
-        /// <summary>The value of <c>lim</c> meaning "unlimited" (D102 decodes it; the licence passes it through).</summary>
+        /// <summary>The value of <c>lim</c> meaning "unlimited" (the metering layer decodes it; the licence passes it through).</summary>
         public const long UnlimitedLimit = -1;
 
         internal static class Fields

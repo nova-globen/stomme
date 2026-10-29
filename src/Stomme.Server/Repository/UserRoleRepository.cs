@@ -44,7 +44,7 @@ namespace Stomme.Repository
     /// <see cref="IUserRepository"/> because that would be a CIRCULAR DI dependency —
     /// <c>UserRepository</c> already takes <see cref="IUserRoleRepository"/> (it assigns auto-assigned roles
     /// on registration). <see cref="IRoleRepository"/> is injected because that dependency already existed and
-    /// is not circular. This is the D19/rule-8 cycle check, and it is why the two look different here.
+    /// is not circular. This is the container-cycle check, and it is why the two look different here.
     /// </para>
     /// <para>
     /// <c>UserManager&lt;IdentityUser&gt;</c> stays injected: <see cref="UpdateSecurityStampAsync"/> reaches into
@@ -276,7 +276,7 @@ namespace Stomme.Repository
         {
             // note that the tracking parameter is no longer relevant: the seam hands back a detached aggregate
             // and UserRoleMapper projects it onto a fresh wire contract either way. Read through the query
-            // session, never the store — D19; see the note in UserRepository.GetUser.
+            // session, never the store; see the note in UserRepository.GetUser.
             return (await HydrateAsync(await QueryAsync(session => session.Query<UserRoleAggregate>()
                 .Where(item => item.Id == userRoleId)
                 .ToList()))).FirstOrDefault();

@@ -164,7 +164,7 @@
         <link id="app-stylesheet-page" />
         <link id="app-stylesheet-module" />
         @* Blazor's <PageTitle>/<HeadContent> render through <HeadOutlet>, which this host never
-           mounted — so a lifted page's <PageTitle> was silently inert (50 of 122 the predecessor platform razor files use it).
+           mounted — so a page's <PageTitle> was silently inert.
            Mounted BEFORE <Head> deliberately: a page that sets <PageTitle> then owns the FIRST <title> in
            document order, which is the one the browser reports as document.title, while a page that does not
            leaves Stomme's own SiteState-driven <title> (Head.razor / ModuleBase.SetPageTitle) untouched. *@
@@ -192,7 +192,7 @@
                 @if (_runtime == Runtimes.WebAssembly && !_prerender)
                 {
                     @* This body is ONE WebAssembly root component and nothing else, so a visitor saw a blank page until the
-                       client had downloaded and started - 238 files, 57.4 MB decoded, measured on UAT 2026-10-02. The status shows
+                       client had downloaded and started - 238 files, 57.4 MB decoded, as measured. The status shows
                        meanwhile, with the download's percentage blazor.web.js sets; app.css hides it once Routes has rendered. *@
                     <div id="db-boot" class="db-boot" role="status" aria-live="polite"><span class="db-boot-text">Loading</span></div>
                 }

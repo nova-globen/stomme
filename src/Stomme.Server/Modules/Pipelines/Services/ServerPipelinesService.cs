@@ -11,7 +11,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Pipelines.Services
 {
     /// <summary>
-    /// The server-side twin of the client service: the same contract, dispatched through the mediator (so the D99 bridge
+    /// The server-side twin of the client service: the same contract, dispatched through the mediator (so the permission bridge
     /// decides). Deliberately NOT an <c>ITransientService</c>: that marker is what the convention scan registers on every
     /// host, and this service exists only where the engine was composed - the module startup registers it behind the
     /// switch (measured: with the marker, a stock host carried it as its one engine-module type).

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// Removes the leftovers of ingestions that never finished (BL-100 F1, absorbing BL-114): chunk parts of an upload
+    /// Removes the leftovers of ingestions that never finished: chunk parts of an upload
     /// whose remaining parts never arrived, and <c>ingest-*</c> staging directories of a request that died between
     /// staging and its <c>finally</c> (a killed process). Before the guard, parts were written straight into the
     /// visible folder and nothing ever removed an incomplete set.

@@ -18,7 +18,7 @@ using Stomme.Tenancy.Abstractions;
 namespace Stomme.Modules.Landing.Application
 {
     // ============================================================================================================
-    // The AI mode and the edit mode (BL-98 increments 3 and 4; the predecessor platform's planned increments 7 and 8, never built there): an
+    // The AI mode and the edit mode : an
     // administrator's brief becomes a proposed page, a section and an instruction a proposed revision - PROPOSED, never stored
     // (an agent proposes, its user applies) - and applying stores the HTML only after the landing sanitizer, run again
     // here whatever the page sent. Both need landing:manage AND the assistant's own key: the model is the site's, metered and
@@ -73,7 +73,7 @@ namespace Stomme.Modules.Landing.Application
 
     /// <summary>
     /// A revision of ONE section of the site's generated page, by the administrator's instruction - the whole page with the
-    /// section replaced, proposed, nothing stored (the predecessor platform's "click a section, prompt, apply").
+    /// section replaced, proposed, nothing stored ("click a section, prompt, apply").
     /// </summary>
     [Requires(LandingPermissions.Manage)]
     public sealed record ProposeLandingSectionCommand(string Section, string Instruction) : ICommand<LandingDraftView>;

@@ -70,7 +70,7 @@ namespace Stomme.Repository
         {
             // The site/date filter is on the Visitor's OWN columns and stays exactly where it was, in the
             // database. Both arms narrow, and both are plain comparisons every provider translates — there is
-            // no sentinel and no constant to fold (contrast D45's (siteId == -1 || ...), which RavenDB did not
+            // no sentinel and no constant to fold (contrast a (siteId == -1 || ...) filter, which RavenDB did not
             // fold and which returned nothing).
             var visitors = await QueryAsync(session => session.Query<VisitorAggregate>()
                 .Where(item => item.SiteId == siteId && item.VisitedOn >= fromDate)
@@ -85,7 +85,7 @@ namespace Stomme.Repository
             {
                 var users = await QueryAsync(session => session.Query<UserAggregate>()
                     // WHERE user_id = ANY ($1) — filtered in the database. The same Contains-over-a-key-list
-                    // shape D45 proved on both providers.
+                    // shape proven on both providers.
                     .Where(item => userIds.Contains(item.Id))
                     .ToList());
 
@@ -125,7 +125,7 @@ namespace Stomme.Repository
         /// <see cref="UpdateVisitorAsync"/>, which re-attaches it. Even before the seam that was a
         /// cross-context detached update — <c>FindAsync</c> tracked on one context and
         /// <c>db.Entry(...).State = Modified</c> ran on another — so nothing here ever depended on change
-        /// tracking to persist, and the port is behaviour-preserving. Contrast D44's Language cluster, whose
+        /// tracking to persist, and the port is behaviour-preserving. Contrast the Language cluster, whose
         /// "one default per site" invariant DID mutate tracked entities and broke silently when ported.
         /// </summary>
         public async Task<Visitor> GetVisitorAsync(int visitorId)

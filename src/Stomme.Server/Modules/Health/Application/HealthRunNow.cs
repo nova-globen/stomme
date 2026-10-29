@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Health.Application
 {
     /// <summary>
-    /// ONE run-now in flight per (tenant, site) - D104's binding for the only live probing besides the job. A second
+    /// ONE run-now in flight per (tenant, site) - the only live probing besides the job. A second
     /// request while one runs is refused rather than queued: a queue would let a double-click, or a script, stack probe
     /// passes against the site's store, cache and SMTP host.
     /// </summary>
@@ -33,7 +33,7 @@ namespace Stomme.Modules.Health.Application
 
     /// <summary>
     /// Runs this site's health probes NOW, plus the shared (Installation and Tenant) scopes the site's dashboard shows,
-    /// through the SAME pass the job runs (D104 items 5 and 8).
+    /// through the SAME pass the job runs.
     /// </summary>
     /// <remarks>
     /// <para>

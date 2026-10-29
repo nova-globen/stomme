@@ -31,7 +31,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (gate <c>ModuleAggregateBackupRoundTripConformanceTests</c>) - the participant every storage-blind
+    /// <c>ModuleAggregateBackupRoundTripConformanceTests</c> - the participant every storage-blind
     /// aggregate gets from <c>AddModuleAggregatePersistence</c>, driven through the real archive on EF SQLite, EF PostgreSQL,
     /// RavenDB and File, with the HOST's tenant context and two tenants: a snapshot is taken; a row is then ADDED, one
     /// DELETED and one MUTATED; the restore puts back exactly what every scope saw at the snapshot - the added row GONE, the

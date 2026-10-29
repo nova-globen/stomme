@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// Gates a controller action (or a whole controller) on a lifted <c>resource:operation</c> permission KEY
-    /// (BL-99): <c>[RequiresPermissionKey("pipelines:manage")]</c>. The key is decided by the
+    /// Gates a controller action (or a whole controller) on a lifted <c>resource:operation</c> permission KEY:
+    /// <c>[RequiresPermissionKey("pipelines:manage")]</c>. The key is decided by the
     /// site's Permission rows <c>(EntityName = resource, EntityId = -1, PermissionName = operation)</c> -
     /// the same rows the mediator's <c>[Requires]</c> consults, so an endpoint and the command behind it
     /// cannot disagree.

@@ -90,7 +90,7 @@ namespace Stomme.Modules.DataExport.Startup
             });
 
             services.TryAddSingleton<IExportCellFormatter, InvariantExportCellFormatter>();
-            // Re-authorised from STORED rows when the job runs (refutation 8). With no export:* rows on a site - the
+            // Re-authorised from STORED rows when the job runs. With no export:* rows on a site - the
             // state of every install until the module's client half seeds them - this denies, which is the right way
             // round for it to fail.
             services.TryAddScoped<Stomme.Infrastructure.Security.IStoredRowPermissionEvaluator, Stomme.Infrastructure.Security.StoredRowPermissionEvaluator>();
@@ -99,7 +99,7 @@ namespace Stomme.Modules.DataExport.Startup
             services.TryAddScoped<ExportsFolder>();
             services.TryAddScoped<IExportArtifactStore, FolderExportArtifactStore>();
             services.AddScoped<ISiteContentReconciler, DataExportSiteReconciler>();
-            // The ready notice rides BL-78's producer port when Notifications is present, and its one template joins that
+            // The ready notice rides the notification producer port when Notifications is present, and its one template joins that
             // module's per-site template reconciliation through its own source seam.
             services.TryAddScoped<ExportReadyNotifier>();
             services.TryAddEnumerable(ServiceDescriptor.Singleton<Modules.Notifications.Application.Templates.INotificationTemplateSource, ExportTemplateSource>());
@@ -109,7 +109,7 @@ namespace Stomme.Modules.DataExport.Startup
 
             // The user-facing CQRS surface. Handlers are registered EXPLICITLY - never AddMediator() here:
             // Guestbook's startup already composed the mediator, and a second AddMediator would double every pipeline
-            // behavior (BL-78 F13). Nothing on the JOB path carries [Requires]: a job has no HttpContext.
+            // behavior. Nothing on the JOB path carries [Requires]: a job has no HttpContext.
             services.TryAddScoped<ExportCaller>();
             services.AddScoped<IRequestHandler<RequestExportCommand, Guid>, RequestExportCommandHandler>();
             services.AddScoped<IRequestHandler<CancelExportCommand, bool>, CancelExportCommandHandler>();

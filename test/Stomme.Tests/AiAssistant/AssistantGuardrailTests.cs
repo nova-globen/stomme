@@ -9,12 +9,11 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// The predecessor platform's <c>AssistantGuardrailTests</c>, by name: a benign request passes; the known injection
-    /// phrases are refused, collapsed whitespace included; only USER messages are scanned; the per-user rate window refuses
-    /// the request past the limit and keeps users apart; an unauthorized resource is refused and an authorized one passes.
-    /// <b>CHANGED:</b> the window is keyed by site and user (a user id repeats across sites), so the same user on another site
-    /// has a budget of their own; and the module's DEFAULT authorizer refuses every explicit reference (the predecessor platform's allowed
-    /// them) - fail-closed until the owning module answers.
+    /// The guardrails: a benign request passes; the known injection phrases are refused, collapsed whitespace included;
+    /// only USER messages are scanned; the per-user rate window refuses the request past the limit and keeps users apart;
+    /// an unauthorized resource is refused and an authorized one passes. The window is keyed by site and user (a user id
+    /// repeats across sites), so the same user on another site has a budget of their own; and the module's default
+    /// authorizer refuses every explicit reference - fail-closed until the owning module answers.
     /// </summary>
     public sealed class AssistantGuardrailTests
     {

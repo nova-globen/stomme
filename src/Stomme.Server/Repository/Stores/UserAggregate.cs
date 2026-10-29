@@ -44,8 +44,8 @@ namespace Stomme.Repository.Stores
         public string CultureCode { get; set; }
 
         /// <summary>
-        /// A reference to a <see cref="File"/> BY ID. Cross-aggregate references are ids, never navigations
-        /// (D7/D19); Files are their own cluster, still on the <c>IDatabase</c>/<c>TenantDBContext</c> path.
+        /// A reference to a <see cref="File"/> BY ID. Cross-aggregate references are ids, never navigations;
+        /// Files are their own cluster, still on the <c>IDatabase</c>/<c>TenantDBContext</c> path.
         /// </summary>
         public int? PhotoFileId { get; set; }
 

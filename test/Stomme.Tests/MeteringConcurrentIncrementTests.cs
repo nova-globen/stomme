@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D102 item 4c: concurrent recorders lose no ledger row and leave the counter equal to what was consumed.
+    /// Concurrent recorders lose no ledger row and leave the counter equal to what was consumed.
     /// </summary>
     /// <remarks>
     /// <para>

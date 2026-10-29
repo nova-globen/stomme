@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// The "your export is ready" notice over BL-78's producer port.
+    /// The "your export is ready" notice over the producer port.
     /// </summary>
     /// <remarks>
     /// What is pinned is WHO is told and WHAT they are handed: the requester alone, by user id, with a route that

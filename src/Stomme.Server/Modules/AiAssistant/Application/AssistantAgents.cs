@@ -12,15 +12,15 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     // ============================================================================================================
-    // The agents, lifted from the predecessor platform's AiAssistant at 183f5c52. What changed for all of them:
+    // The agents. What holds for all of them:
     // - The model is the CURRENT SITE's, opened through IAssistantModelAccess, whose client quota-gates every call before it
-    //   is made and meters it after (MeteredChatClient) - so the per-agent RecordUsageAsync the predecessor platform carried is gone, and a
-    //   tool-calling loop is metered per MODEL CALL (each round), where the predecessor platform recorded one aggregate row per turn.
-    // - An unavailable model throws AssistantUnavailableException with its reason (the predecessor platform threw InvalidOperationException).
+    //   is made and meters it after (MeteredChatClient) - so no agent records usage itself, and a
+    //   tool-calling loop is metered per MODEL CALL (each round), not as one aggregate row per turn.
+    // - An unavailable model throws AssistantUnavailableException with its reason.
     // - The workspace tools read through the owning modules' gated queries as the user (IAssistantQueryGateway).
     // ============================================================================================================
 
-    /// <summary>What every agent turn shares: the composed prompt, and the model-tier hook (the predecessor platform's <c>AssistantModelSelector</c>).</summary>
+    /// <summary>What every agent turn shares: the composed prompt, and the model-tier hook.</summary>
     internal static class AssistantTurn
     {
         /// <summary>Chars-per-token for the prompt-size estimate; tiering needs no tokenizer.</summary>
@@ -63,7 +63,7 @@ namespace Stomme.Modules.AiAssistant.Application
         }
 
         /// <summary>
-        /// the predecessor platform's <c>AssistantResponseCacheGate</c>: only a DETERMINISTIC turn (temperature at most 0 - an unset temperature
+        /// The response-cache gate: only a DETERMINISTIC turn (temperature at most 0 - an unset temperature
         /// samples freely) is served from the response cache, keyed by provider, model, the composed messages and temperature;
         /// everything else dispatches straight through.
         /// </summary>
@@ -82,7 +82,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The general conversational agent (the predecessor platform's <c>ChatAssistantAgent</c>): one tool-calling loop over the read-only
+    /// The general conversational agent: one tool-calling loop over the read-only
     /// workspace tools; the model tier and the response cache are optional seams (CostOptimization).
     /// </summary>
     public sealed class ChatAssistantAgent(IAssistantModelAccess models, IAssistantQueryGateway gateway, IModelTierRouter? tierRouter = null, IModelResponseCache? responseCache = null) : IAssistantSpecialist
@@ -125,7 +125,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The Pipeline Architect (the predecessor platform's <c>PipelineArchitectAgent</c>): the model reads the user's connections, datasets and
+    /// The Pipeline Architect: the model reads the user's connections, datasets and
     /// the step catalog, then calls ProposePipeline, which refuses an unreachable connection and judges the draft the way the
     /// editor's save does. The accepted draft is surfaced PROPOSED; applying it is the user's act.
     /// </summary>
@@ -163,7 +163,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The Dashboard Designer (the predecessor platform's <c>DashboardDesignerAgent</c>): the model reads the datasets, asks the Widget
+    /// The Dashboard Designer: the model reads the datasets, asks the Widget
     /// Generator for each chart's spec, lays the board out and calls ProposeDashboard. The proposal names the datasets it
     /// binds, so the conversation records them as its context.
     /// </summary>
@@ -198,7 +198,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The Widget Generator (the predecessor platform's <c>WidgetGeneratorAgent</c>), the Designer's agent-as-tool: only the bounded summary
+    /// The Widget Generator, the Designer's agent-as-tool: only the bounded summary
     /// reaches the model, and a spec is accepted only when theme-free with every column reference resolved - within
     /// <see cref="WidgetSpecTools.MaxAttempts"/> submissions.
     /// </summary>
@@ -252,7 +252,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// Answers from this site's PUBLISHED help topics (the predecessor platform's composition-root <c>ContextualHelpAssistantAgent</c>): the
+    /// Answers from this site's PUBLISHED help topics: the
     /// Help module owns the content, the agent only phrases an answer from it. With no matching topic it says so WITHOUT a
     /// model call. <b>ADDED:</b> the question is searched term by term (the Help module's search matches one phrase).
     /// </summary>
@@ -310,7 +310,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The entry agent (the predecessor platform's <c>OrchestratorAgent</c>): the guardrail first - rate, injection, explicit references - so a
+    /// The entry agent: the guardrail first - rate, injection, explicit references - so a
     /// refused request reaches no model; then ONE routing turn in which the model names the specialists; then each named
     /// specialist, their proposals merged. With no specialist named, general chat answers.
     /// </summary>

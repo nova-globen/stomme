@@ -11,7 +11,7 @@ namespace Stomme.Infrastructure.EventBus;
 public sealed record DeadLetterSweepResult(bool Swept, int Examined, int Discarded, string Note);
 
 /// <summary>
-/// BL-100 O2 — the pure dead-letter aging logic behind the host's <c>DeadLetterSweepJob</c>: discard every
+/// The pure dead-letter aging logic behind the host's <c>DeadLetterSweepJob</c>: discard every
 /// dead letter that became visible in the dead-letter queue before <c>now - retention</c>.
 /// </summary>
 /// <remarks>

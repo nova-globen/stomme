@@ -12,12 +12,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D104 binding: a probe that never reaches its dependency can only ever report Healthy, so it is a green
+    /// Binding rule: a probe that never reaches its dependency can only ever report Healthy, so it is a green
     /// light wired to nothing — and a monitoring system that answers falsely is worse than one that says nothing.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is not a hypothetical rule invented for the row. Two of the five probes the predecessor platform shipped — the message
+    /// This is not a hypothetical rule invented for the row. Two of the five probes in an earlier implementation — the message
     /// bus and SignalR — did nothing but <c>GetRequiredService</c>, which proves the container can construct a
     /// client and says nothing whatever about whether anything is reachable. They could not fail. They were
     /// reported as health coverage anyway.

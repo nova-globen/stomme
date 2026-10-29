@@ -19,10 +19,10 @@ using FluentFTP.Exceptions;
 namespace Stomme.Modules.Connectors.Ftp
 {
     /// <summary>
-    /// The FTP / FTPS connector (lifted from the predecessor platform's `ftp`): the server is the <c>host</c>/<c>port</c>
+    /// The FTP / FTPS connector: the server is the <c>host</c>/<c>port</c>
     /// settings, the Basic scheme's <c>username</c>/<c>password</c> authenticate the session, TLS follows the settings
     /// (<c>encryption_mode</c> none by default, TLS 1.2+ when on). A test connects, authenticates and disconnects. Its
-    /// operations are the file servers' (<see cref="RemoteFiles"/>, BL-229 - n8n's FTP node made whole, shared with SFTP): a
+    /// operations are the file servers' (<see cref="RemoteFiles"/>, covering n8n's FTP node, shared with SFTP): a
     /// folder listed, files stored through the host's managed file sink into a site folder, one file downloaded into the
     /// pipeline run's folder or uploaded from it, a file or a folder deleted, an entry renamed - never a host path.
     /// </summary>

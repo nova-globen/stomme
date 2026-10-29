@@ -14,12 +14,12 @@ using static Stomme.Tests.AiAssistant.TurnScriptChatClient;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// The predecessor platform's <c>DashboardDesignerAgentTests</c> and <c>WidgetGeneratorAgentTests</c>, by name. The
+    /// The dashboard designer and widget generator agents. The
     /// Designer asks the Widget Generator for a chart spec as ONE tool and proposes the board; applying runs the create command
     /// and only then marks it applied. The Generator accepts a spec only when theme-free with every column resolved, within
-    /// three submissions. <b>ADDED:</b> a widget bound to a dataset the user cannot see, or of a kind the Dashboards module does
-    /// not have, goes back to the model; the proposal names the datasets it binds; the attempt cap is ENFORCED (the predecessor platform's tool
-    /// still validated - and could accept - a fourth submission).
+    /// three submissions. A widget bound to a dataset the user cannot see, or of a kind the Dashboards module does
+    /// not have, goes back to the model; the proposal names the datasets it binds; the attempt cap is enforced, so a
+    /// fourth submission is refused rather than validated and accepted.
     /// </summary>
     public sealed class DashboardAgentsTests
     {

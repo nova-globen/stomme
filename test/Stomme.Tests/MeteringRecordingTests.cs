@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D102, driven on a composed host: the recorder appends once per operation, folds into the quota, and the
+    /// Driven on a composed host: the recorder appends once per operation, folds into the quota, and the
     /// inspector answers before consumption.
     /// </summary>
     /// <remarks>

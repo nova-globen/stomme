@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// D111a DRIVEN over the real receiver on an installed SQLite host: a webhook given a secret of its own is verified under it
+    /// DRIVEN over the real receiver on an installed SQLite host: a webhook given a secret of its own is verified under it
     /// alone - the installation's secret no longer opens it, another webhook still takes the installation's - a new one replaces
     /// it, one that cannot be read refuses every call rather than fall back, and removing it gives the installation's back. Made
     /// and removed through the editor's routes by the host; the ledger names the webhook and never the secret; an anonymous

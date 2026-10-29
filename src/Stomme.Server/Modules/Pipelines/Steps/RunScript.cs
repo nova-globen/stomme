@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// the predecessor platform's JavaScript script action as an engine step: the script sees <c>input</c> (the input text, or the
+    /// A JavaScript script action as an engine step: the script sees <c>input</c> (the input text, or the
     /// previous step's result), a <c>log(...)</c> sink and the variables given as <c>name = value</c> lines; its
     /// completion value is the result (the log lines first, one per line, when any were written). Refused unless
     /// <c>Pipelines:Scripts:Enabled</c>; bounded by <see cref="JavaScriptSandbox"/>. Or written for n8n's Code node

@@ -12,7 +12,7 @@ namespace Stomme.Modules.Pipelines.Steps
     /// Where the file steps may read and write: one folder per engine tenant (a Stomme site) under the configured
     /// root, so a pipeline on one site cannot see another site's files and none can see the host's. A relative path
     /// is resolved under the site's folder and REFUSED when it is rooted, a UNC path, or resolves outside the folder
-    /// (traversal) - the predecessor platform's sandbox boundary, kept, and made per-site.
+    /// (traversal), per site.
     /// </summary>
     internal static class PipelineFileSandbox
     {

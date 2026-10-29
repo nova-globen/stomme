@@ -27,7 +27,7 @@ namespace Stomme.Tests
     /// accidental in-memory fallback delivers the event too, but writes no documents and keeps the null
     /// DLQ, so it fails here.
     /// <para>
-    /// Like the D46 parity suites this FAILS rather than skips when RavenDB is unreachable
+    /// Like the parity suites, this FAILS rather than skips when RavenDB is unreachable
     /// (<c>RAVENDB_TEST_URL</c>): a config-selected transport that was never driven against a real
     /// store proves nothing.
     /// </para>

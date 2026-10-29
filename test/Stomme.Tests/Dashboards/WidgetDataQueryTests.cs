@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Stomme.Tests.Dashboards
 {
-    /// <summary>BL-96 increment 9 - the predecessor platform's WidgetDataQueryTests (4) by name over the port: a widget's data comes from the Datasets catalogue after its bound columns are checked, the classification masks and refuses, and the boards answer the Datasets delete guard.</summary>
+    /// <summary>The WidgetDataQueryTests cases (4), ported by name over the port: a widget's data comes from the Datasets catalogue after its bound columns are checked, the classification masks and refuses, and the boards answer the Datasets delete guard.</summary>
     public sealed class WidgetDataQueryTests
     {
         [Fact]

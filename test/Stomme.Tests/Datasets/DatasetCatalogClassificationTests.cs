@@ -20,11 +20,11 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 9 (D110 Q1) - the Shared read port over the module's real startup on the File store: for
+    /// The shared read port over the module's real startup on the File store: for
     /// Confidential AND Restricted data the summary is masked and raw rows are refused; Internal and Public are served
-    /// in full; a dataset of another site is not found and cannot be previewed. the predecessor platform's
-    /// <c>SensitiveDataset_MasksSummaryAndRefusesRows</c> and <c>GetDescriptor_UnknownDataset_ReturnsNull</c> travel by
-    /// name in the cases below; the port refused rows for Confidential alone.
+    /// in full; a dataset of another site is not found and cannot be previewed. The cases below cover the masking,
+    /// the refusal of unknown datasets and the refusal of rows; refusing rows for Confidential alone would leave
+    /// Restricted data readable.
     /// </summary>
     public sealed class DatasetCatalogClassificationTests : IAsyncLifetime
     {

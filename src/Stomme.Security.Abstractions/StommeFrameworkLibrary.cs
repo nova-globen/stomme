@@ -1,7 +1,7 @@
 // Stomme.Security.Abstractions holds the PORTS of the authorization bridge ([Requires], IAccessGuard,
 // ICurrentUser, IFeatureEvaluator) - a framework building block, NOT a module: the host composes the
 // implementations explicitly (AddStommeAuthorization). The module-convention reflection scan must skip it,
-// exactly as it skips Stomme.Mediator and Stomme.Authorization (docs/decisions.md D13). Today the
+// exactly as it skips Stomme.Mediator and Stomme.Authorization. Today the
 // assembly declares no concrete type the scan could register; the marker is what keeps that true when one is
 // added, and it is what the Server csproj comment beside this reference asserts.
 

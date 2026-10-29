@@ -30,7 +30,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95 increment (d): the step families absorbed from the predecessor platform, run by the engine as the host composes it (the
+    /// The step families, run by the engine as the host composes it (the
     /// module's steps registered from the marker, the options as the host binds them). Each family is driven through a
     /// real run, the records convention (a step's text input falls back to the previous step's result) through a chain,
     /// the failure policy both ways (a fault, and the Failed port of a flowchart), the file sandbox's refusals, and the
@@ -637,7 +637,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229 (n8n's binary data on its HTTP Request node): a file from the site's folder sent as the body - its bytes, typed by its
+        // n8n's binary data on its HTTP Request node: a file from the site's folder sent as the body - its bytes, typed by its
         // extension - or as a multipart form's file; a response saved to a file as it comes, bytes exactly (a PDF is not text), the
         // path the result; an error answer never saved; one over Pipelines:Files:MaxFileBytes refused with nothing left behind; a
         // file outside the folder or missing refused before anything is sent.

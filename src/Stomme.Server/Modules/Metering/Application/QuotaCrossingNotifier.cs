@@ -34,7 +34,7 @@ namespace Stomme.Modules.Metering.Application
     /// <b>Why this is NOT a domain-event handler, which is what the design first specified.</b> Measured while
     /// building: <c>NotificationDispatcher.DispatchAsync</c> persists the request AND calls
     /// <c>IUnitOfWork.SaveChangesAsync</c> itself. A domain-event handler is drained BY <c>SaveChangesAsync</c>
-    /// (D40), and the handler contract is that a handler stages and never commits - so dispatching from one would
+    /// and the handler contract is that a handler stages and never commits - so dispatching from one would
     /// be a re-entrant save inside the drain of the save that triggered it. The crossing is therefore dispatched by
     /// the recorder AFTER its fold has committed, which is the same instant a handler would have seen, without the
     /// re-entrancy. The contract gate keeps its meaning instead of gaining an exemption.
@@ -117,7 +117,7 @@ namespace Stomme.Modules.Metering.Application
         }
     }
 
-    /// <summary>The two templates this module contributes to BL-78's per-site template reconciliation.</summary>
+    /// <summary>The two templates this module contributes to the per-site template reconciliation.</summary>
     public static class MeteringTemplateCatalogue
     {
         public const string QuotaWarningKey = "metering.quota-warning";
@@ -154,7 +154,7 @@ namespace Stomme.Modules.Metering.Application
         }
     }
 
-    /// <summary>Contributes <see cref="MeteringTemplateCatalogue"/> to the per-site template reconciliation (BL-78's seam).</summary>
+    /// <summary>Contributes <see cref="MeteringTemplateCatalogue"/> to the per-site template reconciliation.</summary>
     public sealed class MeteringTemplateSource : INotificationTemplateSource
     {
         public string Name => "Metering quota templates";

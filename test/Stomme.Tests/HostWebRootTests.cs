@@ -12,7 +12,7 @@ namespace Stomme.Tests
     /// <summary>
     /// An app built on the Stomme.Server package has no web root under <c>dotnet run</c> - the framework's static
     /// files come from the package - and ASP.NET leaves <c>WebRootPath</c> NULL when the folder does not exist, so the app's
-    /// first install failed creating the site (measured 2026-09-30). <c>Program.EnsureWebRoot</c> creates and names one and
+    /// first install failed creating the site (measured). <c>Program.EnsureWebRoot</c> creates and names one and
     /// keeps whatever the host already served. The render guard installs without a <c>wwwroot</c> as the end-to-end half,
     /// and the gate's app-template phase drives the app itself.
     /// </summary>

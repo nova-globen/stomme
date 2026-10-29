@@ -9,10 +9,10 @@ using Xunit;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// The predecessor platform's <c>ResourceRefTests</c>, <c>ResourceLockTests</c> and <c>EditSessionTests</c>, by name.
-    /// <b>CHANGED:</b> a resource id is a string (a pipeline's is the engine's definition id), a user an int, a lock and a
-    /// session belong to a site, and a refusal is a <see cref="CollaborationConflictException"/> (the predecessor platform: a bare
-    /// InvalidOperationException) or an <see cref="InvalidResourceRefException"/> for a malformed reference. <b>ADDED:</b> the
+    /// The <c>ResourceRefTests</c>, <c>ResourceLockTests</c> and <c>EditSessionTests</c> cases, by name.
+    /// <b>Note:</b> a resource id is a string (a pipeline's is the engine's definition id), a user an int, a lock and a
+    /// session belong to a site, and a refusal is a <see cref="CollaborationConflictException"/> (a bare
+    /// InvalidOperationException) or an <see cref="InvalidResourceRefException"/> for a malformed reference. Also covered: the
     /// administrator's take-over, the lease's upper bound, the change stream's bound, and the erasure of a user's presence.
     /// </summary>
     public sealed class CollaborationDomainTests
@@ -64,7 +64,7 @@ namespace Stomme.Tests.Collaboration
             Assert.Throws<InvalidResourceRefException>(() => ResourceRef.Of("dashboard", Guid.Empty));
             Assert.Throws<InvalidResourceRefException>(() => ResourceRef.Of("dashboard", "  "));
 
-            // ADDED: an id is a path segment of the scalar - no slash, no whitespace, bounded.
+            // An id is a path segment of the scalar - no slash, no whitespace, bounded.
             Assert.Throws<InvalidResourceRefException>(() => ResourceRef.Of("dashboard", "a/b"));
             Assert.Throws<InvalidResourceRefException>(() => ResourceRef.Of("dashboard", "a b"));
             Assert.Throws<InvalidResourceRefException>(() => ResourceRef.Of("dashboard", new string('x', ResourceRef.MaxIdLength + 1)));
@@ -100,14 +100,14 @@ namespace Stomme.Tests.Collaboration
             Assert.Throws<ArgumentOutOfRangeException>(() => Lock(TimeSpan.Zero));
             Assert.Throws<ArgumentOutOfRangeException>(() => Lock(TimeSpan.FromSeconds(-1)));
 
-            // ADDED: and a bounded one - a lease is renewed, never parked for a day.
+            // A lease is bounded too - it is renewed, never parked for a day.
             Assert.Throws<ArgumentOutOfRangeException>(() => Lock(ResourceLockAggregate.MaxLease + TimeSpan.FromSeconds(1)));
         }
 
         [Fact]
         public void Lease_CarriesTheAutoRenewPolicy()
         {
-            // CHANGED: the lease is its length; renewing is the editor's heartbeat, each renewal extending it that far again.
+            // The lease is its length; renewing is the editor's heartbeat, each renewal extending it that far again.
             var resourceLock = Lock(TimeSpan.FromSeconds(90));
             resourceLock.Renew(Ada, Now.AddSeconds(60));
 

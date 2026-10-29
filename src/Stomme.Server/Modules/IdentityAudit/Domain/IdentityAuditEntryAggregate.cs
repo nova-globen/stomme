@@ -15,8 +15,8 @@ namespace Stomme.Modules.IdentityAudit.Domain
     /// <para>
     /// <b>A durable row, not a log line.</b> These events were only <c>LogFunction.Security</c> rows, and the log is not
     /// an audit: <c>LogManager</c> drops entries below <c>Logging:LogLevel:Default</c>, diverts to a file under load, and
-    /// <c>PurgeJob</c> ages the table out on a setting any administrator can lower (the D101 finding, which gave MCP its
-    /// own ledger for the same reasons).
+    /// <c>PurgeJob</c> ages the table out on a setting any administrator can lower (the same reasons that gave the MCP module
+    /// its own ledger).
     /// </para>
     /// <para>
     /// <b>What is NOT kept:</b> a password, a token, and - for a sign-in attempt on a user name that does not exist - the

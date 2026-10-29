@@ -46,7 +46,7 @@ namespace Stomme.Repository
     /// what makes it unsafe for any other repository to take <see cref="IPermissionRepository"/> in return:
     /// <c>RoleRepository</c> or <c>UserRepository</c> doing so would close a container cycle. Both therefore
     /// take <see cref="IPermissionStore"/> instead — a store has no repository edges, so it cannot close a
-    /// loop. Cycle-checked per edge (D22 rule 8); see src/Stomme.Server/README.md (persistence seam). Do not add another repository
+    /// loop. Cycle-checked per edge; see src/Stomme.Server/README.md (persistence seam). Do not add another repository
     /// dependency here without re-running that check.
     /// </para>
     /// <para>
@@ -118,7 +118,7 @@ namespace Stomme.Repository
 
                 // The RoleName correlation. IN MEMORY, and it always was — RoleName is [NotMapped] view state
                 // with no column, and the harvested code did exactly this List.Find over GetRoles. There was
-                // never an Include and never a SQL join, so nothing is traded away here (D21/rule 9 checked
+                // never an Include and never a SQL join, so nothing is traded away here (checked
                 // and found not to apply). See src/Stomme.Server/README.md (persistence seam).
                 foreach (var permission in permissions)
                 {

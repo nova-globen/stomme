@@ -26,7 +26,7 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 namespace Stomme.Identity.OpenIddict
 {
     /// <summary>
-    /// Wires a PER-TENANT OpenIddict authority into Stomme's existing Blazor SSR host (D61 spike).
+    /// Wires a PER-TENANT OpenIddict authority into Stomme's existing Blazor SSR host.
     /// </summary>
     /// <remarks>
     /// Everything here is gated on <c>OpenIddict:Enabled = true</c> so a stock install is entirely
@@ -211,7 +211,7 @@ namespace Stomme.Identity.OpenIddict
                     options.DisableAccessTokenEncryption();
 
                     // NOTE: SetIssuer is deliberately NOT called — OpenIddict infers the issuer from the
-                    // request host, which is the whole per-tenant-issuer hypothesis under test (D61 Q2). The
+                    // request host, which is what makes the issuer per-tenant. The
                     // discovery document's issuer and the id_token's iss are therefore the tenant host, and
                     // match the consumer's Authority.
 
@@ -231,7 +231,7 @@ namespace Stomme.Identity.OpenIddict
                 {
                     // Validate tokens this same host issued (shares the server's ephemeral key). Because no
                     // issuer is pinned, validation infers the expected issuer from the CURRENT request host —
-                    // the mechanism D61 Q4 measures for cross-host rejection.
+                    // the mechanism that rejects a token minted at another host.
                     options.UseLocalServer();
                     options.UseAspNetCore();
 
@@ -291,7 +291,7 @@ namespace Stomme.Identity.OpenIddict
             // before this handler). If the end user is authenticated at the authority (the existing Stomme
             // Identity cookie), an authorization code is issued for them; otherwise the Identity cookie scheme
             // is challenged (its configured login path). The user is never a default/forced challenge — only
-            // this endpoint challenges, so the D30 render guard is unaffected.
+            // this endpoint challenges, so rendering is unaffected.
             endpoints.MapMethods("/connect/authorize", new[] { "GET", "POST" }, async (HttpContext context) =>
             {
                 var request = context.GetOpenIddictServerRequest()
@@ -429,8 +429,8 @@ namespace Stomme.Identity.OpenIddict
                     claims[Claims.Name] = userName;
                     claims[Claims.PreferredUsername] = userName;
 
-                    // M2 row 2 (ruling C34): the user's role names ON THE SITE the issuer belongs to - effective, unexpired,
-                    // Host implying Administrators and Registered Users - so a relying party (Fravashi's broker) can entitle by
+                    // The user's role names ON THE SITE the issuer belongs to - effective, unexpired,
+                    // Host implying Administrators and Registered Users - so a relying party can entitle by
                     // role. Always an array, empty for a user without roles there.
                     var alias = await context.RequestServices.GetRequiredService<Stomme.Infrastructure.ITenantManager>().GetAliasAsync();
                     var siteUser = alias is null ? null
@@ -464,7 +464,7 @@ namespace Stomme.Identity.OpenIddict
             });
 
             // Protected resource — proves an issued access token is ACCEPTED by the validation handler on the
-            // issuing host, and (D61 Q4) whether a token minted at another host is REJECTED here.
+            // issuing host, and whether a token minted at another host is REJECTED here.
             endpoints.MapGet("/connect/whoami", (HttpContext context) => Results.Json(new
             {
                 subject = context.User.GetClaim(Claims.Subject),
@@ -506,7 +506,7 @@ namespace Stomme.Identity.OpenIddict
 
         /// <summary>
         /// Registers (idempotently) a per-tenant loopback OIDC client — authorization_code + PKCE — in the
-        /// CURRENT scope's tenant OpenIddict store (EF or Raven; D62 carries both). Call inside a request scope
+        /// CURRENT scope's tenant OpenIddict store (EF or Raven). Call inside a request scope
         /// whose tenant has been established (e.g. <c>ITenantManager.SetAliasAsync</c>), exactly like the token
         /// stores resolve their tenant. <paramref name="redirectUri"/> is the site's <c>signin-oidc</c> callback.
         /// </summary>

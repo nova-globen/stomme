@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Stomme.Tests.Dashboards
 {
-    /// <summary>BL-96 increment 9 - the predecessor platform's DashboardCommandTests (10) by name over the port's application layer, through the module's own startup on the File store; plus the port's own: a board belongs to the request's site.</summary>
+    /// <summary>The DashboardCommandTests cases (10), ported by name over the application layer, through the module's own startup on the File store; plus the port's own: a board belongs to the request's site.</summary>
     public sealed class DashboardCommandTests
     {
         [Fact]

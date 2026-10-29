@@ -22,20 +22,19 @@ namespace Stomme.Modules.Mcp.Application
     public sealed record McpContributionConflict(string Kind, string Name, IReadOnlyList<string> Contributors, string Reason);
 
     /// <summary>
-    /// Everything this install's contributors publish, each descriptor bound to the contributor it came from (D101
-    /// items 1 and 2).
+    /// Everything this install's contributors publish, each descriptor bound to the contributor it came from.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>A name published twice is REJECTED - on every side - and the host starts.</b> D101 originally made it a loud
-    /// startup failure. BL-105 measured why that could not stand: contributor discovery matches ANY assembly in
+    /// <b>A name published twice is REJECTED - on every side - and the host starts.</b> A loud
+    /// startup failure cannot stand here, because contributor discovery matches ANY assembly in
     /// <c>/bin</c> whose name contains <c>Stomme</c>, including a package <c>InstallationManager</c> unpacked there,
     /// so a third-party package publishing a framework name could stop the host - and after a restart there is no
-    /// admin UI left to remove it. <b>Owner decision, 2026-09-22:</b> adopt D103/D104's posture (D101 correction 3).
+    /// admin UI left to remove it. The other modules' contributed passes take the same posture.
     /// </para>
     /// <para>
-    /// <b>The security property is unchanged, and that is the whole reason this is safe.</b> the predecessor platform unioned by name,
-    /// first registration wins - so a module registered earlier could publish a same-named descriptor with NO gates
+    /// <b>The security property is unchanged, and that is the whole reason this is safe.</b> Unioning by name,
+    /// first registration wins, would let a module registered earlier publish a same-named descriptor with NO gates
     /// and have the real invoker run behind it, or register a same-named invoker and be handed the caller's
     /// arguments. Rejecting EVERY side of a collision means no same-named descriptor can downgrade a gate or hijack a
     /// handler either: the name simply stops existing. There is deliberately no "the framework contributor wins" -

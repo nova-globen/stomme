@@ -30,7 +30,7 @@ namespace Stomme.Tests
     /// </para>
     /// <para>
     /// <b>The stock-notes case is a vacuity guard, not a formality</b> — every other assertion here would still
-    /// pass if the drain ran unconditionally and did nothing useful. <b>It changed meaning on 2026-09-20 and the
+    /// pass if the drain ran unconditionally and did nothing useful. <b>It changed meaning once and the
     /// change is recorded rather than smoothed over:</b> it used to assert the framework's six labels ALONE, under
     /// the name "an install with no contributing module". That stopped being reachable the moment the health
     /// module shipped a purger, because the module is always present in-tree. So it now pins the exact label SET
@@ -197,7 +197,7 @@ namespace Stomme.Tests
 
                 // The framework's own six, PLUS exactly the contributed passes that ship in-tree.
                 //
-                // CHANGED 2026-09-20, and the change is the point: this used to assert the six alone, under the
+                // The assertion changed, and the change is the point: this used to assert the six alone, under the
                 // name "an install with no contributing module". That stopped being achievable the moment the
                 // health module shipped a purger - it is always present - so the assertion was updated to the new
                 // truth rather than relaxed. It still fails on an UNEXPECTED label, which is what it is for: a

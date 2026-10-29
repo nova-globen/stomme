@@ -13,7 +13,7 @@ using Stomme.Engine.Pipelines.UIHints;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// Records to CSV text (the predecessor platform's <c>write-csv</c> file operation split from the file write: this step renders,
+    /// Records to CSV text (split from the file write: this step renders,
     /// <see cref="WriteTextFile"/> stores). The columns are the record keys in order of first appearance unless named.
     /// </summary>
     [FlowNode(DoneOutcome, FailedOutcome)]

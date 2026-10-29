@@ -22,7 +22,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Mcp.Startup
 {
     /// <summary>
-    /// Wires the MCP module. Increment 2: its two storage-blind aggregates and their closed repositories.
+    /// Wires the MCP module: its two storage-blind aggregates and their closed repositories.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -51,7 +51,7 @@ namespace Stomme.Modules.Mcp.Startup
             // The registry is resolved ONCE here, while the pipeline is built, so that whatever it REJECTED is in the
             // boot log before the first request rather than discovered by a caller an hour later.
             //
-            // It no longer stops the host, and BL-105 is why (owner decision 2026-09-22; D101 correction 3). Contributor
+            // It does not stop the host, and this is why: contributor
             // discovery matches any assembly in /bin whose name contains Stomme, INCLUDING a package
             // InstallationManager unpacked there - so a fatal check let a third-party package brick an install, with no
             // admin UI left to remove it. Every side of a collision is dropped instead, which keeps the security
@@ -75,7 +75,7 @@ namespace Stomme.Modules.Mcp.Startup
             // own UseTenantResolution/UseAuthentication/UseAuthorization, which is what makes this the right place.
             //
             // RequireAuthorization with no policy = RequireAuthenticatedUser against the DEFAULT scheme, which is the
-            // Identity cookie - Wave 1 admits nobody else, and DefaultScheme is NOT touched (D61's rule).
+            // Identity cookie - nobody else is admitted, and DefaultScheme is NOT touched.
             if (app is IEndpointRouteBuilder routes)
             {
                 var configuration = HostConfiguration.Resolve(app.ApplicationServices);
@@ -88,7 +88,7 @@ namespace Stomme.Modules.Mcp.Startup
 
                 if (perMinute > 0)
                 {
-                    // The middleware is the HOST's, placed once in UseStomme since BL-121 gave the host a limiter of its
+                    // The middleware is the HOST's, placed once in UseStomme, which gives the host a limiter of its
                     // own, so the endpoint only opts in. (A second UseRateLimiter here would be redundant rather than
                     // harmful - MEASURED by mutation: the request is still counted once.)
                     endpoint.RequireRateLimiting(McpRateLimiting.PolicyName);
@@ -130,7 +130,7 @@ namespace Stomme.Modules.Mcp.Startup
             var configuration = McpSettings.ComposeTimeConfiguration(services);
 
             // The CLIENT half (Mcp:Enabled) - external-server registrations and what they offer. A SEPARATE switch from
-            // the server half: D101 measured that conflating them hides the admin page behind the endpoint's flag, and
+            // the server half: conflating them hides the admin page behind the endpoint's flag, and
             // an install that only CONSUMES external servers publishes nothing of its own.
             if (McpSettings.ClientEnabled(configuration))
             {
@@ -148,7 +148,7 @@ namespace Stomme.Modules.Mcp.Startup
             }
 
             // The audit ledger's retention pass, contributed to the framework's PurgeJob rather than shipped as a job
-            // of its own (D104's seam). Registered with the SERVER half because that is the half that WRITES the rows:
+            // of its own. Registered with the SERVER half because that is the half that WRITES the rows:
             // a stock install composes no extra pass, and so its purge notes are unchanged. An install that switches
             // the server half OFF keeps its existing ledger un-aged, which is the safe side of that trade - it is a
             // security record, and it can gain no new rows while the endpoint is gone.
@@ -160,7 +160,7 @@ namespace Stomme.Modules.Mcp.Startup
             ConventionContributorDiscovery.AddDiscovered<IMcpContributor>(services);
 
             // The framework's OWN contribution needs the site this request resolved, so it is SCOPED and registered
-            // explicitly - the path D101 reserved for a contributor with dependencies, since the convention scan only
+            // explicitly - the path reserved for a contributor with dependencies, since the convention scan only
             // finds public parameterless constructors. It lands in the same registry as every discovered one, so its
             // names are checked for collision exactly like a third-party module's: the framework is not privileged.
             services.AddScoped<IMcpContributor, StommeSiteContributor>();
@@ -224,7 +224,7 @@ namespace Stomme.Modules.Mcp.Startup
         /// <summary>
         /// The client half. <b>Two switches, not one</b>: <see cref="ServerEnabledKey"/> decides whether this
         /// install PUBLISHES over MCP; this one decides whether it may REGISTER external servers. Reading one for the
-        /// other is the mistake D101 named - the client-half admin page must not hide behind the endpoint's flag.
+        /// other is a mistake - the client-half admin page must not hide behind the endpoint's flag.
         /// </summary>
         public static bool ClientEnabled(IConfiguration? configuration) =>
             bool.TryParse(configuration?[ClientEnabledKey], out var enabled) && enabled;

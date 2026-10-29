@@ -12,8 +12,8 @@ using FluentValidation;
 namespace Stomme.Modules.Collaboration.Application
 {
     // ============================================================================================================
-    // The collaboration requests (the predecessor platform's LockCommands, SessionCommands and SessionQueries), each
-    // decided by the host's authorization behaviour before its handler runs. CHANGED from the predecessor platform: no request names
+    // The collaboration requests (lock commands, session commands and session queries), each
+    // decided by the host's authorization behaviour before its handler runs. No request names
     // a user - the holder, the participant and the author are the request's principal - and a resource is addressed by
     // its type and id, each checked against the owning module (ICollaborativeResourceAccess).
     // ============================================================================================================
@@ -49,7 +49,7 @@ namespace Stomme.Modules.Collaboration.Application
         }
     }
 
-    /// <summary>An administrator releases whoever holds the resource (D114's take-over); false when nobody did.</summary>
+    /// <summary>An administrator releases whoever holds the resource (the take-over); false when nobody did.</summary>
     [Requires(CollaborationPermissions.Manage)]
     public sealed record ForceReleaseLockCommand(string ResourceType, string ResourceId, LockScope Scope = LockScope.Resource) : ICommand<bool>;
 
@@ -90,7 +90,7 @@ namespace Stomme.Modules.Collaboration.Application
         }
     }
 
-    /// <summary>The editor's heartbeat (increment 12): still here.</summary>
+    /// <summary>The editor's heartbeat: still here.</summary>
     [Requires(CollaborationPermissions.View)]
     public sealed record HeartbeatEditSessionCommand(Guid SessionId) : ICommand<Unit>;
 
@@ -184,7 +184,7 @@ namespace Stomme.Modules.Collaboration.Application
         }
     }
 
-    /// <summary>The site's live locks and open sessions (D114's take-over needs to see them) - the administrator's overview.</summary>
+    /// <summary>The site's live locks and open sessions (the take-over needs to see them) - the administrator's overview.</summary>
     [Requires(CollaborationPermissions.Manage)]
     public sealed record GetCollaborationOverviewQuery : IQuery<CollaborationOverviewView>;
 

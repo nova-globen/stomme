@@ -13,8 +13,7 @@ namespace Stomme.Identity.OpenIddict.Raven
     /// <summary>
     /// Conversions between OpenIddict's rich member types (immutable dictionaries of <see cref="JsonElement"/>,
     /// culture maps, <see cref="JsonWebKeySet"/>) and the serializer-friendly shapes stored on the RavenDB
-    /// entities, plus a streaming "load all" used by the generic <c>IQueryable</c>-based store methods (D62,
-    /// lifted from the predecessor platform's RavenStoreHelpers).
+    /// entities, plus a streaming "load all" used by the generic <c>IQueryable</c>-based store methods.
     /// </summary>
     internal static class RavenOpenIddictStoreHelpers
     {

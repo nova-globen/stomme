@@ -14,9 +14,9 @@ namespace Stomme.Infrastructure
     /// </summary>
     /// <remarks>
     /// <para>
-    /// It was the hash of <c>InstallationDate</c>, and BL-221 fell back to the framework version when that was empty. It is
+    /// It was the hash of <c>InstallationDate</c>, and a later fallback used the framework version when that was empty. It is
     /// never empty in a container: nothing there persists <c>InstallationVersion</c>, so <c>ConfigManager.EnsureInstallationId</c>
-    /// sees a version change at EVERY boot and writes <c>InstallationDate</c> = the boot minute - UAT's fingerprint went
+    /// sees a version change at EVERY boot and writes <c>InstallationDate</c> = the boot minute - one fingerprint went
     /// <c>F8427461</c> to <c>F84FA39D</c> (the hash of <c>202610050055</c>) across one restart of 10.7.0, so every browser and
     /// the CDN fetched the files again. And neither the date nor the version follows an app built from the template that
     /// changes its own <c>app.css</c> without a framework release - the stale direction, the one that hurts.

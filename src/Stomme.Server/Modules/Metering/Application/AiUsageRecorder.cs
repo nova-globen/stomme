@@ -16,8 +16,7 @@ namespace Stomme.Modules.Metering.Application
     /// Records one AI call: the ledger row, its server-computed price, and the shared metric it consumes.
     /// </summary>
     /// <remarks>
-    /// AiUsage is NOT a second module. the predecessor platform ran two of them and bridged one into the other in the host's
-    /// composition root; here the AI recorder simply calls the usage recorder in-process for the metric side, so
+    /// AiUsage is NOT a second module: the AI recorder simply calls the usage recorder in-process for the metric side, so
     /// there is one quota engine, one ledger convention and no host bridge to forget.
     /// </remarks>
     public sealed class AiUsageRecorder : IAiUsageRecorder

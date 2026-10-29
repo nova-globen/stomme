@@ -4,7 +4,7 @@ using Stomme.Shared;
 // AddMessaging (gated on Messaging:Enabled) and AddBusSubscription<T>. Without this marker the framework's
 // module convention scan would register BusTransportFlusher and BusSubscriptionInitializer as hosted services
 // in every host regardless of that gate, while their dependencies (BusTransportBuffer, Rebus' IBus) are only
-// registered by the gated extension. See docs/decisions.md D13.
+// registered by the gated extension.
 [assembly: StommeFrameworkLibrary]
 
 namespace Stomme.Shared;

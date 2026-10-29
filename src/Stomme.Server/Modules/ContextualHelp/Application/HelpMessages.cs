@@ -25,7 +25,7 @@ namespace Stomme.Modules.ContextualHelp.Application
     /// <para>
     /// <b>Three keys, split by what a caller can DO, not by what they can see</b>: <c>help:view</c> reads published help
     /// (Everyone - a reader of a public page may have no account), <c>help:author</c> writes, publishes and previews,
-    /// <c>help:manage</c> lists drafts, deletes and resets to seed. D103 refutation 15: the uniform <c>Declare</c> would
+    /// <c>help:manage</c> lists drafts, deletes and resets to seed. The uniform <c>Declare</c> would
     /// have seeded <c>help:manage</c> to All Users, which admits an ANONYMOUS caller - the per-key declaration is why an
     /// anonymous principal holds <c>help:view</c> and nothing else.
     /// </para>
@@ -101,7 +101,7 @@ namespace Stomme.Modules.ContextualHelp.Application
 
     /// <summary>
     /// Writes a topic. A new (anchor, locale) becomes a DRAFT; an existing one - a contributed topic included - is edited,
-    /// and the edit makes it the SITE's, so no contributor updates it again (D103 refutation 6).
+    /// and the edit makes it the SITE's, so no contributor updates it again.
     /// </summary>
     [Requires(HelpPermissions.Author)]
     public sealed record SaveHelpTopicCommand(Guid? Id, string Anchor, string Locale, string Title, string Markdown) : ICommand<Guid>;
@@ -221,8 +221,8 @@ namespace Stomme.Modules.ContextualHelp.Application
     }
 
     /// <summary>
-    /// Hands an edited topic back to the contributor that ships it now - the ONLY way ownership changes (D103
-    /// refutation 6). Refused when no contributor ships its anchor and locale.
+    /// Hands an edited topic back to the contributor that ships it now - the ONLY way ownership changes.
+    /// Refused when no contributor ships its anchor and locale.
     /// </summary>
     [Requires(HelpPermissions.Manage)]
     public sealed record ResetHelpTopicToSeedCommand(Guid Id) : ICommand<Unit>;

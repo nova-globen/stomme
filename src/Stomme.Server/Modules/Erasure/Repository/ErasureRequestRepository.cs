@@ -34,7 +34,7 @@ namespace Stomme.Erasure.Persistence
 
         public async Task<IReadOnlyList<ErasureRequestAggregate>> ListOpenAsync(int siteId, DateTime nowUtc, CancellationToken ct = default)
         {
-            // Equality on ints and enums only (the D78 FindAsync contract); the date bound is applied in memory.
+            // Equality on ints and enums only (the safe subset of the FindAsync contract); the date bound is applied in memory.
             var pending = await inner.FindAsync(r => r.SiteId == siteId && r.Status == ErasureRequestStatus.Pending, ct);
             var retaining = await inner.FindAsync(r => r.SiteId == siteId && r.Status == ErasureRequestStatus.Retaining, ct);
             return pending.Concat(retaining.Where(r => r.RetainedUntilUtc is null || r.ReadOutcomes().Any(o => o.RetainedUntilUtc is { } due && o.PurgedOnUtc is null && due <= nowUtc)))

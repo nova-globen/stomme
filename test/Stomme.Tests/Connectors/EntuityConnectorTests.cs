@@ -10,7 +10,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 4 - the predecessor platform's EntuityConnectorTests (11) by name over the port.</summary>
+    /// <summary>The EntuityConnectorTests cases (11), kept by name over the port.</summary>
     public sealed class EntuityConnectorTests
     {
         private const string Server = "https://entuity.example.com";

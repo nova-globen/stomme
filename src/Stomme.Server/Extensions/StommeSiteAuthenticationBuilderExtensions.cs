@@ -402,9 +402,9 @@ namespace Stomme.Extensions
             var _users = httpContext.RequestServices.GetRequiredService<IUserRepository>();
             User user = null;
             // On the persistence seam, AddUserAsync TRACKS the new UserAggregate in the store's DbContext
-            // (D19). A later UpdateUserAsync in the same request attaches a second instance with the same key,
+            // (reads stay untracked, writes are tracked). A later UpdateUserAsync in the same request attaches a second instance with the same key,
             // which EF rejects ("cannot be tracked because another instance ... is already being tracked") — the
-            // create-then-update path, never exercised before D65 (D64 only drove the LINK path). So a
+            // create-then-update path, which only the link path had been exercised through before. So a
             // just-created user persists LastLoginOn/LastIPAddress at INSERT time and skips the redundant update.
             bool userCreated = false;
 
@@ -692,7 +692,7 @@ namespace Stomme.Extensions
                         user.LastIPAddress = httpContext.Connection.RemoteIpAddress?.ToString() ?? "";
                         // A just-created user already persisted these at INSERT; re-updating here attaches a
                         // second UserAggregate with the same key to the store's tracked context and EF rejects it
-                        // (D19 / D65). The in-memory user still carries the values for the claims identity below.
+                        // . The in-memory user still carries the values for the claims identity below.
                         if (!userCreated)
                         {
                             await _users.UpdateUserAsync(user);

@@ -8,7 +8,7 @@ using System.Text;
 namespace Stomme.Modules.Backup.Application.Archive
 {
     /// <summary>
-    /// The <c>DCBAK1</c> archive (D106 item 4 and refutation 16). Layout, little-endian:
+    /// The <c>DCBAK1</c> archive. Layout, little-endian:
     /// <code>
     /// header   magic "DCBAK1" | format u16 | kdf u8 | reserved u8 | iterations u32 | salt[16] | nonce prefix[4] | chunk size u32
     /// frames   per chunk: plaintext length u32 | ciphertext | GCM tag[16]      (every part, then the manifest)

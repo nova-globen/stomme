@@ -12,7 +12,7 @@ using Xunit.Sdk;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-164's harness change, held to the bar of any other change: <see cref="GateInstallTemplates"/> must install
+    /// The copy harness, held to the bar of any other change: <see cref="GateInstallTemplates"/> must install
     /// ONCE, hand out copies that do NOT see each other's writes, and go RED - not slow - when the copy is empty.
     /// </summary>
     /// <remarks>

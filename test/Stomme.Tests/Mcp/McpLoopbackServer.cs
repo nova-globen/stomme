@@ -26,7 +26,7 @@ namespace Stomme.Tests.Mcp
     /// <para>
     /// <b>It COUNTS requests and records the Authorization headers it saw.</b> That is what makes "registering does not
     /// dial" and "the bearer never left when the destination was refused" assertions about the WIRE rather than about a
-    /// return value - which is the distinction the predecessor platform's registration-time dial got wrong.
+    /// return value - which is the distinction an earlier version's registration-time dial got wrong.
     /// </para>
     /// <para>
     /// It listens on loopback, which the outbound guard DENIES by default. That is deliberate: the same listener is

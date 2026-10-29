@@ -15,9 +15,10 @@
     <PackageReleaseNotes>https://github.com/nova-globen/stomme/releases/tag/v10.2.1</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/nova-globen/stomme</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <!-- A high or critical NuGet advisory in any project's restore fails the build, so every gate refuses it (2026-10-29,
-         after GHSA-rxg9-xrhp-64gj reached consumers of 10.74.1). What a CONSUMER restores is audited separately by
-         scripts/release-dry-run.ps1 - a Web SDK project prunes what the shared framework carries and cannot see that. -->
+    <!-- A high or critical NuGet advisory in any project's restore fails the build, so every gate refuses it. An advisory
+         (GHSA-rxg9-xrhp-64gj) reached the consumers of a published package once, which is why this is enforced here. What a
+         CONSUMER restores is audited separately by scripts/release-dry-run.ps1 - a Web SDK project prunes what the shared
+         framework carries and cannot see that. -->
     <WarningsAsErrors>$(WarningsAsErrors);NU1903;NU1904</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>

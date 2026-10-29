@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// persistence extensions, the module repository provider registry, and FeatureManagement's server startup.
     /// They used to read <c>AppDomain.CurrentDomain.GetData(Constants.DataDirectory)</c> — a PROCESS-global slot,
     /// correct for a deployed app with one host and wrong the moment two hosts coexist, which is the normal state
-    /// of a test run and the mechanism behind BL-153's cross-suite <c>DirectoryNotFoundException</c>
+    /// of a test run and the mechanism behind a cross-suite <c>DirectoryNotFoundException</c>
     /// (<c>DataDirectoryIsProcessGlobalTests</c>).
     /// </para>
     /// <para>
@@ -48,7 +48,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             // A bare composition reads the process-wide slot, which holds whatever host set it LAST - in a test run,
-            // a fixture whose Dispose may already have deleted that folder (two gates in a row died on it, 2026-10-05). A slot
+            // a fixture whose Dispose may already have deleted that folder. A slot
             // whose owning folder is gone is stale: such a composition gets a folder of its own process instead. A fixture
             // that set the slot on purpose, and still has its folder, keeps it.
             var global = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString() ?? string.Empty;

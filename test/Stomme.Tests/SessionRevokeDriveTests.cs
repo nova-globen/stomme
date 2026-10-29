@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-119 driven on an installed host: one account signed in on two "devices", ONE of them revoked, and the revoked
+    /// Driven on an installed host: one account signed in on two "devices", ONE of them revoked, and the revoked
     /// cookie - still presented, as a thief would - refused on its next request while the other keeps working. Then who
     /// may revoke whose session, the administrator's site view and page, and that a sign-out and "log out everywhere"
     /// end the rows server-side, so a copy of a signed-out cookie is refused too.
@@ -116,7 +116,7 @@ namespace Stomme.Tests
 
                 // ---- "log out everywhere" ends every row of the account at once ---------------------------------------------
                 // A third device, signed in and idle: its row must end NOW, before its cookie is ever presented again (a
-                // stale stamp would refuse the cookie later on its own; the ROW is what the owner's list shows).
+                // stale stamp would refuse the cookie later on its own; the ROW is what the session list shows).
                 using var tablet = GateDrive.NewClient(app, Host);
                 var tabletCookies = await GateDrive.LoginAsync(app, tablet, Host, GateDrive.HostUsername, GateDrive.HostPassword, _output);
                 Assert.Equal(2, (await GateDrive.InTenantAsync(app, Host, async (sp, alias) => await sp.GetRequiredService<ISessionRegistry>().ListForUserAsync(alias, hostId))).Count);

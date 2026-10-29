@@ -10,7 +10,7 @@ namespace Stomme.Tests
     /// The container's HEALTHCHECK is LIVENESS (<c>/healthz</c>) and never readiness.
     /// </summary>
     /// <remarks>
-    /// Measured 2026-09-23 on a genuinely uninstalled host in Production: <c>/healthz</c> = 200 "alive", <c>/readyz</c> = 503.
+    /// Measured on a genuinely uninstalled host running the Production environment: <c>/healthz</c> = 200 "alive", <c>/readyz</c> = 503.
     /// A readiness HEALTHCHECK would therefore restart-loop every fresh deployment before its web installer could run. The
     /// probe command itself was driven in bash against a live 200 (exit 0), a live 503 (exit 1) and a closed port (exit 1);
     /// no Docker exists on the build machine, so the image wiring is held to its source here.

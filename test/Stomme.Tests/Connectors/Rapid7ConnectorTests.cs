@@ -12,7 +12,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 4 - the predecessor platform's Rapid7ConnectorTests (9) by name over the port.</summary>
+    /// <summary>The Rapid7 connector cases (9), carried over by name, run over the port.</summary>
     public sealed class Rapid7ConnectorTests
     {
         private const string Console = "https://console.example.test";

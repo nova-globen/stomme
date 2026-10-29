@@ -23,7 +23,7 @@ namespace Stomme.Infrastructure.Backup.Participants
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Where a row lives.</b> The stores partition differently (D106 refutation 2): EF and RavenDB filter only
+    /// <b>Where a row lives.</b> The stores partition differently: EF and RavenDB filter only
     /// tenant-OWNED rows, and system scope sees every tenant's; the File store keeps a directory PER AMBIENT TENANT for every
     /// aggregate, owned or not. So a row is read in system scope and in each installation tenant's scope, and its HOME is
     /// recorded with it: a tenant-owned row's own tenant; otherwise none when every scope sees it (EF, RavenDB), or the one
@@ -32,7 +32,7 @@ namespace Stomme.Infrastructure.Backup.Participants
     /// <para>
     /// <b>Replace, not merge.</b> Everything visible in any of those scopes is deleted, the part is added, and the store is
     /// read back: the same ids, or the replace throws. On a relational store it runs in ONE transaction on the aggregate's
-    /// context, so a failure leaves the rows as they were; RavenDB and File have none (D106 item 7 - the safety snapshot
+    /// context, so a failure leaves the rows as they were; RavenDB and File have none (the safety snapshot
     /// covers them).
     /// </para>
     /// </remarks>

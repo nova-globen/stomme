@@ -31,7 +31,7 @@ public static class MediatorServiceExtensions
     public static IServiceCollection AddMediator<TMarker>(this IServiceCollection services)
         => services.AddMediator(typeof(TMarker).Assembly);
 
-    // The zero-argument form, spelled out. MEASURED (BL-95 increment (a)): once the host referenced the
+    // The zero-argument form, spelled out. MEASURED: once the host referenced the
     // pipeline engine, whose own AddMediator(IServiceCollection, Action<MediatorOptions>? = null) lives in the
     // Microsoft.Extensions.DependencyInjection namespace, a bare services.AddMediator() bound to THAT overload - an
     // optional parameter beats an empty params array - and a stock host silently composed the engine's mediator as

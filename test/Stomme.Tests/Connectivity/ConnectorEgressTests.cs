@@ -15,14 +15,14 @@ namespace Stomme.Tests.Connectivity
     /// a guarded client refuses a loopback receiver at CONNECT (the receiver sees nothing) and a name resolving to loopback
     /// too; an allowlisted loopback receiver receives the request; a redirect is not followed; the resolve-and-pin call
     /// answers null for a refused address, the address for an allowlisted or a public one, and null for a name that does
-    /// not resolve. `OneOutboundGuardTests` is the "no parallel policy" gate D110 asked for - this egress defines no deny
+    /// not resolve. `OneOutboundGuardTests` is the gate that keeps this to one policy - this egress defines no deny
     /// set and assigns no connect step of its own.
     /// </summary>
     public sealed class ConnectorEgressTests
     {
         // Generous on purpose: no test here waits for it (a denial is decided before any socket, an allowlisted receiver
         // answers at once), and under the full gate's parallel host-install load a denial once took longer than 10 seconds
-        // to surface (measured 2026-09-27: 18 s in the parallel run, ~70 ms alone, three of three).
+        // to surface (measured: 18 s in the parallel run, ~70 ms alone, three of three).
         private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(60);
 
         [Fact]

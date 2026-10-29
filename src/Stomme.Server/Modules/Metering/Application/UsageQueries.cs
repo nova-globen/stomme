@@ -66,7 +66,7 @@ namespace Stomme.Modules.Metering.Application
     /// The CALLER's own consumption on this site - one line per metric, against the quota that governs it.
     /// </summary>
     /// <remarks>
-    /// <b>The query takes no user id</b> (D102 item 6/8): the subject is <c>ICurrentUser</c>, so a caller cannot ask
+    /// <b>The query takes no user id</b>: the subject is <c>ICurrentUser</c>, so a caller cannot ask
     /// for someone else's line by changing a parameter. An anonymous caller has no consumption to report - though
     /// <c>[Requires(ViewOwn)]</c> denies it before this handler runs.
     /// </remarks>

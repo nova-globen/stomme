@@ -11,7 +11,7 @@ namespace Stomme.Infrastructure
     /// A release changes files whose URLs do not change - a package's <c>/_content/</c> assets, the Blazor JS initializers -
     /// and Stomme served them with no <c>Cache-Control</c>, so a browser kept them by heuristic freshness: a fraction of the
     /// age the file's <c>Last-Modified</c> gives it, and a package file carries the package's own date. Measured on the move to
-    /// FluentUI 5 (2026-10-02): the host answered 457,618 bytes of 5.0.0's module, the browser kept running its 395,429 bytes of
+    /// FluentUI 5: the host answered 457,618 bytes of 5.0.0's module, the browser kept running its 395,429 bytes of
     /// 4.14.3's, even through a hard reload (Blazor imports the module itself), and no FluentUI 5 control started.
     /// <see cref="FrameworkAssetCaching"/> now has those files revalidated, but that reaches only what a browser asks for again;
     /// a copy it already holds as fresh it does not ask about. This clears that copy, once.

@@ -4,7 +4,7 @@ using Stomme.Shared;
 namespace Stomme.Pipelines
 {
     /// <summary>
-    /// The Pipelines module's permission keys (BL-95 increment (b)): checked on the SERVER through the D99
+    /// The Pipelines module's permission keys: checked on the SERVER through the permission
     /// bridge on every action - listing, authoring, publishing, starting and cancelling a run included. Every key
     /// defaults to Administrators (the framework adds that role to every declaration); an operator widens a key in the
     /// module definition's permission grid. No key is granted to Registered Users by default: a pipeline runs code.

@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
     <PackageReference Include="Microsoft.Extensions.Localization" />
     <PackageReference Include="Microsoft.Extensions.Http" />
-    <!-- Transport (brief 04 / D10): opt-in gRPC-Web client (over the browser fetch stack) + SignalR client. -->
+    <!-- Transport: opt-in gRPC-Web client (over the browser fetch stack) + SignalR client. -->
     <PackageReference Include="Grpc.Net.Client" />
     <PackageReference Include="Grpc.Net.Client.Web" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />

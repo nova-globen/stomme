@@ -42,7 +42,7 @@ namespace Stomme.Modules.Metering.Services
     /// <summary>The BROWSER side: HTTP to the module's controller. The server decides every call again.</summary>
     public class MeteringService : ServiceBase, IMeteringService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
+        /// <summary>A refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public MeteringService(HttpClient http, SiteState siteState) : base(http, siteState) { }

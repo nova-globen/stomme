@@ -17,9 +17,9 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// M2 row 3 (ruling C33): a module's plain HTTP endpoints (<see cref="IModuleHttpEndpointContributor"/>) are mapped on
+    /// A module's plain HTTP endpoints (<see cref="IModuleHttpEndpointContributor"/>) are mapped on
     /// every install - no transport switched on - with the request's site resolved, and not at all on a host that switched
-    /// the module off (<c>module.&lt;id&gt;.enabled=false</c>, row 14). The broker's cookie-less API at
+    /// the module off (<c>module.&lt;id&gt;.enabled=false</c>). A cookie-less API at
     /// <c>/fravashi/api/...</c> is the first such module.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]

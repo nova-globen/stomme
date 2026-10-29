@@ -19,7 +19,7 @@ namespace Stomme.Themes.GraphiteTheme
                 // Graphite ships its OWN accent-token block plus a near-monochrome surface skin as this
                 // theme's CSS. The `--db-*` component layer + base still come from css/app.css; this
                 // file only overrides the accent tokens, the surface ramp, and the theme's own shell. Owning
-                // its accent block is what makes the amber bleed structurally impossible (D31 loading order).
+                // its accent block is what makes the amber bleed structurally impossible (given the stylesheet loading order).
                 new Stylesheet("~/Theme.css")
             }
         };

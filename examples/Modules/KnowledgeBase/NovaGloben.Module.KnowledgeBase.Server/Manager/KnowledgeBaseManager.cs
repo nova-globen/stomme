@@ -22,11 +22,11 @@ namespace NovaGloben.Module.KnowledgeBase.Manager
     /// The module's SERVER MANAGER: the type <c>ModuleDefinition.ServerManagerType</c> names, which the host creates with
     /// <c>ActivatorUtilities</c> wherever it asks a placed module for something - the search index job
     /// (<see cref="ISearchable"/>), the sitemap (<see cref="ISitemap"/>) and the module content export and import
-    /// (<see cref="IPortable"/>, increment 5).
+    /// (<see cref="IPortable"/>).
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Both see the PUBLISHED articles only.</b> A draft is an editor's (increment 2), so it never reaches the index, the
+    /// <b>Both see the PUBLISHED articles only.</b> A draft is an editor's, so it never reaches the index, the
     /// sitemap or a search result - the host's search trims results by the module's view permission, which every visitor
     /// holds, so the only thing that keeps a draft out is that the manager never offers it.
     /// </para>
@@ -37,7 +37,7 @@ namespace NovaGloben.Module.KnowledgeBase.Manager
     /// </para>
     /// <para>
     /// An article's address is its page's own URL with the article after <c>/!/</c> - the address the module's pages
-    /// navigate to (increment 2) - so a search result and a sitemap entry open exactly what a visitor would have clicked.
+    /// navigate to - so a search result and a sitemap entry open exactly what a visitor would have clicked.
     /// </para>
     /// </remarks>
     public sealed class KnowledgeBaseManager(IArticleRepository articles, ICategoryRepository categories, IPageRepository pages, IMediator mediator)
@@ -120,7 +120,7 @@ namespace NovaGloben.Module.KnowledgeBase.Manager
         /// Imports exported content into the placed module's site through the module's OWN gated commands, so the host's
         /// authorization, the author stamp and the slug rules apply exactly as when an editor types it: a missing category is
         /// created, an article whose address is free is drafted, and one whose address is taken is left alone. <b>An import
-        /// never publishes</b> - a publish is quota-checked, metered and announced (increment 3), so it stays an editor's act.
+        /// never publishes</b> - a publish is quota-checked, metered and announced, so it stays an editor's act.
         /// </summary>
         public async Task ImportModuleAsync(ModuleModel module, string content, string version)
         {

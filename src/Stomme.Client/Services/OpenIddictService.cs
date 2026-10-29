@@ -53,13 +53,13 @@ namespace Stomme.Services
         /// <summary>Deletes the given scope.</summary>
         Task DeleteScopeAsync(string name);
 
-        /// <summary>BL-224: the application's service account on this site; null when service accounts are off or the client is unknown.</summary>
+        /// <summary>The application's service account on this site; null when service accounts are off or the client is unknown.</summary>
         Task<OpenIddictServiceAccount> GetServiceAccountAsync(string clientId);
 
-        /// <summary>BL-224: creates the application's service account; a refusal throws with the server's reason.</summary>
+        /// <summary>Creates the application's service account; a refusal throws with the server's reason.</summary>
         Task<OpenIddictServiceAccount> CreateServiceAccountAsync(string clientId);
 
-        /// <summary>BL-224: deletes the application's service account; its tokens sign no one in again.</summary>
+        /// <summary>Deletes the application's service account; its tokens sign no one in again.</summary>
         Task DeleteServiceAccountAsync(string clientId);
     }
 

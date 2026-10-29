@@ -24,7 +24,7 @@ namespace NovaGloben.Module.Blogs.Drive
     /// implements Stomme.Infrastructure.IServerStartup), so a scanner that reports 0 hits on the Server DLL
     /// is broken, not clean. (The retired 1.0.0 single-assembly DLL was the original known-dirty control:
     /// built from HEAD~ it references Stomme.Server, Stomme.SharedKernel and Stomme.Mediator — the same
-    /// detector fired on it, recorded in the BL-13 report.)
+    /// detector fired on it.)
     /// </para>
     /// </summary>
     [Collection("BlogsDrive")]

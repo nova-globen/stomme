@@ -11,7 +11,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Pipelines.Services
 {
     /// <summary>
-    /// The Pipelines module's service contract (BL-95 increment (b)). The client implementation calls the module's
+    /// The Pipelines module's service contract. The client implementation calls the module's
     /// controller over HTTP; the server implementation dispatches the same requests through the mediator. Every call is
     /// decided by the server per permission key; a run is STARTED and then observed through <see cref="GetRunAsync"/>,
     /// never awaited to completion.
@@ -25,28 +25,28 @@ namespace Stomme.Modules.Pipelines.Services
 
         Task<PipelineView> CreatePipelineAsync(CreatePipelineRequest request);
 
-        /// <summary>BL-229 increment 10: a new pipeline with a body (a file, a starter); a refusal throws the server's reason.</summary>
+        /// <summary>A new pipeline with a body (a file, a starter); a refusal throws the server's reason.</summary>
         Task<PipelineView> ImportPipelineAsync(ImportPipelineRequest request);
 
-        /// <summary>BL-229 increment 10: a webhook's address and signing, or a schedule's next runs.</summary>
+        /// <summary>A webhook's address and signing, or a schedule's next runs.</summary>
         Task<TriggerInfoView> GetTriggerInfoAsync(string type, string value, string zone = null);
 
-        /// <summary>BL-229 increment 10: waits for the next call to one of the site's webhooks (at most two minutes).</summary>
+        /// <summary>Waits for the next call to one of the site's webhooks (at most two minutes).</summary>
         Task<WebhookCallView> ListenForWebhookAsync(string name, int seconds);
 
-        /// <summary>BL-229: the newest message in a mailbox of one of the site's connections, to test an Email received trigger's next steps with.</summary>
+        /// <summary>The newest message in a mailbox of one of the site's connections, to test an Email received trigger's next steps with.</summary>
         Task<PipelineTestEventView> FetchNewestEmailAsync(string connection, string mailbox);
 
-        /// <summary>D111a: a new secret of the webhook's own, replacing any it had - given out this once.</summary>
+        /// <summary>A new secret of the webhook's own, replacing any it had - given out this once.</summary>
         Task<PipelineWebhookSecretView> RenewWebhookSecretAsync(string name);
 
-        /// <summary>D111a: removes the webhook's own secret, so it takes the installation's again.</summary>
+        /// <summary>Removes the webhook's own secret, so it takes the installation's again.</summary>
         Task RemoveWebhookSecretAsync(string name);
 
-        /// <summary>BL-229 increment 5b: what this site lets the editor offer.</summary>
+        /// <summary>What this site lets the editor offer.</summary>
         Task<PipelineCapabilitiesView> GetCapabilitiesAsync();
 
-        /// <summary>BL-229 increment 5b: a JavaScript expression's value in the server's bounded sandbox.</summary>
+        /// <summary>A JavaScript expression's value in the server's bounded sandbox.</summary>
         Task<ScriptPreviewView> PreviewScriptAsync(ScriptPreviewRequest request);
 
         /// <summary>
@@ -61,25 +61,25 @@ namespace Stomme.Modules.Pipelines.Services
         /// </summary>
         Task<PipelineScriptView> WriteScriptAsync(PipelineScriptRequest request);
 
-        /// <summary>BL-229 - n8n's Code node linting: why each script does not parse as its step runs it, in order (null: it does).</summary>
+        /// <summary>n8n's Code node linting: why each script does not parse as its step runs it, in order (null: it does).</summary>
         Task<PipelineScriptCheckView> CheckScriptsAsync(PipelineScriptCheckRequest request);
 
-        /// <summary>BL-229 - comments on a pipeline's steps, oldest first.</summary>
+        /// <summary>Comments on a pipeline's steps, oldest first.</summary>
         Task<List<PipelineStepCommentView>> GetStepCommentsAsync(string definitionId);
 
-        /// <summary>BL-229: the people a comment may mention - the site's people who can see its pipelines.</summary>
+        /// <summary>The people a comment may mention - the site's people who can see its pipelines.</summary>
         Task<List<PipelineMentionView>> GetMentionablePeopleAsync();
 
-        /// <summary>BL-229: how many comments each pipeline has open, by definition id - none listed when 0.</summary>
+        /// <summary>How many comments each pipeline has open, by definition id - none listed when 0.</summary>
         Task<Dictionary<string, int>> GetOpenCommentCountsAsync();
 
-        /// <summary>BL-229: a comment added to a step; null when the site has no such pipeline (a refusal throws the server's reason).</summary>
+        /// <summary>A comment added to a step; null when the site has no such pipeline (a refusal throws the server's reason).</summary>
         Task<PipelineStepCommentView> AddStepCommentAsync(string definitionId, PipelineStepCommentRequest request);
 
-        /// <summary>BL-229: a comment dealt with, or open again; null when there is no such comment.</summary>
+        /// <summary>A comment dealt with, or open again; null when there is no such comment.</summary>
         Task<PipelineStepCommentView> SetStepCommentResolvedAsync(string definitionId, Guid id, bool resolved);
 
-        /// <summary>BL-229: a comment deleted; false when there is no such comment.</summary>
+        /// <summary>A comment deleted; false when there is no such comment.</summary>
         Task<bool> DeleteStepCommentAsync(string definitionId, Guid id);
 
         Task<PipelineView> UpdatePipelineAsync(string definitionId, UpdatePipelineRequest request);
@@ -89,98 +89,98 @@ namespace Stomme.Modules.Pipelines.Services
 
         Task RetractPipelineAsync(string definitionId);
 
-        /// <summary>BL-229 - n8n's archive: the pipeline set aside, unpublished; and back as a draft.</summary>
+        /// <summary>n8n's archive: the pipeline set aside, unpublished; and back as a draft.</summary>
         Task ArchivePipelineAsync(string definitionId);
 
         Task RestorePipelineAsync(string definitionId);
 
         Task DeletePipelineAsync(string definitionId);
 
-        /// <summary>BL-229: replaces the pipeline's tags (an empty list clears them) and answers the tags kept; a tag that cannot be one throws the reason.</summary>
+        /// <summary>Replaces the pipeline's tags (an empty list clears them) and answers the tags kept; a tag that cannot be one throws the reason.</summary>
         Task<List<string>> SetTagsAsync(string definitionId, List<string> tags);
 
-        /// <summary>BL-229 - n8n's folders: moves the pipeline to a folder (empty: the top) and answers the folder kept; one that cannot be a folder throws the reason.</summary>
+        /// <summary>n8n's folders: moves the pipeline to a folder (empty: the top) and answers the folder kept; one that cannot be a folder throws the reason.</summary>
         Task<string> SetFolderAsync(string definitionId, string folder);
 
-        /// <summary>BL-229 - n8n's folder rename, move and delete: the folder becomes another path, or is removed with what was in it going up; a move that cannot be throws the reason, a folder no pipeline is in answers null.</summary>
+        /// <summary>n8n's folder rename, move and delete: the folder becomes another path, or is removed with what was in it going up; a move that cannot be throws the reason, a folder no pipeline is in answers null.</summary>
         Task<PipelineFolderMoveResult> MoveFolderAsync(PipelineFolderMoveRequest request);
 
-        /// <summary>BL-229 - find in every pipeline: where a text is used in the site's pipelines (a sensitive input never read).</summary>
+        /// <summary>Find in every pipeline: where a text is used in the site's pipelines (a sensitive input never read).</summary>
         Task<List<PipelineFoundView>> FindInPipelinesAsync(string text);
 
-        /// <summary>BL-229 - the map of the site's pipelines: which runs which.</summary>
+        /// <summary>The map of the site's pipelines: which runs which.</summary>
         Task<PipelineMapView> GetMapAsync();
 
-        /// <summary>BL-229 - the site's pipeline activity, newest first: all of it, or one pipeline's (n8n's audit log). Authors only.</summary>
+        /// <summary>The site's pipeline activity, newest first: all of it, or one pipeline's (n8n's audit log). Authors only.</summary>
         Task<List<PipelineAuditEntryView>> GetAuditAsync(string definitionId = null, int take = PipelineAuditLimits.DefaultTake);
 
-        /// <summary>BL-229: the site's published AI agent tools.</summary>
+        /// <summary>The site's published AI agent tools.</summary>
         Task<List<AgentToolView>> GetAgentToolsAsync();
 
-        /// <summary>BL-229: the site's variables (<c>$vars</c>).</summary>
+        /// <summary>The site's variables (<c>$vars</c>).</summary>
         Task<Dictionary<string, string>> GetSiteVariablesAsync();
 
-        /// <summary>BL-229: replaces the site's variables; a name or value that cannot be one throws the reason.</summary>
+        /// <summary>Replaces the site's variables; a name or value that cannot be one throws the reason.</summary>
         Task<Dictionary<string, string>> SetSiteVariablesAsync(Dictionary<string, string> variables);
 
-        /// <summary>BL-229 - n8n's Data tables: the site's tables, by name.</summary>
+        /// <summary>n8n's Data tables: the site's tables, by name.</summary>
         Task<List<PipelineSiteTableView>> GetSiteTablesAsync();
 
-        /// <summary>BL-229: makes a data table; a name or a column that cannot be one throws the reason.</summary>
+        /// <summary>Makes a data table; a name or a column that cannot be one throws the reason.</summary>
         Task<PipelineSiteTableView> CreateSiteTableAsync(PipelineSiteTableRequest request);
 
-        /// <summary>BL-229: renames a data table or changes its columns; null when there is no such table.</summary>
+        /// <summary>Renames a data table or changes its columns; null when there is no such table.</summary>
         Task<PipelineSiteTableView> UpdateSiteTableAsync(string tableId, PipelineSiteTableRequest request);
 
-        /// <summary>BL-229: deletes a data table with its rows.</summary>
+        /// <summary>Deletes a data table with its rows.</summary>
         Task DeleteSiteTableAsync(string tableId);
 
-        /// <summary>BL-229: a page of a data table's rows, oldest first; null when there is no such table.</summary>
+        /// <summary>A page of a data table's rows, oldest first; null when there is no such table.</summary>
         Task<PipelineTableRowsView> GetTableRowsAsync(string tableId, int skip, int take, string search = null, string sort = null, bool descending = false);
 
-        /// <summary>BL-229: adds a row by hand and answers it; a value that does not fit its column throws the reason.</summary>
+        /// <summary>Adds a row by hand and answers it; a value that does not fit its column throws the reason.</summary>
         Task<Dictionary<string, string>> AddTableRowAsync(string tableId, PipelineTableRowRequest request);
 
-        /// <summary>BL-229: changes a row's values by hand and answers it.</summary>
+        /// <summary>Changes a row's values by hand and answers it.</summary>
         Task<Dictionary<string, string>> UpdateTableRowAsync(string tableId, string rowId, PipelineTableRowRequest request);
 
-        /// <summary>BL-229: deletes a row by hand.</summary>
+        /// <summary>Deletes a row by hand.</summary>
         Task DeleteTableRowAsync(string tableId, string rowId);
 
-        /// <summary>BL-229 - n8n's execution annotations: says how a run went and answers the review kept; past the rules it throws the reason.</summary>
+        /// <summary>n8n's execution annotations: says how a run went and answers the review kept; past the rules it throws the reason.</summary>
         Task<PipelineRunReview> SetRunReviewAsync(string runId, PipelineRunReview review);
 
-        /// <summary>BL-229 - n8n's Evaluations: a pipeline's evaluations, newest first (counts and averages, no rows).</summary>
+        /// <summary>n8n's Evaluations: a pipeline's evaluations, newest first (counts and averages, no rows).</summary>
         Task<List<PipelineEvaluationView>> GetEvaluationsAsync(string definitionId);
 
-        /// <summary>BL-229: one evaluation with every row; null when there is no such evaluation.</summary>
+        /// <summary>One evaluation with every row; null when there is no such evaluation.</summary>
         Task<PipelineEvaluationView> GetEvaluationAsync(string evaluationId);
 
-        /// <summary>BL-229: starts an evaluation over a data table's rows; when it cannot, throws the reason.</summary>
+        /// <summary>Starts an evaluation over a data table's rows; when it cannot, throws the reason.</summary>
         Task<PipelineEvaluationView> StartEvaluationAsync(string definitionId, PipelineEvaluationRequest request);
 
-        /// <summary>BL-229: stops a running evaluation.</summary>
+        /// <summary>Stops a running evaluation.</summary>
         Task<PipelineEvaluationView> CancelEvaluationAsync(string evaluationId);
 
-        /// <summary>BL-229: deletes an evaluation that has ended.</summary>
+        /// <summary>Deletes an evaluation that has ended.</summary>
         Task DeleteEvaluationAsync(string evaluationId);
 
-        /// <summary>BL-229: a data table's rows as CSV; null when there is no such table.</summary>
+        /// <summary>A data table's rows as CSV; null when there is no such table.</summary>
         Task<PipelineTableCsv> ExportTableCsvAsync(string tableId);
 
-        /// <summary>BL-229: adds a CSV's rows to a data table, all or nothing; a value that does not fit throws the reason.</summary>
+        /// <summary>Adds a CSV's rows to a data table, all or nothing; a value that does not fit throws the reason.</summary>
         Task<PipelineTableImportResult> ImportTableCsvAsync(string tableId, string csv);
 
-        /// <summary>BL-229: a folder of the site's pipeline folder - what the file steps read and write; null when there is none.</summary>
+        /// <summary>A folder of the site's pipeline folder - what the file steps read and write; null when there is none.</summary>
         Task<PipelineFolderView> GetPipelineFilesAsync(string folder);
 
-        /// <summary>BL-229: a file taken into a folder of the site's pipeline folder; a refusal throws its reason.</summary>
+        /// <summary>A file taken into a folder of the site's pipeline folder; a refusal throws its reason.</summary>
         Task<PipelineFileEntryView> UploadPipelineFileAsync(string folder, string name, System.IO.Stream content);
 
-        /// <summary>BL-229: a folder made in the site's pipeline folder; a refusal throws its reason.</summary>
+        /// <summary>A folder made in the site's pipeline folder; a refusal throws its reason.</summary>
         Task<PipelineFileEntryView> CreatePipelineFolderAsync(string path);
 
-        /// <summary>BL-229: a file, or a folder with what is in it, deleted from the site's pipeline folder; false when there is none.</summary>
+        /// <summary>A file, or a folder with what is in it, deleted from the site's pipeline folder; false when there is none.</summary>
         Task<bool> DeletePipelineFileAsync(string path);
 
         Task<PipelineRunStarted> StartPipelineAsync(string definitionId, StartPipelineRequest request);
@@ -193,43 +193,43 @@ namespace Stomme.Modules.Pipelines.Services
 
         Task<List<PipelineRunLogLine>> GetRunLogAsync(string runId);
 
-        /// <summary>BL-229: each step execution of a run, in start order; inputs and outputs only for an author.</summary>
+        /// <summary>Each step execution of a run, in start order; inputs and outputs only for an author.</summary>
         Task<List<PipelineStepRunView>> GetRunStepsAsync(string runId);
 
-        /// <summary>BL-229 increment 6: test one step of the graph, on its own and for real; nothing is stored.</summary>
+        /// <summary>Test one step of the graph, on its own and for real; nothing is stored.</summary>
         Task<StepTestResult> TestStepAsync(string definitionId, StepTestRequest request);
 
-        /// <summary>BL-229 increment 7: the pipeline's versions, newest first.</summary>
+        /// <summary>The pipeline's versions, newest first.</summary>
         Task<List<PipelineVersionView>> GetVersionsAsync(string definitionId);
 
-        /// <summary>BL-229 increment 7: the graph of one version.</summary>
+        /// <summary>The graph of one version.</summary>
         Task<PipelineGraph> GetVersionGraphAsync(string definitionId, int version);
 
         Task CancelRunAsync(string runId);
 
-        /// <summary>BL-229: the run started again with its input, on the published version (n8n's retry).</summary>
+        /// <summary>The run started again with its input, on the published version (n8n's retry).</summary>
         Task<PipelineRunStarted> RetryRunAsync(string runId, bool onItsVersion = false);
 
-        /// <summary>BL-229: a failed run gone on from the step that failed, on the published version, what had finished not run
+        /// <summary>A failed run gone on from the step that failed, on the published version, what had finished not run
         /// again (n8n's retry from the node with the error).</summary>
         Task<PipelineRunStarted> RetryFromFailedStepAsync(string runId);
 
-        /// <summary>BL-229: the pipelines that call this one (Execute or Dispatch pipeline).</summary>
+        /// <summary>The pipelines that call this one (Execute or Dispatch pipeline).</summary>
         Task<List<PipelineCallerView>> GetCallersAsync(string definitionId);
 
-        /// <summary>BL-229: the runs waiting for a decision ("Ask for approval") - the site's, or one run's - oldest first.</summary>
+        /// <summary>The runs waiting for a decision ("Ask for approval") - the site's, or one run's - oldest first.</summary>
         Task<List<PipelineApprovalView>> GetApprovalsAsync(string runId = null);
 
-        /// <summary>BL-229: how the site's pipelines have been running over the last 1, 7 or 30 days (n8n's Insights).</summary>
+        /// <summary>How the site's pipelines have been running over the last 1, 7 or 30 days (n8n's Insights).</summary>
         Task<PipelineInsightsView> GetInsightsAsync(int days);
 
-        /// <summary>BL-229: how each step of one pipeline has been doing over the last 1, 7 or 30 days (beyond n8n's Insights).</summary>
+        /// <summary>How each step of one pipeline has been doing over the last 1, 7 or 30 days (beyond n8n's Insights).</summary>
         Task<PipelineStepInsightsView> GetStepInsightsAsync(string definitionId, int days);
 
-        /// <summary>BL-229: what runs next - the published pipelines' schedules and their next runs in the next 24 or 168 hours.</summary>
+        /// <summary>What runs next - the published pipelines' schedules and their next runs in the next 24 or 168 hours.</summary>
         Task<PipelineUpcomingView> GetUpcomingRunsAsync(int hours);
 
-        /// <summary>BL-229: approve or reject a waiting run; null when it was decided already (by someone else) or is gone.</summary>
+        /// <summary>Approve or reject a waiting run; null when it was decided already (by someone else) or is gone.</summary>
         Task<PipelineApprovalDecided> DecideApprovalAsync(string approvalId, ApprovalDecisionRequest request);
 
         Task DeleteRunAsync(string runId);
@@ -250,7 +250,7 @@ namespace Stomme.Modules.Pipelines.Services
 
     public class PipelinesService : ServiceBase, IPipelinesService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
+        /// <summary>A refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public PipelinesService(HttpClient http, SiteState siteState) : base(http, siteState) { }

@@ -98,7 +98,7 @@ namespace Stomme.Modules.Pipelines.Reliability
             // Its time is when its call ARRIVED, when the call says (a trigger's, stamped as it was handed to the engine), else when it
             // is stored, under the lock - the order runs take their turns in. A time taken before the lock let the run stored second
             // be the older (measured under the gate's load); and the engine takes a trigger's calls on several workers, so three calls
-            // sent one after another were stored in the reverse order (measured on UAT, 10.36.0).
+            // sent one after another were stored in the reverse order (measured).
             var now = clock.UtcNow;
             state.CreatedAt = state.UpdatedAt = arrived is { } at && at < now ? at : now;
             var busy = await instances.CountAsync(new PipelineInstanceFilter { DefinitionId = state.DefinitionId, PipelineStatus = PipelineStatus.Running }, ct) > 0;

@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Licensing
 {
     /// <summary>
-    /// D105 binding item 12 (with falsification F-D): the compiled-in ring holds PUBLIC keys only, the production and
+    /// The compiled-in ring holds PUBLIC keys only, the production and
     /// test rings share nothing, and no private-key PEM armour exists in the code trees or in any loaded framework
     /// assembly's embedded resources. The scanner is validated in BOTH directions — 0 on the real tree AND &gt;0 on a
     /// planted string and a planted file fed through the SAME directory walker.

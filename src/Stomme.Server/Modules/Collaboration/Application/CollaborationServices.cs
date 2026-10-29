@@ -33,7 +33,7 @@ namespace Stomme.Modules.Collaboration.Application
         public int LeaseSeconds { get; set; } = 120;
 
         /// <summary>
-        /// How long a participant not heard from stays present (increment 12): the editor's heartbeat runs every half
+        /// How long a participant not heard from stays present: the editor's heartbeat runs every half
         /// minute, and the sweep forgets a participant silent this long - a crashed browser leaves no ghost. Default two minutes.
         /// </summary>
         public int PresenceSeconds { get; set; } = 120;
@@ -133,8 +133,8 @@ namespace Stomme.Modules.Collaboration.Application
 
     /// <summary>
     /// Serialises the check-then-write of a lock or a session open per resource, IN THIS PROCESS - 64 striped gates, so the
-    /// memory is bounded and an unlucky pair of resources at worst waits for each other. <b>CHANGED from the predecessor platform</b>, which
-    /// used a distributed lock: Stomme's <c>IDistributedLock</c> implementations are not composed into the host.
+    /// memory is bounded and an unlucky pair of resources at worst waits for each other. It is not a distributed lock:
+    /// Stomme's <c>IDistributedLock</c> implementations are not composed into the host.
     /// Across nodes of a scaled-out installation two editors can therefore both be granted in the same instant - acceptable
     /// for an ADVISORY lock, whose loser still meets the owning module's optimistic concurrency on save.
     /// </summary>
@@ -164,10 +164,10 @@ namespace Stomme.Modules.Collaboration.Application
     }
 
     /// <summary>
-    /// The advisory locks (the predecessor platform's <c>ResourceLockService</c>): one live holder per resource and scope. Taking a lock
+    /// The advisory locks: one live holder per resource and scope. Taking a lock
     /// held by someone else REPORTS them - it never throws; taking your own renews it; lapsed leases met on the way in are
-    /// expired first (their release still reaches the other editors). <b>CHANGED:</b> the holder is the request's user
-    /// (the predecessor platform took a holder id in the command - anyone could act as anyone); the resource must be one the user may edit;
+    /// expired first (their release still reaches the other editors). The holder is the request's user
+    /// (a holder id in the command would let anyone act as anyone); the resource must be one the user may edit;
     /// an administrator may release another user's live lock.
     /// </summary>
     public sealed class ResourceLockService(
@@ -304,11 +304,11 @@ namespace Stomme.Modules.Collaboration.Application
     }
 
     /// <summary>
-    /// The editing sessions (the predecessor platform's <c>EditSessionService</c>): the first editor of a resource opens its session, the
+    /// The editing sessions: the first editor of a resource opens its session, the
     /// next joins it; a change is broadcast only by a participant holding a live lock on the resource; the last one out
-    /// closes it and gives up their locks. <b>CHANGED:</b> the user is the request's principal, joining needs the right to
+    /// closes it and gives up their locks. The user is the request's principal, joining needs the right to
     /// EDIT the resource (its module decides), and a session is addressed within the request's site - another site's
-    /// answers as absent. The presence push over the hub is increment 12's.
+    /// answers as absent. The presence push goes over the hub.
     /// </summary>
     public sealed class EditSessionService(
         IEditSessionRepository sessions, IResourceLockRepository locks, ICollaborationCaller caller, ICollaborativeResourceAccess access, CollaborationGate gate, TimeProvider time, IUnitOfWork unitOfWork)
@@ -347,7 +347,7 @@ namespace Stomme.Modules.Collaboration.Application
             return session;
         }
 
-        /// <summary>The editor's heartbeat (increment 12): the caller is still here. Tells nobody - presence that stays is no news.</summary>
+        /// <summary>The editor's heartbeat: the caller is still here. Tells nobody - presence that stays is no news.</summary>
         public async Task HeartbeatAsync(Guid sessionId, CancellationToken cancellationToken = default)
         {
             var (session, me) = await ParticipantOfAsync(sessionId, cancellationToken);
@@ -455,12 +455,12 @@ namespace Stomme.Modules.Collaboration.Application
     }
 
     /// <summary>
-    /// The sweep (the predecessor platform's <c>CollaborationLockSweepJob</c>): expires the site's lapsed leases, so their release reaches the
+    /// The sweep: expires the site's lapsed leases, so their release reaches the
     /// other editors even when nobody takes the resource again. Lazy expiry already reclaims a lease the moment someone
     /// does; this is the quiet case's backstop.
     /// </summary>
     /// <summary>
-    /// The presence sweep (increment 12): every open session of the site forgets the participants not heard from within
+    /// The presence sweep: every open session of the site forgets the participants not heard from within
     /// <see cref="CollaborationOptions.PresenceSeconds"/> - a browser that crashed or lost its network never says it left - and
     /// a session so emptied closes. Their locks are not touched here: a lock lives on its own lease.
     /// </summary>

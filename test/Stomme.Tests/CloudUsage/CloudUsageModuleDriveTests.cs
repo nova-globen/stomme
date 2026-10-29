@@ -142,7 +142,7 @@ namespace Stomme.Tests.CloudUsage
             return JsonSerializer.Deserialize<T>(response.Body, Json)!;
         }
 
-        /// <summary>the predecessor platform's captured Azure sample, handed back for any window; it records what the sync handed it.</summary>
+        /// <summary>a captured Azure sample, handed back for any window; it records what the sync handed it.</summary>
         private sealed class FixturePayloadSource : ICloudCostPayloadSource
         {
             public string? LastCredential { get; set; }

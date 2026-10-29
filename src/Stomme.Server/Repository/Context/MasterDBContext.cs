@@ -95,8 +95,8 @@ namespace Stomme.Repository
         // ModuleDefinitionAggregate/TenantAggregate/AliasAggregate and reached only through their master stores
         // (writes) and IMasterStoreSessionFactory (reads). Deleting DbSet<Tenant> and DbSet<Alias> — the last two — is
         // the compiler's proof the whole cluster left EF's model, the same status as the tenant side's MigrationHistory
-        // (D43). The raw install pipeline still writes these tables through the separate InstallationContext, which
-        // deliberately keeps its own DbSets for the pre-seam install branch (D53's concern, not this one). See
+        // The raw install pipeline still writes these tables through the separate InstallationContext, which
+        // deliberately keeps its own DbSets for the pre-seam install branch. See
         // src/Stomme.Server/README.md (persistence seam) and src/Stomme.Persistence.RavenDb/README.md ("THE THIRD WALL").
 
         public override int SaveChanges()

@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Erasure
 {
     /// <summary>
-    /// BL-116 increment 3 (D112's gate) - the twin of D107's <c>SubjectDataCoverageGateTests</c>, widened from user ids
+    /// The twin of <c>SubjectDataCoverageGateTests</c>, widened from user ids
     /// to user-identifying strings: every aggregate that carries a user id, an e-mail address, a username, a display
     /// name, a network address, an identity subject or an authorship stamp is ACCOUNTED FOR under the right to erasure:
     /// either a participant DECLARES the store (Delete / Anonymise / Retain) or it is LEFT OUT for a stated reason. A

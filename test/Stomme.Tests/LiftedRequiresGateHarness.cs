@@ -34,7 +34,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The shared harness of the BL-99 DRIVEN gates: one installed store, one composed production host, and
+    /// The shared harness of the driven gates: one installed store, one composed production host, and
     /// the HTTP verbs the three gate suites drive it with. Nothing here asserts - the suites do.
     /// </summary>
     /// <remarks>
@@ -43,7 +43,7 @@ namespace Stomme.Tests
     /// pipeline with the transport swapped for TestServer, the recipe
     /// <c>ModuleDefinitionSettingsAuthorizationTests</c> established (Identity cookie from
     /// <c>/pages/login</c>, a matched antiforgery pair on every unsafe method). Compiling and unit-green has
-    /// been wrong here before - the D47 rename was green on 452 unit tests, the conformance suite on both
+    /// been wrong here before - a rename was green on 452 unit tests, the conformance suite on both
     /// providers AND the render guard while the feature was broken.
     /// </para>
     /// </remarks>
@@ -541,14 +541,14 @@ namespace Stomme.Tests
         /// <summary>True when the store is actually reachable. A gate FAILS (never skips) when it is not.</summary>
         bool IsReachable();
 
-        /// <summary>What to tell the reader when it is unreachable - the D46 fail-not-skip message.</summary>
+        /// <summary>What to tell the reader when it is unreachable - the fail-not-skip message.</summary>
         string UnreachableMessage { get; }
 
         string CreateConnectionString(string scratchDirectory);
 
         void Cleanup(string connectionString);
 
-        // ---- BL-164: cloning an installed template (GateInstallTemplates) -------------------------------------
+        // ---- Cloning an installed template (GateInstallTemplates) -------------------------------------
 
         /// <summary>
         /// The one token that names THIS store's database in a settings file - what a clone rewrites. Empty for
@@ -611,7 +611,7 @@ namespace Stomme.Tests
         /// </para>
         /// <para>
         /// <b>The mechanism.</b> A file-backed SQLite database admits ONE writer, and a Stomme host writes to
-        /// it from a BACKGROUND thread on every single request - the D34 log drain, which takes its own scope
+        /// it from a BACKGROUND thread on every single request - the log drain, which takes its own scope
         /// and its own connection - while the request writes too. A scratch install puts the master and tenant
         /// stores in the SAME file, so the definition PUT's <c>MasterDBContext.SaveChanges</c> collides with a
         /// drain write. SQLite does not run the busy handler for a read-then-write upgrade that another
@@ -639,17 +639,17 @@ namespace Stomme.Tests
         /// minute. Pooled plus a TARGETED <c>ClearPool</c> for this connection string alone releases the
         /// scratch file without touching any other suite's pool. The render guard's teardown still justifies
         /// ClearAllPools with "the suite's other SQLite users are all in-memory", which stopped being true once
-        /// the install suites became file-backed (backlog BL-104).
+        /// the install suites became file-backed.
         /// </para>
         /// </remarks>
         public string CreateConnectionString(string scratchDirectory)
         {
             // The lock above is real product behaviour on a file-backed SQLite install - one writer at a
-            // time, and the D34 log drain writes from a background thread while a request writes. The HARNESS
+            // time, and the log drain writes from a background thread while a request writes. The HARNESS
             // stops paying for it twice: "Default Timeout" makes a writer WAIT for the lock instead of failing
             // immediately, and WAL (set on the file below, since it is a database-level property) lets readers
-            // run while one writer holds it. Neither hides the product hazard - BL-104 still carries the
-            // product-side fix - they stop a green run from being decided by thread timing.
+            // run while one writer holds it. Neither hides the product hazard; the product-side fix is still
+            // outstanding - they stop a green run from being decided by thread timing.
             var path = Path.Combine(scratchDirectory, "stomme-gate.db");
             var connectionString = $"Data Source={path};Default Timeout=30;";
             using (var connection = new Microsoft.Data.Sqlite.SqliteConnection(connectionString))
@@ -769,7 +769,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// A full install on the shared infra SQL Server (UAT <c>:1434</c>, <see cref="SqlServerTestEndpoint"/>). It has
+    /// A full install on the shared SQL Server test instance (<c>:1434</c>, <see cref="SqlServerTestEndpoint"/>). It has
     /// no template clone - copying a SQL Server database needs a BACKUP file on the server's own disk - so
     /// <see cref="GateInstallTemplates.CloneAsync(IGateStore, string, Xunit.Abstractions.ITestOutputHelper)"/> installs it
     /// afresh; only the few suites that must see SQL Server use it.
@@ -875,7 +875,7 @@ namespace Stomme.Tests
             LastCloneTiming = $"create {createMs} ms, copy {timer.ElapsedMilliseconds - createMs} ms";
         }
 
-        /// <summary>Where the last clone's time went - the RavenDB half of BL-164's numbers.</summary>
+        /// <summary>Where the last clone's time went - the RavenDB half of the clone timings.</summary>
         public static string LastCloneTiming { get; private set; } = "";
 
         public static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") ?? "http://127.0.0.1:7000";
@@ -1063,7 +1063,7 @@ namespace Stomme.Tests
             // Restore the previous value ONLY if the variable still names this install. The variable is process-global
             // and hosts compose in more than one xunit collection; a fixture that captured "previous" while THIS
             // install was current and restores it after this install has moved on would point the next host at a
-            // content root that is already gone - or, worse, still there. Measured in the first full gate after BL-164:
+            // content root that is already gone - or, worse, still there. Measured in the first full gate after the template clone landed:
             // three cases saw another case's rows through exactly that stale restore.
             if (string.Equals(Environment.GetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable), ContentRoot, StringComparison.Ordinal))
             {

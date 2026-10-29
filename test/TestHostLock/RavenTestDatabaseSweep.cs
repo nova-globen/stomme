@@ -11,8 +11,8 @@ using System.Text.RegularExpressions;
 namespace Stomme.TestInfrastructure
 {
     /// <summary>
-    /// Deletes the test databases earlier runs left on THIS machine's RavenDB, when a test host starts. Measured
-    /// 2026-10-02: a developer machine's local RavenDB held 217 of them (6.4 GB of <c>stomme_authz_gate_*</c> and their
+    /// Deletes the test databases earlier runs left on THIS machine's RavenDB, when a test host starts.
+    /// A developer machine's local RavenDB once held 217 of them (6.4 GB of <c>stomme_authz_gate_*</c> and their
     /// <c>_OpenIddict</c> siblings, plus four others) - every killed run, every teardown that threw into its swallowing
     /// catch, and every sibling database a teardown never named stayed for good, and the server's memory grew with them.
     /// </summary>
@@ -21,8 +21,8 @@ namespace Stomme.TestInfrastructure
     /// <b>Which server.</b> The one the suites default to - <c>RAVENDB_TEST_URL</c>, else <c>http://127.0.0.1:7000</c> -
     /// and ONLY when it is a loopback address. That is what makes the sweep safe without an age rule: it runs once the
     /// test host HOLDS the machine-wide lock, so no other test host on this machine is live, so every test-shaped database
-    /// on this machine's own server is a leftover. A server other machines share (the infra UAT RavenDB) is never swept
-    /// here: a database on it may belong to a live run elsewhere, and RavenDB records no creation time to age it by
+    /// on this machine's own server is a leftover. A server other machines share is never swept here: a database
+    /// on it may belong to a live run elsewhere, and RavenDB records no creation time to age it by
     /// (measured: the database listing carries an up-time since load, nothing older).
     /// </para>
     /// <para>

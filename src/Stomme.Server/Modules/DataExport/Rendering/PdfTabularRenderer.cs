@@ -16,8 +16,8 @@ namespace Stomme.Modules.DataExport.Rendering
     /// <remarks>
     /// <para>
     /// <b>No PDF library, on purpose.</b> The permissive ones that lay out tables either pull a font stack this
-    /// product denies (SixLabors) or are not permissive at all (QuestPDF, iText); D108 accepts a plain tabular PDF
-    /// over the 14 standard fonts instead, and books a Unicode, embedded-font PDF as residue.
+    /// product denies (SixLabors) or are not permissive at all (QuestPDF, iText); a plain tabular PDF
+    /// over the 14 standard fonts is accepted instead, and a Unicode, embedded-font PDF is left as future work.
     /// </para>
     /// <para>
     /// <b>The honest limit: Latin-1 only.</b> The standard fonts carry no glyphs beyond WinAnsi, so a character
@@ -25,7 +25,7 @@ namespace Stomme.Modules.DataExport.Rendering
     /// truncated with an ellipsis; this is a report to read, not the data of record. CSV, XLSX and JSON are lossless.
     /// </para>
     /// <para>
-    /// <b>It streams.</b> the predecessor platform built the whole document in memory and called <c>ToArray()</c>. Here a page's
+    /// <b>It streams.</b> The document is never built in memory and copied out with <c>ToArray()</c>: a page's
     /// content is assembled, written and released before the next page begins, and each stream's <c>/Length</c> is an
     /// INDIRECT object written after it - so nothing is ever rewound and the destination may be forward-only. What
     /// is retained across the document is one byte offset per object and one object number per page: a few bytes a

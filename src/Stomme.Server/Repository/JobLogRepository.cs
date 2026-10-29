@@ -44,12 +44,12 @@ namespace Stomme.Repository
     /// predicate: <c>Where(item =&gt; item.JobId == jobId || jobId == -1)</c>. EF folds <c>-1 == -1</c> to true
     /// and drops the arm; RavenDB's LINQ provider does NOT, and would compile the wildcard arm into RQL that
     /// matches NOTHING — returning 0 logs for the "all" call while passing on EF, the exact silent divergence
-    /// D45 measured on SiteGroupMember. So the filter is composed in C# and the provider is only ever sent an
+    /// that was measured on another cluster. So the filter is composed in C# and the provider is only ever sent an
     /// arm that narrows.
     /// </para>
     /// <para>
-    /// 3. WRITES resolve a FRESH store per write (<see cref="NewStore"/>), the UrlMapping per-write-store pattern
-    /// (BL-11). The scheduler opens a log running (<see cref="AddJobLogAsync"/>) and finalizes the SAME log
+    /// 3. WRITES resolve a FRESH store per write (<see cref="NewStore"/>), the per-write-store pattern
+    /// UrlMapping uses. The scheduler opens a log running (<see cref="AddJobLogAsync"/>) and finalizes the SAME log
     /// (<see cref="UpdateJobLogAsync"/>) inside ONE scope every run tick. A store owns ONE <c>MasterDBContext</c>
     /// and <c>EfRepository</c> leaves each write TRACKED, so the finalizing Update through the same store attaches
     /// a second instance with the same key and EF throws <c>already being tracked</c> — which left every run's
@@ -68,7 +68,7 @@ namespace Stomme.Repository
             _sessions = sessions;
         }
 
-        // A store bound to a FRESH unit of work per write (BL-11 / the D47 UrlMapping pattern). IJobLogStore is
+        // A store bound to a FRESH unit of work per write (the same pattern UrlMapping uses). IJobLogStore is
         // registered transient, so each call yields a new store over a new MasterDBContext with an empty change
         // tracker — letting the scheduler add then finalize the same log in one scope. See hazard 3 in the remarks.
         private IJobLogStore NewStore() => _services.GetRequiredService<IJobLogStore>();
@@ -157,7 +157,7 @@ namespace Stomme.Repository
 
         // The severed .Include(item => item.Job), replayed as a second query and stitched on by hand. Reads
         // only the jobs the logs actually reference (a Contains over the distinct ids), not every job — the
-        // harvested .Include carried no join predicate, so no database join is lost (D22 rule 9).
+        // harvested .Include carried no join predicate, so no database join is lost.
         private async Task PopulateJobsAsync(IReadOnlyList<JobLog> jobLogs)
         {
             if (jobLogs.Count == 0)

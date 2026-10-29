@@ -7,8 +7,8 @@ using Stomme.Repository;
 namespace Stomme.Migrations.Tenant
 {
     /// <summary>
-    /// Adds the normalized lookup column the UrlMapping cluster needs to AGREE across the persistence seam
-    /// (D57): <c>UrlMapping.UrlNormalized</c>, a lowercase copy of <c>Url</c>, and BACKFILLS it for existing
+    /// Adds the normalized lookup column the UrlMapping cluster needs to AGREE across the persistence seam:
+    /// <c>UrlMapping.UrlNormalized</c>, a lowercase copy of <c>Url</c>, and BACKFILLS it for existing
     /// rows. The same shape as <c>10020003_AddFolderFileNormalizedColumns</c>, one cluster on.
     /// </summary>
     /// <remarks>
@@ -17,8 +17,8 @@ namespace Stomme.Migrations.Tenant
     /// (<c>App.razor</c> → <c>UrlMappingRepository.GetUrlMappingAsync</c>) filtered <c>Url</c> raw with
     /// <c>==</c>. That expression means DIFFERENT things on the two providers: a row stored <c>Foo/Bar</c>
     /// looked up as <c>foo/bar</c> MISSES on PostgreSQL (case-SENSITIVE <c>=</c> under the column collation)
-    /// and HITS on RavenDB (case-INSENSITIVE <c>==</c>) — observed live on stomme-pg-44357 and a local
-    /// RavenDB. D57 removes the disagreement from the DATA rather than the QUERY: store a lowercase copy, then
+    /// and HITS on RavenDB (case-INSENSITIVE <c>==</c>) — observed live on a PostgreSQL install and a local
+    /// RavenDB. Storing a normalized copy removes the disagreement from the DATA rather than the QUERY: store a lowercase copy, then
     /// filter it with plain <c>==</c>, which both providers agree on. The chosen semantics are
     /// case-INSENSITIVE, matching the existing Folder/File precedent.
     /// </para>
@@ -43,7 +43,7 @@ namespace Stomme.Migrations.Tenant
     /// <b>NO INDEX CHANGE, deliberately.</b> The UNIQUE index <c>ix_url_mapping</c> on (site_id, url) stays
     /// case-SENSITIVE and stays on the stored <c>url</c> column. Moving it onto the normalized twin would
     /// forbid a pair that is legal today (<c>Foo/Bar</c> beside <c>foo/bar</c>) — a silent behaviour change,
-    /// and out of scope. Exactly D49's reasoning for <c>ix_folder</c>/<c>ix_file</c>.
+    /// and out of scope. The same reasoning as for <c>ix_folder</c>/<c>ix_file</c>.
     /// </para>
     /// </remarks>
     [DbContext(typeof(TenantDBContext))]

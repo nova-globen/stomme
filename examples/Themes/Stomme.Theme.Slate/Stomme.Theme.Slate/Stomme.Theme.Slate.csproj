@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <!--
-    D87. An INDEPENDENT, packages-only external THEME for Stomme — the admin theme (Slate),
+    An INDEPENDENT, packages-only external THEME for Stomme — the admin theme (Slate),
     the sibling of the Slate admin theme. Same shape as examples/Modules/Blogs: references Stomme ONLY through
     the Stomme.Sdk meta-package from the local feed (examples/local-feed), ZERO project/source references.
     The assembly name MUST contain "Stomme" or the convention loader never loads it. Ships its Theme.css as a
@@ -43,7 +43,7 @@
 
   <ItemGroup>
     <!-- The folder's own restore configuration, not content of the theme: the host references both stock themes, and their two
-         nuget.config files collided in its publish output (NETSDK1152, measured 2026-10-28). -->
+         nuget.config files collided in its publish output (NETSDK1152). -->
     <Content Update="nuget.config" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
     <None Update="nuget.config" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
   </ItemGroup>

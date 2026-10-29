@@ -25,7 +25,7 @@ namespace Stomme.Tests
     // surfaces call it for sites OTHER than the one the ambient alias resolves to — but the cache entry was
     // keyed on the entity name alone under the ambient alias's SiteKey. The first site to warm the entry
     // therefore answered for every site on the tenant: a cross-site read served the wrong site's permissions
-    // out of the cache, and a cross-site write invalidated the wrong entry. docs/backlog.md §BL-33.
+    // out of the cache, and a cross-site write invalidated the wrong entry.
     //
     // The cache here is the REAL CacheManager over an in-memory FusionCache (PassThroughCache structurally
     // cannot see this: it never caches), and the ambient alias is pinned to site 1 while site 2 is queried.

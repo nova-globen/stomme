@@ -1,9 +1,9 @@
 name: ci
 
 # Build and test on GitHub's hosted runners. Every job runs in the PUBLIC repository on push, pull request and dispatch
-# (free minutes there). In the private working repository only the fast job runs, and only when dispatched (the owner's
-# D45, 2026-10-29: its minutes are counted, so a Linux run there is started when a Linux proof is needed - a change to
-# the workflow or the fast tier before a snapshot carries it out). Commits are gated locally by risk.
+# (free minutes there). In the private working repository only the fast job runs, and only when dispatched: its minutes
+# are counted, so a Linux run there is started when a Linux proof is needed, such as a change to the workflow or to the
+# fast tier before a snapshot carries it out. Commits are gated locally by risk.
 #
 #   fast      - build, every test without the ExternalDatabase trait (scripts/test-fast.ps1), the licence gate
 #   postgres  - the render guard (PostgreSQL is the only provider that reproduces the renderer deadlock class) and

@@ -31,10 +31,9 @@ namespace Stomme.Modules.Collaboration.Realtime
     // collaboration hub (for a browser). The hub is the opt-in SignalR transport; with it off the push is a no-op and the
     // editor polls. The notice names the resource, the kind of change and who caused it - nothing else: an editor re-reads
     // the session and the lock through the API, under its own keys and the owning module's access check.
-    // CHANGED from the predecessor platform, whose hub carried presence positions, change descriptors and lock expiries to a per-resource
-    // group and whose hub methods drove the services: here the hub only carries notices, and every act is the REST API's -
-    // one surface, one authorisation, and a hub invocation never needs a site's tenant scope. the predecessor platform's store change feed
-    // and polling notifier (a session saved on another node) are the bus: every node's handler pushes to its own clients.
+    // The hub only carries notices (not presence positions, change descriptors or lock expiries to a per-resource group), and
+    // every act is the REST API's - one surface, one authorisation, and a hub invocation never needs a site's tenant scope.
+    // The bus carries a session saved on another node: every node's handler pushes to its own clients.
     // ============================================================================================================
 
     /// <summary>The integration event: which site's resource, what kind of change, and who caused it.</summary>

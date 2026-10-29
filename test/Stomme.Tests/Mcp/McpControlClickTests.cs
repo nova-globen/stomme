@@ -21,7 +21,7 @@ using McpIndex = Stomme.Modules.Mcp.Index;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// BL-54 for the MCP module: the controls' <c>@onclick</c> handlers are BOUND.
+    /// For the MCP module: the controls' <c>@onclick</c> handlers are BOUND.
     /// </summary>
     /// <remarks>
     /// <para>

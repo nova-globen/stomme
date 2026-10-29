@@ -163,7 +163,7 @@ namespace Stomme.Services
 
         public async Task<File> UploadFileAsync(string url, int folderId, string name)
         {
-            // BL-100 F1: a POST (antiforgery-validated), no longer a state-changing GET. A refused download answers
+            // A POST (antiforgery-validated), no longer a state-changing GET. A refused download answers
             // 400/403 and this returns null.
             return await PostJsonAsync<object, File>($"{Apiurl}/upload/url?url={WebUtility.UrlEncode(url)}&folderid={folderId}&name={WebUtility.UrlEncode(name)}", null);
         }
@@ -175,7 +175,7 @@ namespace Stomme.Services
 
         public async Task UnzipFileAsync(int fileId)
         {
-            // BL-100 F1: the ingestion guard refuses a zip bomb, an over-count or over-capacity archive or a
+            // The ingestion guard refuses a zip bomb, an over-count or over-capacity archive or a
             // scanner-rejected entry with 400/403. PutAsync swallows a non-success status, so the caller (the
             // Files admin's Details page) would report success; throw instead, so it shows its unzip error.
             var uri = $"{Apiurl}/unzip/{fileId}";

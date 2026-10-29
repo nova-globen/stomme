@@ -39,7 +39,7 @@ namespace Stomme.Tests
     /// <remarks>
     /// <para>
     /// Stands up the REAL Stomme host (<see cref="Program.BuildAppAsync"/> + the real middleware pipeline,
-    /// transport swapped for TestServer), installs one tenant on <c>localhost</c> with the D64 interactive
+    /// transport swapped for TestServer), installs one tenant on <c>localhost</c> with the interactive
     /// OpenIddict authority co-hosted, registers a per-tenant LOOPBACK OIDC client (authorization_code + PKCE)
     /// whose redirect_uri is the site's own <c>signin-oidc</c> callback, points the site's
     /// <c>ExternalLogin:*</c> settings at that same-host authority, then DRIVES the full browser dance over
@@ -59,7 +59,7 @@ namespace Stomme.Tests
     /// </list>
     /// <para>
     /// PROVIDER DIMENSION. SQLite is the always-on EF case (the primary drive). PostgreSQL runs additionally
-    /// when the local service is reachable. RavenDB is yielded UNCONDITIONALLY (D46/D62 discipline: an EF-only
+    /// when the local service is reachable. RavenDB is yielded UNCONDITIONALLY (parity discipline: an EF-only
     /// parity run proves nothing, so an unreachable RavenDB FAILS rather than skips) — this drives the OIDC
     /// login loopback through the Raven OpenIddict stores AND the hand-written Raven IUserStore, the first
     /// time the interactive authority meets the document provider end to end.
@@ -480,7 +480,7 @@ namespace Stomme.Tests
 
         private string _lastAccessToken;
 
-        /// <summary>BL-196: <c>GET api/User/authenticate</c> from a client with NO cookie, carrying only <paramref name="bearer"/> (or nothing).</summary>
+        /// <summary><c>GET api/User/authenticate</c> from a client with NO cookie, carrying only <paramref name="bearer"/> (or nothing).</summary>
         private static async Task<JsonNode> AuthenticateAsync(HttpClient cookieless, string bearer)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/User/authenticate");

@@ -15,11 +15,11 @@ namespace Stomme.Tests
     /// A second save of the site from ONE Interactive Server circuit.
     /// </summary>
     /// <remarks>
-    /// Found clicking BL-192's pages: User Management's Settings tab saved once ("Settings Saved Successfully")
+    /// Found on the admin pages: User Management's Settings tab saved once ("Settings Saved Successfully")
     /// and failed the second time in the same circuit ("Error Saving Settings"; the event log: EF Core's "SiteAggregate
     /// cannot be tracked because another instance with the same key value is already being tracked"), reproduced twice, in
     /// 10.4.1 too. A circuit is one DI scope for as long as the page is open, and the site repository wrote through ONE
-    /// store whose context kept the first save's aggregate - the BL-11 identity-map class across two calls rather than
+    /// store whose context kept the first save's aggregate - the identity-map class of bug across two calls rather than
     /// within one method, so <c>PerWriteStoreInvariantTests</c> cannot see it. Reproduced here as what a circuit is: two
     /// saves through one scope, each read back through a scope of its own. The site's server twin (<c>SiteService</c>) is
     /// the only server-side service that writes a framework seam row from a circuit; every other admin page saves over HTTP,

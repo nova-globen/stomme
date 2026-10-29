@@ -11,7 +11,7 @@ using Stomme.Sessions.Persistence;
 namespace Stomme.Modules.Sessions.Application
 {
     /// <summary>
-    /// A person's sessions on a site, for their data package (BL-82 over BL-119): when and from where they signed in, and
+    /// A person's sessions on a site, for their data package: when and from where they signed in, and
     /// when each session ended. The session id is the row's own - not a credential: a cookie is needed to use one.
     /// </summary>
     public sealed class SessionSubjectContributor(IUserSessionRepository sessions) : ISubjectDataContributor

@@ -7,8 +7,7 @@ namespace Stomme.Infrastructure
 {
     /// <summary>
     /// What a site's Host users are told of its logs (<see cref="LogDrainService"/>: an entry at the notify level or above -
-    /// Error by default - becomes a notification, and so an e-mail) held back when it repeats. Found on UAT on 2026-10-10, the
-    /// day both sites were wired to the mail relay: every request a permission key refuses is logged at Error, so an anonymous
+    /// Error by default - becomes a notification, and so an e-mail) held back when it repeats. Every request a permission key refuses is logged at Error, so an anonymous
     /// probe of an API mailed the host each time, and a crawler could spend the relay's whole day (it allows about 60 mails an
     /// hour and 300 a day) on mail nobody needs, holding back the mail that matters. The same kind of entry - its message
     /// template, at its level, on its site - is told at most once an <see cref="Window"/>, and a site is told of at most

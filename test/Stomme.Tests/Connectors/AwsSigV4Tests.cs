@@ -44,7 +44,7 @@ namespace Stomme.Tests.Connectors
             Assert.Equal($"AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/service/aws4_request, SignedHeaders=host;x-amz-date, Signature={signature}", request.Headers.GetValues("Authorization").Single());
         }
 
-        // BL-229, Amazon S3: the S3 API reference's own examples (examplebucket, 2013-05-24, AKIAIOSFODNN7EXAMPLE) - GET Bucket
+        // Amazon S3: the S3 API reference's own examples (examplebucket, 2013-05-24, AKIAIOSFODNN7EXAMPLE) - GET Bucket
         // Lifecycle and GET Bucket (list objects) - signed with the payload hash header S3 requires, to the signatures S3 gives;
         // the same with the hash handed over as text, as an upload hashed beforehand signs.
         [Theory]

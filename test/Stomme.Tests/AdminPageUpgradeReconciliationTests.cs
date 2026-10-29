@@ -26,11 +26,11 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>The defect this pins, measured on the UAT deployment.</b> <c>AdminSiteTemplate</c> is consulted only by
+    /// <b>The defect this pins, measured on a deployed site.</b> <c>AdminSiteTemplate</c> is consulted only by
     /// the install path, so its pages are created exactly once, at install. Ship a release that adds an admin page
     /// and every existing site is missing it forever: the module itself registers by assembly scan (it is even
     /// selectable when adding a module to a page by hand), but its page never exists, so the feature is invisible.
-    /// On UAT the module definition <c>Stomme.Modules.Admin.OpenIddict</c> was present while
+    /// On the deployed site the module definition <c>Stomme.Modules.Admin.OpenIddict</c> was present while
     /// <c>select count(*) from page where path='admin/openiddict'</c> returned 0.
     /// </para>
     /// <para>
@@ -135,7 +135,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task The_MCP_admin_page_reaches_a_site_installed_before_MCP_existed()
         {
-            // BL-80 / D101 item 7. The MCP page is declared in AdminSiteTemplate behind Mcp:Enabled /
+            // The MCP page is declared in AdminSiteTemplate behind Mcp:Enabled /
             // Mcp:Server:Enabled, exactly as the OpenIddict and Data Export pages are behind theirs - so an install
             // that predates the feature, or has it switched off, must gain the page the moment a half is turned on.
             // Nothing a FRESH install asserts can see this: it is a statement about a site that already exists.
@@ -208,7 +208,7 @@ namespace Stomme.Tests
             // switched on, and a fresh install that never switches it on must not have it.
             using var scratch = new ScratchInstall();
 
-            // ---- Phase 1: help absent (what every install before BL-84 looks like) ------------------------
+            // ---- Phase 1: help absent (what every install before the help module looks like) ------------------------
             scratch.SetOpenIddictEnabled(false);
             scratch.SetHelpEnabled(null);
             var older = await BuildAsync(scratch);
@@ -308,19 +308,19 @@ namespace Stomme.Tests
             }
         }
 
-        // ---- D105: admin/licensing is gated on Deployment:Mode=OnPrem ------------------------------------------
+        // ---- admin/licensing is gated on Deployment:Mode=OnPrem ------------------------------------------
         //
         // The reverse edge is deliberately NOT a fact here: flipping OnPrem OFF never removes the page, because the
         // reconciliation is additive by construction (the second fact above pins that). A site switched back to Hosted
         // keeps an 'admin/licensing' page whose control and api/Licence both answer "licensing is not enabled" (404) -
-        // refutation 5 of section J.BL-2 accepts that edge rather than adding a removal path.
+        // that edge is accepted rather than adding a removal path.
 
         private const string DataExportAdminPagePath = "admin/dataexport";
 
         [Fact]
         public async Task The_data_export_page_and_folder_reach_an_EXISTING_site_once_when_the_feature_is_switched_on()
         {
-            // BL-85 (D108 items 7 and 11). Every other export suite installs FRESH with the feature already on, so none of
+            // Every other export suite installs FRESH with the feature already on, so none of
             // them can see the upgrade shape: a site that was installed without the feature and has it switched on later.
             using var scratch = new ScratchInstall();
 
@@ -640,7 +640,7 @@ namespace Stomme.Tests
 
             /// <summary>
             /// Flips the authority flag in place. Re-reads the file first, because the install WRITES to it
-            /// (DefaultDBType, the connection string, InstallationId — D32/D-4); rewriting from scratch would
+            /// (DefaultDBType, the connection string, InstallationId); rewriting from scratch would
             /// discard that and make phase 2 a fresh install rather than an upgrade.
             /// </summary>
             /// <summary>Sets (or, for <c>null</c>, removes) <c>DataExport:Enabled</c> in place.</summary>

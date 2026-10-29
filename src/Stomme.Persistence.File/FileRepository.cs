@@ -6,13 +6,13 @@ using Stomme.Tenancy.Abstractions;
 namespace Stomme.Persistence.File;
 
 /// <summary>
-/// A simple, RELIABLE file-based <see cref="IRepository{TAggregate, TId}"/> — the THIRD persistence provider
-/// (D80), proving the module persistence registry is genuinely provider-extensible: an unchanged storage-blind
+/// A simple, RELIABLE file-based <see cref="IRepository{TAggregate, TId}"/> — the THIRD persistence provider,
+/// proving the module persistence registry is genuinely provider-extensible: an unchanged storage-blind
 /// module (the Guestbook) runs on it with ZERO module edits. One aggregate is one JSON document under a
 /// per-tenant directory (<c>{RootPath}/{tenantId}/{AggregateTypeName}/{id}.json</c>), so tenants are isolated
 /// physically. All reads/writes use ASYNC file I/O (<see cref="System.IO.File.ReadAllTextAsync(string, CancellationToken)"/>
-/// / <see cref="System.IO.File.WriteAllTextAsync(string, string?, CancellationToken)"/>); the D33 sync-over-async
-/// allowlist stays at ONE.
+/// / <see cref="System.IO.File.WriteAllTextAsync(string, string?, CancellationToken)"/>); no sync-over-async
+/// is used.
 /// <para>
 /// <b>Serialization</b> is the SAME Newtonsoft path the RavenDB store uses (<see cref="FileStoreSerializer"/>),
 /// so a private-constructor aggregate and its <see cref="IStringValueObject"/> value objects round-trip — DRIVEN
@@ -26,7 +26,7 @@ namespace Stomme.Persistence.File;
 /// </para>
 /// <para>
 /// <b>String semantics.</b> <see cref="FindAsync"/> compiles the predicate and filters in memory, so a raw string
-/// <c>==</c> is ordinal/case-SENSITIVE — matching EF/SQLite and diverging from RavenDB, exactly as the D78
+/// <c>==</c> is ordinal/case-SENSITIVE — matching EF/SQLite and diverging from RavenDB, exactly as the
 /// <c>FindAsync</c> contract documents (safe for non-string scalars; strings must use the normalized-column
 /// pattern). <b>A VALUE OBJECT is different, and the difference is measured:</b> in memory it is the value
 /// object's OWN <c>Equals</c> that decides, so <c>e =&gt; e.Author == AuthorName.Create("ada lovelace")</c> matches

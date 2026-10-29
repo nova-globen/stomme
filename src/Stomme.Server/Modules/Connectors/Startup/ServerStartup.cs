@@ -31,7 +31,7 @@ namespace Stomme.Modules.Connectors.Startup
     /// <summary>
     /// The Connectors family's composition: every in-tree connector registered as a singleton <see cref="IConnector"/>
     /// for the host's catalog, which refuses a duplicate type key at composition. The family is ONE Stomme module:
-    /// a connector is a folder, not an <c>IModule</c> of its own (the predecessor platform's per-connector plugin modules did nothing but this
+    /// a connector is a folder, not an <c>IModule</c> of its own (a per-connector module would do nothing but this
     /// one registration). An external connector registers itself the same way from its own <see cref="IServerStartup"/> -
     /// see <c>examples/Connectors/</c>.
     /// </summary>
@@ -47,11 +47,11 @@ namespace Stomme.Modules.Connectors.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Increment 1: the generic REST connector and PostgreSQL - the two types the demo content declares.
+            // The generic REST connector and PostgreSQL - the two types the demo content declares.
             services.AddSingleton<IConnector, RestApiConnector>();
             services.AddSingleton<IConnector, PostgreSqlConnector>();
 
-            // Increment 2: the other drivers and the one host process (HostOnly).
+            // The other drivers and the one host process (HostOnly).
             services.AddSingleton<IConnector, SqlServerConnector>();
             services.AddSingleton<IConnector, FtpConnector>();
             services.AddSingleton<IConnector, Stomme.Modules.Connectors.Imap.ImapConnector>();
@@ -336,7 +336,7 @@ namespace Stomme.Modules.Connectors.Startup
             services.AddSingleton<IConnector, ActiveDirectoryConnector>();
             services.AddSingleton<IConnector, XmlConnector>();
 
-            // Increment 3: the OAuth family over the egress - one token provider shape, one throttling policy, no client of their own.
+            // The OAuth family over the egress - one token provider shape, one throttling policy, no client of their own.
             services.AddSingleton<IConnector, IntuneConnector>();
             services.AddSingleton<IConnector, EntraIdConnector>();
             services.AddSingleton<IConnector, AzureVirtualMachinesConnector>();
@@ -345,7 +345,7 @@ namespace Stomme.Modules.Connectors.Startup
             services.AddSingleton<IConnector, FlexNetManagerConnector>();
             services.AddSingleton<IConnector, FlexeraOneConnector>();
 
-            // Increment 4: the REST-derived vendor connectors and the six cost probes - one shape, one batch.
+            // The REST-derived vendor connectors and the six cost probes - one shape, one batch.
             services.AddSingleton<IConnector, QualysConnector>();
             services.AddSingleton<IConnector, Rapid7Connector>();
             services.AddSingleton<IConnector, ServiceNowConnector>();
@@ -360,7 +360,7 @@ namespace Stomme.Modules.Connectors.Startup
             services.AddSingleton<IConnector, SalesforceCostConnector>();
             services.AddSingleton<IConnector, SnowflakeCostConnector>();
 
-            // Increment 5: the last three - two configuration-only cost checks and the Tenable export.
+            // Two configuration-only cost checks and the Tenable export.
             services.AddSingleton<IConnector, AwsCostConnector>();
             services.AddSingleton<IConnector, GcpCostConnector>();
             services.AddSingleton<IConnector, TenableConnector>();

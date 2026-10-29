@@ -40,7 +40,7 @@ public sealed class ExceptionBehavior<TRequest, TResponse>(
         {
             // Expected too: the caller gave up - a browser that navigates away aborts its request and the request's token
             // with it - so the cancellation is the answer it asked for, not a fault. Re-thrown for the host, never logged
-            // as an error: a dashboard query cancelled that way wrote one per early click (found 2026-10-03). A cancellation
+            // as an error: a dashboard query cancelled that way wrote one per early click. A cancellation
             // nobody asked for falls through below and is logged.
             throw;
         }

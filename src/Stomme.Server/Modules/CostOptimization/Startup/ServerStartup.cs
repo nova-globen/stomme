@@ -19,9 +19,9 @@ namespace Stomme.Modules.CostOptimization.Startup
     /// <summary>
     /// The CostOptimization module's composition: the storage-blind, tenant-owned recommendation on
     /// whichever store the install chose, its closed repository, the advisor's options from the HOST's
-    /// configuration, the four requests, the page's service, and the predecessor platform's five advisor rules (increment 7), each
+    /// configuration, the four requests, the page's service, and the five advisor rules, each
     /// reading its Shared read port - which CloudUsage and Metering implement - and drafting nothing when the port is not
-    /// composed; and (increment 8) the model-tier router and the per-site response cache the AI assistant will consume, and
+    /// composed; and the model-tier router and the per-site response cache the AI assistant will consume, and
     /// the temp-file sweep. The weekly advisor job and the daily temp-file job are HostedServiceBase types found by the
     /// framework's assembly scan, never registered here.
     /// </summary>
@@ -52,14 +52,14 @@ namespace Stomme.Modules.CostOptimization.Startup
             // Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).
             services.AddTransient<ICostOptimizationService, ServerCostOptimizationService>();
 
-            // The advisor's rules (increment 7), the predecessor platform's five.
+            // The advisor's five rules.
             services.TryAddEnumerable(ServiceDescriptor.Scoped<IRecommendationAnalyzer, ExpensiveModelForSimpleTaskAnalyzer>());
             services.TryAddEnumerable(ServiceDescriptor.Scoped<IRecommendationAnalyzer, HighCacheMissAnalyzer>());
             services.TryAddEnumerable(ServiceDescriptor.Scoped<IRecommendationAnalyzer, QuotaApproachingAnalyzer>());
             services.TryAddEnumerable(ServiceDescriptor.Scoped<IRecommendationAnalyzer, CloudCostAnomalyAnalyzer>());
             services.TryAddEnumerable(ServiceDescriptor.Scoped<IRecommendationAnalyzer, LicensingSpendReviewAnalyzer>());
 
-            // Increment 8: the router and the response cache (their options from the HOST's configuration), and the sweep the
+            // The router and the response cache (their options from the HOST's configuration), and the sweep the
             // default-off temp-file job runs.
             services.TryAddSingleton(sp => ModelTiersOptions.From(HostConfiguration.Resolve(sp)));
             services.TryAddSingleton<IModelTierRouter, RuleBasedModelTierRouter>();

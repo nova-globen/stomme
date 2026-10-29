@@ -26,7 +26,7 @@ namespace Stomme.Tests
     /// <b>The mechanism, read at the sink.</b> <c>PermissionRepository.UpdatePermissionsAsync</c> defaults an
     /// empty EntityName to the entity being written and stamps <c>EntityId = -1</c> on ANY row whose EntityName
     /// differs - so a foreign row in a Module/Page/Folder <c>PermissionList</c> lands as a site-wide row.
-    /// D99's correction measured what one such row does: a <c>(User, -1, Write)</c> row for
+    /// One such row does this: a <c>(User, -1, Write)</c> row for
     /// <see cref="RoleNames.Everyone"/> turns the row-less, role-decided Host-only policy on
     /// <c>UserController.Delete</c> row-decided, and the DELETE answered 200 ANONYMOUSLY.
     /// </para>
@@ -75,7 +75,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// The repository guard on its own (defence in depth under the controller 400): a foreign row is refused
-        /// and NOTHING is written, and the lifted-key opt-in never admits a FRAMEWORK entity.
+        /// and NOTHING is written, and the module-key opt-in never admits a FRAMEWORK entity.
         /// </summary>
         [Fact]
         public async Task The_permission_repository_refuses_a_foreign_row_and_writes_nothing()
@@ -127,7 +127,7 @@ namespace Stomme.Tests
                 Assert.IsType<InvalidOperationException>(thrownWithFlag);
                 Assert.Empty(userWrite);
 
-                // Non-vacuity: the flag DOES admit a lifted (non-framework) key row, so "throws" above is about
+                // Non-vacuity: the flag DOES admit a module (non-framework) key row, so "throws" above is about
                 // the entity, not about the flag being ignored.
                 await GateDrive.InTenantAsync(app, Host, async (sp, alias) =>
                 {
@@ -151,7 +151,7 @@ namespace Stomme.Tests
             RunHostGridSaveAsync(LiftedRequiresGateTests.ResolveStore(storeName), _output);
 
         /// <summary>
-        /// BL-102, the module Settings page's side: the SUBMISSION CONTRACT of the module-instance permission grid,
+        /// The module Settings page's side: the SUBMISSION CONTRACT of the module-instance permission grid,
         /// driven as the HOST against the stock Users admin module instance.
         /// </summary>
         /// <remarks>
@@ -162,7 +162,7 @@ namespace Stomme.Tests
         /// The grid's host branch (<c>ValidatePermissions</c>) then adds a <c>Host Users</c> row for every column
         /// with no Administrators row - so a plain host save submitted <c>(User,-1,Write,Host Users)</c>, which,
         /// written, would flip the row-less role-decided User:Write policy row-decided and lock site
-        /// administrators out of user management (the D99 correction). That OLD shape must now be refused (400,
+        /// administrators out of user management. That earlier shape must now be refused (400,
         /// nothing written); the shape the FIXED page sends - own Module rows, host rows for View/Edit only - must
         /// save (200) and leave the framework policies row-less, with a site administrator still holding user
         /// management and still refused the Host-only DELETE.
@@ -625,7 +625,7 @@ namespace Stomme.Tests
         };
     }
 
-    /// <summary>The identical BL-102 scenario on RavenDB - fails, never skips, when the server is unreachable.</summary>
+    /// <summary>The identical scenario on RavenDB - fails, never skips, when the server is unreachable.</summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]
     public class RavenEntityPermissionWriteValidationTests

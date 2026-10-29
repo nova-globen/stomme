@@ -20,8 +20,8 @@ namespace Stomme.Modules.Mcp
     /// <para>
     /// <b>It declares NO page template, on purpose.</b> A module-declared page seeds on every install that has the
     /// assembly, and the only knob over it is the framework's <c>module.&lt;id&gt;.enabled</c> feature flag - a SECOND
-    /// switch beside <c>Mcp:Enabled</c>, which an operator turning MCP on would then also have to find. D101 asks for
-    /// the page to follow <c>Mcp:Enabled</c>, so it is declared in <c>AdminSiteTemplate</c> (server-side, where the
+    /// switch beside <c>Mcp:Enabled</c>, which an operator turning MCP on would then also have to find. The page should follow
+    /// <c>Mcp:Enabled</c>, so it is declared in <c>AdminSiteTemplate</c> (server-side, where the
     /// configuration is) beside the Data Export and Licensing pages, which are opt-in the same way. A stock install
     /// gains no page, and switching MCP on later reaches an EXISTING site through the additive boot-path
     /// reconciliation (<c>SiteRepository.ProcessAdminPageTemplatesAsync</c>).

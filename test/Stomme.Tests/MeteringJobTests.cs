@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D102 items 7 and 9, driven on a composed host: the nightly pass and the erasure participant.
+    /// Driven on a composed host: the nightly pass and the erasure participant.
     /// </summary>
     /// <remarks>
     /// These are the guarantees that are wrong by DEFAULT if nobody writes them down - a rollup job that appends

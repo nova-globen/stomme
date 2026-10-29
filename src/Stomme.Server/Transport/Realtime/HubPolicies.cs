@@ -3,13 +3,12 @@ using System.Collections.Generic;
 namespace Stomme.Transport.Realtime
 {
     /// <summary>
-    /// Per-hub authorization policy names for the realtime transport (brief 04 / D10). Each platform hub is
+    /// Per-hub authorization policy names for the realtime transport. Each platform hub is
     /// mapped with <c>RequireAuthorization(policy)</c>, so the WebSocket connection is authorized with the same
     /// identity/RBAC as the rest of the host. The transport registration adds these as named policies; a module
     /// hub can instead pass a Stomme permission-policy name (the <c>Entity:Permission:Roles</c> form that
     /// <c>AuthorizationPolicyProvider</c> resolves) to gate on a specific permission.
     /// </summary>
-    /// <remarks>Adopted from the predecessor platform's <c>HubPolicies</c>.</remarks>
     public static class HubPolicies
     {
         /// <summary>In-app notifications hub — any authenticated user (SignalR's per-user grouping targets the recipient).</summary>

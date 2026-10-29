@@ -30,7 +30,7 @@ namespace Stomme.Tests.Mcp
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>This is the test increment 4 left a live mutant for.</b> The bridge resolves the catalog from
+    /// <b>This is the test that a live mutant once survived.</b> The bridge resolves the catalog from
     /// <c>RequestContext.Services</c>; swapping that for the server's own provider changed nothing measurable, because
     /// a STATELESS transport builds its server out of the request's scope and the two are the same object. So nothing
     /// in that increment could tell a per-request catalog from a per-host one. This suite can: the same user, the same
@@ -55,7 +55,7 @@ namespace Stomme.Tests.Mcp
         private const string HostA = "localhost";
         private const string HostB = "mcpsiteb.localhost";
 
-        /// <summary>A VIRTUAL-FOLDER alias on site B - D101 item 10's documented route limitation, driven.</summary>
+        /// <summary>A VIRTUAL-FOLDER alias on site B - the documented route limitation, driven.</summary>
         private const string FolderAlias = "localhost/mcpfolder";
 
         private readonly ITestOutputHelper _output;
@@ -187,10 +187,10 @@ namespace Stomme.Tests.Mcp
 
                 // ---- 9. A VIRTUAL-FOLDER ALIAS HAS NO MCP ENDPOINT -----------------------------------
                 // MapMcp maps at the ROOT, so a tenant reachable only at a virtual folder is not an MCP server - the
-                // same limitation D61 measured for the OpenIddict authority. Driven here so the documentation is a
+                // same limitation measured earlier for the OpenIddict authority. Driven here so the documentation is a
                 // statement about this host rather than about the SDK.
                 //
-                // CORRECTED against D101's gate list, which expected 404: a POST to an unmapped path is claimed by the
+                // CORRECTED against the earlier gate list, which expected 404: a POST to an unmapped path is claimed by the
                 // SSR catch-all, which rejects the JSON content type with 400. What is asserted is what can be: the
                 // folder path does NOT serve the catalog, on a request whose ROOT path does.
                 await AddFolderAliasAsync(app, aliasB);
@@ -222,10 +222,10 @@ namespace Stomme.Tests.Mcp
                 var aliasA = await GateDrive.AliasAsync(app, HostA);
                 await CreateSecondSiteAsync(app);
                 var aliasB = await GateDrive.AliasAsync(app, HostB);
-                Assert.Equal(aliasA.TenantId, aliasB.TenantId);     // ONE tenant - the shape that made the predecessor platform reachable
+                Assert.Equal(aliasA.TenantId, aliasB.TenantId);     // ONE tenant - the shape that made an earlier version reachable
 
                 // ---- REGISTERING DOES NOT DIAL, through the REAL service ----------------------------
-                // Asserted on the LISTENER, not on the return value: the predecessor platform dialled on registration and rendered the
+                // Asserted on the LISTENER, not on the return value: an earlier version dialled on registration and rendered the
                 // answer, which is an SSRF oracle whatever the row says afterwards.
                 //
                 // THE ALLOWLIST IS SET FIRST, AND THAT IS THE POINT. Measured: with loopback NOT allowlisted, a planted
@@ -338,7 +338,7 @@ namespace Stomme.Tests.Mcp
             }
         }
 
-        /// <summary>The five by-id operations D101 item 4 names, each as one call on the service.</summary>
+        /// <summary>The five by-id operations, each as one call on the service.</summary>
         private static IEnumerable<(string Name, Func<McpRegistrationService, Guid, Task<McpRegistrationResult>> Operation)> ByIdOperations() =>
         [
             ("refresh", (service, id) => service.RefreshAsync(id)),

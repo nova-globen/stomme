@@ -15,12 +15,13 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// The predecessor platform's ConnectionApplicationTests (17) by name on the port's application layer, over
+    /// The ConnectionApplicationTests cases (17), kept by name, on the application layer, over
     /// the module's real startup on the File store. CHANGED, each on purpose: the vault is the per-site secret store and a
     /// credential is a NAMED field the connector's scheme declares (the single free-form <c>Credential</c> is gone, so the
-    /// fixture declares Basic and the predecessor platform's <c>client_id</c> names are the scheme's <c>client-id</c>); a connector's message
-    /// never reaches the caller - a category does; a deleted connection's secrets are removed after its row. DROPPED here:
-    /// <c>Heartbeat_TestsAllConnections_AndUpdatesStatus</c> - the probe is increment 11's, default-off, per site (F2).
+    /// fixture declares Basic, and a field once named <c>client_id</c> is the scheme's <c>client-id</c>); a connector's message
+    /// never reaches the caller - a category does; a deleted connection's secrets are removed after its row. NOT covered here:
+    /// <c>Heartbeat_TestsAllConnections_AndUpdatesStatus</c> - the health probe is default-off and per site, and
+    /// ConnectionHealthProbeTests covers it.
     /// </summary>
     public sealed class ConnectionApplicationTests
     {

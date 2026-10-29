@@ -29,7 +29,7 @@ namespace Stomme.Tests.AiAssistant
     /// and the proposed artifacts (a child entity carrying its own dataset list) ride the JSON collection columns and come
     /// back intact; a user lists their own conversations on their own site and nobody else's; a by-id read for another user
     /// or site answers "not found"; and the erasure participant deletes exactly the user's conversations on the site,
-    /// idempotently. the predecessor platform's <c>Conversation_round_trips_through_the_repository_with_its_state_intact</c> is the first case,
+    /// idempotently. The first case is <c>Conversation_round_trips_through_the_repository_with_its_state_intact</c>,
     /// on four stores instead of an in-memory one. Composed through the module's OWN startup, the way the host does it.
     /// </summary>
     public abstract class AssistantConversationStoreConformanceTests : IAsyncLifetime

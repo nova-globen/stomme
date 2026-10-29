@@ -11,17 +11,16 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The guardrail run on every assistant request before any model call (lifted from the predecessor platform's
-    /// <c>AssistantGuardrail</c>). Three checks, cheapest first: a per-user fixed-window rate limit
+    /// The guardrail run on every assistant request before any model call. Three checks, cheapest first: a per-user fixed-window rate limit
     /// (<see cref="AssistantOptions.RateLimitPerMinute"/>), a prompt-injection / system-prompt-exfiltration filter over the
     /// USER messages, and an authorization check of every resource the request explicitly targets. The first refusal throws
     /// <see cref="AssistantGuardrailException"/>, so a refused request never reaches an agent or a model.
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED:</b> the rate window is keyed by SITE and user (a Stomme user id repeats across sites and tenants), the
+    /// The rate window is keyed by SITE and user (a Stomme user id repeats across sites and tenants), the
     /// user is the request's principal rather than a string the caller passes, and the default authorizer REFUSES every
-    /// explicit reference instead of allowing it (the predecessor platform's no-op was permissive) - fail-closed until the owning module
-    /// answers. The phrase list is the predecessor platform's, verbatim; it is a tripwire for the obvious, not a defence on its own - the
+    /// explicit reference instead of allowing it (a permissive no-op would let it through) - fail-closed until the owning module
+    /// answers. The phrase list is a tripwire for the obvious, not a defence on its own - the
     /// defence is that an agent only PROPOSES.
     /// </remarks>
     public sealed class AssistantGuardrail : IAssistantGuardrail
@@ -98,7 +97,7 @@ namespace Stomme.Modules.AiAssistant.Application
         }
 
         /// <summary>
-        /// The first known prompt-injection phrase a text holds, whatever its case and spacing; null for none. BL-229: the pipelines'
+        /// The first known prompt-injection phrase a text holds, whatever its case and spacing; null for none. The pipelines'
         /// Check text step finds a jailbreak with it before asking any model - one list, so the two never disagree.
         /// </summary>
         internal static string? KnownInjection(string? text)

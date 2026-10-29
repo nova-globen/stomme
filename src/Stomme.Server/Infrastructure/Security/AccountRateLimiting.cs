@@ -21,15 +21,15 @@ namespace Stomme.Infrastructure.Security
     /// <para>
     /// <b>Why.</b> Per-account lockout stops guessing ONE password; it does nothing about spraying one password across
     /// many accounts, and nothing about hammering the endpoints that SEND mail - password reset, forgot-username, the
-    /// login link, registration - each of which writes a live token or a message. the predecessor platform's host limited sign-in per client
-    /// address; D98 dropped that host, and Stomme had no limiter at all.
+    /// login link, registration - each of which writes a live token or a message. Sign-in was not limited per client
+    /// address, and Stomme had no limiter at all.
     /// </para>
     /// <para>
     /// <b>Two policies, each a fixed window per (site, client address):</b>
     /// <list type="bullet">
     /// <item><see cref="SignInPolicy"/> - every credential or token ATTEMPT: <c>/pages/login</c>, <c>/pages/loginlink</c>,
     /// <c>api/User/signin</c>, <c>twofactor</c>, <c>reset</c>, <c>verify</c> and the external-login link. Default 10 per 60
-    /// seconds (the predecessor platform's number).</item>
+    /// seconds.</item>
     /// <item><see cref="AccountEmailPolicy"/> - every request that makes the host SEND something: <c>forgotpassword</c>,
     /// <c>forgotusername</c> and <c>loginlink</c>; and, as <see cref="RegistrationPolicy"/>, anonymous registration
     /// (<c>POST api/User</c>). Default 5 per 300 seconds.</item>

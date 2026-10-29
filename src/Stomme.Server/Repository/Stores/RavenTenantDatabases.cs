@@ -12,7 +12,7 @@ namespace Stomme.Repository.Stores
     /// <summary>
     /// The RavenDB database each tenant's rows live in: the database its connection string names, as on a relational
     /// install. Null is the store's default database - the installation's own, where the master tenant lives and where every
-    /// tenant lived before BL-176. Filled by the boot and install path (<see cref="RavenTenantDatabasePlanner"/>) for every
+    /// tenant lived before tenants had databases of their own. Filled by the boot and install path (<see cref="RavenTenantDatabasePlanner"/>) for every
     /// tenant before a request is served; the master tenant is known from the start.
     /// </summary>
     public sealed class RavenTenantDatabases

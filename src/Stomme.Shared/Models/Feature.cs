@@ -21,7 +21,7 @@ namespace Stomme.Models
         public bool Enabled { get; set; }
 
         /// <summary>
-        /// Entitlement key this flag additionally requires, if any (BL-2 territory; permissive until then)
+        /// Entitlement key this flag additionally requires, if any (permissive until a licence provider answers)
         /// </summary>
         public string RequiredEntitlement { get; set; }
 

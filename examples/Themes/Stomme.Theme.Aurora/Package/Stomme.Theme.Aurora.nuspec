@@ -29,7 +29,7 @@
         <file src="..\Stomme.Theme.Aurora\bin\Release\net10.0\Stomme.Theme.Aurora.Stomme.dll" target="lib\net10.0" />
         <file src="..\Stomme.Theme.Aurora\bin\Release\net10.0\Stomme.Theme.Aurora.Stomme.pdb" target="lib\net10.0" />
         <file src="..\Stomme.Theme.Aurora\wwwroot\**\*.*" target="staticwebassets" />
-        <!-- D92 dual-consumable pack: the SDK-generated static-web-asset props make a build-time
+        <!-- Dual-consumable pack: the SDK-generated static-web-asset props make a build-time
              <PackageReference> consumer SERVE wwwroot (as _content/Stomme.Theme.Aurora/), while
              InstallationManager consumers keep extracting staticwebassets/ (it ignores build*/ roots).
              The build\{packageId}.props naming is what NuGet auto-imports. -->

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The integration bus is opt-in host wiring (docs/decisions.md D9). These guard the gate itself:
+    // The integration bus is opt-in host wiring. These guard the gate itself:
     // an existing install with no Messaging section must boot exactly as before — no bus, no hosted
     // services, no Rebus worker threads — while enabling the section really does register the seam.
     [Trait("Category", "ExternalDatabase")]

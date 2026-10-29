@@ -31,12 +31,12 @@ namespace Stomme.Tests
     /// </para>
     /// <para>
     /// <b>The arrangement is the point.</b> Tenant one's ambient scope is deliberately held OPEN around a pass
-    /// run for tenant two — the shape the pre-BL-107 job loop really had, and the shape any future non-job caller
+    /// run for tenant two — the shape the job loop really had before its tenant scope was fixed, and the shape any future non-job caller
     /// could still have. If the pass did not enter the tenant's own scope, its reads would be filtered as tenant
     /// one and it would write and read the wrong tenant's rows silently.
     /// </para>
     /// <para>
-    /// <b>The metering module has the same latent id defect and is booked as BL-151</b>; this suite is the shape
+    /// <b>The metering module has the same latent id defect and is tracked separately</b>; this suite is the shape
     /// its gate should take.
     /// </para>
     /// </remarks>

@@ -24,11 +24,11 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Ask the site's language model (BL-229 - n8n's AI node, on Stomme's own model seam): the prompt - with the
+    /// Ask the site's language model (n8n's AI node, on Stomme's own model seam): the prompt - with the
     /// instructions as the system message - goes to the model the site configured for its assistant, through
     /// <see cref="IAssistantModelAccess"/>: the site's provider and endpoint, its key in the site's secret store, the site's egress,
     /// and every call quota-gated before it is made and metered after it, as the <see cref="Agent"/> agent beside the assistant's
-    /// own. The answer is the result - text, or JSON the step checks parses (a fenced block is unwrapped). BL-229, n8n's
+    /// own. The answer is the result - text, or JSON the step checks parses (a fenced block is unwrapped). n8n's
     /// Structured Output Parser and its Auto-fixing one: an Answer shape - an example of the answer, or a JSON Schema
     /// (<see cref="AiAnswerShape"/>) - is told the model, and the answer held to it; an answer that misses it (or is not JSON) is
     /// put to the model once more with what was wrong, and a second miss is <c>AI_WRONG_SHAPE</c>, naming where.

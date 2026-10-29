@@ -39,7 +39,7 @@ namespace Stomme.Repository.Stores
     /// <b>The <see cref="IDeletable"/> stamp now agrees across providers.</b> It was formerly applied by
     /// the relational path only — <see cref="AuditStamp"/> did not port it, because <c>DbContextUtils</c>'s
     /// rule compares the incoming <c>IsDeleted</c> against the value in the database and a document provider
-    /// cannot evaluate that without an extra load. D59 ported it WITHOUT that load: <see cref="AuditStamp.StampDeleted"/>
+    /// cannot evaluate that without an extra load. It is now ported WITHOUT that load: <see cref="AuditStamp.StampDeleted"/>
     /// (called from <c>RavenAuditListener</c>) stamps <see cref="DeletedBy"/>/<see cref="DeletedOn"/> on the first
     /// transition to deleted (<c>IsDeleted == true &amp;&amp; DeletedOn == null</c>) and clears them on restore, so
     /// a Notification soft-deleted through the RavenDB store now records the same DeletedBy/DeletedOn as PostgreSQL.

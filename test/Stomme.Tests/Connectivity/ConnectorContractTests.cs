@@ -62,7 +62,7 @@ namespace Stomme.Tests.Connectivity
     }
 
     /// <summary>
-    /// The predecessor platform's connector-contract cases ported by name onto the BCL-only contract in
+    /// The connector-contract cases, kept by name, on the BCL-only contract in
     /// <c>Stomme.Shared/Connectivity</c>: the config schema (ConnectorConfigSchemaTests 4, ConnectorConfigSchemaRichFieldsTests 16),
     /// the authentication schemes (AuthenticationSchemeTests 10), the picker groups (ConnectorPickerGroupsTests 4), the
     /// catalog (ConnectorCatalogTests 4 - with the one deliberate change: a duplicate key THROWS instead of the first
@@ -231,7 +231,7 @@ namespace Stomme.Tests.Connectivity
                 Assert.Equal(names.Count, names.Distinct(StringComparer.Ordinal).Count());
                 // Each connection secret is keyed connectivity.connection-<id>.<field>, and <field> must ALREADY fit the
                 // per-site secret store's segment grammar - so every scheme's field name is a valid key segment as declared
-                // (the predecessor platform's api_key, client_id, ... are hyphenated here for exactly that reason).
+                // (so api_key and client_id are written api-key and client-id here, for exactly that reason).
                 Assert.All(names, name => Assert.True(Stomme.Infrastructure.Security.SiteSecretStore.IsValidReferenceKey($"connectivity.connection-{Guid.NewGuid():N}.{name}"), name));
             }
         }

@@ -7,12 +7,12 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-230 (BL-153's remainder): a composition with no host environment - a test fixture that runs a module's startup on a
+    /// A composition with no host environment - a test fixture that runs a module's startup on a
     /// bare service collection - must not die on a data directory another fixture has already deleted.
     /// </summary>
     /// <remarks>
     /// The process-wide <c>Constants.DataDirectory</c> slot holds whatever host set it last; in a test run that is often a
-    /// fixture whose <c>Dispose</c> deleted the folder. Two gates in a row (2026-10-05) died on <c>DirectoryNotFoundException</c>
+    /// fixture whose <c>Dispose</c> deleted the folder. Two test runs in a row died on <c>DirectoryNotFoundException</c>
     /// at <c>HostDataDirectory.Expand</c> - a Dashboards and an MCP startup composed bare. A stale slot now resolves to a
     /// folder of the process's own; a slot whose folder exists is kept, so a fixture that set it on purpose is unchanged.
     /// Serialised with the other hosts that touch the slot.
@@ -37,7 +37,7 @@ namespace Stomme.Tests
         {
             Directory.CreateDirectory(_root);
             AppDomain.CurrentDomain.SetData(Constants.DataDirectory, Path.Combine(_root, "Data"));
-            Directory.Delete(_root, recursive: true); // the owner disposed
+            Directory.Delete(_root, recursive: true); // the fixture is disposed here
 
             var expanded = HostDataDirectory.Expand(new ServiceCollection(), "Data Source=|DataDirectory|modules.db");
 

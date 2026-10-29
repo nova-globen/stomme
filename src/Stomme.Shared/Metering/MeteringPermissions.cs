@@ -15,9 +15,9 @@ namespace Stomme.Metering
     /// its controls with it, the Server's requests and controller carry it.
     /// </para>
     /// <para>
-    /// <b>the predecessor platform's FIVE keys collapse to three, and one of them is new.</b> Its usage pages hand-checked
-    /// <c>HasClaim</c> and its AI queries carried three keys that did not separate "my own consumption" from "the
-    /// site's"; the override command carried NONE at all and took the tenant from the request body. Here
+    /// <b>Three keys, one of them the self-service read.</b> Hand-checking
+    /// <c>HasClaim</c> on usage pages, or keys that do not separate "my own consumption" from "the
+    /// site's", or an override command with NO key that takes the tenant from the request body, are the traps avoided. Here
     /// <see cref="ViewOwn"/> is the self-service key every registered user holds, <see cref="View"/> is the
     /// operator's read of the whole site, and <see cref="Manage"/> is the only key that can define a quota, reset a
     /// counter or grant an override - and every by-id handler behind it resolves through the caller's own site.

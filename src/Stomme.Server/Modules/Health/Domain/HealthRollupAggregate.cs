@@ -152,8 +152,7 @@ namespace Stomme.Modules.Health.Domain
         }
 
         /// <summary>
-        /// Folds probe results into the totals of one window — the predecessor platform's <c>MetricRollupCalculator</c> math,
-        /// lifted: counts by state, mean and worst duration in milliseconds, availability as the healthy
+        /// Folds probe results into the totals of one window — counts by state, mean and worst duration in milliseconds, availability as the healthy
         /// percentage, every figure rounded to two places. Returns <c>null</c> for an empty window, because an
         /// empty window writes no row.
         /// </summary>

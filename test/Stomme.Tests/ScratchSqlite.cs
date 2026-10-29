@@ -12,14 +12,14 @@ namespace Stomme.Tests
     /// <remarks>
     /// <para>
     /// A file-backed SQLite database admits ONE writer, and a composed Stomme host writes from two places at once:
-    /// the request being driven, and the D34 log drain flushing from a background thread. When they collide the loser
-    /// gets <c>SQLite Error 5: 'database is locked'</c>. Measured on 2026-09-17: the definition-PUT suites failed this
+    /// the request being driven, and the log drain flushing from a background thread. When they collide the loser
+    /// gets <c>SQLite Error 5: 'database is locked'</c>. Measured: the definition-PUT suites failed this
     /// way in roughly one full run in three, a different case each time, and always passed when run alone; the
     /// captured server error was an <c>EntityFrameworkCore.Update</c> failure on <c>MasterDBContext</c> whose inner
     /// exception was exactly that lock.
     /// </para>
     /// <para>
-    /// <b>CORRECTION 2026-09-20.</b> This used to read "two settings, and BOTH are needed", crediting
+    /// <b>CORRECTION.</b> This used to read "two settings, and BOTH are needed", crediting
     /// <c>Default Timeout</c> with supplying a busy wait. Measured: <c>SqliteConnectionStringBuilder.DefaultTimeout</c>
     /// is <b>already 30 seconds</b> with nothing set (<c>SqliteWalJournalTests</c>), so the explicit setting below
     /// restates the default and changes nothing. That explains the original measurement rather than contradicting it —
@@ -29,7 +29,7 @@ namespace Stomme.Tests
     /// is a property of the FILE, so it is set once, here, when the connection string is handed out.
     /// </para>
     /// <para>
-    /// This no longer stands in for the product, either. BL-104's product half put the same journal mode behind
+    /// This no longer stands in for the product, either: the same journal mode now sits behind
     /// <c>SqliteDatabase.EnsureWalJournal</c>, on the <c>IDatabase.UseDatabase</c> seam every framework context on a
     /// SQLite install is composed through, so a real install gets it too. This helper still applies it to scratch
     /// databases that never go through that seam.
@@ -123,7 +123,7 @@ namespace Stomme.Tests
         /// <remarks>
         /// <para>
         /// A fixture that composes a real host cannot simply release the string it wrote, because <b>the app
-        /// MUTATES its settings at boot</b> (D32/D-4): <c>DefaultDBType</c>, the connection string and an
+        /// MUTATES its settings at boot</b>: <c>DefaultDBType</c>, the connection string and an
         /// <c>InstallationId</c> are written back to the writable settings file, which for these fixtures is
         /// <c>appsettings.override.json</c> under the content root (<c>ConfigManager.GetAppSettingsOverrideFilename</c>).
         /// The host therefore pools under whatever ended up THERE. Since the pool is keyed by the connection

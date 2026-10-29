@@ -20,17 +20,16 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Ported from the predecessor platform <c>tests/Persistence.Aspire.Tests/NotificationsRavenStoreTests.cs</c> (the 4 RavenDB container
-    /// cases): the four notification aggregates round-trip through a LIVE RavenDB with their nested value/entity
+    /// The 4 RavenDB cases: the four notification aggregates round-trip through a LIVE RavenDB with their nested value/entity
     /// graphs - the persistence proof an in-memory store cannot give. Assertions kept; types adapted (site id, int user
     /// id, UTC DateTime, the secret REFERENCE KEY).
     /// <para>
-    /// <b>DEVIATION by name (F4).</b> The gate list places these in <c>test/Stomme.Persistence.Raven.Tests</c>, but that
+    /// <b>Location.</b> These could sit in <c>test/Stomme.Persistence.Raven.Tests</c>, but that
     /// project references no <c>Stomme.Server</c> (where the aggregates live) - only Persistence.RavenDb /
     /// Abstractions / SharedKernel / Tenancy. Rather than hang the whole host off a leaf persistence test project they
-    /// live here as <c>RavenNotificationStoreTests</c>, against infra RavenDB via <c>RAVENDB_TEST_URL</c>, composed the
-    /// way the host composes them (the module <c>ServerStartup</c> under a RavenDB config). the predecessor platform's Aspire container
-    /// fixture became a per-class scratch database. Fails, never skips, when RavenDB is unreachable.
+    /// live here as <c>RavenNotificationStoreTests</c>, against the RavenDB test server via <c>RAVENDB_TEST_URL</c>, composed the
+    /// way the host composes them (the module <c>ServerStartup</c> under a RavenDB config). A per-class scratch database
+    /// replaces a container fixture. Fails, never skips, when RavenDB is unreachable.
     /// </para>
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
@@ -82,7 +81,7 @@ namespace Stomme.Tests.Notifications
             }
         }
 
-        // the predecessor platform built a fresh RavenRepository per call; the harness swap gives each call its own DI scope.
+        // Each call gets its own DI scope, so a fresh RavenRepository is built per call.
         private async Task AddAsync<T>(T aggregate)
             where T : AggregateRoot<Guid>
         {

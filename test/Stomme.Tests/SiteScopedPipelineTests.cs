@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// M2 row 10 (ruling C33): a module scopes its middleware to its own site with <c>UseWhenSitePath</c> (or
+    /// A module scopes its middleware to its own site with <c>UseWhenSitePath</c> (or
     /// <c>UseWhenSite</c>), and a filter with <c>HttpContext.IsSitePath</c> - driven through the host's real pipeline: an
     /// <see cref="IServerPipelineStartup"/> at <see cref="ServerPipelineStage.BeforeRouting"/>, a root site and a site in the
     /// folder <c>sv</c>.

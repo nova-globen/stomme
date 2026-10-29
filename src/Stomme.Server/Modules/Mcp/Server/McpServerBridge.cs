@@ -40,7 +40,7 @@ namespace Stomme.Modules.Mcp.Server
     /// </remarks>
     /// <summary>
     /// Endpoint metadata marking the MCP route, so the Identity cookie's challenge can answer it 401 instead of this
-    /// host''s usual bare 403 (increment 4 follow-up).
+    /// host''s usual bare 403.
     /// </summary>
     /// <remarks>
     /// <b>Metadata, not a path match.</b> The route is configurable (<c>Mcp:Server:Path</c>), so a string comparison in

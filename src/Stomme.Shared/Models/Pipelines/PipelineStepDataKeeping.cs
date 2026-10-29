@@ -6,8 +6,8 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// What a pipeline's runs keep of what each step received and produced (BL-229 - n8n Enterprise's execution data
-    /// redaction): always, only for a run that fails, or never. A run that is not to keep it has its steps' inputs and outputs,
+    /// What a pipeline's runs keep of what each step received and produced (as n8n Enterprise's execution data
+    /// redaction does): always, only for a run that fails, or never. A run that is not to keep it has its steps' inputs and outputs,
     /// and what it was started with and returned, emptied a couple of minutes after it ends - its status, times, errors, log and
     /// saved values stay, so it can still be read; a run started with something is then not run again, nor gone on with from a
     /// failed step, without it. Applies once published, to the runs already kept as well.

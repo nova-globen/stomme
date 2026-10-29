@@ -12,7 +12,7 @@ namespace Stomme.Modules.HtmlText.Repository
     /// <remarks>
     /// Split into two provider methods, then collapsed by <c>SelectStoreProviderByConfig</c> at resolve time —
     /// mirroring the framework's <c>AddStommeFrameworkStore</c> / <c>AddRavenFrameworkStore</c> /
-    /// <c>SelectFrameworkStoreProviderByConfig</c>. D17 rule 1: only CLOSED module contracts are registered here;
+    /// <c>SelectFrameworkStoreProviderByConfig</c>. Only CLOSED module contracts are registered here;
     /// the ambient open-generic <c>IRepository&lt;,&gt;</c> and <c>IDocumentSessionFactory</c> are left to
     /// <c>AddFeatureManagement</c>.
     /// </remarks>

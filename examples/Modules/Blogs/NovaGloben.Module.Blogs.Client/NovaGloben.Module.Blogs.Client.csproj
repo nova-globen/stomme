@@ -15,12 +15,12 @@
     /blogs page keeps resolving after the split.
 
     INDEPENDENT: references Stomme ONLY through a meta-package from the local feed — since
-    BL-44 the SLIM one, Stomme.Sdk.Slim (examples/pack-sdk-slim.ps1). The slim closure still includes
+    the slim one, Stomme.Sdk.Slim (examples/pack-sdk-slim.ps1). The slim closure still includes
     the Stomme.Server compile surface, but the compiler only emits assembly references for types
     actually used — this project uses none, and the reference test proves it (with the Server assembly
     as the known-dirty control).
 
-    STORAGE-BLIND (owner's bar #2) is unchanged by the split: persistence lives entirely in the
+    STORAGE-BLIND is unchanged by the split: persistence lives entirely in the
     Server project (AddModuleAggregatePersistence<BlogPost, Guid>), the client talks HTTP only.
   -->
   <PropertyGroup>

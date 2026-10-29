@@ -16,7 +16,7 @@ namespace Stomme.Tests.Connectors
 {
     /// <summary>
     /// The egress reaches a pinned address within a connection's timeout before a directory library is let dial it (on
-    /// Linux libldap connects synchronously with the system's two-minute timeout, measured on UAT): a listening port answers; a
+    /// Linux libldap connects synchronously with the system's two-minute timeout): a listening port answers; a
     /// closed one is refused in words; an address that does not answer is cut off at the timeout; the caller's own cancellation
     /// stays its own; the address checked against the policy where the bytes go - loopback refused unless the host is allowlisted
     /// and the address is its own; an egress that does not reach answers at once (the contract's default); and the LDAP and

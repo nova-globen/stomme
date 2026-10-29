@@ -21,9 +21,9 @@ namespace Stomme.Tests
     /// The AI meter, driven on an installed site.
     /// </summary>
     /// <remarks>
-    /// Until 2026-09-21 the AI recorder had a port-shape test and nothing else: no case recorded a call. Reconciling
-    /// the predecessor platform's <c>AiUsageRecorderTests</c> BY NAME is what showed it - and showed that one predecessor-platform rule had been lost
-    /// in the lift: a CACHE HIT was priced, and charged to the token quota, like a call the provider was paid for. The
+    /// Until recently the AI recorder had a port-shape test and nothing else: no case recorded a call. Once the recorder
+    /// had cases, they showed that one rule had been lost: a CACHE HIT was priced, and charged to the token quota, like
+    /// a call the provider was paid for. The
     /// price list comes from the override FILE here, as a deployed install's does.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]

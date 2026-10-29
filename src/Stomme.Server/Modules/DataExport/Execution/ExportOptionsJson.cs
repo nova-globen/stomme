@@ -19,7 +19,7 @@ namespace Stomme.Modules.DataExport.Execution
     /// </para>
     /// <para>
     /// Whether a requester MAY turn neutralisation off is decided in the request handler (it needs the manage
-    /// permission, refutation 11), never here: by the time a value reaches this type it has been authorised.
+    /// permission), never here: by the time a value reaches this type it has been authorised.
     /// </para>
     /// </remarks>
     public static class ExportOptionsJson

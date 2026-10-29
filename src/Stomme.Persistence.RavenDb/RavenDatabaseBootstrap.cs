@@ -17,7 +17,7 @@ namespace Stomme.Persistence.RavenDb;
 /// <c>IQuerySession</c> exposes, since it hands back a bare <see cref="IQueryable{T}"/> with no index-name
 /// dimension) does NOT use a static index even when one covers the query exactly. It creates and uses its own
 /// auto-index instead. Deploying static indexes here would ship dead weight; routing dynamic queries at them
-/// would need either a change to the seam's contract (binding the read to RavenDB, which D7 forbids) or a
+/// would need either a change to the seam's contract (binding the read to RavenDB, which the seam forbids) or a
 /// provider-local type-to-index map that silently returns nothing the day a query filters an unindexed field —
 /// the exact silent-failure class this work exists to remove. RavenDB's auto-indexes serve every shape the
 /// framework store issues; correctness across the index-build window is the staleness wait's job, not an

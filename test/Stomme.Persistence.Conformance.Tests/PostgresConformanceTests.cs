@@ -9,13 +9,13 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// <summary>
 /// The conformance suite against the EF Core provider ON POSTGRESQL — the database the product
 /// actually ships on, which the SQLite fixture (<see cref="EfCoreConformanceTests"/>) structurally cannot
-/// represent (the D46 ADR's own stated limit). Each test creates a scratch database on the infra tier
+/// represent (the limit the SQLite fixtures cannot overcome). Each test creates a scratch database on the shared test server
 /// (<c>stomme_conformance_wgt_*</c>), <c>EnsureCreated</c>s the fixture context — exactly as the SQLite
 /// twin does — and force-drops it in teardown; stale leftovers of a killed run are swept at initialization
 /// (see <see cref="PostgresConformanceEndpoint"/>).
 /// </summary>
 /// <remarks>
-/// FAILS, never skips, when PostgreSQL is unreachable — the D46 principle;
+/// FAILS, never skips, when PostgreSQL is unreachable — the fail-not-skip principle;
 /// <see cref="PostgresParityCoverageTests"/> is the named diagnosis.
 /// </remarks>
 public sealed class PostgresConformanceTests : PersistenceConformanceTests

@@ -23,8 +23,8 @@ public interface ITenantDirectory
     /// Every known tenant, in a stable order. Never null; empty before the installation has a tenant store
     /// (the caller decides what that means — typically "fall back to the default tenant").
     /// <para>
-    /// Async because enumerating tenants IS a store read — the host's implementation queries its tenant store
-    /// (D32). Every caller is startup/seeding-time cross-tenant work that already runs on an async path, so
+    /// Async because enumerating tenants IS a store read — the host's implementation queries its tenant store.
+    /// Every caller is startup/seeding-time cross-tenant work that already runs on an async path, so
     /// there is nothing here that must resolve a tenant list from inside a synchronous platform virtual.
     /// </para>
     /// </summary>

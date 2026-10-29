@@ -56,12 +56,12 @@ namespace Stomme.Tests
             Assert.Contains("[Mediator] Handling SignGuestbookCommand", log);
             Assert.Contains("[Mediator] Handled SignGuestbookCommand", log);
             // The performance behavior logs ONE of two lines depending on WALL-CLOCK time (500 ms threshold), and the
-            // first, cold mediator call inside a loaded full gate crossed it (measured 2026-09-23: "took ... ms (slow)"
+            // first, cold mediator call inside a loaded full gate crossed it (the log then read "took ... ms (slow)"
             // instead of "completed in"). What this asserts is that the behavior RAN, so either line is the answer.
             Assert.True(log.Contains("SignGuestbookCommand completed in", StringComparison.Ordinal)
                         || log.Contains("SignGuestbookCommand took", StringComparison.Ordinal),
                 "the performance behavior logged nothing for SignGuestbookCommand:\n" + log);
-            // Both in-process fan-out paths fired on the one signature (D74 keeps them coexisting).
+            // Both in-process fan-out paths fired on the one signature (both are meant to coexist).
             Assert.Contains("MEDIATOR INotification", log);
             Assert.Contains("FRAMEWORK domain event", log);
         }

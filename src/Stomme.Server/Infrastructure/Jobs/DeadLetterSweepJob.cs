@@ -8,7 +8,7 @@ using Stomme.Infrastructure.EventBus;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// BL-100 O2 — the daily dead-letter sweep ported from the predecessor platform's Operations module: discards dead letters that
+    /// The daily dead-letter sweep: discards dead letters that
     /// became visible in the dead-letter queue more than <c>Operations:DeadLetterSweep:RetentionDays</c> (default 30) ago.
     /// The aging logic is <see cref="DeadLetterSweeper"/>; this class is its scheduling and configuration.
     /// </summary>

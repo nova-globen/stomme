@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Erasure.Participants
 {
     /// <summary>
-    /// The authorship stamps (found by increment 3's gate): <c>CreatedBy</c> / <c>ModifiedBy</c> /
+    /// The authorship stamps: <c>CreatedBy</c> / <c>ModifiedBy</c> /
     /// <c>DeletedBy</c> hold the author's USERNAME on every auditable framework row - the site's pages, modules, files,
     /// settings, roles - and after every other participant has run they still name the person. Once the account is
     /// gone from the tenant, the username is replaced by an unlinkable placeholder on every row that carries it, in

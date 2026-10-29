@@ -26,7 +26,7 @@ namespace Stomme.Modules.DataExport.Services
         /// <summary>Where the browser fetches the artifact from. The server authorises that request itself.</summary>
         string DownloadUrl(Guid exportId);
 
-        /// <summary>BL-95: the caller's schedules; every schedule of the site for a manager.</summary>
+        /// <summary>The caller's schedules; every schedule of the site for a manager.</summary>
         Task<List<ExportScheduleView>> GetSchedulesAsync();
 
         /// <summary>A refusal throws with the server's reason.</summary>
@@ -45,7 +45,7 @@ namespace Stomme.Modules.DataExport.Services
     /// <summary>The client half: every call is an HTTP request the server authorises on its own terms.</summary>
     public class DataExportService : ServiceBase, IDataExportService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
+        /// <summary>A refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public DataExportService(HttpClient http, SiteState siteState) : base(http, siteState) { }

@@ -36,13 +36,13 @@ namespace Stomme.Tests
     /// <remarks>
     /// <para>
     /// A fresh install declares one client in <c>OpenIddict:Applications</c> config; the seeder (the exact call
-    /// the bootstrap middleware makes, after the BL-55 provisioner) reconciles it into the tenant's store; then
+    /// the bootstrap middleware makes, after the provisioner) reconciles it into the tenant's store; then
     /// the seeded client mints a <c>client_credentials</c> token over real HTTP. Idempotence is pinned by
     /// seeding twice and asserting a single application with an unchanged physical id — the UPSERT contract that
     /// replaced the old delete-then-create (which orphaned authorizations/tokens on every restart).
     /// </para>
     /// <para>
-    /// Providers per D46: SQLite always; PostgreSQL when the local service is reachable; RavenDB
+    /// Providers: SQLite always; PostgreSQL when the local service is reachable; RavenDB
     /// UNCONDITIONALLY (fail-not-skip — an EF-only pass proves nothing about the Raven client store).
     /// </para>
     /// </remarks>
@@ -266,7 +266,7 @@ namespace Stomme.Tests
             _ => throw new ArgumentOutOfRangeException(nameof(name))
         };
 
-        // ---- provider + install scaffolding (a config-declared client, no _OpenIddict conn key: BL-55) --------
+        // ---- provider + install scaffolding (a config-declared client, no _OpenIddict conn key) --------
 
         private interface ISeedProvider : IDisposable
         {

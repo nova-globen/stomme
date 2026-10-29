@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// "Run probes now" over HTTP (BL-83 / D104 items 5 and 8): the only live probing besides the job - <c>health:manage</c>
+    /// "Run probes now" over HTTP: the only live probing besides the job - <c>health:manage</c>
     /// only, ONE in flight per site, through the job's own pass.
     /// </summary>
     /// <remarks>

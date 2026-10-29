@@ -10,11 +10,11 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// The predecessor platform's ConnectorExtractionServiceTests (7) by name on the port's
+    /// The ConnectorExtractionServiceTests cases (7), kept by name, on the port's
     /// <see cref="IConnectorExtractionService"/>: the connection, the extractor, the operation, the credentials and the
     /// records; a failure is a category, never an exception. CHANGED: the two managed-file-sink cases
     /// (<c>Extract_WithARegisteredFileSink_SetsItOnTheContext</c>, <c>Extract_WithoutARegisteredFileSink_LeavesTheContextSinkNull</c>)
-    /// are the RECORD CAP's - the sink is not in the contract (its file-manager half is BL-95's), the cap is D110's.
+    /// are the record cap's - the sink is not in the contract (its file-manager half comes later), and the cap is the contract's.
     /// </summary>
     public sealed class ConnectorExtractionServiceTests
     {
@@ -141,7 +141,7 @@ namespace Stomme.Tests.Connectivity
         [Fact]
         public async Task An_untrusted_host_key_while_extracting_is_its_own_category()
         {
-            // BL-229 (D110's correction of 2026-10-17): the extraction port classifies it as the test runner does.
+            // The extraction port classifies it as the test runner does.
             await using var harness = await ConnectivityApplicationHarness.StartAsync(new ProbeExtractor("sftpish", count: 1, fault: new ConnectorHostKeyUntrustedException("it offered ssh-ed25519 SHA256:OFFERED")));
             var id = await harness.SendAsync(new CreateConnectionCommand("Kassa", "sftpish", "endpoint://x"));
 
@@ -154,7 +154,7 @@ namespace Stomme.Tests.Connectivity
         [Fact]
         public async Task A_connectors_own_timeout_while_extracting_is_TimedOut_not_an_exception()
         {
-            // BL-239's validation (measured against a slow server): an HttpClient's timeout elapses as a TaskCanceledException
+            // Measured against a slow server: an HttpClient's timeout elapses as a TaskCanceledException
             // the caller never asked for, and it escaped the port - a pipeline step faulted with the raw exception's text.
             var elapsed = new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout of 2 seconds elapsing.", new TimeoutException());
             await using var harness = await ConnectivityApplicationHarness.StartAsync(new ProbeExtractor("fake-extract", count: 1, fault: elapsed));

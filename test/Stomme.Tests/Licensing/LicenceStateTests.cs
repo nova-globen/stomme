@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.Licensing
 {
     /// <summary>
-    /// D105 design item 5: <see cref="LicenceState"/> caches the PARSE + SIGNATURE result per (blob, installation) and
+    /// <see cref="LicenceState"/> caches the PARSE + SIGNATURE result per (blob, installation) and
     /// re-checks <c>nbf</c>/<c>exp</c> against <see cref="TimeProvider"/> on EVERY call — no job, no restart.
     /// </summary>
     public sealed class LicenceStateTests : IDisposable

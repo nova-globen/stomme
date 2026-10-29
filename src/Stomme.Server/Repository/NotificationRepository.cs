@@ -91,8 +91,8 @@ namespace Stomme.Repository
         /// <remarks>
         /// The <c>-1</c> sentinels are branched HERE, in C#, not folded into the predicate as the harvested
         /// <c>item.ToUserId == toUserId || toUserId == -1</c> did. EF folds the constant comparison; RavenDB does NOT
-        /// (the D45 class, fixed the same way in <see cref="JobLogRepository"/>) - MEASURED 2026-09-14 (BL-78 step 3,
-        /// <c>RavenNotificationChannelSeamConformanceTests</c>): on an installed RavenDB host the mailbox read
+        /// (the same class, fixed the same way in <see cref="JobLogRepository"/>) - MEASURED by
+        /// <c>RavenNotificationChannelSeamConformanceTests</c>: on an installed RavenDB host the mailbox read
         /// <c>(siteId, -1, userId)</c> returned ZERO rows for a user with an inbox row that SQLite and PostgreSQL
         /// returned, i.e. every user's inbox read empty on RavenDB. Same rows on EF; a composed filter per real id.
         /// </remarks>
@@ -184,7 +184,7 @@ namespace Stomme.Repository
         /// <remarks>
         /// The parameter is kept and deliberately ignored, exactly as on
         /// <see cref="ProfileRepository.GetProfileAsync(int, bool)"/>: <c>tracking: false</c> was
-        /// <c>NotificationController.Put</c>'s workaround for the very D19 identity conflict this seam removes
+        /// <c>NotificationController.Put</c>'s workaround for the very tracked-instance identity conflict this seam removes
         /// structurally, and every read here now goes through a query session with its own context, so nothing
         /// returned is ever tracked. It stays on <see cref="INotificationRepository"/> because that is public
         /// API downstream apps bind to; retiring it is a breaking change and not a storage move's business.

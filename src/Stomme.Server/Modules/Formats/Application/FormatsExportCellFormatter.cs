@@ -13,14 +13,14 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Formats.Application
 {
     /// <summary>
-    /// The D108 cell formatter Formats replaces the invariant pass-through with: a column whose
+    /// The cell formatter Formats replaces the invariant pass-through with: a column whose
     /// <see cref="ExportColumn.Format"/> names a format - a preset's or a site definition's id, or its name - renders its
     /// values through that <see cref="FormatDescriptor"/> (which never throws); any other column is declined, so the
     /// renderer writes its own invariant text. The site's definitions are loaded ONCE per export by
     /// <see cref="PrepareAsync"/> (the contract's per-cell call is synchronous; a per-site lookup is not), so a key that
-    /// names another site's definition is simply not this site's and is not applied - the refusal D110 asks for, with no
+    /// names another site's definition is simply not this site's and is not applied - a refusal, with no
     /// cross-site read. Everything this formatter returns is a string and is neutralised by the renderer like any other
-    /// cell (D108 refutation 11): a pattern whose literal output starts with a formula leader comes out quoted.
+    /// cell: a pattern whose literal output starts with a formula leader comes out quoted.
     /// </summary>
     public sealed class FormatsExportCellFormatter(IFormatDefinitionRepository definitions, ILogger<FormatsExportCellFormatter> logger) : IExportCellFormatter, IExportCellFormatterPreparation
     {

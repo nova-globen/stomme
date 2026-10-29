@@ -233,7 +233,7 @@ namespace Stomme.Tests.Connectors
 
     /// <summary>
     /// Monica LIVE, against this machine's throwaway Monica 4.1 (scripts/monica-test-server.ps1) - fail-not-skip without it
-    /// (D46): a test naming the token's user and a wrong token refused; a contact made with its gender by name and its birthdate,
+    /// It covers a test naming the token's user and a wrong token refused; a contact made with its gender by name and its birthdate,
     /// changed with the birthdate kept, its field read at Monica's own route, a note made and changed whole, tags added and
     /// removed by name, a tag Monica has refused, a task done, a reminder, an activity, a call, a conversation and its message, a
     /// journal entry - each deleted again, the contact last.

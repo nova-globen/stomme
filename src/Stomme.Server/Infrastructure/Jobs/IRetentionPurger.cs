@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// A contributed retention pass, drained per site by <see cref="PurgeJob"/> after the framework's own passes
-    /// (D104 design point 6).
+    /// A contributed retention pass, drained per site by <see cref="PurgeJob"/> after the framework's own passes.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -29,8 +28,8 @@ namespace Stomme.Infrastructure
     /// clamps inside <see cref="PurgeAsync"/> and says so in its notes.
     /// </para>
     /// <para>
-    /// <b>No cancellation token travels.</b> <c>HostedServiceBase.ExecuteJobAsync</c> takes no token (BL-107 gave
-    /// the tenant LOOP the job's token, but not the body), so callers pass <see cref="CancellationToken.None"/>.
+    /// <b>No cancellation token travels.</b> <c>HostedServiceBase.ExecuteJobAsync</c> takes no token (the tenant LOOP
+    /// has the job's token, but not the body), so callers pass <see cref="CancellationToken.None"/>.
     /// The parameter is on the signature anyway: it costs nothing now and is the only way the purgers become
     /// cancellable when the body eventually gets a token, without touching every implementation.
     /// </para>

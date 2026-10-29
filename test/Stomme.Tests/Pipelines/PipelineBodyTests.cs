@@ -18,7 +18,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95: a step's BODY - a loop's Body, an If's Then and Else - authored in the editor's flat graph and run by
+    /// A step's BODY - a loop's Body, an If's Then and Else - authored in the editor's flat graph and run by
     /// the engine.
     /// </summary>
     /// <remarks>

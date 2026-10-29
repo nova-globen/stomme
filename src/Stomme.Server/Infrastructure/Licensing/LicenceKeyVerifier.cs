@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace Stomme.Infrastructure.Licensing
 {
-    /// <summary>Why an <c>SLK1</c> licence key is or is not in force (D105 design item 5).</summary>
+    /// <summary>Why an <c>SLK1</c> licence key is or is not in force.</summary>
     internal enum LicenceKeyReason
     {
         Valid,
@@ -40,7 +40,7 @@ namespace Stomme.Infrastructure.Licensing
     }
 
     /// <summary>
-    /// The pure, synchronous <c>SLK1</c> verifier (D105 design item 5; D33-clean — no async, no blocking, no logger, so a
+    /// The pure, synchronous <c>SLK1</c> verifier (no async, no blocking, no logger, so a
     /// key can never be logged from here).
     /// </summary>
     /// <remarks>

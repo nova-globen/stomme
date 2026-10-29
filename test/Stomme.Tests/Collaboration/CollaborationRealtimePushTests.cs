@@ -27,7 +27,7 @@ namespace Stomme.Tests.Collaboration
     /// connection is told, in order, of Ada's lock, her joining, her announced change, her save of the board through the
     /// Dashboards API, her save of a pipeline's graph, and her giving the lock up - each notice the resource, the kind and who,
     /// NOTHING else, addressed to the site's group alone. The hub is <c>collaboration:view</c>: a plain user and an anonymous
-    /// caller are refused at negotiate. the predecessor platform's <c>CollaborationHubE2ETests</c>, over the REST surface the hub now leaves
+    /// caller are refused at negotiate. The <c>CollaborationHubE2ETests</c> cases, over the REST surface the hub now leaves
     /// every act to.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]

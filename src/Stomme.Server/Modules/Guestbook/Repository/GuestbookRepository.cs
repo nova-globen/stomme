@@ -21,7 +21,7 @@ namespace Stomme.Guestbook.Persistence
     /// <see cref="GetByModuleAsync"/> filters through <see cref="IRepository{TAggregate, TId}.FindAsync"/> on an
     /// <c>int</c> equality (<c>ModuleId</c>) — a SAFE predicate under FindAsync's contract (equality on a
     /// non-string scalar translates identically on EF and RavenDB; it does not touch the <c>.ToLower()</c>/
-    /// <c>==</c> case-sensitivity divergences). The filter runs in the database (docs/decisions.md D21); the
+    /// <c>==</c> case-sensitivity divergences). The filter runs in the database; the
     /// newest-first ORDER is applied in memory over the already-filtered, single-module result set (small by
     /// construction — one placed guestbook), which keeps the neutral query to its one safe job.
     /// </para>
@@ -49,7 +49,7 @@ namespace Stomme.Guestbook.Persistence
             inner.FindAsync(predicate, ct);
 
         // The ModuleId filter (an int equality — a SAFE FindAsync predicate) runs in the database; the
-        // newest-first order is applied in memory over the filtered single-module set (docs/decisions.md D21).
+        // newest-first order is applied in memory over the filtered single-module set.
         public async Task<IReadOnlyList<GuestbookEntryAggregate>> GetByModuleAsync(int moduleId, CancellationToken ct = default)
         {
             var entries = await inner.FindAsync(entry => entry.ModuleId == moduleId, ct);

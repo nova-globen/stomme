@@ -4,9 +4,9 @@
 @inject IPipelinesService PipelinesService
 
 @*
-    The site's runs (BL-95 increment (b)), newest first, for one pipeline (?definition=) or all. A run is observed, never
+    The site's runs, newest first, for one pipeline (?definition=) or all. A run is observed, never
     awaited: while any listed run is unfinished the list re-reads itself every two seconds through InvokeAsync, on the
-    circuit's own dispatcher (the Step 0 rule).
+    circuit's own dispatcher.
 *@
 
 <PageTitle>Runs</PageTitle>

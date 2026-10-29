@@ -9,12 +9,12 @@ namespace Stomme.Modules.Sessions.Infrastructure
 {
     /// <summary>
     /// Deletes ENDED sessions - expired or revoked - once they have been over for the retention period, drained per site
-    /// by <c>PurgeJob</c> (the D104 contributed-pass seam). An active session is never touched: retention counts from
+    /// by <c>PurgeJob</c> (a contributed-pass seam). An active session is never touched: retention counts from
     /// the moment a session ended, not from when it began.
     /// </summary>
     /// <remarks>
     /// A floor of one day: an ended row is what makes a revoked cookie's NEXT request fail with "session ended" rather
-    /// than "no such session" - both refuse, but only the row tells the owner's list and the audit what happened.
+    /// than "no such session" - both refuse, but only the row tells the user's list of sessions and the audit what happened.
     /// </remarks>
     public sealed class SessionRetentionPurger(IUserSessionRepository sessions) : IRetentionPurger
     {

@@ -21,7 +21,7 @@ namespace Stomme.Repository.Stores
     /// <b>NOT <see cref="IAuditable"/> and NOT <see cref="IDeletable"/>.</b> VERIFIED against the migrated
     /// PostgreSQL database: the <c>url_mapping</c> table had EIGHT columns — url_mapping_id, site_id, url,
     /// mapped_url, requests, created_on, requested_on, referrer — and none of the audit or soft-delete ones.
-    /// D57 adds a NINTH, <c>url_normalized</c> (nullable varchar(750)), the case-insensitive lookup key; still
+    /// A later migration adds a NINTH, <c>url_normalized</c> (nullable varchar(750)), the case-insensitive lookup key; still
     /// no audit or soft-delete column.
     /// <see cref="DbContextUtils.SaveChanges"/> decides by RUNTIME type test, so declaring either interface
     /// here would target columns that do not exist. <see cref="CreatedOn"/> is the mapping's OWN column (when
@@ -37,7 +37,7 @@ namespace Stomme.Repository.Stores
     /// than 2048 because Url is an INDEX column and MySQL caps an index at 3072 bytes (750×4+4 = 3004). That
     /// 750 is not cosmetic: <see cref="UrlMappingRepository.GetUrlMappingAsync"/> truncates the incoming url to
     /// exactly 750 before querying. And the UNIQUE index itself — <c>ix_url_mapping (site_id, url)</c> — is
-    /// declared by that same migration, not by the builder (the D45 lesson, again).
+    /// declared by that same migration, not by the builder (the builders are not a reliable source for the schema).
     /// </para>
     /// <para>
     /// <b>THE UNIQUE INDEX IS BEHAVIOUR, AND IT DOES NOT CROSS TO RAVENDB.</b>
@@ -108,7 +108,7 @@ namespace Stomme.Repository.Stores
         /// <b>The relational UNIQUE index stays on <see cref="Url"/>, NOT this column</b> — see
         /// <c>10020004_AddUrlMappingNormalizedColumn</c>. It is case-SENSITIVE, so <c>Foo/Bar</c> and
         /// <c>foo/bar</c> may coexist within a site exactly as before; the normalized column is a LOOKUP key
-        /// only, mirroring D49's choice for Folder/File.
+        /// only, mirroring the choice made for Folder/File.
         /// </para>
         /// </remarks>
         public string UrlNormalized { get; private set; }

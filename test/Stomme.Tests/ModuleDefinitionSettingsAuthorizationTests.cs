@@ -35,7 +35,7 @@ namespace Stomme.Tests
     ///   <item>the host logs in via <c>/pages/login</c> (Identity cookie), then PUTs a
     ///     <see cref="EntityNames.ModuleDefinition"/> setting to <c>/api/Setting/{entityName}/{entityId}</c> and
     ///     reads it back — asserting <b>200 + persisted</b>, proving the Web-API principal carries
-    ///     <see cref="RoleNames.Host"/> (the D86 finding: this returned 403);</item>
+    ///     <see cref="RoleNames.Host"/> (an entity name that missed its authorization case returned 403);</item>
     ///   <item>a REGISTERED (non-host) user logs in and PUTs the same setting — asserting <b>403</b>, proving the
     ///     gate stays Host-only (it was NOT relaxed to Admin).</item>
     /// </list>

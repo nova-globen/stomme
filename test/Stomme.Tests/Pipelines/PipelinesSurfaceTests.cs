@@ -19,8 +19,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95 increment (b), driven over REAL HTTP on a scratch install: the Host authors a pipeline, publishes it, starts a
-    /// run and OBSERVES it by polling (never awaited - D111 item 3), reads its log, retracts and deletes; a Registered user
+    /// Driven over REAL HTTP on a scratch install: the Host authors a pipeline, publishes it, starts a
+    /// run and OBSERVES it by polling (never awaited), reads its log, retracts and deletes; a Registered user
     /// is refused per key; anonymous is not OK; and with the switch off the routes do not exist and no page is placed.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -116,8 +116,8 @@ namespace Stomme.Tests.Pipelines
                 Assert.Equal(HttpStatusCode.BadRequest, badGraph.Status);
 
                 // The admin page and the editor action are served to the Host. No test transport renders a clean-arch Client
-                // control's markup (BL-79's finding stands), so the controls themselves - the list, the canvas, the inspector -
-                // are the owner's browser drive; what is pinned here is that the page and the action resolve for the Host.
+                // control's markup (no test transport renders one), so the controls themselves - the list, the canvas, the inspector -
+                // are left to a browser drive; what is pinned here is that the page and the action resolve for the Host.
                 var listPage = await GateDrive.GetAsync(client, cookies, Host, "/admin/pipelines", output, "admin/pipelines");
                 Assert.Equal(HttpStatusCode.OK, listPage.Status);
                 Assert.Matches("<title>[^<]*Pipelines[^<]*</title>", listPage.Body);
@@ -317,7 +317,7 @@ namespace Stomme.Tests.Pipelines
         }
 
         /// <summary>
-        /// BL-95 increment (e), the triggers over real HTTP: a webhook pipeline started by the PUBLIC receiver (HMAC over
+        /// The triggers over real HTTP: a webhook pipeline started by the PUBLIC receiver (HMAC over
         /// the raw body under the site's secret; 401 without it; 202 for a name nothing listens under; 404 with the
         /// receiver's switch off), an Event pipeline started by the site's event endpoint through the bus and the reverse
         /// bridge on the bus worker, and a schedule pipeline whose trigger is indexed on the site with the task composed.

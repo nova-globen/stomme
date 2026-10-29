@@ -20,7 +20,7 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>BL-152 was booked on a premise this suite REFUTES.</b> The row reads: "three more <i>update many, save
+    /// <b>This suite REFUTES the premise the work was booked on.</b> The claim reads: "three more <i>update many, save
     /// once</i> loops … all mutate a collection and call <c>SaveChangesAsync</c> ONCE afterwards. If any single row
     /// conflicts, the whole pass is lost." The first half describes the source faithfully; the conclusion does not
     /// follow, because <b>this framework's <c>IUnitOfWork</c> persists nothing</b>. Its
@@ -34,7 +34,7 @@ namespace Stomme.Tests
     /// worth naming precisely, which is what this suite measures: a conflict on one row <b>keeps every write the
     /// loop already made</b> and <b>abandons every row it had not reached yet</b>. Nothing is rolled back; the
     /// remainder is skipped. That distinction decides the fix — the containment has to wrap the REPOSITORY CALL,
-    /// not a trailing save, which is exactly what BL-151 did for the quota repair.
+    /// not a trailing save, which is exactly what the quota repair already does.
     /// </para>
     /// <para>
     /// Driven on a real installed store through the gate harness rather than a double, because the whole question
@@ -82,7 +82,7 @@ namespace Stomme.Tests
                     return true;
                 });
 
-                // The pass, written the way all five of BL-152's loops are: mutate each row, no per-row guard.
+                // The pass, written the way all five planned loops are: mutate each row, no per-row guard.
                 var written = new List<string>();
                 var conflict = await GateDrive.InTenantAsync(app, Host, async (sp, alias) =>
                 {
@@ -132,8 +132,8 @@ namespace Stomme.Tests
         [Fact]
         public async Task Per_row_containment_costs_only_the_conflicting_row()
         {
-            // The same pass with the guard BL-151 put on the quota repair: the conflict is absorbed where it
-            // happens, so every other row in the pass still lands. This is the shape any of BL-152's five loops
+            // The same pass with the guard the quota repair carries: the conflict is absorbed where it
+            // happens, so every other row in the pass still lands. This is the shape any of the five loops
             // should take IF a conflict is ever shown to reach them.
             var store = LiftedRequiresGateTests.ResolveStore(SqliteGateStore.StoreName);
             Assert.True(store.IsReachable(), store.UnreachableMessage);
@@ -212,7 +212,7 @@ namespace Stomme.Tests
             // not from the entry that actually conflicted, which is why that instrument was dropped.)
             //
             // So: run the same pass with a fresh scope per row. If the untouched row lands, the shared context
-            // is the cause and per-row try/catch alone is not containment - which also means BL-151's shipped
+            // is the cause and per-row try/catch alone is not containment - which also means the shipped
             // per-quota guard in UsageRollupJob.RepairQuotasAsync does not contain what it looks like it does.
             var store = LiftedRequiresGateTests.ResolveStore(SqliteGateStore.StoreName);
             Assert.True(store.IsReachable(), store.UnreachableMessage);

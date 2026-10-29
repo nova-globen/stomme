@@ -627,8 +627,8 @@ namespace Stomme.Managers
             // The LOG says what happened; the CALLER is told the same thing either way. These endpoints carry no
             // [Authorize] - neither the controller nor the action - so returning the lookup result made
             // GET api/User/forgotpassword/{username} an anonymous account-existence oracle: `true` meant the
-            // account was there. Driven in RecoveryEndpointDisclosureTests. It compounds with BL-121,
-            // which records that nothing rate-limits these endpoints: an oracle plus unlimited attempts is
+            // account was there. Driven in RecoveryEndpointDisclosureTests. It compounds with the fact
+            // that nothing rate-limits these endpoints: an oracle plus unlimited attempts is
             // enumeration at scale rather than one question.
             _logger.Log(LogLevel.Error, this, LogFunction.Security, "Password Reset Notification Failed For {Username}", username);
             return true;

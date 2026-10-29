@@ -22,9 +22,9 @@ namespace Stomme.Repository.Stores
     /// <b><see cref="Word"/> IS ALWAYS LOWERCASE, and the whole cluster's cross-provider correctness rests on
     /// it.</b> <c>DatabaseSearchProvider.GetWords</c> lowercases every word before it is stored
     /// (<c>term.ToLower(CultureInfo.CurrentCulture)</c>) and <c>SearchUtils.GetKeywords</c> lowercases every
-    /// keyword before it is queried, so BOTH sides of the prefix filter are normalized. That is D49's
-    /// argument — for two lowercase strings, ordinal and case-insensitive matching are the same relation —
-    /// arrived at for free and years earlier, and it is why this cluster needs no <c>_normalized</c> twin
+    /// keyword before it is queried, so BOTH sides of the prefix filter are normalized. That is the
+    /// normalized-column argument — for two lowercase strings, ordinal and case-insensitive matching are the same
+    /// relation — satisfied here for free, and it is why this cluster needs no <c>_normalized</c> twin
     /// column. It matters because <c>StartsWith</c> diverges THREE ways: SQLite's <c>LIKE</c> is
     /// case-INSENSITIVE, PostgreSQL's is case-SENSITIVE, RavenDB's is case-INSENSITIVE. Store one
     /// non-lowercase word here and those three stop coinciding, silently. Pinned by
@@ -35,7 +35,7 @@ namespace Stomme.Repository.Stores
     /// replaces <c>.?!,;:_()[]{}'"/\</c> with spaces but NOT hyphens, so <c>state-of-the-art</c> is ONE row
     /// here. The RavenDB index over this field therefore uses the DEFAULT analyzer, never
     /// <c>FieldIndexing.Search</c> — a full-text analyzer would split it into four terms and change the result
-    /// set in both directions (measured: it misses <c>state-of*</c> and invents <c>art*</c>). See D50 §3.
+    /// set in both directions (measured: it misses <c>state-of*</c> and invents <c>art*</c>).
     /// </para>
     /// </remarks>
     public class SearchWordAggregate : AggregateRoot<int>

@@ -20,11 +20,11 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Dashboards.Realtime
 {
     // ============================================================================================================
-    // Real-time refresh (the predecessor platform's IDashboardDataSignal on Stomme's seams): a dataset's refresh or
+    // Real-time refresh: a dataset's refresh or
     // schema change - a DOMAIN event of the Datasets module, dispatched in the request's scope - becomes ONE integration
     // event on the bus (delivered in-process when no bus is composed, the Pipelines pattern), whose handler pushes the
     // change to the widgets rendered on this host (the in-process signal, for an Interactive Server circuit) and to the
-    // site's group on the Dashboards hub (for a browser). The hub is the opt-in SignalR transport (BL-53's declared
+    // site's group on the Dashboards hub (for a browser). The hub is the opt-in SignalR transport (a declared
     // transport); with it off the push is a no-op and a browser page polls - its interval refresh - which is the default.
     // The message names the dataset and the kind of change, nothing else: the viewer re-reads through the API, under
     // its own key, so the hub never carries a row.

@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// The triggers' settings (BL-95 increment (e)), bound from the <c>Pipelines</c> section of THIS host's
+    /// The triggers' settings, bound from the <c>Pipelines</c> section of THIS host's
     /// configuration root. Schedules run by default (a schedule exists only where an author placed one);
     /// the webhook receiver is a PUBLIC, unauthenticated endpoint and is therefore OFF by default, and even when on
     /// it answers nothing without a secret to verify against.
@@ -19,28 +19,28 @@ namespace Stomme.Modules.Pipelines.Triggers
 
         public WebhookTriggerOptions Webhooks { get; set; } = new();
 
-        /// <summary>BL-229: <c>Pipelines:Runs</c> - how long a finished run is kept.</summary>
+        /// <summary><c>Pipelines:Runs</c> - how long a finished run is kept.</summary>
         public RunRetentionOptions Runs { get; set; } = new();
 
-        /// <summary>BL-229: <c>Pipelines:Waits</c> - the Wait step's bounds and how often due waits are picked up.</summary>
+        /// <summary><c>Pipelines:Waits</c> - the Wait step's bounds and how often due waits are picked up.</summary>
         public WaitOptions Waits { get; set; } = new();
 
-        /// <summary>BL-229: <c>Pipelines:Forms</c> - the pages the Form trigger serves.</summary>
+        /// <summary><c>Pipelines:Forms</c> - the pages the Form trigger serves.</summary>
         public FormTriggerOptions Forms { get; set; } = new();
 
-        /// <summary>BL-229: <c>Pipelines:Chats</c> - the chat pages the Chat trigger serves.</summary>
+        /// <summary><c>Pipelines:Chats</c> - the chat pages the Chat trigger serves.</summary>
         public ChatTriggerOptions Chats { get; set; } = new();
 
-        /// <summary>BL-229: <c>Pipelines:Evaluations</c> - how an evaluation's rows are run.</summary>
+        /// <summary><c>Pipelines:Evaluations</c> - how an evaluation's rows are run.</summary>
         public EvaluationOptions Evaluations { get; set; } = new();
 
-        /// <summary>BL-229: <c>Pipelines:FileTriggers</c> - how the "File added" triggers' folders are looked at.</summary>
+        /// <summary><c>Pipelines:FileTriggers</c> - how the "File added" triggers' folders are looked at.</summary>
         public FileTriggerOptions FileTriggers { get; set; } = new();
 
-        /// <summary>BL-229: <c>Pipelines:EmailTriggers</c> - how the "Email received" triggers' mailboxes are looked at.</summary>
+        /// <summary><c>Pipelines:EmailTriggers</c> - how the "Email received" triggers' mailboxes are looked at.</summary>
         public EmailTriggerOptions EmailTriggers { get; set; } = new();
 
-        /// <summary>BL-229: <c>Pipelines:TelegramTriggers</c> - how the "Telegram message received" triggers' bots are asked.</summary>
+        /// <summary><c>Pipelines:TelegramTriggers</c> - how the "Telegram message received" triggers' bots are asked.</summary>
         public TelegramTriggerOptions TelegramTriggers { get; set; } = new();
     }
 
@@ -139,7 +139,7 @@ namespace Stomme.Modules.Pipelines.Triggers
         public long MaxFileBytes { get; set; } = 10 * 1024 * 1024;
 
         /// <summary>
-        /// BL-229, n8n's multi-page forms: how long a submission waits for its run to reach the next page (a Wait for a form with Next
+        /// n8n's multi-page forms: how long a submission waits for its run to reach the next page (a Wait for a form with Next
         /// page) before the person is thanked instead - the run goes on either way. Only a form a next page can follow waits.
         /// </summary>
         public int NextPageWithinSeconds { get; set; } = 15;
@@ -253,7 +253,7 @@ namespace Stomme.Modules.Pipelines.Triggers
         public int MaxBodyBytes { get; set; } = 1024 * 1024;
 
         /// <summary>
-        /// The callers every webhook admits: literal IP addresses or CIDR ranges (the predecessor platform's per-endpoint allowlist, absorbed as
+        /// The callers every webhook admits: literal IP addresses or CIDR ranges (a per-endpoint allowlist, kept as
         /// configuration beside the secret). Empty admits any caller. A caller outside it is refused before its body is read.
         /// </summary>
         public List<string> AllowedCallers { get; set; } = new();

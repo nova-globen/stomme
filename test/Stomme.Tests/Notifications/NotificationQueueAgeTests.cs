@@ -7,8 +7,8 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// 2026-10-10 - the mail queue keeps every undelivered row for as long as SMTP is off, so switching SMTP on sent everything
-    /// since the install (UAT held 120 rows from 31 July, every one to a placeholder address). The Notification Job now sends
+    /// The mail queue kept every undelivered row for as long as SMTP was off, so switching SMTP on sent everything
+    /// since the install (one deployment held 120 rows, every one to a placeholder address). The Notification Job now sends
     /// only mail due within the last day and closes the rest: a system notice deleted (the purge takes it), a person's message
     /// left in its inbox with its e-mail given up.
     /// </summary>
@@ -44,7 +44,7 @@ namespace Stomme.Tests.Notifications
             Assert.Equal((false, true, (DateTime?)null), (message.IsDeleted, message.IsDelivered, message.DeliveredOn));
         }
 
-        // Infra's finding on the first mail through the relay: the Message-ID named the container ("...@deee53a6f9d6"); it now
+        // The first mail through the relay showed the Message-ID naming the container ("...@deee53a6f9d6"); it now
         // names the sender's own domain, and is new for every mail.
         [Fact]
         public void A_mail_is_identified_at_its_senders_domain()

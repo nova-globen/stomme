@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.CloudUsage
 {
     /// <summary>
-    /// BL-22 (2026-10-22, the module-page walk): the Cloud Usage budget page listed its providers by their member names -
+    /// The Cloud Usage budget page listed its providers by their member names -
     /// "Aws", "Gcp", "Microsoft365", "GenericRest". Every provider now has a name for a page, and the page shows no
     /// provider any other way.
     /// </summary>

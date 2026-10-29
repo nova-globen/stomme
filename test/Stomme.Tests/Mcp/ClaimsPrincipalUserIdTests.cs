@@ -6,8 +6,7 @@ using Xunit;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// <c>ClaimsPrincipal.UserId()</c> answers -1 for a principal that is not a Stomme user, and does not throw
-    /// (D101 item 3).
+    /// <c>ClaimsPrincipal.UserId()</c> answers -1 for a principal that is not a Stomme user, and does not throw.
     /// </summary>
     /// <remarks>
     /// It was <c>int.Parse</c>. Every principal whose NameIdentifier is not an integer therefore produced an unhandled

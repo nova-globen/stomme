@@ -16,7 +16,7 @@ namespace Stomme.Modules.Dashboards.Mcp
     /// <summary>The Dashboards module's feature flags, declared to the catalog by discovery (a public parameterless constructor).</summary>
     public sealed class DashboardsFeatureContributor : IFeatureContributor
     {
-        /// <summary>Exposing dashboards as MCP resources and the <c>get_widget_data</c> tool. DEFAULT OFF, like <c>datasets.mcp</c> (D110 Q6).</summary>
+        /// <summary>Exposing dashboards as MCP resources and the <c>get_widget_data</c> tool. DEFAULT OFF, like <c>datasets.mcp</c>.</summary>
         public const string Mcp = "dashboards.mcp";
 
         public IReadOnlyCollection<FeatureDescriptor> Features { get; } = new[]
@@ -26,7 +26,7 @@ namespace Stomme.Modules.Dashboards.Mcp
     }
 
     /// <summary>
-    /// The dashboards' MCP surface (over BL-80's contributor seam), READ-ONLY: two resources - the
+    /// The dashboards' MCP surface (over the MCP contributor seam), READ-ONLY: two resources - the
     /// site's dashboards and one dashboard with its widgets - and one tool, <c>get_widget_data</c>, which answers what
     /// the page's widget shows: the bound dataset's classification-masked summary and the bounded rows only when the
     /// classification allows them. Every gate names BOTH the feature flag (<c>dashboards.mcp</c>, off by default) and

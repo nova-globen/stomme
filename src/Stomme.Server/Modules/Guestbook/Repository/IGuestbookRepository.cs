@@ -13,7 +13,7 @@ namespace Stomme.Guestbook.Persistence
     /// It lives in <c>Stomme.Guestbook.Persistence</c>, DELIBERATELY OUTSIDE the <c>Stomme.Modules.*</c>
     /// namespace, and that is load-bearing: <c>ModuleStoreRegistrationTests</c> discovers every public
     /// interface <b>under <c>Stomme.Modules.*</c></b> that closes <c>IRepository&lt;,&gt;</c> and demands a
-    /// RavenDB twin for it (the D42/D55 reflective SEAM-store parity gate). This sample rides the clean-arch
+    /// RavenDB twin for it (the reflective SEAM-store parity gate). This sample rides the clean-arch
     /// EF stack (like FeatureManagement), NOT the framework's document seam, so it has no Raven twin by design;
     /// placing the contract outside that namespace keeps it correctly outside that gate rather than tripping
     /// it. It must be public because the CQRS handlers that inject it are public (the mediator dispatches to
@@ -24,7 +24,7 @@ namespace Stomme.Guestbook.Persistence
     {
         /// <summary>
         /// Every signature for one module instance, newest first. The <c>ModuleId</c> filter runs in the
-        /// database, not in memory — the "keep the filter in the database" rule (docs/decisions.md D21).
+        /// database, not in memory — the "keep the filter in the database" rule.
         /// </summary>
         Task<IReadOnlyList<GuestbookEntryAggregate>> GetByModuleAsync(int moduleId, CancellationToken ct = default);
     }

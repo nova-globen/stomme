@@ -13,7 +13,7 @@ namespace Stomme.Modules.Health.Application
     /// </summary>
     /// <remarks>
     /// <para>
-    /// the predecessor platform's <c>DependencyHealthProbe</c>, lifted: a throw is <see cref="HealthState.Unhealthy"/>, a success
+    /// A throw is <see cref="HealthState.Unhealthy"/>, a success
     /// slower than the degraded threshold is <see cref="HealthState.Degraded"/>, anything else is Healthy, and a
     /// round-trip that outruns the timeout is cancelled and reported Unhealthy. The ping delegate is supplied by
     /// whoever composes the probe, which is what keeps this type free of any persistence or transport reference.
@@ -21,8 +21,8 @@ namespace Stomme.Modules.Health.Application
     /// <para>
     /// <b>The ping must actually TALK to the dependency.</b> A delegate that merely resolves a client from the
     /// container will never throw and never be slow, so the probe reports Healthy forever — a green light wired to
-    /// nothing. That is not hypothetical: two of the predecessor platform's five probes did exactly that, and a scanner in this
-    /// module's gates now refuses them.
+    /// nothing. That is not hypothetical: probes written that way
+    /// did exist, and a scanner in this module's gates now refuses them.
     /// </para>
     /// <para>
     /// <b>Caller cancellation is re-thrown, a timeout is not.</b> They mean different things: the host is stopping

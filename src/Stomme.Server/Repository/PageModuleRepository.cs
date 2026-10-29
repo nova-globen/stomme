@@ -28,7 +28,7 @@ namespace Stomme.Repository
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>D19 and D21 deliberately left this cluster behind, and that is why it was cheap to move now.</b>
+    /// <b>The Page and Module moves deliberately left this cluster behind, and that is why it was cheap to move later.</b>
     /// PageModule.Page and PageModule.Module were EF navigations eager-loaded with <c>.Include(...)</c>. When
     /// the Page cluster and the Module cluster took those tables onto the seam, both navigations
     /// had to go — they were severed to ids and this class started stitching the contract's Page and Module
@@ -45,12 +45,12 @@ namespace Stomme.Repository
     /// this class.
     /// </para>
     /// <para>
-    /// <b>THE FOUR OUTBOUND EDGES ARE ALL ACYCLIC, RE-CHECKED FOR THIS INCREMENT (D22 rule 8).</b>
+    /// <b>THE FOUR OUTBOUND EDGES ARE ALL ACYCLIC, RE-CHECKED WHEN THIS CLUSTER MOVED.</b>
     /// ModuleDefinition, Module, Permission and Setting. The one that looks dangerous is
     /// <see cref="IPermissionRepository"/>, because <c>PermissionRepository</c> takes
     /// <see cref="IRoleRepository"/> back — that is exactly why <c>RoleRepository</c> and
     /// <c>UserRepository</c> take <see cref="IPermissionStore"/> instead of the repository. It is NOT a
-    /// problem here: the cycle D24 avoids is Permission→Role→Permission, and NOTHING on Permission's outbound
+    /// problem here: the cycle to avoid is Permission→Role→Permission, and NOTHING on Permission's outbound
     /// path (Role→Setting→stores) reaches back into PageModule. So this class may hold the REPOSITORY, and
     /// should: <c>PermissionRepository</c> is cache-backed (<c>ICacheManager</c>) and every render reads its
     /// permissions through that cache. Swapping to <see cref="IPermissionStore"/> here to be "safe" would
@@ -125,7 +125,7 @@ namespace Stomme.Repository
             //
             // Instead the site's module ids are resolved first, through the Module cluster's own DB-side
             // SiteId filter, and PageModule is then filtered on `ModuleId IN (...)` — still evaluated by the
-            // database, and translated by every provider (the same Contains-over-a-key-list shape D45 proved).
+            // database, and translated by every provider (the same Contains-over-a-key-list shape other clusters already use).
             // The modules are needed anyway to populate pageModule.Module, so this is the SAME number of round
             // trips as the old Include, and the same rows cross the wire. Pinned by
             // GetPageModulesFiltersInTheDatabaseTests.
@@ -216,7 +216,7 @@ namespace Stomme.Repository
         /// <para>
         /// It is also consistent in two directions. Within this class, the sibling
         /// <see cref="GetPageModuleAsync(int, int)"/> already returns null for a miss. Across the migrated
-        /// clusters, D24 made the same strictly-safer call in <c>DeletePermissionAsync</c> for the same shape.
+        /// clusters, the same strictly-safer call was made in <c>DeletePermissionAsync</c> for the same shape.
         /// </para>
         /// <para>
         /// One caller is NOT improved and is named rather than hidden: <c>SettingController</c> does
@@ -264,7 +264,7 @@ namespace Stomme.Repository
         /// hands back an <see cref="IQueryable{T}"/>, and <c>Count(predicate)</c> over it is composed into the
         /// provider's own query on BOTH halves of the seam — SQL <c>COUNT(*)</c> on the relational side, a
         /// server-side count on RavenDB. So no rows cross the wire and the harvested shape is preserved
-        /// exactly. Because "does this translate on both providers" is precisely the question D45 got wrong by
+        /// exactly. Because "does this translate on both providers" is precisely the question an earlier cluster got wrong by
         /// assuming, it is answered by the conformance suite rather than by this comment — see
         /// <c>A_module_instance_count_is_computed_by_the_provider_not_by_materializing_the_rows</c>.
         /// </remarks>
@@ -292,7 +292,7 @@ namespace Stomme.Repository
         /// </summary>
         /// <remarks>
         /// Returns silently for an unknown id where the harvested code threw NullReferenceException — the same
-        /// strictly-safer divergence D24 made in <c>DeletePermissionAsync</c> for this exact shape, and
+        /// strictly-safer divergence made in <c>DeletePermissionAsync</c> for this exact shape, and
         /// consistent with DeleteSetting/DeleteModule/DeleteRole/DeleteUser.
         /// </remarks>
         public async Task DeletePageModuleAsync(int pageModuleId)

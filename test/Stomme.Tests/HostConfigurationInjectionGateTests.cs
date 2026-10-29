@@ -7,11 +7,10 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-251 / BL-162's class, as a gate: no constructor in the host's assembly takes the plain <see cref="IConfiguration"/>.
+    /// A gate for this class: no constructor in the host's assembly takes the plain <see cref="IConfiguration"/>.
     /// In this host the container's <see cref="IConfiguration"/> is the web builder's default, WITHOUT
     /// <c>appsettings.override.json</c> - where an install keeps every setting it writes - so a class that injected it ignored
-    /// what the operator set: the MCP client's host allowlist, the SAML and Windows sign-in claim types (found by the
-    /// app-guidance writers). Ask for <see cref="IConfigurationRoot"/>, or resolve through <c>HostConfiguration.Resolve</c>.
+    /// what the operator set: the MCP client's host allowlist, the SAML and Windows sign-in claim types. Ask for <see cref="IConfigurationRoot"/>, or resolve through <c>HostConfiguration.Resolve</c>.
     /// </summary>
     public sealed class HostConfigurationInjectionGateTests
     {

@@ -6,7 +6,7 @@ using Stomme.Export;
 namespace Stomme.Modules.DataExport.Rendering
 {
     /// <summary>
-    /// Turning a value into cell text, and making that text safe to open (D108 refutation 11).
+    /// Turning a value into cell text, and making that text safe to open.
     /// </summary>
     internal static class ExportCellText
     {
@@ -61,7 +61,7 @@ namespace Stomme.Modules.DataExport.Rendering
         /// <para>
         /// <b>Found by exporting a real event log:</b> its <c>UserId</c> of <c>-1</c> came out as <c>'-1</c>. The
         /// first version neutralised every cell's TEXT, so a real negative number in a numeric column was
-        /// corrupted - a consumer summing that column gets text. D108 refutation 11 never asked for that: it
+        /// corrupted - a consumer summing that column gets text. The guard therefore
         /// neutralises text, a formatter's output, and a value whose runtime type does NOT match its column.
         /// </para>
         /// <para>

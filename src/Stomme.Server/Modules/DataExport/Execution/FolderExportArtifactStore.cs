@@ -21,13 +21,12 @@ namespace Stomme.Modules.DataExport.Execution
     /// <para>
     /// <b>Modelled on the framework's own <c>Users/</c> folder</b> - <see cref="FolderTypes.Private"/>, so it
     /// resolves under ContentRoot and is never served as a static file, with Browse, View and Edit granted to
-    /// Administrators ALONE. The framework's download endpoints authorise by folder View and never by requester
-    /// (D108 F-A), so that row is the whole of what keeps one user's export from another through
+    /// Administrators ALONE. The framework's download endpoints authorise by folder View and never by requester, so that row is the whole of what keeps one user's export from another through
     /// <c>/api/File/download/{id}</c>; the module's own download then narrows Administrators down to the requester
     /// or an <c>export:manage</c> holder.
     /// </para>
     /// <para>
-    /// <b>The folder's rows are not enough on their own (refutation 14).</b> Edit on a folder lets an editor MOVE a
+    /// <b>The folder's rows are not enough on their own.</b> Edit on a folder lets an editor MOVE a
     /// file into a public one. So nothing in this module trusts a File id by itself: <see cref="ContainsAsync"/>
     /// re-asserts that the file still sits in THIS site's Exports folder, and both the download and the purge ask
     /// it first.
@@ -102,7 +101,7 @@ namespace Stomme.Modules.DataExport.Execution
     }
 
     /// <summary>
-    /// Artifacts as framework File rows in the site's private <c>Exports/</c> folder (D108 items 1, 6 and 7).
+    /// Artifacts as framework File rows in the site's private <c>Exports/</c> folder.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -110,7 +109,7 @@ namespace Stomme.Modules.DataExport.Execution
     /// <see cref="File"/> row, so the Files admin, the folder capacity and site deletion all see them.
     /// </para>
     /// <para>
-    /// <b>Each ATTEMPT writes its own temp file</b> (<c>{job}.{attempt}.tmp</c>, refutation 9). A render whose
+    /// <b>Each ATTEMPT writes its own temp file</b> (<c>{job}.{attempt}.tmp</c>). A render whose
     /// lease was taken over may still be writing when the new attempt starts; sharing one path would have the two
     /// interleave bytes into the artifact. The File row is added only at commit, so a temp file is never visible
     /// as a site file, and a crash leaves at worst an orphan the purge can recognise by its extension.
@@ -118,7 +117,7 @@ namespace Stomme.Modules.DataExport.Execution
     /// <para>
     /// <b>Tenancy is the caller's job, and it matters here more than anywhere.</b> The physical path is built from
     /// the RESOLVED TENANT (<c>FolderRepository.GetFolderPathAsync</c>), so this store must run inside the scope
-    /// the hosted job prepared - <c>BeginScope</c> + a fresh DI scope + <c>SetAliasAsync</c> (refutation 3). A
+    /// the hosted job prepared - <c>BeginScope</c> + a fresh DI scope + <c>SetAliasAsync</c>. A
     /// mis-set scope would write one tenant's export under another tenant's directory.
     /// </para>
     /// </remarks>

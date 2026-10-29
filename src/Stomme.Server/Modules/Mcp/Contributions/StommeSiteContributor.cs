@@ -16,7 +16,7 @@ namespace Stomme.Modules.Mcp.Contributions
     /// <remarks>
     /// <para>
     /// <b>It is the proof the seam works from inside the framework</b>, and it is deliberately the smallest useful
-    /// thing: the site's name, its render mode and its runtime. No <c>search_site</c> in Wave 1 - a search tool is a
+    /// thing: the site's name, its render mode and its runtime. There is no <c>search_site</c> tool - a search tool is a
     /// read of everything a site holds, and it wants the egress story before it wants an implementation.
     /// </para>
     /// <para>
@@ -28,10 +28,10 @@ namespace Stomme.Modules.Mcp.Contributions
     /// <para>
     /// <b>SCOPED and registered EXPLICITLY, not discovered by the convention.</b> The convention finds contributors
     /// with a public parameterless constructor and registers them as singletons; this one needs the site THIS REQUEST
-    /// resolved, so it takes <see cref="SiteState"/> and is registered by the module's own startup - the path D101
+    /// resolved, so it takes <see cref="SiteState"/> and is registered by the module's own startup - the path
     /// reserved for "a contributor with dependencies". Both kinds land in the same registry, which is where a name
     /// published twice is refused: <b>the framework's own contribution is not privileged</b>, and a module publishing
-    /// <c>stomme://site</c> stops the host exactly as any other collision would.
+    /// <c>stomme://site</c> is rejected exactly as any other collision would be.
     /// </para>
     /// <para>
     /// <b>The site comes from the request, never from a captured value.</b> With no resolved site the read answers
@@ -67,7 +67,7 @@ namespace Stomme.Modules.Mcp.Contributions
                 Gate),
         };
 
-        /// <summary>Wave 1 contributes no tool. A framework tool is an action on the install, and D101 ships none.</summary>
+        /// <summary>The framework contributes no tool. A framework tool is an action on the install, and none ships.</summary>
         public IReadOnlyCollection<McpToolDescriptor> Tools { get; } = Array.Empty<McpToolDescriptor>();
 
         public IMcpResourceReader? ReaderFor(string uriTemplate) =>

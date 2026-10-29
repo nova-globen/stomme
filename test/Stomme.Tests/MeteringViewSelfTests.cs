@@ -16,12 +16,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D102 item 8, driven over REAL HTTP: the self-service key reads only the caller's own consumption, and it
+    /// Driven over REAL HTTP: the self-service key reads only the caller's own consumption, and it
     /// cannot be turned into a read of the site or of another user by anything on the wire.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is the shape the predecessor platform got wrong twice over: its usage pages hand-checked <c>HasClaim</c> rather than
+    /// This is the shape an earlier version got wrong twice over: its usage pages hand-checked <c>HasClaim</c> rather than
     /// carrying a key, and its override command carried no key at all while taking the tenant from the request
     /// body. The answer here is structural rather than careful - <c>GetMyUsageQuery</c> has NO user-id parameter
     /// and no metering request names a site or a tenant, so there is nothing for a caller to forge. A test that

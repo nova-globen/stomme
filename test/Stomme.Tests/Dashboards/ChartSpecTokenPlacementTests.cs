@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Dashboards
 {
     /// <summary>
-    /// No in-tree chart spec puts a <c>"$column"</c> token inside ECharts' <c>encode</c> (found 2026-09-29 by the owner's walk). The
+    /// No in-tree chart spec puts a <c>"$column"</c> token inside ECharts' <c>encode</c>, which a manual walk of the demo board found was drawing nothing. The
     /// renderer replaces a token with the column's VALUES, and <c>encode</c> takes dimension NAMES - so the demo board's "Sales by
     /// region" series held no data and drew nothing but an axis, on the Dashboards page and on the landing page alike, while every
     /// suite was green (none looks at the drawn bars). The columns belong in a <c>dataset</c> (or a series' <c>data</c>), and

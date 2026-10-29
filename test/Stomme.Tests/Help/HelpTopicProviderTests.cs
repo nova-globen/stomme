@@ -17,12 +17,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84 increment 6 (D103 items 4 and 12): the provider - the port the launcher, the controller and BL-97's assistant
+    /// The provider - the port the launcher, the controller and the assistant
     /// read through - returns PUBLISHED topics of the CURRENT site and tenant only, walks ONE locale chain, and renders
     /// through the allowlist with a cache key that cannot go stale.
     /// </summary>
     /// <remarks>
-    /// D103 refutation 12: the predecessor platform's provider returned every topic on the site, drafts included, from outside the
+    /// A provider that returned every topic on the site, drafts included, from outside the
     /// mediator's authorization behavior - so an assistant would have quoted unpublished text to a user. The isolation
     /// case runs on SQLite, PostgreSQL and RavenDB, with TWO TENANTS on ONE site id; PostgreSQL and RavenDB FAIL rather
     /// than skip.
@@ -86,7 +86,7 @@ namespace Stomme.Tests.Help
                     Assert.DoesNotContain(hits, hit => hit.Anchor == "page:secret");
                     Assert.DoesNotContain(hits, hit => hit.Title.Contains("Tenant two", StringComparison.Ordinal));
 
-                    // By the BODY alone ("does one thing" is not in any title) - the predecessor platform's Search_FindsTopicsByContent.
+                    // By the BODY alone ("does one thing" is not in any title).
                     Assert.Contains(await provider.SearchAsync("does one thing"), hit => hit.Anchor == HelpTestContributor.Anchor && hit.Locale == "en");
                     // By the TITLE alone: the Theme Management topic's own body never says "Theme Management", so its hit
                     // is a title match (the dashboard topic's body does say it, and may match too - that is by content).

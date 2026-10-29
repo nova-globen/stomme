@@ -13,7 +13,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 3 - the predecessor platform's EntraIdConnectorTests (8) by name over the port; BL-229 - a user got, updated, deleted and
+    /// <summary>The EntraIdConnectorTests cases (8), kept by name over the port; a user got, updated, deleted and
     /// kept in groups, a group read, got, created, updated and deleted, users and groups read no further than asked.</summary>
     public sealed class EntraIdConnectorTests
     {

@@ -20,11 +20,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D55a — THE FIRST RAVENDB SITE THAT RENDERS ITS HOME PAGE.
+    /// THE FIRST RAVENDB SITE THAT RENDERS ITS HOME PAGE.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is the point of D55a. A RavenDB install COMPLETED at D54, but did not render — HtmlText was pure EF, so
+    /// This is the point of the drive. A RavenDB install COMPLETED, but did not render — HtmlText was pure EF, so
     /// the built-in content module that fills the home page could not construct its context on a document store.
     /// With HtmlText on the seam, this drives the WHOLE render pipeline on RavenDB for the FIRST time:
     /// <c>TenantResolver</c> → <c>RendererSynchronizationContext</c> → the renderer → the HtmlText module's
@@ -35,15 +35,15 @@ namespace Stomme.Tests
     /// WHY THIS IS THE BAR, NOT A BOOT CHECK. HTTP 200 + bytes would pass against a dead site (the installer is a
     /// healthy 200). So this asserts the seeded HtmlText content — "Welcome To Stomme" — is IN the rendered HTML,
     /// which can only appear if the module was discovered, its content row WRITTEN to Raven during install and READ
-    /// back through the Raven session at render, and its component rendered. It also races a timeout: the D29
+    /// back through the Raven session at render, and its component rendered. It also races a timeout: the
     /// renderer-deadlock class does not throw, it stops responding, and RavenDB's async socket I/O is exactly the
     /// kind of real-async surface that can reproduce it where SQLite cannot. A hang here is a finding.
     /// </para>
     /// <para>
-    /// GATED — FAILS rather than skips when RavenDB is unreachable, the doctrine the conformance suite and the D54
-    /// tests share. Point it at a reachable server with <c>RAVENDB_TEST_URL</c> (default the local install at
+    /// GATED — FAILS rather than skips when RavenDB is unreachable, the doctrine the conformance suite and the
+    /// install tests share. Point it at a reachable server with <c>RAVENDB_TEST_URL</c> (default the local install at
     /// http://127.0.0.1:7000). Driven via automated appsettings config (Raven DBType + Url connection string)
-    /// exactly as D54a/b did — RavenDB IS now an <c>AvailableDatabases</c> wizard entry; this test
+    /// exactly as the earlier install drives did — RavenDB IS now an <c>AvailableDatabases</c> wizard entry; this test
     /// drives the automated-config path, while the wizard path is covered by <c>RavenWizardInstallRenderTests</c>.
     /// </para>
     /// </remarks>
@@ -125,7 +125,7 @@ namespace Stomme.Tests
                 _output.WriteLine($"[install] Success={install.Success} Message={Truncate(install.Message)}");
 
                 // With HtmlText on the seam the module no longer throws on Raven, so the install should now
-                // report success end-to-end — the carried D54 debt this increment clears.
+                // report success end-to-end — the debt carried until the module could run on Raven.
                 Assert.True(install.Success,
                     $"RavenDB installer did not report success: {install.Message}");
 
@@ -137,7 +137,7 @@ namespace Stomme.Tests
                 var requestTask = client.GetAsync("/", renderCts.Token);
                 if (await Task.WhenAny(requestTask, Task.Delay(RenderTimeout)) != requestTask)
                 {
-                    // The D29 signature: the request does not fail, it stops responding. RavenDB's real async socket
+                    // The deadlock signature: the request does not fail, it stops responding. RavenDB's real async socket
                     // I/O is the kind of surface that can post a continuation back to a blocked renderer pump where
                     // SQLite cannot. If this fires, THAT is the finding.
                     throw new TimeoutException(
@@ -211,7 +211,7 @@ namespace Stomme.Tests
         }
 
         // A throwaway content root plus the override the installer's self-writes land in — so the repository's
-        // appsettings.json is never touched, exactly as the render guard and the D54 tests isolate themselves.
+        // appsettings.json is never touched, exactly as the render guard and the install tests isolate themselves.
         private sealed class ScratchInstallation : IDisposable
         {
             private readonly string? _previousOverridePath;

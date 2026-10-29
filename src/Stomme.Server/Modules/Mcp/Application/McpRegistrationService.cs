@@ -32,13 +32,13 @@ namespace Stomme.Modules.Mcp.Application
 
     /// <summary>
     /// The site's external-server registrations: register, refresh, enable, disable, remove, and set or clear the API
-    /// key (D101 items 4, 5 and 6).
+    /// key.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>EVERY by-id operation here reaches its row through <c>GetForSiteAsync</c>, and there is no other way.</b>
-    /// the predecessor platform's five by-id handlers took an id and nothing else, so any row in the TENANT answered - and the default
-    /// install puts every site in one tenant, which made this a cross-site escalation on a stock deployment. "No such
+    /// A by-id handler that took an id and nothing else would answer for any row in the TENANT - and the default
+    /// install puts every site in one tenant, which would make this a cross-site escalation on a stock deployment. "No such
     /// registration" and "another site's registration" are the same answer, or the id space is an oracle for what
     /// exists on the site next door.
     /// </para>
@@ -53,7 +53,7 @@ namespace Stomme.Modules.Mcp.Application
     /// leaving it would be a value nothing can read and nothing will clean up.
     /// </para>
     /// <para>
-    /// <b>One write per execution path</b> (D102 / <c>PerWriteStoreInvariantTests</c>): each method loads its row once
+    /// <b>One write per execution path</b> (<c>PerWriteStoreInvariantTests</c>): each method loads its row once
     /// and saves it once, and the register path's duplicate-name check is a read that ends in a return.
     /// </para>
     /// </remarks>
@@ -171,7 +171,7 @@ namespace Stomme.Modules.Mcp.Application
 
         /// <summary>
         /// Stores (or, for a null/blank value, removes) this server's API key. The key's NAME is derived from the row's
-        /// id and is never supplied by the caller - the predecessor platform took the reference from the request, which let one
+        /// id and is never supplied by the caller - taking the reference from the request would let one
         /// registration be pointed at another feature's secret. Nothing reads a key back out to a caller.
         /// </summary>
         public async Task<McpRegistrationResult> SetApiKeyAsync(Guid id, string? apiKey, CancellationToken ct = default)

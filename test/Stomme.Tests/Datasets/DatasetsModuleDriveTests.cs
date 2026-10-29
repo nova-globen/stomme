@@ -24,7 +24,7 @@ namespace Stomme.Tests.Datasets
     /// as Public comes back Restricted with a masked summary and a refused preview; an open dataset previews its rows; a
     /// same-name different-origin registration is 400; a refresh and a delete land; a registered user is refused; a user
     /// granted view and manage but not preview may list and register and is refused the preview until it is granted
-    /// (the predecessor platform's DatasetsPageTests by name in the comments). The browser click-through is the owner's.
+    /// The browser click-through is not covered by this suite.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

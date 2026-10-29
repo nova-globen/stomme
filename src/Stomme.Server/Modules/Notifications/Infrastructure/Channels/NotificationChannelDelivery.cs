@@ -37,8 +37,8 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
         }
 
         /// <summary>
-        /// Every eligible recipient over one configured channel, recorded as ONE attempt for the channel (BL-78 step 4 - the
-        /// dispatch pass's fan-out, as the predecessor platform's <c>DeliverOverChannelAsync</c>): resolved once; <see cref="DeliveryStatus.Failed"/>
+        /// Every eligible recipient over one configured channel, recorded as ONE attempt for the channel (the
+        /// dispatch pass's fan-out): resolved once; <see cref="DeliveryStatus.Failed"/>
         /// when any send failed (the reasons joined), <see cref="DeliveryStatus.Skipped"/> when every send was a deliberate
         /// skip, <see cref="DeliveryStatus.Succeeded"/> otherwise.
         /// </summary>

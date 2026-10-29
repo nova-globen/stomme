@@ -8,8 +8,8 @@ using Stomme.Transport.V1;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Client-side (WASM / MAUI) wiring for Stomme's opt-in gRPC transport (brief 04 / D10). This is the
-    /// render-mode-specific half of the split D10 records: from a browser the UI cannot open an HTTP/2 gRPC
+    /// Client-side (WASM / MAUI) wiring for Stomme's opt-in gRPC transport. This is the
+    /// render-mode-specific half of the transport wiring: from a browser the UI cannot open an HTTP/2 gRPC
     /// socket, so it reaches the server's gRPC services over <b>gRPC-Web</b> (the <see cref="GrpcWebHandler"/>
     /// tunnels gRPC frames through the browser's fetch stack). The shell owns the single credentialed egress via
     /// <see cref="BackendChannelFactory"/>; a module resolves the factory (or a typed client) from DI and never

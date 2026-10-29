@@ -9,7 +9,7 @@ namespace Stomme.Repository.Stores
     /// </summary>
     /// <remarks>
     /// <see cref="PageModule.Page"/> and <see cref="PageModule.Module"/> are deliberately absent: both are
-    /// <c>[NotMapped]</c> view state that D19 and D21 severed from EF navigations to ids, and
+    /// <c>[NotMapped]</c> view state that was severed from EF navigations to ids, and
     /// <see cref="PageModuleRepository"/> re-populates them from the Page and Module aggregates AFTER this
     /// mapper has run. Round-tripping a PageModule through here LOSES both by design —
     /// <see cref="PageModule.PageId"/> and <see cref="PageModule.ModuleId"/> are the persisted references.

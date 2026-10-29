@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84 increment 8 (refutation 3): the launcher on a REAL installed site, rendered over HTTP - an
+    /// The launcher on a REAL installed site, rendered over HTTP - an
     /// anonymous reader of a Static page gets help as a native disclosure and NO interactive island.
     /// </summary>
     /// <remarks>
@@ -60,7 +60,7 @@ namespace Stomme.Tests.Help
                 Assert.Contains("Welcome help", anonymous.Body, StringComparison.Ordinal);
                 Assert.Contains("<strong>here</strong>", anonymous.Body, StringComparison.Ordinal);
                 Assert.DoesNotContain("<script>alert(1)</script>", anonymous.Body, StringComparison.Ordinal);   // escaped, never live
-                Assert.Empty(InteractiveMarker.Matches(anonymous.Body));                                     // refutation 3(b)
+                Assert.Empty(InteractiveMarker.Matches(anonymous.Body));                                     // an anonymous visitor gets no interactive marker
 
                 // The oracle, validated: the host's view of the same page carries the control panel's island.
                 var client = GateDrive.NewClient(app, Host);

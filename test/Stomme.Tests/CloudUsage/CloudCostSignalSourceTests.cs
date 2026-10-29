@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.CloudUsage
 {
     /// <summary>
-    /// The predecessor platform's <c>CostOptimizationSignalSourceTests.CloudCostSignalSource_*</c> by name: CloudUsage's
+    /// The cases of <c>CostOptimizationSignalSourceTests.CloudCostSignalSource_*</c>, by name: CloudUsage's
     /// side of CostOptimization's read port, through the module's own startup. The port's own: another site's spend is not
     /// this site's signal.
     /// </summary>

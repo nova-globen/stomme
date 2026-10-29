@@ -43,7 +43,7 @@ namespace Stomme.Repository
     /// the D3-safe plan; those calls move when their own clusters do.
     /// <para>
     /// WRITES resolve a FRESH store per write (<see cref="NewStore"/>), the per-write-store pattern of UrlMapping, Job
-    /// and JobLog - BL-193, found 2026-10-02 clicking an admin page: an Interactive Server circuit is ONE DI scope
+    /// and JobLog: an Interactive Server circuit is ONE DI scope
     /// for as long as the page is open, and the site's server twin (<c>SiteService</c>) writes through this repository
     /// from it. With the store constructor-injected, its one context kept the first save's aggregate and the second save
     /// attached another instance with the same key: "SiteAggregate cannot be tracked because another instance with the
@@ -267,7 +267,7 @@ namespace Stomme.Repository
         /// Without this, a framework release that adds an admin page (an "Identity Provider" page, say) gives it
         /// only to sites installed AFTER the release: the module registers by assembly scan, so it is selectable
         /// when adding a module to a page by hand, but its own admin page never appears and the feature is
-        /// invisible to every existing install. Measured on the UAT deployment, where the module definition was
+        /// invisible to every existing install. Observed on a deployed install, where the module definition was
         /// present and <c>admin/openiddict</c> was absent.
         /// </para>
         /// <para>

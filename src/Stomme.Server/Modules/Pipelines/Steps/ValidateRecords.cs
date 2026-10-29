@@ -17,7 +17,7 @@ using Stomme.Engine.Pipelines.UIHints;
 
 namespace Stomme.Modules.Pipelines.Steps
 {
-    /// <summary>How violations accumulate (the predecessor platform's <c>ValidationFailureMode</c>).</summary>
+    /// <summary>How violations accumulate.</summary>
     public enum ValidationFailureMode
     {
         /// <summary>Every record is checked; the step fails when the error count exceeds the threshold.</summary>
@@ -28,10 +28,10 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// the predecessor platform's Validations as one engine step: field rules (required, type, range, regex) at error or warning
+    /// Validations as one engine step: field rules (required, type, range, regex) at error or warning
     /// severity, structure checks (row bounds, unique fields), a failure mode and a threshold, a quality score. The
     /// records pass through as the result so the next step still receives them; the violations are an output. The
-    /// template aggregate is not ported: the rules ARE the step's inputs; the predecessor platform's Format rules (a separate
+    /// template aggregate is not ported: the rules ARE the step's inputs; Format rules (a separate
     /// module) are not carried.
     /// <para>
     /// <b>Rules</b>, one per line, optionally prefixed <c>warn:</c> for a warning: <c>field required</c>,

@@ -12,7 +12,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 3 - the predecessor platform's TaegisConnectorTests (12) by name over the port: the scope-less grant, the derived token URL, the verbatim queries, the flattening.</summary>
+    /// <summary>The Taegis connector cases (12), carried over by name over the port: the scope-less grant, the derived token URL, the verbatim queries, the flattening.</summary>
     public sealed class TaegisConnectorTests
     {
         private const string AlertsPageFull = """

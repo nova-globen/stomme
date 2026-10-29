@@ -224,7 +224,7 @@ namespace Stomme.Tests.Connectors
             await Assert.ThrowsAsync<ConnectorEgressDeniedException>(() => Test(new SftpConnector(), Settings(Fingerprint), Credentials, new HostConnectorEgress(Array.Empty<string>())));
 
             // Refused as the contract's own exception, which the runner makes the HostKeyUntrusted category; its message - the
-            // key the server offered - stays out of every page (D110's correction of 2026-10-17).
+            // key the server offered - stays out of every page.
             var unset = await Assert.ThrowsAsync<ConnectorHostKeyUntrustedException>(() => Test(new SftpConnector(), Settings(), Credentials));
             output.WriteLine($"[live] {unset.Message}");
             Assert.Contains("No host key is set", unset.Message, StringComparison.Ordinal);

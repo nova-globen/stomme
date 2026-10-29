@@ -19,13 +19,13 @@ namespace Stomme.Modules.Pipelines.Triggers
     {
         private static readonly IReadOnlyList<(string Name, string Value)> NoHeaders = Array.Empty<(string Name, string Value)>();
 
-        /// <summary>BL-229: the headers the caller gets besides the content type - none by default.</summary>
+        /// <summary>the headers the caller gets besides the content type - none by default.</summary>
         public IReadOnlyList<(string Name, string Value)> Headers { get; init; } = NoHeaders;
 
-        /// <summary>BL-229: a file's bytes, answered instead of the body; null for a body.</summary>
+        /// <summary>a file's bytes, answered instead of the body; null for a body.</summary>
         public byte[]? File { get; init; }
 
-        /// <summary>BL-229: with a file, the name the caller saves it under (an attachment); null shows it inline.</summary>
+        /// <summary>with a file, the name the caller saves it under (an attachment); null shows it inline.</summary>
         public string? DownloadName { get; init; }
     }
 

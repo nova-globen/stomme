@@ -17,8 +17,8 @@ using Stomme.Modules.Pipelines.Tenancy;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// An HTTP request through one of the site's CONNECTIONS (BL-95's last residue of "a Connection with a vaulted secret",
-    /// 2026-10-03): the HTTP request step carries its Authorization value IN the pipeline, so a pipeline calling an
+    /// An HTTP request through one of the site's CONNECTIONS.
+    /// The HTTP request step carries its Authorization value IN the pipeline, so a pipeline calling an
     /// authenticated API kept the secret in its definition; here the author names a connection and the credentials stay in
     /// the site's secret store. The request goes through the extraction port (<see cref="IConnectorExtractionService"/>) as
     /// the connector's <c>send</c> operation - the REST connector's - so it is the connection's base URL, its credentials and

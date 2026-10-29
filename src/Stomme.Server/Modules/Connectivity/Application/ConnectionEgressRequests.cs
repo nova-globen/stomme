@@ -21,7 +21,7 @@ namespace Stomme.Modules.Connectivity.Application
     // assistant's model endpoint, which rides the same egress. The egress read it from a site setting that no page
     // set; a browser drive of the assistant had to write it into the database. Read by a holder of connections:view;
     // CHANGED BY THE HOST ROLE ALONE: widening a site's egress to private addresses opens the installation's own network
-    // to whoever administers the site (D110's correction). The settings API refuses the same row to anyone but the Host.
+    // to whoever administers the site. The settings API refuses the same row to anyone but the Host.
     // ============================================================================================================
 
     /// <summary>The allowlist's storage - the Site setting the egress reads (<see cref="HostConnectorEgress.AllowedHostsSettingName"/>).</summary>

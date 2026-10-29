@@ -18,7 +18,7 @@ namespace Stomme.Tests.Mcp
     /// </summary>
     /// <remarks>
     /// <para>
-    /// D101 named this as a mistake to avoid rather than one already made: reading one switch for the other hides the
+    /// This is a mistake to avoid rather than one already made: reading one switch for the other hides the
     /// client-half admin page behind the endpoint's flag, so an install that only CONSUMES external servers - and
     /// publishes nothing of its own - would have no way to manage them. It is easy to write, impossible to see in a
     /// driven suite that turns both on, and this is the only place that looks.

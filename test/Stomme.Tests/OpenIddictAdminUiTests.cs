@@ -37,13 +37,13 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is a DRIVE, not a boot check (the D47 bar): a client created through the admin channel must go on to
+    /// This is a drive, not a boot check: a client created through the admin channel must go on to
     /// mint a real <c>client_credentials</c> token, an edit that leaves the secret blank must leave the ORIGINAL
     /// secret working, and supplying a secret must actually rotate it. Each of those is a claim about
     /// OpenIddict's update semantics that the compiler cannot check and that a row-count assertion would miss.
     /// </para>
     /// <para>
-    /// Providers per D46: SQLite always; PostgreSQL when the local service is reachable; RavenDB
+    /// Providers: SQLite always; PostgreSQL when the local service is reachable; RavenDB
     /// UNCONDITIONALLY (fail-not-skip). The admin channel calls <c>PopulateAsync</c> and <c>UpdateAsync</c> on
     /// the store, which the config seeder never exercised on the Raven twins — an EF-only pass would prove
     /// nothing about them.

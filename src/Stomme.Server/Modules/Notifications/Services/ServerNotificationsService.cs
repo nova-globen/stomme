@@ -17,8 +17,7 @@ namespace Stomme.Modules.Notifications.Services
     /// </summary>
     /// <remarks>
     /// UNMEASURED residue: <c>PermissionRowAccessGuard</c> denies when <c>IHttpContextAccessor.HttpContext</c> is null, and
-    /// whether it is populated inside a live interactive-SERVER circuit has not been driven here (the BL-99 gate states the
-    /// same limit). The framework's own server services (HtmlText) read <c>HttpContext.User</c> on this path too.
+    /// whether it is populated inside a live interactive-SERVER circuit has not been driven here. The framework's own server services (HtmlText) read <c>HttpContext.User</c> on this path too.
     /// </remarks>
     public sealed class ServerNotificationsService(IMediator mediator) : INotificationsService, ITransientService
     {

@@ -208,7 +208,7 @@ namespace Stomme.Client
         // A client service's contract: I{Name} in its own namespace and assembly, as the convention always looked for it, else
         // the interface of that name it implements wherever it lives - a module's contract in Stomme.Shared (Landing's
         // ILandingService) was otherwise registered under the class alone, and its page failed to render on every
-        // WebAssembly site (found on UAT, 2026-10-02; WebAssemblyClientServiceRegistrationTests).
+        // WebAssembly site (WebAssemblyClientServiceRegistrationTests).
         private static Type ContractOf(Type implementationType) =>
             Type.GetType(implementationType.AssemblyQualifiedName.Replace(implementationType.Name, $"I{implementationType.Name}"))
             ?? implementationType.GetInterfaces().FirstOrDefault(contract => contract.Name == "I" + implementationType.Name);

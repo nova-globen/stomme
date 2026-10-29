@@ -22,8 +22,7 @@ namespace Stomme.Tests.Formats
     /// <summary>
     /// The Formats module on an installed host, over real HTTP, on SQLite, PostgreSQL and
     /// RavenDB: the admin page exists from the module's own template and renders for the Host; the API lists the presets
-    /// and the site's own definitions, creates, updates and deletes a definition (the predecessor platform's FormatApplicationTests and
-    /// FormatsApiTests cases travel by name below); a save over a preset's id, a duplicate name, a blank pattern for a
+    /// and the site's own definitions, creates, updates and deletes a definition (the application and API cases are covered below); a save over a preset's id, a duplicate name, a blank pattern for a
     /// number and an unknown culture are refused as the caller's input; a preset cannot be deleted; a registered user
     /// holds neither key and is refused; a user granted formats:manage through the key's Permission row may save.
     /// </summary>

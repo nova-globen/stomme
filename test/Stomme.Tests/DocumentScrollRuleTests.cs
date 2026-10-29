@@ -12,8 +12,8 @@ namespace Stomme.Tests
     /// <remarks>
     /// FluentUI 5 adopts a stylesheet whose <c>body</c> rule is the reset of an app laid out with FluentLayout, which scrolls
     /// inside: <c>height: 100dvh; overflow: hidden</c>. Adopted sheets come after the page's own, so on 10.5.0 and 10.5.1 every
-    /// Stomme page was locked at the window's height - no visitor on UAT or production could scroll (the owner, 2026-10-02;
-    /// measured in a browser: body height 420px over 1,570px of content, the wheel and PageDown both inert). A browser fixes
+    /// Stomme page was locked at the window's height - no visitor of a deployed site could scroll (measured in a browser:
+    /// body height 420px over 1,570px of content, the wheel and PageDown both inert). A browser fixes
     /// that only through a rule that outranks FluentUI's bare <c>body</c>, so this pins it in both stylesheets the hosts serve.
     /// </remarks>
     public sealed class DocumentScrollRuleTests

@@ -18,15 +18,15 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.CostOptimization.Application
 {
     /// <summary>
-    /// The weekly FinOps advisor (the predecessor platform's <c>CostOptimizationAdvisorJob</c>): one
+    /// The weekly FinOps advisor: one
     /// <see cref="RaiseRecommendationsCommand"/> pass per SITE of the job's tenant, each in its own scope under the site's
     /// alias so the read ports and the repository see that site. The handler is resolved directly rather than sent
-    /// through the mediator - a system-initiated pass with no interactive user (the predecessor platform's own reasoning, the backup job's
+    /// through the mediator - a system-initiated pass with no interactive user (the backup job's
     /// precedent). One site's failure is logged and contained so the remaining sites still get their pass.
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED from the predecessor platform:</b> per site (the recommendations and their signals are a site's) under the framework's job
-    /// scheduler (weekly, a <see cref="HostedServiceBase"/> found by the assembly scan) instead of a cron over a tenant
+    /// <b>It runs per site</b> (the recommendations and their signals are a site's) under the framework's job
+    /// scheduler (weekly, a <see cref="HostedServiceBase"/> found by the assembly scan) rather than a cron over a tenant
     /// directory. A pass that finds nothing writes nothing, so a stock install - no cost ledger, no AI usage - is unchanged.
     /// </remarks>
     public class CostOptimizationAdvisorJob : HostedServiceBase

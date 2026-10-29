@@ -10,7 +10,7 @@ namespace Stomme.Infrastructure
     /// <remarks>
     /// It was the hash of the definition row's <c>ModifiedOn</c> alone, and a built-in module's row never changes: its declared
     /// version is fixed (Pipelines' is 1.0.0), so nothing rewrites the row on an upgrade. The pipeline editor's script and
-    /// stylesheet kept ONE fingerprint across releases - measured on UAT 2026-10-06, <c>pipelines-editor.js?v=70298F2B</c> served
+    /// stylesheet kept ONE fingerprint across releases - measured, <c>pipelines-editor.js?v=70298F2B</c> served
     /// by the CDN from its cache (no <c>Cache-Control</c> from the origin, so the edge's default lifetime) - so after a release
     /// a browser or the edge could keep the previous release's editor for hours. The framework version and the declared version
     /// are now in it: every release, and every upgrade of an installed package, is a new URL; one build's boots all give the

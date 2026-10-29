@@ -22,7 +22,7 @@ using Raven.Client.Documents.Session;
 namespace Stomme.Infrastructure.Backup.Participants
 {
     /// <summary>
-    /// The RavenDB half of <c>framework:databases</c> (D106 item 3 and refutation 14): the framework store's
+    /// The RavenDB half of <c>framework:databases</c>: the framework store's
     /// collections and the Identity users, in the framework database and - when it is a different one - the master
     /// database, each document with its ORIGINAL id.
     /// </summary>
@@ -53,7 +53,7 @@ namespace Stomme.Infrastructure.Backup.Participants
 
         /// <summary>
         /// The Raven databases of this installation and what each carries - framework first, then a separate master, then
-        /// (BL-176) each database of its own that tenants have, labelled by the tenants in it, so a snapshot restores only into
+        /// each database of its own that tenants have, labelled by the tenants in it, so a snapshot restores only into
         /// an installation whose tenants sit in the same databases.
         /// </summary>
         private static List<(string Label, string Database, IReadOnlyList<Type> Types, IReadOnlyList<int> Tenants)> RavenLayout(IServiceProvider provider)

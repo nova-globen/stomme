@@ -27,7 +27,7 @@ namespace Stomme.Repository
     /// </summary>
     /// <remarks>
     /// <para>
-    /// MASTER, not tenant (D23's master half): Tenant is installation-wide — the registry of physical tenant
+    /// MASTER, not tenant: Tenant is installation-wide — the registry of physical tenant
     /// databases, read on every request to select the tenant's persistence provider (<c>Tenant.DBType</c>) — so reads
     /// go through <see cref="IMasterStoreSessionFactory"/> (NOT the tenant <see cref="IFrameworkStoreSessionFactory"/>)
     /// and writes through a store bound to <see cref="MasterDBContext"/>.

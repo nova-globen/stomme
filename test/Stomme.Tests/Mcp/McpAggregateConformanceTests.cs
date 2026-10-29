@@ -30,15 +30,15 @@ namespace Stomme.Tests.Mcp
     /// </summary>
     /// <remarks>
     /// <para>
-    /// D101's F-A: "persistence is trivial" was FALSIFIED - the predecessor platform's aggregate could not be model-built on a relational
+    /// The claim "persistence is trivial" was falsified: the earlier aggregate could not be model-built on a relational
     /// install at all (a multi-field value object, a record, two collection properties, <c>DateTimeOffset</c>), and the
     /// shared context swallowed the throw. This suite is what says the reshape worked, on the store the reshape was for.
     /// </para>
     /// <para>
     /// <see cref="DateTime.Kind"/> is asserted EXPLICITLY: equality ignores it, so a suite that only compared instants
     /// would be green on exactly the divergence the aggregates re-stamp to hide. PostgreSQL and RavenDB FAIL rather than
-    /// skip. In <c>Stomme.Tests</c> because the conformance project has no File-store module fixture (the BL-78
-    /// F11 precedent) - D101 named the conformance project; this is where its three predecessors went for that reason.
+    /// skip. In <c>Stomme.Tests</c> because the conformance project has no File-store module fixture (as in the earlier
+    /// suite) - The conformance project was the planned home; this is where its three earlier versions went for that reason.
     /// </para>
     /// </remarks>
     public abstract class McpAggregateConformanceTests : IAsyncLifetime
@@ -230,7 +230,7 @@ namespace Stomme.Tests.Mcp
             await SaveAsync(theirs);
 
             Assert.NotNull(await InScopeAsync<IMcpServerRegistrationRepository, McpServerRegistrationAggregate?>(r => r.GetForSiteAsync(mine.Id, Site)));
-            // BOTH sites are in ONE tenant here - the default install shape, and the one predecessor-platform's by-id handlers leaked across.
+            // BOTH sites are in ONE tenant here - the default install shape, and the one an earlier version's by-id handlers leaked across.
             Assert.Null(await InScopeAsync<IMcpServerRegistrationRepository, McpServerRegistrationAggregate?>(r => r.GetForSiteAsync(theirs.Id, Site)));
             Assert.Null(await InScopeAsync<IMcpServerRegistrationRepository, McpServerRegistrationAggregate?>(r => r.GetForSiteAsync(Guid.NewGuid(), Site)));
             Assert.NotNull(await InScopeAsync<IMcpServerRegistrationRepository, McpServerRegistrationAggregate?>(r => r.GetForSiteAsync(theirs.Id, OtherSite)));

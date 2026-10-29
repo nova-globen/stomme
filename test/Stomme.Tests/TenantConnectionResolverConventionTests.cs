@@ -14,7 +14,7 @@ namespace Stomme.Tests
     // MigrateConnectionStringAsync actively rewrites legacy inline strings into names. DBContextBase reads it
     // that way (_config.GetConnectionString(tenant.DBConnectionString)); the seam's resolver read it as a
     // LITERAL, so the moment anything consumed it on a real install it would hand out the string
-    // "DefaultConnection" as if it were a connection string. D37 logged the divergence safe because nothing
+    // "DefaultConnection" as if it were a connection string. The divergence was considered safe because nothing
     // called the resolver; these tests pin the convention so that stops being load-bearing.
     public class TenantConnectionResolverConventionTests
     {

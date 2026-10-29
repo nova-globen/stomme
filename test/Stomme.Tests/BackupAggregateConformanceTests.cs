@@ -27,7 +27,7 @@ namespace Stomme.Tests
     /// EF PostgreSQL, EF SQL Server, RavenDB, File) through the module's own startup: the three value objects as scalars, the
     /// nullable instants, UTC <c>Kind</c>; each transition read in one scope and written in the next persists; the status
     /// filter and the orderings answer identically; a delete removes. PostgreSQL, SQL Server and RavenDB FAIL rather than
-    /// skip. the predecessor platform's in-memory repository and query facts land here, on the real stores.
+    /// skip. the in-memory repository and query facts are checked here, on the real stores.
     /// </summary>
     public abstract class BackupAggregateConformanceTests : IAsyncLifetime
     {
@@ -261,7 +261,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// EF Core on a LIVE SQL Server scratch database (infra UAT, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
+    /// EF Core on a LIVE SQL Server scratch database (a shared test server,<see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
     /// suite on SQL Server, as every module-aggregate suite. Fails, never skips, when SQL Server is down.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]

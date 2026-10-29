@@ -18,8 +18,8 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// <c>ProviderPrefixFilterIsOrdinal</c> remarks measured PostgreSQL answering <c>true</c> where SQLite
 /// answers <c>false</c>, and until this fixture existed that answer was in a comment, not in the suite.
 /// <para>
-/// <b>Two scratch PostgreSQL databases per test, mirroring D23's two contexts</b> — the same two-connection
-/// shape as the SQLite twin, on the shared infra tier (<c>stomme_conformance_fst_*</c> tenant,
+/// <b>Two scratch PostgreSQL databases per test, mirroring the two contexts</b> — the same two-connection
+/// shape as the SQLite twin, on the shared test server (<c>stomme_conformance_fst_*</c> tenant,
 /// <c>stomme_conformance_fsm_*</c> master), force-dropped in teardown, stale leftovers swept at
 /// initialization (see <see cref="PostgresConformanceEndpoint"/>). FAILS, never skips, when PostgreSQL is
 /// unreachable; <see cref="PostgresParityCoverageTests"/> is the named diagnosis.
@@ -55,13 +55,13 @@ public sealed class PostgresFrameworkStoreConformanceTests : FrameworkStoreConfo
 
     protected override IMasterStoreSessionFactory MasterSessions => _masterSessions;
 
-    /// <summary>True — as on every relational provider: <c>==</c> is SQL equality under the column's collation, and PostgreSQL's default collation is case-SENSITIVE. Verified by running this suite against infra PG.</summary>
+    /// <summary>True — as on every relational provider: <c>==</c> is SQL equality under the column's collation, and PostgreSQL's default collation is case-SENSITIVE. Verified by running this suite against the PostgreSQL test server.</summary>
     protected override bool ProviderStringEqualityIsOrdinal => true;
 
     /// <summary>
     /// TRUE — and this single override is the reason this fixture exists. EF translates
     /// <c>StartsWith</c> to <c>LIKE</c>, and <b>PostgreSQL's <c>LIKE</c> is case-SENSITIVE</b> where SQLite's
-    /// and RavenDB's prefix matches are case-INSENSITIVE — the three-way split D50 measured. Both other
+    /// and RavenDB's prefix matches are case-INSENSITIVE — the three-way split measured earlier. Both other
     /// fixtures answer <c>false</c> here; the live product's answer is <c>true</c>, and with this fixture the
     /// suite finally REPRESENTS it (<c>A_prefix_filter_is_expressible_on_every_provider</c> runs the
     /// <c>StartsWith("RUN")</c> probe against a live PostgreSQL and asserts zero rows). Verified by running,

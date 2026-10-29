@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// The predecessor platform's <c>ConflictResolverTests</c> by name, over the lifted <see cref="ConflictResolver"/>:
+    /// The <c>ConflictResolverTests</c> cases, kept by name, over <see cref="ConflictResolver"/>:
     /// a clean application when nothing changed concurrently, distinct elements and the same element's disjoint fields
     /// merged, a structured same-field conflict rejected with the current value, a text same-field divergence
     /// last-writer-wins with a warning, and the bounded retry around the store's <see cref="ConcurrencyConflictException"/>.

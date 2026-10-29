@@ -59,7 +59,7 @@ namespace Stomme.Modules.Sessions.Domain
 
         public DateTime? RevokedOnUtc { get; private set; }
 
-        /// <summary>Who revoked it: the owner, an administrator, or null for the framework (a sign-out, a replaced cookie).</summary>
+        /// <summary>Who revoked it: the session's own user, an administrator, or null for the framework (a sign-out, a replaced cookie).</summary>
         public int? RevokedByUserId { get; private set; }
 
         public string RevokeReason { get; private set; }

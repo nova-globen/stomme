@@ -12,9 +12,9 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// Pause the run (the predecessor platform's ControlFlow Delay, with its bounded-flow ceiling kept as <c>Pipelines:MaxDelaySeconds</c>).
-    /// The pause holds the worker; a durable timer that suspends the run and resumes it later is the triggers
-    /// increment's (e), where scheduling lives.
+    /// Pause the run (with a ceiling kept as <c>Pipelines:MaxDelaySeconds</c>).
+    /// The pause holds the worker; a durable timer that suspends the run and resumes it later is a job for the triggers,
+    /// where scheduling lives.
     /// </summary>
     [Step("Stomme", "Control Flow", "Pause the run for a number of seconds (bounded by Pipelines:MaxDelaySeconds).")]
     public class Delay : CodeStep

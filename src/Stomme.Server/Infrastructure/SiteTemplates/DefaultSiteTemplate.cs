@@ -192,7 +192,7 @@ namespace Stomme.Infrastructure.SiteTemplates
 
             // The shipped brand asset is read through the web root's FILE PROVIDER, not a physical path. An app built on the
             // Stomme.Server package serves it under `dotnet run` as a static web asset from the package, with no file under
-            // its web root, so its first site got no logo (measured 2026-10-01). A host with a physical
+            // its web root, so its first site got no logo (measured). A host with a physical
             // wwwroot, a published app included, is answered from that file as before.
             var logo = _environment.WebRootFileProvider?.GetFileInfo("images/logo-white.png");
             if (logo is { Exists: true, IsDirectory: false })
@@ -200,7 +200,7 @@ namespace Stomme.Infrastructure.SiteTemplates
                 string folderpath = Utilities.PathCombine(_environment.ContentRootPath, "Content", "Tenants", site.TenantId.ToString(), "Sites", site.SiteId.ToString(), Path.DirectorySeparatorChar.ToString());
                 System.IO.Directory.CreateDirectory(folderpath);
                 // Always refresh the seeded logo from the shipped brand asset (the copy overwrites). A stale
-                // logo-white.png left in the content folder by a PRIOR install (e.g. the pre-D63 oqtane mark)
+                // logo-white.png left in the content folder by a PRIOR install (e.g. an older default mark)
                 // must NOT survive a fresh site seed — the earlier "copy only if absent" guard let exactly
                 // that residue render as a fresh install's header logo.
                 await using (var source = logo.CreateReadStream())

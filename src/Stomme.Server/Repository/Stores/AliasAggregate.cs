@@ -46,7 +46,7 @@ namespace Stomme.Repository.Stores
     /// carries no <c>Tenant</c> or <c>Site</c> navigation property, and Site is tenant-side (a different database)
     /// besides. The relational <c>FK_Alias_Tenant</c> stays in the DB (the migration created it, nothing here drops
     /// it) but the MODEL references the tenant by id only. So unlike the SiteGroup or Folder/File
-    /// (D48/D49) pairs there was no mapped navigation to break.
+    /// pairs there was no mapped navigation to break.
     /// </para>
     /// <para>
     /// <b>IAuditable, and it must stay that way.</b> <c>AliasEntityBuilder</c> extends

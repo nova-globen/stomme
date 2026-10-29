@@ -15,20 +15,19 @@
     every provider. A test that only one provider passes is a seam that is not a seam.
 
     GATED: this project IS in Stomme.slnx, so `dotnet test Stomme.slnx` runs it. It needs a live
-    RavenDB server via RAVENDB_TEST_URL — the infra UAT tier, http://192.168.10.20:8081 (the old local :7000
-    default named here until 2026-08-02 is RETIRED; in CI the ci-db-gated.yml parity-suite job points it at a
-    job-local service container instead). When that server is absent the suite FAILS. That is the point: an
+    RavenDB server via RAVENDB_TEST_URL — the shared test server, http://192.168.10.20:8081. In CI the
+    parity-suite job points it at a job-local service container instead. When that server is absent the suite FAILS. That is the point: an
     EF-only run of a parity suite certifies nothing, so parity untested reads as failure rather than a green
     skip. RavenParityCoverageTests is the named diagnosis.
 
     The SQLite EF half needs nothing (in-memory for the Widget half, two connections for the framework-store
-    half). Since BL-16 the suite ALSO needs a live PostgreSQL — the Postgres* fixtures run the same contracts
-    against a scratch database on the infra UAT tier (POSTGRES_TEST_HOST/PORT/USER/PASSWORD, defaulting to
-    192.168.10.20:5433 with DEFAULT_PASSWORD) and FAIL, not skip, when it is unreachable, for the same D46
+    half). The suite also needs a live PostgreSQL — the Postgres* fixtures run the same contracts
+    against a scratch database on the shared test server (POSTGRES_TEST_HOST/PORT/USER/PASSWORD, defaulting to
+    192.168.10.20:5433 with DEFAULT_PASSWORD) and FAIL, not skip, when it is unreachable, for the same
     reason: a SQLite-only EF half cannot represent PostgreSQL's answers (PostgresParityCoverageTests is the
     named diagnosis).
 
-    Until D46 this project was in no .slnx, on the stated grounds that the Raven half "is skipped when it
+    Until the fail-not-skip rule was adopted, this project was in no .slnx, on the stated grounds that the Raven half "is skipped when it
     is unreachable". That claim was false — measured at Failed: 48, Passed: 45 with the server down. It
     never skipped; it failed without saying why.
   -->
@@ -44,10 +43,10 @@
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
     <!-- The PostgreSQL fixtures (PostgresConformanceTests / PostgresFrameworkStoreConformanceTests).
          Both EF fixtures above are SQLite, which structurally cannot represent PostgreSQL's answers (its
-         LIKE is case-SENSITIVE where SQLite's is not — the D46 ADR's own stated limit), so the suite now
-         also runs against a live PG scratch database on the infra tier (POSTGRES_TEST_* / DEFAULT_PASSWORD). -->
+         LIKE is case-SENSITIVE where SQLite's is not — the limit the SQLite fixtures cannot overcome), so the suite now
+         also runs against a live PG scratch database on the shared test server (POSTGRES_TEST_* / DEFAULT_PASSWORD). -->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-    <!-- D83 security pin: force the patched System.Drawing.Common (central 10.0.10) over the transitive
+    <!-- Security pin: force the patched System.Drawing.Common (central 10.0.10) over the transitive
          4.7.0 pulled through Stomme.Server -> Sustainsys.Saml2 (GHSA-rxg9-xrhp-64gj, CRITICAL, NU1904).
          This is the sole project the sweep surfaces it in; a direct reference is required because central
          transitive pinning is off in this repo. -->

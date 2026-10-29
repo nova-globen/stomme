@@ -241,7 +241,7 @@ namespace Stomme.Tests.Connectors
 
     /// <summary>
     /// Taiga LIVE, against this machine's throwaway Taiga 6.10 (scripts/taiga-test-server.ps1) - fail-not-skip without it
-    /// (D46): a test signing in and an unknown user refused in Taiga's words; a project of the test's own, an epic, a user story
+    /// (fails rather than skips): a test signing in and an unknown user refused in Taiga's words; a project of the test's own, an epic, a user story
     /// and its task, and an issue made - its priority and assignee by name - changed by status name with the version read
     /// first, listed by tag and by Taiga's own closed filter, page by page; a task listed by its user story, where n8n's filter
     /// returned every task; everything deleted again, and a list for a project that is not there refused.

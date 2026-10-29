@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.StaticFiles;
 namespace Stomme.Modules.Connectors.Shared
 {
     /// <summary>
-    /// One Microsoft Graph drive's files (BL-229 - OneDrive's and a SharePoint site's document library alike): its items by id or
+    /// One Microsoft Graph drive's files (OneDrive's and a SharePoint site's document library alike): its items by id or
     /// by path, their pages, and their bytes to and from the pipeline run's folder (<see cref="IConnectorFiles"/>). Graph answers a
     /// download with a redirect to a short-lived pre-authenticated address on Microsoft's own download host; that one redirect is
     /// followed only when it is HTTPS on a SharePoint host (or on Graph's own address), WITHOUT the token, through the same egress -

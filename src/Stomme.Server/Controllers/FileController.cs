@@ -297,7 +297,7 @@ namespace Stomme.Controllers
             var zipfile = await _files.GetFileAsync(id, false);
             if (zipfile != null && zipfile.Folder.SiteId == alias.SiteId && zipfile.Extension.ToLower() == "zip")
             {
-                // BL-100 F1: every entry is staged, counted, scanned and capacity-checked by the ingestion guard
+                // Every entry is staged, counted, scanned and capacity-checked by the ingestion guard
                 // before ANY of them reaches the folder; a refusal leaves the folder - and the zip - as they were.
                 string folderpath = await _folders.GetFolderPathAsync(zipfile.Folder);
                 var result = await _ingestion.ExtractZipAsync(new FileIngestionTarget(alias, zipfile.Folder, folderpath), Path.Combine(folderpath, zipfile.Name), HttpContext.RequestAborted);
@@ -377,7 +377,7 @@ namespace Stomme.Controllers
 
         // POST api/<controller>/upload/url?url=x&folderid=y&name=z
         /// <remarks>
-        /// BL-100 F1: was <c>GET api/File/upload?url=</c> - a state change on a GET, which the
+        /// This was <c>GET api/File/upload?url=</c> - a state change on a GET, which the
         /// antiforgery filter never validates and which the Lax Identity cookie accompanies on a cross-site top-level
         /// navigation, so any page could make a signed-in editor's browser plant a download in their folder. Now a
         /// POST (antiforgery-validated), fetched through the outbound connect guard (no loopback/private/link-local
@@ -488,7 +488,7 @@ namespace Stomme.Controllers
                     return StatusCode((int)HttpStatusCode.Forbidden);
                 }
 
-                // BL-100 F1: parts are staged outside the folder, the set's size is capped from its FIRST part, and
+                // Parts are staged outside the folder, the set's size is capped from its FIRST part, and
                 // the merged file is scanned and capacity-checked before it replaces anything in the folder.
                 FileIngestionResult result;
                 await using (var content = formfile.OpenReadStream())

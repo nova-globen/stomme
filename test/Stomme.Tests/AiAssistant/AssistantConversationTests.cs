@@ -8,11 +8,11 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// The predecessor platform's <c>AssistantConversationTests</c>, by name, on the lifted conversation: it opens active
-    /// with its event; a proposed artifact is a Proposed draft and is never auto-applied; only a proposed artifact is applied,
-    /// once; raw rows are refused as model context; an artifact may reference only datasets already attached. the predecessor platform's
-    /// repository round trip is <see cref="AssistantConversationStoreConformanceTests"/>, on four stores. <b>CHANGED:</b> the
-    /// conversation belongs to a site and a Stomme user id, and refuses neither.
+    /// The conversation's rules: it opens active with its event; a proposed artifact is a Proposed draft and is never
+    /// auto-applied; only a proposed artifact is applied, once; raw rows are refused as model context; an artifact may
+    /// reference only datasets already attached. The repository round trip is
+    /// <see cref="AssistantConversationStoreConformanceTests"/>, on four stores. The conversation belongs to a site and a
+    /// user id, and refuses neither.
     /// </summary>
     public sealed class AssistantConversationTests
     {

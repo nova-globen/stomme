@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.CloudUsage.Controllers
 {
     /// <summary>
-    /// <c>api/CloudUsage</c> (the predecessor platform's <c>CloudUsageApi</c>): the site's rollups and budgets under
+    /// <c>api/CloudUsage</c>: the site's rollups and budgets under
     /// <c>cloud-usage:view</c>, the sync and the budget upsert under <c>cloud-usage:manage</c>. A sync that is refused
     /// answers 200 with its code and reason in the body (the refusal is the answer, as the sync reports it); a budget the
     /// domain refuses answers 400 with the domain's message; a window of dates is <c>from</c>/<c>to</c> as yyyy-MM-dd.

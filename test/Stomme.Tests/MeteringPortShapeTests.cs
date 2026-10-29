@@ -11,7 +11,7 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is the defect the predecessor platform shipped, and it is not visible in a behaviour test: its recorder honoured the
+    /// This is a defect an earlier version shipped, and it is not visible in a behaviour test: its recorder honoured the
     /// caller's tenant verbatim and accepted a user id and a timestamp, so a producer could charge another user's
     /// quota, write into another site, or backdate consumption out of the window that a repair pass would later
     /// recompute. The shape is asserted REFLECTIVELY, because the only durable guarantee is that the members do
@@ -102,7 +102,7 @@ namespace Stomme.Tests
         private static Type Unwrap(Type type) =>
             type.IsGenericType ? Unwrap(type.GetGenericArguments()[0]) : type;
 
-        /// <summary>The known-dirty control: what the predecessor platform's event looked like.</summary>
+        /// <summary>The known-dirty control: what an earlier version's event looked like.</summary>
         private sealed record ForgeableProbe(string Metric, long Quantity, int? UserId, DateTime? OccurredOnUtc);
     }
 }

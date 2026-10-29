@@ -11,8 +11,8 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.HtmlText.Repository
 {
     /// <summary>
-    /// The HtmlText module's relational context. Since D55 it maps the <see cref="HtmlTextAggregate"/> onto the
-    /// existing <c>html_text</c> table (D3 — no schema change) rather than the shared wire model, so a migrated
+    /// The HtmlText module's relational context. It maps the <see cref="HtmlTextAggregate"/> onto the
+    /// existing <c>html_text</c> table (no schema change) rather than the shared wire model, so a migrated
     /// cluster reads and writes through <see cref="IHtmlTextStore"/> and <see cref="IHtmlTextStoreSessionFactory"/>
     /// exactly as the framework store's aggregates do through <c>TenantDBContext</c>. It still IS the module's EF
     /// migration target: <c>HtmlTextManager.InstallAsync</c> runs the EF migrator over this context on a relational

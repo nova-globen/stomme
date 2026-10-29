@@ -29,7 +29,7 @@ namespace Stomme.Models
         /// <summary>Whether a persistent signing certificate is loaded (false = ephemeral key, rotates per restart).</summary>
         public bool HasPersistentSigningKey { get; set; }
 
-        /// <summary>BL-224: the <c>OpenIddict:ServiceAccounts:Enabled</c> gate - whether a client-credentials application may have a service account.</summary>
+        /// <summary>The <c>OpenIddict:ServiceAccounts:Enabled</c> gate - whether a client-credentials application may have a service account.</summary>
         public bool ServiceAccountsEnabled { get; set; }
     }
 }

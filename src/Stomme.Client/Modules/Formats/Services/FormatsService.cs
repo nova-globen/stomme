@@ -26,7 +26,7 @@ namespace Stomme.Modules.Formats.Services
     /// <summary>The BROWSER side: HTTP to <c>api/Formats</c>.</summary>
     public class FormatsService : ServiceBase, IFormatsService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason, which this module's page shows.</summary>
+        /// <summary>A refusal throws with the server's reason, which this module's page shows.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public FormatsService(HttpClient http, SiteState siteState) : base(http, siteState) { }

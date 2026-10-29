@@ -13,13 +13,13 @@ namespace Stomme.Modules.Metering
     /// <remarks>
     /// <para>
     /// <b>Permissions.</b> <see cref="ModuleDefinition.PermissionNames"/> is built ONLY by the per-key
-    /// <c>PermissionKeys.Declare</c> - never by hand, since a bare two-segment key is silently ignored (BL-99 F2).
+    /// <c>PermissionKeys.Declare</c> - never by hand, since a bare two-segment key is silently ignored.
     /// The rows seed on install and reconcile lazily through <c>ModuleDefinitionRepository</c>; a revocation is an
     /// Administrators DENY row, never zero rows, because zero rows re-seed.
     /// </para>
     /// <para>
-    /// <b>Pages - and why NOT <c>AdminSiteTemplate</c>.</b> The design said "AdminSiteTemplate 33 to 36", written
-    /// before BL-78 landed. Its sibling module places itself through <see cref="ModuleDefinition.PageTemplates"/>,
+    /// <b>Pages - and why NOT <c>AdminSiteTemplate</c>.</b> Like its sibling module, this one
+    /// places itself through <see cref="ModuleDefinition.PageTemplates"/>,
     /// which the framework reconciles additively per site on every boot, and which keeps the pages the MODULE's
     /// rather than the framework's - so a site that never enables metering never acquires framework admin pages for
     /// it. That is the shape used here: <c>usage</c> for every registered user and <c>admin/usage</c> for the

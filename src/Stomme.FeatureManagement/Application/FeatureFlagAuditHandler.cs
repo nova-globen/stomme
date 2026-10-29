@@ -6,8 +6,8 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.FeatureManagement.Application;
 
 /// <summary>
-/// Records every flag change to the audit trail. Runs in the CALLER's scope after the flag is persisted
-/// (D40), capturing the acting principal (when one is in scope) and the originating tenant, then writing an
+/// Records every flag change to the audit trail. Runs in the CALLER's scope after the flag is persisted,
+/// capturing the acting principal (when one is in scope) and the originating tenant, then writing an
 /// append-only <see cref="FeatureFlagAudit"/>.
 /// </summary>
 /// <remarks>

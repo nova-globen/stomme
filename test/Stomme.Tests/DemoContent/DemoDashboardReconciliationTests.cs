@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DemoContent
 {
     /// <summary>
-    /// BL-96 increment 11 (D110 Q7) - the demo dashboard is OFF by default and ADDITIVE when on: with
+    /// The demo dashboard is OFF by default and ADDITIVE when on: with
     /// <c>DemoContent:Enabled</c> the install path writes one published board per site whose four widgets bind the
     /// demo datasets by origin (the chart and the pivot on sales, the grid on inventory, the KPI on the Restricted
     /// customers set); a second boot changes nothing; an operator's delete survives every later boot because the site

@@ -32,7 +32,7 @@ namespace Stomme.Modules.Backup.Application
     /// <summary>What the boot phase did with a staged restore.</summary>
     public sealed record BackupBootReport(Guid SnapshotId, bool Restored, bool SafetySnapshotRestored, bool Maintenance, string? Reason);
 
-    /// <summary>The <c>Backup</c> configuration section (off by default - D106).</summary>
+    /// <summary>The <c>Backup</c> configuration section (off by default).</summary>
     public sealed class BackupOptions
     {
         public const string SectionName = "Backup";
@@ -48,7 +48,7 @@ namespace Stomme.Modules.Backup.Application
 
             /// <summary>
             /// A file holding the passphrase, which WINS over <see cref="Passphrase"/> when set - how a container gets it, so the
-            /// secret is never in its environment (infra's rule for deployed sites, 2026-09-29).
+            /// secret is never in its environment.
             /// </summary>
             public string PassphraseFile { get; set; } = string.Empty;
 
@@ -100,7 +100,7 @@ namespace Stomme.Modules.Backup.Application
     /// <b>Key custody across the restart.</b> The operator's passphrase is never written down. Staging derives the target
     /// archive's KEY (unique to that archive - its salt) and the safety snapshot's, and writes them to
     /// <c>|DataDirectory|backups/restore.pending.json</c> - beside the databases, never web-served - for the window until the
-    /// boot phase has applied the restore and deleted the file. Since 2026-09-24 the file is PROTECTED with the host's
+    /// boot phase has applied the restore and deleted the file. The file is PROTECTED with the host's
     /// Data Protection key ring (purpose <see cref="RequestProtectorPurpose"/>): a copy of the file alone yields nothing, and a
     /// file written under another host's ring is unreadable, which the boot phase reports rather than guessing.
     /// </para>
@@ -812,7 +812,7 @@ namespace Stomme.Modules.Backup.Application
 
             public bool Maintenance { get; set; }
 
-            /// <summary>BL-171: the tenants to put back; null for the whole snapshot.</summary>
+            /// <summary>The tenants to put back; null for the whole snapshot.</summary>
             public List<int>? TenantIds { get; set; }
         }
 

@@ -151,7 +151,8 @@ public sealed class RavenDbDeadLetterAdminLiveTests : IAsyncLifetime
 /// <summary>
 /// STATIC poison switch + success-only sink. Static (and the consumer parameterless) because handler
 /// discovery scans the whole assembly: a constructor dependency here would break the OTHER live test's
-/// host, whose container does not register it (the composition lesson BL-36(a) paid for). The sink only
+/// host, whose container does not register it (the host validates its container at build, so an unregistered
+/// dependency stops the host from starting). The sink only
 /// completes on an UNPOISONED delivery, so an await on it cannot be satisfied by the failed attempt
 /// that dead-lettered the message.
 /// </summary>

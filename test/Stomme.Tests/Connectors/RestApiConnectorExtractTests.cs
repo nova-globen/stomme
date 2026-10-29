@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 1 - the predecessor platform's RestApiConnectorExtractTests (8) by name: the REST connector's read operation streams canonical records; the two connectors declare their capabilities; the record JSON helper (now in the Shared contract).</summary>
+    /// <summary>The REST connector extraction cases (8), carried over by name: the REST connector's read operation streams canonical records; the two connectors declare their capabilities; the record JSON helper (now in the Shared contract).</summary>
     public sealed class RestApiConnectorExtractTests
     {
         [Fact]
@@ -76,7 +76,7 @@ namespace Stomme.Tests.Connectors
             Assert.True(connector is IConnectorExtractor);
             Assert.True(connector.Capabilities.HasFlag(ConnectorCapabilities.Extract));
             Assert.True(connector.Capabilities.HasFlag(ConnectorCapabilities.TestConnection));
-            // BL-95 added "send" beside the predecessor platform's single "read", which stays first: an extraction naming no operation reads.
+            // "send" sits beside the single "read" operation, which stays first: an extraction naming no operation reads.
             var operations = ((IConnectorExtractor)connector).Operations;
             Assert.Equal(new[] { "read", "send" }, operations.Select(operation => operation.Name));
             Assert.All(operations, operation => Assert.Contains(operation.Parameters.Fields, f => f.Name == "method" && f.Type == ConnectorConfigFieldType.Select));

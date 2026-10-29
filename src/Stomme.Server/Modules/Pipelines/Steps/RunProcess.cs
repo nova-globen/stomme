@@ -17,7 +17,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// the predecessor platform's process action as an engine step: launch a program with arguments, feed it the input text on standard
+    /// A process action as an engine step: launch a program with arguments, feed it the input text on standard
     /// input, capture standard output as the result. Refused unless <c>Pipelines:Processes:Enabled</c> AND the resolved
     /// executable lives inside one of <c>Pipelines:Processes:AllowedRoots</c> - there is no open-ended "run anything"
     /// path. The launch is wall-clock bounded (the tree is killed on overrun), output-capped, and works out of the

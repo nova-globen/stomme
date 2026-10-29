@@ -13,7 +13,7 @@ namespace Stomme.Tests.Backup
 {
     /// <summary>
     /// What the S3 archive store adds to the contract: the upload in parts S3 accepts, a failed publish that leaves
-    /// nothing behind, the key layout and its prefix, the configuration infra's deployment uses (the key pair from FILES),
+    /// nothing behind, the key layout and its prefix, the configuration a deployment uses (the key pair from FILES),
     /// and the choice of store per snapshot.
     /// </summary>
     public sealed class S3BackupArchiveStoreTests : IDisposable
@@ -56,7 +56,7 @@ namespace Stomme.Tests.Backup
             await WriteAsync(store, location, bytes);
             await store.PublishAsync(location, Checksum.Compute(bytes));
 
-            // Every part but the last is at least 5 MiB - the in-memory bucket refuses the completion otherwise, as infra's does.
+            // Every part but the last is at least 5 MiB - the in-memory bucket refuses the completion otherwise, as the real service does.
             Assert.Equal(parts, _bucket.PartsUploaded.Select(part => part.Length).ToArray());
             Assert.Equal(Enumerable.Range(1, parts.Length), _bucket.PartsUploaded.Select(part => part.PartNumber));
             Assert.Equal(0, _bucket.OpenUploads);
@@ -176,7 +176,7 @@ namespace Stomme.Tests.Backup
         [Fact]
         public void The_settings_infra_deploys_bind_from_configuration()
         {
-            // The container's environment, as infra's compose file writes it (double underscores are the section separator).
+            // The container's environment, as the deployment's compose file writes it (double underscores are the section separator).
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Backup:Archive:Provider"] = "S3",

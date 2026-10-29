@@ -110,7 +110,7 @@ namespace Stomme.Tests
 
             public override Task<string> ExecuteJobAsync(IServiceProvider provider)
             {
-                // The ambient tenant is what BL-107 is about, and it is the only identity available for a
+                // The ambient tenant is what this suite is about, and it is the only identity available for a
                 // tenant with no row in this scratch store: TenantManager resolves names from the store.
                 var tenant = provider.GetRequiredService<ITenantContext>();
                 var current = tenant.CurrentTenantId?.ToString() ?? "";

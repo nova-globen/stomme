@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-120 driven on an installed host: real sign-ins through the login form and a real role grant through the API each
+    /// Driven on an installed host: real sign-ins through the login form and a real role grant through the API each
     /// write an identity audit line, and the ledger is read back through its Administrators-only API and page.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]

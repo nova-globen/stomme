@@ -17,7 +17,7 @@ namespace Stomme.Tests.Fixtures.McpTestModule
     /// whose name contains <c>Stomme</c>, so it is found by the CONVENTION - nothing registers it.
     /// </summary>
     /// <remarks>
-    /// Every descriptor is gated on <see cref="GateTestPermissions.Manage"/>, the key the BL-99 fixture already declares
+    /// Every descriptor is gated on <see cref="GateTestPermissions.Manage"/>, the key the gate fixture already declares
     /// and the installer seeds for Administrators: the host account is admitted through a ROW, a registered-only user
     /// is not, and no suite here has to invent a permission of its own.
     /// </remarks>

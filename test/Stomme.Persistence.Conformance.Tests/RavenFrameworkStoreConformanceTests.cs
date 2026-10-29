@@ -14,7 +14,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// <para>
 /// <b>Everything under test is resolved from the container through <c>AddRavenFrameworkStore</c> — the real
 /// registration, not a hand-built object graph.</b> That is deliberate: the extension IS half the deliverable
-/// (it is where D17 rule 1 is either honoured or violated), and a fixture that news up the stores directly
+/// (it is where the registration rule is either honoured or violated), and a fixture that news up the stores directly
 /// would leave the registration itself unproven. It also keeps the internal store classes internal.
 /// </para>
 /// <para>
@@ -41,14 +41,14 @@ public sealed class RavenFrameworkStoreConformanceTests : FrameworkStoreConforma
     /// <summary>
     /// False — RavenDB's string equality is case-INSENSITIVE by default. MEASURED, not read in a doc: it is
     /// what <see cref="The_seam_cannot_express_a_case_insensitive_column_filter_portably"/> asserts, and it is
-    /// half of the divergence D48 escalated the File cluster over.
+    /// half of the divergence that kept the File cluster off the seam.
     /// </summary>
     protected override bool ProviderStringEqualityIsOrdinal => false;
 
     /// <summary>
     /// False — RavenDB's prefix match is case-INSENSITIVE, like its <c>==</c>. MEASURED: <c>StartsWith("RUN")</c>
     /// returns the lowercase-stored rows. It agrees with the SQLite fixture here and would disagree with
-    /// PostgreSQL; see the remarks on the base property. D50.
+    /// PostgreSQL; see the remarks on the base property.
     /// </summary>
     protected override bool ProviderPrefixFilterIsOrdinal => false;
 
@@ -125,24 +125,24 @@ public sealed class RavenFrameworkStoreConformanceTests : FrameworkStoreConforma
 
     // The Job/JobLog pair — master-side only, pinned to the master RavenDB database by
     // FixedRavenDatabaseResolver inside RavenJobStore/RavenJobLogStore. Resolved from the container like every
-    // other store, which is what proves AddRavenFrameworkStore registered them (D42's reflective gate demands it).
+    // other store, which is what proves AddRavenFrameworkStore registered them (the reflective gate demands it).
     protected override IJobStore NewJobs() => Resolve<IJobStore>();
 
     protected override IJobLogStore NewJobLogs() => Resolve<IJobLogStore>();
 
     // The Theme cluster — master-side only, pinned to the master RavenDB database by
     // FixedRavenDatabaseResolver inside RavenThemeStore. Resolved from the container like every other store,
-    // which is what proves AddRavenFrameworkStore registered it (D42's reflective gate demands it).
+    // which is what proves AddRavenFrameworkStore registered it (the reflective gate demands it).
     protected override IThemeStore NewThemes() => Resolve<IThemeStore>();
 
     // The ModuleDefinition cluster — master-side only, pinned to the master RavenDB database by
     // FixedRavenDatabaseResolver inside RavenModuleDefinitionStore. Resolved from the container like every other
-    // store, which is what proves AddRavenFrameworkStore registered it (D42's reflective gate demands it).
+    // store, which is what proves AddRavenFrameworkStore registered it (the reflective gate demands it).
     protected override IModuleDefinitionStore NewModuleDefinitions() => Resolve<IModuleDefinitionStore>();
 
     // The Tenant/Alias routing pair — master-side only, pinned to the master RavenDB database by
     // FixedRavenDatabaseResolver inside RavenTenantStore/RavenAliasStore. Resolved from the container like every
-    // other store, which is what proves AddRavenFrameworkStore registered them (D42's reflective gate demands it).
+    // other store, which is what proves AddRavenFrameworkStore registered them (the reflective gate demands it).
     protected override ITenantStore NewTenants() => Resolve<ITenantStore>();
 
     protected override IAliasStore NewAliases() => Resolve<IAliasStore>();

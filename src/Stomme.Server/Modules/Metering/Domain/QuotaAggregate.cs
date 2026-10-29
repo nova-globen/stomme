@@ -11,14 +11,14 @@ namespace Stomme.Modules.Metering.Domain
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>One authority, calendar-aligned.</b> the predecessor platform ran two: a sliding window folded into a counter, and a
-    /// second guard that counted the raw ledger from a calendar month start against a different fallback. They
-    /// disagreed by construction. Here the window is calendar-snapped UTC, the counter is authoritative, and the
+    /// <b>One authority, calendar-aligned.</b> Two authorities (a sliding window folded into a counter, and a
+    /// second guard that counted the raw ledger from a calendar month start against a different fallback) would
+    /// disagree by construction. Here the window is calendar-snapped UTC, the counter is authoritative, and the
     /// ledger exists to repair the counter - never to answer in parallel.
     /// </para>
     /// <para>
-    /// <b>Computed members are METHODS.</b> <c>IsUnlimited</c> and <c>ConsumedPercent</c> were get-only properties
-    /// in the predecessor platform, which one EF context hand-ignored. The reason they cannot stay properties here is not EF: both
+    /// <b>Computed members are METHODS.</b> <c>IsUnlimited</c> and <c>ConsumedPercent</c> are methods, not get-only
+    /// properties, and the reason is not EF: both
     /// document providers serialise read-only properties (their resolvers ignore only DomainEvents), so they would
     /// become stored fields on RavenDB and File with no EF column - a provider divergence invisible in the code.
     /// </para>

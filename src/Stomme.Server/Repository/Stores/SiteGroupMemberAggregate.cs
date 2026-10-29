@@ -22,7 +22,7 @@ namespace Stomme.Repository.Stores
     /// <b>NOTE WHAT IS ABSENT: <c>SiteGroup</c>.</b> The contract's <c>SiteGroupMember.SiteGroup</c> was a
     /// MAPPED navigation into the <see cref="SiteGroup"/> CLR type and the harvested repository eager-loaded it
     /// with <c>.Include(item =&gt; item.SiteGroup)</c>. This aggregate references the group BY ID only
-    /// (D7/D19) — a navigation would resurrect <see cref="SiteGroup"/> as a second entity type on the table
+    /// — a navigation would resurrect <see cref="SiteGroup"/> as a second entity type on the table
     /// <see cref="SiteGroupAggregate"/> owns and break the model at startup. That failure was OBSERVED for this
     /// cluster, not assumed; see the remarks on <see cref="SiteGroupAggregate"/>.
     /// </para>
@@ -33,7 +33,7 @@ namespace Stomme.Repository.Stores
     /// <c>Site/Index.razor</c>. <see cref="SiteGroupMemberRepository"/> therefore populates the contract's
     /// (now <c>[NotMapped]</c>) <c>SiteGroup</c> member by hand from a second session query, which is
     /// behaviour-equivalent because the harvested <c>.Include</c> carried NO join predicate: the filter at
-    /// <c>SiteGroupMemberRepository</c> was on this table's own columns, so D22 rule 9 does not apply and no
+    /// <c>SiteGroupMemberRepository</c> was on this table's own columns, so no
     /// database join was lost. Pinned by <c>SeveringTheSiteGroupNavigationTests</c>.
     /// </para>
     /// <para>

@@ -5,12 +5,12 @@ using Stomme.Security;
 namespace Stomme.Modules.ContextualHelp
 {
     /// <summary>
-    /// Contextual help's <see cref="ModuleDefinition"/> (D103 items 8-9) - how the framework discovers it and what
+    /// Contextual help's <see cref="ModuleDefinition"/> - how the framework discovers it and what
     /// it declares to the authorization bridge.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Permissions, per key</b> (D103 refutation 15): <c>help:view</c> to Everyone, <c>help:author</c> and
+    /// <b>Permissions, per key</b>: <c>help:view</c> to Everyone, <c>help:author</c> and
     /// <c>help:manage</c> to Administrators. The UNIFORM <c>Declare</c> would have handed all three to Everyone, and
     /// <c>UserSecurity.IsAuthorized</c> admits All Users at userId -1 - an anonymous visitor could author and manage.
     /// </para>
@@ -20,7 +20,7 @@ namespace Stomme.Modules.ContextualHelp
     /// template on the definition would give every stock install a help page for a feature that is off.
     /// </para>
     /// <para>
-    /// The name is what the D85 knob is keyed on: "Contextual Help" becomes <c>module.contextualhelp.enabled</c>.
+    /// The name is what the module's config knob is keyed on: "Contextual Help" becomes <c>module.contextualhelp.enabled</c>.
     /// </para>
     /// </remarks>
     public class ModuleInfo : IModule

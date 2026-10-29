@@ -21,7 +21,7 @@ namespace Stomme.Infrastructure
     /// and the root remains the one answer.
     /// </para>
     /// <para>
-    /// MEASURED 2026-09-21 by driving a real install: with <c>Health:Enabled = true</c> and <c>Metering:Enabled = true</c>
+    /// MEASURED by driving a real install: with <c>Health:Enabled = true</c> and <c>Metering:Enabled = true</c>
     /// in the override, the Health probe job logged "Health Probing Is Disabled" every minute and the page said "never
     /// checked" - the jobs asked <see cref="IConfiguration"/>, which saw the shipped file's <c>false</c>. Every suite
     /// was green, because each set the key on <c>builder.Configuration</c>, the one place production never writes.

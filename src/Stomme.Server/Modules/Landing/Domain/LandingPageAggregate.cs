@@ -34,9 +34,9 @@ namespace Stomme.Modules.Landing.Domain
     }
 
     /// <summary>
-    /// A site's landing page (the predecessor platform's <c>LandingPage</c>, planned there and never built): how it was made, its
-    /// content, and whether visitors see it. Tenant-owned and one per SITE of that tenant (the predecessor platform's "one per tenant" - a
-    /// Stomme site is the unit with its own home page).
+    /// A site's landing page: how it was made, its
+    /// content, and whether visitors see it. Tenant-owned and one per SITE of that tenant (a
+    /// Stomme site is the unit with its own home page, so not one per tenant).
     /// </summary>
     /// <remarks>
     /// <para>

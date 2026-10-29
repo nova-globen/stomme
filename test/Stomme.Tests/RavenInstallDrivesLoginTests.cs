@@ -148,7 +148,7 @@ namespace Stomme.Tests
                 var store = scope.ServiceProvider.GetRequiredService<IUserStore<IdentityUser>>();
                 Assert.IsType<RavenIdentityUserStore>(store);
 
-                // FindByName normalizes the (mixed-case) input and matches on NormalizedUserName — the D48/D49
+                // FindByName normalizes the (mixed-case) input and matches on NormalizedUserName — the intended
                 // case behaviour, DRIVEN. Look it up with DIFFERENT casing than it was created with.
                 var found = await userManager.FindByNameAsync("hostadmin");
                 Assert.NotNull(found);

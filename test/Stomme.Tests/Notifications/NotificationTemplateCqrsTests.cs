@@ -13,15 +13,15 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationTemplateCqrsTests.cs</c> (7 Fact + 1 Theory x5 =
+    /// The template tests (7 Fact + 1 Theory x5 =
     /// 12 cases): save (create/update), key uniqueness, placeholder validation, preview rendering and delete-if-unreferenced,
-    /// through the mediator. Harness swapped (<see cref="NotificationCqrsHarness"/>).
+    /// through the mediator, on <see cref="NotificationCqrsHarness"/>.
     /// </summary>
     /// <remarks>
     /// Per-case map: the seven facts keep their names and intent; <c>Delete_ReferencedTemplate_IsRejected</c> seeds the
-    /// referencing request through the File-store repository (the predecessor platform: the InMemory repository + unit of work); the Theory's
+    /// referencing request through the File-store repository; the Theory's
     /// three query rows expect <c>ManageTemplates</c> - the split drops <c>notifications:view</c>, and PREVIEW in particular is
-    /// template authoring. Added below the port (not the predecessor platform cases): the preview's HTML encoding, site isolation.
+    /// template authoring. Added below the original cases: the preview's HTML encoding, site isolation.
     /// </remarks>
     public sealed class NotificationTemplateCqrsTests
     {
@@ -148,7 +148,7 @@ namespace Stomme.Tests.Notifications
             Assert.Contains(requires, requirement => requirement.Permission == expected);
         }
 
-        // ---- added in Stomme (not the predecessor platform cases) ------------------------------------------------------------------
+        // ---- added after the original cases ----------------------------------------------------------------------------------------
 
         [Fact]
         public async Task Preview_encodes_a_parameter_as_html_and_reports_a_runaway_loop_as_an_error()

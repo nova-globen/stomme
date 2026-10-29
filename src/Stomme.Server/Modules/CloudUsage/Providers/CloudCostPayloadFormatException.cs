@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-// Lifted from the predecessor platform: the payload mapping is unchanged; only the namespaces moved.
+// Raised when a provider's cost payload cannot be mapped.
 namespace Stomme.Modules.CloudUsage.Providers
 {
     /// <summary>

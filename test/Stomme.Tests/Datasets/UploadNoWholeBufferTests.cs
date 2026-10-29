@@ -9,8 +9,8 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 13 (D110 refutation 6) - a source scan: nothing under the Datasets module reads a whole upload into
-    /// memory (the predecessor platform's parser did <c>reader.ReadToEnd()</c> and the file-manager source buffered every byte). The forms
+    /// A source scan: nothing under the Datasets module reads a whole upload into
+    /// memory (a parser that calls <c>reader.ReadToEnd()</c>, or a file source that buffers every byte, would do so). The forms
     /// the gate refuses are the ones that materialise an unbounded input; both directions - the clean tree passes and a
     /// planted <c>ReadToEnd</c> is caught.
     /// </summary>

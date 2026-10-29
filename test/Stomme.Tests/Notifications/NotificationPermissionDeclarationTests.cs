@@ -36,10 +36,10 @@ namespace Stomme.Tests.Notifications
     /// HTTP on an installed host (the <see cref="LiftedRequiresGateTests"/> recipe).
     /// </summary>
     /// <remarks>
-    /// The reflective half is necessary but proves nothing about a decision: the D47 rename shipped broken with every compile-time
+    /// The reflective half is necessary but proves nothing by itself: a rename once shipped broken with every compile-time
     /// check green. The driven half answers the only questions that matter - does a registered user read ONLY their own data, is
     /// the send log and the preview refused them, is an anonymous caller refused, and does a revocation (an Administrators DENY
-    /// row, BL-99 correction 7) take effect on the very next request. SQLite here; step 6 repeats the drive on PostgreSQL and
+    /// row) take effect on the very next request. SQLite here; the drive repeats on PostgreSQL and
     /// RavenDB (<see cref="Stores"/> is the seam). Fail-not-skip is inherited from <see cref="IGateStore"/>.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -98,7 +98,7 @@ namespace Stomme.Tests.Notifications
             var keys = PermissionKeys.ParseKeys(definition.PermissionNames);
             Assert.Equal(5, keys.Count);
             Assert.Equal(NotificationsPermissions.All.OrderBy(key => key), keys.Select(key => key.Key).OrderBy(key => key));
-            Assert.DoesNotContain(keys, key => key.Key == "notifications:view"); // the predecessor platform's single key is SPLIT, not kept
+            Assert.DoesNotContain(keys, key => key.Key == "notifications:view"); // the single original key is split, not kept
 
             Assert.Equal(new[] { RoleNames.Registered, RoleNames.Admin }, keys.Single(key => key.Key == NotificationsPermissions.ViewOwn).Roles);
             foreach (var adminOnly in new[] { NotificationsPermissions.ViewLog, NotificationsPermissions.Send, NotificationsPermissions.ManageChannels, NotificationsPermissions.ManageTemplates })
@@ -136,7 +136,7 @@ namespace Stomme.Tests.Notifications
                 Assert.True(string.IsNullOrEmpty(requires[0].Feature), $"{type.Name} carries a feature requirement.");
             }
 
-            // F3: nothing on the dispatch/job path (dispatcher, processor, hint handler, channels) is gated - a job has no HttpContext.
+            // Nothing on the dispatch/job path (dispatcher, processor, hint handler, channels) is gated - a job has no HttpContext.
             var gatedElsewhere = moduleTypes.Where(type => !requestTypes.Contains(type)
                 && (type.GetCustomAttributes<RequiresAttribute>(inherit: true).Any()
                     || type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
@@ -145,7 +145,7 @@ namespace Stomme.Tests.Notifications
                 .ToList();
             Assert.Empty(gatedElsewhere);
 
-            // No request is an IStreamRequest / INotification (a [Requires] there is never enforced - F15).
+            // No request is an IStreamRequest / INotification (a [Requires] there is never enforced).
             Assert.DoesNotContain(requestTypes, type => typeof(INotification).IsAssignableFrom(type)
                 || type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IStreamRequest<>)));
         }
@@ -233,7 +233,7 @@ namespace Stomme.Tests.Notifications
         [MemberData(nameof(Stores))]
         public Task The_split_keys_decide_over_http(string storeName) => DriveAsync(LiftedRequiresGateTests.ResolveStore(storeName), _output);
 
-        /// <summary>The whole drive, store-parameterised so step 6 runs the IDENTICAL assertions on PostgreSQL and RavenDB.</summary>
+        /// <summary>The whole drive, store-parameterised so the drive runs the identical assertions on PostgreSQL and RavenDB.</summary>
         internal static async Task DriveAsync(IGateStore store, ITestOutputHelper output)
         {
             const string Host = LiftedRequiresGateTests.Host;
@@ -317,7 +317,7 @@ namespace Stomme.Tests.Notifications
                 response = await GateDrive.GetAsync(anonymousClient, null, Host, "/api/Notifications/log", output, store.Name + " anonymous log");
                 Assert.Equal(HttpStatusCode.Forbidden, response.Status);
 
-                // ---- 6. REVOKE view-log FROM ADMINISTRATORS OVER HTTP: a DENY row (BL-99 correction 7), not zero rows -----
+                // ---- 6. REVOKE view-log FROM ADMINISTRATORS OVER HTTP: a DENY row, not zero rows -----
                 var revoked = GateDrive.Clone(definition);
                 var adminLogRows = revoked.PermissionList.Where(row => IsKeyRow(row, "view-log", RoleNames.Admin, true)).ToList();
                 Assert.NotEmpty(adminLogRows);

@@ -14,13 +14,11 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// Opening a site's model, with the predecessor platform's <c>AssistantOptionsAndResolverTests</c> by name where
-    /// they carry over. The installation switch and the SITE's switch both have to be on or nothing reaches a provider; a
-    /// site names its provider case-insensitively; an unknown provider, a missing model and an unreadable key are refused
-    /// with the setting named; the key, when stored, reaches the provider and nothing else; the client handed out is the
-    /// metered one. <b>CHANGED:</b> the predecessor platform bound one provider for the whole deployment from <c>the predecessor platform:AI</c>; here the
-    /// installation switch is <c>AiAssistant</c> and the provider, endpoint, model and key are PER SITE. the predecessor platform's
-    /// default of a Claude model is gone - no model is assumed.
+    /// Opening a site's model. The installation switch and the SITE's switch both have to be on or nothing reaches a
+    /// provider; a site names its provider case-insensitively; an unknown provider, a missing model and an unreadable key
+    /// are refused with the setting named; the key, when stored, reaches the provider and nothing else; the client handed
+    /// out is the metered one. The installation switch is <c>AiAssistant</c> and the provider, endpoint, model and key
+    /// are PER SITE, not one provider for the whole deployment. No model is assumed by default.
     /// </summary>
     public sealed class AssistantModelAccessTests
     {

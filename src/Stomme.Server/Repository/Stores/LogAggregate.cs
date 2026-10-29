@@ -15,8 +15,8 @@ namespace Stomme.Repository.Stores
     /// way.</b> <c>LogEntityBuilder</c> derives from <c>BaseEntityBuilder</c>, not
     /// <c>AuditableBaseEntityBuilder</c>, and never calls <c>AddAuditableColumns</c> — so the table has NO
     /// created_by/created_on/modified_by/modified_on. VERIFIED against the migrated PostgreSQL database: the
-    /// <c>log</c> table's 18 columns contain none of the four. Every other migrated cluster (D17/D21/D22/D23/
-    /// D24) carries the audit quartet, so adding it here "for consistency" is the obvious mistake: it would
+    /// <c>log</c> table's 18 columns contain none of the four. Every other migrated cluster
+    /// carries the audit quartet, so adding it here "for consistency" is the obvious mistake: it would
     /// make <c>DbContextUtils</c> and <see cref="AuditStamp"/> stamp four columns that do not exist and every
     /// single log write would fail — i.e. logging, on every request. <see cref="Log"/> has its own
     /// <see cref="LogDate"/> instead, set by <c>LogManager</c> on the calling thread.

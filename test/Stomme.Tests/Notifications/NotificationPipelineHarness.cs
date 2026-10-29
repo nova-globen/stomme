@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// The HARNESS SWAP for the predecessor platform's dispatch/digest suites (<c>AddInMemoryPersistence</c> + <c>AddMediator</c> + a bus):
+    /// The harness for the dispatch/digest suites, in place of an in-memory setup (<c>AddInMemoryPersistence</c> + <c>AddMediator</c> + a bus):
     /// the module's own <c>ServerStartup</c> on the in-process FILE store (a real serialize/deserialize per scope), the
     /// shipped channels replaced by <see cref="FakeTransportChannel"/>s, and the two framework-facing ports
     /// (<see cref="INotificationSiteSettings"/>, <see cref="INotificationRecipientDirectory"/>) replaced by in-memory

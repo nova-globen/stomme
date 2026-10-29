@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// The collaboration panel an editor hosts (the predecessor platform's <c>CollaborationPanelTests</c>, by what they
+    /// The collaboration panel an editor hosts (the cases of <c>CollaborationPanelTests</c>, by what they
     /// proved): it joins the resource's session and takes the free lock; another holder is named and nothing is taken from
     /// them; a notice from this site about this resource re-reads the session and the lock - someone else's SAVE becomes a
     /// warning with Reload, someone else's announced change the last change shown, a lock lost the user is told of - while a

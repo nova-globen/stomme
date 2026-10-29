@@ -12,9 +12,9 @@ namespace Stomme.Tests
 {
     // ConfigManager resolved its write target into STATIC fields from the constructor, so when several hosts
     // run in one process (every integration suite here does) the last-constructed host silently redirected
-    // EVERY host's AddOrUpdateSetting into its own file. Observed 2026-07-23: InstallPrerenderTests' install
-    // write polluted the shared test-bin appsettings.json and broke two unrelated suites. The write target
-    // must be per-instance state, captured at construction. docs/backlog.md §BL-59.
+    // EVERY host's AddOrUpdateSetting into its own file. A prerender install's write once polluted the shared
+    // test-bin appsettings.json and broke two unrelated suites. The write target must be per-instance state,
+    // captured at construction.
     //
     // Shares the non-parallel collection because it swaps the override-path environment variable, which is
     // process-global.

@@ -24,11 +24,11 @@ namespace Stomme.Tests
     /// <c>GET api/User/forgotpassword/{username}</c> and <c>GET api/User/forgotusername/{email}</c> carry no
     /// <c>[Authorize]</c> — neither the controller nor the methods — and returned the manager's raw <c>bool</c>:
     /// <c>true</c> when the lookup found somebody, <c>false</c> when it did not. That is an account-existence
-    /// oracle available to anyone who can reach the site, and since BL-90 the only thing standing in front of it
-    /// is a per-site switch that turns recovery off altogether.
+    /// oracle available to anyone who can reach the site, and the only thing standing in front of it
+    /// now is a per-site switch that turns recovery off altogether.
     /// </para>
     /// <para>
-    /// <b>It compounds.</b> BL-121 records that nothing rate-limits these endpoints, so an oracle plus unlimited
+    /// <b>It compounds.</b> Nothing rate-limits these endpoints, so an oracle plus unlimited
     /// attempts is enumeration at scale rather than a single question. Rate limiting is NOT fixed here — this row
     /// closes the oracle, and the two rows are only dangerous together.
     /// </para>
@@ -37,7 +37,7 @@ namespace Stomme.Tests
     /// <c>"Password Reset Failed For {Username} And Token {Token}"</c>, putting a live password-reset token into
     /// the site Log table that every administrator can read. The assertion below checks EVERY string column of
     /// the row, not just the message: the token also rides the query string, and <c>LogManager</c> copies the
-    /// request URL into <c>Log.Url</c> for every entry raised during that request — the same second door BL-112's
+    /// request URL into <c>Log.Url</c> for every entry raised during that request — the same second door an earlier
     /// fix left open for setting values.
     /// </para>
     /// </remarks>
@@ -159,13 +159,13 @@ namespace Stomme.Tests
                     "the reset request never reached UserManager.ResetPassword, so this test would pass without " +
                     "exercising the logging path at all: " + Trim(responseBody));
 
-                // The D34 drain writes from a background thread, so the row is not there the instant the response
+                // The log drain writes from a background thread, so the row is not there the instant the response
                 // returns. Poll for it - and make its arrival a POSITIVE CONTROL: without proof that this
                 // request's own entry reached the table, "the token is absent" is a claim about an empty table.
                 // The OTHER branch. The reset above names a user that exists, so it fails inside Identity and
-                // takes the "result.Succeeded == false" path. The branch BL-149 actually named - the one that
-                // spelled the token into its message - is the else, reached when the username resolves to
-                // nobody. Both are driven, or the message fix is covered by reading only.
+                // takes the "result.Succeeded == false" path. The branch that spelled the token into its
+                // message is the else, reached when the username resolves to nobody. Both are driven, or the
+                // message fix is covered by reading only.
                 var orphanToken = "BL149-ORPHAN-" + Guid.NewGuid().ToString("N");
                 var (orphanStatus, _) = await GateDrive.SendJsonAsync(
                     app, client, cookies: null, Host, actorUserId: null,

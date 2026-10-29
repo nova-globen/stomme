@@ -16,10 +16,8 @@ using FluentValidation;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    // The two operator commands gated by Send. NOT a lift of the predecessor platform's SendNotificationCommand /
-    // RetryDeliveryCommand: those were UNGATED, system-scoped commands the bus consumer ran - in Stomme that work is the
-    // dispatch job's (NotificationDispatchProcessor, no [Requires], F3). These are the user-facing surface D100 point 6 names:
-    // "send/retry = send".
+    // The two operator commands gated by Send. They are the user-facing surface: system-scoped, ungated send and retry
+    // work is the dispatch job's (NotificationDispatchProcessor, no [Requires]). Send and retry both need "send".
 
     /// <summary>
     /// Sends a test notification TO THE CALLER through <c>generic.message</c> over the given channels, through the SAME

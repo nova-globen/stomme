@@ -10,17 +10,17 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Notifications.Infrastructure.Channels
 {
     /// <summary>
-    /// One delivery medium's transport, lifted from the predecessor platform <c>INotificationChannelProvider</c>.
+    /// One delivery medium's transport.
     /// Each implementation owns the kind-specific RUNTIME validation of a channel's <see cref="TransportSettings"/>
     /// (beyond the structural checks the value object enforces) and the actual send. Registered as
     /// <c>IEnumerable&lt;INotificationChannel&gt;</c> by the module startup and selected by
     /// <see cref="NotificationChannelResolver"/>.
     /// </summary>
     /// <remarks>
-    /// <b>Deviation from the D100 signature (named).</b> The spec's <c>IReadOnlyList&lt;string&gt;
-    /// ValidateSettings(TransportSettings)</c> is <see cref="ValidateSettingsAsync"/> here, with the SITE: the webhook
+    /// <b>Why validation is async and takes the SITE.</b> A synchronous <c>IReadOnlyList&lt;string&gt;
+    /// ValidateSettings(TransportSettings)</c> is replaced by <see cref="ValidateSettingsAsync"/>: the webhook
     /// channel's configure-time SSRF check must RESOLVE the host (DNS is I/O - a synchronous resolve would block a
-    /// request thread, an async one behind a sync signature would be sync-over-async, which D33 bans) and must honour
+    /// request thread, an async one behind a sync signature would be sync-over-async, which this codebase bans) and must honour
     /// the per-site host allowlist, which is keyed by site.
     /// </remarks>
     public interface INotificationChannel
@@ -69,7 +69,7 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
     }
 
     /// <summary>
-    /// One send over a resolved channel. <see cref="SiteId"/> is NEW relative to the predecessor platform: the inherited
+    /// One send over a resolved channel. <see cref="SiteId"/> is carried because the
     /// <c>Notification</c> row the e-mail and in-app channels write requires one, and the webhook credential and host
     /// allowlist are per site.
     /// </summary>
@@ -91,8 +91,8 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
     /// <summary>
     /// Selects the <see cref="INotificationChannel"/> for a configured channel. Null - a SKIP, logged with its reason -
     /// for a disabled channel, a kind with no registered transport (SMS), and a channel that NAMES a provider no
-    /// transport registers. the predecessor platform fell back to the first same-kind provider in that last case (<c>?? candidates[0]</c>),
-    /// silently delivering over a transport the operator did not choose; that fallback does not travel.
+    /// transport registers. Falling back to the first same-kind provider in that last case (<c>?? candidates[0]</c>)
+    /// would silently deliver over a transport the operator did not choose, so there is no such fallback.
     /// </summary>
     public sealed class NotificationChannelResolver
     {

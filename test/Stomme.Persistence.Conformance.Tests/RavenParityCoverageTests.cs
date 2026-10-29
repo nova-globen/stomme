@@ -22,7 +22,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// </para>
 /// <para>
 /// <b>Deliberately not a skip.</b> An EF-only run of a provider-parity suite certifies nothing: its entire
-/// purpose is the comparison. D45 is the evidence — a harvested <c>siteId == -1</c> sentinel query that EF
+/// purpose is the comparison. The evidence is a <c>siteId == -1</c> sentinel query that EF
 /// folds at translation time and RavenDB's LINQ provider does not, measured at 0 of 2 rows on RavenDB while
 /// green on EF. Only the Raven half could see that. Parity untested must read as failure.
 /// </para>

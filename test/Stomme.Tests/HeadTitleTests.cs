@@ -11,7 +11,7 @@ namespace Stomme.Tests
     /// Stomme's own <c>&lt;title&gt;</c> (the <c>Head</c> component) is the FIRST node it renders.
     /// </summary>
     /// <remarks>
-    /// Found on UAT 2026-10-02, a WebAssembly site, and reproduced on a local one: "Cannot read properties of null (reading
+    /// Found on a deployed WebAssembly site, and reproduced on a local one: "Cannot read properties of null (reading
     /// 'removeChild')", the node a <c>&lt;title&gt;</c> (traced through the browser's debugger). On an Interactive site Blazor's
     /// <c>HeadOutlet</c> (mounted) removes, on its first render, every <c>&lt;title&gt;</c> it does not take for its
     /// own - one whose previous sibling is not a Blazor marker comment. <c>Head</c> rendered <c>"\n&lt;title&gt;..."</c>, so its

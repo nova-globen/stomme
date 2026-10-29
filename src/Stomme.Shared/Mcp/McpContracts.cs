@@ -40,8 +40,8 @@ namespace Stomme.Mcp
     /// <summary>What happens when a permitted caller invokes a tool.</summary>
     /// <remarks>
     /// <b><see cref="Deny"/> is zero ON PURPOSE.</b> An approval that was never set - a default-initialised field, a
-    /// value a newer release added and this one does not know - must land on the side that does nothing. D101 lists the
-    /// members as Auto, Confirm, Deny; it does not fix their numbers, and the permissive one is not the one to be 0.
+    /// value a newer release added and this one does not know - must land on the side that does nothing. The
+    /// members are Auto, Confirm, Deny, and the permissive one is not the one to be 0.
     /// </remarks>
     public enum McpToolApproval
     {
@@ -116,8 +116,8 @@ namespace Stomme.Mcp
         /// <param name="uri">The resource URI, or a template with <c>{name}</c> segments (see <see cref="McpUriTemplate"/>).</param>
         /// <param name="requires">At least one gate. An empty list is refused - see the type remarks.</param>
         /// <remarks>
-        /// In the predecessor platform <c>Requires</c> was optional and defaulted to empty, and an empty list did not mean "nobody" - it
-        /// meant INVOKABLE BY EVERY AUTHENTICATED PRINCIPAL ON EVERY SITE, and it was the default. So the list has no
+        /// An optional <c>Requires</c> that defaulted to empty would be a trap: an empty list would not mean "nobody", it
+        /// would mean INVOKABLE BY EVERY AUTHENTICATED PRINCIPAL ON EVERY SITE, and it would be the default. So the list has no
         /// default here and an empty one throws: forgetting the gate is a construction error, not an open door.
         /// </remarks>
         public McpResourceDescriptor(string uri, string name, string description, string? mimeType, IReadOnlyList<McpAccessGate> requires)
@@ -159,8 +159,8 @@ namespace Stomme.Mcp
     {
         /// <remarks>
         /// <b>A tool whose name says it changes something may not be <see cref="McpToolApproval.Auto"/></b>, and that
-        /// is refused HERE rather than left to a scanner: the predecessor platform's one mutating tool, <c>execute_pipeline</c>, arrived
-        /// as Auto and "deliberately ungated at the mediator level". A scanner over the tree would not see a packaged
+        /// is refused HERE rather than left to a scanner: a mutating tool such as <c>execute_pipeline</c> could otherwise arrive
+        /// as Auto and ungated at the mediator level. A scanner over the tree would not see a packaged
         /// module; a constructor sees every descriptor there is.
         /// </remarks>
         public McpToolDescriptor(string name, string description, string parametersJsonSchema, IReadOnlyList<McpAccessGate> requires, McpToolApproval approval)
@@ -276,9 +276,9 @@ namespace Stomme.Mcp
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>One unit on purpose.</b> the predecessor platform had four interfaces - two that published descriptors, two that handled them -
-    /// unioned by name, first registration wins. So a module registered earlier could publish a same-named descriptor
-    /// with NO gates and the real invoker ran behind it; or register a same-named invoker and receive the caller's
+    /// <b>One unit on purpose.</b> Four interfaces - two that publish descriptors, two that handle them -
+    /// unioned by name, with the first registration winning, would let a module registered earlier publish a same-named descriptor
+    /// with NO gates while the real invoker ran behind it; or register a same-named invoker and receive the caller's
     /// arguments. Here the catalog resolves a handler FROM THE CONTRIBUTOR THAT PUBLISHED THE DESCRIPTOR, and a name
     /// published twice is a startup failure, never a silent winner.
     /// </para>

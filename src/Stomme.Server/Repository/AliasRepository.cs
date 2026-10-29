@@ -29,7 +29,7 @@ namespace Stomme.Repository
     /// </summary>
     /// <remarks>
     /// <para>
-    /// MASTER, not tenant (D23's master half): Alias is installation-wide routing state — the map from host+path to a
+    /// MASTER, not tenant: Alias is installation-wide routing state — the map from host+path to a
     /// Site and Tenant — so reads go through <see cref="IMasterStoreSessionFactory"/> (NOT the tenant
     /// <see cref="IFrameworkStoreSessionFactory"/>) and writes through a store bound to <see cref="MasterDBContext"/>.
     /// </para>
@@ -60,8 +60,8 @@ namespace Stomme.Repository
         }
 
         // The read path on the seam: reads go through a MASTER query session, never the store, so the store's
-        // tracker stays clean. The IQueryable is materialized inside this method, so it never leaves the repository
-        // (D7). Plain LINQ rather than EF's async operators, which would bind these reads to the relational provider.
+        // tracker stays clean. The IQueryable is materialized inside this method, so it never leaves the repository.
+        // Plain LINQ rather than EF's async operators, which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
             var session = _sessions.OpenQuerySession();

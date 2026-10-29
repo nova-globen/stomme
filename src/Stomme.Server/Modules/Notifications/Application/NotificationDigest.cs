@@ -6,13 +6,12 @@ using Stomme.Modules.Notifications.Domain;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    /// <summary>One user's batch of digest-held requests (int user id - Stomme users, BL-78 F10).</summary>
+    /// <summary>One user's batch of digest-held requests (int user id - Stomme users).</summary>
     public sealed record DigestBatch(int UserId, IReadOnlyList<NotificationRequestAggregate> Requests);
 
     /// <summary>
-    /// The digest-grouping primitive the hourly flush consumes, lifted from the predecessor platform
-    /// <c>the predecessor platform.Notifications.Application/NotificationPreferences.cs</c> (<c>NotificationDigest.GroupForDigest</c>)
-    /// with the user id adapted from Guid to int: requests grouped per user, users in ascending id order, each user's
+    /// The digest-grouping primitive the hourly flush consumes (<c>NotificationDigest.GroupForDigest</c>):
+    /// requests grouped per user, users in ascending id order, each user's
     /// requests in input order.
     /// </summary>
     public static class NotificationDigest

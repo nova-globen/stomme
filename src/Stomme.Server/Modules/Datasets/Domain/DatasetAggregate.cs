@@ -214,8 +214,8 @@ namespace Stomme.Modules.Datasets.Domain
         /// The id is the TENANT's, the site's and the origin's. The tenant is in the hash because the storage-blind module
         /// store is one per installation and a site id repeats across tenants (the site-per-alias topology): an id derived
         /// from the site and the origin alone COLLIDED on the store's primary key when a second tenant on the same site id
-        /// registered the same origin - measured by the demo-content two-tenant case, the BL-111
-        /// class one level down.
+        /// registered the same origin - measured by the demo-content two-tenant case, the same
+        /// class of collision one level down.
         /// </summary>
         public static Guid For(TenantId tenantId, int siteId, OriginKind originKind, string reference)
         {
@@ -238,7 +238,7 @@ namespace Stomme.Modules.Datasets.Domain
     /// <summary>Per-column metadata only: a few sample values, min and max, unique and null counts. Never the data.</summary>
     public sealed record DatasetColumnSummary(string Name, IReadOnlyList<string> Samples, string? Min, string? Max, int UniqueCount, int NullCount);
 
-    /// <summary>The ordered columns as ONE JSON string column on every store (the D101 precedent), read back typed.</summary>
+    /// <summary>The ordered columns as ONE JSON string column on every store (as the other module aggregates do), read back typed.</summary>
     public sealed class DatasetSchema : ValueObject, IStringValueObject
     {
         public const int MaxLength = 64_000;

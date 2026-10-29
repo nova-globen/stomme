@@ -13,18 +13,17 @@ using Stomme.Modules.Metering.Domain;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Metering's side of CostOptimization's AI-usage read port (the predecessor platform's
-    /// <c>AiUsageAssistantUsageSignalSource</c>; D102's marked correction books it): the REQUEST's site's AI ledger for the
+    /// Metering's side of CostOptimization's AI-usage read port: the REQUEST's site's AI ledger for the
     /// current calendar month per provider and model - requests, cache-served requests, raw tokens, cost - and the site's
     /// monthly <c>ai.calls</c> quota position. With no site resolved the signal is empty, never another site's.
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED from the predecessor platform:</b> the predecessor platform's pricing catalogue was USD only; D102's price list names a currency per model, so
+    /// <b>Currency:</b> the price list names a currency per model, so
     /// a month can hold two. The signal carries one currency (the port's shape, which the analyzers compare shares within),
     /// so it is the month's DOMINANT priced currency by row count - USD when nothing is priced - and a model's cost counts
     /// only its rows in that currency; requests, cache hits and tokens count every row. No FX, as everywhere in this repo.
     /// The quota is the site's monthly <c>ai.calls</c> quota at its effective limit (a granted override included); an
-    /// unlimited quota, or none, carries no quota signal - the predecessor platform's "unlimited tenant".
+    /// unlimited quota, or none, carries no quota signal (an "unlimited tenant").
     /// </remarks>
     public sealed class MeteringAssistantUsageSignalSource(
         IAiUsageRecordRepository aiUsage,

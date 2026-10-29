@@ -23,7 +23,7 @@ namespace Stomme.Tests
     /// <b>This sits alongside <see cref="PermissionKeyUpgradeReconciliationTests"/>, it does not replace it.</b>
     /// That suite drives the full two-release upgrade — a key a newer release declares appears on an
     /// already-installed site, and an operator''s grant survives — and it reconciles by READING the definitions
-    /// itself, which is exactly the laziness BL-103 is about. This one removes that read: it asserts the boot
+    /// itself, which is exactly the laziness this test guards against. This one removes that read: it asserts the boot
     /// pass on its own is enough, which is what makes the other suite''s "the boot/read path is what reconciles"
     /// literally true rather than true-because-the-test-did-it.
     /// </remarks>

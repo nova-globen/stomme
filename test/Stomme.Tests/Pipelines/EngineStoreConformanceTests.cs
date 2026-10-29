@@ -56,7 +56,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95 increment (a), D111: the engine's store contracts on Stomme persistence, held to the engine's own
+    /// The engine's store contracts on Stomme persistence, held to the engine's own
     /// MEMORY stores as the oracle. Every scenario runs the same writes and reads against the store under test and
     /// a fresh memory store and compares what comes back - ids, counts, order where an order was asked for, and the
     /// text the engine's serializers produce for the non-scalar members. One test per contract keeps the per-test
@@ -90,7 +90,7 @@ namespace Stomme.Tests.Pipelines
                 module.AddStep<SinkStep>();
                 module.AddStep<Stomme.Modules.Pipelines.Steps.Schedule>();
                 // The Tenants feature, as the host composes it: without it a dispatched run's tenant is not restored on
-                // the worker (measured 2026-09-24). The tenants here are the ones the tests register, one per test.
+                // the worker. The tenants here are the ones the tests register, one per test.
                 module.UseTenants();
                 module.Configure<MultitenancyFeature>(multitenancy => multitenancy.UseTenantsProvider<FixtureTenantsProvider>());
             });
@@ -1173,7 +1173,7 @@ namespace Stomme.Tests.Pipelines
             Assert.All(log.Items, record => Assert.Equal(instance.TenantId, record.TenantId));
         }
 
-        // Inside a REGISTERED engine tenant. MEASURED 2026-09-24: the background dispatcher sends the caller's tenant id as
+        // Inside a REGISTERED engine tenant. Measured: the background dispatcher sends the caller's tenant id as
         // a command header, and restoring it on the worker is the Tenants feature's middleware (UseTenants()), which needs
         // a tenant the engine's ITenantService can FIND - without the feature, a run dispatched from inside a tenant landed
         // under the default tenant and was invisible to a poll from the dispatching one. The fixture composes the feature
@@ -1276,7 +1276,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // Found 2026-10-07 reading the schedules task: a key-value KEY is the row's id, one per installation, while the
+        // Found while reading the schedules task: a key-value KEY is the row's id, one per installation, while the
         // store's reads are per tenant - so two sites with the same cron kept their last fire under one key, each tick
         // moved the row to the site that saved it last, the other found nothing, re-anchored, and NEITHER ever fired.
         [Fact]
@@ -1578,7 +1578,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // ---- BL-229: the runs list's days (n8n's start-date filter)
+        // ---- The runs list's days (n8n's start-date filter)
 
         // Whole days in UTC, both kept, on every store: a run at midnight starts its day and the day's last tick ends it,
         // whatever zone the server runs in - the engine reads a timestamp AT midnight as a day built in the server's zone, so
@@ -1620,7 +1620,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // ---- BL-232: the engine in an installation's backup
+        // ---- The engine in an installation's backup
 
         // A backup carries the site's pipelines - every row or document of the engine, exactly - and a restore puts back what it
         // held: a definition deleted since comes back, a key saved since goes, and the engine reads what was put back (its

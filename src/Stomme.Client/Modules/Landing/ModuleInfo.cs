@@ -7,7 +7,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Landing
 {
     /// <summary>
-    /// The Landing module (the predecessor platform's feature 44, planned there and never built): a site's landing page, on its HOME page.
+    /// The Landing module: a site's landing page, on its HOME page.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -63,7 +63,7 @@ namespace Stomme.Modules.Landing
                             Title = "-",
                             Pane = PaneNames.Default,
                             // BEFORE whatever a site template placed first (the default template's welcome text is at 1, and a
-                            // tie kept the older module on top - found by the owner's walk, 2026-09-29). A reorder in the page
+                            // tie kept the older module on top). A reorder in the page
                             // editor renumbers 1, 3, 5..., so an operator can still move it; -1 only decides where it lands.
                             Order = -1,
                             PermissionList = new List<Permission>

@@ -18,7 +18,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95 increment (c), the graph seam: the editor's graph becomes the engine's own Flowchart document and back, and
+    /// The graph seam: the editor's graph becomes the engine's own Flowchart document and back, and
     /// the ENGINE is the judge - the document it gets is deserialised by its step serializer into a flowchart with the
     /// steps, the typed literal inputs and the connections the graph named, and a run of it executes them. Held to the
     /// engine composed as the host composes it, with no store behind it.
@@ -127,7 +127,7 @@ namespace Stomme.Tests.Pipelines
 
         // n8n's "save successful executions" - not keeping the runs that finish well is kept in the designer metadata,
         // where the task that deletes them reads it from the published body; kept (the default) writes nothing.
-        // BL-229, n8n's "save execution progress": kept with the graph, absent while off.
+        // n8n's "save execution progress": kept with the graph, absent while off.
         [Fact]
         public void Saving_progress_is_kept_with_the_graph()
         {

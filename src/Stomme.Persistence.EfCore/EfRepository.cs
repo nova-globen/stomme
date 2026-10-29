@@ -26,7 +26,7 @@ public sealed class EfRepository<TAggregate, TId>(
 
     /// <summary>
     /// False for a repository whose DI scope may be LONG-LIVED - an Interactive Server circuit is one scope for as
-    /// long as the page is open (D79's correction of 2026-09-21). Reads then do not track, and a write is
+    /// long as the page is open . Reads then do not track, and a write is
     /// detached once it is saved, so a re-read always answers from the database: what the RavenDB and File
     /// repositories already do.
     /// </summary>
@@ -123,7 +123,7 @@ public sealed class EfRepository<TAggregate, TId>(
             //
             // That makes this the right place to fix it rather than each caller: a per-row guard is the obvious
             // containment and it silently did not work, so every existing one was reporting rows as
-            // conflict-skipped that had never conflicted (UsageRollupJob.RepairQuotasAsync, BL-151, is one).
+            // conflict-skipped that had never conflicted (UsageRollupJob.RepairQuotasAsync is one).
             //
             // Discarding the whole pending set is correct HERE because writes are eager — Add/Update/Delete each
             // end in this method, so the only pending changes are the ones the failed call introduced, the

@@ -30,7 +30,7 @@ namespace Stomme.Tests.AiAssistant
     /// board - the orchestrator routes to the Dashboard Designer, which reads the site's datasets through the Datasets module
     /// AS THE USER and proposes a board bound to one of them - nothing is created until the apply, which creates the board
     /// through the Dashboards module's own commands; every model call is in the site's AI usage, attributed to its agent.
-    /// the predecessor platform's API cases by name are the start, send and apply-and-discard legs.
+    /// the API cases by name are the start, send and apply-and-discard legs.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]
@@ -160,7 +160,7 @@ namespace Stomme.Tests.AiAssistant
                     new RegisterDatasetRequest { Name = "Sales", OriginKind = OriginKind.PipelineOutput, OriginReference = "pipeline-sales", SampleJson = "[ { \"sku\": \"A1\", \"amount\": \"10\" } ]", Classification = DataClassification.Internal },
                     "register Sales");
 
-                // Start, then ask (the predecessor platform's AssistantEndpoints / SendMessage_StoresAssistantReplyAndProposedArtifact).
+                // Start, then ask (the AssistantEndpoints / SendMessage_StoresAssistantReplyAndProposedArtifact cases).
                 var started = await Send(app, client, cookies, hostId, HttpMethod.Post, $"{Api}/conversations", new { }, "start");
                 Assert.Equal(HttpStatusCode.Created, started.Status);
                 var conversationId = JsonSerializer.Deserialize<AssistantConversationView>(started.Body, Json)!.Id;
@@ -175,7 +175,7 @@ namespace Stomme.Tests.AiAssistant
                 var before = JsonSerializer.Deserialize<List<DashboardView>>((await GateDrive.GetAsync(client, cookies, Host, "/api/Dashboards", output, "boards before the apply")).Body, Json)!;
                 Assert.DoesNotContain(before, board => board.Name == "Sales board");
 
-                // Apply (the predecessor platform's ApplyAndDiscard_RoundTripArtifactStateThroughApi): the board through the Dashboards module.
+                // Apply (ApplyAndDiscard_RoundTripArtifactStateThroughApi): the board through the Dashboards module.
                 var applied = await Ok<AssistantArtifactApplyResult>(app, client, cookies, hostId, HttpMethod.Post, $"{Api}/conversations/{conversationId}/artifacts/{artifact.Id}/apply", new { }, "apply");
                 var board = JsonSerializer.Deserialize<DashboardView>((await GateDrive.GetAsync(client, cookies, Host, $"/api/Dashboards/{applied.CreatedResourceId}", output, "the created board")).Body, Json)!;
                 Assert.Equal("Sales board", board.Name);

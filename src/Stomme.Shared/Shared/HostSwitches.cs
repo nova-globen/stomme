@@ -6,8 +6,8 @@ namespace Stomme.Shared
     /// The installation-wide switches a client component reads before it calls the API they guard. Off - the
     /// default for each - the API answers 404, and a WebAssembly site's browser logged that 404: the help launcher on every
     /// page, a person's data on their profile, the collaboration panel in the pipeline editor and on the dashboards. The
-    /// server puts each in the site's settings as <c>{section}:Enabled</c>, the channel D70 made for SAML's and Windows'
-    /// switches, and a component asks only when it is not told the switch is off.
+    /// server puts each in the site's settings as <c>{section}:Enabled</c>, the same channel SAML's and Windows'
+    /// switches use, and a component asks only when it is not told the switch is off.
     /// </summary>
     public static class HostSwitches
     {

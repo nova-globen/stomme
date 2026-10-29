@@ -13,7 +13,7 @@ namespace Stomme.Repository
         /// <summary>
         /// The host's own settings view. Carried here for one reason: the contexts expand the
         /// <c>|DataDirectory|</c> token in a tenant connection string, and that value has to belong to THIS host
-        /// rather than to a process-wide slot the last-composed host wrote (BL-153,
+        /// rather than to a process-wide slot the last-composed host wrote (see
         /// <c>IConfigManager.GetDataDirectory</c>).
         /// </summary>
         IConfigManager ConfigManager { get; }

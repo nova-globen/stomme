@@ -222,7 +222,7 @@ namespace Stomme.Tests.Pipelines
             Assert.False(PipelineForms.IsNextPage(new PipelineGraphStep { Type = PipelineCalls.WaitStepType, Inputs = { [PipelineForms.NextPageInput] = "true" } }));
         }
 
-        // BL-229, n8n's HTML node: a Make HTML template puts a value in as it is, so one put in without the html filter is said - a
+        // n8n's HTML node: a Make HTML template puts a value in as it is, so one put in without the html filter is said - a
         // warning; one encoded, one marked | raw (HTML the author made), or a template with no value in it, says nothing.
         [Fact]
         public void A_value_put_in_html_without_the_html_filter_is_said()
@@ -244,7 +244,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(Found());
         }
 
-        // BL-229, Respond to webhook: an answer with no Webhook answering from the pipeline reaches nobody, and a Webhook that
+        // Respond to webhook: an answer with no Webhook answering from the pipeline reaches nobody, and a Webhook that
         // answers from the pipeline with no Respond step keeps its caller waiting - each a warning; together, or switched off, none.
         [Fact]
         public void A_webhook_answer_needs_a_webhook_that_waits_for_it_and_the_other_way_round()
@@ -266,7 +266,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "h:" + PipelineGraphProblems.NoWebhookAnswer }, Codes());
         }
 
-        // BL-229, Filter records: its rules are held as the input's value. Text that is not a condition the editor wrote, and an
+        // Filter records: its rules are held as the input's value. Text that is not a condition the editor wrote, and an
         // incomplete one, are errors before publish; no rule at all is none (it keeps every record), and the names a complete
         // condition reads are the records' fields - never "no variable is named", and never the placeholder-in-a-value warning.
         [Fact]
@@ -289,7 +289,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(Found());
         }
 
-        // BL-229, the Form trigger: its fields are held as the input's value; text the editor did not write, and each thing that keeps
+        // The Form trigger: its fields are held as the input's value; text the editor did not write, and each thing that keeps
         // the fields from being a form, is an error before publish - and a form's labels are never read as placeholders.
         [Fact]
         public void A_forms_fields_are_ones_the_editor_wrote_and_make_a_form()
@@ -315,7 +315,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(Found());
         }
 
-        // BL-229, found driving: "Hello {{ who }}" typed as a VALUE went out as typed. When a value names one of the pipeline's
+        // "Hello {{ who }}" typed as a VALUE went out as typed. When a value names one of the pipeline's
         // variables in a placeholder, that is a warning (it publishes) saying to make it an expression; braces naming no variable
         // are left alone (a value may hold them on purpose), and the same text as an expression is no problem.
         [Fact]

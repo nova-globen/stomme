@@ -17,7 +17,7 @@ public static class PersistenceServiceExtensions
     {
         services.TryAddScoped<IAggregateTracker, AggregateTracker>();
 
-        // CURRENT-SCOPE DISPATCH, AND ONLY ONE IMPLEMENTATION OF IT (docs/decisions.md D40).
+        // CURRENT-SCOPE DISPATCH, AND ONLY ONE IMPLEMENTATION OF IT.
         //
         // This used to register a rival: Stomme.Persistence's own DomainEventDispatcher, which opened a NEW
         // child scope per dispatch, while Stomme.FeatureManagement TryAdd'd a current-scope one. Both are
@@ -25,7 +25,7 @@ public static class PersistenceServiceExtensions
         // happened to call AddFeatureManagement / AddDomainEvents in — an ordering accident with no compile
         // error to announce it (src/Stomme.Persistence/README.md defect #4).
         //
-        // D40 settled it: current scope. Both rivals are gone and every caller now registers the one
+        // Current scope it is. Both rivals are gone and every caller now registers the one
         // CurrentScopeDomainEventDispatcher, which takes IServiceProvider — it has no scope factory to create a
         // scope with, so new-scope dispatch is unrepresentable rather than merely unregistered. Registration
         // order is now semantically inert: TryAdd either wins or loses with the SAME implementation type.

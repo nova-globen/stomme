@@ -62,18 +62,18 @@ namespace Stomme.Modules.CloudUsage.Application
     }
 
     /// <summary>
-    /// The one fetch-normalise-persist-materialise path (the predecessor platform's <c>CloudCostSyncService</c>): the
+    /// The one fetch-normalise-persist-materialise path: the
     /// request's site and tenant, the source's adapter, a daily (yesterday) or monthly (last month) window, the connection
     /// through the site, the host egress for that site, the rows recorded, and - when asked - a dataset registered or
-    /// refreshed through D110's registrar (the classifier may escalate it, never lower it). A refusal is a code, a reason
+    /// refreshed through the dataset registrar (the classifier may escalate it, never lower it). A refusal is a code, a reason
     /// and a detail; nothing throws out of it.
     /// </summary>
     /// <remarks>
-    /// <para><b>CHANGED from the predecessor platform.</b> The connection must be the SOURCE's own cost connector type (an <c>azurecost</c>
-    /// connection for Azure...), refused by name otherwise - the predecessor platform sent any connection's secret to any provider's endpoint.
-    /// The site and the tenant are the request's, refused when none is resolved (the predecessor platform fell back to the default tenant).
+    /// <para>The connection must be the SOURCE's own cost connector type (an <c>azurecost</c>
+    /// connection for Azure...), refused by name otherwise - so no connection's secret goes to another provider's endpoint.
+    /// The site and the tenant are the request's, refused when none is resolved (there is no fallback to a default tenant).
     /// A fetch failure's detail is a CATEGORY (the answer's status, a timeout, the egress's refusal), never the exception's
-    /// words, which carry the endpoint - D110's sanitised verdict; the log carries the exception type.</para>
+    /// words, which carry the endpoint - a sanitised verdict; the log carries the exception type.</para>
     /// </remarks>
     public sealed class CloudCostSyncService(
         ICloudCostProviderRegistry providers,
@@ -210,7 +210,7 @@ namespace Stomme.Modules.CloudUsage.Application
             return CloudCostSyncResult.Ok(new CloudCostSyncOutcome(provider, from, to, entries, registeredDataset, reason));
         }
 
-        // A category, never the exception's words (they carry the endpoint): D110's sanitised verdict.
+        // A category, never the exception's words (they carry the endpoint): a sanitised verdict.
         private static string FetchCategory(Exception ex) => ex switch
         {
             _ when ex is ConnectorEgressDeniedException || ex.InnerException is ConnectorEgressDeniedException => "The host's egress refused the destination.",

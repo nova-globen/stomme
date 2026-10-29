@@ -21,7 +21,7 @@ namespace Stomme.Tests.Fixtures.PaidFeatureTestModule
     }
 
     /// <summary>
-    /// Declares the paid feature the way a module does (D105 design item 9): enabled by default, gated by a required
+    /// Declares the paid feature the way a module does: enabled by default, gated by a required
     /// entitlement. With no <c>IEntitlementProvider</c> registered (mode unset) the entitlement leg is permissive, so the
     /// feature is simply on; under <c>Deployment:Mode=OnPrem</c> it is on only while a Valid licence key grants
     /// <see cref="PaidFeatureTestFeatures.Entitlement"/>.
@@ -53,7 +53,7 @@ namespace Stomme.Tests.Fixtures.PaidFeatureTestModule
     /// <summary>
     /// The paid capability's request. The <c>[Requires(Feature)]</c> sits on the REQUEST TYPE because that is the only
     /// place it is enforced: <c>AuthorizationBehavior</c> evaluates <c>request.GetType()</c>, and no MVC filter reads the
-    /// attribute at all (D105 refutation 1, pinned by <c>PermissionKeyDeclarationGateTests</c>).
+    /// attribute at all (pinned by <c>PermissionKeyDeclarationGateTests</c>).
     /// </summary>
     [Requires(Feature = PaidFeatureTestFeatures.Key)]
     public sealed record PaidFeatureTestCommand : IRequest<string>;

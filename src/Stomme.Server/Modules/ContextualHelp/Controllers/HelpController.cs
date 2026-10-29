@@ -34,7 +34,7 @@ namespace Stomme.Modules.ContextualHelp.Controllers
     /// never be reached by a caller without the key.
     /// </para>
     /// <para>
-    /// <b>Wire input never produces a 500.</b> A malformed <c>?anchor=</c> is "no topic" (204, D103 refutation 10);
+    /// <b>Wire input never produces a 500.</b> A malformed <c>?anchor=</c> is "no topic" (204);
     /// author input the domain refuses is a 400 with the reason; another site's id answers exactly like no id (404),
     /// so the deterministic - therefore guessable - id space is not an oracle for other sites.
     /// </para>

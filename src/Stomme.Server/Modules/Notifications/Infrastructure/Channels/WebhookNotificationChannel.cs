@@ -19,7 +19,7 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
 {
     /// <summary>
     /// The webhook channel: one HTTP POST of a small JSON envelope (<c>to</c>/<c>subject</c>/<c>body</c>) to
-    /// the channel's endpoint, lifted from the predecessor platform <c>WebhookChannelProvider</c> and closed against the SSRF path it had.
+    /// the channel's endpoint, guarded against SSRF.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -33,8 +33,8 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
     /// </para>
     /// <para>
     /// <b>Credential.</b> Optional (Slack/Teams/Discord authenticate by URL). When the transport carries a secret
-    /// reference - the D101 key <see cref="CredentialReferenceKey"/> - it is read from <see cref="ISiteSecretStore"/> at
-    /// send time and sent as a Bearer token through the guarded client only. A missing or unreadable secret (F8: a lost
+    /// reference - the key <see cref="CredentialReferenceKey"/> - it is read from <see cref="ISiteSecretStore"/> at
+    /// send time and sent as a Bearer token through the guarded client only. A missing or unreadable secret (for example a lost
     /// Data Protection key ring) is a FAILED attempt with a message that names neither the secret nor the ciphertext.
     /// </para>
     /// <para>
@@ -62,7 +62,7 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
 
         public string ProviderKey => NotificationProviderKeys.Webhook;
 
-        /// <summary>The D101 site secret store reference key for a channel's credential: <c>notifications.channel.{id:N}.credential</c>.</summary>
+        /// <summary>The site secret store reference key for a channel's credential: <c>notifications.channel.{id:N}.credential</c>.</summary>
         public static string CredentialReferenceKey(Guid channelId) => $"notifications.channel.{channelId:N}.credential";
 
         /// <summary>The JSON envelope posted to the endpoint; the only place the rendered text is escaped.</summary>

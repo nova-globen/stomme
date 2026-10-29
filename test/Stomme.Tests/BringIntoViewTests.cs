@@ -24,7 +24,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-22's depth-2 pass - a page that opens an editor below its list brings the editor into view. On Formats
+    /// The depth-2 pass - a page that opens an editor below its list brings the editor into view. On Formats
     /// the editor sat 427 pixels below a 900-pixel viewport once the list held the presets, so Edit looked like it did
     /// nothing; Connections, Datasets, Dashboards, help topics and notification channels and templates had the same shape.
     /// <c>ModuleBase.BringIntoView</c> asks the browser to scroll after the next render.

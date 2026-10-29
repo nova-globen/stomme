@@ -16,11 +16,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The backfill that takes the <c>Everyone</c> View grant off user folders BL-115 could not reach.
+    /// The backfill that takes the <c>Everyone</c> View grant off user folders the seed fix never reached.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// BL-115 closed the two places that SEED a user's "My Folder", so folders created since are private — and
+    /// The seed fix closed the two places that SEED a user's "My Folder", so folders created since are private — and
     /// did nothing for the ones that already existed, including the host account's, created by the installer.
     /// Those still grant View to <see cref="RoleNames.Everyone"/>, which <c>UserSecurity.IsAuthorized</c> treats
     /// as granted to an ANONYMOUS caller, so every file under <c>Users/{id}/</c> remains downloadable by anyone
@@ -28,8 +28,8 @@ namespace Stomme.Tests
     /// yet.
     /// </para>
     /// <para>
-    /// The exposure is PLANTED here rather than waited for: the current seed is already private (that is BL-115,
-    /// pinned by <c>UserFolderPrivacyTests</c>), so the only way to test the repair of an OLD install is to
+    /// The exposure is PLANTED here rather than waited for: the current seed is already private (pinned
+    /// by <c>UserFolderPrivacyTests</c>), so the only way to test the repair of an OLD install is to
     /// recreate what an old install looks like.
     /// </para>
     /// </remarks>
@@ -58,7 +58,7 @@ namespace Stomme.Tests
                 var userId = await GateDrive.UserIdAsync(app, Host, GateDrive.HostUsername);
                 _output.WriteLine($"[host user] {userId}");
 
-                // ---- plant what a PRE-BL-115 install looks like ---------------------------------------------
+                // ---- plant what a pre-seed-fix install looks like ---------------------------------------------
                 var (legacyUserFolder, publicFolder) = await GateDrive.InTenantAsync(app, Host, async (sp, _) =>
                 {
                     var folders = sp.GetRequiredService<IFolderRepository>();
@@ -82,7 +82,7 @@ namespace Stomme.Tests
                             PermissionList = new List<Permission>()
                         });
 
-                    // The PRE-BL-115 ACL: owner + Administrators AND Everyone - the row that exposes it.
+                    // The legacy ACL: the folder's owner + Administrators AND Everyone - the row that exposes it.
                     await sp.GetRequiredService<IPermissionRepository>().UpdatePermissionsAsync(
                         siteId, EntityNames.Folder, user.FolderId,
                         new List<Permission>
@@ -130,7 +130,7 @@ namespace Stomme.Tests
                 Assert.DoesNotContain(after, row =>
                     row.PermissionName == PermissionNames.View && row.RoleName == RoleNames.Everyone && row.IsAuthorized);
 
-                // The owner and the administrators keep theirs - the repair removes ONE row, not the folder's ACL.
+                // The folder's owner and the administrators keep theirs - the repair removes ONE row, not the folder's ACL.
                 Assert.Contains(after, row => row.PermissionName == PermissionNames.View && row.UserId == userId && row.IsAuthorized);
                 Assert.Contains(after, row => row.PermissionName == PermissionNames.View && row.RoleName == RoleNames.Admin && row.IsAuthorized);
                 Assert.Contains(after, row => row.PermissionName == PermissionNames.Browse && row.UserId == userId && row.IsAuthorized);

@@ -8,7 +8,7 @@ namespace Stomme.Modules.Guestbook.Models
     /// server-side <c>GuestbookEntryAggregate</c> (the DDD aggregate root): the aggregate carries behavior,
     /// invariants, a value object and a version token, none of which belong on the DTO. A mapper translates
     /// between them at the repository boundary — the same aggregate-beside-wire-contract split the framework
-    /// store uses (docs/decisions.md D17).
+    /// store uses.
     /// </summary>
     public class GuestbookEntry
     {

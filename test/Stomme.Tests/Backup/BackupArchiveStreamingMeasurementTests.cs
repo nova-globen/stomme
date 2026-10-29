@@ -17,7 +17,7 @@ namespace Stomme.Tests.Backup
 
     /// <summary>
     /// A 256 MiB part is written and read back with the live managed heap BOUNDED: the archive holds
-    /// one chunk, never the part (the predecessor platform's protector held the whole archive in memory, a ~2 GB ceiling). The instrument is
+    /// one chunk, never the part (an earlier protector held the whole archive in memory, a ~2 GB ceiling). The instrument is
     /// <c>XlsxStreamingMeasurementTests</c>' - a forced collection and <see cref="GC.GetTotalMemory(bool)"/>, sampled from
     /// INSIDE the data source and the data sink while the archive works - and it is validated in the other direction by a
     /// sink that KEEPS what it is given, which the same instrument must see grow.
@@ -87,8 +87,8 @@ namespace Stomme.Tests.Backup
                 await writer.CompleteAsync("10.2.3", Array.Empty<int>(), DateTime.UtcNow);
             }
 
-            // BL-226 (BL-213's class): memory an earlier test still held at the baseline and released inside the window nets
-            // against the planted part (measured: 18.9 MB seen of 96 MiB inside the gate's rest-a, green alone). A sink that
+            // Memory an earlier test still held at the baseline and released inside the window nets
+            // against the planted part (measured: 18.9 MB seen of 96 MiB inside the full test run, green alone). A sink that
             // keeps the part holds it in EVERY window while such a release is chance, so up to three windows are measured and
             // one clear reading proves the instrument; the bound is unchanged.
             var readings = new System.Collections.Generic.List<long>();

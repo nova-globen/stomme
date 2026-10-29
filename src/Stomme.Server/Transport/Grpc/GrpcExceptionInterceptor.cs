@@ -7,7 +7,7 @@ using Grpc.Core.Interceptors;
 namespace Stomme.Transport.Grpc
 {
     /// <summary>
-    /// The Stomme gRPC-Web boundary interceptor (brief 04 / D10): translates the domain failures a service
+    /// The Stomme gRPC-Web boundary interceptor: translates the domain failures a service
     /// method (or the code it calls) throws into gRPC status codes — the gRPC equivalent of the framework's
     /// REST 401/403/400 responses. Registered once via <c>AddGrpc</c>, so every module service inherits it and
     /// stays thin. A service that wants a specific code for a specific case still throws
@@ -15,8 +15,7 @@ namespace Stomme.Transport.Grpc
     /// the common, otherwise-opaque failures.
     /// </summary>
     /// <remarks>
-    /// Adopted from the predecessor platform's <c>GrpcExceptionInterceptor</c> and adapted to Stomme, which has no
-    /// FluentValidation layer: the mapping keys off BCL exception types the framework already raises
+    /// Stomme has no FluentValidation layer, so the mapping keys off BCL exception types the framework already raises
     /// (<see cref="UnauthorizedAccessException"/> for a denied permission, <see cref="ArgumentException"/> for
     /// bad input, and so on) rather than a bespoke exception hierarchy.
     /// </remarks>

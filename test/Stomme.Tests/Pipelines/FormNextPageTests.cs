@@ -100,7 +100,7 @@ namespace Stomme.Tests.Pipelines
 
         // The memory store lists triggers in its dictionary's order, which their random ids decide - so a test that needs an order sets
         // it: this one keeps the memory store and lists what it holds in the order it was indexed. (Publishing until the order came out
-        // right left a pipeline published second still listed first after 20 more in 109 of 14,253 runs - measured 2026-10-18.)
+        // right left a pipeline published second still listed first after 20 more in 109 of 14,253 runs.)
         private sealed class InIndexingOrderTriggerStore(MemoryTriggerStore store) : ITriggerStore
         {
             private readonly ConcurrentDictionary<string, long> _indexedAt = new();
@@ -274,7 +274,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(PipelineStatus.Running, (await RunOf(services, paged)).Status);
         }
 
-        // BL-229, n8n's redirect after a submission: the form's address to go to read from the published pipeline; one that is not
+        // n8n's redirect after a submission: the form's address to go to read from the published pipeline; one that is not
         // http(s) refused when it is published, naming it.
         [Fact]
         public async Task A_forms_address_to_go_to_is_read_from_the_published_form_and_a_bad_one_refused_at_publish()

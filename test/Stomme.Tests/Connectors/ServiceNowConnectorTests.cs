@@ -12,7 +12,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 4 - the predecessor platform's ServiceNowConnectorTests (11) by name over the port; BL-229 - a record got, created,
+    /// <summary>The ServiceNow connector cases (11), carried over by name over the port; a record got, created,
     /// updated and deleted in any table, an incident created and updated by its own fields, a table read no further than asked.</summary>
     public sealed class ServiceNowConnectorTests
     {

@@ -13,10 +13,10 @@ namespace Stomme.Modules.Health
     /// <remarks>
     /// <para>
     /// <b>Permissions.</b> <see cref="ModuleDefinition.PermissionNames"/> is built ONLY by the per-key
-    /// <c>PermissionKeys.Declare</c> — never by hand, since a bare two-segment key is silently ignored (BL-99 F2).
-    /// This declaration is not paperwork: BL-99's reflective gate refused this row's <c>[Requires]</c> attributes
-    /// until it existed, on the ground that a key no definition declares seeds NO permission row and therefore
-    /// denies everyone. The gate was right, and it caught it before anything shipped.
+    /// <c>PermissionKeys.Declare</c> — never by hand, since a bare two-segment key is silently ignored.
+    /// This declaration is not paperwork: the reflective permission gate refuses this row's <c>[Requires]</c> attributes
+    /// until it exists, on the ground that a key no definition declares seeds NO permission row and therefore
+    /// denies everyone. The gate catches that before anything ships.
     /// </para>
     /// <para>
     /// <b>One page, admin-only.</b> Unlike metering there is no public counterpart: health has no self-service half

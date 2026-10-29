@@ -39,7 +39,7 @@ namespace Stomme.Tests.DataExport
     /// </para>
     /// <para>
     /// Placed in <c>Stomme.Tests</c> beside the other module-aggregate suites: the conformance project has no
-    /// File-store module fixture (the BL-78 F11 precedent). PostgreSQL and RavenDB FAIL rather than skip.
+    /// File-store module fixture. PostgreSQL and RavenDB FAIL rather than skip.
     /// </para>
     /// </remarks>
     public abstract class DataExportAggregateConformanceTests : IAsyncLifetime

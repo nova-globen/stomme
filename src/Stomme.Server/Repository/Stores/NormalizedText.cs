@@ -6,11 +6,11 @@ namespace Stomme.Repository.Stores
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Why a normalized column exists at all.</b> D48 measured a provider disagreement with no portable
+    /// <b>Why a normalized column exists at all.</b> A provider disagreement was measured, with no portable
     /// spelling: <c>x.ToLower() == v</c> translates on the relational providers and <b>throws</b>
     /// <c>NotSupportedException</c> on RavenDB, while the portable <c>x == v</c> is case-SENSITIVE on
     /// relational and case-INSENSITIVE on RavenDB. One expression, two semantics — so the File cluster could
-    /// not cross the seam. D49 removes the disagreement from the DATA instead of translating the QUERY: store
+    /// not cross the seam. The answer is to remove the disagreement from the DATA instead of translating the QUERY: store
     /// a lowercase copy, then filter it with plain <c>==</c>. Both providers then agree, because for two
     /// lowercase strings ordinal equality and case-insensitive equality are the SAME relation. That
     /// equivalence is the whole argument, and it is asserted on both live providers by

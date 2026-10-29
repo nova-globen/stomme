@@ -12,7 +12,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// The start-of-run RavenDB sweep's two rules, in both directions: which names are test databases, and which server is
-    /// this machine's own. Names taken from what a developer machine's local server actually held on 2026-10-02, and from the shared tier.
+    /// this machine's own. Names taken from what a developer machine's local server and a shared server actually held.
     /// </summary>
     public sealed class RavenTestDatabaseSweepTests
     {
@@ -49,7 +49,7 @@ namespace Stomme.Tests
             Assert.Equal(host, RavenTestDatabaseSweep.LocalServer(configured)?.Host);
 
         [Theory]
-        [InlineData("http://192.168.10.20:8081")]   // the shared UAT tier: other machines' runs live there
+        [InlineData("http://192.168.10.20:8081")]   // a shared server: other machines' runs live there
         [InlineData("http://ravendb:8080")]        // a CI service container
         [InlineData("not a url")]
         public void A_server_other_machines_can_use_is_not(string configured) =>

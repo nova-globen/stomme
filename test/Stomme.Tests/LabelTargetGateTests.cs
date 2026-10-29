@@ -8,7 +8,7 @@ using File = System.IO.File;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-22's depth-2 pass - a field's label names the field. <c>&lt;Label For="x"&gt;</c> renders a
+    /// A field's label names the field. <c>&lt;Label For="x"&gt;</c> renders a
     /// <c>&lt;label for="x"&gt;</c>, which tells a screen reader what the field is and focuses it when clicked - only when an
     /// element with that id exists. Thirty-eight did not, in twenty-three pages and controls: inputs with no id, ids misspelt
     /// (<c>softfield</c>, <c>SettingValue</c>), two selects sharing one id so the second label named the first field, and

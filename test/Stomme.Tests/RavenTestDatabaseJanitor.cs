@@ -8,7 +8,7 @@ using Raven.Client.ServerWide.Operations;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Deletes STALE test databases left on the local RavenDB by prior runs (BL wave 2026-07-22: 72 leftovers,
+    /// Deletes STALE test databases left on the local RavenDB by prior runs (a sweep once found 72 leftovers,
     /// 4.6 GB under C:\RavenDB\Data\Databases). The per-fixture <c>DisposeStoreAsync</c> hard-deletes correctly,
     /// but a KILLED run (Stop-Process during a drive, a crashed host, a debugger stop) never reaches teardown —
     /// so cleanup must be a mechanism closed by construction, not a politeness: each Raven fixture calls
@@ -65,8 +65,8 @@ namespace Stomme.Tests
         /// <summary>
         /// Hard-deletes <paramref name="database"/> and every database named <c>{database}_…</c> - the siblings an
         /// installed host creates beside its own: the dedicated OpenIddict store (<c>{database}_OpenIddict</c>, derived by
-        /// <c>OpenIddictConnectionStrings</c> when the authority is on) and a second tenant's database (BL-176's drive names
-        /// it <c>{database}_second</c>). Deleting the one name alone left each of those behind for good. Returns how many
+        /// <c>OpenIddictConnectionStrings</c> when the authority is on) and a second tenant's database (named
+        /// <c>{database}_second</c>). Deleting the one name alone left each of those behind for good. Returns how many
         /// were deleted. Throws on a server error - the caller decides whether a teardown may swallow it.
         /// </summary>
         public static int DeleteWithSiblings(IDocumentStore store, string database)

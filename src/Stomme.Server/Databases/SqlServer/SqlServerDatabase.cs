@@ -50,7 +50,7 @@ namespace Stomme.Database.SqlServer
         // A restore inserts ORIGINAL keys, which SQL Server accepts only with IDENTITY_INSERT ON for that table - and
         // only one table per session at a time, so each batch is bracketed. No reseed follows (ResetIdentityAsync stays the
         // base no-op): an explicit identity value above the table's current one BECOMES the current one, so after the restore
-        // the next insert already follows the highest restored key - measured on infra :1434 with the identity rewound first.
+        // the next insert already follows the highest restored key - measured with the identity rewound first.
         // That also keeps the permission bar at ALTER on the table; DBCC CHECKIDENT would need db_owner or db_ddladmin.
         public override async Task BeginExplicitKeyInsertsAsync(DbContext context, string table, System.Threading.CancellationToken cancellationToken)
         {

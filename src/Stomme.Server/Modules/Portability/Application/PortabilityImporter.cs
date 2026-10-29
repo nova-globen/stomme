@@ -27,7 +27,7 @@ namespace Stomme.Modules.Portability.Application
 
     /// <summary>
     /// The contributors a host has, by entity type. A type claimed by TWO contributors is claimed
-    /// by NEITHER: both are excluded and the collision logged at Error - the BL-105 posture, so a packaged module cannot
+    /// by NEITHER: both are excluded and the collision logged at Error, so a packaged module cannot
     /// take over another's type or brick the host. An in-tree duplicate is a build-gate failure instead.
     /// </summary>
     public sealed class PortabilityContributorRegistry
@@ -67,8 +67,8 @@ namespace Stomme.Modules.Portability.Application
     /// Imports a configuration package: <b>validate everything, then change anything</b>. The size cap, the
     /// format, the kind, every entity's invariants, a readable schema, no secrets, a contributor per type, the manifest,
     /// the dependency closure and order, and each contributor's own <see cref="IPortableEntityContributor.ValidateImportAsync"/>
-    /// are ALL checked before the first <see cref="IPortableEntityContributor.ImportAsync"/> - the predecessor platform ran its providers in
-    /// document order and validated afterwards, so a bad entity left side effects with no report.
+    /// are ALL checked before the first <see cref="IPortableEntityContributor.ImportAsync"/> - an importer that ran its providers in
+    /// document order and validated afterwards would leave side effects with no report when an entity is bad.
     /// </summary>
     public sealed class PortabilityImporter(PortabilityContributorRegistry registry, PortabilityBundleSerializer serializer)
     {

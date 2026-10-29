@@ -12,8 +12,8 @@ namespace Stomme.Tests
     // ModuleDefinitionRepository's control scan let an Index control's Title OVERWRITE the Name a
     // module declared through IModule — and ModuleFeatureFlags derives the module.<id>.enabled config knob
     // from the resulting name, so the flag an author would reasonably write (keyed on the declared name) did
-    // nothing while a key derived from a UI title worked. Measured live on 4 fresh installs during the
-    // idiomatic endgame proof-of-life: with Name = "Reference" and Index.Title = "Memos",
+    // nothing while a key derived from a UI title worked. Measured live on 4 fresh installs with
+    // Name = "Reference" and Index.Title = "Memos",
     // module.reference.enabled=false had NO effect and module.memos.enabled=false suppressed seeding.
     //
     // The resolution contract these tests pin: a name DECLARED via IModule is authoritative; the Index
@@ -42,7 +42,7 @@ namespace Stomme.Tests
         {
             var definition = Definition("Stomme.Tests.Bl74DeclaredFixture, Stomme.Tests");
 
-            // This is the D85 knob the author writes in features.json — it must answer to the name the
+            // This is the feature switch key the author writes in features.json, and it must answer to the name the
             // author declared, not to a UI title nobody wrote down.
             Assert.Equal("module.bl74declaredname.enabled", ModuleFeatureFlags.FeatureKey(definition.Name));
         }
@@ -62,8 +62,8 @@ namespace Stomme.Tests
 
 namespace Stomme.Tests.Bl74DeclaredFixture
 {
-    // A module whose declared Name and Index Title deliberately DISAGREE — the exact shape the endgame's
-    // lifted modules take (ModuleInfo.Name = "Reference", Index.Title = "Memos"). Inert everywhere else:
+    // A module whose declared Name and Index Title deliberately DISAGREE — the shape real modules
+    // can take (ModuleInfo.Name = "Reference", Index.Title = "Memos"). Inert everywhere else:
     // no PageTemplates, so nothing seeds; discovered by the same assembly scan every suite already runs
     // over this test assembly (the TransportDeclaringTestModule precedent).
     public sealed class ModuleInfo : IModule

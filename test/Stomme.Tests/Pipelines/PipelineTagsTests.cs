@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Stomme.Tests.Pipelines
 {
-    /// <summary>BL-229: the one rule for a pipeline's tags, held by the list page and the server alike.</summary>
+    /// <summary>The one rule for a pipeline's tags, held by the list page and the server alike.</summary>
     public sealed class PipelineTagsTests
     {
         [Fact]

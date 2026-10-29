@@ -43,7 +43,7 @@ namespace Stomme.Modules.Dashboards.Services
 
     public class DashboardsService : ServiceBase, IDashboardsService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason, which this module's page shows.</summary>
+        /// <summary>A refusal throws with the server's reason, which this module's page shows.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public DashboardsService(HttpClient http, SiteState siteState) : base(http, siteState) { }

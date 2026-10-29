@@ -11,7 +11,7 @@
 # and the Stomme.Sdk.Slim meta-package. Measured on Blogs.Server: fat Stomme.Sdk restore closure was
 # 180 packages / ~1.2 GB in the global packages folder; slim is what this script proves instead.
 #
-# EXTENDS the D81 flow (examples/pack-sdk.ps1) — it does not replace it: the fat feed remains the path for
+# EXTENDS the full-SDK flow (examples/pack-sdk.ps1) — it does not replace it: the fat feed remains the path for
 # a module that genuinely needs provider-specific surface, and _sdk-smoke still proves it.
 #
 # Versioning: everything flows from examples/Directory.Build.props <Version> (mirroring the root). Pass
@@ -70,7 +70,7 @@ Get-ChildItem $feed -Filter *.nupkg |
     Where-Object { $_.Name -match '^Stomme\.(Shared|SharedKernel|Mediator|Security\.Abstractions|Tenancy\.Domain|Tenancy\.Abstractions|Persistence\.Abstractions|EventBus|Server\.Sdk|Client\.Sdk|Sdk\.Slim)\.' } |
     Select-Object -ExpandProperty Name | Sort-Object
 
-# 4. The proof (BL-44's bar): the REAL external module — the split Blogs module — restores + builds
+# 4. The proof: the REAL external module — the split Blogs module — restores + builds
 #    against the slim SDK, packages only. Its three csprojs reference Stomme.Sdk.Slim.
 $blogs = Join-Path $PSScriptRoot 'Modules/Blogs'
 foreach ($p in @('NovaGloben.Module.Blogs.Shared/NovaGloben.Module.Blogs.Shared.csproj',

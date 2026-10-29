@@ -50,8 +50,7 @@ namespace Stomme.Modules.Connectors.Shared
     }
 
     /// <summary>
-    /// The one OAuth2 token acquisition every connector of the family shares (lifted from the predecessor platform's
-    /// <c>CachingOAuth2TokenProvider</c>): the grant is posted as a form through the client the HOST's egress hands the
+    /// The one OAuth2 token acquisition every connector of the family shares: the grant is posted as a form through the client the HOST's egress hands the
     /// connector, the response binds <c>access_token</c> by its exact wire name (a legacy bridge never bound it and
     /// sent <c>Bearer null</c>), an incomplete request fails loudly before any call (another legacy bridge logged the empty
     /// secret and carried on), and the token is cached until shortly before <c>expires_in</c> elapses.

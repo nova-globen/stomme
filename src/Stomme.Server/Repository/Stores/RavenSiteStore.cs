@@ -17,7 +17,7 @@ namespace Stomme.Repository.Stores
     /// implements, over <see cref="RavenRepository{TAggregate, TId}"/>.
     /// <para>
     /// <b>No count is stated here on purpose.</b> This comment used to say "the same eight closed store
-    /// interfaces" and was wrong for as long as D24's Permission cluster went un-twinned — a hand-counted
+    /// interfaces" and was wrong for as long as the Permission cluster went un-twinned — a hand-counted
     /// comment drifts exactly when the code does, and reassures while it drifts. The set is whatever
     /// <c>ISiteStore.cs</c> declares; <c>RavenFrameworkStoreRegistrationTests</c> discovers it reflectively
     /// and holds BOTH providers to it, which is the only statement of the count that cannot go stale.
@@ -195,7 +195,7 @@ namespace Stomme.Repository.Stores
     /// <remarks>
     /// <b>Bound to the framework database, with no master twin</b> — Permission is tenant-side only, so
     /// unlike <see cref="RavenMasterSettingStore"/> there is no <see cref="FixedRavenDatabaseResolver"/> here
-    /// and tenant routing applies normally. Added by D42: the cluster was migrated after the RavenDB
+    /// and tenant routing applies normally. Added later: the cluster was migrated after the RavenDB
     /// provider was written, and the twin was never added — <c>AddRavenFrameworkStore</c> registered eight
     /// stores against the EF provider's nine, so any host on the RavenDB path threw on the first
     /// <c>PermissionRepository</c> construction. The registration gate is reflective now precisely so the
@@ -220,7 +220,7 @@ namespace Stomme.Repository.Stores
     /// The RavenDB <see cref="ILanguageStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
-    /// Bound to the framework database with no master twin — one of D44's five tenant-side leaf clusters, so
+    /// Bound to the framework database with no master twin — one of the five tenant-side leaf clusters, so
     /// tenant routing applies normally and there is no <see cref="FixedRavenDatabaseResolver"/> here.
     /// </remarks>
     internal sealed class RavenLanguageStore(
@@ -286,13 +286,12 @@ namespace Stomme.Repository.Stores
     /// The RavenDB <see cref="INotificationStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
-    /// <b>RESOLVED in D59 — this comment previously described a divergence that no longer exists.</b>
     /// <see cref="NotificationAggregate"/> is <c>IDeletable</c>, and the <c>DeletedBy</c>/<c>DeletedOn</c>
     /// stamp now AGREES across providers: <see cref="AuditStamp"/> ports it (<c>StampDeleted</c>), detecting
     /// the transition from the entity's own state (<c>IsDeleted == true &amp;&amp; DeletedOn == null</c>)
     /// rather than from a database load — which is why the "a document provider cannot evaluate that without
     /// an extra load" blocker cited by the original deferral did not hold. A Notification soft-deleted through
-    /// this store records who and when, matching EF's observable outcome; pinned by a driven test. See D59 and
+    /// this store records who and when, matching EF's observable outcome; pinned by a driven test. See
     /// the remarks on <see cref="NotificationAggregate"/>.
     /// </remarks>
     internal sealed class RavenNotificationStore(
@@ -379,10 +378,10 @@ namespace Stomme.Repository.Stores
     /// The RavenDB <see cref="IPageModuleStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
-    /// <b>RESOLVED in D59</b> — as for <see cref="RavenNotificationStore"/>, the IDeletable stamp no longer
-    /// diverges: <c>AuditStamp</c> ports the soft-delete rule, so a PageModule soft-deleted through this store
+    /// As for <see cref="RavenNotificationStore"/>, the IDeletable stamp does not
+    /// diverge: <c>AuditStamp</c> ports the soft-delete rule, so a PageModule soft-deleted through this store
     /// records <c>DeletedBy</c>/<c>DeletedOn</c> as well as <c>IsDeleted</c>. The IAuditable half applies too.
-    /// See D59 and <see cref="PageModuleAggregate"/>.
+    /// See <see cref="PageModuleAggregate"/>.
     /// </remarks>
     internal sealed class RavenPageModuleStore(
         IDocumentStore store,
@@ -434,10 +433,10 @@ namespace Stomme.Repository.Stores
     /// applies normally and there is no <see cref="FixedRavenDatabaseResolver"/> here.
     /// </para>
     /// <para>
-    /// <b>This is the store D48 said could not exist</b>, and what changed is the DATA, not this class. The
+    /// <b>This store was once thought impossible</b>, and what changed is the DATA, not this class. The
     /// blocker was <c>FileRepository</c>'s <c>item.Name.ToLower() == fileName</c>, which this provider throws
-    /// on. D49 stores a lowercase <see cref="FileAggregate.NameNormalized"/> alongside the stored case and
-    /// filters THAT with plain <c>==</c> — an expression this provider has always understood. Note the
+    /// on. The data now holds a lowercase <see cref="FileAggregate.NameNormalized"/> alongside the stored case and
+    /// the reads filter THAT with plain <c>==</c> — an expression this provider has always understood. Note the
     /// equivalence relies on every stored value in that column actually being lowercase, which is why
     /// <see cref="FileAggregate.Name"/>'s setter derives it rather than trusting a caller.
     /// </para>
@@ -445,13 +444,13 @@ namespace Stomme.Repository.Stores
     /// <b>One divergence, inherited and named:</b> the relational UNIQUE index on (folder_id, name) is a
     /// DATABASE constraint, so on RavenDB two files may share a name within a folder — the same shape as
     /// <see cref="RavenFolderStore"/>'s (site_id, path). Note this does NOT interact with the normalized
-    /// column: the index is on <c>name</c>, not <c>name_normalized</c>, and D49 deliberately left it there, so
+    /// column: the index is on <c>name</c>, not <c>name_normalized</c>, and that was deliberately left, so
     /// <c>Logo.png</c> and <c>logo.png</c> coexist on relational exactly as they did before — which is why the
     /// render path's folder resolution fans in on a LIST rather than assuming one row.
     /// </para>
     /// <para>
     /// RavenDB's case-INSENSITIVE string equality — the divergence named on <see cref="RavenFolderStore"/> —
-    /// is INERT for this cluster's own reads, and that is the point of D49 rather than an accident: every
+    /// is INERT for this cluster's own reads, and that is by design rather than an accident: every
     /// string this cluster filters on is already lowercase on both sides, so the two providers' equality
     /// relations coincide exactly. Asserted live on both in
     /// <c>A_normalized_column_filter_is_identical_on_every_provider</c>.
@@ -805,7 +804,7 @@ namespace Stomme.Repository.Stores
     /// store, bound to the MASTER database.
     /// </summary>
     /// <remarks>
-    /// The SECOND factory D23 requires, and the reason <see cref="RavenDocumentSessionFactory"/> takes a
+    /// The SECOND (master) factory, and the reason <see cref="RavenDocumentSessionFactory"/> takes a
     /// database map rather than assuming the store's default. <c>SettingRepository</c> picks between this and
     /// <see cref="IFrameworkStoreSessionFactory"/> per read by <c>IsMaster(entityName)</c> and merges the two
     /// results in memory — a merge that spans two RavenDB DATABASES here, as it spans two contexts on the

@@ -13,22 +13,20 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// The assistant's meter bridge (D113 over D102), with the predecessor platform's <c>AiUsageAssistantMeterTests</c> (15
-    /// cases, re-booked here) reconciled by name:
+    /// The assistant's meter bridge, with the cases of the earlier usage meter re-booked here:
     /// <list type="bullet">
     /// <item><c>RecordAsync_MapsUsageToLedgerEntry</c> - <see cref="A_call_is_recorded_with_its_provider_model_agent_tokens_and_status"/>.</item>
-    /// <item><c>RecordAsync_MapsCachedTurnToCachedStatus</c> - LEAVES: a cached turn is the response cache's to report
+    /// <item><c>RecordAsync_MapsCachedTurnToCachedStatus</c> - a cached turn is the response cache's to report
     /// (CostOptimization's); the bridge records what the provider served.</item>
     /// <item><c>RecordAsync_ParsesProviderIdentityAndFallsBackToUnknown</c> (5) and <c>RecordAsync_ParsesAgentIdentityAndFallsBackToUnknown</c>
-    /// (6) - CHANGED: D102's recorder takes provider and agent as strings and normalises them itself, so nothing is parsed
+    /// (6) - the recorder takes provider and agent as strings and normalises them itself, so nothing is parsed
     /// here and nothing becomes "Unknown": <see cref="Provider_and_agent_pass_through_verbatim"/>.</item>
     /// <item><c>RecordAsync_SwallowsRecorderFailuresSoTheAssistantCallSucceeds</c> -
     /// <see cref="A_recorder_failure_after_the_call_is_logged_as_an_error_and_the_reply_stands"/> (logged at Error, not dropped quietly).</item>
     /// <item><c>Host_ResolvesTheRecordingBridge_NotTheNoOpMeter</c> - there is no no-op meter to confuse it with: every
     /// client <see cref="IAssistantModelAccess"/> opens is this one (<c>AssistantModelAccessTests</c>).</item>
     /// </list>
-    /// NEW with D113: the quota is asked BEFORE the call, and a spent or unreachable quota refuses it with the model never
-    /// called.
+    /// The quota is asked BEFORE the call, and a spent or unreachable quota refuses it with the model never called.
     /// </summary>
     public sealed class MeteredChatClientTests
     {
@@ -75,7 +73,7 @@ namespace Stomme.Tests.AiAssistant
         }
 
         /// <summary>
-        /// ADDED (found driving the assistant with the site's private hosts cleared): the site's outbound guard refusing
+        /// The site's outbound guard refusing
         /// the endpoint is a refusal the caller is told, metered as an error - not a fault. The OpenAI client throws its retried
         /// attempts together, so both shapes are covered.
         /// </summary>

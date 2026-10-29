@@ -19,7 +19,7 @@ namespace Stomme.Shared
     /// The framework matches this attribute by its <see cref="TypeFullName"/>, not by type identity, so a leaf
     /// library that deliberately does not reference <c>Stomme.Shared</c> opts out by declaring its own
     /// <c>internal</c> attribute of the same full name and applying it at assembly level. Assemblies that
-    /// already reference <c>Stomme.Shared</c> simply use this type. See docs/decisions.md D13.
+    /// already reference <c>Stomme.Shared</c> simply use this type.
     /// </summary>
     /// <example>
     /// <code>

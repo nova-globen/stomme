@@ -10,10 +10,9 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// The published producer port - <see cref="INotificationDispatcher"/> and its DTO + mirror
-    /// enums - lives in <c>Stomme.Shared</c>, dependency-free, lifted from the predecessor platform's
-    /// <c>the predecessor platform.Notifications.Abstractions</c>. Pinned here: placement, the enum WIRE values (a producer compiled
+    /// enums - lives in <c>Stomme.Shared</c>, dependency-free. Pinned here: placement, the enum WIRE values (a producer compiled
     /// against one release must mean the same channel against the next), and the optional members' defaults. The
-    /// behavioural contract (a Shared-only dependent reaches a channel; Endpoint recipients rejected - F9) is
+    /// behavioural contract (a Shared-only dependent reaches a channel; Endpoint recipients rejected) is
     /// NotificationDispatcherContractTests, which lands with the module.
     /// </summary>
     public sealed class NotificationDispatcherPortShapeTests

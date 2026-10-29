@@ -5,7 +5,7 @@ namespace Stomme.Services
     /// <summary>
     /// Holds the session's colour mode and cycles System -> Light -> Dark. The mode a visitor chooses lives
     /// client-side under "stomme-theme"; App.razor's <c>stommeTheme.apply()</c> applies it to the <c>--db-*</c>
-    /// surfaces and to FluentUI 5 together (BL-192 - FluentUI 5 has no FluentDesignTheme).
+    /// surfaces and to FluentUI 5 together (FluentUI 5 has no FluentDesignTheme).
     /// </summary>
     public sealed class ThemeState
     {

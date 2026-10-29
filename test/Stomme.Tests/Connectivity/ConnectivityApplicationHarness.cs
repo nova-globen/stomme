@@ -26,13 +26,13 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// The HARNESS SWAP for the predecessor platform's Connectivity application suites (<c>AddInMemoryPersistence</c> + <c>AddMediator</c> +
+    /// The harness for the Connectivity application suites (<c>AddInMemoryPersistence</c> + <c>AddMediator</c> +
     /// a fake vault): the module's own <c>ServerStartup</c> on the in-process FILE store (a real serialize/deserialize per
     /// scope), the mediator with the host's behavior order (authorization outermost, validation innermost), a dictionary
     /// <see cref="ISiteSecretStore"/>, a settable <see cref="ICurrentUser"/>, the connectors given, the host's catalog, and
     /// ONE egress for every site (a double by default; the real <see cref="HostConnectorEgress"/> in the egress suite).
     /// The guard is ALLOW-ALL: these suites pin what the handlers DO; what the keys DECIDE is pinned over real HTTP by
-    /// the drive (increment 7).
+    /// the module drive (ConnectionsModuleDriveTests).
     /// </summary>
     internal sealed class ConnectivityApplicationHarness : IAsyncDisposable
     {

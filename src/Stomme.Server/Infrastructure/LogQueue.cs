@@ -28,9 +28,9 @@ namespace Stomme.Infrastructure
     /// <remarks>
     /// <para>
     /// WHY THIS EXISTS. <c>ILogManager.Log</c> is called from ~443 sites, many of them synchronous, and
-    /// its body used to write the Log table and send notifications inline. Once the repositories became async
-    /// (D33), that body could only be satisfied by blocking — the exact sync-over-async shape D29 shipped a
-    /// dead master with. Making <c>Log</c> async instead would have pushed an await into all 443 call sites.
+    /// its body used to write the Log table and send notifications inline. Once the repositories became async,
+    /// that body could only be satisfied by blocking — the exact sync-over-async shape that once deadlocked
+    /// the renderer. Making <c>Log</c> async instead would have pushed an await into all 443 call sites.
     /// Buffering removes the dilemma: the sync surface no longer touches a store at all, so it is
     /// synchronous LEGITIMATELY rather than by exemption. That is the point of this class, not a loophole.
     /// </para>

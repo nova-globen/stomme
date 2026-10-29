@@ -20,8 +20,8 @@ namespace Stomme.Tests
 {
     // The guard that was missing. Every other suite composes its OWN small container, so none of them ever
     // ran the framework's reflection scan over the real host wiring — which is exactly how a container that
-    // could not be constructed in ANY configuration shipped with a clean build and a green suite (D3
-    // violated; see src/Stomme.Server/README.md).
+    // could not be constructed in ANY configuration shipped with a clean build and a green suite (the composition rule
+    // was violated; see src/Stomme.Server/README.md).
     //
     // These tests build the ACTUAL host container — the real AddStomme, the real assembly scan, the real
     // module startups — and assert it composes. They reproduce both observed failure modes:
@@ -163,13 +163,12 @@ namespace Stomme.Tests
 
         /// <summary>
         /// Pins the DECIDED semantics of the host's <see cref="IDomainEventDispatcher"/>: exactly one
-        /// registration, and it is the current-scope dispatcher, scoped (docs/decisions.md D40).
+        /// registration, and it is the current-scope dispatcher, scoped.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// THE DECISION IS MADE — this doc previously described it as reserved for the owner, which is now
-        /// stale. D40 chose CURRENT-SCOPE dispatch: handlers resolve from the scope that raised the events,
-        /// inside the caller's unit of work. D9 puts domain events inside one bounded context and writes the
+        /// THE DECISION IS MADE: CURRENT-SCOPE dispatch. Handlers resolve from the scope that raised the events,
+        /// inside the caller's unit of work. Domain events stay inside one bounded context, and the
         /// outbox row inside the aggregate's transaction; a child scope would put the handler outside that
         /// transaction, which is what the outbox does deliberately, for integration events. Concretely,
         /// current scope is what carries the scoped tenant context into handlers without re-propagation, and
@@ -179,7 +178,7 @@ namespace Stomme.Tests
         /// WHAT THIS CATCHES, AND WHAT IT NO LONGER HAS TO. The old pin had an honest hole: both
         /// registrations were TryAdd (first-caller-wins) over DIFFERENT implementations, so it only fired if
         /// AddDomainEvents ran BEFORE the FeatureManagement startup — called after, TryAdd left the rival
-        /// untouched and the test stayed green over unchanged semantics. D40 dissolved that hole rather than
+        /// untouched and the test stayed green over unchanged semantics. The design dissolved that hole rather than
         /// papering over it: both rival implementations are deleted and every registration path
         /// (AddDomainEvents, AddFeatureManagement) now TryAdds the SAME CurrentScopeDomainEventDispatcher, so
         /// registration order is semantically inert — TryAdd wins or loses with the same type either way.
@@ -212,7 +211,7 @@ namespace Stomme.Tests
 
             // The decision, asserted on the type rather than on its name. Current-scope dispatch means taking
             // the AMBIENT provider; a dispatcher that takes IServiceScopeFactory is one that can open a child
-            // scope, which is the semantics D40 rejected. Pinning the constructor makes new-scope dispatch
+            // scope, which is the semantics the design rejected. Pinning the constructor makes new-scope dispatch
             // unrepresentable rather than merely absent.
             var constructor = Assert.Single(typeof(CurrentScopeDomainEventDispatcher).GetConstructors());
             var parameter = Assert.Single(constructor.GetParameters());
@@ -221,8 +220,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// Pins the OBSERVED <see cref="IUnitOfWork"/> composition of the real host: exactly one registration,
-        /// and it is the single collapsed <c>Stomme.Persistence.Abstractions.UnitOfWork</c>, scoped
-        /// (docs/decisions.md D41 / D67).
+        /// and it is the single collapsed <c>Stomme.Persistence.Abstractions.UnitOfWork</c>, scoped.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -231,10 +229,10 @@ namespace Stomme.Tests
         /// dispatch) and <c>Stomme.FeatureManagement.Application.FeatureUnitOfWork</c> (registered by
         /// <c>AddFeatureManagement</c>, dispatch before clear) — and BOTH registered via <c>TryAddScoped</c>,
         /// so registration order silently decided the re-dispatch semantics. That was the same rival-TryAdd
-        /// shape D40 dissolved for <c>IDomainEventDispatcher</c>, left standing one line below it.
+        /// shape the design dissolved for <c>IDomainEventDispatcher</c>, left standing one line below it.
         /// </para>
         /// <para>
-        /// D67 collapsed them. There is now ONE implementation — the clear-before-dispatch
+        /// They were collapsed. There is now ONE implementation — the clear-before-dispatch
         /// <c>Stomme.Persistence.Abstractions.UnitOfWork</c>, in the one assembly both registration paths
         /// reference — and both <c>AddDomainEvents</c> and <c>AddFeatureManagement</c> <c>TryAddScoped</c> that
         /// SAME type. So the order-dependence is gone: whichever <c>Add*()</c> runs first (or a host that calls
@@ -264,7 +262,7 @@ namespace Stomme.Tests
 
             // The other half of the observation, asserted rather than narrated: neither retired rival is in the
             // host's composition at all. If either concrete type is ever resurrected and re-registered — the
-            // exact order-dependent divergence D67 removed — THIS is the line that notices.
+            // exact order-dependent divergence that was removed — THIS is the line that notices.
             Assert.DoesNotContain(
                 builder.Services,
                 descriptor => descriptor.ImplementationType?.FullName is
@@ -274,7 +272,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// Pins the DELIBERATE current state: the composed host registers NO <see cref="IDomainEventSerializer"/>.
-        /// This is the outbox footgun turned into a red build (docs/decisions.md D69; model answered).
+        /// This is the outbox footgun turned into a red build.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -282,14 +280,14 @@ namespace Stomme.Tests
         /// Raven twin take <c>IEnumerable&lt;IDomainEventSerializer&gt;</c> and call <c>FirstOrDefault()</c>;
         /// the instant ONE is registered, EVERY repository over EVERY DbContext in the process flips from
         /// in-process domain-event dispatch to writing the transactional outbox (EfRepository.AfterPersist).
-        /// That silently stops feature-flag domain events reaching <c>FeatureFlagAuditHandler</c> and KILLS
-        /// brief 06's audit trail — no compile error, no failing existing test, just a dead handler.
+        /// That silently stops feature-flag domain events reaching <c>FeatureFlagAuditHandler</c> and kills
+        /// the audit trail — no compile error, no failing existing test, just a dead handler.
         /// </para>
         /// <para>
         /// <c>AddOutbox</c> (PersistenceServiceExtensions.cs) is the only thing that registers the serializer,
-        /// and it has ZERO call sites in <c>src/</c> today — brief 03's outbox is intentionally unwired. The
+        /// and it has ZERO call sites in <c>src/</c> today — the outbox is intentionally unwired. The
         /// activation MODEL (per-context switch vs. routing the FM audit through the outbox) is an UNRESOLVED
-        /// OWNER decision. This guard makes a future agent who adds <c>AddOutbox</c> to "finish DoD #3" get a
+        /// decision. This guard makes a future agent who adds <c>AddOutbox</c> to "finish the outbox wiring" get a
         /// RED BUILD here instead of a silently-dead audit trail.
         /// </para>
         /// </remarks>
@@ -323,7 +321,7 @@ namespace Stomme.Tests
 
             Assert.NotEmpty(hostedServices);
             // A framework building-block library must not have had its hosted services convention-registered:
-            // they belong to an opt-in Add*() and only that call may register them (docs/decisions.md D13).
+            // they belong to an opt-in Add*() and only that call may register them.
             Assert.DoesNotContain(hostedServices, s => s.GetType().Name == "OutboxBackgroundService");
         }
 

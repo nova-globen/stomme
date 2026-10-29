@@ -106,7 +106,7 @@ else
         </TabPanel>
 
         <TabPanel Name="Endpoints" Heading="Endpoints" ResourceKey="Endpoints">
-            @* The issuer is INFERRED from the request host (D61 deliberately never calls SetIssuer), so these
+            @* The issuer is INFERRED from the request host (the host deliberately never calls SetIssuer), so these
                values belong to THIS alias — a second tenant sees its own. They are what a relying party needs. *@
             <div class="db-card">
                 <div class="db-fields">

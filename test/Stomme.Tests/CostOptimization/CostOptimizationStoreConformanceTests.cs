@@ -25,7 +25,7 @@ namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
     /// The recommendation on every store the install can choose, composed through the module's
-    /// OWN startup: the predecessor platform's <c>OptimizationRecommendationRepositoryTests</c> by name (every field of an open recommendation
+    /// OWN startup: the <c>OptimizationRecommendationRepositoryTests</c> cases, ported by name (every field of an open recommendation
     /// round-trips, its evidence list and its decimal saving exact; the dismissed lifecycle persists with its cooldown), and
     /// the port's own: a site lists its own recommendations newest first and finds another site's id as none.
     /// </summary>

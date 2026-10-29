@@ -23,7 +23,7 @@ namespace Stomme.Repository.Stores
         /// <summary>
         /// The database holding the MASTER half of the Setting cluster — Host, Job, ModuleDefinition, Theme
         /// and <c>master:*</c> settings. Null/empty uses the document store's own default database,
-        /// which collapses D23's two databases into one; set it to keep the master store separate, as the
+        /// which collapses the two databases (framework and master) into one; set it to keep the master store separate, as the
         /// relational path keeps <see cref="MasterDBContext"/> separate from <see cref="TenantDBContext"/>.
         /// </summary>
         public string MasterDatabase { get; set; }
@@ -43,13 +43,11 @@ namespace Stomme.Repository.Stores
         /// </para>
         /// <para>
         /// <b>What this is NOT.</b> It is not the per-site, install-only policy the hazard really wants —
-        /// that needs the seam to know it is installing, and where that flag lives is an open owner-level
-        /// question (src/Stomme.Persistence.RavenDb/README.md). This is the blanket switch, defaulted safe, left where the owner can
-        /// see and relax it. <b>NOTE (corrected 2026-07-20):</b> this previously read "no host wires the
-        /// RavenDB framework store yet, so this default cannot slow a live path" — that is no longer true.
-        /// D54 wired the Raven framework store into the host (resolve-time selection keyed on
-        /// <c>GetDatabaseType()</c>) and D56 made RavenDB install-selectable, so this default DOES apply to a
-        /// live path on a RavenDB install. It is deliberately left ON (correctness over speed): see the
+        /// that needs the seam to know it is installing, and where that flag lives is an open
+        /// question (src/Stomme.Persistence.RavenDb/README.md). This is the blanket switch, defaulted safe, left where an
+        /// operator can see and relax it. The Raven framework store is wired into the host (resolve-time
+        /// selection keyed on <c>GetDatabaseType()</c>) and RavenDB is install-selectable, so this default
+        /// DOES apply to a live path on a RavenDB install. It is deliberately left ON (correctness over speed): see the
         /// role-hydration hazard above.
         /// </para>
         /// </summary>
@@ -66,7 +64,7 @@ namespace Stomme.Repository.Stores
     public static class RavenFrameworkStoreServiceExtensions
     {
         /// <summary>
-        /// Registers the RavenDB framework stores and D23's two session factories. Call INSTEAD OF
+        /// Registers the RavenDB framework stores and the two session factories (framework and master). Call INSTEAD OF
         /// <see cref="FrameworkStoreServiceExtensions.AddStommeFrameworkStore"/>, and after
         /// <c>AddStommeTenancy()</c> — <see cref="RavenRepository{TAggregate, TId}"/> takes an
         /// <c>ITenantContext</c> and filters visibility by it.
@@ -80,8 +78,7 @@ namespace Stomme.Repository.Stores
         /// feature module's own SQLite store. DI is last-wins, so calling <c>AddRavenPersistence</c> here would
         /// silently re-point every live feature flag at RavenDB — no error, no warning, just flags read from a
         /// store that has never held one. Everything below registers CLOSED types only; nothing here may ever
-        /// register <c>IRepository&lt;,&gt;</c>, <c>IDocumentSessionFactory</c> or <c>DbContext</c>. See D17
-        /// rule 1 and the remarks on <see cref="ISiteStore"/>.
+        /// register <c>IRepository&lt;,&gt;</c>, <c>IDocumentSessionFactory</c> or <c>DbContext</c>. See the remarks on <see cref="ISiteStore"/>.
         /// </para>
         /// <para>
         /// The ambient <see cref="IDocumentSessionFactory"/> is likewise left alone: the framework store reads
@@ -96,7 +93,7 @@ namespace Stomme.Repository.Stores
         {
             ArgumentNullException.ThrowIfNull(store);
 
-            // An already-built store: capture it. This overload is what the conformance suite and the D42
+            // An already-built store: capture it. This overload is what the conformance suite and the
             // registration gate use; the host uses the lazy factory overload below.
             return services.AddRavenFrameworkStore(_ => store, configure);
         }
@@ -164,42 +161,42 @@ namespace Stomme.Repository.Stores
 
             // The Job/JobLog PAIR — the master-bookkeeping cluster. MASTER-side only, pinned to the master
             // database with FixedRavenDatabaseResolver exactly as RavenMasterSettingStore is, because Job is
-            // installation-wide and the background scheduler runs with no tenant. D42's reflective gate demands
+            // installation-wide and the background scheduler runs with no tenant. The reflective registration gate demands
             // both twins the moment IJobStore/IJobLogStore exist.
             services.AddTransient<IJobStore, RavenJobStore>();
             services.AddTransient<IJobLogStore, RavenJobLogStore>();
 
             // Theme — the master-bookkeeping cluster's last member. MASTER-side only, pinned to the master
             // database with FixedRavenDatabaseResolver inside RavenThemeStore, exactly as the Job/JobLog pair is,
-            // because Theme is installation-wide. D42's reflective gate demands this twin the moment IThemeStore
+            // because Theme is installation-wide. The reflective registration gate demands this twin the moment IThemeStore
             // exists.
             services.AddTransient<IThemeStore, RavenThemeStore>();
 
             // ModuleDefinition — installation-wide registry of installed module types. MASTER-side only,
             // pinned to the master database with FixedRavenDatabaseResolver inside RavenModuleDefinitionStore,
             // exactly as Theme is, because ModuleDefinition is installation-wide and module discovery runs with no
-            // tenant. D42's reflective gate demands this twin the moment IModuleDefinitionStore exists.
+            // tenant. The reflective registration gate demands this twin the moment IModuleDefinitionStore exists.
             services.AddTransient<IModuleDefinitionStore, RavenModuleDefinitionStore>();
 
             // Tenant + Alias — the routing core, and the FINAL master-bookkeeping cluster. MASTER-side only,
             // pinned to the master database with FixedRavenDatabaseResolver inside RavenTenantStore/RavenAliasStore,
             // exactly as Theme/ModuleDefinition and the Job/JobLog pair are, because both are installation-wide and
-            // resolution reads them BEFORE a tenant is known. D42's reflective gate demands both twins the moment
+            // resolution reads them BEFORE a tenant is known. The reflective registration gate demands both twins the moment
             // ITenantStore/IAliasStore exist.
             services.AddTransient<ITenantStore, RavenTenantStore>();
             services.AddTransient<IAliasStore, RavenAliasStore>();
 
             // The Permission cluster, twinned. ONE store — Permission is tenant-side only, so no
-            // master twin and no IsMaster routing, exactly as on the EF side. Missing here until D42: the
-            // cluster was migrated after this extension was written, and the enumerated registration test
+            // master twin and no IsMaster routing, exactly as on the EF side. It was once missing here: the
+            // cluster was migrated after this extension was written, and an enumerated registration test
             // could not notice an interface it did not list. Permission gates every render and every admin
             // action, so its absence took the whole RavenDB path down at the first PermissionRepository.
             services.AddTransient<IPermissionStore, RavenPermissionStore>();
 
             // The five LEAF clusters: Language, Log, Profile, SiteTask, Notification. Tenant-side only,
-            // so no master twins and no IsMaster routing, exactly as on the EF side. Added in the SAME
-            // increment as their EF counterparts rather than after it — which is the point of D42's reflective
-            // gate: adding the interface to ISiteStore.cs makes this registration mandatory on the next run,
+            // so no master twins and no IsMaster routing, exactly as on the EF side. Each is added together
+            // with its EF counterpart rather than after it — which is the point of the reflective
+            // registration gate: adding the interface to ISiteStore.cs makes this registration mandatory on the next run,
             // so the Permission gap (an EF-only store that took the whole RavenDB path down) cannot recur.
             services.AddTransient<ILanguageStore, RavenLanguageStore>();
             services.AddTransient<ILogStore, RavenLogStore>();
@@ -227,7 +224,7 @@ namespace Stomme.Repository.Stores
             // relational unique index on (site_id, path), and RavenDB's case-INSENSITIVE string equality.
             services.AddTransient<IFolderStore, RavenFolderStore>();
 
-            // File, added in the same increment as its EF counterpart because D42's reflective gate
+            // File, added together with its EF counterpart because the reflective registration gate
             // demands both the moment IFileStore exists. See RavenFileStore for the one inherited divergence
             // (the relational UNIQUE index on (folder_id, name)) and for why RavenDB's case-insensitive string
             // equality is inert here rather than dangerous.
@@ -265,7 +262,7 @@ namespace Stomme.Repository.Stores
 
             await RavenDatabaseBootstrap.EnsureDatabaseAsync(store, options.FrameworkDatabase, ct);
 
-            // D23's second database. Skipped when it resolves to the same database as the framework store,
+            // The second (master) database. Skipped when it resolves to the same database as the framework store,
             // which is the supported single-database shape (the relational install is the same: the master
             // database is also a tenant database in every supported install — see FrameworkStoreModel).
             if (!SameDatabase(store, options.FrameworkDatabase, options.MasterDatabase))
@@ -280,7 +277,7 @@ namespace Stomme.Repository.Stores
             // dynamic-query auto-indexing for a reason it cannot satisfy: the index LoadDocuments across
             // SearchWordAggregate and SearchContentAggregate to bring the word and the site/entity/date
             // columns onto one entry, and a dynamic query cannot LoadDocument. Without it the site arm — an
-            // EF JOIN today — would have to run in memory, which D22 rule 9 forbids.
+            // EF JOIN today — would have to run in memory, which the seam forbids.
             await RavenClusterCommit.EnsureIndexAsync(
                 store,
                 new SearchContentWordIndex(),

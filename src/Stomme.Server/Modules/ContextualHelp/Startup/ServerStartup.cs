@@ -96,16 +96,16 @@ namespace Stomme.Modules.ContextualHelp.Startup
 
             // The boot/upgrade path's writer - run by the framework's SiteContentReconciliationRunner, which enters each
             // tenant's scope BEFORE it creates the site's DI scope and contains a throw to this reconciler on that site
-            // (D103 refutations 1 and 2). It is the ONLY thing that writes help on a boot.
+            // It is the ONLY thing that writes help on a boot.
             services.AddScoped<ISiteContentReconciler, HelpTopicReconciler>();
 
-            // The read port (the launcher, the controller and BL-97's assistant): PUBLISHED topics of the CURRENT site
-            // only, by construction (D103 refutation 12). Scoped, because it reads the site this request resolved.
+            // The read port (the launcher, the controller and the assistant): PUBLISHED topics of the CURRENT site
+            // only, by construction. Scoped, because it reads the site this request resolved.
             services.TryAddScoped<IHelpTopicProvider, HelpTopicProvider>();
 
             // The gated surface. Handlers are registered EXPLICITLY - never AddMediator() here: an earlier
-            // startup already composed the mediator, and a second call would double every pipeline behaviour (BL-78
-            // F13). Found by driving: without these every api/Help call was a 500 - the mediator had no handler.
+            // startup already composed the mediator, and a second call would double every pipeline behaviour.
+            // Without these every api/Help call was a 500 - the mediator had no handler.
             services.AddScoped<IRequestHandler<ResolveHelpTopicQuery, HelpTopicView?>, ResolveHelpTopicQueryHandler>();
             services.AddScoped<IRequestHandler<ListPublishedHelpTopicsQuery, IReadOnlyList<HelpTopicSummary>>, ListPublishedHelpTopicsQueryHandler>();
             services.AddScoped<IRequestHandler<GetHelpTopicForEditQuery, HelpTopicEditView?>, GetHelpTopicForEditQueryHandler>();
@@ -123,7 +123,7 @@ namespace Stomme.Modules.ContextualHelp.Startup
     public static class HelpSettings
     {
         /// <summary>
-        /// The feature's own switch. <b>Default FALSE</b> (D103 refutation 14): the <c>Messaging:Enabled</c> idiom
+        /// The feature's own switch. <b>Default FALSE</b>: the <c>Messaging:Enabled</c> idiom
         /// this copies has no default, upgraded installs carry no <c>Help</c> section at all, and the shipped
         /// framework topics DO render on admin pages - so a default of true would change every existing install's
         /// admin surface on upgrade without anyone asking for it.

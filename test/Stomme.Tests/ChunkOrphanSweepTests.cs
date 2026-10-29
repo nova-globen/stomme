@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-100 F1 / BL-114: chunk parts of an upload that never completes, and staging directories of
+    /// Chunk parts of an upload that never completes, and staging directories of
     /// an ingestion that died mid-flight, used to accumulate without bound. <see cref="ChunkOrphanSweeper"/> removes
     /// them once they are older than <c>Files:Chunks:OrphanMinutes</c>; it runs opportunistically on every chunk
     /// arrival and once a day per site from <see cref="PurgeJob"/>.

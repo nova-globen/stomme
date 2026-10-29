@@ -46,7 +46,7 @@ namespace Stomme.Modules.Mcp.Infrastructure
     /// </summary>
     /// <remarks>
     /// <b>Registering does not come here.</b> A new registration is <c>Unverified</c> with no tools; discovery is the
-    /// explicit <c>mcp:manage</c> refresh. the predecessor platform dialled on registration and rendered the response, which made the
+    /// explicit <c>mcp:manage</c> refresh. Dialling on registration and rendering the response would make the
     /// registration form an SSRF oracle for anyone who could reach it - the response told the caller what was listening.
     /// </remarks>
     public interface IMcpClientConnector

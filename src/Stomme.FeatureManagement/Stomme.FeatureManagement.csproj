@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- The BL-39 evaluator cache is internal; its write-race (version-stamp) and TTL semantics are pinned
+    <!-- The evaluator cache is internal; its write-race (version-stamp) and TTL semantics are pinned
          by direct unit tests, which need to construct it. -->
     <InternalsVisibleTo Include="Stomme.FeatureManagement.Tests" />
   </ItemGroup>

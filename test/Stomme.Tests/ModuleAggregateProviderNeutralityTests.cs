@@ -14,7 +14,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// The clean-arch module persistence provider-neutrality GATE. It closes the exact hole that let the
-    /// Guestbook sample ship EF/SQLite-only (D74 open follow-up): a clean-arch module authored in the
+    /// Guestbook sample ship EF/SQLite-only: a clean-arch module authored in the
     /// FeatureManagement shape works on a relational install and is silently broken on a RavenDB install,
     /// GREEN on the compiler and every EF test.
     /// </summary>
@@ -37,7 +37,7 @@ namespace Stomme.Tests
     /// neutrality.
     /// </para>
     /// <para>
-    /// VALIDATED BOTH DIRECTIONS (D76 report): green with the Guestbook Raven branch present; RED when the
+    /// VALIDATED BOTH DIRECTIONS: green with the Guestbook Raven branch present; RED when the
     /// <c>else</c> branch of <c>Guestbook/Startup/ServerStartup</c> is removed so a RavenDB install registers no
     /// Guestbook repository (the closed descriptor vanishes under the Raven config) — reverted after observing.
     /// </para>
@@ -134,7 +134,7 @@ namespace Stomme.Tests
             }
         }
 
-        // Discovery must not silently find nothing (the D42 vacuity guard): the theories would pass by running
+        // Discovery must not silently find nothing (the vacuity guard): the theories would pass by running
         // no cases. Asserted against the two clean-arch aggregates known to exist, plus a floor.
         [Fact]
         public void Discovery_finds_the_module_aggregates_and_startups()

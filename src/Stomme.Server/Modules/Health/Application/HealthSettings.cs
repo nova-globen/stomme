@@ -23,8 +23,8 @@ namespace Stomme.Modules.Health.Application
     /// <para>
     /// Every value is parsed defensively and falls back rather than throwing. A Setting row is free text — the
     /// admin page uses a number input, but the settings API and the database do not — and a monitoring component
-    /// that dies on a typo in its own configuration is worse than useless. This is the BL-113 lesson, applied
-    /// before it can bite rather than after.
+    /// that dies on a typo in its own configuration is worse than useless. The same lesson is applied
+    /// here before it can bite rather than after.
     /// </para>
     /// </remarks>
     public sealed class HealthSettings
@@ -129,12 +129,11 @@ namespace Stomme.Modules.Health.Application
         /// metering's equivalent remarks.
         /// </para>
         /// <para>
-        /// <b>ON by default, and shipped ON since BL-83 closed.</b> D104 decided that probing, the
+        /// <b>ON by default.</b> Probing, the
         /// endpoints and the admin page are on for a stock install — stated, not hidden, because a stock install
-        /// then gains two Job rows and per-minute rows in the module store. While the row was incomplete
-        /// <c>appsettings.json</c> carried <c>Health:Enabled = false</c>, so a half-built monitor did not start itself on
-        /// anybody's install; an operator can still set it, and the page then says probing is off. Alerting
-        /// (<c>Health:Alerting</c>) still ships OFF, as D104 decided.
+        /// then gains two Job rows and per-minute rows in the module store. An operator can still set
+        /// <c>Health:Enabled = false</c>, and the page then says probing is off. Alerting
+        /// (<c>Health:Alerting</c>) ships OFF.
         /// </para>
         /// </remarks>
         public static bool ProbingEnabled(IConfiguration? configuration) =>

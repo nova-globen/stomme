@@ -24,7 +24,7 @@ namespace Stomme.Modules.Erasure.Services
     /// <summary>The BROWSER side: HTTP to <c>api/Erasure</c>.</summary>
     public class ErasureService : ServiceBase, IErasureService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
+        /// <summary>A refusal throws with the server's reason; this module's pages catch it, where a null read as success on a WebAssembly site.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public ErasureService(HttpClient http, SiteState siteState) : base(http, siteState) { }

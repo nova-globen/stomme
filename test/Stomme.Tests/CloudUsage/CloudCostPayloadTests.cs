@@ -18,7 +18,7 @@ using Xunit;
 
 namespace Stomme.Tests.CloudUsage
 {
-    /// <summary>Fixture-backed <see cref="ICloudCostPayloadSource"/> returning a captured sample payload (the predecessor platform's own).</summary>
+    /// <summary>Fixture-backed <see cref="ICloudCostPayloadSource"/> returning a captured sample payload.</summary>
     internal sealed class StaticCloudCostPayloadSource(string payload) : ICloudCostPayloadSource
     {
         public Task<string> ReadAsync(CloudCostQuery query, CancellationToken ct = default) => Task.FromResult(payload);
@@ -30,7 +30,7 @@ namespace Stomme.Tests.CloudUsage
     }
 
     /// <summary>
-    /// The predecessor platform's <c>ConnectorCostPayloadSourceTests</c> by name. CHANGED: the request leaves through the
+    /// The cases of <c>ConnectorCostPayloadSourceTests</c>, by name. Note: the request leaves through the
     /// query's HOST egress (a stub here, recording the client it handed out), never a handler the source built; a query with
     /// no egress is a configuration error - the port's own case.
     /// </summary>
@@ -131,7 +131,7 @@ namespace Stomme.Tests.CloudUsage
     }
 
     /// <summary>
-    /// The predecessor platform's <c>CloudCostProviderRegistryTests</c> by name; its two <c>AddCloudUsage_*</c> cases
+    /// The cases of <c>CloudCostProviderRegistryTests</c>, by name; its two <c>AddCloudUsage_*</c> cases
     /// compose the module's OWN startup, the way the host does.
     /// </summary>
     public sealed class CloudCostProviderRegistryTests

@@ -359,13 +359,13 @@ namespace Stomme.Tests
         // the Users/Roles cluster moved to the seam.
         //
         // The Permission CONTRACT used to be declared here, because Permission.Role was the OTHER navigation
-        // into this cluster. D24 moved Permission onto the seam, so it is now mapped as PermissionAggregate by
+        // into this cluster. Permission was moved onto the seam, so it is now mapped as PermissionAggregate by
         // ConfigureFrameworkStore and must NOT be declared here — two entity types on the `permission` table
         // breaks the model. Permission.Role remains [NotMapped] + [Obsolete] and
         // PermissionMustNotBeResurrectedTests now pins that from the Permission side.
         //
         // The Visitor CONTRACT used to be declared here for exactly the same reason — Visitor.User was the
-        // navigation this class is named for. D47 moved Visitor onto the seam, so it is now mapped as
+        // navigation this class is named for. Visitor was moved onto the seam, so it is now mapped as
         // VisitorAggregate and declaring the contract here would put two entity types on the `visitor` table.
         // The protection did not go away, it MOVED: VisitorAggregate references the user by id and has no
         // navigation to lose, which is asserted below and pinned from the Visitor side by
@@ -373,7 +373,7 @@ namespace Stomme.Tests
         // the neighbour that is still genuinely unmigrated.
         private sealed class TenantLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
-            // Folder stood here until D48, File until D49, and the SearchContent family until D50 —
+            // Folder, File and the SearchContent family each stood here until it moved to the seam —
             // declaring any of them now would map its table twice and break the model.
             //
             // THIS CONTEXT IS NOW EMPTY, and that is the END OF THE PATTERN rather than a gap. The neighbour
@@ -383,7 +383,7 @@ namespace Stomme.Tests
             // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
-            // protection now, and it needed no edit across D47, D48, D49 or D50.
+            // protection now, and it needed no edit as those clusters moved.
 
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureFrameworkStore(database);
         }
@@ -398,7 +398,7 @@ namespace Stomme.Tests
         }
 
         // Mutation check: give VisitorAggregate a `public User User { get; set; }` navigation and this fails
-        // (the model throws while building) — which is exactly the protection being asserted. Until D47 the
+        // (the model throws while building) — which is exactly the protection being asserted. Before that, the
         // same check was "remove [NotMapped] from Visitor.User", back when the Visitor CONTRACT was the entity
         // this context tracked; the hazard is identical, only the type carrying it changed.
         [Fact]
@@ -436,7 +436,7 @@ namespace Stomme.Tests
         // Visitors moved to the seam. This test used to read
         // "Visitor_is_still_a_plain_entity_referencing_the_user_by_id" and assert over the Visitor CONTRACT;
         // the contract is not an entity type any more, so the assertion is made over the AGGREGATE that
-        // replaced it. What is being pinned is unchanged and is D22's, not D47's: whatever entity holds the
+        // replaced it. What is being pinned is unchanged by that replacement: whatever entity holds the
         // visitor row must reach the User cluster BY ID, because a navigation would rediscover User as a
         // second entity type on the `user` table and break the model at startup.
         [Fact]
@@ -444,7 +444,7 @@ namespace Stomme.Tests
         {
             var model = BuildModel();
 
-            // The contract is gone from the model — D47 replaced it with the aggregate.
+            // The contract is gone from the model — it was replaced by the aggregate.
             Assert.Null(model.FindEntityType(typeof(Visitor)));
 
             var visitor = model.FindEntityType(typeof(VisitorAggregate))!;

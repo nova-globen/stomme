@@ -22,7 +22,7 @@ namespace Stomme.Modules.Sessions.Controllers
     /// </summary>
     /// <remarks>
     /// Gated by FRAMEWORK policies (signed in; the Administrators role) and by no permission key - <c>identity.*</c> is
-    /// the prefix D109 reserves, and who may end whose sign-in is the framework's question.
+    /// the prefix the framework reserves, and who may end whose sign-in is the framework's question.
     /// </remarks>
     [Route(ControllerRoutes.ApiRoute)]
     public sealed class SessionController : ModuleControllerBase

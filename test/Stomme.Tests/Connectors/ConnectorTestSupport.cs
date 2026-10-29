@@ -11,8 +11,8 @@ namespace Stomme.Tests.Connectors
 {
     /// <summary>
     /// The egress a connector unit test hands in: an <see cref="IConnectorEgress"/> over a test handler, so every
-    /// request a connector sends is captured without a socket - the shape the predecessor platform reached through its per-connector
-    /// handler-factory constructor, which the port dropped (the client is the host's). <see cref="Pinned"/> is what
+    /// request a connector sends is captured without a socket - the host owns the client, so a connector takes no
+    /// handler factory of its own. <see cref="Pinned"/> is what
     /// a driver connector gets back for any host; null refuses every host.
     /// </summary>
     internal sealed class StubEgress(HttpMessageHandler? handler = null) : IConnectorEgress

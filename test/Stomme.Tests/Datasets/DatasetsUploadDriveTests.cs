@@ -145,7 +145,7 @@ namespace Stomme.Tests.Datasets
     }
 
     /// <summary>
-    /// BL-94 increment 13 (D110 refutation 6) - the bombs, DRIVEN with crafted files through the framework's file API
+    /// The bombs, DRIVEN with crafted files through the framework's file API
     /// and the upload command on an installed SQLite host: an XLSX with an oversized shared-string part, one with
     /// thousands of parts, one with a high-ratio part, an XLSX renamed .csv, a 60 MB JSON body and a deeply nested JSON
     /// document - each refused with nothing registered.

@@ -9,17 +9,17 @@ namespace Stomme.Persistence.Abstractions;
 /// dispatch their domain events to the in-scope handlers, and clear them. Call
 /// <see cref="SaveChangesAsync"/> after the writes that make up one operation. It is what drives the
 /// FeatureManagement flag-change audit trail: the audit handler stages its row inside this dispatch, in
-/// the caller's scope (docs/decisions.md D40).
+/// the caller's scope.
 /// </summary>
 /// <remarks>
 /// <para>
-/// ONE IMPLEMENTATION, DELIBERATELY CLEAR-BEFORE-DISPATCH (docs/decisions.md D41 / D67). This type
+/// ONE IMPLEMENTATION, DELIBERATELY CLEAR-BEFORE-DISPATCH. This type
 /// collapsed two rivals that both registered via <c>TryAddScoped</c> and so let registration order decide
 /// the semantics — <c>Stomme.Persistence.UnitOfWork</c> (snapshot, clear, then dispatch) and
 /// <c>Stomme.FeatureManagement.Application.FeatureUnitOfWork</c> (dispatch, then clear). It lives in
 /// <c>Stomme.Persistence.Abstractions</c> — the one assembly both <c>AddDomainEvents</c> and
 /// <c>AddFeatureManagement</c> reference — so every composition root now registers this SAME type and the
-/// order-dependence is gone, exactly as D40 did for <see cref="IDomainEventDispatcher"/> one line away.
+/// order-dependence is gone, exactly as the current-scope dispatcher did for <see cref="IDomainEventDispatcher"/> one line away.
 /// </para>
 /// <para>
 /// The surviving order is <c>UnitOfWork</c>'s clear-before-dispatch: snapshot the events, clear every

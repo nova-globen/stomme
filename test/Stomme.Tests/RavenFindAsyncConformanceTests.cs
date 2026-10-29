@@ -12,13 +12,13 @@ using Raven.Client.ServerWide.Operations;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The SAME D78 FindAsync conformance suite against a LIVE RavenDB document store, each run in its own
+    /// The SAME provider-neutral FindAsync conformance suite against a LIVE RavenDB document store, each run in its own
     /// database (<c>RAVENDB_TEST_URL</c>, default http://127.0.0.1:7000). Composed the way a RavenDB install
-    /// composes a clean-arch module: <c>AddRavenFrameworkStore</c> supplies the host's Raven singletons, then the
-    /// D76 helper selects the Raven branch and binds the closed <c>IRepository&lt;ProbeAggregate, Guid&gt;</c> to
+    /// composes a clean-arch module: <c>AddRavenFrameworkStore</c> supplies the host's Raven singletons, then a
+    /// helper selects the Raven branch and binds the closed <c>IRepository&lt;ProbeAggregate, Guid&gt;</c> to
     /// <c>RavenRepository</c>.
     /// <para>
-    /// Like the D46 parity suite this FAILS rather than skips when RavenDB is unreachable: an EF-only run proves
+    /// Like the parity suite this FAILS rather than skips when RavenDB is unreachable: an EF-only run proves
     /// nothing about the both-providers guarantee FindAsync exists to hold. Its bare <c>==</c> on a string is
     /// case-INSENSITIVE, which the string-boundary test pins as the divergence from EF.
     /// </para>

@@ -13,7 +13,7 @@
     untitled, so an unmade landing page leaves the home page as it was. A holder of landing:manage also sees the draft and a
     link to the module's interactive Edit action, where the chooser, the editor and the publish controls live.
 
-    A DASHBOARD landing page (increment 2) is the Dashboards module's read-only board, rendered statically; its charts are
+    A DASHBOARD landing page is the Dashboards module's read-only board, rendered statically; its charts are
     drawn in the browser by the module's page script, which loads the chart runtime only when the page holds a chart. The
     board's data is the viewer's own: the Dashboards requests decide dashboards:view again, and the landing request answers
     nothing to a visitor who may not read dashboards.
@@ -57,7 +57,7 @@
         }
         else if (_generated is not null)
         {
-            @* A GENERATED page (increment 3): sanitised on the server when it was stored, and shown in a frame that runs no script
+            @* A GENERATED page: sanitised on the server when it was stored, and shown in a frame that runs no script
                - no allow-scripts, no allow-same-origin - with a content policy of its own: the sanitizer is the first guard, the
                frame the second. A site link leaves the frame for the site on a click; an external one opens apart. *@
             <iframe id="landing-generated" title="Landing page" srcdoc="@_generated" sandbox="allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"

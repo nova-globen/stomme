@@ -25,7 +25,7 @@ namespace Stomme.Infrastructure.Backup.Participants
     /// fails half-way leaves the live trees exactly as they were. A file absent from the snapshot is absent afterwards.
     /// </para>
     /// <para>
-    /// <b>Paths (D106 refutation 16's sibling, zip-slip).</b> A path is relative, '/'-separated, without an empty, '.' or
+    /// <b>Paths (zip-slip).</b> A path is relative, '/'-separated, without an empty, '.' or
     /// '..' segment, a drive or a backslash - checked on validation, and again on replace, where the resolved path must lie
     /// inside the staging folder.
     /// </para>

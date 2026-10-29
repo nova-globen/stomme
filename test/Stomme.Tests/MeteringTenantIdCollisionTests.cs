@@ -25,7 +25,7 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>The defect this pins was shipped, and was found by writing the equivalent ids for BL-83.</b>
+    /// <b>The defect this pins was shipped, and was found by writing the equivalent ids for a related fixture.</b>
     /// <c>QuotaIds</c> hashed only (site, metric, period), and site ids are NOT unique across tenants when two
     /// tenants share a physical database — site-per-alias is a supported topology, and
     /// <c>MeteringJobTenantScopeTests</c> already constructs exactly it. Both tenants' quotas for that site

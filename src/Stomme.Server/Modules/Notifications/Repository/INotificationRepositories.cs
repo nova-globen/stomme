@@ -11,9 +11,9 @@ namespace Stomme.Notifications.Persistence
     // The Notifications module's CLOSED repositories. They live in Stomme.Notifications.Persistence, DELIBERATELY
     // OUTSIDE Stomme.Modules.* - exactly as Guestbook's IGuestbookRepository does - because ModuleStoreRegistrationTests
     // discovers every interface under Stomme.Modules.* that closes IRepository<,> and demands a hand-written RavenDB
-    // twin (the D42/D55 SEAM parity gate). These ride the storage-blind clean-arch stack: one implementation per
+    // twin (the seam parity gate). These ride the storage-blind clean-arch stack: one implementation per
     // contract, delegating to the CLOSED IRepository<TAggregate, Guid> AddModuleAggregatePersistence registered, so
-    // they run unchanged on EF, RavenDB and File. Every filter is a FindAsync on a non-string scalar or on a D49
+    // they run unchanged on EF, RavenDB and File. Every filter is a FindAsync on a non-string scalar or on a
     // normalized column with BOTH sides normalized (FindAsync's contract: strings diverge between providers).
 
     /// <summary>Persistence for <see cref="NotificationRequestAggregate"/>.</summary>
@@ -24,7 +24,7 @@ namespace Stomme.Notifications.Persistence
 
         /// <summary>
         /// The dispatch job's due work for a site: <c>SiteId == siteId &amp;&amp; CompletedOn == null &amp;&amp;
-        /// DigestDeferredUntil == null &amp;&amp; NextAttemptOn &lt;= nowUtc</c>. CHANGED from D100 point 3's
+        /// DigestDeferredUntil == null &amp;&amp; NextAttemptOn &lt;= nowUtc</c>. It does not select on
         /// <c>Status == Queued</c>: <c>Status</c> is derived from the attempts, so a request whose first pass
         /// failed is <c>Failed</c> and its retry would never be selected; <c>CompletedOn</c> is the scalar in-flight marker,
         /// and a digest hold is the hourly flush's, not this pass's.

@@ -17,7 +17,7 @@ using Xunit;
 namespace Stomme.Tests.CloudUsage
 {
     /// <summary>
-    /// The predecessor platform's <c>SyncCloudCostsCommandHandlerTests</c> by name through the mediator and the module's
+    /// The <c>SyncCloudCostsCommandHandlerTests</c> cases, by name, through the mediator and the module's
     /// own startup: a stubbed payload feeds the shared sync path, rows land in the SITE's ledger, a refusal is a code on the
     /// view, a named dataset materialises with the connection as its origin. The port's own: a connection of another
     /// connector type, a connection without its token, a fetch failure reported as a category and never the exception's
@@ -182,7 +182,7 @@ namespace Stomme.Tests.CloudUsage
         }
     }
 
-    /// <summary>BL-97 increment 4 - the command-handler half of the predecessor platform's <c>CloudBudgetTests</c> by name: one budget per scope, the second set amends it.</summary>
+    /// <summary>The command-handler half of the <c>CloudBudgetTests</c> cases, by name: one budget per scope, the second set amends it.</summary>
     public sealed class CloudBudgetCommandTests
     {
         [Fact]
@@ -222,7 +222,7 @@ namespace Stomme.Tests.CloudUsage
         }
     }
 
-    /// <summary>BL-97 increment 4 - the predecessor platform's <c>CloudUsageQueryTests</c> by name through the mediator, plus a site's rollups never counting another site's rows.</summary>
+    /// <summary>The <c>CloudUsageQueryTests</c> cases, by name, through the mediator, plus a site's rollups never counting another site's rows.</summary>
     public sealed class CloudUsageQueryTests
     {
         [Fact]
@@ -384,7 +384,7 @@ namespace Stomme.Tests.CloudUsage
     }
 
     /// <summary>
-    /// The predecessor platform's <c>CloudCostAlertServiceTests</c> by name on the site-scoped service. CHANGED: the
+    /// The <c>CloudCostAlertServiceTests</c> cases, by name, on the site-scoped service. The
     /// recipients are the site's administrators by user id (never a configured address list), the alerts default OFF, and
     /// the job is a framework job gated by <c>CloudUsage:Alerts:Enabled</c>.
     /// </summary>
@@ -573,7 +573,7 @@ namespace Stomme.Tests.CloudUsage
         {
             var defaults = CloudUsageAlertOptions.From(configuration: null);
 
-            Assert.False(defaults.Enabled); // CHANGED: off by default - a stock install gains no alert work
+            Assert.False(defaults.Enabled); // Off by default - a stock install gains no alert work
             Assert.Equal((7, 20m), (defaults.AnomalyLookbackDays, defaults.AnomalyThresholdPercent));
             Assert.True(typeof(Stomme.Infrastructure.HostedServiceBase).IsAssignableFrom(typeof(CloudCostAlertJob))); // found by the framework's job scan
             var job = new CloudCostAlertJob(new ServiceCollection().BuildServiceProvider().GetRequiredService<IServiceScopeFactory>());

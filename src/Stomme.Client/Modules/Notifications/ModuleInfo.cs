@@ -13,10 +13,10 @@ namespace Stomme.Modules.Notifications
     /// <remarks>
     /// <para>
     /// <b>Permissions.</b> <see cref="ModuleDefinition.PermissionNames"/> is built ONLY by the per-key
-    /// <c>PermissionKeys.Declare</c> (never by hand - a bare two-segment key is silently ignored, BL-99 F2): <c>View,Edit</c>
+    /// <c>PermissionKeys.Declare</c> (never by hand - a bare two-segment key is silently ignored): <c>View,Edit</c>
     /// first, then the five SPLIT keys with their default roles (<see cref="NotificationsPermissions.Declarations"/>). The rows
     /// seed on install and reconcile lazily through the existing <c>ModuleDefinitionRepository</c>; a revocation is an
-    /// Administrators DENY row, never zero rows (zero rows re-seed - BL-99 correction 7).
+    /// Administrators DENY row, never zero rows (zero rows re-seed).
     /// </para>
     /// <para>
     /// <b>Pages.</b> A page places the module and renders its <c>Index</c>; the other controls (<c>Preferences</c>,

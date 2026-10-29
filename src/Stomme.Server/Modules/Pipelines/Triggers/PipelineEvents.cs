@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// A named event raised for a site's pipelines (BL-95 increment (e), the predecessor platform's bus trigger re-homed onto the
+    /// A named event raised for a site's pipelines (on the
     /// engine's own <c>Event</c> trigger): any module publishes one on the integration event bus, and the handler
     /// below turns it into the engine's event stimulus on that site - starting every published pipeline whose
     /// <c>Event</c> trigger names it and resuming every run waiting on it (<c>WaitForEvent</c>, the durable

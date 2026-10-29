@@ -39,9 +39,9 @@ namespace Stomme.Tests
     /// (the usage fold, the dispatch job, an observed probe result) running in a scope of its own in between. The
     /// database's own answer is read through a third, fresh scope, so a case cannot pass because nothing changed.
     /// <para>
-    /// MEASURED before the fix (2026-09-21): all three pages STALE on SQLite and PostgreSQL, fresh on RavenDB, and the
+    /// Measured before the fix: all three pages STALE on SQLite and PostgreSQL, fresh on RavenDB, and the
     /// first write from the stale scope refused with a concurrency conflict. The module repositories no longer track
-    /// (<c>EfRepository.TrackReads</c>, D79's correction), so every case now asserts FRESH on every provider. Remove
+    /// (<c>EfRepository.TrackReads</c>), so every case now asserts FRESH on every provider. Remove
     /// <c>TrackReads = false</c> from <c>AddModuleAggregatePersistence</c> and the six EF cases go red.
     /// </para>
     /// </remarks>
@@ -258,13 +258,13 @@ namespace Stomme.Tests
                     _output.WriteLine($"[BL-160][SQLite] featuremanagement evaluator: first={evaluatedFirst}; re-evaluated in the SAME scope={evaluatedSecond} => {(evaluatedSecond == truth ? "FRESH" : "STALE")}");
                     Assert.NotEqual(listedFirst, truth);
 
-                    // MEASURED 2026-09-21. The EVALUATOR - the only part of this module a circuit consults - is fresh:
+                    // Measured earlier. The EVALUATOR - the only part of this module a circuit consults - is fresh:
                     // it reads through the singleton flag cache, which the toggle invalidates. That is asserted.
                     Assert.Equal(truth, evaluatedSecond);
 
                     // The admin LIST through a long-lived scope was STALE when this was first measured (tracked reads, the
                     // module's own context). Nothing consumed it from a circuit - its one consumer is FeatureController,
-                    // a scope per request - so it was latent, and BL-161 closed it before it could become live: the
+                    // a scope per request - so it was latent, and the fix closed it before it could become live: the
                     // module's two repositories no longer track either.
                     Assert.Equal(truth, listedSecond);
 

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.AiAssistant.Infrastructure
 {
     /// <summary>
-    /// The assistant's right-to-erasure participant (D113 over D112): a conversation is the user's own text, so it is
+    /// The assistant's right-to-erasure participant: a conversation is the user's own text, so it is
     /// DELETED - every conversation the user holds on the site. Idempotent: a second run finds nothing.
     /// </summary>
     public sealed class AssistantConversationErasure(

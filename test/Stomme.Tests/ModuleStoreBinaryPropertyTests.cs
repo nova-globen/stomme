@@ -22,10 +22,10 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-263 (infra): does the module store hold binary data? A <c>byte[]</c> property on a module aggregate,
+    /// Does the module store hold binary data? A <c>byte[]</c> property on a module aggregate,
     /// written and read back in separate scopes, byte for byte, on the relational store (SQLite), RavenDB and the File
     /// store. What it pins is the SMALL-value case the module-persistence guide allows - a thumbnail, a hash, a key - not
-    /// files, which belong in the site's folders (stomme-store-files).
+    /// files, which belong in the site's file folders.
     /// </summary>
     public abstract class ModuleStoreBinaryPropertyTests : IAsyncLifetime
     {

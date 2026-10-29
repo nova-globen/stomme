@@ -192,14 +192,14 @@ namespace Stomme.Tests.Pipelines
 
             Assert.Equal("", (await Info("Stomme.WriteLine", "x", options)).Kind);
 
-            // BL-229, n8n's trigger rules: several lines, their next runs merged in order; a bad second line named.
+            // n8n's trigger rules: several lines, their next runs merged in order; a bad second line named.
             var ruled = await Info("Stomme.Schedule", "0 6 * * *\n30 7 * * *", options);
             Assert.Equal(new[] { "2026-10-06 06:00", "2026-10-06 07:30", "2026-10-07 06:00", "2026-10-07 07:30", "2026-10-08 06:00" },
                 ruled.NextRunsUtc.Select(run => run.ToString("yyyy-MM-dd HH:mm")));
             Assert.StartsWith("'61 * * * *' is not a five-field cron expression", (await Info("Stomme.Schedule", "0 6 * * *\n61 * * * *", options)).Error);
 
             // In a time zone, daylight saving followed - six in the morning in Stockholm is 04:00 UTC until the clocks go
-            // back on 2026-10-25, 05:00 UTC after; each run also as the zone's clock reads it. A zone it does not know is said.
+            // back late in October, 05:00 UTC after; each run also as the zone's clock reads it. A zone it does not know is said.
             var stockholm = await Info("Stomme.Schedule", "0 6 * * *", options, new DateTimeOffset(2026, 10, 24, 2, 30, 0, TimeSpan.Zero), "Europe/Stockholm");
             Assert.Null(stockholm.Error);
             Assert.Equal("Europe/Stockholm", stockholm.TimeZone);

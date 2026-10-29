@@ -39,7 +39,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Erasure
 {
     /// <summary>
-    /// BL-116 / D112 driven on a real install, one store at a time: a user with a setting, a site notification and a
+    /// Driven on a real install, one store at a time: a user with a setting, a site notification and a
     /// visitor row is deleted; the deletion queues an erasure; the job runs it under the site's alias and every
     /// framework participant erases its rows under its declared handling; the identity audit's rows are RETAINED (the
     /// deletion itself wrote one about the subject), so the receipt keeps the subject's ids until that falls due; a
@@ -82,7 +82,7 @@ namespace Stomme.Tests.Erasure
                     await sp.GetRequiredService<INotificationRepository>().AddNotificationAsync(new Notification { SiteId = alias.SiteId, FromUserId = hostId, FromDisplayName = "host", FromEmail = "host@gate.test", ToUserId = subject.UserId, ToDisplayName = "erased", ToEmail = "erased-user@gate.test", Subject = "welcome", Body = "hello", CreatedOn = DateTime.UtcNow, IsDelivered = false, IsRead = false, IsDeleted = false });
                     await sp.GetRequiredService<IVisitorRepository>().AddVisitorAsync(new Visitor { SiteId = alias.SiteId, UserId = subject.UserId, IPAddress = "10.9.9.9", UserAgent = "drive", Language = "en", Url = "/", Referrer = "", Visits = 1, CreatedOn = DateTime.UtcNow, VisitedOn = DateTime.UtcNow });
 
-                    // ...and in the four Wave-1 ledgers (increment 2): an MCP tool call, a portability audit line about them,
+                    // ...and in the four ledgers: an MCP tool call, a portability audit line about them,
                     // an export job they requested with its audit line, and a notification request naming them and the host.
                     var tenantId = sp.GetRequiredService<ITenantContext>().CurrentTenantId!;
                     var now = DateTime.UtcNow;
@@ -91,7 +91,7 @@ namespace Stomme.Tests.Erasure
                     var job = ExportJobAggregate.Request(Guid.NewGuid(), tenantId, alias.SiteId, subject.UserId, "site.users", ExportFormat.Csv, null, "{}", now);
                     await sp.GetRequiredService<IExportJobRepository>().AddAsync(job);
                     await sp.GetRequiredService<IExportAuditRepository>().AddAsync(ExportAuditEntryAggregate.Record(Guid.NewGuid(), tenantId, alias.SiteId, job.Id, subject.UserId, ExportAuditAction.Requested, now));
-                    // A schedule they own - it runs as its owner, so with the owner gone it goes too.
+                    // A schedule they created - it runs as its creator, so with the creator gone it goes too.
                     await sp.GetRequiredService<IExportScheduleRepository>().AddAsync(ExportScheduleAggregate.Create(
                         Guid.NewGuid(), tenantId, alias.SiteId, subject.UserId, "Nightly users", "site.users", ExportFormat.Csv, null, "{}", "0 6 * * *", now));
                     await sp.GetRequiredService<INotificationRequestRepository>().AddAsync(NotificationRequestAggregate.Create(Guid.NewGuid(), tenantId, alias.SiteId, "welcome",
@@ -134,7 +134,7 @@ namespace Stomme.Tests.Erasure
                     Assert.Contains(outcomes, o => o.Participant == participant);
                 }
 
-                // The Wave-1 ledgers (increment 2), each under its declared handling.
+                // The four ledgers, each under its declared handling.
                 var mcp = outcomes.Single(o => o.Participant == "MCP audit");
                 Assert.Equal((ErasureHandling.Retain, RetentionReason.Security, 1), (mcp.Handling, mcp.Reason, mcp.Affected));
                 var portabilityAudit = outcomes.Single(o => o.Participant == "Portability" && o.Store == "PortabilityAuditEntryAggregate");
@@ -185,13 +185,13 @@ namespace Stomme.Tests.Erasure
                 var denied = await GateDrive.GetAsync(plainClient, plainCookies, Host, "/api/Erasure/receipts", output, "receipts as a registered user");
                 Assert.Equal(HttpStatusCode.Forbidden, denied.Status);
 
-                // Increment 4: the profile's self-delete is the SAME mechanism, over HTTP. A second subject deletes
+                // The profile's self-delete is the same mechanism, over HTTP. A second subject deletes
                 // themselves and is signed out; a Host may not delete themselves; the job then writes their receipt.
                 var self = await GateDrive.AddUserAsync(app, Host, "self-erased", "S3lf!Erased$2026", "self-erased@gate.test", RoleNames.Admin);
                 using var selfClient = GateDrive.NewClient(app, Host);
                 var selfCookies = await GateDrive.LoginAsync(app, selfClient, Host, "self-erased", "S3lf!Erased$2026", output);
 
-                // Increment 5: as an administrator they author a page, which is the SITE's content and survives them -
+                // As an administrator they author a page, which is the SITE's content and survives them -
                 // stamped with their username until the erasure, with the placeholder afterwards.
                 var home = await GateDrive.InTenantAsync(app, Host, async (sp, alias) => (await sp.GetRequiredService<IPageRepository>().GetPagesAsync(alias.SiteId)).First(p => p.Path == ""));
                 var authored = JsonSerializer.Deserialize<Page>(JsonSerializer.Serialize(home))!;
@@ -202,7 +202,7 @@ namespace Stomme.Tests.Erasure
                 authored.Path = "authored-by-erased";
                 authored.UserId = null;
                 // As the Add-page form sends it: no stamps of its own. The RavenDB listener reads an unset CreatedOn as
-                // "an insert" (D26 - the document store has no change tracker), so a clone carrying the home page's
+                // "an insert" (the document store has no change tracker), so a clone carrying the home page's
                 // CreatedOn would be stamped as an UPDATE there, ModifiedBy only, while EF stamps by EntityState.
                 authored.CreatedBy = null;
                 authored.CreatedOn = default;
@@ -212,7 +212,7 @@ namespace Stomme.Tests.Erasure
                 var posted = await GateDrive.SendJsonAsync(app, selfClient, selfCookies, Host, self.UserId, HttpMethod.Post, "/api/Page", authored, output, "the editor's page");
                 Assert.Equal(HttpStatusCode.OK, posted.Status);
                 // Every provider stamps the signed-in name: the RavenDB listener carried a fixed empty context until
-                // this drive found it (fixed in the same increment) - a page POSTed by a signed-in
+                // this drive found it (fixed in the same change) - a page POSTed by a signed-in
                 // administrator came back CreatedBy "" on RavenDB and "self-erased" on SQLite and PostgreSQL.
                 var stamped = await GateDrive.InTenantAsync(app, Host, async (sp, alias) => await sp.GetRequiredService<IPageRepository>().GetPageAsync("authored-by-erased", alias.SiteId));
                 Assert.Equal(("self-erased", "self-erased"), (stamped.CreatedBy, stamped.ModifiedBy));
@@ -263,7 +263,7 @@ namespace Stomme.Tests.Erasure
         /// <summary>
         /// Runs the job until the request has left Pending. The host's OWN ErasureJob (every minute, and at start) may hold
         /// the per-site lease when the drive's run asks for it - the run then reports 'Is Being Run Elsewhere' and does
-        /// nothing, which a full gate hit once (2026-09-27). Either runner completes the erasure; the drive asserts the
+        /// nothing, which a full gate hit once. Either runner completes the erasure; the drive asserts the
         /// outcome, not who produced it. The host cannot run with its jobs off here: the drive's HTTP half needs a started server.
         /// </summary>
         private async Task RunUntilSettledAsync(WebApplication app, Guid requestId)

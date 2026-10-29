@@ -18,11 +18,11 @@ namespace Stomme.Tests.Pipelines
     /// </summary>
     /// <remarks>
     /// <para>
-    /// 2026-10-02 (found walking the editor in a browser): a step with an embedded port - a loop's Body, an If's Then and Else -
+    /// A step with an embedded port - a loop's Body, an If's Then and Else -
     /// had its child slots drawn as outcome ports and could only be saved empty, so such steps were left out.
     /// </para>
     /// <para>
-    /// 2026-10-05: the editor opens each embedded port as a flowchart of its own, so those steps are offered, the
+    /// The editor opens each embedded port as a flowchart of its own, so those steps are offered, the
     /// embedded ports listed as <c>Bodies</c> and NEVER as <c>Ports</c> (the outcomes a connection leaves from). Still out:
     /// a container whose children are a list (Sequence, Parallel - the canvas is that list) and Switch, whose cases each
     /// hold a step no body names. Read over the engine as the host composes it, so a step the engine gains is judged by the

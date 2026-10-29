@@ -27,7 +27,7 @@ namespace Stomme.Tests.Mcp
     /// </summary>
     /// <remarks>
     /// A driven host always composes a guard, so the drive cannot see this branch: the mutant that made a missing guard
-    /// ALLOW survived <c>McpCatalogDriveTests</c> (measured 2026-09-22). This is the case that kills it.
+    /// ALLOW survived <c>McpCatalogDriveTests</c>. This is the case that kills it.
     /// </remarks>
     public class McpCatalogFailsClosedTests
     {

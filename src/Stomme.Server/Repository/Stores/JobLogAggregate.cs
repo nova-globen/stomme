@@ -5,8 +5,8 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// The JobLog aggregate root — the persistence-side model of the framework store's <c>JobLog</c> table
-    /// (D52), reachable only through <see cref="IJobLogStore"/> (writes) and <see cref="IQuerySession.Query{T}"/>
+    /// The JobLog aggregate root — the persistence-side model of the framework store's <c>JobLog</c> table,
+    /// reachable only through <see cref="IJobLogStore"/> (writes) and <see cref="IQuerySession.Query{T}"/>
     /// (reads). A MASTER-database aggregate, like <see cref="JobAggregate"/>: bound to <see cref="MasterDBContext"/>
     /// and read through <see cref="IMasterStoreSessionFactory"/>.
     /// </summary>

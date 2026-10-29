@@ -166,7 +166,7 @@ else
 }
 
 @code {
-    // A connection's connector type names the cost source it fetches (BL-96's cost connectors, and the generic rest one).
+    // A connection's connector type names the cost source it fetches (the cost connectors, and the generic rest one).
     private static readonly Dictionary<string, CloudProvider> CostConnectorTypes = new(StringComparer.OrdinalIgnoreCase)
     {
         ["azurecost"] = CloudProvider.Azure,

@@ -11,14 +11,14 @@ namespace Stomme.Help
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>This is what makes the reconciler safe to run on every boot.</b> D103 refutation 1 measured the alternative:
+    /// <b>This is what makes the reconciler safe to run on every boot.</b> Consider the alternative:
     /// a reconciler that looks a topic up by its fields and creates it when it does not find one will create it again
     /// on the next boot the moment the look-up is wrong - and there is no unique index on ANY provider
     /// (<c>EnsureCreated</c>, properties only), so the rows simply accumulate. With a deterministic id the reconciler
     /// is a GetById-then-Add-or-Update, and running it twice is running it once.
     /// </para>
     /// <para>
-    /// <b>It also removes the query D103 refutation 9 refused.</b> Resolving a topic by
+    /// <b>It also removes a query that would be unsafe.</b> Resolving a topic by
     /// <c>FindAsync(t =&gt; t.Anchor == a &amp;&amp; t.Locale == l)</c> is a string comparison, and this repository has
     /// measured three different answers to that across its providers: case-sensitive on the relational ones,
     /// case-insensitive on RavenDB. A by-id read has one answer everywhere.
@@ -43,7 +43,7 @@ namespace Stomme.Help
         /// by their callers: the id must not depend on whether the caller remembered to.
         /// </summary>
         /// <remarks>
-        /// <b>The TENANT is part of the key (BL-151's lesson, re-learned here before it shipped).</b> Site ids are NOT
+        /// <b>The TENANT is part of the key.</b> Site ids are NOT
         /// unique across tenants: every tenant database numbers its sites from 1, two tenants may share one database
         /// (site-per-alias), and the module store is ONE store for the whole install. Keyed on (site, anchor, locale)
         /// alone, tenant B's topic for site 1 had tenant A's primary key - on EF the insert collides, and because the

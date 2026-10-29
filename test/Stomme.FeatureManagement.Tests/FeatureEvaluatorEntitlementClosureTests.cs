@@ -13,10 +13,10 @@ using Xunit;
 namespace Stomme.FeatureManagement.Tests;
 
 /// <summary>
-/// D105 "one gate, closed properly" (the evaluator half; §J.BL-2 refutation 6): when the registry holds a
+/// One gate, closed properly (the evaluator half): when the registry holds a
 /// <see cref="FeatureDescriptor"/> for a key, the descriptor's <c>RequiredEntitlement</c> is the ONLY one the
 /// evaluator consults — on the row path AND on the row-less config path. The stored row value applies only when
-/// no descriptor is registered. This closes two holes measured at 9f65890: D84's row-less config-true key ran no
+/// no descriptor is registered. This closes two holes: a row-less config-true key ran no
 /// entitlement gate at all, and an upgrade whose descriptor starts requiring an entitlement never reached the
 /// existing row (<c>FeatureFlag.RequiredEntitlement</c> is <c>private set</c> with no mutator, and the seeder only
 /// creates missing rows).

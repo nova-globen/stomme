@@ -22,10 +22,10 @@ using Xunit;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-97 increment 1 (re-booked from BL-85) - the predecessor platform's <c>ExportSourceResolverTests</c> by name on D108's
+    /// The <c>ExportSourceResolverTests</c> cases, ported by name on the
     /// contract: the dataset rows projected onto the schema or a projection, a sensitive dataset exported schema-only, a grid
-    /// widget and a whole board read exactly as the widget's data query reads them. What the predecessor platform checked inside the resolver
-    /// (the caller's permission) is the engine's now: each source DECLARES the key and the engine asks it for the requester
+    /// widget and a whole board read exactly as the widget's data query reads them. The permission check that the resolver
+    /// once made itself (the caller's permission) is the engine's now: each source DECLARES the key and the engine asks it for the requester
     /// at request time and again when the job runs - the drive proves the refusal over HTTP.
     /// </summary>
     public sealed class ModuleExportSourceTests
@@ -134,7 +134,7 @@ namespace Stomme.Tests.DataExport
             var table = Assert.Single(await ReadAsync(new DatasetRowsExportSource(catalog), Args(DatasetId)));
 
             Assert.Equal(new[] { ExportValueKind.Decimal, ExportValueKind.Text }, table.Kinds);
-            Assert.Equal("money", table.Formats[0]); // the column's format reaches the D108 cell formatter
+            Assert.Equal("money", table.Formats[0]); // the column's format reaches the cell formatter
             Assert.Equal(new object?[] { 12.50m, "A" }, table.Rows[0]);
             Assert.Equal(new object?[] { "n/a", 7L }, table.Rows[1]);
         }
@@ -268,7 +268,7 @@ namespace Stomme.Tests.DataExport
         [Fact]
         public async Task Registry_resolves_by_kind_and_throws_for_an_unregistered_kind()
         {
-            // D108's registry is keyed by the canonical source key (the kind the predecessor platform enumerated): the three module sources
+            // The registry is keyed by the canonical source key (the kind the source enumeration lists): the three module sources
             // register beside the event log without a collision, each found by its exact key and by nothing else.
             await using var harness = await DashboardsApplicationHarness.StartAsync();
             var dashboardSources = await harness.InScopeAsync(sp => Task.FromResult(sp.GetServices<IExportSource>().ToList()));

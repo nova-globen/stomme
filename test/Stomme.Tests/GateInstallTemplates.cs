@@ -13,7 +13,7 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Why a copy and not a shared install.</b> Measured 2026-09-22: on RavenDB the INSTALL is the whole cost of a
+    /// <b>Why a copy and not a shared install.</b> Measured: on RavenDB the INSTALL is the whole cost of a
     /// driven test - compose 0.15 s, install 40-60 s, start 1 s - while a boot over an already-installed database is
     /// 0.2 s (every save waits for its indexes, <c>RavenFrameworkStoreOptions.WaitForNonStaleResults</c>, on purpose).
     /// The slow tests are NOT several cases in one class re-installing - they are one case per class per provider,

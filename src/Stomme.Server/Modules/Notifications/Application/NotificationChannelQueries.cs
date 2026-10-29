@@ -13,8 +13,7 @@ using Stomme.Shared;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    // Lifted from the predecessor platform NotificationChannelQueries.cs. CHANGED: the predecessor platform gated these on the single
-    // notifications:view key (split); a channel's configuration (endpoints, the credential's reference key,
+    // A channel's configuration (endpoints, the credential's reference key,
     // transport options) is operator data, so reading it requires ManageChannels.
 
     /// <summary>Lists the current site's channels, by name.</summary>

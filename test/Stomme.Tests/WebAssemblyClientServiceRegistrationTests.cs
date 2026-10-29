@@ -13,7 +13,7 @@ namespace Stomme.Tests
     /// On a WebAssembly site every client service a page injects is registered in the BROWSER under the interface the page asks for.
     /// </summary>
     /// <remarks>
-    /// Found on UAT 2026-10-02, a WebAssembly site, verifying 10.5.0 in a browser: the home page's Landing module failed to
+    /// Found on a WebAssembly site verifying 10.5.0 in a browser: the home page's Landing module failed to
     /// render - "There is no registered service of type 'Stomme.Landing.ILandingService'" - and the renderer's later batches
     /// failed after it. The WebAssembly client's <c>Program</c> registers each <c>IClientService</c> under the interface it
     /// derives by NAME in the implementation's own namespace and assembly (<c>...Services.LandingService</c> ->

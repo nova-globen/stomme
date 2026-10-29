@@ -84,7 +84,7 @@ namespace Stomme.Models
         /// error at startup.
         ///
         /// It is also the right shape independently: PageModule and Module are separate aggregates, and a
-        /// cross-aggregate reference belongs by id, not by navigation (D7 — an aggregate is reached only
+        /// cross-aggregate reference belongs by id, not by navigation (an aggregate is reached only
         /// through its own store). The value is unchanged for every consumer, and the database FK
         /// (FK_PageModule_Module) and its index (IX_PageModule_Module) are declared by
         /// PageModuleEntityBuilder in the migration set, not by this navigation, so the schema is untouched.
@@ -110,7 +110,7 @@ namespace Stomme.Models
         /// entity type 'Page' ... there is no linking relationship").
         ///
         /// It is also the right shape independently: PageModule and Page are separate aggregates, and a
-        /// cross-aggregate reference belongs by id, not by navigation (D7 — an aggregate is reached only
+        /// cross-aggregate reference belongs by id, not by navigation (an aggregate is reached only
         /// through its own store). The value is unchanged for every consumer, and the database FK
         /// (FK_PageModule_Page) is declared by PageModuleEntityBuilder in the migration set, not by this
         /// navigation, so the schema is untouched.

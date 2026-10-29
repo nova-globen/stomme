@@ -23,8 +23,8 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Why a gate and not a convention.</b> The framework SILENTLY IGNORES a malformed declaration (F2,
-    /// measured): a bare two-segment key renders no grid column, materialises no Permission row, and is written
+    /// <b>Why a gate and not a convention.</b> The framework SILENTLY IGNORES a malformed declaration:
+    /// a bare two-segment key renders no grid column, materialises no Permission row, and is written
     /// by the control-panel add-module path as a literal Module permission - and a key whose casing differs from
     /// the row it is looked up against is a silent denial on PostgreSQL and a silent grant on RavenDB.
     /// Every failure mode here is invisible at runtime, which is exactly what a gate is for.
@@ -58,7 +58,7 @@ namespace Stomme.Tests
             var definitions = DiscoveredDefinitions();
 
             // Not vacuous: the stock framework modules are in the set (they carry the framework API policies),
-            // and so is the BL-99 fixture, which declares real keys.
+            // and so is the test fixture, which declares real keys.
             Assert.True(definitions.Count > 5, $"only {definitions.Count} module definitions were discovered");
             Assert.Contains(definitions, definition => PermissionKeys.ParseKeys(definition.PermissionNames).Count > 0);
             Assert.Contains(definitions, definition => PermissionKeys.ParseEntries(definition.PermissionNames)
@@ -79,7 +79,7 @@ namespace Stomme.Tests
             var attributes = DiscoveredRequirements();
             var definitions = DiscoveredDefinitions();
 
-            // Not vacuous: the BL-99 fixture command carries [Requires("gatetest:manage")].
+            // Not vacuous: the test fixture command carries [Requires("gatetest:manage")].
             Assert.Contains(attributes, requirement => requirement.Permission == GateTestPermissions.Manage);
 
             var violations = ValidateRequirements(attributes, definitions.Select(definition => (definition.Name, definition.PermissionNames)));
@@ -209,7 +209,7 @@ namespace Stomme.Tests
         }
 
         // Notifications declares DIFFERENT default roles per key (view-own for Registered
-        // Users, the rest for Administrators only) - the uniform overload applies one role set to every key (F12).
+        // Users, the rest for Administrators only) - the uniform overload applies one role set to every key.
 
         [Fact]
         public void Declare_with_per_key_roles_puts_View_and_Edit_first_and_appends_administrators_to_each_entry()
@@ -290,7 +290,7 @@ namespace Stomme.Tests
                 _output.WriteLine($"key-gated endpoint: {endpoint.Owner} [{endpoint.Key}] anonymous={endpoint.AllowsAnonymous}");
             }
 
-            // Not vacuous: the BL-99 fixture controller's key-gated action is in the discovered set.
+            // Not vacuous: the test fixture controller's key-gated action is in the discovered set.
             Assert.Contains(endpoints, endpoint => endpoint.Owner.Contains(nameof(GateTestController), StringComparison.Ordinal));
 
             // The gate's own planted fixtures must NOT reach the real set, or it could never be green.
@@ -369,7 +369,7 @@ namespace Stomme.Tests
                 _output.WriteLine($"[Requires] on a controller: {requirement.Owner}");
             }
 
-            // Not vacuous: the scan does reach controllers (the BL-99 fixture controller is a loaded type), and
+            // Not vacuous: the scan does reach controllers (the test fixture controller is a loaded type), and
             // the planted controllers below are kept out of the real set.
             Assert.Contains(LoadedTypes(), type => type == typeof(GateTestController));
             Assert.DoesNotContain(attributes, item => item.Owner.Contains("Planted", StringComparison.Ordinal));
@@ -388,7 +388,7 @@ namespace Stomme.Tests
         [Fact]
         public void The_requires_gate_fails_a_planted_controller_attribute()
         {
-            // D105 refutation 1: no MVC filter reads RequiresAttribute - only the mediator's AuthorizationBehavior
+            // Refutation: no MVC filter reads RequiresAttribute - only the mediator's AuthorizationBehavior
             // does, and only on the REQUEST type. A [Requires] on a controller compiles, reads as a paywall, and
             // lets every caller through.
             var typeLevel = DiscoverRequirements(new[] { typeof(PlantedRequiresController) });
@@ -584,7 +584,7 @@ namespace Stomme.Tests
 
                 if (requirement.IsOnController)
                 {
-                    // D105 refutation 1: RequiresAttribute is read by the mediator's AuthorizationBehavior and by
+                    // Refutation: RequiresAttribute is read by the mediator's AuthorizationBehavior and by
                     // nothing else. On a controller it is decoration - every caller reaches the action.
                     violations.Add($"{requirement.Owner}: [Requires] on a controller type or action is NEVER enforced - no MVC filter reads it; dispatch a mediator request that carries [Requires] (D105)");
                 }
@@ -624,10 +624,10 @@ namespace Stomme.Tests
         /// ONE rule, and it is the asymmetry that makes the mistake dangerous. <c>[RequiresPermissionKey]</c>
         /// is an ordinary <c>AuthorizeAttribute</c>, and ASP.NET Core's authorization middleware SHORT-CIRCUITS
         /// on <c>[AllowAnonymous]</c> endpoint metadata however many policies the endpoint carries - while the
-        /// mediator's <c>[Requires]</c> on the command behind it still denies. Driven on this branch's host:
+        /// mediator's <c>[Requires]</c> on the command behind it still denies. Driven on a test host:
         /// an <c>[AllowAnonymous]</c> controller's key-gated action returned 200 to an anonymous caller and its
         /// ungated dispatching action returned 403, so an author who tests the dispatching one concludes the
-        /// controller is gated. D99 booked this as a per-module DoD sentence; prose is not a gate, and an
+        /// controller is gated. It was first booked as a per-module Definition of Done sentence; prose is not a gate, and an
         /// external module escapes prose entirely.
         /// </remarks>
         internal static List<string> ValidateKeyGatedEndpoints(IEnumerable<KeyGatedEndpoint> endpoints)

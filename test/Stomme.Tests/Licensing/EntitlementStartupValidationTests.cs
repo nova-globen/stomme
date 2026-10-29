@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Licensing
 {
     /// <summary>
-    /// D105 "One gate, closed properly" — the POST-BUILD validation (refutations 2, 3 and 8): a stray or replaced entitlement
+    /// The post-build validation of the entitlement wiring: a stray or replaced entitlement
     /// provider, conflicting feature descriptors and a non-canonical <c>RequiredEntitlement</c> each fail startup, in both
     /// directions, and the failure is NOT swallowed (it surfaces from <see cref="Program.BuildAppAsync"/>, before
     /// <c>FeatureSeeder.StartAsync</c>'s catch-all could see it).

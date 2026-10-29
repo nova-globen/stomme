@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The predecessor platform's RestApiConnectorTests (7) by name over the port. CHANGED: the connector has no
+    /// The REST connector cases (7), carried over by name over the port. CHANGED: the connector has no
     /// handler-factory constructor; the client is the egress's, so a test hands in a <see cref="StubEgress"/> over its
     /// handler. The two Live cases now say what the port means: a real HTTP server on loopback is reached through a
     /// permissive stub egress (the connector's HTTP path is real), and through the HOST's egress the same loopback address

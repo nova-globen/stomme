@@ -11,7 +11,7 @@ namespace Stomme.Modules.Health.Domain
     /// <b>This exists because of a defect that was measured, not imagined.</b> Every relational provider hands a
     /// stored instant back with <see cref="DateTimeKind.Unspecified"/>. <c>ToUniversalTime()</c> does not turn
     /// such a value into UTC — it assumes it is LOCAL and subtracts the machine's offset. In the metering module
-    /// (D102) that quietly moved usage into the previous day, and would have charged consumption recorded just
+    /// that quietly moved usage into the previous day, and would have charged consumption recorded just
     /// after midnight on the 1st to the PREVIOUS month's allowance.
     /// </para>
     /// <para>

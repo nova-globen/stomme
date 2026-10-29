@@ -14,7 +14,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 4 - the predecessor platform's QualysConnectorTests (8) by name over the port.</summary>
+    /// <summary>The QualysConnector cases (8), carried over by name, run over the port.</summary>
     public sealed class QualysConnectorTests
     {
         private const string PageOne = """

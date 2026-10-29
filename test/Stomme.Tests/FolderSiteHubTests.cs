@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// M2 row 7 (rulings C33, C34): a module's hub at <c>/hubs/&lt;name&gt;</c> answers under a site in a folder too - Lek's
+    /// A module's hub at <c>/hubs/&lt;name&gt;</c> answers under a site in a folder too - Lek's
     /// <c>/lek/hubs/fuse</c> - with the FOLDER's site resolved, because <c>hubs</c> is one of the routes the host strips a
     /// folder's prefix from (<see cref="Constants.ReservedRoutes"/>). A client builds the URL with
     /// <see cref="Utilities.SiteUrl"/>; the page's base is the host's root, so a relative URL would not carry the folder.

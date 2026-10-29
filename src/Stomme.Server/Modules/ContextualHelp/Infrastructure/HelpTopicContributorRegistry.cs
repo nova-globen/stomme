@@ -23,7 +23,7 @@ namespace Stomme.Modules.ContextualHelp.Infrastructure
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>A key published twice is REJECTED - on every side - and the host starts</b> (D103 refutation 8; BL-105 made it
+    /// <b>A key published twice is REJECTED - on every side - and the host starts</b> (this is
     /// the rule for every contribution seam). Discovery matches ANY assembly in <c>/bin</c> whose name contains
     /// <c>Stomme</c>, including a package <c>InstallationManager</c> unpacked there, so a fatal check would let a third
     /// party stop the host with no admin UI left to remove it.

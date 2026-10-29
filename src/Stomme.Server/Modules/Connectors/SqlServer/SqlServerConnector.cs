@@ -13,7 +13,7 @@ using Microsoft.Data.SqlClient;
 namespace Stomme.Modules.Connectors.SqlServer
 {
     /// <summary>
-    /// The SQL Server connector (lifted from the predecessor platform's `sqlserver` - SQL mode only, ODBC dropped): the
+    /// The SQL Server connector (SQL mode only, no ODBC): the
     /// endpoint is a SqlClient connection string WITHOUT credentials; the Basic scheme's <c>username</c>/<c>password</c>
     /// are applied from the per-site secret store. A test opens and runs <c>SELECT 1</c>; the <c>query</c> operation
     /// streams rows, its <c>@name</c> values bound as parameters (<see cref="SqlValues"/>).

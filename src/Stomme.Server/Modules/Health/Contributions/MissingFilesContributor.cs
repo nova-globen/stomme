@@ -15,9 +15,9 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Health.Contributions
 {
     /// <summary>
-    /// BL-218 (BL-203's remainder): ONE Site-scope probe, <c>missing-files</c>, naming the file rows of a site whose file is
-    /// gone from disk - what an operator has to upload again. BL-203 puts the seeded logo back when its file is missing,
-    /// but a file a user uploaded and lost the same way (a container's own layer before infra BL-134) cannot be put back
+    /// ONE Site-scope probe, <c>missing-files</c>, naming the file rows of a site whose file is
+    /// gone from disk - what an operator has to upload again. The seeded logo is put back when its file is missing,
+    /// but a file a user uploaded and lost the same way (for example when storage lived in a container's own layer) cannot be put back
     /// while the database still lists it; without this, the first anyone hears of it is a broken image on a page.
     /// </summary>
     /// <remarks>
@@ -127,8 +127,8 @@ namespace Stomme.Modules.Health.Contributions
             }
 
             var data = missing.Take(NamedLimit).ToDictionary(name => name, _ => "missing on disk", StringComparer.Ordinal);
-            // The names IN the description too: the Health page and its API show a probe's description, not its data - found on
-            // UAT the day it shipped, where the page said "1 file(s)" and nowhere which (10.68.0).
+            // The names IN the description too: the Health page and its API show a probe's description, not its data - a page that
+            // only said "1 file(s)" never said which (found in 10.68.0).
             var shown = missing.Take(DescribedLimit).ToList();
             var more = missing.Count > shown.Count ? $" and {missing.Count - shown.Count} more" : "";
             return new HealthProbeResult(

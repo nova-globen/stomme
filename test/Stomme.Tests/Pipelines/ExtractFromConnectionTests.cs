@@ -22,7 +22,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95's residue "a Connection with a vaulted secret": the Extract from connection step over the extraction port,
+    /// The case of "a Connection with a vaulted secret": the Extract from connection step over the extraction port,
     /// run by the real engine with the port scripted - the connection id, operation, parameters and the clamped cap reach the
     /// port; the records become the step's result for the next step; a refused extraction is the port's category; a
     /// truncated extract says so. The installed drive is <see cref="ExtractFromConnectionDriveTests"/>.

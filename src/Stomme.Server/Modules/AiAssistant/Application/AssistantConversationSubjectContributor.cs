@@ -11,7 +11,7 @@ using Stomme.Portability;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// A person's assistant conversations on a site, for their data package (D107 over D113): the transcript they wrote and
+    /// A person's assistant conversations on a site, for their data package: the transcript they wrote and
     /// received, the datasets attached as context, and every artifact proposed - its kind, title, state and draft. It is the
     /// person's own text, so it is carried, not left out; the erasure participant deletes the same rows.
     /// </summary>

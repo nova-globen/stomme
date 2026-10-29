@@ -26,7 +26,7 @@ namespace Stomme.Formats
     /// <summary>
     /// A display format as consumers see it: the same shape for a system preset and a tenant definition. <see cref="Format"/>
     /// and <see cref="TryParse"/> NEVER throw - an unknown culture, a local <see cref="DateTime"/>, a bad time zone or an
-    /// unconvertible value fall back to an invariant rendering (measured: the predecessor platform's threw on the first two).
+    /// unconvertible value fall back to an invariant rendering (a naive implementation throws on the first two).
     /// </summary>
     public sealed record FormatDescriptor(
         Guid Id,
@@ -151,8 +151,8 @@ namespace Stomme.Formats
         private static DateTimeOffset ToDate(object value) => value switch
         {
             DateTimeOffset dto => dto,
-            // A Local DateTime carries the machine's offset; an Unspecified one is read as UTC. the predecessor platform passed both
-            // to the (DateTime, TimeSpan.Zero) constructor, which throws for a Local value off UTC.
+            // A Local DateTime carries the machine's offset; an Unspecified one is read as UTC. Passing both
+            // to the (DateTime, TimeSpan.Zero) constructor would throw for a Local value off UTC.
             DateTime { Kind: DateTimeKind.Local } local => new DateTimeOffset(local),
             DateTime dt => new DateTimeOffset(DateTime.SpecifyKind(dt, DateTimeKind.Utc), TimeSpan.Zero),
             string s => DateTimeOffset.Parse(s, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),

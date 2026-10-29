@@ -8,7 +8,7 @@ using Jint.Native;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// The ONE JavaScript sandbox the steps share (the predecessor platform's Jint runner): strict mode, no CLR or host access (Jint
+    /// The ONE JavaScript sandbox the steps share (Jint): strict mode, no CLR or host access (Jint
     /// exposes none unless asked), bounded by statements, wall-clock and memory from <see cref="ScriptStepOptions"/>.
     /// Interpreter-level isolation - fit for bounded expression-style scripts, not a substitute for a process boundary
     /// against hostile code, which is why the switch is off by default.

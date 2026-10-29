@@ -26,8 +26,8 @@ public class EngineFeature : FeatureBase
     public bool DisableAutomaticStepRegistration { get; set; }
 
     /// <summary>
-    /// More of the step execution pipeline, applied after the default chain is built (Stomme BL-229 increment 9: the
-    /// Pipelines module inserts its per-step retry and continue-on-error just inside the exception handling). Set it in the
+    /// More of the step execution pipeline, applied after the default chain is built. The
+    /// Pipelines module inserts its per-step retry and continue-on-error just inside the exception handling. Set it in the
     /// <c>AddEngine</c> callback; it is read when the step pipeline is first built.
     /// </summary>
     public Action<Stomme.Engine.Pipelines.IStepExecutionPipelineBuilder>? ConfigureStepExecutionPipeline { get; set; }

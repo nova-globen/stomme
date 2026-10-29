@@ -115,7 +115,7 @@ namespace Stomme.Server
         /// <remarks>
         /// An app built on the Stomme.Server package has no web root of its own under <c>dotnet run</c>: the
         /// framework's static files are served from the package. Its first install failed creating the site,
-        /// <c>ArgumentNullException</c> for <c>path1</c> in <c>DefaultSiteTemplate</c> (measured 2026-09-30); some thirty
+        /// <c>ArgumentNullException</c> for <c>path1</c> in <c>DefaultSiteTemplate</c>; some thirty
         /// test harnesses had created an empty <c>wwwroot</c> to get past the same line. The folder is created and named,
         /// and a provider for it is put in front of the existing one, which is the shape ASP.NET builds when the folder
         /// exists - so files written there are served, and the static web assets still are.

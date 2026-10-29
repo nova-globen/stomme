@@ -24,7 +24,7 @@ namespace Stomme.Infrastructure.Governance
     }
 
     /// <summary>
-    /// Scans text for PII and masks it (lifted from the predecessor platform's Data Governance building block, D110 Q7).
+    /// Scans text for PII and masks it.
     /// The scanner DETECTS regardless of any setting; whether a consumer masks is that consumer's policy.
     /// </summary>
     public interface IPiiScanner

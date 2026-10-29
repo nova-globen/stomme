@@ -29,7 +29,7 @@ namespace Stomme.Infrastructure
     /// instance had won, which is not how <c>Set</c> behaves. It narrows the window; it does not close it. A
     /// real mutex needs a store primitive with a conditional write, which is what the unused
     /// <c>IDistributedLock</c> abstraction (<c>PostgresAdvisoryLock</c>, <c>RavenDistributedLock</c>) exists
-    /// for; converging the two is booked as BL-154.
+    /// for; converging the two is open work.
     /// </para>
     /// <para>
     /// <b>3. The jitter is now actually taken.</b> It used to call <c>Task.Delay(...)</c> without awaiting it,

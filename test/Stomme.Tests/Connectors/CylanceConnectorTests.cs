@@ -15,7 +15,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 3 - the predecessor platform's CylanceConnectorTests (8) by name over the port: the JWT assertion minted and verified, one exchange serving both pages, the credential fields the ApiKeyPair scheme's.</summary>
+    /// <summary>The CylanceConnectorTests cases (8), kept by name over the port: the JWT assertion minted and verified, one exchange serving both pages, the credential fields the ApiKeyPair scheme's.</summary>
     public sealed class CylanceConnectorTests
     {
         private const string DevicesPageOne = """

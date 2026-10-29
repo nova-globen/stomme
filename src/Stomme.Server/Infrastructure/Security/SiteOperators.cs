@@ -15,7 +15,7 @@ namespace Stomme.Infrastructure.Security
     /// A fresh install's site has NO Administrators member: the install's one user is the host, holding only Host Users. An
     /// alert addressed to "the site's administrators" alone therefore reached nobody on a single-host installation - Metering's
     /// quota crossings, CloudUsage's budget and anomaly alerts and Health's site-scope notices were each silent until someone was
-    /// made an administrator, and every suite that covered them stubbed the recipients (found by the BL-86 exemplar's drive,
+    /// made an administrator, and every suite that covered them stubbed the recipients (found by driving an example module,
     /// which addresses operators this way). Every site-scoped alert asks this one place.
     /// </para>
     /// <para>

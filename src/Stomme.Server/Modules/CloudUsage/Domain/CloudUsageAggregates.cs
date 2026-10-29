@@ -29,12 +29,12 @@ namespace Stomme.Modules.CloudUsage.Domain
         string Currency) : DomainEvent;
 
     /// <summary>
-    /// One normalised cost row (lifted from the predecessor platform's <c>CloudCostRecord</c>): the Unified Cost Schema's
+    /// One normalised cost row: the Unified Cost Schema's
     /// fields, the provider and category a defined value, the currency a three-letter code upper-cased, the optional tags
     /// trimmed with a blank one stored as none, a negative cost accepted (credits and refunds).
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED from the predecessor platform:</b> the row belongs to a SITE of its tenant (the connection it was fetched through is a
+    /// The row belongs to a SITE of its tenant (the connection it was fetched through is a
     /// site's), and the date is <see cref="DateUtc"/> - a UTC-midnight <see cref="DateTime"/> - because no module store holds
     /// a <see cref="DateOnly"/>; the Shared schema keeps its <see cref="DateOnly"/>, and a window is a range on this value.
     /// </remarks>
@@ -126,8 +126,8 @@ namespace Stomme.Modules.CloudUsage.Domain
     }
 
     /// <summary>
-    /// A monthly budget (the predecessor platform's <c>CloudBudget</c>): a positive amount in one ISO 4217 currency, for all providers or one;
-    /// one budget per scope, amended rather than duplicated (the command's upsert). CHANGED: per site, as the rows it
+    /// A monthly budget: a positive amount in one ISO 4217 currency, for all providers or one;
+    /// one budget per scope, amended rather than duplicated (the command's upsert). Per site, as the rows it
     /// measures are.
     /// </summary>
     public sealed class CloudBudgetAggregate : AggregateRoot<Guid>, ITenantOwned
@@ -187,7 +187,7 @@ namespace Stomme.Modules.CloudUsage.Domain
     }
 
     /// <summary>
-    /// The once-only record of an alert already raised (the predecessor platform's <c>CloudCostAlertMarker</c>): its id is a hash of the
+    /// The once-only record of an alert already raised: its id is a hash of the
     /// tenant, the site and the alert key, so a second pass for the same threshold, month or day finds it and sends nothing.
     /// </summary>
     public sealed class CloudCostAlertMarkerAggregate : AggregateRoot<Guid>, ITenantOwned

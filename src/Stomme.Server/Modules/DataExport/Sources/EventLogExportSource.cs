@@ -20,8 +20,7 @@ namespace Stomme.Modules.DataExport.Sources
     /// <b>It pages, because the log is the largest table a site has.</b> The admin viewer's read is "newest N"; an
     /// export needs ALL of a range, and reading that in one query would materialise it. So rows are pulled through
     /// <see cref="ILogRepository.GetLogsPageAsync"/> a page at a time, keyed on <c>Id</c> - <c>LogDate</c> is not
-    /// unique, and a cursor on it would skip or repeat every entry that shares an instant with a page boundary
-    /// (refutation 5).
+    /// unique, and a cursor on it would skip or repeat every entry that shares an instant with a page boundary.
     /// </para>
     /// <para>
     /// <b>The site comes from the server-built context, never from the arguments.</b> The arguments carry a UTC
@@ -35,7 +34,7 @@ namespace Stomme.Modules.DataExport.Sources
     /// per provider.
     /// </para>
     /// <para>
-    /// Deliberately NOT exported: <c>Properties</c> and <c>Exception</c>. BL-157 records that entity log entries
+    /// Deliberately NOT exported: <c>Properties</c> and <c>Exception</c>. Entity log entries
     /// serialise whole object graphs into them; an export must not become the way that leaves the site.
     /// </para>
     /// </remarks>

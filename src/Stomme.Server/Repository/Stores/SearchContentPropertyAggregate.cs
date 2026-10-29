@@ -32,7 +32,7 @@ namespace Stomme.Repository.Stores
     /// <c>SearchQuery.Properties</c> drove two arms that threw on EF Core: <c>.Include()</c> after a
     /// <c>GroupBy().Select()</c> projection, and <c>.Any()</c> on the projected entity. Nothing in-tree
     /// populates <c>Properties</c>, but <c>SearchResultsController.Post</c> binds it <c>[FromBody]</c>, so a
-    /// client that posted one got a 500. See <see cref="ISearchQueryStore"/> and D50 §7.
+    /// client that posted one got a 500. See <see cref="ISearchQueryStore"/>.
     /// </para>
     /// </remarks>
     public class SearchContentPropertyAggregate : AggregateRoot<int>

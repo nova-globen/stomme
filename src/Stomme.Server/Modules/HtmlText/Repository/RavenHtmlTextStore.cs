@@ -17,8 +17,8 @@ namespace Stomme.Modules.HtmlText.Repository
     /// <remarks>
     /// Reuses the HOST singletons registered by the framework's <c>AddRavenFrameworkStore</c>
     /// (<see cref="IDocumentStore"/>, <see cref="IRavenTenantDatabaseResolver"/>, <see cref="IRavenIdGenerator"/>,
-    /// <see cref="RavenChangeVectorTracker"/>, <see cref="IAggregateTracker"/>) — there is NO second RavenDB DI path
-    /// (D17). The lazy <see cref="IDocumentStore"/> is never constructed on a relational install, because the
+    /// <see cref="RavenChangeVectorTracker"/>, <see cref="IAggregateTracker"/>) — there is NO second RavenDB DI path.
+    /// The lazy <see cref="IDocumentStore"/> is never constructed on a relational install, because the
     /// provider selector never resolves this store there.
     /// </remarks>
     [PrivateApi("Mark HtmlText classes as private, since it's not very useful in the public docs")]
@@ -40,7 +40,7 @@ namespace Stomme.Modules.HtmlText.Repository
     /// <summary>
     /// The RavenDB <see cref="IHtmlTextStoreSessionFactory"/>: the module's read path over the framework
     /// database — the module's twin of the framework's <c>RavenFrameworkStoreSessionFactory</c>, bound to the same
-    /// framework database (the tenant side D54 already ensured) via the shared <see cref="RavenFrameworkStoreOptions"/>
+    /// framework database (the tenant side, already ensured) via the shared <see cref="RavenFrameworkStoreOptions"/>
     /// host singleton.
     /// </summary>
     [PrivateApi("Mark HtmlText classes as private, since it's not very useful in the public docs")]

@@ -3,7 +3,7 @@ using Stomme.Shared;
 // This library is a framework building block, not a module: the host opts into it explicitly via
 // AddFeatureManagement (called from the FeatureManagement module's ServerStartup), which registers
 // FeatureSeeder itself. The module convention scan must not register FeatureSeeder independently of that
-// call — the seeder depends on the store AddFeatureManagement wires. See docs/decisions.md D13.
+// call — the seeder depends on the store AddFeatureManagement wires.
 [assembly: StommeFrameworkLibrary]
 
 namespace Stomme.Shared;

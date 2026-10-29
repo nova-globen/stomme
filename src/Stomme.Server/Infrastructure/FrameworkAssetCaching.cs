@@ -9,7 +9,7 @@ namespace Stomme.Infrastructure
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>The defect this closes (measured 2026-07-26 on the UAT deployment).</b> Stomme served
+    /// <b>The defect this closes (measured on a deployed site).</b> Stomme served
     /// <c>/_framework/*</c> with NO <c>Cache-Control</c> at all, so every CDN and proxy invented its own —
     /// Cloudflare applied its default <c>.js</c> TTL of <c>max-age=14400</c>. Blazor fingerprints its assemblies
     /// (<c>Stomme.Client.&lt;hash&gt;.wasm</c>) but NOT its loaders (<c>blazor.web.js</c>, <c>dotnet.js</c>),
@@ -34,7 +34,7 @@ namespace Stomme.Infrastructure
     /// happily mistake for a hash.
     /// </para>
     /// <para>
-    /// <b>The same class under <c>/_content/</c> (measured 2026-10-02).</b> A package's static web assets keep their
+    /// <b>The same class under <c>/_content/</c> (measured).</b> A package's static web assets keep their
     /// names across the package's versions: FluentUI's <c>Microsoft.FluentUI.AspNetCore.Components.lib.module.js</c> is one
     /// URL under 4.14.3 and 5.0.0. Served with no <c>Cache-Control</c>, a browser that had loaded the 4.x file kept running it
     /// after the host moved to 5.0.0 - the origin answered 457,618 bytes of 5.x, the browser used its 395,429 bytes of 4.x -
@@ -93,7 +93,7 @@ namespace Stomme.Infrastructure
         public static string Resolve(string path)
         {
             // A Blazor JS initializer keeps its "<assembly>.lib.module.js" name wherever it is served from - Stomme's own sits
-            // at the root - and BL-192 made Stomme's the one that starts FluentUI 5, so a stale copy is a broken page.
+            // at the root - and Stomme's is the one that starts FluentUI 5, so a stale copy is a broken page.
             if (!string.IsNullOrEmpty(path) && path.EndsWith(".lib.module.js", StringComparison.OrdinalIgnoreCase))
             {
                 return NoCache;

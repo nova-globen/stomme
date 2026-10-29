@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Health.Application
 {
     /// <summary>
-    /// Sends a raised or cleared alert to the people who can act on it, through BL-78's producer port.
+    /// Sends a raised or cleared alert to the people who can act on it, through the notification producer port.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -40,7 +40,7 @@ namespace Stomme.Modules.Health.Application
     /// roles is one recipient.
     /// </para>
     /// <para>
-    /// <b>Zero recipients is LOGGED, not silently returned.</b> the predecessor platform returned quietly, so an installation with
+    /// <b>Zero recipients is LOGGED, not silently returned.</b> Returning quietly would mean an installation with
     /// no Host user alerted nobody about anything and looked healthy while doing it.
     /// </para>
     /// </remarks>

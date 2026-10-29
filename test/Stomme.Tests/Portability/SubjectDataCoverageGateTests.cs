@@ -10,9 +10,9 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// BL-82 (D107 gates) - every aggregate that holds a user id is ACCOUNTED FOR in a person's data package: either a
-    /// subject contributor carries it, or it is left out for a stated reason. A new aggregate with a user-id member fails
-    /// this gate until someone decides which - the way a person's data stops leaking out of the package silently.
+    /// Every aggregate that holds a user id is ACCOUNTED FOR in a person's data package: either a subject contributor
+    /// carries it, or it is left out for a stated reason. A new aggregate with a user-id member fails this gate until
+    /// someone decides which - the way a person's data stops leaking out of the package silently.
     /// </summary>
     /// <remarks>
     /// Discovery is reflective over the server assembly: every <c>AggregateRoot&lt;&gt;</c> (the clean-arch modules) and
@@ -37,7 +37,7 @@ namespace Stomme.Tests.Portability
             ["IdentityAuditEntryAggregate"] = "IdentityAuditSubjectContributor",
             ["PipelineStepCommentAggregate"] = "PipelineStepCommentSubjectContributor",
 
-            // ---- left out, each for a stated reason (D107 item 8's allowlist, extended to what landed since) -----------------
+            // ---- left out, each for a stated reason (the allowlist, extended to what landed since) --------------------------
             ["VisitorAggregate"] = "LEFT OUT: per-visit analytics (address, agent, url) aged out by VisitorRetention; D107 item 8 allowlist",
             ["LogAggregate"] = "LEFT OUT: the operational event log - one row can name several people and hold request internals; aged out by LogRetention; D107 item 8 allowlist",
             ["PermissionAggregate"] = "LEFT OUT: a per-user permission row is the SITE's access configuration about the person, not data they gave; its effect is what they can reach",

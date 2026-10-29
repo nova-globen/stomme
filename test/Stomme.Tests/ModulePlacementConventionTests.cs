@@ -12,17 +12,16 @@ namespace Stomme.Tests
     /// <summary>
     /// Repo-wide gates over the way a module DECLARES its CMS placement — the "routable modules" mechanism:
     /// <see cref="ModuleDefinition.PageTemplates"/> read on every boot by
-    /// <c>SiteRepository.ProcessPageTemplatesAsync</c>. Ported from the idiomatic endgame proof-of-life spike
-    /// (BL-74), where every rule below was MEASURED failing on a live install
-    /// (<c>docs/reports/endgame-proof-of-life-idiomatic.md</c>) — each fails SILENTLY: no exception, no log
-    /// line, just a page that is not there or a child page created at the root. Exactly the class the endgame
-    /// cannot afford to rediscover 36 times.
+    /// <c>SiteRepository.ProcessPageTemplatesAsync</c>. Every rule below was measured failing on a live install,
+    /// and each fails SILENTLY: no exception, no log
+    /// line, just a page that is not there or a child page created at the root. A class of defect that is
+    /// easy to rediscover by hand, so each rule is pinned here.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The spike's third gate — an Index control Title that disagrees with the declared module Name re-keys
-    /// the <c>module.&lt;id&gt;.enabled</c> knob — is deliberately NOT ported as a convention ban: BL-74 fixed
-    /// the mechanism instead (a declared Name is now authoritative; see
+    /// The third rule an earlier draft checked — an Index control Title that disagrees with the declared module Name re-keys
+    /// the <c>module.&lt;id&gt;.enabled</c> knob — is deliberately NOT enforced as a convention ban: the mechanism was fixed
+    /// instead (a declared Name is now authoritative; see
     /// <see cref="ModuleDefinitionNameResolutionTests"/>), so the disagreement is legal and harmless.
     /// </para>
     /// <para>

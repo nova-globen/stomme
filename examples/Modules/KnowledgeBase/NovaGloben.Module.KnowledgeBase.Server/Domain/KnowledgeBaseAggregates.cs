@@ -150,7 +150,7 @@ namespace NovaGloben.Module.KnowledgeBase.Domain
         }
 
         /// <summary>
-        /// A demo article the host seeds on a new site (<c>DemoContent:Enabled</c>, increment 6): PUBLISHED at once, attributed
+        /// A demo article the host seeds on a new site (<c>DemoContent:Enabled</c>): PUBLISHED at once, attributed
         /// to nobody, and raising NO event - a seed is not a publish, so nothing is metered, counted against the site's quota
         /// or announced.
         /// </summary>

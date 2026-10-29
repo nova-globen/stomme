@@ -15,7 +15,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 namespace Stomme.Modules.DataExport.Rendering
 {
     /// <summary>
-    /// XLSX: one sheet per table, rows streamed through the SAX writer (D108 refutation 12).
+    /// XLSX: one sheet per table, rows streamed through the SAX writer.
     /// </summary>
     /// <remarks>
     /// <para>

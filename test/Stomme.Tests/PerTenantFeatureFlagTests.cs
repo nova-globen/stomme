@@ -82,9 +82,9 @@ namespace Stomme.Tests
             Assert.Equal(TenantId.Default, Tenant1);
 
             var rows = await host.FlagsForAsync(Tenant1);
-            // One row per DECLARED flag: the core catalogue plus every discovered contributor's (was a literal 2; BL-78
-            // added notifications.dispatch; BL-94 increment 12 added the first in-tree module contributor, datasets.mcp,
-            // which a core-only count could not see).
+            // One row per DECLARED flag: the core catalogue plus every discovered contributor's. A literal count of 2 was
+            // once correct; later flags, including notifications.dispatch and the first in-tree module contributor,
+            // datasets.mcp, arrived after that, and a core-only count could not see contributed flags.
             Assert.Equal(host.DeclaredFlagCount(), rows.Count);
             Assert.True(rows.Count > FeatureCatalog.All.Count, "the contributed flags were not seeded");
             Assert.All(rows, row => Assert.Equal(TenantId.Default, row.TenantId));
@@ -142,7 +142,7 @@ namespace Stomme.Tests
         {
             using var host = NewHost(Tenant1, Tenant2);
 
-            // Emulate the pre-D16 seeder: the default tenant only.
+            // Emulate the older seeder: the default tenant only.
             await host.SeedOnlyAsync(TenantId.Default);
 
             Assert.True(await host.IsEnabledAsync(EmailFlag, Tenant1));
@@ -226,7 +226,7 @@ namespace Stomme.Tests
             }
         }
 
-        /// <summary>The pre-D16 behaviour, for the negative control: seed one tenant and no other.</summary>
+        /// <summary>The older behaviour, for the negative control: seed one tenant and no other.</summary>
         internal async Task SeedOnlyAsync(TenantId tenantId)
         {
             using var tenantScope = Scopes.BeginScope(tenantId.Value);

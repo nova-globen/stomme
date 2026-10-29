@@ -12,7 +12,7 @@ namespace Stomme.Tests
     /// <summary>
     /// The Guestbook conformance suite against the RELATIONAL (EF Core) store — a throwaway SQLite FILE (not
     /// <c>:memory:</c>, which would give each per-scope connection its own empty database), composed exactly as
-    /// the module's <c>ServerStartup</c> composes it on a relational install: the D76 helper selects the EF
+    /// the module's <c>ServerStartup</c> composes it on a relational install: the shared helper selects the EF
     /// branch from the configured provider, and the EF <see cref="GuestbookRepository"/> is the closed
     /// <see cref="IGuestbookRepository"/>. This is the baseline the RavenDB run must match member for member.
     /// </summary>
@@ -26,7 +26,7 @@ namespace Stomme.Tests
         /// <summary>The one string both the store and the teardown use — the pool is keyed by it.</summary>
         private string ConnectionString => $"Data Source={_databasePath}";
 
-        /// <summary>BL-150, measured.</summary>
+        /// <summary>Value-object equality is case-sensitive on this store.</summary>
 
         protected override bool ValueObjectEqualityIsCaseInsensitive => false;
 

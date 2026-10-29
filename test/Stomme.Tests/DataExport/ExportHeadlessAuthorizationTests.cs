@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-85 (D108 refutation 8) - the headless, stored-row permission evaluator against the request path.
+    /// The headless, stored-row permission evaluator against the request path.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -29,7 +29,7 @@ namespace Stomme.Tests.DataExport
     /// decides for that absent user is NEW logic, and new authorisation logic is exactly where a quiet divergence
     /// becomes a hole. So every case here is put to BOTH paths - the real <see cref="IUserPermissions"/> over a
     /// principal built the way sign-in builds one, and <see cref="IStoredRowPermissionEvaluator"/> - on a really
-    /// installed site, and the two must agree on all of them except the two D108 names: a role that exists only
+    /// installed site, and the two must agree on all of them except two named cases: a role that exists only
     /// as a CLAIM, and a role REVOKED after the cookie was issued. In both the request path says yes and the
     /// headless path says no - the stricter answer, and the right one for a job.
     /// </para>

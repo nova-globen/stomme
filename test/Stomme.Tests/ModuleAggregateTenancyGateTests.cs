@@ -14,19 +14,19 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-111 (D79's correction) - a module aggregate is TENANT-OWNED by contract. The shared module store is one per
+    /// A module aggregate is TENANT-OWNED by contract. The shared module store is one per
     /// installation and a module-scoped key (a module id) repeats across tenants, so a non-tenant-owned aggregate let
     /// module 5 of tenant one read module 5 of tenant two on EF and RavenDB (measured; the File store partitions by
     /// tenant). In-tree this is a build gate: every module <c>AggregateRoot&lt;&gt;</c> implements
     /// <see cref="ITenantOwned"/>. An external module's aggregate cannot be gated at build; it is composed all the same
-    /// and NAMED at startup by a <see cref="ModuleAggregateTenancyNotice"/> (never a failure - the BL-105 posture), which
+    /// and NAMED at startup by a <see cref="ModuleAggregateTenancyNotice"/> (never a failure, by design), which
     /// the second test pins in both directions.
     /// </summary>
     public class ModuleAggregateTenancyGateTests(ITestOutputHelper output)
     {
         /// <summary>
-        /// The aggregates that are NOT tenant-owned for a stated reason. The BL-111 row said the Guestbook's was the only
-        /// one in the tree; this gate falsified that on its first run (2026-09-27) with these three. A stale entry - an
+        /// The aggregates that are NOT tenant-owned for a stated reason. An earlier note said the Guestbook's was the only
+        /// one in the tree; this gate falsified that on its first run, with these three. A stale entry - an
         /// aggregate that became tenant-owned or disappeared - fails, so the list cannot rot.
         /// </summary>
         private static readonly IReadOnlyDictionary<string, string> NotTenantOwnedByDesign = new Dictionary<string, string>(StringComparer.Ordinal)

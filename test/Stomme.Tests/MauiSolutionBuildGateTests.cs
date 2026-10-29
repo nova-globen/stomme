@@ -10,18 +10,18 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// The MAUI hybrid shell is in its own solution, so <c>dotnet test Stomme.slnx</c> never
-    /// compiled it and it rotted silently: measured 2026-08-03, <c>dotnet build Stomme.Maui.slnx</c> had
+    /// compiled it and it rotted silently: <c>dotnet build Stomme.Maui.slnx</c> had
     /// been failing on NETSDK1147 (the root <c>Directory.Build.props</c>' singular
     /// <c>TargetFramework=net10.0</c> leaked into the csproj, and UseMaui + a plain net10.0 TFM demands
     /// every MAUI workload, tizen included) — a written "also build the MAUI solution" rule enforced by
     /// nobody. Rules here are tests: this fact BUILDS the MAUI solution inside the commit gate.
     /// </summary>
     /// <remarks>
-    /// Requires the <c>maui-windows</c> workload (installed on the gate machine 2026-08-03). Placed in the
+    /// Requires the <c>maui-windows</c> workload (installed on the gate machine). Placed in the
     /// serial render-tests collection so the build's CPU load never overlaps the timing-sensitive
     /// install/render tests. CI is unaffected: <c>ci.yml</c> runs only the three database-free suites and
     /// the render-guard filter, never this fact — the LOCAL gate is where MAUI rot gets caught, which is
-    /// exactly where the BL-19 decision aimed.
+    /// exactly where that decision aimed.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     public class MauiSolutionBuildGateTests

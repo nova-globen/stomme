@@ -13,7 +13,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AzureVirtualMachines
 {
     /// <summary>
-    /// Azure Virtual Machines (lifted from the predecessor platform's <c>azurevm</c>): OAuth2 client credentials over
+    /// Azure Virtual Machines: OAuth2 client credentials over
     /// Azure Resource Manager through the family's token provider, keeping the legacy three-phase shape per subscription -
     /// the VM list (configurable api-version), the instance view (<c>statusOnly=true</c>) for the power state, and the
     /// primary-NIC enrichment (MAC and first private IP; public IPs stay unfetched). The power state is parsed from the

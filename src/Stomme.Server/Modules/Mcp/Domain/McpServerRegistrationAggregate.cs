@@ -8,12 +8,12 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Mcp.Domain
 {
     /// <summary>
-    /// An EXTERNAL MCP server one SITE has registered, and what it last said it offers (D101 items 4 and 6).
+    /// An EXTERNAL MCP server one SITE has registered, and what it last said it offers.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>It belongs to a SITE, not only to a tenant.</b> the predecessor platform's registration was tenant-owned and nothing else, its
-    /// five by-id handlers reached any row in the tenant, and the default install puts EVERY site in one tenant - so one
+    /// <b>It belongs to a SITE, not only to a tenant.</b> A registration owned by the tenant alone would let by-id handlers reach any row in the tenant, and the
+    /// default install puts EVERY site in one tenant - so one
     /// site's administrator could enable, refresh or read the secret of another's. <see cref="SiteId"/> sits beside
     /// <see cref="ITenantOwned"/>, and the repository gives ONE answer for "no such registration" and "another site's".
     /// </para>
@@ -23,8 +23,8 @@ namespace Stomme.Modules.Mcp.Domain
     /// </para>
     /// <para>
     /// <b>The API key is never here.</b> The row records only THAT a key was stored; the key lives in the per-site secret
-    /// store under a name derived from this row's id (<see cref="ApiKeySecretName"/>). the predecessor platform took the reference from
-    /// the caller, which let one registration point at another feature's secret.
+    /// store under a name derived from this row's id (<see cref="ApiKeySecretName"/>). Taking the reference from
+    /// the caller would let one registration point at another feature's secret.
     /// </para>
     /// <para>
     /// <b>There is no way to change the endpoint</b>, on purpose. <see cref="TrustState"/> and the discovered tools are

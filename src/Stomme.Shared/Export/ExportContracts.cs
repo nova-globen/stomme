@@ -188,7 +188,7 @@ namespace Stomme.Export
     /// <summary>
     /// A formatter that needs a per-site lookup implements this beside <see cref="IExportCellFormatter"/>: the processor
     /// calls it ONCE per export, in the site's scope, before the first row - the per-cell call stays synchronous, and no
-    /// renderer ever awaits a lookup (D108's correction of 2026-09-27). A renderer used on its own
+    /// renderer ever awaits a lookup. A renderer used on its own
     /// gets a formatter that was never prepared, which resolves what needs no site (the presets) and declines the rest.
     /// </summary>
     public interface IExportCellFormatterPreparation

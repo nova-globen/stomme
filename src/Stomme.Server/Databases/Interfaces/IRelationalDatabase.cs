@@ -46,8 +46,8 @@ namespace Stomme.Databases.Interfaces
         public DbContextOptionsBuilder UseDatabase(DbContextOptionsBuilder optionsBuilder, string connectionString);
 
         /// <summary>
-        /// BL-81 (D106 Q5): whether a logical restore - rows inserted with their ORIGINAL keys, then the identity moved past
-        /// them - is supported on this provider. Every relational provider supports it since BL-173 drove SQL Server.
+        /// Whether a logical restore - rows inserted with their ORIGINAL keys, then the identity moved past
+        /// them - is supported on this provider. Every relational provider supports it, SQL Server included.
         /// </summary>
         public bool SupportsLogicalRestore { get; }
 
@@ -65,7 +65,7 @@ namespace Stomme.Databases.Interfaces
         /// </summary>
         public Task<bool> AllowExplicitKeysAsync(DbContext context, string table, string keyColumn, System.Threading.CancellationToken cancellationToken);
 
-        /// <summary>BL-81: puts back the GENERATED ALWAYS that <see cref="AllowExplicitKeysAsync"/> relaxed.</summary>
+        /// <summary>Puts back the GENERATED ALWAYS that <see cref="AllowExplicitKeysAsync"/> relaxed.</summary>
         public Task RestoreGeneratedAlwaysAsync(DbContext context, string table, string keyColumn, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Stomme.Databases.Interfaces
         /// </summary>
         public Task BeginExplicitKeyInsertsAsync(DbContext context, string table, System.Threading.CancellationToken cancellationToken);
 
-        /// <summary>BL-173: ends what <see cref="BeginExplicitKeyInsertsAsync"/> began.</summary>
+        /// <summary>Ends what <see cref="BeginExplicitKeyInsertsAsync"/> began.</summary>
         public Task EndExplicitKeyInsertsAsync(DbContext context, string table, System.Threading.CancellationToken cancellationToken);
     }
 }

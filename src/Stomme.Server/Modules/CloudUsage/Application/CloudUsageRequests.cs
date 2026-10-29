@@ -201,7 +201,7 @@ namespace Stomme.Modules.CloudUsage.Application
 
     internal static class CloudCostRollup
     {
-        // A window of calendar days, both ends inclusive (the predecessor platform's), read as a range on the stored UTC midnight.
+        // A window of calendar days, both ends inclusive, read as a range on the stored UTC midnight.
         public static Task<IReadOnlyList<CloudCostRecordAggregate>> WindowAsync(ICloudCostRecordRepository records, int siteId, DateOnly? from, DateOnly? to, CancellationToken ct) =>
             records.ListForSiteAsync(siteId,
                 from is { } lower ? CloudCostRecordAggregate.ToStoredDate(lower) : null,

@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// A quota crossing reaches the site's ADMINISTRATORS through BL-78's producer port, exactly ONCE
+    /// A quota crossing reaches the site's ADMINISTRATORS through the producer port, exactly ONCE
     /// per crossing per window.
     /// </summary>
     /// <remarks>

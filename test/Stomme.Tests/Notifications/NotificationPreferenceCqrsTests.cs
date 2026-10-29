@@ -14,9 +14,9 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// The three self-service CQRS facts of the predecessor platform <c>NotificationPreferenceTests.cs</c> that step 4 DEFERRED (the other 13 are in
+    /// The three self-service CQRS facts of the preference suite that were deferred (the other 13 are in
     /// <see cref="NotificationQuietHoursTests"/>): <c>SaveThenGet_RoundTripsPreferences</c>, <c>Save_Twice_UpdatesInPlace</c>,
-    /// <c>Get_NoPreference_ReturnsPermissiveDefaults</c> - names kept; user ids are int (F10); the harness is
+    /// <c>Get_NoPreference_ReturnsPermissiveDefaults</c> - names kept; user ids are int; the harness is
     /// <see cref="NotificationCqrsHarness"/>. Below them, the Stomme additions for the view-own split: the send log, the
     /// caller's own list, send-test and retry.
     /// </summary>
@@ -80,7 +80,7 @@ namespace Stomme.Tests.Notifications
             Assert.Equal(NotificationDigestMode.Immediate, view.Digest);
         }
 
-        // ---- added in Stomme (not the predecessor platform cases) ------------------------------------------------------------------
+        // ---- added after the original cases ----------------------------------------------------------------------------------------
 
         [Fact]
         public async Task Preferences_are_the_callers_own_and_a_second_user_does_not_see_them()

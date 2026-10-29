@@ -10,8 +10,8 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The RESERVED-PREFIX half of the declaration gate (D109 refutation 17): the seven the predecessor platform modules
-    /// that DISSOLVED into framework surfaces took their permission keys with them. Their vocabulary maps to
+    /// The RESERVED-PREFIX half of the declaration gate. Seven modules that were dissolved into framework surfaces
+    /// took their permission keys with them, and those prefixes are reserved so no later module can reuse them. Their vocabulary maps to
     /// framework gates (<c>files:*</c> to File/Folder permission rows, <c>tenants:*</c>/<c>ops:*</c> to Host,
     /// <c>modules:*</c>/<c>platform.modules:*</c> to Host/Admin on ModuleDefinitionController, <c>identity.*</c> to
     /// the User/Role policies, <c>features:*</c> to Admin/Host on FeatureController) - so a later lift that
@@ -43,7 +43,7 @@ namespace Stomme.Tests
             var requirements = DiscoveredRequirements();
             var endpoints = DiscoveredKeyGatedEndpoints();
 
-            // Not vacuous: each of the three scanned sets reaches the BL-99 fixture's real keys.
+            // Not vacuous: each of the three scanned sets reaches the fixture's real keys.
             Assert.Contains(definitions, definition => PermissionKeys.ParseKeys(definition.PermissionNames).Any(key => key.Key == GateTestPermissions.Manage));
             Assert.Contains(requirements, requirement => requirement.Permission == GateTestPermissions.Manage);
             Assert.Contains(endpoints, endpoint => endpoint.Key == GateTestPermissions.Manage);

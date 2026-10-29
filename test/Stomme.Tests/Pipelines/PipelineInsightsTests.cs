@@ -293,7 +293,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "minutely", "twice", "morning" }, day.Schedules.Select(schedule => schedule.StepId)); // the soonest first
             var minutely = day.Schedules[0];
             Assert.Equal((T0.AddMinutes(1), PipelineUpcoming.MaxCounted, PipelineUpcoming.Shown), (minutely.NextRunsUtc[0], minutely.RunsInWindow, minutely.NextRunsUtc.Count));
-            // BL-229, n8n's trigger rules: a schedule's lines merged - noon and six today, the lines said as one.
+            // n8n's trigger rules: a schedule's lines merged - noon and six today, the lines said as one.
             var twice = day.Schedules[1];
             Assert.Equal(("0 12 * * *; 0 18 * * *", 2), (twice.Cron, twice.RunsInWindow));
             Assert.Equal(new[] { T0.AddHours(3), T0.AddHours(9) }, twice.NextRunsUtc);

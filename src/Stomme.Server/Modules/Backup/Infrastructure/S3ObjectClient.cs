@@ -13,7 +13,7 @@ using Amazon.S3.Model;
 namespace Stomme.Modules.Backup.Infrastructure
 {
     /// <summary>
-    /// The object-store operations the S3 archive store uses - exactly the ones infra's key permits: multipart (start,
+    /// The object-store operations the S3 archive store uses - exactly the ones a restricted key needs: multipart (start,
     /// part, complete, abort), put, get, delete, list. Its own seam so the store's rules are tested against an in-memory store
     /// that behaves like S3 (a part below 5 MiB other than the last refused), and the SDK is one adapter.
     /// </summary>
@@ -45,7 +45,7 @@ namespace Stomme.Modules.Backup.Infrastructure
 
     /// <summary>
     /// <see cref="IS3ObjectClient"/> over AWSSDK.S3 (Apache-2.0) for an S3-COMPATIBLE store: path-style addressing and the region
-    /// in the signature (both required by infra's store), and the SDK's newer default of streamed trailing checksums turned down
+    /// in the signature (both required by some S3-compatible stores), and the SDK's newer default of streamed trailing checksums turned down
     /// to "when required" - an S3-compatible gateway is not obliged to accept aws-chunked uploads. The client is built on first
     /// use, so a host with the object store misconfigured still boots and the first backup says what is missing.
     /// </summary>

@@ -36,12 +36,12 @@ namespace Stomme.Repository
     /// implementations are deliberately unalike.
     /// </para>
     /// <para>
-    /// <b>Stores are constructor-injected, not resolved per write (not D47).</b> Nothing here reads a key
+    /// <b>Stores are constructor-injected, not resolved per write.</b> Nothing here reads a key
     /// and then writes it twice through one instance: <c>DatabaseSearchProvider.SaveSearchContent</c> deletes
     /// by (entityName, entityId) and then ADDs a fresh row, and <c>AnalyzeSearchContentAsync</c>'s per-word
     /// loop either adds or updates a given key exactly once. UrlMapping remains the sole cluster needing the
     /// per-write workaround, because it is the sole cluster whose READ writes. Verified by mutation check
-    /// rather than reasoned from the call graph, as D49 requires.
+    /// rather than reasoned from the call graph, as the project's verification bar requires.
     /// </para>
     /// </remarks>
     public class SearchContentRepository : ISearchContentRepository
@@ -153,7 +153,7 @@ namespace Stomme.Repository
         /// </summary>
         /// <remarks>
         /// The harvested code deleted in batches of 100 with <c>RemoveRange</c>. The seam has no batch delete
-        /// (Phase 5 owns it), so this is one round trip per row — the cost D24/D44 already accepted for
+        /// yet, so this is one round trip per row — the cost already accepted for
         /// <c>DeletePermissions</c> and the three leaf purge loops. The batching loop goes with it: it existed
         /// to bound EF's change tracker, and a session read tracks nothing.
         /// </remarks>
@@ -241,13 +241,13 @@ namespace Stomme.Repository
         /// </summary>
         /// <remarks>
         /// The harvested code got the word by <c>.Include(i =&gt; i.SearchWord)</c>. That navigation is
-        /// <c>[NotMapped]</c> now (D45's mechanism — a mapped one resurrects the SearchWord contract and breaks
+        /// <c>[NotMapped]</c> now (a mapped one resurrects the SearchWord contract and breaks
         /// the model), so the member is stitched on from a SECOND query over the referenced words, exactly as
-        /// D45's <c>PopulateSiteGroups</c> does. It is LOAD-BEARING, not decoration:
+        /// <c>PopulateSiteGroups</c> does. It is LOAD-BEARING, not decoration:
         /// <c>DatabaseSearchProvider.AnalyzeSearchContentAsync</c> reads <c>existing.SearchWord?.Word</c> to key
         /// its insert-vs-update decision for every word of every indexed document, and a null member there
         /// silently re-inserts every word on every save. Behaviour-equivalent because the <c>.Include</c>
-        /// carried no join predicate (D22 rule 9 does not apply; there was no join to lose). One query for the
+        /// carried no join predicate (there was no join to lose). One query for the
         /// whole set, not N+1.
         /// </remarks>
         public async Task<IEnumerable<SearchContentWord>> GetSearchContentWordsAsync(int searchContentId)

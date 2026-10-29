@@ -36,7 +36,7 @@ namespace Stomme.Infrastructure.Backup.Participants
     /// that differs from this installation's.
     /// </para>
     /// <para>
-    /// <b>Replace.</b> Per context, in ONE transaction: the search index is cleared (it is rebuilt, D106 refutation 12), every
+    /// <b>Replace.</b> Per context, in ONE transaction: the search index is cleared (it is rebuilt), every
     /// carried table deleted child-first, the rows inserted parent-first with their keys, each table's count checked, and the
     /// identity moved past the highest key (<see cref="IRelationalDatabase.ResetIdentityAsync"/>). Audit stamping is off
     /// while it writes (<see cref="AuditStampSuppression"/>) - a restored row keeps its history. SQL Server takes the original

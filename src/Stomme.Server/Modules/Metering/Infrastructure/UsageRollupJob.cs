@@ -30,8 +30,8 @@ namespace Stomme.Modules.Metering.Infrastructure
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Idempotent by deterministic id, incremental by window.</b> the predecessor platform's rollup job rescanned the ENTIRE
-    /// ledger every night and never deleted a rollup whose rows had gone, so the dashboard slowly filled with
+    /// <b>Idempotent by deterministic id, incremental by window.</b> A rollup job that rescanned the ENTIRE
+    /// ledger every night and never deleted a rollup whose rows had gone would slowly fill the dashboard with
     /// slices no ledger supported. Here each slice's row id is derived from (site, day, provider, model, agent), a
     /// re-run recomputes the same rows rather than appending duplicates, only days touched since the last pass are
     /// recomputed, and a rollup inside the recomputed range with no surviving ledger rows is DELETED.

@@ -29,14 +29,14 @@ namespace Stomme.Repository
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>The one outbound edge is <see cref="ISiteRepository"/>, and it is acyclic (D22 rule 8).</b> Verified
-    /// by re-running the check rather than inheriting the claim: <c>SiteRepository</c> takes Role, Profile,
+    /// <b>The one outbound edge is <see cref="ISiteRepository"/>, and it is acyclic.</b> Checked
+    /// directly against the dependency graph: <c>SiteRepository</c> takes Role, Profile,
     /// Folder, Page, Module, PageModule, ModuleDefinition, Theme and Setting — not this one. The stronger
     /// statement is the true one: NO repository anywhere takes <see cref="IUrlMappingRepository"/>. Its only
     /// consumers are <c>PageController</c>, <c>UrlMappingController</c>, <c>PurgeJob</c>,
     /// <c>Files.cshtml.cs</c>, <c>Sitemap.cshtml.cs</c> and <c>App.razor</c> — controllers, pages and a job.
-    /// So the edge cannot close a loop from any direction, and the store-instead-of-repository escape D24
-    /// needed for Permission is not needed here.
+    /// So the edge cannot close a loop from any direction, and the store-instead-of-repository escape
+    /// used for Permission is not needed here.
     /// </para>
     /// <para>
     /// <b>ON THE RENDER PATH.</b> <c>App.razor</c> calls <see cref="GetUrlMappingAsync(int, string, string)"/>
@@ -125,7 +125,7 @@ namespace Stomme.Repository
         /// tidy-up that silently changes behaviour when a later migration relaxes the column. Both arms and
         /// both directions are pinned on both providers by the conformance suite
         /// (<c>Url_mappings_split_into_the_mapped_and_the_unmapped_halves</c>) — which is where a translation
-        /// gap would surface, exactly as D45's sentinel did.
+        /// gap would surface, exactly as a sentinel comparison once did.
         /// </remarks>
         public async Task<IEnumerable<UrlMapping>> GetUrlMappingsAsync(int siteId, bool isMapped)
         {

@@ -4,7 +4,6 @@
 // Stomme.Persistence and Stomme.FeatureManagement. Without this marker the scan would reflect over the
 // mediator's abstractions and behaviors looking for IService/IServerStartup/IHostedService and register
 // nothing useful while the open-generic behaviors are meant to be wired only through AddMediatorBehavior.
-// See docs/decisions.md D13.
 
 // The canonical (public) marker type lives in Stomme.Shared; the framework matches the attribute by full
 // name, so this leaf library declares its own internal copy rather than referencing Stomme.Shared (which

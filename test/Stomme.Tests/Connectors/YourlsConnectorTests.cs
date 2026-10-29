@@ -151,7 +151,7 @@ namespace Stomme.Tests.Connectors
 
     /// <summary>
     /// YOURLS LIVE, against this machine's throwaway YOURLS 1.10 (scripts/yourls-test-server.ps1) - fail-not-skip without it
-    /// (D46): a URL shortened with a keyword and a title, shortened again and answered as its existing short URL, its keyword
+    /// (fails rather than skips): a URL shortened with a keyword and a title, shortened again and answered as its existing short URL, its keyword
     /// refused for another URL, expanded and its stats read by keyword and by address; a wrong signature refused with YOURLS's own
     /// words.
     /// </summary>

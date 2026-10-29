@@ -8,7 +8,7 @@ using Stomme.Modules.CloudUsage.Domain;
 using Stomme.Modules.CloudUsage.Providers;
 using Xunit;
 
-// the predecessor platform's cases by name; the fixtures and assertions are unchanged.
+// Cases carried over unchanged: the fixtures and assertions are the same.
 namespace Stomme.Tests.CloudUsage
 {
     public sealed class AzureCostProviderTests

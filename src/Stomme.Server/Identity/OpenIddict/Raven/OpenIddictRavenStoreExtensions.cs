@@ -18,8 +18,7 @@ namespace Stomme.Identity.OpenIddict.Raven
 
     /// <summary>
     /// Wires the Stomme RavenDB OpenIddict stores into the OpenIddict core builder: the four default
-    /// entity types and the four <c>IOpenIddict*Store</c> implementations, registered as SCOPED — unlike
-    /// the predecessor platform's singletons — because each store resolves the PER-REQUEST tenant through
+    /// entity types and the four <c>IOpenIddict*Store</c> implementations, registered as SCOPED (not singletons) because each store resolves the PER-REQUEST tenant through
     /// <see cref="IRavenOpenIddictSessionProvider"/>, and the tenant is a property of the request scope.
     /// </summary>
     internal static class OpenIddictRavenStoreExtensions

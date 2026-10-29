@@ -24,7 +24,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// BL-82 (refutation 10) - a placed module's content through its own <c>IPortable</c>, driven over HTTP
+    /// A placed module's content through its own <c>IPortable</c>, driven over HTTP
     /// with HtmlText on an installed site: exported without its private settings, imported back onto the module in the same
     /// place - Skip leaves it, Overwrite restores it - and refused before anything changes when the package would overwrite
     /// a private setting, or when the importer holds the import key but not Edit on the page.

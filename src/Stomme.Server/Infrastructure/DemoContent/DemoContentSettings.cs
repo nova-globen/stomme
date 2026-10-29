@@ -11,8 +11,8 @@ using Microsoft.Extensions.Configuration;
 namespace Stomme.Infrastructure.DemoContent
 {
     /// <summary>
-    /// The ONE switch for every module's demo content (D110 Q7): <c>DemoContent:Enabled</c>, DEFAULT OFF.
-    /// the predecessor platform seeded its demo connections and datasets on every boot of every install; here a stock install carries
+    /// The ONE switch for every module's demo content: <c>DemoContent:Enabled</c>, DEFAULT OFF.
+    /// A stock install carries
     /// none, and an evaluator turns the switch on in the override file. Read through <see cref="HostConfiguration"/>,
     /// never <c>IConfiguration</c>.
     /// </summary>

@@ -6,8 +6,8 @@
     The health THRESHOLDS, as the module's "Thresholds" action - NOT "Settings", which SiteRouter
     reserves for the framework's module-settings dialog. They are Host-scope Setting rows - ONE value for the deployment, which every
     site of the tenant runs by (a shared store cannot be Degraded on one site and Healthy on the next) - so this page is
-    HOST-ONLY, not health:manage: a site's administrator must not be able to change every other site's alerting. D104 item 12
-    said health:manage; its correction records why that cannot stand. The server decides again: SettingController only lets
+    HOST-ONLY, not health:manage: a site's administrator must not be able to change every other site's alerting.
+    The server decides again: SettingController only lets
     the Host role EDIT Host settings. Values the health module cannot use fall back to its defaults (HealthSettings parses
     defensively), and retention is clamped there to 1..365 days.
 *@

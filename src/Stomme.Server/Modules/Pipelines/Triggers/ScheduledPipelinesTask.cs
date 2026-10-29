@@ -23,7 +23,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// Fires due schedules (BL-95 increment (e)): a recurring task the ENGINE runs per site tenant (its tenant task
+    /// Fires due schedules: a recurring task the ENGINE runs per site tenant (its tenant task
     /// manager starts every recurring task under each tenant's scope, so the trigger store, the key-value store and
     /// the stimulus sender below are the site's), on one node at a time (<see cref="SingleNodeTaskAttribute"/>, the
     /// engine's distributed lock). Each tick lists the stored <c>Stomme.Schedule</c> triggers, and for each distinct
@@ -33,7 +33,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     /// next tick can see it. A misfire (the host was down over an occurrence) fires once at the next tick, never once
     /// per missed occurrence. The last fire is kept under the SITE's key (<see cref="LastFiredKey"/>): a key-value key is
     /// one row per installation while the store reads per site, so two sites with the same cron once shared one row, took
-    /// it from each other every tick, and neither ever fired (found 2026-10-07).
+    /// it from each other every tick, and neither ever fired.
     /// </summary>
     [SingleNodeTask]
     public sealed class ScheduledPipelinesTask(

@@ -12,7 +12,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 3 - the predecessor platform's IntuneConnectorTests (8) by name over the port: the token and every Graph page ride the egress's client; the credential fields are the scheme's.</summary>
+    /// <summary>Tests for the Intune connector: the token and every Graph page ride the egress's client, and the credential fields are the scheme's.</summary>
     public sealed class IntuneConnectorTests
     {
         // A recorded Graph managedDevices page (a typed subset of the ~45-column projection).

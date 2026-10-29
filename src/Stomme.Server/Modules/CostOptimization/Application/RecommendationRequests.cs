@@ -23,7 +23,7 @@ namespace Stomme.Modules.CostOptimization.Application
     // ============================================================================================================
 
     /// <summary>
-    /// Runs every registered analyzer over the site's signals and raises the drafts (the predecessor platform's). A draft whose key has an
+    /// Runs every registered analyzer over the site's signals and raises the drafts. A draft whose key has an
     /// open recommendation, or one still inside its dismissal cooldown, or that was drafted twice in this pass, is
     /// suppressed rather than re-raised.
     /// </summary>
@@ -42,7 +42,7 @@ namespace Stomme.Modules.CostOptimization.Application
         {
             var siteId = CostOptimizationScope.Site(siteState);
 
-            // CHANGED from the predecessor platform, which fell back to the default tenant: a recommendation is tenant-owned, so a
+            // A recommendation is tenant-owned (no fallback to a default tenant), so a
             // pass with no resolved tenant is refused rather than written to a guess.
             var tenantId = tenantContext.CurrentTenantId ?? throw new InvalidOperationException("A recommendation belongs to a tenant; none is resolved in this scope.");
             var now = clock.GetUtcNow().UtcDateTime;
@@ -87,7 +87,7 @@ namespace Stomme.Modules.CostOptimization.Application
         }
     }
 
-    /// <summary>Applies an open recommendation of the site, recording the action taken (the predecessor platform's).</summary>
+    /// <summary>Applies an open recommendation of the site, recording the action taken.</summary>
     [Requires(CostOptimizationPermissions.Manage)]
     public sealed record ApplyRecommendationCommand(Guid RecommendationId, string ActionTaken) : ICommand<RecommendationDecisionView>;
 
@@ -126,7 +126,7 @@ namespace Stomme.Modules.CostOptimization.Application
     }
 
     /// <summary>
-    /// Dismisses an open recommendation of the site with a reason (the predecessor platform's); the advisor suppresses its key for the
+    /// Dismisses an open recommendation of the site with a reason; the advisor suppresses its key for the
     /// cooldown - the request's days, or <see cref="AdvisorOptions.DismissCooldownDays"/>. A non-positive cooldown is
     /// refused by code, before the recommendation is read.
     /// </summary>
@@ -174,7 +174,7 @@ namespace Stomme.Modules.CostOptimization.Application
         }
     }
 
-    /// <summary>The site's recommendations, newest first, optionally by status and/or category (the predecessor platform's).</summary>
+    /// <summary>The site's recommendations, newest first, optionally by status and/or category.</summary>
     [Requires(CostOptimizationPermissions.View)]
     public sealed record ListRecommendationsQuery(RecommendationStatus? Status = null, RecommendationCategory? Category = null) : IQuery<IReadOnlyList<RecommendationView>>;
 

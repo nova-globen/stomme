@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Dashboards.Infrastructure
 {
     /// <summary>
-    /// The Dashboards module's demo content (D110 Q7): one published board over the demo datasets
+    /// The Dashboards module's demo content: one published board over the demo datasets
     /// an evaluator can open on <c>admin/dashboards</c> - a chart, a pivot, a grid and a KPI - written per site on the
     /// boot/upgrade path through the framework's <see cref="SiteContentReconciliationRunner"/>, ONLY while
     /// <c>DemoContent:Enabled</c> is true (default off; while it is off this type is not registered), and ADDITIVELY: a
@@ -50,8 +50,8 @@ namespace Stomme.Modules.Dashboards.Infrastructure
 
         // The columns go in a DATASET and `encode` names its dimensions - ECharts' own idiom, as the cloud cost board's specs use.
         // The first version put the "$column" tokens inside `encode`, which takes dimension NAMES: the series then held no data and
-        // drew nothing but an axis, on the Dashboards page and on the landing page alike (found by the owner's walk, 2026-09-29;
-        // ChartSpecTokenPlacementTests keeps a token out of `encode` in every in-tree spec).
+        // drew nothing but an axis, on the Dashboards page and on the landing page alike.
+        // ChartSpecTokenPlacementTests keeps a token out of `encode` in every in-tree spec.
         public const string SalesChartSpec = """{ "dataset": { "source": { "region": "$region", "amount": "$amount" } }, "xAxis": { "type": "category" }, "yAxis": { "type": "value" }, "series": [ { "type": "bar", "encode": { "x": "region", "y": "amount" } } ] }""";
 
         public string Name => "Demo dashboard";

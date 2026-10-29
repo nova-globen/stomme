@@ -9,7 +9,7 @@ using Stomme.Transport.Realtime;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Composition-root registration for Stomme's two opt-in transports (brief 04 / D10). Both are additive
+    /// Composition-root registration for Stomme's two opt-in transports. Both are additive
     /// and gated by the <c>Transport</c> configuration section: with neither enabled this method registers
     /// nothing beyond the shared <see cref="TransportOptions"/> snapshot, so the framework builds and runs
     /// exactly as before. Endpoint mapping (gRPC-Web services + hubs) is a separate step —
@@ -57,7 +57,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         /// Builds ONE hub policy: an authenticated user, plus - when the hub declares a permission - the
-        /// D99 permission-key requirement (BL-99 point 9).
+        /// permission-key requirement.
         /// </summary>
         /// <remarks>
         /// <para>

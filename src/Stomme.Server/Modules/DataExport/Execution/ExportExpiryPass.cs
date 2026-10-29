@@ -19,12 +19,12 @@ namespace Stomme.Modules.DataExport.Execution
     /// </summary>
     /// <remarks>
     /// <para>
-    /// the predecessor platform never purged an export: <c>DeleteAsync</c> had no caller, so every artifact ever rendered stayed on
-    /// disk. Here a Ready job past <c>ExpiresOnUtc</c> loses its bytes and its File row and becomes Expired - the job
+    /// Without a purge, every artifact ever rendered would stay on
+    /// disk. A Ready job past <c>ExpiresOnUtc</c> loses its bytes and its File row and becomes Expired - the job
     /// row stays as history - with an audit entry written at the transition, by this code.
     /// </para>
     /// <para>
-    /// <b>The purge deletes ONLY what is still in the Exports folder (refutation 14).</b> Folder Edit lets a file be
+    /// <b>The purge deletes ONLY what is still in the Exports folder.</b> Folder Edit lets a file be
     /// moved elsewhere; a File id the job remembers is not licence to delete whatever that row now is. A moved
     /// artifact is LEFT ALONE and logged, and the job still expires - the module stops vouching for it either way.
     /// </para>

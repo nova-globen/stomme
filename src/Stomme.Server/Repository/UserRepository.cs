@@ -38,8 +38,8 @@ namespace Stomme.Repository
     /// <para>
     /// Deliberately OUT of this cluster, mirroring the Sites/Pages/Modules precedent: the user's personal
     /// folder is created through <see cref="IFolderRepository"/> and auto-assigned roles through
-    /// <see cref="IRoleRepository"/>/<see cref="IUserRoleRepository"/>. The <c>IDbContextFactory</c> IS GONE
-    /// (D24): it survived the Users/Roles increment only for <c>db.Permission</c> in <see cref="DeleteUserAsync"/>,
+    /// <see cref="IRoleRepository"/>/<see cref="IUserRoleRepository"/>. The <c>IDbContextFactory</c> IS GONE:
+    /// it survived the Users/Roles increment only for <c>db.Permission</c> in <see cref="DeleteUserAsync"/>,
     /// and the Permission cluster is now on the seam, so this class holds no <c>DbContext</c> at all. It takes
     /// <see cref="IPermissionStore"/> rather than <see cref="IPermissionRepository"/> — the repository would
     /// close a container cycle through <c>PermissionRepository -&gt; IRoleRepository -&gt; ...</c>; a store has
@@ -215,7 +215,7 @@ namespace Stomme.Repository
             // db.Permission (see the remarks on this class for why it is the store and not the repository).
             // The UserId filter stays in the DATABASE, as db.Permission.Where did: the store's only read is
             // GetAllAsync, so reading through it would scan every permission in the tenant. Read filtered
-            // through the session, delete each detached aggregate through the store (D19/rule 9).
+            // through the session, delete each detached aggregate through the store.
             var permissions = await QueryAsync(session => session.Query<PermissionAggregate>()
                 .Where(item => item.UserId == userId)
                 .ToList());

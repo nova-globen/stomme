@@ -8,9 +8,9 @@ namespace Stomme.Tests.Formats
 {
     /// <summary>
     /// <see cref="FormatDescriptor.Format"/> and <see cref="FormatDescriptor.TryParse"/> never
-    /// throw. the predecessor platform's threw on two inputs a consumer cannot prevent - an unknown culture name on a descriptor built from
-    /// stored data (the <c>CultureInfo</c> getter) and a Local <see cref="DateTime"/> (the (value, Zero) constructor) -
-    /// both pinned here beside the time-zone cases the predecessor platform already had.
+    /// throw. A naive implementation throws on two inputs a consumer cannot prevent: an unknown culture name on a descriptor built from
+    /// stored data (the <c>CultureInfo</c> getter) and a Local <see cref="DateTime"/> (the (value, Zero) constructor).
+    /// Both are pinned here beside the time-zone cases.
     /// </summary>
     public sealed class FormatDescriptorNeverThrowsTests
     {

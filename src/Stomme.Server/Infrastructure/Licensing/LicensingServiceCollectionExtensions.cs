@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Stomme.Infrastructure.Licensing
 {
-    /// <summary>The composition half of D105 "The gate".</summary>
+    /// <summary>The composition half of the licensing gate.</summary>
     public static class LicensingServiceCollectionExtensions
     {
         /// <summary>

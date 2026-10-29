@@ -11,7 +11,7 @@ using Stomme.Portability;
 namespace Stomme.Modules.IdentityAudit.Application
 {
     /// <summary>
-    /// The identity audit lines ABOUT a person on a site, for their data package (BL-82 over BL-120): what happened to
+    /// The identity audit lines ABOUT a person on a site, for their data package: what happened to
     /// their account, when and from where. Lines where they were only the ACTOR on someone else's account are that other
     /// person's data and are not included.
     /// </summary>

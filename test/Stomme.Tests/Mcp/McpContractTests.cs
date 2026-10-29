@@ -13,10 +13,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// BL-80, increment 1 - the MCP contribution seam: what a descriptor REFUSES to be.
+    /// The MCP contribution seam: what a descriptor REFUSES to be.
     /// </summary>
     /// <remarks>
-    /// Every refusal here answers something measured on the predecessor platform: an empty gate list meant "every authenticated principal
+    /// Every refusal here answers something measured on an earlier version of the platform: an empty gate list meant "every authenticated principal
     /// on every site" and was the default; the one mutating tool arrived as Auto; a name decided by first-registration
     /// let a rogue module stand in front of a real handler. The last of those is the catalog's to enforce (a later
     /// increment); the first two are the constructor's, so they hold for a packaged module no scanner can see.
@@ -52,7 +52,7 @@ namespace Stomme.Tests.Mcp
         [Fact]
         public void A_descriptor_with_NO_gate_cannot_be_constructed()
         {
-            // the predecessor platform: Requires was optional, defaulted to empty, and empty meant invokable by every authenticated principal.
+            // An earlier version: Requires was optional, defaulted to empty, and empty meant invokable by every authenticated principal.
             var noResourceGate = Assert.Throws<ArgumentException>(() => new McpResourceDescriptor("stomme://site", "Site", "", null, Array.Empty<McpAccessGate>()));
             var noToolGate = Assert.Throws<ArgumentException>(() => new McpToolDescriptor("list_things", "", "{}", Array.Empty<McpAccessGate>(), McpToolApproval.Auto));
             _output.WriteLine(noResourceGate.Message);

@@ -18,7 +18,7 @@ namespace Stomme.Tests.Connectivity
     /// <see cref="HostConnectorEgress"/> behind the harness: a test's HTTP call to a private address is refused at connect
     /// and answered as the policy's category, an allowlisted host is admitted and the receiver hears the request; a
     /// driver-style connector asking for an address to dial is refused BEFORE dialling (null) and admitted when the host
-    /// is allowlisted; an extraction rides the same egress. The probe path joins in increment 11.
+    /// is allowlisted; an extraction rides the same egress, and so does the health probe.
     /// </summary>
     public sealed class ConnectionEgressTests
     {

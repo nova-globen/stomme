@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-// Lifted from the predecessor platform: the tier model and the router port are unchanged.
+// The model tier and the router port.
 namespace Stomme.CostOptimization
 {
     /// <summary>
@@ -24,7 +24,7 @@ namespace Stomme.CostOptimization
     }
 
     /// <summary>
-    /// Cheap, provider-neutral complexity signals for one AI request, as seen at the AI assistant (BL-97 increments 9-10)
+    /// Cheap, provider-neutral complexity signals for one AI request, as seen at the AI assistant's
     /// provider seam before the model is chosen.
     /// </summary>
     /// <param name="TokenEstimate">Estimated prompt token count.</param>
@@ -47,7 +47,7 @@ namespace Stomme.CostOptimization
     public sealed record ModelTierDecision(ModelTier Tier, string? Model = null);
 
     /// <summary>
-    /// Model auto-tiering port resolved per request by the AI assistant (BL-97 increments 9-10) provider seam: classifies
+    /// Model auto-tiering port resolved per request at the AI assistant's provider seam: classifies
     /// the request's complexity from cheap signals and maps the tier to the cheapest appropriate model.
     /// Cost Optimization owns the routing policy; the assistant owns provider invocation.
     /// </summary>

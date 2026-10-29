@@ -10,11 +10,11 @@
     and the WASM streaming drive asserts this Server assembly is EXCLUDED.
 
     INDEPENDENT: references Stomme ONLY through a meta-package from the local feed — since
-    BL-44 the SLIM one, Stomme.Sdk.Slim (examples/pack-sdk-slim.ps1): the module-facing compile
+    the slim one, Stomme.Sdk.Slim (examples/pack-sdk-slim.ps1): the module-facing compile
     surface without the fat Stomme.Server closure (measured: 180 packages / ~1.2 GB restored down to
     the curated slim set). The ASP.NET Core surface arrives via the Stomme.Server.Sdk shim's
     Microsoft.AspNetCore.App framework reference, exactly as it did via the fat package. STORAGE-BLIND
-    (owner's bar #2): the module still authors ZERO EF DbContext / RavenDB store / file store /
+    STORAGE-BLIND: the module still authors ZERO EF DbContext / RavenDB store / file store /
     provider branch.
   -->
   <PropertyGroup>

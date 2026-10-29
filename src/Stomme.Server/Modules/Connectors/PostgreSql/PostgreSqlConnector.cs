@@ -11,7 +11,7 @@ using Npgsql;
 namespace Stomme.Modules.Connectors.PostgreSql
 {
     /// <summary>
-    /// The PostgreSQL connector (lifted from the predecessor platform's `postgresql`): the endpoint is an Npgsql connection
+    /// The PostgreSQL connector: the endpoint is an Npgsql connection
     /// string WITHOUT credentials (a connection string is never a place for a credential); the Basic scheme's
     /// <c>username</c>/<c>password</c> are applied from the per-site secret store. A test opens a connection and runs
     /// <c>SELECT 1</c> within the timeout; the <c>query</c> operation runs a statement and streams each row into a record, its

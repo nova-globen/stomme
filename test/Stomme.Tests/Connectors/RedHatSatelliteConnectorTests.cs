@@ -10,7 +10,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 4 - the predecessor platform's RedHatSatelliteConnectorTests (11) by name over the port.</summary>
+    /// <summary>The Red Hat Satellite connector cases (11), carried over by name, run over the port.</summary>
     public sealed class RedHatSatelliteConnectorTests
     {
         private const string Server = "https://satellite.example.com";

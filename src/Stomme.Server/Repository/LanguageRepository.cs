@@ -48,7 +48,7 @@ namespace Stomme.Repository
     /// <para>
     /// COST: that un-defaulting is now one round trip per row where the harvested code batched every row and
     /// the insert into a single <c>SaveChanges</c>. The seam has no unit of work spanning aggregates — the same
-    /// regression D24 accepted for <c>UpdatePermissions</c>. A site has a handful of languages, so the row
+    /// regression accepted for <c>UpdatePermissions</c>. A site has a handful of languages, so the row
     /// count is small; the consequence that matters is not speed but atomicity: a failure part-way now leaves
     /// earlier rows un-defaulted. See src/Stomme.Server/README.md (persistence seam).
     /// </para>
@@ -118,7 +118,7 @@ namespace Stomme.Repository
             // The harvested code guarded the write with `if (language.LanguageId != 0)` — an unsaved language
             // was never marked Modified and SaveChanges simply skipped it. Preserved: a keyed write of id 0
             // would be an UPDATE matching no row rather than a no-op, and on RavenDB a blind upsert to
-            // Language/0 (see the D25 guard).
+            // Language/0 (see the guard below).
             if (language.LanguageId != 0)
             {
                 await _store.UpdateAsync(LanguageMapper.ToAggregate(language, assignId: true));
@@ -159,7 +159,7 @@ namespace Stomme.Repository
                 aggregate.IsDefault = false;
 
                 // A detached aggregate read through a session, written through the store's own clean tracker
-                // (D19). One SaveChanges per row — see the class remarks for the cost this trades.
+                // (so no tracked instance conflicts). One SaveChanges per row — see the class remarks for the cost this trades.
                 await _store.UpdateAsync(aggregate);
             }
         }

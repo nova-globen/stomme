@@ -117,7 +117,7 @@ namespace Stomme.Controllers
         /// </summary>
         /// <remarks>
         /// <see cref="UserSecurity.IsAuthorized(Models.User, string, List{Permission})"/> filters on
-        /// <c>PermissionName</c> ALONE, and since D99 the read path MERGES the declared keys' foreign rows into
+        /// <c>PermissionName</c> ALONE, and the read path MERGES the declared keys' foreign rows into
         /// this list - so an operation half that collided with <c>Utilize</c> would help decide who may see the
         /// definition. Today only casing keeps them apart (a key is lower-cased, the framework's names are
         /// TitleCase), which is an accident, not a check. The list is filtered to the definition's own entity
@@ -187,7 +187,7 @@ namespace Stomme.Controllers
                 : null;
             if (current != null)
             {
-                // D99 point 4 / F10. Everything below the ModuleDefinition entity is a SITE-WIDE row:
+                // Everything below the ModuleDefinition entity is a SITE-WIDE row:
                 // UpdatePermissionsAsync stamps any row whose EntityName differs from ModuleDefinition with
                 // EntityId -1, so an unvalidated PUT let an ADMINISTRATOR grant themselves an arbitrary
                 // framework policy (User:Write and friends) through a module's own editor - driven, it
@@ -509,7 +509,7 @@ namespace Stomme.Controllers
             // A generated module references Stomme through ONE package, Stomme.Sdk.Slim: at the chosen release,
             // restored from the framework's package feed - or, for "local", at this framework's own version from the slim SDK
             // packed out of this source tree (examples/local-feed, examples/pack-sdk-slim.ps1). The old template referenced
-            // the Debug build's DLLs by path instead, which D81 retired. "Local" is the version this tree's
+            // the Debug build's DLLs by path instead, which is no longer done. "Local" is the version this tree's
             // packages carry, so a preview's label too: the release number alone names no package on a preview's feed.
             var local = moduleDefinition.Version == "local";
             var frameworkVersion = local ? Constants.PackageVersion : moduleDefinition.Version;

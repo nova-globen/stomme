@@ -27,8 +27,8 @@ namespace Stomme.Modules.Health.Application
     /// </summary>
     /// <remarks>
     /// A seam rather than a direct call to the notification dispatcher, for two reasons that both turned out to
-    /// matter. It lets the transition machine be driven end to end without the notification stack — the predecessor platform's
-    /// policy could not be tested without it, which is why its recovery branch was never exercised. And it keeps
+    /// matter. It lets the transition machine be driven end to end without the notification stack — a policy that
+    /// needs it cannot be tested, and its recovery branch goes unexercised. And it keeps
     /// alerting OPTIONAL: an install with alerting off gets the no-op sink, and the probe job still records
     /// everything it observes, so the history is there when someone turns alerting on.
     /// </remarks>

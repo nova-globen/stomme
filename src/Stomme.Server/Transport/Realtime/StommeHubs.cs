@@ -11,10 +11,10 @@ namespace Stomme.Transport.Realtime
     // live notification feed can name the route; AssemblyInfo.cs forwards the type.
 
     /// <summary>
-    /// In-app realtime notifications (brief 04 / D10). The server pushes a rendered notification to the
+    /// In-app realtime notifications. The server pushes a rendered notification to the
     /// <see cref="NotificationMethod"/> client method, targeted to the recipient user — SignalR's per-user
     /// grouping (<c>Clients.User</c>) resolves every connection authenticated as that user id. Authenticated;
-    /// carries no client-callable methods (server-push only). Adopted from the predecessor platform's <c>NotificationHub</c>.
+    /// carries no client-callable methods (server-push only).
     /// </summary>
     [Authorize]
     public sealed class NotificationHub : Hub
@@ -24,8 +24,8 @@ namespace Stomme.Transport.Realtime
     }
 
     /// <summary>
-    /// Realtime health (brief 04 / D10): the health page's live update, and the live connection count
-    /// <see cref="RealtimeConnectionCounter"/> reports. Adopted from the predecessor platform's <c>HealthHub</c>.
+    /// Realtime health: the health page's live update, and the live connection count
+    /// <see cref="RealtimeConnectionCounter"/> reports.
     /// </summary>
     /// <remarks>
     /// <para>

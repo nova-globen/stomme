@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-100 F1 (D109 items 1, 10, 14, 15): ONE file-ingestion guard over every <c>FileController</c> path that brings
+    /// One file-ingestion guard over every <c>FileController</c> path that brings
     /// bytes into a folder - the form/chunked upload, the unzip, and the upload-by-URL - driven over real HTTP through
     /// the composed host on SQLite (the <see cref="GateDrive"/> recipe), logged in as host.
     /// </summary>

@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Cylance
 {
     /// <summary>
-    /// BlackBerry Cylance (lifted from the predecessor platform's <c>cylance</c>): the console's bespoke JWT-assertion
+    /// BlackBerry Cylance: the console's bespoke JWT-assertion
     /// exchange (an ApiKeyPair - the application id and secret - plus the tenant id setting feeding the assertion's
     /// <c>tid</c> claim) through <see cref="CylanceTokenClient"/>, the legacy region enum collapsed into the endpoint
     /// (regional hosts such as <c>protectapi-euc1.cylance.com</c> are endpoint overrides), 1-based <c>page</c>/<c>page_size</c>

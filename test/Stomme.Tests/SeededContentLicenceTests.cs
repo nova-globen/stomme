@@ -8,7 +8,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// What every new install shows its visitors states the licence the product has (PolyForm Noncommercial
-    /// OR PolyForm Small Business, a commercial licence for everyone else; D98's "all rights reserved" until 2026-10-26). Found on 2026-10-01 on a fresh install's home page: the default site template still seeded "an open source
+    /// OR PolyForm Small Business, a commercial licence for everyone else; "all rights reserved" no longer applies). Observed on a fresh install's home page: the default site template still seeded "an open source
     /// multi-tenant CMS", the full MIT licence text under the title "MIT License", MySQL among the stores (removed) and a
     /// <c>git clone</c> of a GitHub repository that does not exist - on every install and every app made from the template,
     /// while every package declares the proprietary licence. The 22 module definitions named that repository as
@@ -16,7 +16,7 @@ namespace Stomme.Tests
     /// </summary>
     public sealed class SeededContentLicenceTests
     {
-        // D115 replaced D98's "all rights reserved" for everything published, so its wording is forbidden too.
+        // The published text states the PolyForm licence instead, so "all rights reserved" is forbidden too.
         private static readonly string[] Forbidden =
         {
             "MIT License", "Permission is hereby granted", "open source", "github.com/nova-globen", "MySQL",
@@ -34,7 +34,7 @@ namespace Stomme.Tests
             Assert.Contains("Required Notice: Copyright Nova Globen AB (https://nova-globen.se)", template, StringComparison.Ordinal);
         }
 
-        // 2026-10-28 (the rebranding, infra's ruling C18): the public repository exists now, so a module definition names
+        // The public repository exists now, so a module definition names
         // it as its contact and the product page as its URL - and no other host.
         [Fact]
         public void Every_module_definition_names_the_product_page_and_the_public_repository()

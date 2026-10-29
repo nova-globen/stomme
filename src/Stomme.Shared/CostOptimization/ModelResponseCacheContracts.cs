@@ -7,12 +7,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-// Lifted from the predecessor platform: the key and the port are unchanged; BCL-only like every Shared contract.
+// The response-cache key and port. BCL-only like every Shared contract.
 namespace Stomme.CostOptimization
 {
     /// <summary>
     /// One prompt message (role + content) contributing to a <see cref="ModelResponseCacheKey"/>. The
-    /// consumer (the AI assistant, BL-97 increments 9-10) maps its provider-specific message type onto this neutral
+    /// consumer (the AI assistant) maps its provider-specific message type onto this neutral
     /// shape so the key stays provider-library free.
     /// </summary>
     /// <param name="Role">The message's chat role (e.g. <c>system</c>, <c>user</c>, <c>assistant</c>).</param>

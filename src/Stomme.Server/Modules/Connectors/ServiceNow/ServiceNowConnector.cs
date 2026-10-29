@@ -19,13 +19,13 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.ServiceNow
 {
     /// <summary>
-    /// ServiceNow (lifted from the predecessor platform's <c>servicenow</c>): any Table-API table paged by offset, a short
+    /// ServiceNow: any Table-API table paged by offset, a short
     /// or empty page a clean stop (the legacy bridge threw on an empty page), reference objects collapsed to one
     /// <c>{name}_value</c> column, a pasted API URL forgiven down to the instance. Basic credentials; every request through
     /// the host's egress.
     /// </summary>
     /// <remarks>
-    /// BL-229 (n8n's ServiceNow node) adds a record got, created, updated and deleted in any table, and an incident created and
+    /// Beyond those, matching n8n's ServiceNow node, it offers a record got, created, updated and deleted in any table, and an incident created and
     /// updated by its own fields - <c>table</c> unchanged but for an optional <c>max</c> and a step's own display values.
     /// A record's values are a JSON object of columns and values; every table, sys_id, column, value and choice held to its
     /// shape before anything is sent. A written record comes back as ServiceNow keeps it now, its references collapsed as

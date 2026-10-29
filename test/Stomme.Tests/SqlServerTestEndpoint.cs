@@ -9,7 +9,7 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Env-overridable, defaulting to the <b>shared INFRA TIER UAT</b> instance (<c>192.168.10.20:1434</c>, SQL Server 2025
+    /// Env-overridable, defaulting to the <b>shared</b> instance (<c>192.168.10.20:1434</c>, SQL Server 2025
     /// Developer) as <c>sa</c>, with the password from <c>DEFAULT_PASSWORD</c>, set in the environment of the test run (the
     /// shared server keeps the SA password with PostgreSQL's).
     /// </para>

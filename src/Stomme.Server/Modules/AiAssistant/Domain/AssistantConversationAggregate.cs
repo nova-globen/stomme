@@ -48,15 +48,13 @@ namespace Stomme.Modules.AiAssistant.Domain
     public sealed record ArtifactAppliedEvent(Guid ConversationId, Guid ArtifactId, string Kind) : DomainEvent;
 
     /// <summary>
-    /// A conversation between a user and the assistant (lifted from the predecessor platform's
-    /// <c>AssistantConversation</c>): the transcript, the datasets vetted as model context, and the artifacts agents have
-    /// proposed. Its invariants are the predecessor platform's: only dataset SUMMARIES are shared with a model unless raw rows are opted in;
+    /// A conversation between a user and the assistant: the transcript, the datasets vetted as model context, and the artifacts agents have
+    /// proposed. Its invariants: only dataset SUMMARIES are shared with a model unless raw rows are opted in;
     /// a proposed artifact may reference only datasets already attached (and so already vetted for the user); an artifact
     /// is never auto-applied - applying is a separate step that routes through the owning module's gated command.
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED:</b> the predecessor platform's conversation belonged to a tenant GUID and a string user id; here it is TENANT-OWNED (BL-111:
-    /// the storage-blind store is one per installation) and belongs to a SITE of that tenant and a Stomme user id, as every
+    /// A conversation is TENANT-OWNED (the storage-blind store is one per installation) and belongs to a SITE of that tenant and a Stomme user id, as every
     /// Stomme page-owned aggregate does. It holds the user's own text, so the right-to-erasure seam DELETES it. The
     /// transcript, the context and the artifacts ride the module store's JSON collection columns.
     /// </remarks>

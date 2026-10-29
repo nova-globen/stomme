@@ -8,9 +8,9 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-228 (BL-221's correction): the <c>?v=</c> on the site's own static assets is the hash of their CONTENT - the same on
-    /// every boot of one build, different as soon as a file is. BL-221 hashed <c>InstallationDate</c>, which a container
-    /// rewrites at every boot (UAT, 10.7.0: <c>F8427461</c> to <c>F84FA39D</c>, the boot minute's hash, across one restart).
+    /// The <c>?v=</c> on the site's own static assets is the hash of their CONTENT - the same on
+    /// every boot of one build, different as soon as a file is. An earlier version hashed <c>InstallationDate</c>, which a container
+    /// rewrites at every boot (observed on a deployed host, 10.7.0: <c>F8427461</c> to <c>F84FA39D</c>, the boot minute's hash, across one restart).
     /// </summary>
     public sealed class SiteFingerprintTests : IDisposable
     {
@@ -82,7 +82,7 @@ namespace Stomme.Tests
             Assert.Equal(SiteAssetFingerprint.Files.Count, System.Text.RegularExpressions.Regex.Matches(app, @"\?v=@_fingerprint").Count);
         }
 
-        // A module's or a theme's ?v= (found on UAT 2026-10-06: the pipeline editor's script kept one fingerprint across
+        // A module's or a theme's ?v= (observed: the pipeline editor's script kept one fingerprint across
         // releases, served by the CDN from its cache): a new framework version or a new declared version is a new URL; the same
         // row in the same build is the same one; a Save (ModifiedOn) still busts it.
         [Fact]

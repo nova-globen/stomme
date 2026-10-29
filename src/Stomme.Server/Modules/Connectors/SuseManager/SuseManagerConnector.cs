@@ -16,7 +16,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.SuseManager
 {
     /// <summary>
-    /// SUSE Manager / Uyuni (lifted from the predecessor platform's <c>susemanager</c>): the XML-RPC surface - a session
+    /// SUSE Manager / Uyuni: the XML-RPC surface - a session
     /// opened with the Basic credentials, the systems listed, each system optionally merged with its
     /// <c>listActiveSystemsDetails</c> row, the session closed best-effort - a pasted <c>/rpc/api</c> suffix forgiven.
     /// Every request through the host's egress.

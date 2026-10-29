@@ -10,8 +10,8 @@ namespace Stomme.Modules.Notifications.Domain
     /// A configured delivery medium for a SITE - e-mail, in-app, webhook or SMS - owning its kind-specific
     /// <see cref="TransportSettings"/> (a credential only as a site secret store reference key), an optional
     /// <see cref="RateLimit"/>, and an enablement flag. A disabled channel is skipped at delivery. Every create /
-    /// reconfigure / toggle raises <see cref="ChannelConfiguredEvent"/>. Lifted from the predecessor platform <c>NotificationChannel</c>
-    /// (BL-78), tenant-owned + <see cref="SiteId"/>, with <see cref="NameNormalized"/> maintained for the D49 lookup.
+    /// reconfigure / toggle raises <see cref="ChannelConfiguredEvent"/>. Tenant-owned + <see cref="SiteId"/>,
+    /// with <see cref="NameNormalized"/> maintained for the normalized lookup.
     /// </summary>
     public sealed class NotificationChannelAggregate : AggregateRoot<Guid>, ITenantOwned
     {
@@ -33,7 +33,7 @@ namespace Stomme.Modules.Notifications.Domain
 
         public string Name { get; private set; }
 
-        /// <summary><see cref="Name"/> upper-invariant - the D49 normalized lookup column.</summary>
+        /// <summary><see cref="Name"/> upper-invariant - the normalized lookup column.</summary>
         public string NameNormalized { get; private set; }
 
         public bool Enabled { get; private set; }
@@ -42,7 +42,7 @@ namespace Stomme.Modules.Notifications.Domain
 
         public RateLimit? RateLimit { get; private set; }
 
-        /// <summary>The D49 normalization of a channel name: trimmed, upper-invariant. Apply to BOTH sides of a lookup.</summary>
+        /// <summary>The normalization of a channel name: trimmed, upper-invariant. Apply to BOTH sides of a lookup.</summary>
         public static string NormalizeName(string name) => (name ?? string.Empty).Trim().ToUpperInvariant();
 
         public static NotificationChannelAggregate Create(

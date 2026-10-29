@@ -8,14 +8,14 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// <c>api/Health</c> tells the page whether probing is ON (found by a browser drive on 2026-09-23): with
-    /// <c>Health:Enabled = false</c> - what the shipped configuration carried while BL-83 was incomplete, and what an operator
+    /// <c>api/Health</c> tells the page whether probing is ON (found by a browser drive): with
+    /// <c>Health:Enabled = false</c> - what the shipped configuration carried while probing was incomplete, and what an operator
     /// can still set - the page promised a tick "every minute" that the job, logging "Health Probing Is Disabled", would never
     /// deliver.
     /// </summary>
     /// <remarks>
     /// Driven over HTTP on a real install, because the handler must read the MERGED configuration (the override file
-    /// where an install keeps the switch - BL-162), and only a real host composes that.
+    /// where an install keeps the switch), and only a real host composes that.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     public class HealthDashboardSwitchTests
@@ -27,7 +27,7 @@ namespace Stomme.Tests
         public HealthDashboardSwitchTests(ITestOutputHelper output) => _output = output;
 
         [Theory]
-        [InlineData(null, true)]       // the shipped appsettings.json: Health:Enabled = true (D104's default, since BL-83 closed)
+        [InlineData(null, true)]       // the shipped appsettings.json: Health:Enabled = true (the default)
         [InlineData(false, false)]     // switched OFF in the override file, where a deployed install keeps it
         public async Task The_dashboard_carries_whether_probing_is_ON(bool? enabled, bool expected)
         {

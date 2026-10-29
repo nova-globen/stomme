@@ -12,7 +12,7 @@ using Stomme.Notifications.Persistence;
 namespace Stomme.Modules.Notifications.Application
 {
     /// <summary>
-    /// The outcome of one delivery pass over a request (lifted from the predecessor platform <c>DeliveryOutcome</c>): processed (the attempts
+    /// The outcome of one delivery pass over a request: processed (the attempts
     /// reflect the result), deferred for quiet hours (<see cref="DeferFor"/>), or held for the digest (<see cref="IsDigestQueued"/>).
     /// </summary>
     public sealed record DeliveryOutcome(TimeSpan? DeferFor, bool IsDigestQueued = false)
@@ -28,7 +28,7 @@ namespace Stomme.Modules.Notifications.Application
     public sealed record RecipientPreference(Recipient Recipient, NotificationPreferenceAggregate? Preference);
 
     /// <summary>
-    /// A pure, server-side preference plan for one request (lifted from the predecessor platform <c>NotificationPreferencePlan</c>, instants as
+    /// A pure, server-side preference plan for one request (instants as
     /// UTC <see cref="DateTime"/>): per channel, which recipients remain after their channel/severity/topic preferences; whether
     /// the whole request is held for the digest; whether it is deferred for quiet hours.
     /// </summary>
@@ -106,7 +106,7 @@ namespace Stomme.Modules.Notifications.Application
         }
     }
 
-    /// <summary>Loads each user recipient's preferences (per SITE, int user id - F10) and builds the pure plan.</summary>
+    /// <summary>Loads each user recipient's preferences (per SITE, int user id) and builds the pure plan.</summary>
     public sealed class NotificationPreferenceResolver
     {
         private readonly INotificationPreferenceRepository _preferences;

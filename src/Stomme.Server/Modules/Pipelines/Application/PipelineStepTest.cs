@@ -56,7 +56,7 @@ namespace Stomme.Modules.Pipelines.Application
                 return new StepTestResult { Status = "Refused", Error = ex.ParamName is null ? ex.Message : ex.Message.Replace($" (Parameter '{ex.ParamName}')", string.Empty, StringComparison.Ordinal) };
             }
 
-            // BL-229 (n8n's pinned data): a pinned step hands its pinned result on in place of running - every one the test holds
+            // (n8n's pinned data): a pinned step hands its pinned result on in place of running - every one the test holds
             // but the step tested itself, as testing it is how its result is had again.
             var pinned = alone.Steps.Where(step => step.PinnedResult is not null && (request.Whole || step.Id != request.StepId))
                 .ToDictionary(step => step.Id, step => step.PinnedResult!, StringComparer.Ordinal);
@@ -148,7 +148,7 @@ namespace Stomme.Modules.Pipelines.Application
         }
 
         /// <summary>
-        /// BL-229 (n8n tests a step with what leads to it): the step and every step that leads to it in its own flowchart - each
+        /// (n8n tests a step with what leads to it): the step and every step that leads to it in its own flowchart - each
         /// one a connection path reaches it from - with what their bodies hold, lifted to the pipeline's own level when the step
         /// sits in a body; the connections among them; the variables as <see cref="Alone"/> gives them. A step that leads here
         /// and is switched off stays off, as a run would skip it; the step tested runs whatever its switch says.
@@ -200,7 +200,7 @@ namespace Stomme.Modules.Pipelines.Application
         }
 
         /// <summary>
-        /// BL-229 (n8n's "Test workflow"): the whole pipeline as it stands on the canvas, saved or not - every step, every
+        /// (n8n's "Test workflow"): the whole pipeline as it stands on the canvas, saved or not - every step, every
         /// connection, a switched-off step skipped as a run skips it - so the same document a published run would start from;
         /// the variables as <see cref="Alone"/> gives them. Null when there is no step at all.
         /// </summary>

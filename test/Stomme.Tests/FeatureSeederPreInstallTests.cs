@@ -23,7 +23,7 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The fast, every-commit guard for D68's fix: on the wizard path the feature seeder runs at host start
+    /// A fast guard for the seeder's pre-install fix: on the wizard path the feature seeder runs at host start
     /// BEFORE any database exists, so enumerating tenants through <see cref="ITenantDirectory"/> reaches a
     /// master store that is not there and throws. That is an EXPECTED boot state — no site is served
     /// pre-install — so the seeder must swallow it QUIETLY (no Error-level log) and defer, and then seed

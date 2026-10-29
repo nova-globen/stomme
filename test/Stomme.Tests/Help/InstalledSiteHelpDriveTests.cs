@@ -16,12 +16,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84's D30 bar: contextual help on a REAL installed site, on PostgreSQL AND RavenDB - installed, booted twice,
+    /// Contextual help on a REAL installed site, on PostgreSQL AND RavenDB - installed, booted twice,
     /// the admin page rendering, the framework topics reconciled once, a Static page view with help and no circuit, an
     /// authored topic that saves and re-renders, and the locale chain falling back.
     /// </summary>
     /// <remarks>
-    /// SQLite cannot reproduce the renderer-deadlock class (its async surface completes synchronously - D29/D30), so the
+    /// SQLite cannot reproduce the renderer-deadlock class (its async surface completes synchronously), so the
     /// render half of this is run where it can fail. Both providers FAIL rather than skip.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]

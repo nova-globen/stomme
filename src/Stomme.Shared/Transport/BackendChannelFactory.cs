@@ -4,7 +4,7 @@ using Grpc.Core;
 namespace Stomme.Transport
 {
     /// <summary>
-    /// Supplies gRPC channels to the backend origin for typed transport clients (brief 04 / D10). One of
+    /// Supplies gRPC channels to the backend origin for typed transport clients. One of
     /// these is registered per runtime and resolved from DI wherever a module needs a channel, so a module
     /// never constructs the transport itself and the render-mode-specific wiring lives in exactly one place:
     /// <list type="bullet">
@@ -13,7 +13,7 @@ namespace Stomme.Transport
     /// <item>On the server (interactive Server / Static SSR / the host itself) the factory creates a plain
     /// HTTP/2 <c>GrpcChannel</c> to the local loopback endpoint — no gRPC-Web needed in-process.</item>
     /// </list>
-    /// This is the deliberate divergence from the predecessor platform's ADR 0016, which welds a single WASM shell to a
+    /// This deliberately avoids welding a single WASM shell to a
     /// gRPC-Web-only egress: Stomme is multi-render-mode, so the channel transport is chosen by runtime.
     /// </summary>
     public sealed class BackendChannelFactory

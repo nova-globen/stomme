@@ -12,7 +12,7 @@ namespace Stomme.Tests.Collaboration
 {
     /// <summary>
     /// Presence lives on a heartbeat. Found driving two browsers: a host restart killed one editor's
-    /// circuit, it never said it left, and it stayed a participant - so its session could never close. the predecessor platform released a
+    /// circuit, it never said it left, and it stayed a participant - so its session could never close. Another design released a
     /// dropped editor from its hub's disconnect; here the editor talks through the API, so a participant carries when it was
     /// last heard from, its heartbeat tells nobody, and the sweep forgets one silent past the presence window, closing a
     /// session it leaves empty. Mutation-checked: a sweep that ignores the cutoff, and a heartbeat that does not touch.

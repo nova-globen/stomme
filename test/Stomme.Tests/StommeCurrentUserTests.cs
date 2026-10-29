@@ -9,8 +9,8 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Pins the NARROWED <see cref="Stomme.Security.Abstractions.ICurrentUser"/> of the authorization bridge
-    /// (D99 point 6): id / name / authenticated / roles / site, and nothing else. The site rule is the
+    /// Pins the NARROWED <see cref="Stomme.Security.Abstractions.ICurrentUser"/> of the authorization bridge:
+    /// id / name / authenticated / roles / site, and nothing else. The site rule is the
     /// load-bearing one — it must be the SAME source <see cref="PermissionRowAccessGuard"/> scopes its rows by
     /// (the request-resolved alias, -1 when there is none), or "who am I" and "what may I do" answer for two
     /// different sites on the same request.

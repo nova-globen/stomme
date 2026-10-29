@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Stomme.CloudUsage;
 using Stomme.Modules.CloudUsage.Domain;
 
-// Lifted from the predecessor platform: the payload mapping is unchanged; only the namespaces moved.
+// Maps a SaaS or generic REST cost payload onto the Unified Cost Schema.
 namespace Stomme.Modules.CloudUsage.Providers
 {
     /// <summary>

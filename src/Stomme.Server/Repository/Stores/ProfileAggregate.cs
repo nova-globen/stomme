@@ -20,7 +20,7 @@ namespace Stomme.Repository.Stores
     /// <b>THE ONE INBOUND REPOSITORY EDGE IN THIS BATCH.</b> <see cref="SiteRepository"/> takes
     /// <see cref="IProfileRepository"/> and seeds eight default profile properties on every site creation. The
     /// edge is INBOUND only and this cluster takes no repository at all, so it cannot close a container cycle
-    /// (D22 rule 8) — but it does put this cluster on the site-creation path, which is the installer. Do not
+    /// — but it does put this cluster on the site-creation path, which is the installer. Do not
     /// add a repository dependency here without re-running that check; taking
     /// <see cref="ISiteRepository"/> back would deadlock the container.
     /// </para>

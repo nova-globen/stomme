@@ -14,7 +14,7 @@ namespace Stomme.Tests
     /// <summary>
     /// The observable contract of the provider-neutral <c>IRepository.FindAsync</c>, expressed ONCE and
     /// DRIVEN against BOTH providers it must behave identically on (EF Core / SQLite and a LIVE RavenDB), the
-    /// same fail-not-skip shape as the D46 parity suite and the D76 Guestbook conformance suite. A subclass
+    /// same fail-not-skip shape as the parity suite and the Guestbook conformance suite. A subclass
     /// supplies the store; the tests below know nothing about either provider.
     /// <para>
     /// This is the evidence for the whole modularity effort's crux (src/Stomme.SharedKernel/README.md): a storage-blind
@@ -25,7 +25,7 @@ namespace Stomme.Tests
     ///     <c>DateTime</c> range, and boolean composition) — asserted to return the SAME rows on both providers,
     ///     which the abstract-then-two-fixtures structure proves by running the identical assertions on each.</item>
     ///   <item>the <b>STRING boundary</b> — a raw mixed-case <c>==</c> is DEMONSTRATED to DIVERGE (EF/SQLite
-    ///     case-sensitive misses it; RavenDB case-insensitive matches it), and the D49 normalized-column pattern
+    ///     case-sensitive misses it; RavenDB case-insensitive matches it), and the normalized-column pattern
     ///     is proven to make the two providers AGREE. This is the boundary the contract documents, MEASURED here
     ///     rather than asserted in prose.</item>
     /// </list>
@@ -148,8 +148,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// <c>long</c> is already NAMED in the FindAsync safe set; what was missing was the evidence (D102 binding
-        /// item 11). These two cases are it - equality and a range, over values well past <c>int</c>, on every
+        /// <c>long</c> is already NAMED in the FindAsync safe set; what was missing was the evidence. These two cases are it - equality and a range, over values well past <c>int</c>, on every
         /// provider the suite runs against. Metering counts in <c>long</c>, so "it is in the list" was not enough.
         /// </summary>
         [Fact]
@@ -250,7 +249,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task Normalized_string_equality_AGREES_across_providers()
         {
-            // The D49 pattern: compare the normalized COLUMN against the SAME normalization of the argument
+            // The normalized-column pattern: compare the normalized COLUMN against the SAME normalization of the argument
             // (upper-invariant, in code — not translated by the provider). Both providers return the two "Hello"
             // rows regardless of the argument's original case, so the neutral query is safe for text this way.
             var normalized = "hello".ToUpperInvariant();

@@ -34,7 +34,7 @@ namespace Stomme.Tests
         }
 
         [Theory]
-        [InlineData("false", 0)] // explicit override: Interactive install, prerender OFF (the BL-57 fix)
+        [InlineData("false", 0)] // explicit override: Interactive install, prerender OFF
         [InlineData("true", 1)]  // explicit override: prerender ON
         [InlineData("", 1)]      // default preserved: Interactive => prerender ON
         public async Task Interactive_install_honours_the_prerender_override(string prerender, int expected)

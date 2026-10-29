@@ -49,7 +49,7 @@ namespace NovaGloben.Module.KnowledgeBase.Startup
             services.AddScoped<Stomme.SharedKernel.Domain.IDomainEventHandler<ArticlePublishedEvent>, ArticlePublishedDomainEventHandler>();
             services.TryAddEnumerable(ServiceDescriptor.Singleton<Stomme.Modules.Notifications.Application.Templates.INotificationTemplateSource, KnowledgeBaseTemplateSource>());
 
-            // The discovery seams (increment 4). The help topics and the feature flag are found by the host's convention, and
+            // The discovery seams. The help topics and the feature flag are found by the host's convention, and
             // the server manager (search, sitemap) is created by the host from ModuleDefinition.ServerManagerType. The MCP
             // contribution needs the mediator, so it is registered here - and only while the host's MCP server half is
             // composed: with it off the host has no catalog, and a module must not contribute to one that does not exist.
@@ -58,14 +58,14 @@ namespace NovaGloben.Module.KnowledgeBase.Startup
                 services.AddScoped<Stomme.Mcp.IMcpContributor, KnowledgeBaseMcpContributor>();
             }
 
-            // The data duties (increment 5): the author's articles in their data package and in an erasure, and the
+            // The data duties: the author's articles in their data package and in an erasure, and the
             // published articles as an export source. Module content export/import is the server manager's IPortable,
             // and a backup carries both aggregates with no code here at all - AddModuleAggregatePersistence registered them.
             services.AddScoped<Stomme.Portability.ISubjectDataContributor, KnowledgeBaseSubjectDataContributor>();
             services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, KnowledgeBaseErasureParticipant>();
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Export.IExportSource, KnowledgeBaseArticlesExportSource>());
 
-            // The operations (increment 6): the stale-drafts probe on the host's health monitor, its threshold read per scope from
+            // The operations: the stale-drafts probe on the host's health monitor, its threshold read per scope from
             // the host's configuration (the override file a deployed install writes); and the demo articles, composed
             // only while the host's demo switch is on at composition - off, nothing is seeded and nothing is registered.
             services.AddScoped<Stomme.Health.IHealthContributor>(sp => new KnowledgeBaseHealthContributor(

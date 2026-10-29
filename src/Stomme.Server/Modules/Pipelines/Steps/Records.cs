@@ -9,7 +9,7 @@ using System.Text.Json.Nodes;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// The records shape the data steps share: a JSON array of flat objects (the predecessor platform's JSON payload). A single object
+    /// The records shape the data steps share: a JSON array of flat objects. A single object
     /// is one record; anything else is refused with the reason, never silently treated as empty.
     /// </summary>
     internal static class Records

@@ -39,7 +39,7 @@ namespace Stomme.Tests
 
         [Theory]
         [InlineData("123")]                              // the legacy cookie: an id alone
-        [InlineData("123|9/30/2026 10:00:00 PM")]        // the plain cookie every visitor carried before BL-185
+        [InlineData("123|9/30/2026 10:00:00 PM")]        // the plain cookie every visitor carried before it was protected
         [InlineData("")]
         [InlineData("not-a-protected-value")]
         public void A_value_the_host_did_not_issue_proves_no_visitor(string value)

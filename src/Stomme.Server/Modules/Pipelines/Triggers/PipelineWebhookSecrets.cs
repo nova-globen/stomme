@@ -10,7 +10,7 @@ using Stomme.Modules.Pipelines.Steps;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// A webhook's OWN secret (owner 2026-10-10): a secret for one webhook name of one site, kept in the site's secret
+    /// A webhook's OWN secret: a secret for one webhook name of one site, kept in the site's secret
     /// store and made by the editor - so a pipeline's author can hand one caller a secret that opens one webhook, and
     /// renew it without a host's configuration change. Signing is HMAC as before. A name with no secret of its own takes the
     /// installation's (<c>Pipelines:Webhooks:Secret</c> or <c>SecretFile</c>), so the callers set up before this keep working;

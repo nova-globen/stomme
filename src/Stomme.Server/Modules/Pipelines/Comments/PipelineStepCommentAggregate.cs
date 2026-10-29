@@ -8,7 +8,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Pipelines.Comments
 {
     /// <summary>
-    /// A comment on a step of a site's pipeline (BL-229 - better than n8n, whose workflows have no discussion): what someone said
+    /// A comment on a step of a site's pipeline: what someone said
     /// about the step, who said it and when, and whether it was dealt with. Not a change to the pipeline - in no version and no
     /// pipeline file - so it is written straight away and a reviewer without the manage key can write one.
     /// </summary>

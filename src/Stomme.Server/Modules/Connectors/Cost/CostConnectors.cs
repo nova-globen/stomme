@@ -10,12 +10,10 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Cost
 {
     /// <summary>
-    /// The six small cost connectors (lifted from the predecessor platform's <c>azurecost</c>, <c>datadogcost</c>,
-    /// <c>githubcost</c>, <c>m365cost</c>, <c>salesforcecost</c>, <c>snowflakecost</c>): a reachability probe only - one GET
+    /// The six small cost connectors (Azure, Datadog, GitHub, Microsoft 365, Salesforce and Snowflake cost): a reachability probe only - one GET
     /// with the Bearer scheme's <c>token</c>, at the default endpoint or the configured one, optionally at a probe path -
-    /// through the host's egress. the predecessor platform carried six identical HTTP helpers; the port carries one shape.
-    /// <b>CHANGED:</b> the predecessor platform read the token from its legacy single credential and declared no scheme; the port declares
-    /// Bearer, so the token is the scheme's field in the per-site secret store, and the schema still names no secret.
+    /// through the host's egress. The six share one shape rather than six HTTP helpers.
+    /// The connectors declare the Bearer scheme, so the token is the scheme's field in the per-site secret store, and the schema still names no secret.
     /// </summary>
     public abstract class BearerProbeConnector : IConnector
     {

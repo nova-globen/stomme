@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-85 (D108 refutation 5) - the keyset-paged log read, and the built-in event-log source over it, on a really
+    /// The keyset-paged log read, and the built-in event-log source over it, on a really
     /// installed SQLite, PostgreSQL and RavenDB site.
     /// </summary>
     /// <remarks>

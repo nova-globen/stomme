@@ -7,7 +7,7 @@
 
 @*
     The Landing module's EDIT ACTION, reached from the home page through EditUrl("Edit"): the chooser when the site
-    has no landing page, the editor, the dashboard picker (increment 2), and the controls to publish, hide or forget it. It
+    has no landing page, the editor, the dashboard picker, and the controls to publish, hide or forget it. It
     is interactive; the home page's own
     component is STATIC, so a visitor's view of the home page never opens a circuit (the Help suite's "no marker" oracle
     caught the first version, which put these controls on the home page itself). api/Landing decides every permission again.
@@ -50,7 +50,7 @@ else
         }
         else if (_design is not null)
         {
-            @* The AI mode and the edit mode (increments 3-4): the assistant PROPOSES - a page from a brief, or the page with one
+            @* The AI mode and the edit mode: the assistant PROPOSES - a page from a brief, or the page with one
                section revised - shown in the same sandboxed frame the home page uses; nothing is stored until Use this page. *@
             <div id="landing-design" style="display:flex;flex-direction:column;gap:0.75rem;">
                 @if (_design.Section is null)

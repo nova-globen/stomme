@@ -13,7 +13,7 @@ namespace Stomme.FeatureManagement.Tests;
 /// <c>AddRavenPersistence</c>, which points the module's open-generic <c>IRepository&lt;,&gt;</c> at
 /// <c>RavenRepository&lt;,&gt;</c> — so the flags live in the document store rather than a side-car SQLite file.
 /// <para>
-/// Like the D46 parity suite this FAILS rather than skips when RavenDB is unreachable: an EF-only run proves
+/// Like the parity suite this FAILS rather than skips when RavenDB is unreachable: an EF-only run proves
 /// nothing about the both-providers invariant this exists to hold.
 /// </para>
 /// </summary>

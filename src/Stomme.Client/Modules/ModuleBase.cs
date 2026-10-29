@@ -158,7 +158,7 @@ namespace Stomme.Modules
             }
         }
 
-        // An element to scroll into view once the next render has put it on the page (BL-22's depth-2 pass): a page that
+        // An element to scroll into view once the next render has put it on the page: a page that
         // opens an editor or a detail section below a list opened it off-screen once the list was long, so Edit looked like
         // it did nothing - measured on Formats, its editor 427 pixels below a 900-pixel viewport.
         private string _bringIntoView;

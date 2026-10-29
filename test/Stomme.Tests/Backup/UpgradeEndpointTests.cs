@@ -15,7 +15,7 @@ namespace Stomme.Tests.Backup
     /// <summary>
     /// The framework-upgrade endpoint, over real HTTP on an installed host: a POST (antiforgery-checked; it was a GET
     /// a cross-site link could trigger), Host-only, that AWAITS the hand-off and answers with why an upgrade did not start -
-    /// BL-172's pre-upgrade refusal included - instead of leaving it to the log.
+    /// the pre-upgrade refusal included - instead of leaving it to the log.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     public sealed class UpgradeEndpointTests(ITestOutputHelper output)
@@ -27,7 +27,7 @@ namespace Stomme.Tests.Backup
         [Fact]
         public async Task A_refused_pre_upgrade_snapshot_reaches_the_caller_and_the_package_stays()
         {
-            // Backup on, no scheduled passphrase: BL-172 refuses every upgrade.
+            // Backup on, no scheduled passphrase: every upgrade is refused.
             using var scratch = await GateInstallTemplates.CloneAsync(new SqliteGateStore(), Host, output, colocateModuleAggregates: false,
                 extraSettings: new JsonObject { ["Backup"] = new JsonObject { ["Enabled"] = true } });
             var app = await GateDrive.InstallAsync(scratch, output);

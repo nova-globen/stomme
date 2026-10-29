@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// BL-82 (D107 items 3, 9, 12, refutations 11, 12, 14) driven over HTTP on an installed site, per store: who may build,
+    /// Driven over HTTP on an installed site, per store: who may build,
     /// see, download and import what. A person gets their OWN data package without anyone's help and nobody else can
     /// download it; a configuration package goes back in with every entity skipped; an Administrator who is not a Host
     /// cannot request the Host's data; an import over the cap is refused before it is read.
@@ -198,7 +198,7 @@ namespace Stomme.Tests.Portability
         private protected override IGateStore Store() => new RavenGateStore();
     }
 
-    /// <summary>BL-82 - switched off, portability has no surface: every route 404, no admin page.</summary>
+    /// <summary>Switched off, portability has no surface: every route 404, no admin page.</summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     public class PortabilityDisabledSurfaceTests(ITestOutputHelper output)
     {

@@ -6,7 +6,7 @@ namespace Stomme.Models.Export
     /// <summary>What a client may ask for. Everything else about an export is decided by the server.</summary>
     /// <remarks>
     /// There is deliberately NO site, tenant, user or timestamp here: the server takes those from the request it
-    /// resolved, never from the body. the predecessor platform's export request carried the tenant in the body.
+    /// resolved, never from the body, so a caller cannot name another tenant.
     /// </remarks>
     public sealed class ExportRequest
     {

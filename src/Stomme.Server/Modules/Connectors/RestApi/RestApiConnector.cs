@@ -13,17 +13,17 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.RestApi
 {
     /// <summary>
-    /// The generic REST connector (lifted from the predecessor platform's `rest`): the endpoint is an absolute http(s)
+    /// The generic REST connector: the endpoint is an absolute http(s)
     /// URL; the Bearer scheme's <c>token</c> credential is sent as a bearer token unless a custom Authorization header is
     /// set; a test issues a GET (optionally at the <c>path</c> setting) and treats a 2xx as reachable; the <c>read</c>
     /// operation issues a request and reads a JSON array (or a named array property) into records; the <c>send</c> operation
     /// issues one and answers a single record, the status code and the response body as text.
     /// </summary>
     /// <remarks>
-    /// <b>What changed in the port (BL-96 spec default 1).</b> Every request goes through the client the HOST's egress
+    /// <b>Egress.</b> Every request goes through the client the HOST's egress
     /// hands the connector (<see cref="IConnectorEgress.CreateHttpClient"/>): private, link-local, loopback and metadata
-    /// addresses are refused where the bytes go, redirects are off, one attempt within the timeout. the predecessor platform's per-connection
-    /// <c>proxy_url</c> and <c>danger_accept_any_certificate</c> settings and its handler-factory constructor are DROPPED -
+    /// addresses are refused where the bytes go, redirects are off, one attempt within the timeout. There is no per-connection
+    /// <c>proxy_url</c> or <c>danger_accept_any_certificate</c> setting and no handler-factory constructor -
     /// a proxy and a certificate policy are the host's, not a way for a site admin to step around the egress. A refusal by
     /// the policy is not swallowed into a Fail: it propagates so the runner categorises it <c>DeniedByPolicy</c>; a
     /// timeout propagates as the cancellation it is, categorised <c>TimedOut</c>.
@@ -68,7 +68,7 @@ namespace Stomme.Modules.Connectors.RestApi
                     new ConnectorConfigField("records_path", "Records path", ConnectorConfigFieldType.Text, Required: false, Description: "JSON property holding the array of rows (defaults to the top-level array, else values/value/data)."),
                 }),
             },
-            // BL-95's residue "an HTTP step that SENDS through a connection's credentials": a request whose answer
+            // An HTTP step that SENDS through a connection's credentials: a request whose answer
             // is not rows - creating an item, posting an event - as ONE record, the status and the response body as text.
             new ConnectorOperation("send", "Send", "Issues an HTTP request and answers one record: the status code and the response body as text.")
             {

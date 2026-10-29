@@ -15,7 +15,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Dashboards.Infrastructure
 {
     /// <summary>
-    /// One grid widget as an export (the predecessor platform's <c>DashboardGridExportSourceResolver</c>): key
+    /// One grid widget as an export: key
     /// <c>dashboards.grid</c>, arguments <c>{"dashboardId": "...", "widgetId": "..."}</c>, one table named after the
     /// widget - what the widget's data query answers, never more: the board through the job's site, every bound column
     /// checked against the dataset's published schema, the rows only when the dataset's classification allows them.
@@ -73,7 +73,7 @@ namespace Stomme.Modules.Dashboards.Infrastructure
     }
 
     /// <summary>
-    /// A whole board as an export (the predecessor platform's <c>DashboardReportExportSourceResolver</c>): key <c>dashboards.report</c>,
+    /// A whole board as an export: key <c>dashboards.report</c>,
     /// arguments <c>{"dashboardId": "..."}</c>, one table per GRID widget in the board's widget order - MULTIPLE tables, so
     /// CSV refuses it at request time and XLSX renders a sheet each. A board with no grid widget is refused when opened.
     /// </summary>

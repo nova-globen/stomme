@@ -9,8 +9,8 @@ namespace Stomme.Metering
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>The port takes no subject, no site and no clock.</b> the predecessor platform's recorder honoured the caller's tenant
-    /// verbatim and let the caller name the user and the timestamp, which made three things forgeable: the quota
+    /// <b>The port takes no subject, no site and no clock.</b> A recorder that honoured the caller's tenant
+    /// verbatim and let the caller name the user and the timestamp would make three things forgeable: the quota
     /// another user is charged against, the site the row lands in, and the window a backdated row falls into. Here
     /// the server derives all three - the user from the request principal, the site from the resolved alias, the
     /// time from the clock - so a producer can only say WHAT was consumed and HOW MUCH.
@@ -38,7 +38,7 @@ namespace Stomme.Metering
     }
 
     /// <summary>
-    /// Answers "may this happen?" BEFORE it happens - the pre-consumption check the predecessor platform never had.
+    /// Answers "may this happen?" BEFORE it happens - the pre-consumption check.
     /// </summary>
     /// <remarks>
     /// It takes no user id: the subject is the caller, always. Asking about somebody else's quota is a reporting

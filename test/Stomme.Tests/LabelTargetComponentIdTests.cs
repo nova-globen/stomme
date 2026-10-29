@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-22's depth-2 pass - <c>LabelTargetGateTests</c> accepts a component's <c>Id</c> as a label's target, so
+    /// <c>LabelTargetGateTests</c> accepts a component's <c>Id</c> as a label's target, so
     /// the components a label names must put that id on the field itself. The user picker and the icon list took none.
     /// </summary>
     public sealed class LabelTargetComponentIdTests : BunitContext

@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <!--
-    D81 PROOF. A storage-blind, provider-neutral Stomme module that references Stomme ONLY through the
+    Packages-only proof. A storage-blind, provider-neutral Stomme module that references Stomme ONLY through the
     Stomme.Sdk meta-package from the local feed — ZERO ProjectReference, ZERO source references. If this
-    RESTORES + BUILDS, the published SDK surface is complete for a storage-blind module (owner's bar #1).
+    RESTORES + BUILDS, the published SDK surface is complete for a storage-blind module.
 
     Razor SDK: the project carries both a Blazor component (Index.razor : ModuleBase) and the server-side
     IServerStartup + aggregate, exactly the surface a real module spans. The Microsoft.AspNetCore.App shared

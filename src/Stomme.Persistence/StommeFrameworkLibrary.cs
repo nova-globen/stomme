@@ -3,7 +3,7 @@ using Stomme.Shared;
 // This library is a framework building block, not a module: the host opts into it explicitly via
 // AddDomainEvents/AddOutbox. Without this marker the framework's module convention scan would register
 // OutboxBackgroundService as a hosted service in every host, whether or not AddOutbox was ever called —
-// and OutboxProcessor, which it depends on, is only registered by AddOutbox. See docs/decisions.md D13.
+// and OutboxProcessor, which it depends on, is only registered by AddOutbox.
 [assembly: StommeFrameworkLibrary]
 
 namespace Stomme.Shared;

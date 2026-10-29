@@ -1,7 +1,7 @@
 // Stomme.Authorization is a framework building block, NOT a module: the host opts into it explicitly
 // (AddStommeAuthorization registers IAccessGuard / ICurrentUser / IFeatureEvaluator and the outermost
 // AuthorizationBehavior). The module-convention reflection scan must skip it, exactly as it skips
-// Stomme.Mediator (docs/decisions.md D13).
+// Stomme.Mediator.
 
 // The canonical (public) marker type lives in Stomme.Shared; the framework matches the attribute by full
 // name, so this leaf library declares its own internal copy rather than referencing Stomme.Shared (which

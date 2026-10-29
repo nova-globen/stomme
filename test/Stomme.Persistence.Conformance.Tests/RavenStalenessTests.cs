@@ -53,7 +53,7 @@ public sealed class RavenStalenessTests : IAsyncLifetime
     /// <summary>
     /// The failure mode, made deterministic by pausing indexing: a written document is invisible to a
     /// QUERY while remaining visible to a LOAD by id. Every framework-store read on the seam is a query
-    /// (D19), so this is the shape the install path would hit — silently half-configuring a site.
+    /// so this is the shape the install path would hit — silently half-configuring a site.
     /// </summary>
     [Fact]
     public async Task A_stale_index_makes_a_query_silently_miss_a_written_document()

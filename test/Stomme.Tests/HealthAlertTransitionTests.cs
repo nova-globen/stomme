@@ -22,7 +22,7 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Every case here is one predecessor-platform could not have: its transition state was a per-process dictionary, and its
+    /// Every case here is one an earlier design could not have: its transition state was a per-process dictionary, and its
     /// policy could not be exercised without the notification stack — which is why its recovery branch was never
     /// tested, and why the design review found a proposed rewrite in which a recovery could never fire at all.
     /// </para>
@@ -204,7 +204,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task A_second_host_over_the_same_database_does_not_re_alert()
         {
-            // The defect the durable row exists for: the predecessor platform kept transitions in a per-process dictionary, so a
+            // The defect the durable row exists for: a per-process dictionary held the transitions, so a
             // second instance - or the same instance after a restart - announced the same outage again.
             var shared = new World { State = HealthState.Unhealthy };
 

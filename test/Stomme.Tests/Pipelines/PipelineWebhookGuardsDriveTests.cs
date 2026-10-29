@@ -17,8 +17,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// the predecessor platform's per-endpoint webhook guards DRIVEN over the real receiver on an installed SQLite host (a BL-95 residue,
-    /// 2026-09-28). The drive's clients carry addresses in 10.77.0.0/16. The installation admits only 192.0.2.0/24, so a name
+    /// The per-endpoint webhook guards DRIVEN over the real receiver on an installed SQLite host.
+    /// The drive's clients carry addresses in 10.77.0.0/16. The installation admits only 192.0.2.0/24, so a name
     /// with no endpoint of its own refuses them (403, whatever the signature); <c>orders</c> admits 10.77.0.0/16 with a
     /// 60-second window keyed on the body, <c>by-id</c> the same keyed on <c>X-Request-Id</c>. A repeat of an authentic delivery
     /// is 202 and starts no run; a different one starts one; an UNSIGNED repeat is 401 and does not pre-empt the delivery.
@@ -77,7 +77,7 @@ namespace Stomme.Tests.Pipelines
                 Assert.Equal(2, (await RunsAsync(client, cookies, orders)).Count);
 
                 // A URL-encoded call is verified over its body like any other, and its name is the route's, not a field's
-                // (found 2026-10-07: it was refused 401 - MVC's form binding had read the body before the signature was checked).
+                // (MVC's form binding had read the body before the signature was checked, which refused it with 401.)
                 var form = Encoding.UTF8.GetBytes("order=3&name=other");
                 Assert.Equal(HttpStatusCode.Accepted, (await PostAsync(caller, "orders", form, Sign(form), contentType: "application/x-www-form-urlencoded")).StatusCode);
                 await UntilRunsAsync(client, cookies, orders, 3);

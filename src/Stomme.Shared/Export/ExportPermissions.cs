@@ -12,7 +12,7 @@ namespace Stomme.Export
     /// gates its controls with it, the Server's requests, controller and queue job carry it.
     /// </para>
     /// <para>
-    /// <b>Three keys where the predecessor platform had four.</b> Its <c>export:read</c> and <c>export:download</c> always travelled
+    /// <b>Three keys, not four.</b> A separate <c>export:read</c> and <c>export:download</c> would always travel
     /// together - nobody may see an export they cannot download, or download one they cannot see - so they collapse
     /// into <see cref="View"/>. <see cref="Manage"/> is what sees OTHER people's exports, and is also the only key
     /// that may turn formula neutralisation off (refutation 11): any holder of <see cref="Create"/> could otherwise

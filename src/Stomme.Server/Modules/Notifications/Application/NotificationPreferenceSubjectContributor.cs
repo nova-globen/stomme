@@ -10,7 +10,7 @@ using Stomme.Portability;
 namespace Stomme.Modules.Notifications.Application
 {
     /// <summary>
-    /// A person's notification preferences on a site, for their data package (BL-82 over BL-78): the choices they made
+    /// A person's notification preferences on a site, for their data package: the choices they made
     /// - severity filter, quiet hours, digest, preferred language.
     /// </summary>
     public sealed class NotificationPreferenceSubjectContributor(INotificationPreferenceRepository preferences) : ISubjectDataContributor

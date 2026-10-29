@@ -1,7 +1,7 @@
 namespace Stomme.FeatureManagement.Application;
 
-// These three types are COMPILED INTO Stomme.Security.Abstractions and keep the namespace they were born in (BL-86
-// increment 4, 2026-09-27). A module declares its flags through them, and a module built on the slim SDK
+// These three types are COMPILED INTO Stomme.Security.Abstractions and keep the namespace they were born in.
+// A module declares its flags through them, and a module built on the slim SDK
 // (examples/Stomme.Sdk.Slim) could not: they lived in Stomme.FeatureManagement, whose package carries EF Core and
 // Microsoft.FeatureManagement - the closure the slim SDK exists to keep out of a module's restore. Their neighbour
 // IFeatureEvaluator already lives here for the same reason ([Requires] gates on a flag). Stomme.FeatureManagement

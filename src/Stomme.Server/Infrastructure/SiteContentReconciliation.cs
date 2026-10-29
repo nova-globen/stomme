@@ -24,7 +24,7 @@ namespace Stomme.Infrastructure
     /// <summary>
     /// Module-owned content a site must carry, brought up to date on the boot/upgrade path - ADDITIVELY: create what a
     /// newer release declares and the site lacks, never re-process what exists (an operator's edit must survive every
-    /// boot). BL-78's notification templates are the first implementation; BL-79's metering and BL-84's help topics use
+    /// boot). The notification templates are the first implementation; metering and help topics use
     /// the same seam.
     /// </summary>
     /// <remarks>
@@ -47,18 +47,18 @@ namespace Stomme.Infrastructure
 
     /// <summary>
     /// Runs every <see cref="ISiteContentReconciler"/> for every site of every tenant, on the boot/upgrade path, after
-    /// the framework's own site steps (D103's shared runner, built by BL-78 because it landed first).
+    /// the framework's own site steps.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Why not inside <c>DatabaseManager.InitializeSitesAsync</c>'s loop (the D103 correction to D100 point 5).</b>
+    /// <b>Why not inside <c>DatabaseManager.InitializeSitesAsync</c>'s loop.</b>
     /// That loop walks every tenant and site inside ONE DI scope, where <c>StommeTenantContext</c> caches the FIRST
     /// alias's tenant, and wraps the whole loop in one catch. A module reconciler called there would write every
     /// tenant's content under tenant 1, and one throw would abort the framework page reconciliation for every site
     /// after it. Here: the tenant scope is entered BEFORE a fresh DI scope is created (the <c>FeatureSeeder</c> order,
     /// pinned by <c>HostCompositionTests.The_tenant_scope_flows_into_a_di_scope_created_inside_it</c>), each site gets
     /// its own DI scope, and each reconciler's failure is logged by name and contained to that site.
-    /// <b>Corrected 2026-10-02:</b> the framework loop had the same defect for its OWN writes - a second tenant's
+    /// The framework loop had the same defect for its OWN writes - a second tenant's
     /// pages landed in the first tenant's database - and now takes this runner's shape (a tenant scope, a DI scope per
     /// site, a failure contained to its site). This runner still runs after it, whatever happened to a site there.
     /// </para>
@@ -68,13 +68,13 @@ namespace Stomme.Infrastructure
     /// per DI scope. So removing only the <c>BeginScope</c> is harmless here (each site's fresh scope has its alias set
     /// before anything reads the tenant), and so is sharing one DI scope across sites while keeping it (the ambient
     /// tenant wins). Both are EQUIVALENT mutants against <c>HelpTopicReconciliationTests</c>; removing BOTH - which was
-    /// <c>InitializeSitesAsync</c>'s shape until BL-205 - turns it red on SQLite, PostgreSQL and RavenDB. Keep both: each covers a
+    /// <c>InitializeSitesAsync</c>'s earlier shape - turns it red on SQLite, PostgreSQL and RavenDB. Keep both: each covers a
     /// caller the other does not (a service that reads the tenant during scope construction; a scope reused by mistake).
     /// </para>
     /// <para>
-    /// <b>The module stores are brought up FIRST (BL-78 F2, measured).</b> This path runs from <c>Program.Main</c>'s
+    /// <b>The module stores are brought up FIRST (measured).</b> This path runs from <c>Program.Main</c>'s
     /// <c>InstallAsync</c>, BEFORE <c>app.RunAsync()</c> starts any hosted service - and the relational module store's
-    /// schema (<c>EnsureCreated</c> + the BL-52 missing-table catch-up) is created by
+    /// schema (<c>EnsureCreated</c> + the missing-table catch-up) is created by
     /// <c>ModuleAggregateStoreInitializer</c>, a hosted service. So on a fresh install, and on the first boot of a
     /// release that enrols a new aggregate, the tables a reconciler writes do not exist yet. The runner therefore runs
     /// the SAME schema step first (idempotent; the initializer repeats it harmlessly when the host starts).

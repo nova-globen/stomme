@@ -28,14 +28,14 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The File cluster on the persistence seam — the last one to cross, and the one D48 escalated.
+    /// The File cluster on the persistence seam — the last one to cross, and the one held back longest.
     /// Writes through <see cref="IFileStore"/>, reads through <see cref="IFrameworkStoreSessionFactory"/>
-    /// (D19). The <c>DbSet&lt;File&gt;</c> is gone from <see cref="TenantDBContext"/> — that deletion is the
+    /// (so no tracked instance can conflict). The <c>DbSet&lt;File&gt;</c> is gone from <see cref="TenantDBContext"/> — that deletion is the
     /// compiler's proof this cluster moved.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>What D48 escalated, and what D49 decided.</b> The two reads below that find a file BY NAME used to
+    /// <b>What held it back, and what was decided.</b> The two reads below that find a file BY NAME used to
     /// fold case on the COLUMN — <c>item.Name.ToLower() == fileName</c>. That was not stylistic: the live
     /// database stores mixed-case names and paths (<c>Public/</c>, <c>Users/1/</c>) while
     /// <c>Pages/Files.cshtml.cs</c> lowercases the requested URL before calling, so the fold was the only
@@ -44,7 +44,7 @@ namespace Stomme.Repository
     /// case-SENSITIVE on relational and case-INSENSITIVE on RavenDB. One expression, two semantics.
     /// </para>
     /// <para>
-    /// D49 normalizes the DATA instead of translating the QUERY. <see cref="FileAggregate.NameNormalized"/>
+    /// The fix normalizes the DATA instead of translating the QUERY. <see cref="FileAggregate.NameNormalized"/>
     /// and <see cref="FolderAggregate.PathNormalized"/> hold a lowercase copy beside the stored case, and the
     /// reads below filter them with plain <c>==</c>. Both providers then agree, because for two lowercase
     /// strings ordinal equality and case-insensitive equality are the same relation — asserted live on each by
@@ -56,14 +56,14 @@ namespace Stomme.Repository
     /// derived in the aggregate's setter; the ARGUMENT side is normalized by
     /// <see cref="NormalizedText.Normalize"/> in each read below. The harvested code required the CALLER to
     /// pre-lowercase (<c>item.Name.ToLower() == fileName</c> — argument untouched), which is exactly the
-    /// invisible convention D49 rejected when it rejected teaching <c>RavenLinqRewriting</c> to fold
+    /// invisible convention rejected along with teaching <c>RavenLinqRewriting</c> to fold
     /// <c>.ToLower()</c>: a rule the seam cannot see or enforce is a rule that gets broken. It already had
     /// been — see <see cref="GetFileAsync(int, string, string)"/> on <c>SynchronizationJob</c>. A caller can no
     /// longer get this wrong, and <c>A_file_resolves_by_name_whatever_case_the_caller_passes</c> pins that.
     /// </para>
     /// <para>
-    /// <b>The join stays decomposed (D22 rule 9, the D21 pattern), unchanged.</b>
-    /// <see cref="GetFileAsync(int, string, string)"/> cannot filter across <c>File.Folder</c> — D48 severed
+    /// <b>The join stays decomposed, unchanged.</b>
+    /// <see cref="GetFileAsync(int, string, string)"/> cannot filter across <c>File.Folder</c> — the framework severed
     /// that navigation to <c>[NotMapped]</c> because while it stayed mapped EF rediscovered the Folder
     /// contract through it and broke the model at startup. So the folder ids are resolved FIRST (their own
     /// database-side filter, now on the normalized column) and the files are fanned in on
@@ -75,11 +75,11 @@ namespace Stomme.Repository
     /// stored case; this read matches case-INSENSITIVELY because its caller passes a lowercased URL segment.
     /// Reusing it would compare <c>Public/</c> against <c>public/</c> and 404 every file on the site. It also
     /// returns a SET, because nothing stops <c>Docs/</c> and <c>docs/</c> coexisting — the unique index on
-    /// (site_id, path) is case-sensitive and <b>D49 did not move it onto the normalized column</b>, precisely
+    /// (site_id, path) is case-sensitive and <b>was deliberately not moved onto the normalized column</b>, precisely
     /// so that a pair which is legal today stays legal.
     /// </para>
     /// <para>
-    /// <b>The store is CONSTRUCTOR-INJECTED, and D47's per-write store is deliberately NOT cargo-culted here.
+    /// <b>The store is CONSTRUCTOR-INJECTED, and the per-write store used for UrlMapping is deliberately NOT cargo-culted here.
     /// That was checked, not assumed — and the first draft of this class got it wrong.</b> The hazard is real:
     /// a store owns ONE <see cref="TenantDBContext"/> for its lifetime and a controller holds one transient
     /// repository per request, so two writes to the SAME key through one instance hit the identity map and
@@ -241,18 +241,18 @@ namespace Stomme.Repository
         /// </summary>
         /// <remarks>
         /// <para>
-        /// <b>The decomposed join (D22 rule 9)</b> — see the remarks on this class for why the folder ids are
+        /// <b>The decomposed join</b> — see the remarks on this class for why the folder ids are
         /// resolved separately, why they are a LIST, and why
         /// <c>IFolderRepository.GetFolderAsync(siteId, path)</c> is the wrong tool.
         /// </para>
         /// <para>
-        /// <b>D49 NORMALIZES THE ARGUMENTS HERE, WHICH IS A DELIBERATE BEHAVIOUR CHANGE, AND IT FIXES A LIVE
+        /// <b>THE ARGUMENTS ARE NORMALIZED HERE, WHICH IS A DELIBERATE BEHAVIOUR CHANGE, AND IT FIXES A LIVE
         /// NRE.</b> The harvested read did NOT normalize its arguments — it was <c>item.Name.ToLower() ==
         /// fileName</c>, i.e. the caller was expected to have lowercased. <c>Files.cshtml.cs</c> does.
         /// <c>SynchronizationJob.ResolveFileIdAsync</c> does NOT: it passes <c>file.Folder.Path</c> and
         /// <c>file.Name</c> straight out of the database, in stored case, so a mixed-case folder never matched,
         /// the method returned null, and the job dereferenced <c>.FileId</c> on it — an unhandled
-        /// <see cref="NullReferenceException"/> that aborted site synchronization. D48 found it and left it at
+        /// <see cref="NullReferenceException"/> that aborted site synchronization. It was found earlier and left at
         /// parity. Normalizing inside the repository removes THAT cause; see the note on
         /// <c>SynchronizationJob.ResolveFileIdAsync</c> for the second, independent cause on the same line
         /// which this does NOT fix and which is out of scope here.
@@ -286,14 +286,14 @@ namespace Stomme.Repository
         /// <remarks>
         /// A LIST, not a single id, because the harvested join matched a set — the (site_id, path) unique
         /// index is case-sensitive, so <c>Docs/</c> and <c>docs/</c> may coexist and both normalize to
-        /// <c>docs/</c>. D49 did not move that index onto the normalized column, so that pair is still legal
+        /// <c>docs/</c>. that index was not moved onto the normalized column, so that pair is still legal
         /// and this still has to return both. Returning the first would silently change which file a URL
         /// resolves to.
         /// <para>
         /// THIS is the read that used to keep the File cluster off the seam: it was
         /// <c>item.Path.ToLower() == folderPath</c>, which throws <c>NotSupportedException</c> on RavenDB
         /// (measured — and <c>TheToLowerTranslationGapTests</c> still pins that measurement, because the
-        /// gap is real and D49 routed around it rather than closing it). Filtering
+        /// gap is real and the design routed around it rather than closing it). Filtering
         /// <see cref="FolderAggregate.PathNormalized"/> with plain <c>==</c> says the same thing on every
         /// provider.
         /// </para>

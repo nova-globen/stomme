@@ -17,7 +17,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229, the AI agent: the site's published AI agent tools - what an <see cref="AiAgent"/> step can be given - by name, with
+    /// The AI agent: the site's published AI agent tools - what an <see cref="AiAgent"/> step can be given - by name, with
     /// what each does and the pipeline it runs; for the editor's Tools input. Read from the trigger store, as the agent reads them.
     /// </summary>
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.View)]

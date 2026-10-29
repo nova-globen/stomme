@@ -161,9 +161,9 @@ namespace Stomme.Tests.Mcp
 
             try
             {
-                // THE SPLIT IS THE POINT (McpPermissions): D101 named two keys and would have gated the published
+                // THE SPLIT IS THE POINT (McpPermissions): the design named two keys, and one key would have gated the published
                 // catalog and the AUDIT LEDGER on the same one. The catalog is what a user may use; the ledger is every
-                // principal's calls on the site. One key over both is the shape D100 had to unpick in Notifications.
+                // principal's calls on the site. One key over both is the shape that had to be unpicked in Notifications.
                 //
                 // A user holding NO key would answer 403 to all three and prove nothing about the split, so this user
                 // holds mcp:view and only mcp:view.

@@ -70,7 +70,7 @@ namespace Stomme.Models.Pipelines
         /// <summary>Wait for a form: a run paused on a form a person fills in at the run's form address - or, with <see cref="NextPageInput"/>, the next page of the form before it.</summary>
         public const string WaitStepType = "Stomme.WaitForForm";
 
-        /// <summary>BL-229, n8n's multi-page forms: Wait for a form's tick that takes the person who sent the form before it straight on to it.</summary>
+        /// <summary>n8n's multi-page forms: Wait for a form's tick that takes the person who sent the form before it straight on to it.</summary>
         public const string NextPageInput = "NextPage";
 
         /// <summary>Whether a step is a Wait for a form with Next page ticked.</summary>

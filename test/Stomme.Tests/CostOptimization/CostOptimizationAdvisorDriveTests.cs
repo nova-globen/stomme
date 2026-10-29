@@ -29,9 +29,9 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// The advisor and Metering's side of the AI-usage port on an installed SQLite host: the predecessor platform's
-    /// <c>CostOptimizationSignalSourceTests.AiUsageSignalSource_*</c> and <c>AdvisorJobTests</c> by name. CHANGED
-    /// throughout: the predecessor platform's per-tenant pass over a tenant directory is a per-SITE pass of the framework's weekly job, and its
+    /// The advisor and Metering's side of the AI-usage port on an installed SQLite host: the
+    /// <c>CostOptimizationSignalSourceTests.AiUsageSignalSource_*</c> and <c>AdvisorJobTests</c> cases, ported by name. CHANGED
+    /// throughout: the per-tenant pass over a tenant directory is a per-SITE pass of the framework's weekly job, and its
     /// "without a tenant directory" case is a run with no tenant set.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -99,7 +99,7 @@ namespace Stomme.Tests.CostOptimization
                 await StopTheSchedulersAdvisorAsync(app);
                 var siteId = await SeedSpikeAsync(app, Host);
 
-                // the predecessor platform's Advisor_RunsTheAnalysisOncePerTenant_AndCountsRaisedRecommendations: the anomaly and the licensing review.
+                // The Advisor_RunsTheAnalysisOncePerTenant_AndCountsRaisedRecommendations case: the anomaly and the licensing review.
                 var first = await RunJobAsync(app);
                 output.WriteLine($"[first] {first}");
                 Assert.Contains("Raised 2, Suppressed 0", first);
@@ -107,7 +107,7 @@ namespace Stomme.Tests.CostOptimization
                 Assert.Equal(new[] { "right-sizing:cloud-cost:azure:usd:mom-increase", "right-sizing:licensing:usd:seat-review" }, raised.Select(r => r.RecommendationKey).OrderBy(k => k, StringComparer.Ordinal));
                 Assert.All(raised, r => Assert.Equal(RecommendationStatus.Open, r.Status));
 
-                // the predecessor platform's Advisor_SecondRun_RaisesNothingWhileTheKeysStayOpen.
+                // The Advisor_SecondRun_RaisesNothingWhileTheKeysStayOpen case.
                 var second = await RunJobAsync(app);
                 output.WriteLine($"[second] {second}");
                 Assert.Contains("Raised 0, Suppressed 2", second);
@@ -187,8 +187,8 @@ namespace Stomme.Tests.CostOptimization
             });
 
         // The host's own scheduler runs this job 0-10 s after it starts (a new job's first run is now), beside the run these tests
-        // make by hand - measured in a fast gate (2026-10-10): both passes raised site B's two recommendations, 4 where 2 were
-        // expected. Stopped before anything is seeded, it has run on nothing or not at all; production has only the scheduler's.
+        // make by hand - measured in a fast gate run: both passes raised site B's two recommendations, 4 where 2 were
+        // expected. Stopped before anything is seeded, it has run on nothing or not at all; a real install has only the scheduler's.
         private static async Task StopTheSchedulersAdvisorAsync(WebApplication app) =>
             await app.Services.GetServices<Microsoft.Extensions.Hosting.IHostedService>().OfType<CostOptimizationAdvisorJob>().Single().StopAsync(CancellationToken.None);
 

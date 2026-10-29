@@ -13,10 +13,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Tests.Fixtures.GateTestModule
 {
     /// <summary>
-    /// The SERVER half of the BL-99 gate fixture: the handler behind the <c>[Requires]</c> command, the
-    /// startup that registers it, and a controller carrying BOTH gates a lifted module can use - the new
+    /// The server half of the gate fixture: the handler behind the <c>[Requires]</c> command, the
+    /// startup that registers it, and a controller carrying BOTH gates a module can use - the new
     /// <see cref="RequiresPermissionKeyAttribute"/> and, as a KNOWN-DIRTY control, the
-    /// framework's dynamic 3-segment policy the survey refuted as a carrier for lifted keys (F8).
+    /// framework's dynamic 3-segment policy, which a survey found cannot carry module keys.
     /// </summary>
     /// <remarks>
     /// Discovered by the SAME startup scan a real module rides: the assembly is named "Stomme.Tests", so
@@ -45,7 +45,7 @@ namespace Stomme.Tests.Fixtures.GateTestModule
         }
     }
 
-    /// <summary>Registers the fixture's mediator handler, the way a lifted module's server startup does.</summary>
+    /// <summary>Registers the fixture's mediator handler, the way a module's server startup does.</summary>
     /// <remarks>
     /// It registers the handler EXPLICITLY rather than calling <c>AddMediator(assembly)</c>: that call is
     /// additive, not idempotent (F12), and over this assembly it would also re-register every behavior and
@@ -75,9 +75,9 @@ namespace Stomme.Tests.Fixtures.GateTestModule
     /// <c>(gatetest, -1, manage)</c> rows, with no query-string re-scoping and no roles fallback;</item>
     /// <item><c>dispatch</c> - UNGATED at the endpoint, dispatching the <c>[Requires]</c>-carrying command
     /// so the mediator's <c>AuthorizationBehavior</c> is the only thing standing between the caller and the
-    /// handler (a denial must surface as 403 ProblemDetails, not 500 - F5);</item>
+    /// handler (a denial must surface as 403 ProblemDetails, not 500);</item>
     /// <item><c>dynamic</c> - the KNOWN-DIRTY control: the framework's own 3-segment policy over the same
-    /// resource and operation. F8 says that path lets the CALLER re-scope the row lookup with
+    /// resource and operation. That path lets the CALLER re-scope the row lookup with
     /// <c>?authgatetestid=</c>; the gate drives exactly that and shows the two paths disagreeing.</item>
     /// </list>
     /// </summary>

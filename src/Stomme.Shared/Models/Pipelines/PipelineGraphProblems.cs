@@ -48,7 +48,7 @@ namespace Stomme.Models.Pipelines
 
         public const string MissingVariable = "MissingVariable";
 
-        /// <summary>An expression reads <c>{{ name }}</c> and no variable has that name (increment 5).</summary>
+        /// <summary>An expression reads <c>{{ name }}</c> and no variable has that name.</summary>
         public const string UnknownVariable = "UnknownVariable";
 
         public const string NeverRuns = "NeverRuns";
@@ -57,10 +57,10 @@ namespace Stomme.Models.Pipelines
 
         public const string EmptyBody = "EmptyBody";
 
-        /// <summary>A condition built from rules that cannot be tested (increment 10): no rule, a rule testing nothing.</summary>
+        /// <summary>A condition built from rules that cannot be tested: no rule, a rule testing nothing.</summary>
         public const string BadCondition = "BadCondition";
 
-        /// <summary>A Switch's case without a label, or a label twice; no case at all is a warning (increment 10).</summary>
+        /// <summary>A Switch's case without a label, or a label twice; no case at all is a warning.</summary>
         public const string BadCase = "BadCase";
 
         /// <summary>A step that takes its Failed path (n8n's error output) with nothing connected to it.</summary>
@@ -185,7 +185,7 @@ namespace Stomme.Models.Pipelines
 
                 foreach (var input in entry.Inputs ?? new List<StepInputView>())
                 {
-                    // A Switch's cases are checked as cases, below (increment 10).
+                    // A Switch's cases are checked as cases, below.
                     if (entry.OutcomesFrom == StepCatalogEntry.CaseOutcomes && input.Name == StepCatalogEntry.CaseOutcomes)
                     {
                         continue;
@@ -207,7 +207,7 @@ namespace Stomme.Models.Pipelines
                         continue;
                     }
 
-                    // A JavaScript expression (increment 5b) reads what it likes - only the run can say; an empty one fills nothing.
+                    // A JavaScript expression reads what it likes - only the run can say; an empty one fills nothing.
                     if (step.InputScripts is not null && step.InputScripts.TryGetValue(input.Name, out var script) && script is not null)
                     {
                         if (string.IsNullOrWhiteSpace(script) && input.IsRequired)
@@ -218,14 +218,14 @@ namespace Stomme.Models.Pipelines
                         continue;
                     }
 
-                    // A condition built from rules (increment 10): complete, and reading only variables the pipeline has.
+                    // A condition built from rules: complete, and reading only variables the pipeline has.
                     if (step.InputConditions is not null && step.InputConditions.TryGetValue(input.Name, out var condition) && condition is not null)
                     {
                         problems.AddRange(ConditionProblems(step, entry, input.Name, Label(input), condition, variables, savedTo));
                         continue;
                     }
 
-                    // An expression fills the input when the step runs (increment 5); each name it reads must be a variable of the
+                    // An expression fills the input when the step runs; each name it reads must be a variable of the
                     // pipeline - the engine finds a variable by its exact name.
                     if (step.InputExpressions is not null && step.InputExpressions.TryGetValue(input.Name, out var template) && template is not null)
                     {
@@ -328,7 +328,7 @@ namespace Stomme.Models.Pipelines
                         problems.Add(Problem(step, entry, input.Name, Warning, PlaceholderInValue, $"{Label(input)} is a value, so {{{{ {placeholder} }}}} is sent as typed, not filled in - make it an expression."));
                     }
 
-                    // A Fork's branches are its outcomes (increment 10): two a person cannot tell apart are one too many.
+                    // A Fork's branches are its outcomes: two a person cannot tell apart are one too many.
                     if (entry.OutcomesFrom == StepCatalogEntry.BranchesOutcomes && input.Name == StepCatalogEntry.BranchesOutcomes
                         && PipelineOutcomes.Branches(text).GroupBy(name => name, StringComparer.OrdinalIgnoreCase).FirstOrDefault(group => group.Count() > 1) is { } twice)
                     {
@@ -336,7 +336,7 @@ namespace Stomme.Models.Pipelines
                     }
                 }
 
-                // A Switch's cases (increment 10): each labelled once, each a condition that can be tested.
+                // A Switch's cases: each labelled once, each a condition that can be tested.
                 if (entry.OutcomesFrom == StepCatalogEntry.CaseOutcomes)
                 {
                     problems.AddRange(CaseProblems(step, entry, variables, savedTo));
@@ -376,7 +376,7 @@ namespace Stomme.Models.Pipelines
                     problems.Add(Problem(step, entry, PipelineApprovals.DecideWithinInput, Error, BadValue, "Decide within: " + withinError));
                 }
 
-                // BL-229, Respond to webhook: an answer reaches a call only when the pipeline's Webhook answers from the pipeline, and a
+                // Respond to webhook: an answer reaches a call only when the pipeline's Webhook answers from the pipeline, and a
                 // Webhook that does keeps its caller waiting for an answer some step must give - each a warning (it runs, to no end).
                 if (step.Type == PipelineWebhookAnswering.RespondStepType && !step.Disabled && !steps.Any(PipelineWebhookAnswering.Answers))
                 {
@@ -403,7 +403,7 @@ namespace Stomme.Models.Pipelines
                     }
                 }
 
-                // BL-229, n8n's HTML node: a template puts a value in as it is - a record's "<script>" becomes the page's - so a value put
+                // n8n's HTML node: a template puts a value in as it is - a record's "<script>" becomes the page's - so a value put
                 // in without the html filter is said; | raw says it is HTML the author made, put in as it is on purpose.
                 if (step.Type == MakeHtmlStepType && step.InputExpressions is not null && step.InputExpressions.TryGetValue(MakeHtmlTemplateInput, out var html)
                     && PipelineTemplate.Placeholders(html).Select(each => each.Trim()).FirstOrDefault(each =>

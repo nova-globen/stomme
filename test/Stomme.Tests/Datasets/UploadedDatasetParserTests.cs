@@ -15,11 +15,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 13 (D110 refutation 6) - the predecessor platform's UploadedDatasetParserTests (13) by name on the hardened parser,
+    /// The parser cases, checked on the hardened parser,
     /// plus the port's additions: a numFmt date cell read as a date, duplicate headers rejected, a column past the
     /// sheet's width refused, rows beyond the sample counted without materialisation (a bounded allocation
     /// measurement), and the format decided by the ZIP signature plus the extension - never the content type, which the
-    /// port no longer takes (the predecessor platform picked the parser from the client's content type first). CHANGED accordingly: the
+    /// port no longer takes (a parser that picked its format from the client's content type first could be fooled by a renamed file). Changed accordingly: the
     /// text overload is gone (everything is a stream), and the two content-type-driven cases assert the sniffing rule.
     /// </summary>
     public sealed class UploadedDatasetParserTests(ITestOutputHelper output)

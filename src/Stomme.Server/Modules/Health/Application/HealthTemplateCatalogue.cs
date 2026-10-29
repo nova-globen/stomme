@@ -8,12 +8,12 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Health.Application
 {
     /// <summary>
-    /// The ONE template this module contributes to BL-78's per-site template reconciliation.
+    /// The ONE template this module contributes to the per-site notification template reconciliation.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>One key, not three.</b> the predecessor platform had <c>health.dependency.unhealthy</c>, <c>…degraded</c> and
-    /// <c>…recovered</c>, which made the state part of the template IDENTITY — so an operator who wanted to
+    /// <b>One key, not three.</b> Separate <c>health.dependency.unhealthy</c>, <c>…degraded</c> and
+    /// <c>…recovered</c> templates would make the state part of the template IDENTITY — so an operator who wanted to
     /// reword "a dependency is in trouble" had to edit three templates and keep them consistent, and adding a
     /// fourth state would have meant a fourth template. Here the state is a PARAMETER, so one template says it
     /// once and the catalogue does not grow with the state machine.

@@ -7,12 +7,12 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-225 (found on UAT): in the pipeline editor, typing a Log step's message and then clicking another step
+    /// In the pipeline editor, typing a Log step's message and then clicking another step
     /// on the canvas saved the text to the step clicked. A field committed on <c>change</c>, which the browser fires on blur -
     /// after the canvas's mousedown had already selected the other step and re-rendered the inspector for it, and with an
     /// unchanged rendered value Blazor leaves the typed text in the box. Every text field of the inspector bound to the
     /// selected step commits on <c>input</c> instead; a checkbox, a radio button or a select commits on change, which fires as it
-    /// is chosen (a radio joined on 2026-10-08 with a sticky note's colours: its change fires on the click itself, no blur after).
+    /// is chosen (a radio button's change fires on the click itself, with no blur after).
     /// </summary>
     public sealed class PipelineInspectorCommitTests
     {

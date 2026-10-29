@@ -90,7 +90,7 @@ namespace Stomme.Pages
                     _logger.Log(LogLevel.Error, this, LogFunction.Security, "Login Failed For User {Username}", username);
                 }
 
-                // BL-120. An account that does not exist is recorded WITHOUT the name typed: it may be a password in the wrong field.
+                // An account that does not exist is recorded WITHOUT the name typed: it may be a password in the wrong field.
                 if (_identityAudit != null)
                 {
                     await _identityAudit.RecordAsync(outcome, user?.UserId, identityuser == null ? null : identityuser.UserName,

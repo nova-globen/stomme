@@ -31,7 +31,7 @@ namespace Stomme.Modules.Backup.Application
     /// line. Without it a due schedule is reported and nothing is taken.
     /// </para>
     /// <para>
-    /// <b>Retention runs here, not through D104's <c>IRetentionPurger</c></b> (D106 item 8 named it): that seam is PER SITE,
+    /// <b>Retention runs here, not through the <c>IRetentionPurger</c> seam</b>: that seam is PER SITE,
     /// configured by a per-site setting in whole days; backup retention is installation-wide and configured per schedule
     /// (days AND keep-last-N) - drained per site, it would repeat one pass N times against one catalogue.
     /// </para>

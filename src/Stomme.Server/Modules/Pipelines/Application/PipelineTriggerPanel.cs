@@ -51,7 +51,7 @@ namespace Stomme.Modules.Pipelines.Application
                 };
             }
 
-            // BL-229, the Chat trigger: where its page is, and whether the site serves chats.
+            // The Chat trigger: where its page is, and whether the site serves chats.
             if (string.Equals(request.Type, Steps.ChatTrigger.StepTypeName, StringComparison.Ordinal))
             {
                 var valid = Webhook.IsValidName(request.Value);
@@ -64,7 +64,7 @@ namespace Stomme.Modules.Pipelines.Application
                 };
             }
 
-            // BL-229, the Form trigger: where its page is, and whether the site serves forms.
+            // The Form trigger: where its page is, and whether the site serves forms.
             if (string.Equals(request.Type, PipelineForms.StepType, StringComparison.Ordinal))
             {
                 var valid = Webhook.IsValidName(request.Value);

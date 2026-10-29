@@ -13,8 +13,7 @@ namespace Stomme.Transport.Realtime
     /// The transport-agnostic port a producing feature (e.g. a notification service) depends on to push an
     /// in-app notification in realtime, without referencing SignalR. The host registers
     /// <see cref="NotificationRealtimePush"/> as the adapter when the SignalR transport is enabled; when it is
-    /// not, the port is simply absent and producers fall back to their non-realtime path. Adopted from the predecessor platform's
-    /// <c>INotificationRealtimePush</c>.
+    /// not, the port is simply absent and producers fall back to their non-realtime path.
     /// </summary>
     public interface INotificationRealtimePush
     {

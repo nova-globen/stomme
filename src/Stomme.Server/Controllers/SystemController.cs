@@ -114,7 +114,7 @@ namespace Stomme.Controllers
 
         // POST: api/<controller>/cache/clear
         /// <summary>
-        /// The SystemInfo Caching section's "Clear All" (BL-100 O1): removes every framework cache entry. Its own
+        /// The SystemInfo Caching section's "Clear All": removes every framework cache entry. Its own
         /// endpoint rather than a key through <see cref="Post"/>, whose unknown keys are WRITTEN to appsettings.
         /// </summary>
         [HttpPost("cache/clear")]

@@ -14,8 +14,8 @@ namespace Stomme.Database.File
     /// <para>
     /// <b>Config-driven, not (yet) wizard-selectable.</b> This type is intentionally absent from
     /// <c>AvailableDatabases</c>: the file store proves provider EXTENSIBILITY for module persistence via
-    /// <c>DefaultDBType=Stomme.Database.File.FileDatabase, Stomme.Server</c>, which is sufficient for the D80
-    /// proof. A full install-wizard entry (its own installer control, plus a framework-store twin) is a separate,
+    /// <c>DefaultDBType=Stomme.Database.File.FileDatabase, Stomme.Server</c>, which is sufficient for
+    /// that proof. A full install-wizard entry (its own installer control, plus a framework-store twin) is a separate,
     /// larger piece of work and is deferred.
     /// </para>
     /// </summary>

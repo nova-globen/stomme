@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    /// <summary>The shared BL-102 predicate - it must classify rows exactly as the permission sink stamps them.</summary>
+    /// <summary>The shared scope predicate - it must classify rows exactly as the permission sink stamps them.</summary>
     public class PermissionRowScopeTests
     {
         [Fact]

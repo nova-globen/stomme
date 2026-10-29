@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Stomme.Tests.Datasets
 {
-    /// <summary>BL-94 increment 9 (D110 Q7) - the predecessor platform's GovernanceDataClassifierTests (4) by name: a secret column name is Confidential, PII in the sample is Restricted (the top of the one order), otherwise Internal; a secret name wins over PII.</summary>
+    /// <summary>The classifier cases: a secret column name is Confidential, PII in the sample is Restricted (the top of the one order), otherwise Internal; a secret name wins over PII.</summary>
     public sealed class GovernanceDataClassifierTests
     {
         private static readonly IDataClassifier Classifier = new GovernanceDataClassifier(new PiiScanner());

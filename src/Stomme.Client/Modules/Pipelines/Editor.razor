@@ -19,10 +19,10 @@
 @using System.Text.Json
 
 @*
-    The pipeline editor (BL-95 increment (c)): the predecessor platform's canvas re-targeted to the ENGINE's model. The palette is the
+    The pipeline editor: a canvas over the ENGINE's model. The palette is the
     engine's step registry (the catalog), a node is a step with the literal inputs the catalog describes, a link is a
     connection through an outcome port, and Save sends the graph, which the server turns into the engine's own Flowchart
-    document and the engine judges before it is stored. Everything the predecessor platform modelled itself - templates, connectors,
+    document and the engine judges before it is stored. Nothing is modelled by the editor itself - templates, connectors,
     step kinds, relations - is gone; the library (Z.Blazor.Diagrams, MIT) supplies pan, zoom, dragging and link drawing
     only, and the node visuals are ours, so it stays swappable.
 *@
@@ -1000,7 +1000,7 @@ else
                     }
                     @* A text field commits on INPUT. On change, typing in a field and then clicking another step on the
                        canvas wrote the text to the step clicked: the selection re-renders the inspector before the browser fires
-                       change, and an unchanged rendered value leaves the typed text in the box (found on UAT, 2026-10-05). *@
+                       change, and an unchanged rendered value leaves the typed text in the box (observed in a deployed site). *@
                     <label for="pipelines-editor-step-name">Name</label>
                     <input id="pipelines-editor-step-name" type="text" class="db-input" value="@_selected.Name" @oninput="e => RenameSelected(e.Value?.ToString())" disabled="@(!CanManage)" />
                     @* A step switched off stays in the pipeline and is skipped when it runs (D on the canvas does the same). *@
@@ -1067,13 +1067,13 @@ else
                     }
                     @if (_selected.Entry is not null)
                     {
-                        @* BL-229, n8n's mapping: each variable, and each field of what it holds (the values the previews use), dragged
+                        @* n8n's mapping: each variable, and each field of what it holds (the values the previews use), dragged
                            into an input reads it there - dropped on a value it makes the value an expression (pipelines-editor.js). *@
                         var draggable = CanManage && _selected.Entry.Inputs.Count > 0 ? PipelineTemplate.Suggest("", PreviewValues(out _), max: 24) : (IReadOnlyList<string>)Array.Empty<string>();
                         @if (draggable.Count > 0)
                         {
                             @* The pipeline's own values in sight; the built-in ones ($now, $run, $vars...) folded away - sixteen of them
-                               pushed the step's own inputs out of sight (found looking at UAT with fresh eyes). *@
+                               pushed the step's own inputs out of sight (observed in use). *@
                             var builtIns = draggable.Where(placeholder => placeholder.StartsWith("{{ $", StringComparison.Ordinal)).ToList();
                             <div id="pipelines-editor-drag-fields" class="db-pipeline-editor__drag-fields" role="list" aria-label="Variables to drag into an input">
                                 <span class="db-pipeline-editor__drag-hint">Drag into an input:</span>
@@ -1483,7 +1483,7 @@ else
                             }
                             else if (input.UIHint == PipelineInputHints.AgentTools)
                             {
-                                @* BL-229, the AI agent: the tools it may call, one name per line; the site's published tools offered to add. *@
+                                @* The AI agent: the tools it may call, one name per line; the site's published tools offered to add. *@
                                 var named = AgentToolsOf(Value(_selected.Inputs, name));
                                 <textarea id="@("pipelines-editor-input-" + name)" class="db-input" rows="3" placeholder="(every tool on this site)" value="@Value(_selected.Inputs, name)" @oninput="e => SetInput(name, e.Value?.ToString())" disabled="@(!CanManage)"></textarea>
                                 @if (_agentTools is { Count: > 0 })
@@ -1504,7 +1504,7 @@ else
                             }
                             else if (input.UIHint == PipelineInputHints.FormFields)
                             {
-                                @* BL-229, the Form trigger: the form's fields, held as the input's value. *@
+                                @* The Form trigger: the form's fields, held as the input's value. *@
                                 <FormFieldsEditor IdPrefix="@("pipelines-editor-form-fields-" + name)" Fields="FormFieldsOf(name)" Disabled="@(!CanManage)" Changed="() => FormFieldsChanged(name)" />
                             }
                             else if (input.UIHint is "code-editor" or PipelineInputHints.SqlQuery)
@@ -1613,7 +1613,7 @@ else
                            author can listen for one), a schedule's next runs. Read off the rules the receiver and the schedules apply. *@
                         @if (_selected.Type == ChatStepType)
                         {
-                            @* BL-229, the Chat trigger: where visitors talk to it, whether the site serves chats, and a message to test with. *@
+                            @* The Chat trigger: where visitors talk to it, whether the site serves chats, and a message to test with. *@
                             <h5 style="margin:0.75rem 0 0;">Talking to it</h5>
                             <div id="pipelines-editor-trigger" class="db-pipeline-editor__trigger">
                                 @if (TriggerValue(_selected) is null)
@@ -1645,7 +1645,7 @@ else
                         }
                         else if (_selected.Type == AgentToolStepType)
                         {
-                            @* BL-229, the AI agent: who calls this tool, with what, and what goes back. *@
+                            @* The AI agent: who calls this tool, with what, and what goes back. *@
                             var toolName = Value(_selected.Inputs, "ToolName");
                             <h5 style="margin:0.75rem 0 0;">When it runs</h5>
                             <div id="pipelines-editor-trigger" class="db-pipeline-editor__trigger">
@@ -1654,7 +1654,7 @@ else
                         }
                         else if (_selected.Type == PipelineForms.StepType)
                         {
-                            @* BL-229, the Form trigger: where people fill it in, whether the site serves forms, and a sample to test with. *@
+                            @* The Form trigger: where people fill it in, whether the site serves forms, and a sample to test with. *@
                             <h5 style="margin:0.75rem 0 0;">Filling it in</h5>
                             <div id="pipelines-editor-trigger" class="db-pipeline-editor__trigger">
                                 @if (TriggerValue(_selected) is null)
@@ -2088,7 +2088,7 @@ else
                                     <ol id="pipelines-editor-test-steps" class="db-pipeline-editor__runs">
                                         @foreach (var ran in _testResult.Steps.Where(ran => ran.StepId != _selected.StepId))
                                         {
-                                            @* A failure the pipeline went on past is "failed, and took its Failed path", not "done" (found on UAT, 10.13.0). *@
+                                            @* A failure the pipeline went on past is "failed, and took its Failed path", not "done" (observed in a deployed site). *@
                                             <li>@(StepTitle(ran.StepId)) - @RanAs(ran)@(string.IsNullOrEmpty(ran.Error) ? "" : ": " + ran.Error)</li>
                                         }
                                     </ol>
@@ -2469,7 +2469,7 @@ else
         _message = $"'{variableName}' holds a sample message - select a later step and Test step.";
     }
 
-    // BL-229, the AI agent: the site's published AI agent tools, for an agent's Tools input; null when they could not be listed.
+    // The AI agent: the site's published AI agent tools, for an agent's Tools input; null when they could not be listed.
     private List<AgentToolView> _agentTools;
 
     private static List<string> AgentToolsOf(string text) =>
@@ -2733,7 +2733,7 @@ else
         // The canvas talks to the browser; it is rendered only once the session is interactive (never during prerendering)
         // AND once the base has loaded the module's scripts - the canvas library's included. Flipping it on in the synchronous
         // OnAfterRender raced that load: opening the editor by its URL rendered the canvas before ZBlazorDiagrams existed and
-        // the circuit failed (found driving BL-97 increment 12; the list's Edit link won the race because the page was warm).
+        // the circuit failed (found by driving the editor; the list's Edit link won the race because the page was warm).
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender && !_interactive)
         {
@@ -2979,7 +2979,7 @@ else
         _webhookSecretCopied = false;
     }
 
-    // What the call sent becomes the variable's value for testing the next steps (increment 6's values).
+    // What the call sent becomes the variable's value for testing the next steps (the values of a step test).
     private void UseWebhookCall(string variableName)
     {
         if (_webhookCall is { Received: true })
@@ -5721,7 +5721,7 @@ else
         MarkDirty(_selected.StepId + "/expression/" + name);
     }
 
-    // The values an expression is previewed with: what the author gave a variable for a step test (increment 6's values, kept
+    // The values an expression is previewed with: what the author gave a variable for a step test (kept
     // for the session - a sample failure, a webhook call heard), else the value kept with the pipeline for tests, else what the
     // run shown left in it (RunValues - an author's, from its steps' outputs), else its starting value. The source names the
     // freshest used.
@@ -5740,8 +5740,8 @@ else
             .ToList();
     }
 
-    // The values a template or a condition is previewed and suggested with: the variables' (above), then the built-ins (BL-229,
-    // PipelineBuiltIns) - the moment, the run shown and this pipeline - which the engine fills from the run when the step runs and
+    // The values a template or a condition is previewed and suggested with: the variables' (above), then the built-ins
+    // (PipelineBuiltIns) - the moment, the run shown and this pipeline - which the engine fills from the run when the step runs and
     // which answer before a variable of the same name there, so here too.
     private List<(string Name, object Value)> PreviewValues(out string source)
     {
@@ -6245,7 +6245,7 @@ else
         return withResult ? found.Where(candidate => candidate.Entry?.Outputs.Any(output => output.Name == ResultOutput) == true).ToList() : found;
     }
 
-    // BL-229 (n8n's "Debug in editor"): what each step leading here produced in the run shown - its last pass's Result - for
+    // n8n's "Debug in editor": what each step leading here produced in the run shown - its last pass's Result - for
     // pinning; a result cut short in the record is left out, as it is not the whole result.
     private List<(StepNodeModel Step, string Result)> RunResultsBefore(StepNodeModel step) =>
         _shownRunId is null || step is null
@@ -6959,7 +6959,7 @@ else
         });
     }
 
-    // BL-229, n8n's mapping: a variable or a field dragged onto an input's VALUE (pipelines-editor.js) - the value becomes an
+    // n8n's mapping: a variable or a field dragged onto an input's VALUE (pipelines-editor.js) - the value becomes an
     // expression ending in the placeholder, so it reads what was dropped instead of sending "{{ ... }}" as typed. An expression
     // takes the drop in place (the browser's own); a value that is not text is never dropped on.
     [JSInvokable]
@@ -7221,7 +7221,7 @@ else
         MarkDirty();
     }
 
-    // BL-229 (n8n's pinned data): the selected step's pinned result - set from what a run or a test produced, edited, or
+    // n8n's pinned data: the selected step's pinned result - set from what a run or a test produced, edited, or
     // removed (null). Pinning and unpinning are a step of undo each; typing in the pinned result joins the step before it.
     private void SetPinned(string result, bool typed = false)
     {

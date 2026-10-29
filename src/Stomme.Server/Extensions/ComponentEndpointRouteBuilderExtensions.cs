@@ -23,7 +23,7 @@ namespace StommeSSR.Extensions
             {
                 // A page is a GET, a HEAD or a form's POST. Anything else that reaches the fallback - a hub's negotiate
                 // with the transport off, a JSON or body-less POST to a path nothing serves - is a 404, never the page renderer,
-                // which answered such a request 500 (measured on UAT and in SwitchedOffApiNotFoundTests; a form POST it refuses
+                // which answered such a request 500 (measured, and covered by SwitchedOffApiNotFoundTests; a form POST it refuses
                 // itself, 400).
                 if (!HttpMethods.IsGet(ctx.Request.Method) && !HttpMethods.IsHead(ctx.Request.Method) && !IsFormPost(ctx.Request.ContentType))
                 {
@@ -53,7 +53,7 @@ namespace StommeSSR.Extensions
 
         // The HEADER, never Request.HasFormContentType. This endpoint requires an antiforgery token, so for a POST
         // without one the antiforgery middleware has already set an invalid IAntiforgeryValidationFeature, and
-        // HasFormContentType THROWS on it - every token-less POST answered 500 and logged an error (measured on UAT on 10.7.0).
+        // HasFormContentType THROWS on it - every token-less POST answered 500 and logged an error (measured).
         internal static bool IsFormPost(string? contentType) =>
             MediaTypeHeaderValue.TryParse(contentType, out var type) &&
             (type.MediaType.Equals("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase) ||

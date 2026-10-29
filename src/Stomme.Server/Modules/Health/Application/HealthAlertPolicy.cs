@@ -30,7 +30,7 @@ namespace Stomme.Modules.Health.Application
     public sealed record HealthAlertThresholds(TimeSpan UnhealthyAlertAfter, TimeSpan DegradedAlertAfter, TimeSpan Cooldown);
 
     /// <summary>
-    /// The transition machine, pure and without I/O — the predecessor platform's <c>HealthAlertPolicy</c>, lifted.
+    /// The transition machine, pure and without I/O.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -52,10 +52,9 @@ namespace Stomme.Modules.Health.Application
     /// for one outage, on its way to getting better.
     /// </para>
     /// <para>
-    /// What this lift CHANGES from the predecessor platform, and why: the decision no longer carries channels, a severity or a
-    /// template key. Routing is the notification module's job and baking three template keys into the
-    /// policy is what made the predecessor platform's version untestable without the notification stack. Here the policy answers
-    /// only "what should happen", and the caller decides who hears about it.
+    /// The decision carries no channels, severity or template key. Routing is the notification module's job, and
+    /// baking three template keys into the policy would make it untestable without the notification stack. The
+    /// policy answers only "what should happen", and the caller decides who hears about it.
     /// </para>
     /// </remarks>
     public sealed class HealthAlertPolicy

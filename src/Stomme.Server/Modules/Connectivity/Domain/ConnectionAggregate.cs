@@ -22,7 +22,7 @@ namespace Stomme.Modules.Connectivity.Domain
     /// schema accepts, the NAMES of the credential fields stored for it (the values live only in the per-site secret
     /// store under <see cref="ConnectionCredentialKeys"/>), a bounded timeout, the last test's verdict. Tenant-owned
     /// and site-scoped, named with a normalised twin; the connector type is lower-cased so a key compares the
-    /// same way everywhere. the predecessor platform's free-form <c>CredentialRef</c> and <c>MaxRetries</c> are gone.
+    /// same way everywhere. There is no free-form credential reference and no retry count on a connection.
     /// </summary>
     public sealed class ConnectionAggregate : AggregateRoot<Guid>, ITenantOwned
     {
@@ -152,7 +152,7 @@ namespace Stomme.Modules.Connectivity.Domain
     /// <summary>
     /// Where a connection reaches its system: a URL or a driver connection string, as the connector declares. A
     /// connection string carrying a credential keyword (<c>Password</c>, <c>Pwd</c>, <c>Secret</c>, <c>Token</c>) is
-    /// REFUSED (D110 refutation 11): the endpoint is persisted plainly, listed to every <c>connections:view</c> holder
+    /// REFUSED: the endpoint is persisted plainly, listed to every <c>connections:view</c> holder
     /// and carried by export and backup - a secret belongs in the secret store under a declared field.
     /// </summary>
     public sealed class ConnectionEndpoint : ValueObject, IStringValueObject
@@ -224,7 +224,7 @@ namespace Stomme.Modules.Connectivity.Domain
         public override string ToString() => Value;
     }
 
-    /// <summary>The connector's settings as ONE JSON string column (the D101 McpServer precedent); read back through <see cref="GetSettings"/>.</summary>
+    /// <summary>The connector's settings as ONE JSON string column (the same shape the McpServer aggregate uses); read back through <see cref="GetSettings"/>.</summary>
     public sealed class ConnectionSettings : ValueObject, IStringValueObject
     {
         public const int MaxLength = 8000;
@@ -285,7 +285,7 @@ namespace Stomme.Modules.Connectivity.Domain
     /// <summary>
     /// The closed key grammar for a connection's secrets: <c>connectivity.connection-&lt;id:N&gt;.&lt;field&gt;</c>, where
     /// <c>field</c> is a name the connector's authentication scheme declares AND already fits the secret store's segment
-    /// grammar - anything else is REJECTED, never rewritten, which closes the predecessor platform's free-form name and <c>../</c> class.
+    /// grammar - anything else is REJECTED, never rewritten, which closes the free-form-name and <c>../</c> path-traversal class.
     /// </summary>
     public static class ConnectionCredentialKeys
     {

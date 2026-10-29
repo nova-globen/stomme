@@ -12,11 +12,11 @@ namespace Stomme.Modules.Metering.Domain
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>No prompt, no completion, ever.</b> the predecessor platform's record carried none either, and that holds here: what is
+    /// <b>No prompt, no completion, ever.</b> The record carries none: what is
     /// kept is the shape of the call, not its content.
     /// </para>
     /// <para>
-    /// <b>Provider, model and agent are D49 PAIRS.</b> The raw value keeps the vendor's own spelling, because the
+    /// <b>Provider, model and agent are PAIRS.</b> The raw value keeps the vendor's own spelling, because the
     /// dashboard renders it; the normalized twin is what every filter compares, because bare string equality
     /// diverges across providers. Lower-casing in place - the shape the design first proposed - would have made
     /// the two providers agree by destroying the thing the UI displays.
@@ -49,14 +49,14 @@ namespace Stomme.Modules.Metering.Domain
         /// <summary>The vendor's own spelling, trimmed - what the dashboard renders.</summary>
         public string Provider { get; private set; }
 
-        /// <summary>The D49 normalized twin - what every filter compares.</summary>
+        /// <summary>The normalized twin - what every filter compares.</summary>
         public string ProviderNormalized { get; private set; }
 
         public string Model { get; private set; }
 
         public string ModelNormalized { get; private set; }
 
-        /// <summary>Which agent made the call (a lifted vocabulary; a string, not an enum naming later waves).</summary>
+        /// <summary>Which agent made the call (an open vocabulary; a string, not an enum naming every agent).</summary>
         public string Agent { get; private set; }
 
         public string AgentNormalized { get; private set; }
@@ -87,8 +87,7 @@ namespace Stomme.Modules.Metering.Domain
         /// </summary>
         /// <remarks>
         /// A cached answer cost the provider nothing, so it costs the site nothing: no price, and no tokens against a
-        /// token quota. The raw counts are kept - they say how much the cache saved. the predecessor platform had this rule and the lift
-        /// dropped it without a word (found 2026-09-21 by reconciling its tests by name); it lives HERE so that no caller
+        /// token quota. The raw counts are kept - they say how much the cache saved. The rule lives HERE so that no caller
         /// can store a priced cache hit.
         /// </remarks>
         public long BillableTokens() => Status == AiCallStatus.Cached ? 0 : InputTokens + OutputTokens;

@@ -12,9 +12,9 @@ using Xunit;
 namespace Stomme.Tests.RavenTenancy
 {
     /// <summary>
-    /// The rule that decides a RavenDB tenant's database, against infra UAT's RavenDB: the installation's own database
-    /// when the connection string names it; the tenant's own database when it exists; a tenant created BEFORE BL-176 (its own
-    /// database never created, its sites in the installation's) kept where its rows are and recorded so the answer is stable;
+    /// The rule that decides a RavenDB tenant's database, against a live RavenDB: the installation's own database
+    /// when the connection string names it; the tenant's own database when it exists; a tenant whose own database was
+    /// never created (its sites in the installation's) kept where its rows are and recorded so the answer is stable;
     /// a new tenant's database created with the search index; another server refused. And the resolver refuses a tenant it was
     /// never told about rather than route it to the installation's database.
     /// </summary>
@@ -55,7 +55,7 @@ namespace Stomme.Tests.RavenTenancy
             // Asked again (the next boot), it exists: its own again, and nothing recorded.
             Assert.Equal(own, await Planner().PlanAsync(Tenant(3), Connection(own), () => Task.FromResult(true)));
 
-            // A tenant from before BL-176: its database never created, its sites in the installation's database.
+            // A tenant from before per-tenant databases existed: its database never created, its sites in the installation's.
             var never = _installation + "_four";
             Assert.Null(await Planner().PlanAsync(Tenant(4), Connection(never), () => Task.FromResult(true)));
             Assert.Equal("4", _shared);

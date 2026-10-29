@@ -34,8 +34,8 @@ namespace Stomme.Modules.Mcp.Application
     /// <para>
     /// <b>The guard is OPTIONAL and its absence DENIES.</b> <see cref="IAccessGuard"/> is a constructor parameter with a
     /// default of null: a host composed without an evaluator gets a catalog that lists nothing and runs nothing, not a
-    /// container that throws on resolve and answers 500. D101 falsified "the catalog fails closed without a guard" on
-    /// the predecessor platform for exactly that reason - a REQUIRED dependency that is missing is an error page, and an error page is
+    /// container that throws on resolve and answers 500. "The catalog fails closed without a guard" does not hold for
+    /// exactly that reason - a REQUIRED dependency that is missing is an error page, and an error page is
     /// not a refusal.
     /// </para>
     /// <para>

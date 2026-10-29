@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 6 (D110 refutation 3) - a connector's own words never reach a page, an event or a log. A fixture
+    /// A connector's own words never reach a page, an event or a log. A fixture
     /// answering with a message that carries the host, the user and the password produces a CATEGORY in the response and
     /// in the events; a fixture that throws produces a category, and the log carries the exception TYPE. The other
     /// categories - the policy's denial, a timeout, an unreadable or missing credential - are decided without a dial.
@@ -79,7 +79,7 @@ namespace Stomme.Tests.Connectivity
         [Fact]
         public async Task An_untrusted_host_key_is_its_own_category_and_the_key_offered_reaches_neither_the_response_nor_the_log()
         {
-            // BL-229 (D110's correction of 2026-10-17): the fixed text says what to set; the key the server offered - a server's
+            // The fixed text says what to set; the key the server offered - a server's
             // answer, never a reason to trust it - stays inside the connector's exception.
             const string Offered = "ssh-ed25519 SHA256:OFFEREDBYTHESERVERxxxxxxxxxxxxxxxxxxxxxxxxx";
             var tested = new RecordingDomainEventHandler<ConnectionTestedEvent>();

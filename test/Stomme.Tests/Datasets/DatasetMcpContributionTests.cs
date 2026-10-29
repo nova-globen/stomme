@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 12 (D110 Q6) - the predecessor platform's DatasetMcpContributionTests (6) by name on the one <c>IMcpContributor</c>
+    /// The MCP contribution, checked on the one <c>IMcpContributor</c>
     /// over the module's real startup on the File store: the descriptors carry the feature flag AND the key, the list
     /// and summary resources resolve to the classification-masked summary with no sample values, unknown or malformed
     /// ids are null, <c>query_dataset</c> returns the bounded preview and the refusal for BOTH sensitive levels, and the

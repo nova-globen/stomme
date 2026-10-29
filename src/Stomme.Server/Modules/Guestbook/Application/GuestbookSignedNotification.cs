@@ -10,7 +10,7 @@ namespace Stomme.Modules.Guestbook.Application
     /// The MEDIATOR notification published by <c>SignGuestbookCommandHandler</c> after a signature is written,
     /// via <c>IMediator.Publish</c>. This is the mediator's <see cref="INotification"/> fan-out path — one of
     /// the two in-process mechanisms this sample runs side by side (the other is the framework domain-event
-    /// dispatcher; see <c>GuestbookEntrySignedDomainEvent</c>). D74 keeps them coexisting on purpose.
+    /// dispatcher; see <c>GuestbookEntrySignedDomainEvent</c>). They coexist on purpose.
     /// </summary>
     public sealed record GuestbookSignedNotification(Guid EntryId, int ModuleId, string Author) : INotification;
 

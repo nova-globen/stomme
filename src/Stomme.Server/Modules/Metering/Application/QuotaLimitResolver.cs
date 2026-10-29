@@ -58,7 +58,7 @@ namespace Stomme.Modules.Metering.Application
     /// <summary>The module's own default limits, by canonical metric key.</summary>
     /// <remarks>
     /// A stock install seeds NOTHING, so this is a catalog an operator adopts rather than rows that appear on
-    /// their own: the predecessor platform's three demo quotas became documentation, not data.
+    /// their own: the default quotas are documentation, not data.
     /// </remarks>
     public sealed class MeteringDefaults
     {

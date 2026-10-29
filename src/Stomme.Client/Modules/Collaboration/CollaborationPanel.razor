@@ -228,7 +228,7 @@
         }
     }
 
-    // Presence lives on this heartbeat (increment 12): the sweep forgets a participant not heard from for two minutes, so a
+    // Presence lives on this heartbeat: the sweep forgets a participant not heard from for two minutes, so a
     // browser that crashed leaves no ghost; every half minute says "still here" and tells nobody.
     private async Task HeartbeatLoopAsync(CancellationToken cancellationToken)
     {

@@ -19,7 +19,7 @@ namespace Stomme.Modules.Metering.Application
     /// <para>
     /// <b>Two commits, admitted.</b> Stomme's unit of work persists nothing of its own - every repository call
     /// commits eagerly - so the ledger append and the counter update cannot share a transaction, and
-    /// the predecessor platform's single-SaveChanges atomicity does not survive the lift. Rather than pretend otherwise, the pair
+    /// a single-SaveChanges atomicity is not available. Rather than pretend otherwise, the pair
     /// is made RECOVERABLE: the ledger row is written Pending, the fold runs under a lock, and the row is flipped
     /// to Applied afterwards. A crash in between leaves a Pending row that the recovery job folds.
     /// </para>

@@ -175,7 +175,7 @@ namespace Stomme.Repository
             // db.Permission (see the remarks on this class for why it is the store and not the repository).
             // The RoleId filter stays in the DATABASE, as db.Permission.Where did: the store's only read is
             // GetAllAsync, so reading through it would scan every permission in the tenant. Read filtered
-            // through the session, delete each detached aggregate through the store (D19/rule 9).
+            // through the session, delete each detached aggregate through the store.
             var permissions = await QueryAsync(session => session.Query<PermissionAggregate>()
                 .Where(item => item.RoleId == roleId)
                 .ToList());

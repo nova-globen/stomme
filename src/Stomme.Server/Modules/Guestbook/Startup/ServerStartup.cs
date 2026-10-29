@@ -21,7 +21,7 @@ namespace Stomme.Modules.Guestbook.Startup
     /// is discovered by the framework's reflection scan the same way every other module's startup is, so the
     /// mediator and this module's CQRS/DDD stack plug in by convention rather than by editing the composition
     /// root <c>StommeServiceCollectionExtensions.cs</c>. Until this module, <c>Stomme.Mediator</c> was
-    /// built but had ZERO live callers (docs/decisions.md D14); this is its first activation in the host.
+    /// built but had ZERO live callers; this is its first activation in the host.
     /// </summary>
     public class ServerStartup : IServerStartup
     {
@@ -43,7 +43,7 @@ namespace Stomme.Modules.Guestbook.Startup
             // into the shared ModuleAggregatesDbContext (the AuthorName value object becomes a plain string column
             // by the IStringValueObject convention); on a RavenDB install it round-trips through the install's
             // document store. It reads Database:DefaultDBType once (compose time), registers the CLOSED
-            // IRepository<GuestbookEntryAggregate, Guid> (never the open generic FeatureManagement owns — D17),
+            // IRepository<GuestbookEntryAggregate, Guid> (never the open generic FeatureManagement owns),
             // wires the shared clean-arch pieces (tracker/dispatcher/unit-of-work) and, on a relational install,
             // an EnsureCreated schema initializer. The Raven support singletons it needs are already TryAdded by
             // AddRavenFrameworkStore in the composition root.
@@ -81,7 +81,7 @@ namespace Stomme.Modules.Guestbook.Startup
             services.AddScoped<IValidator<SignGuestbookCommand>, SignGuestbookCommandValidator>();
 
             // The framework domain-event handler (dispatched by the unit of work), COEXISTING with the
-            // mediator notification handler above — the two in-process fan-out paths D74 keeps separate.
+            // mediator notification handler above — the two in-process fan-out paths this sample keeps separate.
             services.AddScoped<IDomainEventHandler<GuestbookEntrySignedDomainEvent>, GuestbookEntrySignedDomainEventHandler>();
 
             // ---- The module's server service (dispatches via IMediator) ---------------------------------

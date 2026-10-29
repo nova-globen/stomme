@@ -12,7 +12,7 @@ using Stomme.Export;
 namespace Stomme.Modules.DataExport.Sources
 {
     /// <summary>
-    /// One export table over a module's BOUNDED JSON rows (the predecessor platform's <c>ExportSourceRows</c>): a JSON
+    /// One export table over a module's BOUNDED JSON rows: a JSON
     /// array of objects - the shape the Datasets catalogue's preview and a dashboard widget's data carry - projected onto a
     /// fixed, ordered column list, a cell absent from a row becoming null.
     /// </summary>

@@ -6,7 +6,7 @@
    handler here. That JS went away with the CDN in Phase 1, which left every TabStrip page unable to
    change tabs (and, with no .tab-pane CSS, showing all panels stacked at once). Switching is now
    Stomme's own, dual-mode like ActionDialog/Pager: Blazor state when interactive, a "tab="
-   querystring link when statically rendered (OnParametersSet already honours "tab"). See D18. *@
+   querystring link when statically rendered (OnParametersSet already honours "tab"). *@
 <CascadingValue Value="this" IsFixed="true">
     <div class="db-tabs">
         <ul class="db-tablist" role="tablist">

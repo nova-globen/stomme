@@ -387,7 +387,7 @@ namespace Stomme.Infrastructure
                     .Select(site => site.Name).ToList();
             }
 
-            // M2 row 12: the root site's top-level page paths at each host name a folder entry names (the collision rule),
+            // The root site's top-level page paths at each host name a folder entry names (the collision rule),
             // each read in a fresh scope entered through that root alias.
             var rootPages = new Dictionary<string, IReadOnlyCollection<string>>(StringComparer.OrdinalIgnoreCase);
             foreach (var host in ConfiguredSites.FolderHosts(entries))
@@ -570,8 +570,8 @@ namespace Stomme.Infrastructure
             {
                 // The installer's FIRST writes — the master Tenant and its Aliases — go through the seam's
                 // MASTER repositories instead of the raw EF InstallationContext, so a non-relational install can
-                // persist them through the same provider-neutral store the resolution READ path already uses
-                // (D52). On a relational install this writes IDENTICAL rows: Tenant/Alias are IAuditable, and
+                // persist them through the same provider-neutral store the resolution READ path already uses.
+                // On a relational install this writes IDENTICAL rows: Tenant/Alias are IAuditable, and
                 // DbContextUtils stamps CreatedBy/ModifiedBy = "" when there is no authenticated user (install
                 // time) — exactly the empty strings the harvested code set by hand — with CreatedOn/ModifiedOn =
                 // UtcNow as before. The repositories also invalidate the "Tenants"/"Aliases" caches, which the
@@ -814,7 +814,7 @@ namespace Stomme.Infrastructure
                                 // the master store — so the harvested EF re-read that "retained" them is redundant
                                 // and dropped. This is a plain column update, NOT IModuleDefinitionRepository.
                                 // UpdateModuleDefinitionAsync, which dereferences an unresolved alias here (no
-                                // alias is set at this install stage) — the D53 finding that deferred this write.
+                                // alias is set at this install stage).
                                 moduleDefinition.Version = versions[versions.Length - 1];
                                 moduleDefinition.ModifiedOn = DateTime.UtcNow;
                                 await moduleDefinitionStore.UpdateAsync(ModuleDefinitionMapper.ToAggregate(moduleDefinition, assignId: true));
@@ -1032,7 +1032,7 @@ namespace Stomme.Infrastructure
         // installation with two tenants on two databases, the second tenant's READS went to its own database (a fresh
         // session per read) while its WRITES went through the page store the first tenant's pass had bound - so every page
         // the second tenant lacked was created in the FIRST tenant's database, again on every boot that reconciled pages.
-        // Measured on UAT (2026-10-02): every module page three times on the first tenant's site 1. A site's failure is
+        // Observed: every module page three times on the first tenant's site 1. A site's failure is
         // contained to that site and reported, so one tenant whose database is gone no longer stops every site after it.
         private async Task<Installation> InitializeSitesAsync(InstallConfig install)
         {
@@ -1116,7 +1116,7 @@ namespace Stomme.Infrastructure
                 result.Message = "An Error Occurred Initializing Sites - " + string.Join(Environment.NewLine, failures);
             }
 
-            // Module-owned site content (BL-78 notification templates first; D103's shared runner): AFTER the framework
+            // Module-owned site content (notification templates first; the shared site-content runner): AFTER the framework
             // steps. It enters each tenant's scope before a fresh DI scope per site and contains every failure per site,
             // so it runs whatever happened to a site above - one broken tenant must not hold back every other's content.
             try
@@ -1208,7 +1208,7 @@ namespace Stomme.Infrastructure
             }
         }
 
-        /// <summary>BL-176: which RavenDB database a tenant's rows live in, decided and made ready - see <see cref="Stomme.Repository.Stores.RavenTenantDatabasePlanner"/>.</summary>
+        /// <summary>Which RavenDB database a tenant's rows live in, decided and made ready - see <see cref="Stomme.Repository.Stores.RavenTenantDatabasePlanner"/>.</summary>
         private async Task PlanRavenTenantDatabaseAsync(IServiceProvider provider, Tenant tenant, string connectionString)
         {
             var planner = new Stomme.Repository.Stores.RavenTenantDatabasePlanner(
@@ -1220,7 +1220,7 @@ namespace Stomme.Infrastructure
             var aliases = provider.GetRequiredService<IAliasRepository>();
             await planner.PlanAsync(tenant, NormalizeConnectionString(connectionString),
                 // A tenant "has sites" when an alias points at a real one: CreateTenantAsync adds a NEW tenant's aliases with SiteId -1
-                // before its site exists, which must not read as a tenant from before BL-176.
+                // before its site exists, which must not read as a tenant from before per-tenant RavenDB databases.
                 async () => (await aliases.GetAliasesAsync()).Any(alias => alias.TenantId == tenant.TenantId && alias.SiteId > 0));
         }
 
@@ -1309,7 +1309,7 @@ namespace Stomme.Infrastructure
         // ValidateConfiguration is GONE. It rewrote AvailableDatabases at boot (missing section or
         // pre-6.1.5 ", Stomme.Database." entries) from InstallAsync's first statement — before any
         // install-intent check, so serving the wizard mutated appsettings.json. The catalog is now resolved
-        // on READ by DatabaseController (defaults + the 6.1.5 namespace migration), the same D32 pattern
+        // on READ by DatabaseController (defaults + the 6.1.5 namespace migration), the same pattern
         // GetDatabaseType uses for DefaultDBType.
 
         private bool ModuleSupportsDatabase(string databases, string dbtype)

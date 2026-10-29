@@ -29,7 +29,7 @@ namespace Stomme.UI
 
         /// <summary>
         /// Sets a cookie for <paramref name="path"/> - a site in a folder passes its own (<c>/didin</c>), so its cookie is not
-        /// the root site's (M2 row 8).
+        /// the root site's.
         /// </summary>
         public Task SetCookie(string name, string value, int days, bool secure, string sameSite, string path)
         {

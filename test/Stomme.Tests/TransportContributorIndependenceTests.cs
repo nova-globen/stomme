@@ -25,7 +25,7 @@ namespace Stomme.Tests
     // suite pins: MapStommeTransport ran the IModuleEndpointContributor loop only inside the
     // `if (options.Grpc.Enabled)` gate, so a module contributing a SignalR hub was silently never mapped on a
     // SignalR-only install — while the SignalR branch's own comment claimed "Module hubs map themselves via
-    // IModuleEndpointContributor". D10 asserts the two transports are independent opt-ins; this is the first
+    // IModuleEndpointContributor". The two transports are independent opt-ins; this is the first
     // test of that independence.
     public class TransportContributorIndependenceTests : IAsyncLifetime
     {

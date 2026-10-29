@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// An (anchor, locale) belongs to ONE contribution (D103 refutation 8, BL-105's rule).
+    /// An (anchor, locale) belongs to ONE contribution.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -287,8 +287,8 @@ namespace Stomme.Tests.Help
         [Fact]
         public void The_fixture_contributor_names_nothing_outside_Stomme_Shared_and_the_BCL()
         {
-            // A packaged module must be able to contribute help by referencing Stomme.Shared and stopping (D103
-            // item 2). The Roslyn compile probe in HelpContractTests is the strong form; this holds the FIXTURE to it.
+            // A packaged module must be able to contribute help by referencing Stomme.Shared and stopping.
+            // The Roslyn compile probe in HelpContractTests is the strong form; this holds the FIXTURE to it.
             Assert.Empty(ForeignAssemblies(typeof(HelpTestContributor)));
 
             // Validated the other way: a type in the module does reach outside, and the same check sees it.

@@ -11,8 +11,7 @@ using Stomme.Shared;
 namespace Stomme.Identity.OpenIddict
 {
     /// <summary>
-    /// The per-tenant store for OpenIddict's entities (applications / authorizations / scopes / tokens),
-    /// D61 spike.
+    /// The per-tenant store for OpenIddict's entities (applications / authorizations / scopes / tokens).
     /// </summary>
     /// <remarks>
     /// <para>
@@ -73,9 +72,9 @@ namespace Stomme.Identity.OpenIddict
             // The explicit {key}_OpenIddict connection string wins; when absent (every install done
             // outside the test suite — nothing writes it) a DEDICATED sibling store is DERIVED from the
             // tenant's own connection string, so the authority works storage-blind with zero provisioning.
-            // D61's per-tenant isolation is preserved: the derived store is never the tenant's own database.
+            // Per-tenant isolation is preserved: the derived store is never the tenant's own database.
             // THIS host's data directory replaces the |DataDirectory| token, as the tenant's own context does. It
-            // was left in (found driving M2 row 2, 2026-10-29): every install whose tenant string uses the token - every
+            // was left in: every install whose tenant string uses the token - every
             // install the installer writes - opened "|DataDirectory|\x_OpenIddict.db" literally, which Windows refuses
             // ("unable to open database file") and Linux creates beside the app, OFF the data volume, so an unattended
             // container lost every authorization and refresh token at its next recreate. The suites set absolute paths.
@@ -90,7 +89,7 @@ namespace Stomme.Identity.OpenIddict
             }
             else
             {
-                // D61 is relational/EF only (phase C carries the RavenDB OpenIddict stores). A non-relational
+                // This store is relational/EF only (RavenDB has its own OpenIddict stores). A non-relational
                 // tenant reaching here is a misconfiguration, not a silent no-op.
                 throw new InvalidOperationException(
                     $"The OpenIddict per-tenant store (D61) is relational/EF only, but tenant {tenant.TenantId} " +

@@ -232,7 +232,7 @@ namespace Stomme.Controllers
         /// The route below puts the VALUE IN THE URL, and <c>LogManager</c> copies the request URL into
         /// <c>Log.Url</c> for every entry raised during a request — so saving a private setting through it wrote
         /// the secret into the site Log table, readable by every administrator, by a door that has nothing to do
-        /// with what was being logged. BL-112 redacted the log ARGUMENTS; this is the other door.
+        /// with what was being logged. Redacting the log ARGUMENTS does not cover this; it is the other door.
         /// The legacy route is kept working for any caller still on it, and redacts its own URL.
         /// </remarks>
         [HttpPut("{entityName}/{entityId}/{settingName}")]
@@ -688,7 +688,7 @@ namespace Stomme.Controllers
             // The sync path must publish the EXACT EntityNames casing — FormatName title-cases a multi-word
             // entity ("ModuleDefinition" -> "Moduledefinition"), so its "...Setting" event was invisible to
             // any subscriber matching the constant, and the switch below never matched (the surviving half
-            // of the D88 root cause).
+            // of the root cause).
             var entityName = NormalizeEntityName(EntityName);
             await _syncManager.AddSyncEventAsync(alias, entityName + "Setting", SettingId, Action);
 
@@ -769,7 +769,7 @@ namespace Stomme.Controllers
         /// <summary>
         /// The Site settings that widen a site's egress to private and loopback addresses - the connector egress
         /// (which the AI assistant's model endpoint rides too), the webhook channel's and the MCP client's. Opening the
-        /// installation's own network is the Host's decision, not a site Administrator's (D110's correction), so every door
+        /// installation's own network is the Host's decision, not a site Administrator's, so every door
         /// refuses them to anyone else; the Connections page is where the Host sets the first. Matched case-insensitively and
         /// trimmed, as SQL Server and RavenDB find a setting by name. <c>EgressAllowlistDriveTests</c> gates the list: every
         /// <c>AllowedHostsSettingName</c> the server declares must be on it.

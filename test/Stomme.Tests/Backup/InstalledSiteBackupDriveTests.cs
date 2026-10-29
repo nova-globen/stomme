@@ -26,7 +26,7 @@ using Stomme.Tenancy.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (gates <c>InstalledSiteBackupDriveTests</c> and <c>InstalledSiteBackupFreshHostDriveTests</c>) - the D30 bar
+    /// <c>InstalledSiteBackupDriveTests</c> and <c>InstalledSiteBackupFreshHostDriveTests</c> - the full bar
     /// on SQLite, PostgreSQL, RavenDB AND SQL Server: an installed site with a guestbook entry, the home page's HtmlText content and an
     /// uploaded file; a snapshot taken over HTTP; afterwards another entry, new content, the file deleted; the restore staged
     /// over HTTP and the host RESTARTED - the file is served again, the later entry is gone, the home page renders the old
@@ -233,7 +233,7 @@ namespace Stomme.Tests.Backup
         private static BackupEngine Engine(WebApplication app) => app.Services.CreateScope().ServiceProvider.GetRequiredService<BackupEngine>();
 
         /// <summary>
-        /// S2 item 4 (infra's C15: Local is the default, S3 an option): with NO <c>Backup:Archive</c> in the installation's
+        /// Local is the default, S3 an option: with NO <c>Backup:Archive</c> in the installation's
         /// settings, a snapshot is recorded in the Local store and its archive is a file in <c>Data/backups</c> under the
         /// host's content root - the data directory a container mounts as its volume. The path is computed from the scratch
         /// install's content root, not asked of the host, so a host that wrote elsewhere fails here. Returns the file's path.
@@ -356,7 +356,7 @@ namespace Stomme.Tests.Backup
         private protected override IGateStore Store() => new RavenGateStore();
     }
 
-    /// <summary>BL-173: the same drive on SQL Server (infra UAT <c>:1434</c>) - installed fresh, it has no template clone.</summary>
+    /// <summary>The same drive on SQL Server (a shared test server <c>:1434</c>) - installed fresh, it has no template clone.</summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class SqlServerInstalledSiteBackupDriveTests(ITestOutputHelper output) : InstalledSiteBackupDriveTests(output)
     {

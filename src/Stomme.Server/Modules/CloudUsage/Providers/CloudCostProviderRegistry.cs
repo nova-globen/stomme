@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Stomme.CloudUsage;
 
-// Lifted from the predecessor platform: the payload mapping is unchanged; only the namespaces moved.
+// The registry of cost providers, by source.
 namespace Stomme.Modules.CloudUsage.Providers
 {
     /// <summary>

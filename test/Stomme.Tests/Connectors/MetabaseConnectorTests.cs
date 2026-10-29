@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>A pipeline folder in memory, for an operation that saves a file (BL-229's Metabase tests).</summary>
+    /// <summary>A pipeline folder in memory, for an operation that saves a file.</summary>
     internal sealed class MemoryFolder(long max = 1_000_000) : IConnectorFiles
     {
         public Dictionary<string, byte[]> Written { get; } = new(StringComparer.Ordinal);

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Stomme.Tests
 {
-    /// <summary>An enum column, so the D78 FindAsync conformance suite can drive an enum-equality predicate.</summary>
+    /// <summary>An enum column, so the FindAsync conformance suite can drive an enum-equality predicate.</summary>
     public enum ProbeRating
     {
         Poor = 0,
@@ -15,7 +15,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// A throwaway aggregate for the D78 <c>IRepository.FindAsync</c> conformance suite. It carries ONE column of
+    /// A throwaway aggregate for the <c>IRepository.FindAsync</c> conformance suite. It carries ONE column of
     /// every scalar shape the FindAsync contract calls SAFE (<c>int</c>, <c>Guid</c>, an <c>enum</c>, <c>bool</c>,
     /// <c>DateTime</c>) plus a raw string and a normalized string, so the suite can drive every safe predicate
     /// AND the string boundary (raw-case divergence + normalized-column agreement) against BOTH providers.
@@ -54,8 +54,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// A <c>long</c> column. <c>IRepository</c> already NAMES long in the safe set; what was missing was the
-        /// EVIDENCE, so the conformance suite drives equality AND a range predicate over it on both providers
-        /// (D102 binding item 11).
+        /// EVIDENCE, so the conformance suite drives equality AND a range predicate over it on both providers.
         /// </summary>
         public long Quantity { get; private set; }
 
@@ -78,7 +77,7 @@ namespace Stomme.Tests
         public string Name { get; private set; }
 
         /// <summary>
-        /// The D49 normalized twin of <see cref="Name"/> (upper-invariant). Comparing it against a
+        /// The normalized twin of <see cref="Name"/> (upper-invariant). Comparing it against a
         /// SIMILARLY-normalized argument AGREES across providers.
         /// </summary>
         public string NameNormalized { get; private set; }
@@ -90,7 +89,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// The probe aggregate's own EF Core context — the relational half the D76 helper composes on a relational
+    /// The probe aggregate's own EF Core context — the relational half the shared helper composes on a relational
     /// install. Every column maps by convention (enum → int, bool, <c>Guid</c>, <c>DateTime</c>, string), so
     /// <c>EnsureCreated</c> builds the schema with no <c>EntityBuilder</c>. The base context ignores the
     /// aggregate's domain events and wires the concurrency token.

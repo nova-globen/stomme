@@ -51,7 +51,7 @@ namespace Stomme.Modules.Pipelines.Persistence
     /// </para>
     /// <para>
     /// <b>Replace.</b> Relational: one transaction - the rows in scope deleted, the part's inserted in batches, each table's
-    /// count checked. RavenDB: per database (BL-176 gives a tenant its own), delete by query, then the documents with their
+    /// count checked. RavenDB: per database (a tenant may have its own), delete by query, then the documents with their
     /// ids, each collection's count checked - RavenDB has no transaction across that, as for every RavenDB part.
     /// </para>
     /// </remarks>

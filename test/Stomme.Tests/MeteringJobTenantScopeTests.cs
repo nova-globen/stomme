@@ -21,14 +21,14 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D102 binding item 1: a module-seam job binds the TENANT itself, so it is correct no matter what scope its
+    /// A module-seam job binds the TENANT itself, so it is correct no matter what scope its
     /// caller hands it.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>CORRECTED 2026-09-20 - the original reason given here was already false when it was written.</b> It said
-    /// the job must scope itself "because <c>HostedServiceBase</c> does not". The base class DOES: BL-107 landed in
-    /// <c>ff19714</c> on 2026-09-17, before this module existed, and <c>RunTenantsAsync</c> now enters
+    /// <b>Corrected: the original reason given here was already false when it was written.</b> It said
+    /// the job must scope itself "because <c>HostedServiceBase</c> does not". The base class DOES: this has been true since
+    /// <c>ff19714</c>, before this module existed, and <c>RunTenantsAsync</c> now enters
     /// <c>ITenantScopeFactory.BeginScope</c> AND a fresh DI scope per tenant, with a per-tenant catch. That is
     /// pinned by its own gate, <c>HostedServiceBaseTenantIsolationTests</c>. Leaving the old sentence standing would
     /// have told the next reader the framework is broken when it is not.
@@ -36,7 +36,7 @@ namespace Stomme.Tests
     /// <para>
     /// What this gate proves is therefore narrower and still worth having: the job does not TRUST its caller. It
     /// enters the tenant's ambient scope itself before creating any DI scope, so it lands the right tenant's rows
-    /// even when invoked from somewhere that got the scope wrong - the shape the pre-BL-107 loop actually had, and
+    /// even when invoked from somewhere that got the scope wrong - the shape the earlier loop actually had, and
     /// the shape any future non-job caller could still have. The underlying hazard is real and unchanged: the seam's
     /// <c>StommeTenantContext</c> caches the first alias's tenant per DI scope, so a module-seam read in a
     /// mis-scoped scope is silently filtered as the WRONG tenant rather than failing.

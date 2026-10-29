@@ -17,7 +17,7 @@ using Xunit;
 namespace Stomme.Tests.Erasure
 {
     /// <summary>
-    /// BL-116 / D112, the runner's contract held against fakes and a controlled clock: every participant's outcome is
+    /// The runner's contract, held against fakes and a controlled clock: every participant's outcome is
     /// on the receipt with the declared handling; a retention keeps the subject's ids until it falls due, then the same
     /// participant purges and the receipt drops the ids; a participant that throws fails the run CLOSED - nothing is
     /// recorded as erased, the request stays pending with the participant and the exception type, the next run

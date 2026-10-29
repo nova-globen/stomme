@@ -48,7 +48,7 @@ namespace Stomme.Modules.Erasure.Startup
             services.AddScoped<ISubjectErasureParticipant, PersonalPagesErasureParticipant>();
             services.AddScoped<ISubjectErasureParticipant, SiteAccessErasureParticipant>();
             services.AddScoped<ISubjectErasureParticipant, OpenIddictErasureParticipant>();
-            services.AddScoped<ISubjectErasureParticipant, AuthorshipStampsErasureParticipant>(); // increment 5: the author's username on every framework row
+            services.AddScoped<ISubjectErasureParticipant, AuthorshipStampsErasureParticipant>(); // the author's username on every framework row
         }
     }
 }

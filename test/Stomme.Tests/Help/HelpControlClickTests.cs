@@ -20,7 +20,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84 increments 7-8: the help controls are CLICKED - the launcher in both render modes, and the admin
+    /// The help controls are CLICKED - the launcher in both render modes, and the admin
     /// control's editor.
     /// </summary>
     /// <remarks>
@@ -30,7 +30,7 @@ namespace Stomme.Tests.Help
     /// that; bUnit's <c>Click()</c> throws on an element with no bound handler, so these facts go red on exactly that.
     /// </para>
     /// <para>
-    /// <b>The launcher's two shapes are the point of D103 refutation 3.</b> On an INTERACTIVE page it is a drawer that a
+    /// <b>The launcher's two shapes are the point of this design.</b> On an INTERACTIVE page it is a drawer that a
     /// click opens. On a STATIC page it is a native <c>&lt;details&gt;</c> with no handler at all - which is what lets an
     /// anonymous page view show help without a circuit.
     /// </para>
@@ -126,7 +126,7 @@ namespace Stomme.Tests.Help
         [Fact]
         public void The_ControlPanel_renders_the_launcher_under_its_OWN_switch_not_the_language_switchers()
         {
-            // D103 refutation 3(a): the slot the design first chose was conditional on ShowLanguageSwitcher. No shipped
+            // The slot the design first chose was conditional on ShowLanguageSwitcher. No shipped
             // theme turns that off today, so only this render can tell the two placements apart.
             Services.AddSingleton(Inert<IPageService>.Create());
             Services.AddSingleton(Inert<ISettingService>.Create());

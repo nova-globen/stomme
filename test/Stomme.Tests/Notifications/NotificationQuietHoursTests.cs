@@ -12,10 +12,9 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationPreferenceTests.cs</c> (16 facts), renamed per the
-    /// BL-78 gate list. 13 facts travel here: the domain / pure-primitive facts (step 2) and, since step 4, the ten that
-    /// drive the dispatch pipeline - harness swapped: the File store + the dispatch job's per-site pass
-    /// (<see cref="NotificationPipelineHarness.RunSiteAsync"/>) for the predecessor platform's in-memory store + <c>SendNotificationCommand</c>,
+    /// The preference suite (16 facts), renamed to the module's names. 13 facts live here: the domain / pure-primitive facts
+    /// and the ten that drive the dispatch pipeline - on the File store, with the dispatch job's per-site pass
+    /// (<see cref="NotificationPipelineHarness.RunSiteAsync"/>) in place of an in-memory store + <c>SendNotificationCommand</c>,
     /// and the scalar <c>NextAttemptOn</c> re-arm for the bus consumer's deferred message. The three self-service CQRS
     /// facts (<c>SaveThenGet_RoundTripsPreferences</c>, <c>Save_Twice_UpdatesInPlace</c>,
     /// <c>Get_NoPreference_ReturnsPermissiveDefaults</c>) land with the CQRS step. Type adaptation only:
@@ -114,7 +113,7 @@ namespace Stomme.Tests.Notifications
             var mutedId = await SeedRequestAsync(host, userId, [ChannelKind.Webhook], topic: "pipeline:42");
             await SeedRequestAsync(host, userId, [ChannelKind.Webhook], topic: "pipeline:7");
 
-            await host.RunSiteAsync(); // one pass handles both (the predecessor platform sent each separately)
+            await host.RunSiteAsync(); // one pass handles both (an earlier design sent each separately)
 
             Assert.Contains((await host.GetAsync<NotificationRequestAggregate>(mutedId))!.Attempts, a => a.Status == DeliveryStatus.Skipped);
             Assert.Single(webhook.Sent); // only the un-muted topic was delivered
@@ -135,7 +134,7 @@ namespace Stomme.Tests.Notifications
 
             var result = await host.RunSiteAsync();
 
-            // Harness swap: the predecessor platform's outcome.DeferFor (8 h) is the re-armed NextAttemptOn.
+            // The 8-hour defer is the re-armed NextAttemptOn.
             Assert.Equal(1, result.Deferred);
             var request = (await host.GetAsync<NotificationRequestAggregate>(id))!;
             Assert.Equal(TimeSpan.FromHours(8), request.NextAttemptOn - LateEvening); // 23:00 -> next 07:00
@@ -173,8 +172,8 @@ namespace Stomme.Tests.Notifications
 
             await host.RunSiteAsync();
 
-            // Harness swap: the predecessor platform deferred a fresh DispatchNotificationMessage by 8 h on the bus. Stomme re-arms the
-            // request's NextAttemptOn to the window end without consuming a retry, and the job re-dispatches it then.
+            // The request's NextAttemptOn is re-armed to the window end without consuming a retry, and the job
+            // re-dispatches it then.
             var deferred = (await host.GetAsync<NotificationRequestAggregate>(id))!;
             Assert.Equal(TimeSpan.FromHours(8), deferred.NextAttemptOn - LateEvening);
             Assert.Equal(0, deferred.AttemptCount);
@@ -195,7 +194,7 @@ namespace Stomme.Tests.Notifications
             await SeedAsync(host, Template(), preference, WebhookChannel());
 
             // A quiet user plus a literal email recipient (always reachable): the request is delivered now. The request is
-            // stored directly (as in the predecessor platform), not dispatched, so the site's external-recipient opt-in is not involved.
+            // stored directly, not dispatched, so the site's external-recipient opt-in is not involved.
             var request = NotificationRequestAggregate.Create(
                 Guid.NewGuid(), TenantId.Default, NotificationPipelineHarness.SiteId, TemplateKey,
                 recipients: [NotificationPipelineHarness.User(quietUser), new Recipient(RecipientKind.Email, "ops@example.com")],

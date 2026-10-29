@@ -27,7 +27,7 @@ namespace Stomme.Modules.Collaboration.Startup
     /// sweep job, and the subject-rights participants. The persistence is registered UNCONDITIONALLY - a switch turned off
     /// must not take the data with it (the Help module's rule); the requests and the API answer only while
     /// <c>Collaboration:Enabled</c> is on, so with it off editing is exactly the single-editor behaviour. The presence
-    /// and change feed over the hub, and the editors' wiring, are increment 12.
+    /// and change feed over the hub, and the editors' wiring, are wired further down.
     /// </summary>
     public class ServerStartup : IServerStartup
     {
@@ -87,7 +87,7 @@ namespace Stomme.Modules.Collaboration.Startup
             // Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).
             services.AddTransient<Stomme.Modules.Collaboration.Services.ICollaborationService, Services.ServerCollaborationService>();
 
-            // Presence and the change feed (increment 12): the aggregates' domain events and a board stored by the Dashboards module
+            // Presence and the change feed: the aggregates' domain events and a board stored by the Dashboards module
             // become one integration event whose handler tells this host's circuits (the signal) and the site's hub group. The push
             // is the SignalR adapter only while the transport is on (resolved at runtime, so a host with it off validates and
             // boots); a no-op otherwise, and the editor polls.

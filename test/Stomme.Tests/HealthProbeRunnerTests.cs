@@ -12,11 +12,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D104 binding item 9: one hung or throwing probe must not be able to stop health monitoring.
+    /// One hung or throwing probe must not be able to stop health monitoring.
     /// </summary>
     /// <remarks>
-    /// The failure this guards against was measured on the predecessor platform, not imagined: its job body took no cancellation
-    /// token, its <c>MaximumDuration</c> auto-heal could only run on a LATER pass of the loop (which cannot start
+    /// The failure this guards against was measured, not imagined: a job body took no cancellation
+    /// token; its <c>MaximumDuration</c> auto-heal could only run on a LATER pass of the loop (which cannot start
     /// while the body is stuck), and one catch wrapped every tenant. A single SMTP connect to a host that
     /// black-holes packets therefore stopped health for the whole installation, and one tenant's exception
     /// skipped every later tenant.
@@ -146,8 +146,8 @@ namespace Stomme.Tests
             Assert.Equal(HealthState.Unhealthy, HealthProbeRunner.Worst(results, HealthState.Healthy));
             Assert.Equal(HealthState.Degraded, HealthProbeRunner.Worst(results.Where(r => r.State != HealthState.Unhealthy).ToList(), HealthState.Healthy));
 
-            // the predecessor platform's aggregator folded an EMPTY set to Healthy, so an installation whose probes all failed to
-            // REGISTER reported perfect health. Here the caller must say what empty means.
+            // an aggregator that folds an EMPTY set to Healthy would report perfect health for an installation whose probes all
+            // failed to REGISTER. Here the caller must say what empty means.
             Assert.Equal(HealthState.Unhealthy, HealthProbeRunner.Worst(Array.Empty<HealthProbeResult>(), HealthState.Unhealthy));
             Assert.Equal(HealthState.Healthy, HealthProbeRunner.Worst(Array.Empty<HealthProbeResult>(), HealthState.Healthy));
         }
@@ -155,7 +155,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task A_probe_that_is_slower_than_the_degraded_threshold_is_degraded_not_unhealthy()
         {
-            // The engine lifted from the predecessor platform: slow is a different answer from broken, and collapsing them is how
+            // Slow is a different answer from broken, and collapsing them is how
             // a monitor cries wolf.
             var slow = new DependencyHealthProbe(
                 "slow", "Slow Thing", HealthProbeScope.Installation,

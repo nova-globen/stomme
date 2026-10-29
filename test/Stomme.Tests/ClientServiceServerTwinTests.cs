@@ -19,7 +19,7 @@ namespace Stomme.Tests
     /// the default for a fresh install and for every site the admin UI creates - therefore resolves its injected service from
     /// what its module's server startup registers, and a module that registers nothing renders "Missing service(s)" instead
     /// of its page. MCP shipped without its twin once and pinned it for itself (<c>McpAdminSurfaceDriveTests</c>); the Erasure
-    /// receipts page then shipped without one too, and was found only by clicking it in a browser on 2026-10-01 - its API
+    /// receipts page then shipped without one too, and was found only by clicking it in a browser - its API
     /// drive was green, because the controller has dependencies of its own. This gate reads the client assembly, so a new
     /// module's service joins it with no edit here.
     /// </para>

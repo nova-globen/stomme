@@ -12,11 +12,11 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// The predecessor platform's DatasetTests by name where they are the domain's (the inference, the masked
+    /// The domain's own cases (the inference, the masked
     /// summary, the escalate-only refresh) on the reshaped aggregate, plus the port's own rules: the id is the ORIGIN's,
     /// the name and the reference are normalised, the sample is bounded and must be a JSON array, the schema and
     /// the summary are one JSON value each and read back typed, the summary must describe the schema, and the ONE
-    /// classification order (Q1). the predecessor platform's mediator, registrar and upload cases are increment 10's.
+    /// classification order. The mediator, registrar and upload cases are covered by their own suites.
     /// </summary>
     public sealed class DatasetTests
     {
@@ -86,7 +86,7 @@ namespace Stomme.Tests.Datasets
         {
             Assert.True(DataClassification.Public < DataClassification.Internal);
             Assert.True(DataClassification.Internal < DataClassification.Confidential);
-            Assert.True(DataClassification.Confidential < DataClassification.Restricted); // Restricted is PII, the top (the predecessor platform ranked it below Confidential)
+            Assert.True(DataClassification.Confidential < DataClassification.Restricted); // Restricted is PII, the top of the order
             Assert.Equal(new[] { false, false, true, true }, Enum.GetValues<DataClassification>().Select(DatasetClassificationPolicy.IsSensitive));
         }
 
@@ -136,7 +136,7 @@ namespace Stomme.Tests.Datasets
             Assert.NotEqual(first.Id, otherKind.Id);
             Assert.Equal(("Sales", "SALES", "Pipeline-7", "PIPELINE-7"), (first.Name, first.NameNormalized, first.OriginReference, first.OriginReferenceNormalized));
             Assert.Equal(DatasetIdentity.For(TenantId.Default, 1, OriginKind.PipelineOutput, "PIPELINE-7"), first.Id);
-            // Another TENANT on the same site id and origin is another id: the module store is one per installation (BL-94 increment 14 found the collision).
+            // Another tenant on the same site id and origin is another id: the module store is one per installation, so the tenant is part of the identity.
             Assert.NotEqual(first.Id, DatasetIdentity.For(TenantId.From(Guid.NewGuid()), 1, OriginKind.PipelineOutput, "PIPELINE-7"));
             Assert.Single(first.DomainEvents.OfType<DatasetRegisteredEvent>());
 

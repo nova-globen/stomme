@@ -21,7 +21,7 @@ namespace Stomme.Repository.Stores
     /// <b>THIS AGGREGATE CANNOT LAND ALONE.</b> <c>SiteGroupMember.SiteGroup</c> was a MAPPED navigation into
     /// the <see cref="SiteGroup"/> CLR type, so mapping this aggregate onto the <c>site_group</c> table while
     /// that navigation stayed mapped made EF rediscover <see cref="SiteGroup"/> THROUGH the navigation and
-    /// claim the same table — the D19 blocker, verbatim and OBSERVED for this cluster:
+    /// claim the same table — the blocker, verbatim and OBSERVED for this cluster:
     /// <code>
     ///   The entity type 'SiteGroup' cannot be added to the model because a type with the same name already
     ///   exists ... 'site_group' cannot be used for entity type 'SiteGroupAggregate' since it is being used
@@ -32,8 +32,8 @@ namespace Stomme.Repository.Stores
     /// <c>SiteGroupsMustNotBeResurrectedTests</c>.
     /// </para>
     /// <para>
-    /// <b>The columns are exactly what the EntityBuilder says, which is NOT a given</b> — D44 found Language's
-    /// builder creating a <c>name</c> column the migrations had since dropped. VERIFIED against the migrated
+    /// <b>The columns are exactly what the EntityBuilder says, which is NOT a given</b> — Language's
+    /// builder was found creating a <c>name</c> column the migrations had since dropped. VERIFIED against the migrated
     /// PostgreSQL database (<c>stomme-pg-44357</c>): <c>site_group</c> has nine columns — site_group_id,
     /// name, type, primary_site_id, synchronize and the four audit columns — and no migration after
     /// <c>10010001_AddSiteGroups</c> touches it. So this one is a clean 1:1 with its builder.

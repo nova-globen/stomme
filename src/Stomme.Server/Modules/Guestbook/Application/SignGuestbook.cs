@@ -15,7 +15,7 @@ namespace Stomme.Modules.Guestbook.Application
 {
     /// <summary>
     /// CQRS COMMAND: sign a guestbook. One command per file with its validator and handler nested, the
-    /// handler-pattern shape #07 lifts from the predecessor platform. Dispatched through <c>IMediator.Send</c> — never called
+    /// standard handler-pattern shape. Dispatched through <c>IMediator.Send</c> — never called
     /// directly — so it flows through the whole behavior pipeline (exception → logging → performance →
     /// validation → handler).
     /// </summary>
@@ -25,7 +25,7 @@ namespace Stomme.Modules.Guestbook.Application
     /// The FluentValidation validator the <c>ValidationBehavior</c> runs before the handler. An invalid
     /// command (blank author/message, over length, non-positive module) is rejected here with a
     /// <see cref="ValidationException"/> and the handler never runs — the visible "the pipeline rejected a bad
-    /// command" evidence D74 drives.
+    /// command" evidence this sample drives.
     /// </summary>
     public sealed class SignGuestbookCommandValidator : AbstractValidator<SignGuestbookCommand>
     {
@@ -46,8 +46,8 @@ namespace Stomme.Modules.Guestbook.Application
     /// event), persists it through the clean-arch repository, drains the unit of work — which dispatches the
     /// <see cref="GuestbookEntrySignedDomainEvent"/> to the FRAMEWORK dispatcher in this scope — and then
     /// PUBLISHES a <see cref="GuestbookSignedNotification"/> through the MEDIATOR. Both in-process fan-out
-    /// mechanisms fire, deliberately (D74 keeps them coexisting; it does not collapse them). Since BL-36(c)
-    /// it ALSO announces the signature across contexts: a <see cref="GuestbookEntrySignedIntegrationEvent"/>
+    /// mechanisms fire, deliberately (they coexist; the sample does not collapse them). It
+    /// ALSO announces the signature across contexts: a <see cref="GuestbookEntrySignedIntegrationEvent"/>
     /// over the bus, after commit — the bus is opt-in, so with messaging off no <c>IEventBus</c> is
     /// registered and the enumerable is empty (a stock install is unaffected).
     /// </summary>

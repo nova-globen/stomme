@@ -20,12 +20,12 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.EntraId
 {
     /// <summary>
-    /// Microsoft Entra ID (lifted from the predecessor platform's <c>entra</c>): a real directory connector - <c>users</c>
+    /// Microsoft Entra ID: a real directory connector - <c>users</c>
     /// and <c>devices</c> over Microsoft Graph with meaningful default <c>$select</c> projections, OAuth2 client credentials
     /// through the family's token provider, <c>@odata.nextLink</c> paging - every request through the host's egress.
     /// </summary>
     /// <remarks>
-    /// BL-229 (n8n's Microsoft Entra ID node) adds a user got, updated and deleted, a user added to and removed from a group, and
+    /// Beyond those, matching n8n's Microsoft Entra ID node, it offers a user got, updated and deleted, a user added to and removed from a group, and
     /// a group read, got, created, updated and deleted - <c>users</c> and <c>devices</c> unchanged but for an optional
     /// <c>max</c>. A user's update is a JSON object of Graph's user properties - a password never among them; the few Graph
     /// keeps apart (about me, birthday, interests, my site, past projects, responsibilities, schools, skills) sent in a PATCH

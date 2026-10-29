@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// The predecessor platform's <c>ModelTierRoutingTests</c> by name (17 cases): the boundaries, the mapping and the
+    /// The <c>ModelTierRoutingTests</c> cases, ported by name (17 cases): the boundaries, the mapping and the
     /// override unchanged; the two binding cases CHANGED to the host-read section through the module's startup.
     /// </summary>
     public sealed class ModelTierRoutingTests
@@ -132,7 +132,7 @@ namespace Stomme.Tests.CostOptimization
 
         // --- Config-map resolution through the module's startup ---
         // CHANGED: the section is CostOptimization:ModelTiers in the HOST's configuration, composed through the module's
-        // own startup; the predecessor platform's the predecessor platform:AI: prefix is dropped.
+        // own startup; the original's AI: section prefix is dropped.
 
         [Fact]
         public async Task AddCostOptimization_binds_the_tier_map_and_thresholds_from_the_CostOptimization_ModelTiers_section()

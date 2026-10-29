@@ -67,7 +67,7 @@ public static class RavenPersistenceExtensions
         // generator caches a server-reserved range, so a shorter lifetime burns a range per scope.
         services.TryAddSingleton<IRavenIdGenerator>(_ => new RavenHiLoIdGenerator(store));
         // The seam's read path. Bound to the store's default database and to StoreNames.Main only;
-        // a host needing D23's two stores binds two factories over two databases explicitly.
+        // a host needing two stores binds two factories over two databases explicitly.
         services.TryAddSingleton<IDocumentSessionFactory>(provider =>
             new RavenDocumentSessionFactory(store, provider.GetRequiredService<IRavenIdGenerator>()));
         // Per-scope change-vector cache enabling optimistic concurrency across the per-operation sessions.
@@ -79,8 +79,8 @@ public static class RavenPersistenceExtensions
         // Data-patch migration runner (invoked by the setup/upgrade flow); resolves any registered
         // IRavenDataMigration implementations.
         services.TryAddSingleton<Migrations.RavenDataMigrationRunner>();
-        // NOTE (Stomme phase 4 lift): the durable job-run/job-schedule stores are omitted here; the
-        // BackgroundJobs seam is not part of this backlog item (see brief 03/message bus). They are
+        // NOTE: the durable job-run/job-schedule stores are omitted here; the
+        // BackgroundJobs seam is not part of this extension. They are
         // re-added when that seam lands.
         services.AddScoped(typeof(IRepository<,>), typeof(RavenRepository<,>));
         return services;

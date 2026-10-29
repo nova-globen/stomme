@@ -22,7 +22,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-180 driven over HTTP on an installed host: which private hosts a site may reach is set on the Connections page by
+    /// Driven over HTTP on an installed host: which private hosts a site may reach is set on the Connections page by
     /// the Host and nobody else. A REST connection to a loopback server is refused by the egress; an Administrator reads
     /// the allowlist and is refused changing it; a range is refused; the Host allows the loopback address and the same
     /// connection's test reaches the server. And the settings API refuses the three egress allowlists to an Administrator

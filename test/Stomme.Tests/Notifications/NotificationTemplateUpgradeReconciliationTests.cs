@@ -16,13 +16,13 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 step 4 (D100 point 5 + the D103 correction): a built-in notification template a NEWER release declares
+    /// A built-in notification template a NEWER release declares
     /// reaches an ALREADY-INSTALLED site on the boot path, and an operator's edit to an existing template survives - driven
     /// the only way that class of defect shows, TWO hosts over ONE database (the <c>AdminPageUpgradeReconciliationTests</c>
     /// / <c>PermissionKeyUpgradeReconciliationTests</c> shape), never a fresh install.
     /// <para>
     /// <b>The boot path is observed BEFORE the hosted services start</b> (<c>start: false</c>): that is where
-    /// <c>Program.Main</c> stands after <c>InstallAsync</c> and before <c>RunAsync</c>, and where F2 said the module store's
+    /// <c>Program.Main</c> stands after <c>InstallAsync</c> and before <c>RunAsync</c>, and where the module store's
     /// tables may not exist yet. SQLite runs the production default (the module-store SQLite sidecar); PostgreSQL
     /// co-locates the module store in the install's own database so the leg is PostgreSQL end to end; RavenDB is
     /// schemaless and runs too. PostgreSQL and RavenDB FAIL rather than skip.

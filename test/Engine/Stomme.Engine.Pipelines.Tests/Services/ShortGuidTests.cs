@@ -3,8 +3,8 @@ using Xunit;
 namespace Stomme.Engine.Pipelines.Tests.Services;
 
 /// <summary>
-/// Pins the id FORMAT of the in-house <see cref="ShortGuid"/> that replaced the ShortGuid package (BL-93:
-/// its 2.0.1 nuspec declares no licence, so D2 cannot carry it). Every golden vector below was MEASURED
+/// Pins the id FORMAT of the in-house <see cref="ShortGuid"/> that replaced the ShortGuid package (its 2.0.1
+/// nuspec declares no licence, so the permissive-licence rule cannot carry it). Every golden vector below was MEASURED
 /// against DEDrake.ShortGuid 2.0.1 before the package was removed - if one of these changes, ids the
 /// engine has already handed out stop round-tripping.
 /// </summary>

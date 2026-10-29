@@ -46,7 +46,7 @@ namespace Stomme.Modules.Portability.Startup
             services.TryAddSingleton(provider =>
             {
                 // IConfigurationRoot FIRST (HostConfiguration.Resolve): the plain IConfiguration lacked the override file a
-                // deployed install writes its switches into (since BL-251 it has it, but still lacks features.json).
+                // deployed install writes its switches into (it has it now, but still lacks features.json).
                 var options = new PortabilityOptions();
                 HostConfiguration.Resolve(provider)?.GetSection(PortabilityOptions.SectionName).Bind(options);
                 return options;

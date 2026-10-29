@@ -25,7 +25,7 @@ namespace Stomme.Modules.Health.Infrastructure
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>The job calls the pass directly rather than sending a gated message.</b> BL-99's outermost
+    /// <b>The job calls the pass directly rather than sending a gated message.</b> The outermost
     /// <c>AuthorizationBehavior</c> is unconditional and denies when there is no <c>HttpContext</c>; a job has
     /// none, so every tick would throw <c>AccessDeniedException</c> into the job's catch and do nothing — while
     /// reporting success. Gating belongs on the OPERATOR messages (run-now, acknowledge), which do have a caller.

@@ -14,8 +14,8 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Shared aggregate/value-object builders for the Notifications domain tests - lifted from the predecessor platform's
-    /// <c>NotificationTestData</c> with the types adapted: every aggregate is site-scoped (<see cref="SiteId"/>),
+    /// Shared aggregate/value-object builders for the Notifications domain tests, with the types adapted:
+    /// every aggregate is site-scoped (<see cref="SiteId"/>),
     /// a secret is an <c>ISiteSecretStore</c> REFERENCE KEY rather than a <c>vault://</c> URI, and a user
     /// recipient is an int user id.
     /// </summary>
@@ -23,7 +23,7 @@ namespace Stomme.Tests.Notifications
     {
         public const int SiteId = 1;
 
-        /// <summary>A well-formed <c>ISiteSecretStore</c> reference key (the D101 key rule).</summary>
+        /// <summary>A well-formed <c>ISiteSecretStore</c> reference key (the key rule for site secrets).</summary>
         public const string SecretReference = "notifications.channel.primary.credential";
 
         public static Recipient Email(string address = "ops@example.com") => new(RecipientKind.Email, address);
@@ -62,9 +62,9 @@ namespace Stomme.Tests.Notifications
     }
 
     /// <summary>
-    /// The HARNESS SWAP for the predecessor platform's <c>services.AddInMemoryPersistence()</c> round-trip facts: the module's own
+    /// The harness for the round-trip facts, in place of <c>services.AddInMemoryPersistence()</c>: the module's own
     /// <c>ServerStartup</c> composed on the in-process FILE store (a throwaway directory), so a "round-trips through
-    /// the repository" fact goes through a real serialize/deserialize (the predecessor platform's in-memory store never serialized).
+    /// the repository" fact goes through a real serialize/deserialize (an in-memory store would never serialize).
     /// Every write and every read runs in its own DI scope.
     /// </summary>
     internal sealed class NotificationFileStore : IAsyncDisposable

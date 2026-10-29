@@ -15,14 +15,14 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.CostOptimization.Application
 {
     /// <summary>
-    /// The resource-cleanup settings (the predecessor platform's <c>CleanupOptions</c>), read from the HOST's configuration section
+    /// The resource-cleanup settings, read from the HOST's configuration section
     /// <c>CostOptimization:Cleanup</c>. Reversible by default: <see cref="DryRun"/> starts true (the job only
     /// reports what it would remove) and nothing newer than <see cref="SafetyWindowDays"/> is ever touched.
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED from the predecessor platform:</b> the temp-file job is OFF by default (<c>TempFiles:Enabled</c> false - BL-97 default 5,
-    /// a job that deletes files is opt-in); the predecessor platform's <c>RecommendationMinBytes</c> is gone with the recommendation it
-    /// gated (see <see cref="TempFileSweeper"/>); the predecessor platform's stale-cache settings are gone with the eviction job (see
+    /// <b>The temp-file job is OFF by default</b> (<c>TempFiles:Enabled</c> false;
+    /// a job that deletes files is opt-in); there is no minimum-bytes setting, as no recommendation is
+    /// gated (see <see cref="TempFileSweeper"/>); and no stale-cache settings, as there is no eviction job (see
     /// <see cref="CacheManagerModelResponseCache"/>).
     /// </remarks>
     public sealed class CleanupOptions
@@ -58,12 +58,12 @@ namespace Stomme.Modules.CostOptimization.Application
     public sealed record TempFileSweepResult(bool Ran, bool DryRun, int Count, long Bytes, string Report);
 
     /// <summary>
-    /// the predecessor platform's temp-file sweep (<c>TempFileCleanupJob</c>'s body): the directories an operator configured, recursively; a
+    /// The temp-file sweep: the directories an operator configured, recursively; a
     /// file older than the safety window is a candidate, counted in a dry run and deleted in a live one; a locked or vanished
     /// file is left for the next run; an unreadable directory is skipped.
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED from the predecessor platform:</b> a dry run REPORTS the reclaimable space in the job's log instead of raising a Cleanup
+    /// <b>A dry run REPORTS</b> the reclaimable space in the job's log instead of raising a Cleanup
     /// recommendation. The finding is the installation's - the swept directories are the host's - while a recommendation is
     /// a site's and is shown to that site's administrators; its evidence would carry the host's directory layout to every
     /// tenant. The job's log is the host's.
@@ -167,7 +167,7 @@ namespace Stomme.Modules.CostOptimization.Application
     }
 
     /// <summary>
-    /// The daily temp-file cleanup (the predecessor platform's <c>TempFileCleanupJob</c>): gated at run time by the HOST's
+    /// The daily temp-file cleanup: gated at run time by the HOST's
     /// <c>CostOptimization:Cleanup:TempFiles:Enabled</c> (default off). The directories are the installation's, so the sweep
     /// runs in the MASTER tenant's pass only - the scheduler runs a job once per tenant, and every other tenant's pass says so
     /// and touches nothing.

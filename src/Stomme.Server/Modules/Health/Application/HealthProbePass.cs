@@ -86,7 +86,7 @@ namespace Stomme.Modules.Health.Application
             var context = new HealthProbeContext(siteId);
 
             // Loaded HERE, in an async method, and shared with the contributors through the scope's accessor -
-            // the settings are read from the store and a constructor cannot await (D33 bans the blocking form).
+            // the settings are read from the store and a constructor cannot await (the blocking form is banned by a build gate).
             var settings = _settingRepository is null
                 ? _settingsAccessor.Current
                 : await _settingsAccessor.EnsureLoadedAsync(_settingRepository).ConfigureAwait(false);

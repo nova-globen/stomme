@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The owner's rule: "buttons must follow the colors defined in their theme and nothing must overide
+    /// The rule: "buttons must follow the colors defined in their theme and nothing must overide
     /// that. if no color is defined then they must follow the default."
     /// </summary>
     /// <remarks>
@@ -85,7 +85,7 @@ namespace Stomme.Tests
         [Fact]
         public void Every_theme_token_a_stylesheet_or_page_reads_is_defined()
         {
-            // Measured on 2026-10-02: --db-danger (fourteen error messages), --db-surface, --db-surface-2, --db-bg-elev-1 and
+            // Measured: --db-danger (fourteen error messages), --db-surface, --db-surface-2, --db-bg-elev-1 and
             // --db-shadow-lg were read but defined nowhere, so each element always showed the fallback written beside it - a
             // colour no theme defined. A token is defined by a stylesheet or set inline on an element (the dashboard grid's).
             var root = RepositoryRoot();

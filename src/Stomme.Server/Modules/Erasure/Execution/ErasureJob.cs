@@ -22,7 +22,7 @@ namespace Stomme.Modules.Erasure.Execution
     /// The erasure job: every minute, per tenant (the base runs each tenant in its own scope) and per
     /// site (its own DI scope with the site's alias set - for the cache as much as the path), under a lease per site
     /// so two nodes never run the same subject at once, it runs every open request through the participants. Immediate
-    /// in the sense the owner decided: a deletion is queued at once and erased on the next tick; no grace period (v2).
+    /// in the sense that a deletion is queued at once and erased on the next tick; no grace period.
     /// Always on - erasure is not a feature an install opts into.
     /// </summary>
     public sealed class ErasureJob : HostedServiceBase

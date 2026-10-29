@@ -5,7 +5,7 @@ namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
     /// The assembly marker the engine's <c>AddStepsFrom</c> scans: every public, concrete, non-generic step in this
-    /// assembly is registered by it (BL-95 increment (d)).
+    /// assembly is registered by it.
     /// </summary>
     public sealed class PipelineStepsMarker
     {
@@ -16,7 +16,7 @@ namespace Stomme.Modules.Pipelines.Steps
 
     /// <summary>
     /// The settings the built-in steps read, bound from the <c>Pipelines</c> section of THIS host's configuration
-    /// root (the one that ends with the override file - BL-162) at composition time. Every switch fails closed: an
+    /// root (the one that ends with the override file) at composition time. Every switch fails closed: an
     /// absent section refuses private-network HTTP egress, confines file steps to the host's data directory and
     /// bounds a delay.
     /// </summary>
@@ -38,10 +38,10 @@ namespace Stomme.Modules.Pipelines.Steps
 
     /// <summary>
     /// Settings for the JavaScript sandbox behind the script step and the map step's <c>js:</c> computed fields
-    /// (<c>Pipelines:Scripts</c>, the predecessor platform's <c>Actions:Scripts</c>). OFF by default: a script is a code-execution
+    /// (<c>Pipelines:Scripts</c>). OFF by default: a script is a code-execution
     /// surface, even one with no host access; when on, it runs in-process in Jint with no CLR access and is bounded by
-    /// statements, wall-clock and memory. Native scripts (PowerShell, Bash, Python) are not a step here: the predecessor platform refused
-    /// them without OS isolation, and the process step is the bounded way to run a program.
+    /// statements, wall-clock and memory. Native scripts (PowerShell, Bash, Python) are not a step here:
+    /// they are refused without OS isolation, and the process step is the bounded way to run a program.
     /// </summary>
     public sealed class ScriptStepOptions
     {
@@ -55,7 +55,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Settings for the process step (<c>Pipelines:Processes</c>, the predecessor platform's <c>Actions:Processes</c>). OFF by default,
+    /// Settings for the process step (<c>Pipelines:Processes</c>). OFF by default,
     /// and even when on nothing may launch until a deployment lists the directories its approved programs live in.
     /// </summary>
     public sealed class ProcessStepOptions
@@ -77,8 +77,8 @@ namespace Stomme.Modules.Pipelines.Steps
     {
         /// <summary>
         /// Host names a request may reach even when they resolve to a denied address (loopback, the LAN, link-local,
-        /// the cloud metadata endpoint) - the framework's ONE outbound guard's allowlist (<c>OutboundConnectGuard</c>,
-        /// BL-132), the same option the webhook channel, the MCP client and upload-by-URL carry. Empty by default: a
+        /// the cloud metadata endpoint) - the framework's ONE outbound guard's allowlist (<c>OutboundConnectGuard</c>),
+        /// the same option the webhook channel, the MCP client and upload-by-URL carry. Empty by default: a
         /// pipeline authored by a site administrator must not be able to probe the host's own network (the SSRF
         /// class), and the decision is taken at CONNECT time on the resolved address, so a redirect or a DNS answer
         /// that changes between check and connect cannot slip past it.
@@ -94,7 +94,7 @@ namespace Stomme.Modules.Pipelines.Steps
         /// <summary>How many redirects a request follows (each hop goes through the egress check again).</summary>
         public int MaxRedirects { get; set; } = 3;
 
-        /// <summary>BL-229: the most pages one paginated request reads, whatever its own 'Most pages' says.</summary>
+        /// <summary>the most pages one paginated request reads, whatever its own 'Most pages' says.</summary>
         public int MaxPages { get; set; } = 100;
     }
 

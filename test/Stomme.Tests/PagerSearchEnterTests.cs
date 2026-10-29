@@ -16,7 +16,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-22's depth-2 pass - Enter in a list's search box searches. The box's value binds on its change event,
+    /// Enter in a list's search box searches. The box's value binds on its change event,
     /// which fires after keydown, so the Pager's keydown handler read the search before the text had arrived: "Drive" typed,
     /// Enter pressed, the pages list unfiltered until the Search button was clicked. FluentUI's key-press hook commits the value
     /// and then calls the Pager; this drives that hook the way its script does.

@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// What a site's Host users are mailed of its error log is held back when it repeats (found on UAT on 2026-10-10: every
+    /// What a site's Host users are mailed of its error log is held back when it repeats (found in a real burst: every
     /// anonymous probe a permission key refused mailed the host, and the mail relay allows about 300 mails a day): the same
     /// kind is told once an hour, a site at most ten an hour, and the next telling of a kind says how many were held back -
     /// while every entry is still written to the site's log.

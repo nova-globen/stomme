@@ -30,10 +30,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// <c>NotificationExtendsNotParallelTests</c> (D100 points 1-3): the Notifications module EXTENDS the
+    /// <c>NotificationExtendsNotParallelTests</c>: the Notifications module EXTENDS the
     /// inherited notification path, it does not run a parallel one. BEHAVIOURAL: an e-mail dispatch's row is returned by
     /// the EXISTING queue predicate (<c>INotificationRepository.GetNotificationsAsync(siteId, -1, -1)</c>) and marked
-    /// delivered by the EXISTING <see cref="NotificationJob"/> against an in-test loopback SMTP responder (F7: no SMTP fake
+    /// delivered by the EXISTING <see cref="NotificationJob"/> against an in-test loopback SMTP responder (no SMTP fake
     /// existed, <c>NotificationJob</c> is <c>IsEnabled=false</c> and needs the site's SMTP settings, so its
     /// <c>ExecuteJobAsync</c> is invoked directly); an in-app row is never in that queue. REFLECTIVE: no module type
     /// reaches an SMTP client, no second notification store exists, no <c>DbContext</c>/<c>DbSet</c> under the module -

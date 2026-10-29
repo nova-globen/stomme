@@ -10,8 +10,8 @@ namespace Stomme.Transport.Realtime
     /// collaboration notice), whose subscribers are each called in the EXECUTION CONTEXT THEY SUBSCRIBED IN - never the
     /// raiser's. An Interactive Server page subscribes from its circuit, and everything it then does - a service call, the
     /// access guard, the current user - reads the principal through the ambient HttpContext, which rides the execution
-    /// context. Invoked on the raiser's thread, a subscriber's work ran as the REQUEST THAT RAISED THE MESSAGE: driven
-    /// increment 12 with two signed-in editors, one editor's panel re-read the lock as the other user and told her she had
+    /// context. Invoked on the raiser's thread, a subscriber's work ran as the REQUEST THAT RAISED THE MESSAGE: seen
+    /// with two signed-in editors, one editor's panel re-read the lock as the other user and told her she had
     /// lost it; the dashboards page re-read a viewer's widgets under whoever refreshed the dataset. Each
     /// subscriber is also isolated: one that throws neither stops the others nor fails the request that raised the message.
     /// </summary>

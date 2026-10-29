@@ -19,8 +19,8 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// A specialist the orchestrator can route to. <b>CHANGED:</b> a specialist describes itself - the predecessor platform's orchestrator held a
-    /// switch of the four names it knew, so a new specialist (the landing page's) would have edited the orchestrator.
+    /// A specialist the orchestrator can route to. A specialist describes itself - an orchestrator holding a
+    /// switch of the names it knew would have to be edited for every new specialist (the landing page's, say).
     /// </summary>
     public interface IAssistantSpecialist : IAssistantAgent
     {
@@ -62,8 +62,8 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// What the agents may READ of the user's workspace. <b>CHANGED:</b> the predecessor platform's gateway was a no-op in every host -
-    /// the agents saw nothing; here every read is the owning module's own <c>[Requires]</c>-gated query dispatched through
+    /// What the agents may READ of the user's workspace. A no-op gateway would leave
+    /// the agents seeing nothing; here every read is the owning module's own <c>[Requires]</c>-gated query dispatched through
     /// the mediator AS THE USER, so an agent sees exactly what its user may see. A refused query answers as nothing visible.
     /// </summary>
     public interface IAssistantQueryGateway
@@ -119,13 +119,13 @@ namespace Stomme.Modules.AiAssistant.Application
     public sealed record AssistantPipelineDraft(string Name, string? Description, IReadOnlyList<AssistantPipelineStepDraft> Steps, IReadOnlyList<AssistantPipelineRelationDraft> Relations);
 
     /// <summary>
-    /// One step. <b>CHANGED:</b> <see cref="Type"/> is a step type from the engine's catalog (the predecessor platform's was one of eight coarse
+    /// One step. <see cref="Type"/> is a step type from the engine's catalog (not one of a few coarse
     /// kinds), <see cref="Inputs"/> are literal input values by input name, and <see cref="ConnectionId"/> fills the step's
     /// <c>Connection</c> input - only with a connection the user can reach.
     /// </summary>
     public sealed record AssistantPipelineStepDraft(string Type, string Name, Guid? ConnectionId = null, IReadOnlyDictionary<string, string>? Inputs = null);
 
-    /// <summary>An edge by step index. <b>CHANGED:</b> the predecessor platform's free-text condition is the engine's outcome <see cref="Port"/>.</summary>
+    /// <summary>An edge by step index. Its condition is the engine's outcome <see cref="Port"/>, not free text.</summary>
     public sealed record AssistantPipelineRelationDraft(int SourceStepIndex, int TargetStepIndex, string? Port = null);
 
     public sealed record AssistantPipelineValidationResult(bool IsValid, IReadOnlyList<string> Errors)

@@ -28,7 +28,7 @@ namespace Stomme.Tests.Mcp
     /// </summary>
     /// <remarks>
     /// This is also <c>McpAuditLedgerTests</c>: the host is configured with <c>Logging:LogLevel:Default = Warning</c>,
-    /// the setting under which the predecessor platform's logged "audit" disappeared, and every outcome below is asserted as a ROW.
+    /// the setting under which an earlier version's logged "audit" disappeared, and every outcome below is asserted as a ROW.
     /// </remarks>
     [Trait("Category", "ExternalDatabase")]
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -52,7 +52,7 @@ namespace Stomme.Tests.Mcp
         /// client half - registering external servers - and <c>Mcp:Server:Enabled</c> is the endpoint this install
         /// publishes. They are turned on together HERE only because these suites drive both.
         /// <c>McpSwitchIndependenceTests</c> is what asserts neither implies the other. The <c>Warning</c> log level is
-        /// the setting the predecessor platform's logged "audit" vanished under, and every audit assertion is made through it.
+        /// the setting an earlier version's logged "audit" vanished under, and every audit assertion is made through it.
         /// </remarks>
         internal static JsonObject McpEnabled() => new()
         {

@@ -52,7 +52,7 @@ namespace Stomme.Modules.Pipelines.Reliability
         public static bool IsDisabled(IDictionary<string, object>? properties) => properties is not null && Flag(properties, DisabledKey);
 
         /// <summary>
-        /// BL-229 (n8n's pinned data): the result a TEST hands on in place of running the step. Only the step test puts it on a
+        /// n8n's pinned data: the result a TEST hands on in place of running the step. Only the step test puts it on a
         /// step - on a body it runs and stores nowhere, never through the codec - so no published run holds one; and it is read
         /// only in a step test besides (<see cref="Application.StepTestCommitGate"/>).
         /// </summary>
@@ -128,7 +128,7 @@ namespace Stomme.Modules.Pipelines.Reliability
                 return;
             }
 
-            // BL-229 (n8n's pinned data): in a test, a step its author pinned hands its pinned result on in place of running - and
+            // n8n's pinned data: in a test, a step its author pinned hands its pinned result on in place of running - and
             // goes on through its first outcome, as one switched off does.
             if (StepReliability.Pinned(context.Step.CustomProperties) is { } pinned && Application.StepTestCommitGate.IsStepTest(context.PipelineExecutionContext))
             {

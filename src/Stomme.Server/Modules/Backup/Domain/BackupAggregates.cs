@@ -159,8 +159,8 @@ namespace Stomme.Modules.Backup.Domain
     /// </summary>
     /// <remarks>
     /// Creating -&gt; Available | Failed. A restore: Available -&gt; Staged (pre-flight passed, waiting for the restart) -&gt;
-    /// Restoring (the boot phase is applying it) -&gt; Available, or RestoreFailed. the predecessor platform returned a failed restore to
-    /// Available; here it is RestoreFailed - a restore that did not finish is a fact the operator must see.
+    /// Restoring (the boot phase is applying it) -&gt; Available, or RestoreFailed (not back to
+    /// Available) - a restore that did not finish is a fact the operator must see.
     /// The archive is untouched by a restore, so a RestoreFailed snapshot is still restorable.
     /// </remarks>
     [BackupExcluded("the catalogue: a restore must never rewrite the rows that drive it")]

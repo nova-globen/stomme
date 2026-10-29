@@ -20,13 +20,13 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The Health admin control, RENDERED and CLICKED. Until 2026-09-23 it had never rendered anywhere observable,
-    /// so the BL-54 dead-click class was not excluded for it; a browser drive has now clicked it, and this pins what it
+    /// The Health admin control, RENDERED and CLICKED. It had never rendered anywhere observable until a browser drive
+    /// clicked it, so a dead click on it went untested; this pins what it
     /// showed.
     /// </summary>
     /// <remarks>
     /// <b>Two empty states, and they must not be confused</b> (found by that drive): with probing switched OFF
-    /// (<c>Health:Enabled = false</c>, which the shipped configuration carried until BL-83 closed and an operator can still
+    /// (<c>Health:Enabled = false</c>, which the shipped configuration carried until probing was complete and an operator can still
     /// set) the page used to promise that "the health job runs every minute" - a tick that would never come.
     /// </remarks>
     public sealed class HealthControlTests : BunitContext
@@ -88,7 +88,7 @@ namespace Stomme.Tests
         [Fact]
         public void The_sparkline_column_draws_a_subjects_hourly_availability_and_nothing_under_two_periods()
         {
-            // BL-96 increment 10 (re-booked): a "Last hours" column, one inline SVG per subject with two or more
+            // A "Last hours" column, one inline SVG per subject with two or more
             // hourly rollups; a subject with fewer draws nothing and the column stays.
             var tick = new DateTime(2026, 9, 27, 14, 0, 0, DateTimeKind.Utc);
             _service.Next = new HealthDashboard(HealthState.Healthy, tick,

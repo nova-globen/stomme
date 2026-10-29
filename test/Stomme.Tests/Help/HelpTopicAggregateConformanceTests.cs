@@ -33,8 +33,8 @@ namespace Stomme.Tests.Help
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>It also closes the predecessor platform user-gated item 74, and that is why the site comes from <c>SiteState</c>.</b> D103
-    /// refutation 13 refuted "SiteId closes item 74 in ~5 lines": the seam's automatic isolation is TENANT-only, and
+    /// <b>It also closes a user-gated item of the earlier implementation, and that is why the site comes from <c>SiteState</c>.</b>
+    /// An earlier claim that a SiteId alone closed it (in about five lines) was refuted: the seam's automatic isolation is TENANT-only, and
     /// the default install puts every site in ONE tenant. So the repository takes no site parameter, the site is read
     /// from the resolved alias, and this suite drives every method with TWO SITES IN ONE TENANT.
     /// </para>
@@ -199,14 +199,14 @@ namespace Stomme.Tests.Help
         [Fact]
         public async Task An_unusable_anchor_or_locale_answers_NO_TOPIC_rather_than_throwing()
         {
-            // D103 refutation 10: this input arrives from the wire on an endpoint an anonymous visitor can reach.
+            // This input arrives from the wire on an endpoint an anonymous visitor can reach.
             Assert.Null(await AsSiteAsync(Site, repository => repository.GetAsync("has space", "en")));
             Assert.Null(await AsSiteAsync(Site, repository => repository.GetAsync("page:x", "not a locale")));
             Assert.Null(await AsSiteAsync(Site, repository => repository.GetAsync(new string('a', 201), "en")));
             Assert.Null(await AsSiteAsync(Site, repository => repository.GetAsync(null!, null!)));
         }
 
-        // ---- TWO SITES IN ONE TENANT: the predecessor platform user-gated item 74 ---------------------------------------------------
+        // ---- TWO SITES IN ONE TENANT: an earlier user-gated item ---------------------------------------------------
 
         [Fact]
         public async Task EVERY_repository_method_answers_for_the_site_the_scope_resolved_and_no_other()

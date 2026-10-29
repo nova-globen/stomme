@@ -5,8 +5,8 @@
 @inject NavigationManager NavigationManager
 
 @*
-    One run (BL-95 increment (b)): its status and its execution log, re-read every two seconds while it is unfinished -
-    observed through InvokeAsync on the circuit's dispatcher, never awaited (the Step 0 rule). A run is
+    One run: its status and its execution log, re-read every two seconds while it is unfinished -
+    observed through InvokeAsync on the circuit's dispatcher, never awaited. A run is
     DISPATCHED, so the page a Run button opens (`started=1`) can ask before the engine has stored it: that page waits for
     the run for up to StartingPolls reads, showing it as starting, before it calls it missing - found walking the editor in
     a browser, where every new run read "There is no such run on this site" until Refresh was pressed.
@@ -319,7 +319,7 @@ else
     public TimeSpan PollInterval { get; set; } = TimeSpan.FromSeconds(2);
 
     /// <summary>The clock the poll runs on: the system's, or a test's that fires each poll itself - a wall-clock timer's
-    /// callbacks waited for a thread under a loaded test run and the page's test failed now and then (2026-10-03).</summary>
+    /// callbacks waited for a thread under a loaded test run and the page's test failed now and then.</summary>
     [Parameter]
     public TimeProvider Clock { get; set; } = TimeProvider.System;
 

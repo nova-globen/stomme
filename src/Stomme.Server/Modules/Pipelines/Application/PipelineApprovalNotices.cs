@@ -13,7 +13,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// What an "Ask for approval" tells the people it names (BL-229 - n8n's approval node SENDS the request): who they are, with
+    /// What an "Ask for approval" tells the people it names (as n8n's approval node SENDS the request): who they are, with
     /// a role resolved to the users who hold it on the site now, and the address of the run's page, where they decide.
     /// </summary>
     public static class PipelineApprovalNotices

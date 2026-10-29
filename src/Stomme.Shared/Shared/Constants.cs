@@ -53,7 +53,7 @@ namespace Stomme.Shared
         public const string ActionToken = "{Action}";
         public const string DefaultAction = "Index";
 
-        // "hubs" (M2 row 7): a module's SignalR hub at /hubs/<name> answers under a folder site too (/lek/hubs/<name>), the
+        // "hubs": a module's SignalR hub at /hubs/<name> answers under a folder site too (/lek/hubs/<name>), the
         // folder's prefix stripped and the site resolved; so no site or top-level page may be named "hubs" either.
         public static readonly string[] ReservedRoutes = { "api", "pages", "files", "hubs" };
         public const string ModuleDelimiter = "*";

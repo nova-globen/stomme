@@ -14,15 +14,15 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-100's drive (D109 DoD, "the D30 bar on PostgreSQL AND RavenDB"): an installed site on each store, the Host signed
+    /// Installed-site drive for the system tools and file uploads: an installed site on each store, the Host signed
     /// in over HTTP; the SystemInfo "Clear all" endpoint empties the framework cache for real (a primed entry's factory runs
     /// again); a normal zip uploads through the Files API and extracts - files on disk AND rows; a zip bomb is refused with a
-    /// 400 carrying its reason, nothing lands and no staging is left. The F1/O1 suites prove each rule on SQLite; this runs
+    /// 400 carrying its reason, nothing lands and no staging is left. The rule-level suites prove each rule on SQLite; this runs
     /// the same paths where the stores differ.
     /// </summary>
     /// <remarks>
     /// Not covered here, stated rather than implied: "Clear all" CLICKED in an interactive mode with zero console errors - no
-    /// browser harness exists (the D109 correction, item 6); that half is one of the owner-sign-in click-throughs.
+    /// browser harness exists; that half is a manual sign-in click-through.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     public abstract class InstalledSiteBl100DriveTests<TFixture> : IClassFixture<TFixture>

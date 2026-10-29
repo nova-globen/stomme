@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.FeatureManagement.Tests;
 
 /// <summary>
-/// Drives the D84 config-backed feature source end-to-end against a live relational store, through the REAL
+/// Drives the config-backed feature source end-to-end against a live relational store, through the REAL
 /// configuration providers a host uses — a <c>features.json</c> on disk, environment variables, the
 /// Microsoft.FeatureManagement object schema — not a fake. Each test composes the module exactly as a host
 /// does (<c>AddFeatureManagement</c> over SQLite + an <see cref="IConfiguration"/> built from real providers),
@@ -219,7 +219,7 @@ public sealed class FeatureConfigurationPrecedenceTests
         }
     }
 
-    /// <summary>D105 (§J.BL-2 refutation 6): a config-true key with NO backing row is still gated when a
+    /// <summary>A config-true key with NO backing row is still gated when a
     /// registered descriptor requires an entitlement — the row-less branch no longer turns the flag on unconditionally.
     /// Driven through a real features.json on disk; the schema is created without seeding so the key stays row-less.</summary>
     [Fact]

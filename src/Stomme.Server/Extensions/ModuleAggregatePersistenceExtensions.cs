@@ -37,8 +37,8 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <para>
     /// Before this, a clean-arch module authored in the FeatureManagement shape (its own EF <c>DbContext</c> +
     /// a hand-composed <c>EfRepository</c>) was EF-only by construction: the Guestbook sample ran its guestbook
-    /// on SQLite even on a RavenDB install (D74 open follow-up). This helper is the smallest shared thing that
-    /// closes that gap, mirroring how D73 gave FeatureManagement its Raven branch — but reusable, and
+    /// on SQLite even on a RavenDB install. This helper is the smallest shared thing that
+    /// closes that gap, mirroring how FeatureManagement got its Raven branch — but reusable, and
     /// registering the CLOSED <c>IRepository&lt;TAggregate, TId&gt;</c> rather than the open generic.
     /// </para>
     /// </summary>
@@ -47,9 +47,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Wires <typeparamref name="TAggregate"/>'s clean-arch persistence for whichever provider the install
         /// selected, read ONCE from <c>Database:DefaultDBType</c> at composition time (the same key
-        /// <c>ConfigManager.GetDatabaseType()</c> and D73's FeatureManagement branch read; the pre-6.1.5
+        /// <c>ConfigManager.GetDatabaseType()</c> and FeatureManagement's branch read; the pre-6.1.5
         /// <c>, Stomme.Database.*</c> namespace is rewritten). This is a COMPOSITION-time branch for the same
-        /// reason D62/D73 are: the provider must be persisted in config by the time the host boots, which is
+        /// reason as the other provider-selected registrations: the provider must be persisted in config by the time the host boots, which is
         /// true for every post-install boot (the wizard restarts the host after writing <c>DefaultDBType</c>).
         /// <list type="bullet">
         ///   <item><b>Relational</b> → an <see cref="IDbContextFactory{TContext}"/> + a per-scope
@@ -58,7 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     <see cref="EfRepository{TAggregate, TId}"/> over <typeparamref name="TContext"/>, and an
         ///     <c>EnsureCreated</c> schema initializer (the module owns and creates its own schema; aggregates
         ///     registered after the database first exists get their missing tables created ADDITIVELY at
-        ///     startup — BL-52).</item>
+        ///     startup).</item>
         ///   <item><b>Document (RavenDB)</b> → a CLOSED <c>IRepository&lt;TAggregate, TId&gt;</c> bound to
         ///     <see cref="RavenRepository{TAggregate, TId}"/>, and NO <c>DbContext</c>/schema/seeder (RavenDB is
         ///     schemaless). The Raven support singletons (a lazily-built <c>IDocumentStore</c>, the change-vector
@@ -223,14 +223,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
             AddBackupParticipant<TAggregate, TId, ModuleAggregatesDbContext>(services);
 
-            // BL-111 (D79's correction): a module aggregate is TENANT-OWNED by contract - the shared store is one per
+            // A module aggregate is TENANT-OWNED by contract - the shared store is one per
             // installation and a module-scoped key repeats across tenants, so a non-tenant-owned aggregate lets one
             // tenant read another's rows on EF and RavenDB. In-tree that is a build gate (ModuleAggregateTenancyGateTests);
-            // an external module's aggregate is composed all the same and NAMED at startup (never a failure - the
-            // BL-105 posture: a third party must not be able to brick an install from /bin).
+            // an external module's aggregate is composed all the same and NAMED at startup (never a failure -
+            // a third party must not be able to brick an install from /bin).
             // The host's OWN aggregates are the build gate's, with its reasoned list (Backup's schedule and snapshot are
             // installation-wide by design): naming them too told every stock install, at every boot, to "make it tenant-owned"
-            // about the framework itself (seen in the BL-86 exemplar drive's host log).
+            // about the framework itself (seen in the exemplar module drive's host log).
             if (!typeof(ITenantOwned).IsAssignableFrom(typeof(TAggregate))
                 && typeof(TAggregate).Assembly != typeof(ModuleAggregatePersistenceExtensions).Assembly)
             {
@@ -334,7 +334,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// The configured provider type, read from the <see cref="IConfigurationRoot"/> the host registers as a
         /// singleton instance, resolved off the descriptor list (composition time — the container is not built
-        /// yet). Mirrors D73's <c>ResolveConfiguredDatabaseType</c>.
+        /// yet). Mirrors FeatureManagement's <c>ResolveConfiguredDatabaseType</c>.
         /// </summary>
         internal static string ResolveConfiguredDatabaseType(IServiceCollection services)
         {
@@ -402,7 +402,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // EnsureCreated is a NO-OP against an existing database, and the store database is created at
             // FIRST boot with whatever aggregates are registered THEN — so an aggregate arriving later (a module
             // installed from the marketplace, then a restart) found the database present and its table absent:
-            // writes threw 'no such table', swallowed into a silent empty read (found by DRIVING the BL-1 loop).
+            // writes threw 'no such table', swallowed into a silent empty read (found by driving the install loop).
             // Catch the schema up ADDITIVELY: create only the missing tables, never touching existing data.
             await CreateMissingTablesAsync(context, scope, cancellationToken);
 
@@ -583,8 +583,8 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// The schema step itself - <c>EnsureCreated</c> plus the BL-52 missing-table catch-up for every registered
-        /// relational module store - callable OUTSIDE the hosted-service start. BL-78 F2 (measured): the boot path's
+        /// The schema step itself - <c>EnsureCreated</c> plus the missing-table catch-up for every registered
+        /// relational module store - callable OUTSIDE the hosted-service start. Measured: the boot path's
         /// <c>SiteContentReconciliationRunner</c> runs from <c>Program.Main</c>'s <c>InstallAsync</c>, before any hosted
         /// service starts, and without this it wrote to tables that did not exist yet (SQLite "no such table:
         /// NotificationTemplateAggregate", PostgreSQL 42P01). Idempotent: running it there and again at host start is

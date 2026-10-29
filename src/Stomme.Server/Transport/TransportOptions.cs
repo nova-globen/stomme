@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 namespace Stomme.Transport
 {
     /// <summary>
-    /// Opt-in switches for Stomme's two additive transports (brief 04 / D10), bound from the
+    /// Opt-in switches for Stomme's two additive transports, bound from the
     /// <c>Transport</c> section of configuration. Both default to <b>off</b> — the framework must build
     /// and run with neither enabled — so a deployment turns on only what it needs:
     /// <code>

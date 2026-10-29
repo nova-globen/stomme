@@ -31,8 +31,8 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// M2 row 14 (ruling C33): <c>module.&lt;id&gt;.enabled=false</c> switches a module assembly's hosted services and endpoint
-    /// contributors off on a host, so the one image both hosts run can carry a module (Lek's 30 Hz game loops) that runs on
+    /// <c>module.&lt;id&gt;.enabled=false</c> switches a module assembly's hosted services and endpoint
+    /// contributors off on a host, so the one image both hosts run can carry a module (for example one with 30 Hz game loops) that runs on
     /// one host only. Silent configuration leaves everything on. This assembly stands in for the module: it declares the
     /// switch "stomme-tests", a hosted service (<see cref="ProbeHostedService"/>) and an endpoint contributor
     /// (<see cref="TransportContributorIndependenceTests.SignalRContributor"/>, whose "on" side that suite proves).

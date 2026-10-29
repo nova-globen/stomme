@@ -8,9 +8,9 @@ name: release
 # SDK meta, the app template (scripts/pack-template.ps1), the slim SDK. Pushes every Stomme.* package. Guards before the
 # push: every package carries the LICENSE file, the themes' embedded static-web-asset props declare exactly what they
 # package, and no pushed package depends on an id this run does not push. scripts/release-dry-run.ps1 packs the
-# same way and runs the same guards locally, before the tag (infra ruling C31): a guard changed here changes there too.
+# same way and runs the same guards locally, before the tag: a guard changed here changes there too.
 #
-# Publishes with nuget.org TRUSTED PUBLISHING (infra's ruling C21): no stored API key. The job asks GitHub for an OIDC
+# Publishes with nuget.org TRUSTED PUBLISHING, so no API key is stored. The job asks GitHub for an OIDC
 # token (id-token: write), NuGet/login exchanges it for a key that lives one hour, requested right before the push. The
 # nuget.org policy names this repository and this workflow file; the repository variable NUGET_USER is the nuget.org
 # profile name (not an e-mail).

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Stomme.Tests.Portability
 {
-    /// <summary>BL-82 - the package's own invariants: who a package is about, and which transitions exist.</summary>
+    /// <summary>The package's own invariants: who a package is about, and which transitions exist.</summary>
     public class PortabilityPackageAggregateTests
     {
         private static readonly DateTime Now = new(2026, 9, 23, 12, 0, 0, DateTimeKind.Utc);

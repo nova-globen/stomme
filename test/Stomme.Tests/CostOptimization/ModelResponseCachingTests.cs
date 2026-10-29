@@ -15,9 +15,9 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// The predecessor platform's <c>ModelResponseCachingTests</c> by name (9 cases): the key cases unchanged; the cache-aside
+    /// The <c>ModelResponseCachingTests</c> cases, ported by name (9 cases): the key cases unchanged; the cache-aside
     /// cases over <see cref="ICacheManager"/> - CHANGED: an entry is the site's (stored under its alias) and its TTL is the
-    /// memory and distributed duration; the predecessor platform's <c>AiResponse</c> tag has no equivalent. The port's own: two sites never
+    /// memory and distributed duration; the <c>AiResponse</c> tag has no equivalent. The port's own: two sites never
     /// share an answer, and with no site the cache is bypassed rather than shared.
     /// </summary>
     public sealed class ModelResponseCachingTests
@@ -96,7 +96,7 @@ namespace Stomme.Tests.CostOptimization
             Assert.Equal("cached answer", hit.Response.Text);
         }
 
-        // CHANGED: the predecessor platform's Entries_carry_the_configured_ttl_and_the_AiResponse_tag - the cache manager carries no tag, so the
+        // CHANGED: the Entries_carry_the_configured_ttl_and_the_AiResponse_tag case - the cache manager carries no tag, so the
         // entry carries the TTL as both durations and the SITE's alias instead.
         [Fact]
         public async Task Entries_carry_the_configured_ttl_and_the_sites_alias()

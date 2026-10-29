@@ -27,7 +27,7 @@ namespace Stomme.Tests
 {
     // The SiteGroup PAIR on the persistence seam: SiteGroup and SiteGroupMember.
     //
-    // NOT leaf clusters, and that is the whole point of this file. Every cluster D44 moved was a single table
+    // NOT leaf clusters, and that is the whole point of this file. Every cluster moved before this one was a single table
     // with no navigation in or out; these two are joined by SiteGroupMember.SiteGroup, a MAPPED navigation into
     // the SiteGroup contract. That one member decides everything interesting here:
     //
@@ -43,7 +43,7 @@ namespace Stomme.Tests
     //     guard that would have caught it.
     //
     // Both tables were read off the migrated PostgreSQL database (stomme-pg-44357), not off their
-    // EntityBuilders — D44 was bitten by exactly that, and it paid off again here: SiteGroupMember carries a
+    // EntityBuilders — an earlier cluster was bitten by exactly that, and it paid off again here: SiteGroupMember carries a
     // UNIQUE index on (SiteId, SiteGroupId) that SiteGroupMemberEntityBuilder does not create (the migration
     // 10010001_AddSiteGroups adds it separately).
     //
@@ -341,22 +341,22 @@ namespace Stomme.Tests
         }
     }
 
-    // Rule (g)/D19/D22 rule 6: deleting the DbSet is NOT enough — EF rediscovers CLR types through
+    // Deleting the DbSet is NOT enough — EF rediscovers CLR types through
     // NAVIGATIONS. This pair is the first cluster on the seam where that was not a hypothetical: it was
-    // observed, and it is the reason the two had to land in one increment.
+    // observed, and it is the reason the two had to land together.
     public class SiteGroupsMustNotBeResurrectedTests
     {
         // The unmigrated neighbours, as TenantDBContext still holds them. Note SiteGroup and SiteGroupMember
         // are NOT here any more — that is the state under test.
         //
-        // PageModule, Visitor and UrlMapping USED to stand here as neighbours too. D47 put all three on the
+        // PageModule, Visitor and UrlMapping USED to stand here as neighbours too. They moved onto the
         // seam, so listing them now would map each table twice — the aggregate via ConfigureFrameworkStore and
-        // the contract via the DbSet — and every test in this class would fail with the D19 blocker on a table
+        // the contract via the DbSet — and every test in this class would fail with EF's two-entity-types blocker on a table
         // this class does not even test. Folder and File are the neighbours that are still genuinely
         // unmigrated, which is the property this fixture needs.
         private sealed class TenantLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
-            // Folder stood here until D48, File until D49, and the SearchContent family until D50 —
+            // Folder, File and the SearchContent family each stood here until they moved onto the seam —
             // declaring any of them now would map its table twice and break the model.
             //
             // THIS CONTEXT IS NOW EMPTY, and that is the END OF THE PATTERN rather than a gap. The neighbour
@@ -366,7 +366,7 @@ namespace Stomme.Tests
             // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
-            // protection now, and it needed no edit across D47, D48, D49 or D50.
+            // protection now, and it needed no edit as the neighbouring clusters moved onto the seam.
 
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureFrameworkStore(database);
         }
@@ -995,7 +995,7 @@ namespace Stomme.Tests
             Assert.Null(read.SiteGroup);
         }
 
-        // THE D19 SHAPE, through the REAL repositories, which is what SynchronizationJob does: read every
+        // THE read-then-write SHAPE, through the REAL repositories, which is what SynchronizationJob does: read every
         // member, then write each one back, on ONE repository instance. If the read had gone through the store
         // this would throw the identity-conflict InvalidOperationException instead of persisting.
         [Fact]

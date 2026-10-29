@@ -18,8 +18,8 @@ using FluentValidation;
 namespace Stomme.Modules.Dashboards.Application
 {
     // ============================================================================================================
-    // The Dashboards application layer (lifted from the predecessor platform's DashboardCommands, WidgetCommands,
-    // DashboardQueries and WidgetDataQuery): every request under its key; every handler resolves the board through the
+    // The Dashboards application layer (dashboard and widget commands,
+    // dashboard queries and the widget data query): every request under its key; every handler resolves the board through the
     // REQUEST's site - another site's board is "does not exist"; every mutation is one read and one update of the board
     // the widgets hang off (the per-write rule holds by construction: the aggregate is the unit). The widget's data
     // comes from the Datasets catalogue - the descriptor with its masked summary and the rows only when the
@@ -358,7 +358,7 @@ namespace Stomme.Modules.Dashboards.Application
         }
     }
 
-    /// <summary>The Datasets module's delete guard, answered by the boards of the request's site: a dataset a widget binds cannot be deleted (the predecessor platform's DashboardUsageProvider).</summary>
+    /// <summary>The Datasets module's delete guard, answered by the boards of the request's site: a dataset a widget binds cannot be deleted.</summary>
     public sealed class DashboardDatasetUsageProvider(IDashboardRepository dashboards, SiteState siteState) : IDatasetUsageProvider
     {
         public async Task<IReadOnlyList<string>> FindReferencesAsync(Guid datasetId, CancellationToken ct = default)

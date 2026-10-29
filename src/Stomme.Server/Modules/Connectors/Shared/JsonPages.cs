@@ -11,7 +11,7 @@ using Stomme.Connectivity;
 
 namespace Stomme.Modules.Connectors.Shared
 {
-    /// <summary>One Microsoft Graph collection page: the <c>value</c> array as records (top-level properties typed; nested objects and arrays kept as raw JSON text) and <c>@odata.nextLink</c> for paging. Shared by Intune and Entra ID (the predecessor platform kept a copy per plugin).</summary>
+    /// <summary>One Microsoft Graph collection page: the <c>value</c> array as records (top-level properties typed; nested objects and arrays kept as raw JSON text) and <c>@odata.nextLink</c> for paging. Shared by Intune and Entra ID.</summary>
     public static class GraphPage
     {
         /// <summary>
@@ -73,7 +73,7 @@ namespace Stomme.Modules.Connectors.Shared
     /// <summary>
     /// One JSON row flattened with the legacy bridges' column semantics: nested objects flatten recursively to
     /// <c>parent_child</c> columns, scalar arrays join to a comma-separated string, arrays of objects stay as raw JSON text.
-    /// Shared by Taegis, Cylance and Flexera One (the predecessor platform carried three identical copies).
+    /// Shared by Taegis, Cylance and Flexera One so the three share one copy.
     /// </summary>
     public static class FlattenedRows
     {

@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The predecessor platform's RestApiConnectorRequestOptionsTests (13) by name: connection-level headers overlaid
+    /// The REST connector request-option cases (13), carried over by name: connection-level headers overlaid
     /// by per-operation headers, the body content type, malformed header lines named. CHANGED (five cases): the
     /// handler-factory and the proxy / certificate-bypass options are gone - <c>HandlerFactory_ReceivesTheParsedNetworkingOptions</c>,
     /// <c>HandlerFactory_ReceivesDefaultOptions_WhenNoNetworkingSettingsAreSet</c>, <c>CreateDefaultHandler_*</c> (2) and

@@ -32,7 +32,7 @@ namespace Stomme.Tests.Landing
     /// version put the editor on the home page as an interactive island; the Help suite's anonymous-view oracle (Blazor marks
     /// every interactive component it renders with <c>&lt;!--Blazor:</c>) caught it, and the editor moved to the module's
     /// interactive Edit action. The oracle is validated the other way round here too: that action carries a marker.
-    /// Increment 2: a published dashboard as the landing page - the Dashboards module's read-only board, rendered statically,
+    /// A published dashboard as the landing page - the Dashboards module's read-only board, rendered statically,
     /// its charts carrying what the page script draws - shown only to a visitor who may read dashboards.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -73,8 +73,8 @@ namespace Stomme.Tests.Landing
 
                 // The host's home page links to the edit action, and the Landing component there is static: the edit action is
                 // the module's one island, so it carries exactly one marker more than the home page's view (the control panel's).
-                // A Static site does not prerender an interactive module (BL-57's default), so the chooser itself exists only
-                // once the circuit connects - the click-through is the owner's.
+                // A Static site does not prerender an interactive module (the default), so the chooser itself exists only
+                // once the circuit connects - the click-through is not driven here.
                 var hostHome = await GateDrive.GetAsync(hostClient, hostCookies, Host, "/", output, "the host's home page, no landing page");
                 Assert.Contains("id=\"landing-manage\"", hostHome.Body, StringComparison.Ordinal);
                 Assert.Contains(editAction, hostHome.Body, StringComparison.Ordinal);
@@ -116,8 +116,8 @@ namespace Stomme.Tests.Landing
                 Assert.Contains("href=\"/start\"", publishedHome.Body, StringComparison.Ordinal);
                 Assert.DoesNotContain("id=\"landing-manage\"", publishedHome.Body, StringComparison.Ordinal);
                 Assert.Empty(InteractiveMarker.Matches(publishedHome.Body));
-                // ...at the TOP of the home page, above the site template's welcome text (the owner's walk found it below,
-                // 2026-09-29: both were placed at order 1 and the tie kept the older module first).
+                // ...at the TOP of the home page, above the site template's welcome text (at order 1 the tie kept the older module
+                // first, so it was found below the welcome text).
                 var welcome = publishedHome.Body.IndexOf("Welcome To Stomme", StringComparison.Ordinal);
                 Assert.True(welcome > 0, "the site template's welcome text is on the home page");
                 Assert.True(publishedHome.Body.IndexOf("id=\"landing-content\"", StringComparison.Ordinal) < welcome, "the landing page is above the welcome text");

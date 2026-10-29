@@ -13,7 +13,7 @@ namespace Stomme.Persistence.RavenDb;
 /// <b>Why RavenDB's synchronous session backs this.</b> <see cref="IQuerySession.Query{TEntity}"/> hands
 /// back a bare <see cref="IQueryable{T}"/> and every caller on the seam materializes it with plain LINQ
 /// <c>.ToList()</c> (deliberately — EF Core's <c>ToListAsync</c> would bind the read to the relational
-/// provider, which D7 forbids). RavenDB's <i>async</i> session exposes a LINQ provider that only executes
+/// provider, which the seam forbids). RavenDB's <i>async</i> session exposes a LINQ provider that only executes
 /// asynchronously, so a synchronous <c>.ToList()</c> over it throws. The synchronous session's provider
 /// executes in-place and satisfies the contract as written.
 /// </para>
@@ -54,7 +54,7 @@ public sealed class RavenDocumentSession(
             : query;
 
         // Adapt standard LINQ to RavenDB's dialect before RavenDB's provider sees it. The seam hands callers a
-        // bare IQueryable and D7 forbids them knowing the provider, so `values.Contains(doc.Field)` — which
+        // bare IQueryable and the seam forbids them knowing the provider, so `values.Contains(doc.Field)` — which
         // RavenDB's provider rejects outright — is translated here rather than spelled RavenDB's way upstream.
         // See RavenLinqRewriting.
         return customized.Rewriting();

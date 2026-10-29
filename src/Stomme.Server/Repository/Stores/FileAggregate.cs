@@ -13,8 +13,8 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// A File is a row here plus a real file on disk, which
     /// <see cref="FileRepository.GetFilePathAsync(Models.File)"/> resolves from its folder's path + this
-    /// row's <see cref="Name"/>. It is the LAST framework cluster to cross the seam, and D48 is why it was
-    /// late: its two name lookups folded case on the column, which no portable expression could say. D49
+    /// row's <see cref="Name"/>. It is the LAST framework cluster to cross the seam, and this is why it was
+    /// late: its two name lookups folded case on the column, which no portable expression could say. The fix
     /// removed the disagreement from the data instead — see <see cref="NameNormalized"/>.
     /// </para>
     /// <para>
@@ -43,13 +43,13 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// <b>What is NOT here: Folder and Url.</b> Both are <c>[NotMapped]</c> view state on the
     /// <see cref="Models.File"/> contract that <see cref="FileRepository"/> populates after this aggregate has
-    /// been mapped back — the folder from <see cref="IFolderRepository"/> (D48 severed the navigation), the
+    /// been mapped back — the folder from <see cref="IFolderRepository"/> (the navigation is severed), the
     /// url computed from it. They are not persisted and never were.
     /// </para>
     /// <para>
     /// <b>The UNIQUE index on (folder_id, name) is production behaviour and does not cross to RavenDB.</b>
     /// <c>ix_file</c> is case-SENSITIVE, exactly as Folder's <c>ix_folder</c> on (site_id, path) is — so
-    /// <c>Logo.png</c> and <c>logo.png</c> may legitimately coexist in one folder, and D49 does NOT change
+    /// <c>Logo.png</c> and <c>logo.png</c> may legitimately coexist in one folder, and the normalized column does NOT change
     /// that. It is why the render path's folder resolution returns a LIST. See <c>RavenFileStore</c>.
     /// </para>
     /// <para>

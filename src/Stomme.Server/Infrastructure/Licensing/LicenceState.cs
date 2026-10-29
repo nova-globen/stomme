@@ -8,7 +8,7 @@ using System.Text;
 namespace Stomme.Infrastructure.Licensing
 {
     /// <summary>
-    /// The licence read path's state (D105 design item 5): a singleton (registered in a later step) that caches the
+    /// The licence read path's state: a singleton that caches the
     /// PARSE and SIGNATURE result of a key per <c>SHA-256(blob) + '|' + InstallationId</c>, and re-checks <c>nbf</c>/<c>exp</c>
     /// against <see cref="TimeProvider"/> on EVERY call — so a key expires mid-process with no job, no persistence and no
     /// restart. The signed blob IS the state; editing it only produces a different cache key that fails verification.

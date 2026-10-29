@@ -7,8 +7,7 @@ using System.Security.Cryptography;
 namespace Stomme.Infrastructure.Licensing
 {
     /// <summary>
-    /// The COMPILED-IN public keys an <c>SLK1</c> licence may be signed under, by <c>kid</c> → P-256 SubjectPublicKeyInfo
-    /// (D105 "The key", design item 4).
+    /// The COMPILED-IN public keys an <c>SLK1</c> licence may be signed under, by <c>kid</c> → P-256 SubjectPublicKeyInfo.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -23,7 +22,7 @@ namespace Stomme.Infrastructure.Licensing
     /// <see cref="OverrideForTests"/> is the internal ring-substitution seam binding item 11 requires: reachable from
     /// <c>Stomme.Tests</c> only through <c>InternalsVisibleTo</c> (<c>Stomme.Server.csproj</c>), never a DI
     /// registration or a configuration input. A REFLECTIVE caller running inside the host process could also reach it;
-    /// that is inside D105's stated non-goal (the threat model is accidental reuse, not code running in the process,
+    /// that is outside the design's scope (the threat model is accidental reuse, not code running in the process,
     /// which could equally patch the IL). <c>LicenceKeyRingSecretGateTests</c> pins that the production ring and the
     /// test ring share no <c>kid</c> and no key bytes.
     /// </para>
@@ -39,7 +38,7 @@ namespace Stomme.Infrastructure.Licensing
         internal static IReadOnlyDictionary<string, byte[]> Production { get; } =
             new ReadOnlyDictionary<string, byte[]>(new Dictionary<string, byte[]>(StringComparer.Ordinal)
             {
-                // stomme-2026-1: generated 2026-10-28 with tools/Stomme.LicenceIssuer keygen. Private half: the secret store only.
+                // stomme-2026-1: generated with tools/Stomme.LicenceIssuer keygen. Private half: the secret store only.
                 ["stomme-2026-1"] = Convert.FromBase64String(
                     "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEjIN5Uwll4SKA/BDE4vYnIH1Mf+aJZTOoCzVu6BjSmFYRM1pbh3REC47+2e+YQISSITOYg0r00wzGITs470ap9g=="),
             });

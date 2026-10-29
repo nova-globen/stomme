@@ -9,7 +9,7 @@ using Stomme.Modules.DataExport.Domain;
 namespace Stomme.Modules.DataExport.Execution
 {
     /// <summary>
-    /// Re-authorises a queued export from STORED rows at the moment it is rendered (D108 refutation 8).
+    /// Re-authorises a queued export from STORED rows at the moment it is rendered.
     /// </summary>
     /// <remarks>
     /// <para>

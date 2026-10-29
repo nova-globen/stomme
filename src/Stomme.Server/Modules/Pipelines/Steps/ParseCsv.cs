@@ -14,7 +14,7 @@ using Stomme.Engine.Pipelines.UIHints;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// CSV text to records (the predecessor platform's CSV extraction re-homed as a step over TEXT: the file read is
+    /// CSV text to records (a step over TEXT: the file read is
     /// <see cref="ReadTextFile"/>'s job, the HTTP fetch is <see cref="SendHttpRequest"/>'s, composition over a
     /// monolith). The header row names the fields; without one they are <c>column1</c>, <c>column2</c>...; a record
     /// shorter than the header leaves the rest empty, a longer one keeps its extra values under generated names.

@@ -67,7 +67,7 @@ namespace Stomme.Dashboards
 
         Kpi = 3,
 
-        /// <summary>A pivot over the bounded rows (increment 10): the first bound column groups, the second is summed when numeric; a count always.</summary>
+        /// <summary>A pivot over the bounded rows: the first bound column groups, the second is summed when numeric; a count always.</summary>
         Pivot = 4,
     }
 

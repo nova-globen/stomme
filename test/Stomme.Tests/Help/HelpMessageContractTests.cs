@@ -19,14 +19,14 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// The help module's mediator surface, reflectively (D103 item 8 - the spec's
+    /// The help module's mediator surface, reflectively (see
     /// <c>HelpSeedIsNotAMediatorMessageTests</c>).
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>Every request carries <c>[Requires]</c> with a help key</b> - the authorization behaviour decides nothing for a
     /// request without one - and <b>every request has a registered handler while help is on.</b> The second one was
-    /// found by DRIVING: the handlers are registered explicitly (never <c>AddMediator()</c>, BL-78 F13), none was, and
+    /// found by DRIVING: the handlers are registered explicitly (never <c>AddMediator()</c>), none was, and
     /// every <c>api/Help</c> call answered an empty 500. Nothing short of an HTTP call had noticed.
     /// </para>
     /// <para>

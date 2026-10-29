@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-98 increments 3 and 4 - the Landing Page Designer over the site's metered model (a scripted one here) and the real
+    /// The Landing Page Designer over the site's metered model (a scripted one here) and the real
     /// landing sanitizer: a submission is accepted only as the sanitizer leaves it; anything it had to take out goes back to
     /// the model to put right, within <see cref="LandingPageDesignerAgent.MaxAttempts"/> submissions; a revised section must be
     /// ONE section of the same name; the model off for the site is the refusal the Landing request surfaces.

@@ -20,7 +20,7 @@ namespace Stomme.Tests
     /// A page script (<see cref="ResourceLoadBehavior.BlazorPageScript"/>) exports onLoad/onUpdate/onDispose; the static path's
     /// &lt;page-script&gt; imports it. The interactive path handed every script resource to <c>includeScripts</c> as a classic
     /// &lt;script&gt;, so the Landing module's page script threw "Unexpected token 'export'" on every interactive home page
-    /// (found on UAT 10.5.1, and in the pipeline editor walk) and a dashboard landing page drew no chart on a WebAssembly site.
+    /// (found on a deployed 10.5.1 site, and in a walk through the pipeline editor) and a dashboard landing page drew no chart on a WebAssembly site.
     /// </remarks>
     public sealed class PageScriptInteractiveTests : BunitContext
     {

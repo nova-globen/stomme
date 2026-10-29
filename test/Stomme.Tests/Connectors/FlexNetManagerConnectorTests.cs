@@ -14,7 +14,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 3 - the predecessor platform's FlexNetManagerConnectorTests (10) by name over the port: the hand-rolled SOAP envelope, the DataSet diffgram, the region-aware refresh-token grant.</summary>
+    /// <summary>The FlexNetManagerConnectorTests cases (10), kept by name over the port: the hand-rolled SOAP envelope, the DataSet diffgram, the region-aware refresh-token grant.</summary>
     public sealed class FlexNetManagerConnectorTests
     {
         private const string DataSetResponse = """

@@ -5,7 +5,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// A pipeline's body as the editor sees it (BL-95 increment (c)): the engine's Flowchart, reduced to steps with
+    /// A pipeline's body as the editor sees it: the engine's Flowchart, reduced to steps with
     /// literal inputs and a designer position, and the connections between them by step id and port. The server
     /// turns it into the engine's own step document and back; nothing engine-specific reaches the client.
     /// </summary>
@@ -93,7 +93,7 @@ namespace Stomme.Models.Pipelines
 
         public string ParentPort { get; set; }
 
-        /// <summary>BL-229 - n8n's sticky-note colours: one of <see cref="PipelineNoteColors.All"/>, or null for the theme's accent.</summary>
+        /// <summary>n8n's sticky-note colours: one of <see cref="PipelineNoteColors.All"/>, or null for the theme's accent.</summary>
         public string Color { get; set; }
     }
 
@@ -131,7 +131,7 @@ namespace Stomme.Models.Pipelines
         public string Value { get; set; }
 
         /// <summary>
-        /// BL-229 (n8n's pinned data): the value an author pinned for testing steps - kept with the pipeline, in the flowchart's
+        /// (n8n's pinned data) The value an author pinned for testing steps - kept with the pipeline, in the flowchart's
         /// designer metadata, and never read by a run. It can be real data, so only an author is given it (a viewer's graph,
         /// version or export has none); null for none.
         /// </summary>
@@ -151,11 +151,11 @@ namespace Stomme.Models.Pipelines
 
         public GraphPosition Position { get; set; } = new GraphPosition();
 
-        /// <summary>BL-229 increment 8: a comment on the step for whoever reads the pipeline - shown on it, never run.</summary>
+        /// <summary>A comment on the step for whoever reads the pipeline - shown on it, never run.</summary>
         public string Comment { get; set; }
 
         /// <summary>
-        /// BL-229 (n8n's pinned data): the result an author pinned for the step - kept with the pipeline, in the flowchart's
+        /// (n8n's pinned data) The result an author pinned for the step - kept with the pipeline, in the flowchart's
         /// designer metadata. A TEST of the pipeline hands it on in place of running the step (an API not called again, a model
         /// not asked again); a published run never reads it. It can be real data, so only an author is given it and a file never
         /// carries it. Null when nothing is pinned.
@@ -170,7 +170,7 @@ namespace Stomme.Models.Pipelines
             return copy;
         }
 
-        /// <summary>BL-229 increment 9: how many times a failed step is tried again (0 to 5)...</summary>
+        /// <summary>How many times a failed step is tried again (0 to 5)...</summary>
         public int Retries { get; set; }
 
         /// <summary>...how many seconds apart (0 to 60)...</summary>

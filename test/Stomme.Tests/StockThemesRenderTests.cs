@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The stock themes this host bundles (Aurora public, Slate admin - D92) RENDER on it.
+    /// The stock themes this host bundles (Aurora public, Slate admin) RENDER on it.
     /// </summary>
     /// <remarks>
     /// Nothing in the gate rendered them before 10.5.0. Their 1.1.2 packs render <c>FluentDesignTheme</c>,

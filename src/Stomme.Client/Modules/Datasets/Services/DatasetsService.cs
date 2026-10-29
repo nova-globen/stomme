@@ -23,7 +23,7 @@ namespace Stomme.Modules.Datasets.Services
 
         Task<DatasetDescriptor> RegisterAsync(RegisterDatasetRequest request);
 
-        /// <summary>A dataset from a file the file manager holds, opened as the caller (increment 13).</summary>
+        /// <summary>A dataset from a file the file manager holds, opened as the caller.</summary>
         Task<DatasetDescriptor> UploadAsync(UploadDatasetRequest request);
 
         Task<DatasetDescriptor> RefreshAsync(Guid id, RefreshDatasetRequest request);
@@ -34,7 +34,7 @@ namespace Stomme.Modules.Datasets.Services
     /// <summary>The BROWSER side: HTTP to <c>api/Datasets</c>.</summary>
     public class DatasetsService : ServiceBase, IDatasetsService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason, which this module's page shows.</summary>
+        /// <summary>A refusal throws with the server's reason, which this module's page shows.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public DatasetsService(HttpClient http, SiteState siteState) : base(http, siteState) { }

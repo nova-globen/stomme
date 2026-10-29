@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Stomme.Tests.Connectivity
 {
-    /// <summary>BL-94 increment 7 - a connector's display name reaches its monogram as letters and digits only, escaped besides, so markup in a name renders as text; a declared icon wins.</summary>
+    /// <summary>A connector's display name reaches its monogram as letters and digits only, escaped besides, so markup in a name renders as text; a declared icon wins.</summary>
     public sealed class ConnectorIconEscapingTests
     {
         [Theory]

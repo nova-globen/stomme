@@ -41,8 +41,8 @@ namespace Stomme.Repository
     /// <para>
     /// <b>Why a second query is behaviour-equivalent and not a shortcut.</b> The harvested <c>.Include</c>
     /// carried NO join predicate — the filter was on this table's OWN columns (<c>SiteId</c>,
-    /// <c>SiteGroupId</c>), so the include only ever fetched values, it never narrowed the result set. D22 rule
-    /// 9 (keep filters in the database) therefore does not apply here: there is no database join to lose. The
+    /// <c>SiteGroupId</c>), so the include only ever fetched values, it never narrowed the result set. The
+    /// rule to keep filters in the database therefore does not apply here: there is no database join to lose. The
     /// filters that DO narrow the read stay in the database below.
     /// </para>
     /// <para>

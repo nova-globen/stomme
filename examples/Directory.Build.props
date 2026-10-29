@@ -1,6 +1,6 @@
 <Project>
   <!--
-    D81. Isolates examples/ from the framework build. The SDK-feed consumers (the Stomme.Sdk
+    Isolates examples/ from the framework build. The SDK-feed consumers (the Stomme.Sdk
     meta-package packer and the _sdk-smoke proof module) are STANDALONE: they must restore + build
     against the published packages ONLY, exactly as a downstream module would. Stopping the upward
     Directory.Build.props / Directory.Packages.props walk here keeps the framework's central package

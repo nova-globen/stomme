@@ -22,12 +22,12 @@ namespace Stomme.Modules.Notifications.Startup
     /// Wires the Notifications module into the host by the startup scan. STORAGE-BLIND: ONE
     /// <c>AddModuleAggregatePersistence&lt;TAggregate, Guid&gt;()</c> per aggregate and ZERO persistence code - no
     /// <c>DbContext</c>, no RavenDB twin, no provider branch. On a relational install the four aggregates join the host's
-    /// shared <c>ModuleAggregatesDbContext</c> (value objects as string columns, collections as JSON columns - the
-    /// BL-78 step 1 convention); on RavenDB and File they round-trip through the generic repositories.
+    /// shared <c>ModuleAggregatesDbContext</c> (value objects as string columns, collections as JSON columns);
+    /// on RavenDB and File they round-trip through the generic repositories.
     /// <para>
     /// It deliberately does NOT call <c>AddMediator()</c> or <c>AddMediatorBehavior(...)</c>: Guestbook's startup
     /// already did, and <c>AddMediator</c> is additive, so a second call would double every pipeline behavior
-    /// (BL-78 F13). Its handlers and validators are registered explicitly below (step 5).
+    /// Its handlers and validators are registered explicitly below.
     /// </para>
     /// </summary>
     public class ServerStartup : IServerStartup
@@ -69,15 +69,15 @@ namespace Stomme.Modules.Notifications.Startup
             services.AddSingleton<WebhookHttpClient>();
             services.AddSingleton<NotificationTemplateRenderer>();
 
-            // Templates on the boot/upgrade path (D100 point 5 + the D103 correction): additive,
+            // Templates on the boot/upgrade path: additive,
             // create-if-absent per site, run by the framework's SiteContentReconciliationRunner. A later module adds
             // its own INotificationTemplateSource.
             services.TryAddEnumerable(ServiceDescriptor.Singleton<INotificationTemplateSource, BuiltInNotificationTemplateSource>());
             services.AddScoped<ISiteContentReconciler, NotificationTemplateReconciler>();
 
-            // The producer port + the Job-backed pipeline (D100 points 3-4). NotificationDispatchJob (a
+            // The producer port + the Job-backed pipeline. NotificationDispatchJob (a
             // HostedServiceBase in Infrastructure/Jobs) is auto-registered by the framework's scan, not here. Nothing on
-            // this path carries [Requires] (F3: no HttpContext in a job). TryAdd for the clock so a host or a test can
+            // this path carries [Requires] (there is no HttpContext in a job). TryAdd for the clock so a host or a test can
             // supply its own TimeProvider first.
             services.TryAddSingleton(TimeProvider.System);
             services.AddScoped<INotificationDispatcher, NotificationDispatcher>();
@@ -87,8 +87,8 @@ namespace Stomme.Modules.Notifications.Startup
             services.AddScoped<INotificationRecipientDirectory, SiteUserRecipientDirectory>();
 
             // The USER-FACING CQRS surface: every request carries [Requires] with one of the five
-            // split keys; the job path above carries none (F3). Handlers and validators are registered EXPLICITLY - never
-            // AddMediator()/AddMediatorBehavior() here (F13: Guestbook's startup already composed the mediator, and a second
+            // split keys; the job path above carries none. Handlers and validators are registered EXPLICITLY - never
+            // AddMediator()/AddMediatorBehavior() here (Guestbook's startup already composed the mediator, and a second
             // AddMediator doubles every behavior; the authorization behavior is the host's, composed before any module).
             services.AddScoped<IRequestHandler<ConfigureChannelCommand, Guid>, ConfigureChannelCommandHandler>();
             services.AddScoped<IRequestHandler<SetChannelCredentialCommand, Unit>, SetChannelCredentialCommandHandler>();

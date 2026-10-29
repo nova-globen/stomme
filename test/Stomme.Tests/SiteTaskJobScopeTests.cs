@@ -15,13 +15,13 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-168 (D107 refutation 2) - <c>SiteTaskJob</c> runs each site's task with THAT site: the provider a task gets
+    /// <c>SiteTaskJob</c> runs each site's task with THAT site: the provider a task gets
     /// resolves the task's own site and tenant, for two sites of one tenant drained in ONE job run, in the order the
     /// loop takes them. A task that read the first site's state on the second site would act on the wrong site.
     /// </summary>
     /// <remarks>
-    /// Measured 2026-09-23: green as the code stands; with the per-task <c>SetAliasAsync</c> removed both tasks resolve
-    /// site -1 and it fails. The cross-TENANT half of the refutation is <c>HostedServiceBase</c>'s per-tenant scope
+    /// Measured: green as the code stands; with the per-task <c>SetAliasAsync</c> removed both tasks resolve
+    /// site -1 and it fails. The cross-TENANT half is <c>HostedServiceBase</c>'s per-tenant scope
     /// (<see cref="HostedServiceBaseTenantIsolationTests"/>), so no job run ever carries two tenants.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]

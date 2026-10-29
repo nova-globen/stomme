@@ -8,8 +8,8 @@ using Xunit;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// The package format. the predecessor platform's eight serializer facts, ported by name onto format 1.1, plus what
-    /// 1.1 adds: a predecessor platform 1.0 document stays readable, a newer minor is refused, and the ordering is deterministic whatever
+    /// The package format. Eight serializer facts, held on format 1.1, plus what
+    /// 1.1 adds: a 1.0 document stays readable, a newer minor is refused, and the ordering is deterministic whatever
     /// order the contributors produced.
     /// </summary>
     public class PortabilityBundleSerializerTests
@@ -123,7 +123,7 @@ namespace Stomme.Tests.Portability
             Assert.True(_serializer.Read(json).Success);
         }
 
-        /// <summary>A document exactly as the predecessor platform wrote it at 1.0: a Guid tenant, a Guid exporter, <c>exportedAt</c>, no names or dependencies.</summary>
+        /// <summary>A document exactly as format 1.0 wrote it: a Guid tenant, a Guid exporter, <c>exportedAt</c>, no names or dependencies.</summary>
         [Fact]
         public void A_Predecessor_1_0_document_is_readable()
         {

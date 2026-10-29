@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Datasets.Infrastructure
 {
     /// <summary>
-    /// The Datasets module's demo content (D110 Q7): three datasets an evaluator can browse, preview
+    /// The Datasets module's demo content: three datasets an evaluator can browse, preview
     /// and query - written per site on the boot/upgrade path through the framework's
     /// <see cref="SiteContentReconciliationRunner"/>, ONLY while <c>DemoContent:Enabled</c> is true (default off; while
     /// it is off this type is not registered), and ADDITIVELY: a site stamped at <see cref="Version"/> is left alone
@@ -23,7 +23,7 @@ namespace Stomme.Modules.Datasets.Infrastructure
     /// the origin's (<c>demo:&lt;key&gt;</c>), the schema and summary are inferred, and the classifier decides the level -
     /// the customers set carries an e-mail column and comes out Restricted (masked, its preview refused) whatever this
     /// reconciler asserts, which is the demonstration; the classifier's floor is Internal, so nothing here is Public. The registrar reads the site from the scope's alias and the
-    /// tenant from the ambient scope the runner entered - the two guards D103 measured.
+    /// tenant from the ambient scope the runner entered - the two guards that keep the registrar from writing under the wrong site or tenant.
     /// </remarks>
     public sealed class DatasetsDemoContentReconciler(IDatasetRepository datasets, IDatasetRegistrar registrar, DemoContentStamp stamp, ILogger<DatasetsDemoContentReconciler> logger) : ISiteContentReconciler
     {

@@ -18,7 +18,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// One step's output reaches a later step's input through a pipeline variable (the pipeline editor walk, 2026-10-02).
+    /// One step's output reaches a later step's input through a pipeline variable.
     /// </summary>
     /// <remarks>
     /// A data step's empty text input takes the previous step's result, so a straight chain needed nothing more; a pipeline

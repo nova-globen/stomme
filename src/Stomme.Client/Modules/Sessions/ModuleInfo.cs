@@ -11,7 +11,7 @@ namespace Stomme.Modules.Sessions
     /// </summary>
     /// <remarks>
     /// <b>No permission keys.</b> Who may end whose sign-in is the framework's question - the Administrators role, decided
-    /// again by the server on every call - and <c>identity.*</c> is the prefix D109 reserves.
+    /// again by the server on every call - and <c>identity.*</c> is a prefix reserved for the framework.
     /// </remarks>
     public class ModuleInfo : IModule
     {

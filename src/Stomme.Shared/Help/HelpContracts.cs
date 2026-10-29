@@ -19,9 +19,9 @@ namespace Stomme.Help
     /// A reflective sweep asserts it, in both directions.
     /// </para>
     /// <para>
-    /// <b>This is NEW design, not a lift.</b> D103 falsified "its topics travel with their modules": 0 of the predecessor platform's 36
-    /// modules shipped a topic or an anchor, and what the predecessor platform called a contribution seam was a two-method READ port
-    /// with one implementation. What travels is the idea; the shape is this repository's.
+    /// <b>Topics do not travel with their modules by themselves.</b> A module ships a topic or an anchor only by
+    /// contributing it explicitly, and the contribution seam is a real contributor contract, not a two-method READ port
+    /// with one implementation.
     /// </para>
     /// </remarks>
     public static class HelpKeys
@@ -36,8 +36,8 @@ namespace Stomme.Help
         public const string PagePrefix = "page:";
 
         /// <summary>
-        /// Normalizes an anchor, or answers false. <b>It does not throw, and that is the whole point</b> (D103
-        /// refutation 10): the anchor arrives from the wire (<c>?anchor=</c>) on an endpoint an anonymous visitor can
+        /// Normalizes an anchor, or answers false. <b>It does not throw, and that is the whole point</b>:
+        /// the anchor arrives from the wire (<c>?anchor=</c>) on an endpoint an anonymous visitor can
         /// reach, so a throwing factory would turn a malformed query string into a 500. Empty, over-long or otherwise
         /// invalid input means "no topic", which is what a reader should see anyway.
         /// </summary>
@@ -121,7 +121,7 @@ namespace Stomme.Help
         /// Accepts what the router puts in <c>PageState.Modules[].ModuleType</c> (<c>Namespace.Type, Assembly</c>) as well
         /// as a bare full name, and keeps only the TYPE part: an assembly name is packaging, and a control that moves
         /// between assemblies is the same surface to a reader. The anchor is therefore per control AND per action -
-        /// <c>...users.index</c> and <c>...users.edit</c> are different anchors (D103 refutation 5), and a contributor
+        /// <c>...users.index</c> and <c>...users.edit</c> are different anchors, and a contributor
         /// ships each one it wants.
         /// </para>
         /// <para>
@@ -214,8 +214,7 @@ namespace Stomme.Help
     /// with dependencies.
     /// </summary>
     /// <remarks>
-    /// <b>A duplicate <c>(anchor, locale)</c> does NOT stop the host</b> (D103 refutation 8; BL-105 made it the rule for
-    /// every contribution seam). Discovery matches any assembly in <c>/bin</c> whose name contains <c>Stomme</c>,
+    /// <b>A duplicate <c>(anchor, locale)</c> does NOT stop the host</b> (the same rule holds for every contribution seam). Discovery matches any assembly in <c>/bin</c> whose name contains <c>Stomme</c>,
     /// including a package unpacked there - so a fatal check would let a third-party package brick an install, with no
     /// admin UI left to remove it. Instead EVERY side of a collision is rejected - there is no "the framework wins",
     /// because a winner is a rule an attacker can aim at - logged at Error and listed on the admin page. In-tree
@@ -282,17 +281,17 @@ namespace Stomme.Help
         /// <summary>True while the row is still the contributor's to update - an operator edit clears it.</summary>
         public bool IsSeeded { get; }
 
-        /// <summary>Which contributor seeded it. A seed update applies only when this MATCHES (D103 refutation 6).</summary>
+        /// <summary>Which contributor seeded it. A seed update applies only when this MATCHES.</summary>
         public string? SeedContributorId { get; }
     }
 
     /// <summary>
-    /// Reads help topics for the CURRENT SITE. The port BL-97's assistant will consume.
+    /// Reads help topics for the CURRENT SITE. The port the assistant consumes.
     /// </summary>
     /// <remarks>
-    /// <b>PUBLISHED topics of the CURRENT site only, by construction</b> (D103 refutation 12). This port sits outside
-    /// the mediator's authorization behavior, and the predecessor platform's equivalent returned every topic on the site, drafts
-    /// included - so an assistant reading it would have quoted unpublished text back to a user. Drafts are reachable
+    /// <b>PUBLISHED topics of the CURRENT site only, by construction</b>. This port sits outside
+    /// the mediator's authorization behavior, and one that returned every topic on the site, drafts
+    /// included, would let an assistant reading it quote unpublished text back to a user. Drafts are reachable
     /// only through the <c>help:manage</c>-gated list. A gate asserts a draft is never returned.
     /// </remarks>
     public interface IHelpTopicProvider

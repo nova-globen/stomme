@@ -12,7 +12,7 @@ namespace Stomme.Modules.Health.Application
     /// <b>This exists because reading settings is asynchronous and a constructor is not.</b> The obvious
     /// registration — resolve <see cref="HealthSettings"/> from a factory that blocks on
     /// <c>LoadAsync(...).GetAwaiter().GetResult()</c> — is banned outright here: <c>AsyncAllTheWayDownTests</c>
-    /// (D33) fails the build on sync-over-async and its allowlist has exactly ONE entry, a MAUI platform
+    /// fails the build on sync-over-async and its allowlist has exactly ONE entry, a MAUI platform
     /// contract. Wanting a second is a design error, not a paperwork step. So the settings are loaded by the
     /// PASS, which is already in an async method, and shared with everything else in the scope through here.
     /// </para>

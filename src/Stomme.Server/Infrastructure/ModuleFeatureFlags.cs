@@ -14,8 +14,8 @@ namespace Stomme.Infrastructure
     /// is therefore UNCONDITIONAL and a stock install is byte-for-byte unaffected; what a config flag gates is
     /// whether that discovered module is SEEDED onto a page at install time (and thus whether it renders).
     /// <para>
-    /// The key is <c>module.&lt;id&gt;.enabled</c> (the M5 knob), read through W1's
-    /// <see cref="IFeatureConfigurationSource"/> — the config layer of the D84 precedence <c>config → DB →
+    /// The key is <c>module.&lt;id&gt;.enabled</c> read through the
+    /// <see cref="IFeatureConfigurationSource"/> — the config layer of the precedence <c>config → DB →
     /// catalog default</c> — from the <c>FeatureManagement</c> section of <c>features.json</c> / an
     /// <c>appsettings</c> section / an environment variable / (later) Azure App Configuration. This deliberately
     /// consults the config source DIRECTLY rather than the full <see cref="IFeatureEvaluator"/>: the seeding

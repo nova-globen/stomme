@@ -28,7 +28,7 @@ namespace Stomme.Tests.CloudUsage
     /// the module's OWN startup: a cost row round-trips every Unified Cost Schema field with its decimal exact, a negative
     /// cost and its UTC-midnight date; a site lists its own rows in a window (from inclusive, to exclusive) and not another
     /// site's; a budget round-trips with and without a provider scope, the scope found by value; an alert marker is found by
-    /// its deterministic id. the predecessor platform's <c>Repository_RoundTripsCloudCostRecord</c> is the first case, on four stores.
+    /// its deterministic id. The <c>Repository_RoundTripsCloudCostRecord</c> case is the first, on four stores.
     /// </summary>
     public abstract class CloudUsageStoreConformanceTests : IAsyncLifetime
     {

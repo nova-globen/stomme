@@ -12,8 +12,7 @@ namespace Stomme.Modules.Notifications.Domain
     /// <summary>
     /// A single site user's notification preferences, resolved server-side before fan-out: accepted channel kinds, a
     /// severity filter, muted topics, a quiet-hours window, a digest preference, and a preferred locale. One per
-    /// (site, user); absence of a record means "accept everything". Lifted from the predecessor platform <c>NotificationPreference</c>
-    /// (BL-78) with <see cref="UserId"/> an int (Stomme users - F10; the predecessor platform used a Guid), tenant-owned +
+    /// (site, user); absence of a record means "accept everything". <see cref="UserId"/> is an int (Stomme users); tenant-owned +
     /// <see cref="SiteId"/>.
     /// </summary>
     public sealed class NotificationPreferenceAggregate : AggregateRoot<Guid>, ITenantOwned

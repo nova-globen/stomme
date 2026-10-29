@@ -29,14 +29,14 @@ namespace Stomme.Tests.CostOptimization
     /// <summary>
     /// The CostOptimization application layer over the File store through the module's OWN startup:
     /// the mediator with the authorization and validation behaviours, a resolved tenant and a site the test can switch,
-    /// the predecessor platform's settable clock, and one scripted analyzer standing for the predecessor platform's stub analyzers - it yields the scripted
+    /// a settable clock, and one scripted analyzer standing in for the stub analyzers of the original tests - it yields the scripted
     /// drafts in order, which is what the command sees of several analyzers in order.
     /// </summary>
     internal sealed class CostOptimizationApplicationHarness : IAsyncDisposable
     {
         public const int SiteId = 1;
 
-        // the predecessor platform's start: 2026-07-01 08:00 UTC.
+        // The fixed start of the test clock: 2026-07-01 08:00 UTC.
         public static readonly DateTime Start = new(2026, 7, 1, 8, 0, 0, DateTimeKind.Utc);
 
         private readonly string _root;
@@ -137,7 +137,7 @@ namespace Stomme.Tests.CostOptimization
         }
     }
 
-    /// <summary>the predecessor platform's <c>StubAnalyzer</c>s in one: the scripted analyzers' drafts, in order.</summary>
+    /// <summary>The <c>StubAnalyzer</c> test doubles in one: the scripted analyzers' drafts, in order.</summary>
     internal sealed class ScriptedAnalyzer : IRecommendationAnalyzer
     {
         private IReadOnlyList<RecommendationDraft[]> _analyzers = Array.Empty<RecommendationDraft[]>();

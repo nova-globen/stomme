@@ -17,10 +17,10 @@ namespace Stomme.Tests
     /// <para>
     /// The framework gate discovers its contracts from <c>typeof(ISiteStore).Namespace</c> —
     /// <c>Stomme.Repository.Stores</c> — so a module store in <c>Stomme.Modules.HtmlText.Repository</c> is
-    /// INVISIBLE to it, one namespace out, and its RavenDB twin would be UNGATED: the exact drift D42 exists to
-    /// prevent. This gate closes that gap for modules. It discovers every closed store contract declared under
+    /// INVISIBLE to it, one namespace out, and its RavenDB twin would be UNGATED: the exact drift the framework gate
+    /// exists to prevent. This gate closes that gap for modules. It discovers every closed store contract declared under
     /// <c>Stomme.Modules.*</c> reflectively — no hand-maintained list — and holds BOTH providers to it, exactly
-    /// as D42 holds the framework's two providers to the framework contract set.
+    /// as the framework gate holds the framework's two providers to the framework contract set.
     /// </para>
     /// <para>
     /// It is a SEPARATE gate rather than an extension of the framework discovery, because the framework theories
@@ -29,9 +29,9 @@ namespace Stomme.Tests
     /// those.
     /// </para>
     /// <para>
-    /// VALIDATED BOTH DIRECTIONS (D55a report): green with both twins present, and red when the Raven registration
+    /// VALIDATED BOTH DIRECTIONS: green with both twins present, and red when the Raven registration
     /// of <see cref="IHtmlTextStore"/> is removed (the Raven theory fails on that contract) — the same fire the
-    /// missing <c>RavenPermissionStore</c> would have drawn had D42 covered modules.
+    /// missing <c>RavenPermissionStore</c> would have drawn had the framework gate covered modules.
     /// </para>
     /// </remarks>
     public class ModuleStoreRegistrationTests
@@ -50,7 +50,7 @@ namespace Stomme.Tests
         // Every closed store contract declared under Stomme.Modules.* in the server assembly: a public interface
         // that either closes the seam's open-generic IRepository<,> over one aggregate or is one of the module's
         // own read-path session factories (IDocumentSessionFactory descendants). The open generics themselves are
-        // excluded — registering them is the very thing D17 rule 1 forbids.
+        // excluded — registering them is the very thing the registration rules forbid.
         private static IEnumerable<Type> DiscoverModuleStoreContracts() =>
             typeof(IHtmlTextStore).Assembly
                 .GetTypes()
@@ -76,7 +76,7 @@ namespace Stomme.Tests
                 implemented.IsGenericType && implemented.GetGenericTypeDefinition() == typeof(IRepository<,>));
         }
 
-        // The discovery must not silently find nothing (the D42 vacuity guard, module-scoped): a rule that matched
+        // The discovery must not silently find nothing (the vacuity guard, module-scoped): a rule that matched
         // zero types would make the theories below vacuous and the gate would pass by running no cases. Asserted
         // against a floor plus the two contracts HtmlText is known to declare.
         [Fact]
@@ -103,7 +103,7 @@ namespace Stomme.Tests
             Assert.Contains(services, descriptor => descriptor.ServiceType == serviceType);
         }
 
-        // THE GATE (RavenDB half). The mirror — a module store added to EF but not RavenDB is the drift D42 exists
+        // THE GATE (RavenDB half). The mirror — a module store added to EF but not RavenDB is the drift the gate exists
         // to stop, and it fails here. This is the theory that goes red if the RavenDB twin's registration is removed.
         [Theory]
         [MemberData(nameof(ModuleStoreContracts))]

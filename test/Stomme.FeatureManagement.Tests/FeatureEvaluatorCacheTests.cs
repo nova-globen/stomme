@@ -16,13 +16,13 @@ using Xunit;
 namespace Stomme.FeatureManagement.Tests;
 
 /// <summary>
-/// Pins the BL-39 evaluator cache: N evaluations of a flag hit the store once; a flag WRITE (toggle,
+/// Pins the evaluator cache: N evaluations of a flag hit the store once; a flag WRITE (toggle,
 /// targeting, per-user override — every mutating path in <see cref="IFeatureAdminService"/>) changes the
-/// answer IMMEDIATELY; the D84 precedence (config → DB → catalog default) is untouched by caching — a
+/// answer IMMEDIATELY; the precedence (config → DB → catalog default) is untouched by caching — a
 /// config-sourced answer keeps tracking LIVE configuration because config is never cached; and a tenant's
 /// cached answer never answers another tenant (the cache key carries the same tenant identity the store's
-/// tenant query filter reads by — the BL-41 trap, inverted: a cross-tenant cache hit would be a leak, a
-/// worse defect than the slowness the cache removes).
+/// tenant query filter reads by — a cross-tenant cache hit would be a leak, a worse defect than the
+/// slowness the cache removes).
 /// <para>
 /// Every evaluation here runs in its OWN DI scope, like a request or a background job would — so a store
 /// hit collapsing across evaluations is collapsing across scopes, which is exactly the background-job shape
@@ -59,8 +59,8 @@ public sealed class FeatureEvaluatorCacheTests
 
         if (counter is not null)
         {
-            // A CLOSED registration wins over the module's open-generic EfRepository<,> (the MS.DI rule
-            // verified for D80), so every FeatureFlag store read/write flows through the counter — the
+            // A CLOSED registration wins over the module's open-generic EfRepository<,> (the MS.DI
+            // resolution rule), so every FeatureFlag store read/write flows through the counter — the
             // probe that observes how many times evaluation actually reaches the store.
             services.AddScoped<IRepository<FeatureFlag, Guid>>(sp => new CountingFeatureFlagRepository(
                 ActivatorUtilities.CreateInstance<EfRepository<FeatureFlag, Guid>>(sp),
@@ -212,7 +212,7 @@ public sealed class FeatureEvaluatorCacheTests
     // ---- (3) config precedence survives caching, and config stays LIVE ----
 
     /// <summary>
-    /// The D84 precedence is untouched: after the DB answer is cached, a config value still wins over it —
+    /// The precedence is untouched: after the DB answer is cached, a config value still wins over it —
     /// and because config answers are never cached, a LIVE config change (hot reload) takes effect on the
     /// very next evaluation, both appearing and disappearing.
     /// </summary>

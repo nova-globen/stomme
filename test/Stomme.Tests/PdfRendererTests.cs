@@ -115,7 +115,7 @@ namespace Stomme.Tests
             Assert.Contains(@"(A\(1\)\\) Tj", text);
         }
 
-        // Found by reconciling the predecessor platform's cases by name (BL-85 residue 7): the page options were accepted, stored and
+        // Found by reconciling the earlier cases by name: the page options were accepted, stored and
         // canonicalised, and nothing asserted that the page actually changes.
         [Theory]
         [InlineData("A4", "Portrait", "595.28", "841.89")]

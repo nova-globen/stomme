@@ -29,7 +29,7 @@ namespace Stomme.Infrastructure.Tenancy
         private readonly IConfigurationRoot _config;
 
         // Optional so the convention tests can compose the resolver with no host at all. When it is absent the
-        // expansion falls back to the process-wide slot - what this class did for everyone before BL-153.
+        // expansion falls back to the process-wide slot - what this class did for everyone before the host-scoped lookup existed.
         private readonly IConfigManager _configManager;
 
         public StommeTenantConnectionResolver(

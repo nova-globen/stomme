@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Licensing
 {
     /// <summary>
-    /// D105 design item 10, DRIVEN over real HTTP on an installed SQLite site (the BL-99 harness): the Host-only licensing
+    /// Driven over real HTTP on an installed SQLite site: the Host-only licensing
     /// surface <c>api/Licence</c>. POST verifies FIRST, writes <c>Licensing:Keys:&lt;lid&gt;</c> through ConfigManager and READS
     /// IT BACK (refutation 7: <c>AddOrUpdateSetting</c> swallows every error and returns void, so a 200 without a read-back
     /// would lie about a read-only settings file); GET reports each key's reason and CONFIGURATION SOURCE; DELETE refuses a

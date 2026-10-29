@@ -29,7 +29,7 @@ namespace Stomme.Repository
     /// <remarks>
     /// <para>
     /// A LEAF cluster: no repository edges in either direction, no navigations, one table, tenant-side only.
-    /// Append-and-purge — there is no update path at all, so the D19 identity conflict has no shape to take
+    /// Append-and-purge — there is no update path at all, so the tracked-instance identity conflict has no shape to take
     /// here. <see cref="LogAggregate"/> carries no audit columns; see the remarks there.
     /// </para>
     /// <para>
@@ -108,7 +108,7 @@ namespace Stomme.Repository
 
         public async Task<IReadOnlyList<Log>> GetLogsPageAsync(int siteId, DateTime fromUtc, DateTime toUtc, string exactLevel, int afterId, int take)
         {
-            // The EXPORT's read (D108 refutation 5). GetLogsAsync above is "the newest N" and cannot walk a
+            // The EXPORT's read. GetLogsAsync above is "the newest N" and cannot walk a
             // range; this one can, a page at a time, without ever materialising the table.
             //
             // KEYSET ON Id, NOT LogDate. LogDate is not unique - a burst of entries shares an instant - so a cursor

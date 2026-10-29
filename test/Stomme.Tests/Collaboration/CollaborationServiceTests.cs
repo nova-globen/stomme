@@ -11,11 +11,11 @@ using static Stomme.Tests.Collaboration.CollaborationRig;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// The predecessor platform's <c>ResourceLockServiceTests</c> and <c>EditSessionServiceTests</c>, by name, over the
-    /// real services on an in-memory store. <b>CHANGED:</b> no call names a user - the principal does (a switchable caller
+    /// The <c>ResourceLockServiceTests</c> and <c>EditSessionServiceTests</c> cases, by name, over the
+    /// real services on an in-memory store. <b>Note:</b> no call names a user - the principal does (a switchable caller
     /// here); the resource must be one its module lets the caller edit; the "guard held" cases become the in-process gate's
     /// own proof - concurrent callers are serialised, so exactly one is granted the lock and exactly one session is opened
-    /// (the predecessor platform's distributed guard reported contention instead; Stomme's is not composed).
+    /// (a distributed guard would report contention instead; none is composed here).
     /// </summary>
     public sealed class CollaborationServiceTests
     {
@@ -96,7 +96,7 @@ namespace Stomme.Tests.Collaboration
         [Fact]
         public async Task AcquireAsync_WhileTheGuardIsHeld_ReportsContention_WithoutCreatingALease()
         {
-            // CHANGED: the in-process gate serialises two concurrent acquires - exactly one is granted, the other names it,
+            // The in-process gate serialises two concurrent acquires - exactly one is granted, the other names it,
             // and exactly one lease exists.
             var rig = new CollaborationRig();
             var ada = new ResourceLockService(rig.Locks, new SwitchableCaller { Current = SwitchableCaller.As(Ada, "Ada") }, rig.Access, rig.Options, rig.Gate, rig.Clock, rig.UnitOfWork);
@@ -114,7 +114,7 @@ namespace Stomme.Tests.Collaboration
         [Fact]
         public async Task AcquireAsync_WhileTheGuardIsHeld_StillNamesADurablyRecordedHolder()
         {
-            // CHANGED: an acquire that meets the gate held WAITS for it, then names whoever got in first.
+            // An acquire that meets the gate held WAITS for it, then names whoever got in first.
             var rig = new CollaborationRig();
             var bo = new ResourceLockService(rig.Locks, new SwitchableCaller { Current = SwitchableCaller.As(Bo, "Bo") }, rig.Access, rig.Options, rig.Gate, rig.Clock, rig.UnitOfWork);
             Task<ResourceLockResult> waiting;
@@ -315,7 +315,7 @@ namespace Stomme.Tests.Collaboration
         [Fact]
         public async Task JoinAsync_WhileTheOpenGuardIsHeld_WithNoVisibleSession_IsRejectedAsTransient()
         {
-            // CHANGED: concurrent first joins are serialised by the gate - ONE session is opened and every joiner is in it.
+            // Concurrent first joins are serialised by the gate - ONE session is opened and every joiner is in it.
             var rig = new CollaborationRig();
             var services = Enumerable.Range(0, 10)
                 .Select(index => new EditSessionService(rig.Sessions, rig.Locks, new SwitchableCaller { Current = SwitchableCaller.As(100 + index, "user " + index) }, rig.Access, rig.Gate, rig.Clock, rig.UnitOfWork))

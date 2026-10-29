@@ -13,7 +13,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.FlexeraOne
 {
     /// <summary>
-    /// Flexera One (lifted from the predecessor platform's <c>flexeraone</c>): the OAuth2 refresh-token grant through the
+    /// Flexera One: the OAuth2 refresh-token grant through the
     /// family's token provider, the token endpoint from the <c>region</c> setting (<c>login.flexera.{region}/oidc/token</c>)
     /// and the API base from the endpoint (or <c>api.flexera.{region}</c> when empty). The <c>reports</c> operation executes
     /// each configured report and follows next-link paging - BOUNDED with cycle detection (the legacy loop could follow a

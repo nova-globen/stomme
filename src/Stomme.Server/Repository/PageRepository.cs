@@ -174,7 +174,7 @@ namespace Stomme.Repository
         {
             // Normalize the ARGUMENT in C# and filter the normalized COLUMN, never the raw Path. A bare
             // `item.Path == path` means two different things behind the seam — case-SENSITIVE on PostgreSQL,
-            // case-INSENSITIVE on RavenDB (the D48/D57 mechanism, DRIVEN on both real hosts) — so a mixed-case
+            // case-INSENSITIVE on RavenDB (DRIVEN on both real hosts) — so a mixed-case
             // path silently resolved on one provider and not the other on the render RESOLVE fallback
             // (SiteRouter.razor, reached when the in-memory OrdinalIgnoreCase match at :227 misses) and the
             // admin page lookup (PageController.Get). Both sides lowercased, the providers agree

@@ -18,10 +18,10 @@ namespace Stomme.Modules.Mcp.Infrastructure
     /// <remarks>
     /// <para>
     /// <b>The decision is taken at CONNECT time, against the address the socket actually reaches</b> - not against a
-    /// URL, and not against a DNS answer read earlier. D101 falsified the pre-flight look-up as TOCTOU: the transport
+    /// URL, and not against a DNS answer read earlier. A pre-flight look-up is open to a time-of-check/time-of-use race: the transport
     /// resolves again when it dials, so a name that answered a public address during the check can answer a private one
     /// a moment later. The mechanism is <see cref="OutboundConnectGuard"/>, the framework's ONE outbound guard
-    /// (D100's deny set): loopback, RFC1918, link-local including 169.254.169.254, unique-local
+    /// (its deny set): loopback, RFC1918, link-local including 169.254.169.254, unique-local
     /// fc00::/7, the unspecified and multicast ranges, and the IPv4-mapped IPv6 form of each. Redirects are off - a 302
     /// to an internal address would otherwise be followed past the check - and so is the proxy, which would move the
     /// check onto the proxy's address.
@@ -29,7 +29,7 @@ namespace Stomme.Modules.Mcp.Infrastructure
     /// <para>
     /// <b>This file adds NO address logic of its own.</b> MCP is the third caller of that guard (after the webhook
     /// channel and the upload-by-URL path), and a third copy of a deny set is a third place for one range to be
-    /// forgotten - which is what BL-132 exists to finish collapsing. What is MCP's own is the ALLOWLIST: the hosts an
+    /// forgotten. What is MCP's own is the ALLOWLIST: the hosts an
     /// operator has said this install may dial anyway, from <c>Mcp:Client:HostAllowlist</c> and, per site, the setting
     /// <see cref="AllowedHostsSettingName"/>. The two are UNIONED - an install-wide entry and a site's own entry are
     /// both an operator's statement, and neither should silently cancel the other.

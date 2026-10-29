@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Stomme.Modules.Pipelines.Persistence.EfCore
 {
     /// <summary>
-    /// The engine's eight store entities on the install's relational provider (BL-95 increment (a)). It lives
+    /// The engine's eight store entities on the install's relational provider. It lives
     /// in the module store's database (co-located when <c>ConnectionStrings:ModuleAggregates</c> is set, the SQLite
     /// sidecar otherwise) under <c>Engine*</c> tables, and is created and caught up additively by the same schema
     /// initializer the storage-blind modules use. Rules that are load-bearing:

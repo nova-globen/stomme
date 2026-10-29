@@ -40,7 +40,7 @@ namespace Stomme.Infrastructure
         /// deployed app (one host per process) and wrong the moment two hosts coexist, as they do throughout the
         /// test suite — the last host to compose decided the directory for every other one, including hosts whose
         /// content root had already been deleted. Measured in <c>DataDirectoryIsProcessGlobalTests</c>; it is the
-        /// mechanism behind BL-153's cross-suite <c>DirectoryNotFoundException</c>. Reading it off the injected
+        /// mechanism behind a cross-suite <c>DirectoryNotFoundException</c>. Reading it off the injected
         /// <c>IWebHostEnvironment</c> makes the answer belong to the host that asks.
         /// </remarks>
         string GetDataDirectory();
@@ -61,7 +61,7 @@ namespace Stomme.Infrastructure
 
         // Per-instance, captured at construction: several hosts run in one process (the integration suites),
         // and a static target would let the last-constructed host redirect every host's config writes into
-        // its own file (observed 2026-07-23).
+        // its own file.
         private readonly string _appsettingsPath = "";
         private readonly string _appsettingsFilename = "";
 

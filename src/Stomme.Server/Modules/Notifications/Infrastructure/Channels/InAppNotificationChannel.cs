@@ -17,7 +17,7 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
     /// (<c>IsDelivered = true</c>, <c>DeliveredOn = UtcNow</c>) - so the SMTP queue predicate never returns it - and then
     /// pushes it live through <see cref="INotificationRealtimePush"/> when the host has one. The push port is resolved
     /// OPTIONALLY: it is registered only when the SignalR transport is enabled, so its absence is not a failure (the
-    /// row IS the delivery - the predecessor platform failed the send instead). A push that throws is logged and does not undo a written
+    /// row IS the delivery - failing the send instead would be wrong). A push that throws is logged and does not undo a written
     /// row. Only a site user can be addressed.
     /// </summary>
     public sealed class InAppNotificationChannel : INotificationChannel

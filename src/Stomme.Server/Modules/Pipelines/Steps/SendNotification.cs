@@ -17,7 +17,7 @@ using Stomme.Notifications;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// the predecessor platform's ControlFlow SendNotification as an engine step over Stomme's Notifications module: a template key,
+    /// A notification as an engine step over Stomme's Notifications module: a template key,
     /// recipients (<c>user:&lt;id&gt;</c>, <c>email:&lt;address&gt;</c>, <c>endpoint:&lt;url&gt;</c>), channels,
     /// a severity, template parameters and a topic; the created request's id is the result. The dispatcher needs
     /// Stomme's site context, which a run on the engine's worker does not have, so the step enters the site of its

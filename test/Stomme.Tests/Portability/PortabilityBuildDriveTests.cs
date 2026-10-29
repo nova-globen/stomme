@@ -25,7 +25,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// BL-82 (D107 items 3, 6, 7) - the build JOB and retention on a really installed site: the job enters the tenant and
+    /// The build JOB and retention on a really installed site: the job enters the tenant and
     /// site scopes itself, a queued package becomes a File row plus bytes in the site's private <c>Portability/</c> folder,
     /// a throwing contributor fails the package with its exception TYPE and nothing of its message, a build left too long
     /// is abandoned, and retention retires artifacts - a subject package after seven days whatever the setting says.

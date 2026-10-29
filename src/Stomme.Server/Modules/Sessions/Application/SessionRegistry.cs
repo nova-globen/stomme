@@ -53,7 +53,7 @@ namespace Stomme.Modules.Sessions.Application
     /// <b>How fast a revoke lands.</b> On the node that revokes: the next request - the check's cache entry is removed.
     /// On another node: at most <see cref="CheckCacheDuration"/> later, or at once where the cache runs with its Redis
     /// backplane, because the removal goes through the same FusionCache. An Interactive Server circuit that is already
-    /// open is NOT re-checked by this: it carries the principal it was opened with (the D99 limit, unchanged) - the
+    /// open is NOT re-checked by this: it carries the principal it was opened with (a known limit) - the
     /// revoke reaches it on its next HTTP request or reconnect.
     /// </para>
     /// <para>

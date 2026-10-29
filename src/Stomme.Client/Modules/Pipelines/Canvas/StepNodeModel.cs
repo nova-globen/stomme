@@ -9,7 +9,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// A step on the canvas (BL-95 increment (c)). The library supplies pan, zoom, hit-testing and link drawing; the
+    /// A step on the canvas. The library supplies pan, zoom, hit-testing and link drawing; the
     /// model is the ENGINE's: a step type from the catalog, its literal inputs, and one output port per outcome the
     /// catalog names (or a single unnamed one), so a link drawn from a port is a connection through that port.
     /// </summary>
@@ -45,16 +45,16 @@ namespace Stomme.Modules.Pipelines.Canvas
         /// <summary>Inputs that read a pipeline variable: input name to variable id.</summary>
         public Dictionary<string, string> InputVariables { get; } = new Dictionary<string, string>();
 
-        /// <summary>BL-229 increment 5: inputs that are an expression - input name to its template.</summary>
+        /// <summary>Inputs that are an expression - input name to its template.</summary>
         public Dictionary<string, string> InputExpressions { get; } = new Dictionary<string, string>();
 
-        /// <summary>BL-229 increment 5b: inputs computed by JavaScript - input name to the expression.</summary>
+        /// <summary>Inputs computed by JavaScript - input name to the expression.</summary>
         public Dictionary<string, string> InputScripts { get; } = new Dictionary<string, string>();
 
-        /// <summary>BL-229 increment 10: inputs that are a condition built from rules - input name to the condition.</summary>
+        /// <summary>Inputs that are a condition built from rules - input name to the condition.</summary>
         public Dictionary<string, PipelineCondition> InputConditions { get; } = new Dictionary<string, PipelineCondition>();
 
-        /// <summary>BL-229 increment 10: a Switch (flow)'s cases, in order - each one of its outcomes.</summary>
+        /// <summary>A Switch (flow)'s cases, in order - each one of its outcomes.</summary>
         public List<PipelineGraphCase> Cases { get; } = new List<PipelineGraphCase>();
 
         /// <summary>Outputs saved to a pipeline variable: output name to variable id.</summary>
@@ -186,7 +186,7 @@ namespace Stomme.Modules.Pipelines.Canvas
             Refresh();
         }
 
-        /// <summary>BL-229 increment 9: how often and how far apart a failed step is tried again, and whether the run goes on past it.</summary>
+        /// <summary>How often and how far apart a failed step is tried again, and whether the run goes on past it.</summary>
         public int Retries { get; private set; }
 
         public int RetryDelaySeconds { get; private set; }
@@ -219,10 +219,10 @@ namespace Stomme.Modules.Pipelines.Canvas
         /// <summary>Switched off (n8n's "deactivate"): kept, greyed, and skipped when the pipeline runs.</summary>
         public bool Disabled { get; private set; }
 
-        /// <summary>BL-229: the step double-clicked - the editor opens its wide view (n8n opens a node's details so).</summary>
+        /// <summary>The step double-clicked - the editor opens its wide view (n8n opens a node's details so).</summary>
         public Action<StepNodeModel> Opened { get; set; }
 
-        /// <summary>BL-229: the "+" on an outcome nothing follows - the editor adds the next step there (n8n's + after a node); null for a viewer.</summary>
+        /// <summary>The "+" on an outcome nothing follows - the editor adds the next step there (n8n's + after a node); null for a viewer.</summary>
         public Action<StepNodeModel, StepPortModel> AddAfter { get; set; }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Stomme.Modules.Pipelines.Canvas
 
         public Action<StepNodeModel> Delete { get; set; }
 
-        /// <summary>BL-229 - n8n's right-click on a step: the editor opens its menu where the pointer is (client x, y); null for a viewer.</summary>
+        /// <summary>n8n's right-click on a step: the editor opens its menu where the pointer is (client x, y); null for a viewer.</summary>
         public Action<StepNodeModel, double, double> Menu { get; set; }
 
         public void SetDisabled(bool disabled)
@@ -244,7 +244,7 @@ namespace Stomme.Modules.Pipelines.Canvas
             Refresh();
         }
 
-        /// <summary>BL-229 increment 8: the author's comment on the step, shown on it.</summary>
+        /// <summary>The author's comment on the step, shown on it.</summary>
         public string Comment { get; private set; }
 
         public void Annotate(string comment)
@@ -253,7 +253,7 @@ namespace Stomme.Modules.Pipelines.Canvas
             Refresh();
         }
 
-        /// <summary>BL-229 (n8n's pinned data): the result a test hands on in place of running the step; null when none is pinned.</summary>
+        /// <summary>The result a test hands on in place of running the step; null when none is pinned.</summary>
         public string PinnedResult { get; private set; }
 
         public void Pin(string result)
@@ -262,10 +262,10 @@ namespace Stomme.Modules.Pipelines.Canvas
             Refresh();
         }
 
-        /// <summary>BL-229: the step's discussion not yet resolved, as a count on it; 0 for none.</summary>
+        /// <summary>The step's discussion not yet resolved, as a count on it; 0 for none.</summary>
         public int OpenComments { get; private set; }
 
-        /// <summary>BL-229: the open comments on the steps its bodies hold, at any depth - a loop's or a branch's; 0 for none.</summary>
+        /// <summary>The open comments on the steps its bodies hold, at any depth - a loop's or a branch's; 0 for none.</summary>
         public int OpenCommentsInside { get; private set; }
 
         public void SetOpenComments(int open, int inside = 0)
@@ -300,7 +300,7 @@ namespace Stomme.Modules.Pipelines.Canvas
 
         public string Outcome { get; private set; }
 
-        /// <summary>BL-229 increment 10: a case or branch renamed - the same port, its connections with it, under the new name.</summary>
+        /// <summary>A case or branch renamed - the same port, its connections with it, under the new name.</summary>
         public void Rename(string outcome)
         {
             Outcome = outcome;

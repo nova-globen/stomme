@@ -187,7 +187,7 @@ namespace Stomme.Tests
         }
     }
 
-    // Rule (g)/D19/D22 rule 6: deleting the DbSet is NOT enough — EF rediscovers CLR types through
+    // Deleting the DbSet is NOT enough — EF rediscovers CLR types through
     // navigations. THIS IS NOT HYPOTHETICAL FOR THIS CLUSTER: deleting DbSet<Permission> from TenantDBContext
     // immediately broke SEVEN tests, because two test probe contexts still declared the Permission CONTRACT as
     // an "unmigrated neighbour" and EF then put two entity types on the `permission` table:
@@ -204,8 +204,8 @@ namespace Stomme.Tests
         // The unmigrated neighbours that permissions hang off, as TenantDBContext still holds them.
         //
         // THIS CONTEXT IS NOW EMPTY, and that is a finding rather than a gap. PageModule and Visitor stood here
-        // until D47; FOLDER stood here — as the last tenant-side entity carrying a [NotMapped] PermissionList —
-        // until D48 put it on the seam. Declaring any of them now would put two entity types on its table and
+        // until the seam took them; FOLDER stood here — as the last tenant-side entity carrying a [NotMapped] PermissionList —
+        // until the seam took it too. Declaring any of them now would put two entity types on its table and
         // break the model. Nothing that TenantDBContext still maps (File, the SearchContent family,
         // MigrationHistory) carries a PermissionList at all, so there is no neighbour left to probe.
         //
@@ -214,7 +214,7 @@ namespace Stomme.Tests
         // neighbour with permissions is added back, this is where it goes. The reflective sweep below
         // (No_entity_the_tenant_context_maps_carries_a_mapped_permission_member) is what actually covers the
         // entities this context no longer names; it walks TenantDBContext's own DbSets, so it kept working
-        // across D47 and D48 without an edit.
+        // across those moves without an edit.
         private sealed class TenantLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureFrameworkStore(database);
@@ -230,7 +230,7 @@ namespace Stomme.Tests
         }
 
         // Mutation check: map a PermissionList onto any entity this context declares and this fails (the model
-        // throws while building). Until D48 the mutation was concrete — remove [NotMapped] from
+        // throws while building). Before FOLDER moved to the seam the mutation was concrete — remove [NotMapped] from
         // Folder.PermissionList — but Folder is on the seam now and this context declares nothing. The
         // reflective sweep below is what carries that protection for the entities TenantDBContext still maps.
         [Fact]
@@ -549,7 +549,7 @@ namespace Stomme.Tests
             Assert.Empty(verifyContext.Set<PermissionAggregate>().Where(item => item.EntityName == "Module" && item.EntityId == 7));
         }
 
-        // The D19 pair, first half. This is the bug that made Pages' PUT return 200 and persist NOTHING, and
+        // The identity-map pair, first half. This is the bug that made a PUT return 200 and persist NOTHING, and
         // it is live in this cluster's shape: PermissionRepository.UpdatePermissions reads existing
         // permissions and then writes them back on ONE repository instance — one store, one context.
         [Fact]
@@ -584,7 +584,7 @@ namespace Stomme.Tests
             await Assert.ThrowsAsync<InvalidOperationException>(() => store.UpdateAsync(rebuilt));
         }
 
-        // The D19 pair, second half: the shape the repository actually uses — read through a SESSION (its own
+        // The identity-map pair, second half: the shape the repository actually uses — read through a SESSION (its own
         // context), write through the store — persists.
         [Fact]
         public async Task A_session_read_then_a_store_write_persists()

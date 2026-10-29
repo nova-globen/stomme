@@ -6,7 +6,7 @@ using Stomme.Models;
 namespace Stomme.Extensions
 {
     /// <summary>
-    /// A module's middleware or filter for ITS site only (M2 row 10, ruling C33). An <c>IServerPipelineStartup</c> hook and
+    /// A module's middleware or filter for ITS site only. An <c>IServerPipelineStartup</c> hook and
     /// a global MVC filter see every request on every site of the host; one image serves several sites, so a module that
     /// rewrites, authenticates or limits must scope itself. These read the site the request was resolved to, so they work
     /// at the stages AFTER tenant resolution (<c>BeforeJwt</c>, <c>BeforeRouting</c>) and in filters - never at

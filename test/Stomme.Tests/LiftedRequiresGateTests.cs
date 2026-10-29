@@ -23,7 +23,7 @@ namespace Stomme.Tests
     /// <remarks>
     /// <para>
     /// Everything else about this bridge can be green while it decides nothing: the unit suites compose the
-    /// guard by hand, the reflective gates only read source, and the D47 rename shipped broken with 452 unit
+    /// guard by hand, the reflective gates only read source, and a rename shipped broken with 452 unit
     /// tests, both conformance providers AND the render guard green. So this installs a REAL site through
     /// <see cref="Program.BuildAppAsync"/> + <c>InstallAsync</c>, logs principals in through
     /// <c>/pages/login</c>, and drives the composed production pipeline:

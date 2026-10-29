@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationRequestTests.cs</c> (10 facts): the
+    /// The request tests (10 facts): the
     /// <see cref="NotificationRequestAggregate"/> - creation invariants, attempt recording per requested channel, the
     /// derived <see cref="NotificationStatus"/>, the Sent/Failed events, and round-trip persistence. Type adaptation
     /// only: <c>DateTimeOffset</c> became a UTC <see cref="DateTime"/>, and the round-trip runs on the File store.

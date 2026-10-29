@@ -63,7 +63,7 @@
         }
     };
 
-    // Increment 10: Export - the pipeline file made in the page, saved by the browser; nothing goes back to the server.
+    // Export - the pipeline file made in the page, saved by the browser; nothing goes back to the server.
     window.stommePipelineEditorDownload = function (fileName, text, type) {
         var url = URL.createObjectURL(new Blob([text], { type: type || 'application/json' }));
         var link = document.createElement('a');
@@ -756,7 +756,7 @@
             return;
         }
 
-        // Increment 3: Ctrl+S saves and Ctrl+Enter runs even from a field - but in the box that asks the AI, Ctrl+Enter asks it
+        // Ctrl+S saves and Ctrl+Enter runs even from a field - but in the box that asks the AI, Ctrl+Enter asks it
         // (the box answers that itself); the rest are the canvas's while no field has the focus, and a plain copy of text the
         // person selected on the page stays the browser's.
         var command = null;

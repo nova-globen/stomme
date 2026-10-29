@@ -26,7 +26,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-85 (D108 items 6 and 7, refutations 3, 4 and 14) - the export queue JOB on a really installed site.
+    /// The export queue JOB on a really installed site.
     /// </summary>
     /// <remarks>
     /// Everything the processor suites stub is real here: the hosted job enters the tenant and site scopes itself,
@@ -669,7 +669,7 @@ namespace Stomme.Tests.DataExport
         [Fact]
         public async Task A_REQUEST_can_ask_for_a_PDF_page_and_gets_it_and_a_page_this_engine_does_not_have_is_REFUSED()
         {
-            // Found by reconciling the predecessor platform's cases by name: the renderer honoured a page size and an orientation, the stored
+            // Found while porting cases by name: the renderer honoured a page size and an orientation, the stored
             // options carried them - and no request could set either. End to end here: the real handler, the real job, and
             // the /MediaBox of the bytes that landed in the Exports folder.
             using var scratch = await GateInstallTemplates.CloneAsync(new SqliteGateStore(), Host, _output, colocateModuleAggregates: false, extraSettings: Settings(enabled: true));
@@ -779,10 +779,10 @@ namespace Stomme.Tests.DataExport
             // HTTP or SSR test can see this (a request has a scope of its own), so the circuit is reproduced here as what
             // it is: one scope, read, changed from elsewhere, read again.
             //
-            // This module first answered it with a fresh DI scope per handler (ExportStoreScope). BL-160 then measured the
-            // same staleness on Metering, Notifications and Health, and fixed it where it lives - the storage-blind module
-            // repository no longer tracks (EfRepository.TrackReads, D79's correction) - so the handlers read through the
-            // circuit's own scope again, and THIS is the test that says they may.
+            // This module first answered it with a fresh DI scope per handler (ExportStoreScope). The same staleness was later
+            // measured on Metering, Notifications and Health, and fixed where it lives - the storage-blind module repository
+            // no longer tracks (EfRepository.TrackReads) - so the handlers read through the circuit's own scope again, and
+            // THIS is the test that says they may.
             using var scratch = await GateInstallTemplates.CloneAsync(new SqliteGateStore(), Host, _output, colocateModuleAggregates: false, extraSettings: Settings(enabled: true));
             var app = await GateDrive.InstallAsync(scratch, _output, AddTestSource, start: false);
 

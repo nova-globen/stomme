@@ -6,14 +6,14 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // Found by the 2026-08-09 admin interaction pass: the SHIPPED v10.2.2 self-reported 10.2.1 on
+    // Found while exercising the admin pages: the SHIPPED v10.2.2 self-reported 10.2.1 on
     // admin/system, because Constants.Version is a hand-maintained string the release ritual forgot.
     // That string is not cosmetic: the installer stamps InstallationVersion from it, the marketplace
     // framework gate compares nuspec Stomme.Framework minimums against it (a package requiring the
     // REAL shipped version silently refuses to install), and admin/update offers the current version as
     // an "upgrade". These pins make the drift impossible to ship again.
     //
-    // BL-192: a PREVIEW's packages carry a label (10.5.0-preview.1) that System.Version refuses, and the
+    // A PREVIEW's packages carry a label (10.5.0-preview.1) that System.Version refuses, and the
     // release number is parsed at boot (every admin module's version), by the upgrade ledger and by Create Module. So
     // Constants.Version is the release number, and Constants.PackageVersion is the build's version with its label.
     public class VersionConsistencyTests

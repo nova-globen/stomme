@@ -14,7 +14,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Entuity
 {
     /// <summary>
-    /// Entuity (lifted from the predecessor platform's <c>entuity</c>): one GET per operation over the /api/v2 surface (or
+    /// Entuity: one GET per operation over the /api/v2 surface (or
     /// the legacy /api base), the rows read from a keyed array, a bare array or a lone object, the server id and the
     /// incident state as query scopes, a custom endpoint by raw path. Basic credentials; every request through the host's
     /// egress.

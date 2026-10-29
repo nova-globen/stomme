@@ -18,7 +18,7 @@
     private RenderFragment _textEditorComponent;
     private ITextEditor _textEditor;
 
-    // BL-083 (infra backlog): what Initialize was last called with, so a redundant render pass
+    // What Initialize was last called with, so a redundant render pass
     // (same Content, same editor instance) does not call it again and wipe an unsaved edit - see
     // OnAfterRenderAsync below.
     private ITextEditor _initializedTextEditor;

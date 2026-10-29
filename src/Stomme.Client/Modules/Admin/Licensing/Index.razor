@@ -3,7 +3,7 @@
 @inject ILicenceService LicenceService
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 
-@* D105 design item 10: the Host-only licensing page. It is added to the admin site template only under
+@* The Host-only licensing page. It is added to the admin site template only under
    Deployment:Mode=OnPrem, but the boot reconciliation is additive, so a site switched back to Hosted keeps the page -
    which is why the "not enabled" branch (api/Licence answers 404) exists. Visibility here is cosmetic; the controller
    is the enforcement. *@

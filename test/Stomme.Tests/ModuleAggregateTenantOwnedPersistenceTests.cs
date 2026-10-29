@@ -16,12 +16,12 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-92 (D98 Wave 0) — the tenant-owned aggregate relational trap, measured by the August endgame spikes and
-    /// ported from branch <c>endgame/proof-of-life</c>. <see cref="ModuleAggregatesDbContext"/>'s reflective
+    /// The tenant-owned aggregate relational trap, measured on a prototype.
+    /// <see cref="ModuleAggregatesDbContext"/>'s reflective
     /// value-object guard rejected <see cref="TenantId"/> as an unsupported shape, the throw was caught by the
     /// schema initializer and logged as "it will read as empty", and the host reported healthy — so EVERY
     /// <see cref="ITenantOwned"/> storage-blind aggregate silently persisted NOTHING on a relational install.
-    /// 38 of 47 the predecessor platform aggregates are tenant-owned, which is why this gate lands before any of them is lifted.
+    /// Most storage-blind aggregates are tenant-owned, which is why this gate guards every one of them.
     /// <para>
     /// The contract pinned here: a tenant-owned aggregate registered through the storage-blind overload
     /// round-trips on the relational store with its <c>TenantId</c> intact, exactly like a module-scoped one.
@@ -112,7 +112,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// The smallest tenant-owned storage-blind aggregate — the shape of 38 of 47 the predecessor platform aggregates.
+    /// The smallest tenant-owned storage-blind aggregate, the shape most framework aggregates take.
     /// </summary>
     public sealed class TenantOwnedNoteAggregate : AggregateRoot<Guid>, ITenantOwned
     {

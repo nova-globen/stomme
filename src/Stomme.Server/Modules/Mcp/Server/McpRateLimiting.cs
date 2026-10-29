@@ -17,14 +17,14 @@ namespace Stomme.Modules.Mcp.Server
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>It exists only when the endpoint does, and only when it is configured.</b> The limiter middleware is the host's
-    /// (BL-121); this policy is added to it only then. <c>Mcp:Server:RequestsPerMinute</c> at <c>0</c> means no MCP policy
+    /// <b>It exists only when the endpoint does, and only when it is configured.</b> The limiter middleware is the host's;
+    /// this policy is added to it only then. <c>Mcp:Server:RequestsPerMinute</c> at <c>0</c> means no MCP policy
     /// at all - not a limiter set to zero, which would refuse everything.
     /// </para>
     /// <para>
-    /// <b>The partition is the CALLER AND THE SITE, which is more than D101 asked for and is the same rule as
+    /// <b>The partition is the CALLER AND THE SITE, which is the same rule as
     /// everywhere else in this module.</b> Per-principal alone would let a user on one site spend another site's
-    /// budget on a multi-tenant install - the class of mistake the whole of item 4 is about. An UNAUTHENTICATED
+    /// budget on a multi-tenant install - the class of mistake the site-scoped registrations exist to prevent. An UNAUTHENTICATED
     /// request is partitioned by remote address instead: it is refused by the route a moment later, but it reaches
     /// the limiter first, and putting every anonymous caller in one partition would let one of them exhaust it for
     /// all of them.
@@ -63,7 +63,7 @@ namespace Stomme.Modules.Mcp.Server
                 return;
             }
 
-            // The rejection answer (429, completed at the limiter) is the HOST's since BL-121 -
+            // The rejection answer (429, completed at the limiter) is the HOST's -
             // Stomme.Infrastructure.Security.AccountRateLimiting.WriteRejectionAsync, which carries the measured reason the
             // response must be completed there. This adds only the policy.
             services.AddRateLimiter(options =>

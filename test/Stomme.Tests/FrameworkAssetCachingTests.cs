@@ -9,7 +9,7 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Measured on the UAT deployment: Stomme sent NO <c>Cache-Control</c> for <c>/_framework/*</c>, so
+    /// Measured on a deployed site: Stomme sent NO <c>Cache-Control</c> for <c>/_framework/*</c>, so
     /// Cloudflare applied its default <c>max-age=14400</c> to the STABLE-named loaders. After a redeploy the edge
     /// kept serving the old <c>blazor.web.js</c>, which named a <c>Stomme.Client.&lt;old-hash&gt;.wasm</c> that
     /// no longer existed — 404, and the app never booted, for four hours.

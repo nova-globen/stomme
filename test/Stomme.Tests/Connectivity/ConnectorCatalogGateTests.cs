@@ -12,11 +12,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 3, the two gates around the contract. A type key published twice refuses the COMPOSITION:
+    /// The two gates around the contract. A type key published twice refuses the COMPOSITION:
     /// the catalog throws when the host first resolves it, naming the key and both owners (in both directions: a planted
     /// duplicate throws, distinct keys in different cases resolve). And the contract is BCL-only: every type in
     /// <c>Stomme.Shared</c>'s <c>Stomme.Connectivity</c> namespace references, through its bases, interfaces, members and
-    /// parameters, only the BCL and that namespace itself - so the connectors of BL-96 reference <c>Stomme.Shared</c> and
+    /// parameters, only the BCL and that namespace itself - so connectors reference <c>Stomme.Shared</c> and
     /// nothing else; a planted reference to a server type is caught by the same walk.
     /// </summary>
     public class ConnectorCatalogGateTests(ITestOutputHelper output)

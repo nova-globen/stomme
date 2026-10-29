@@ -14,17 +14,17 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationChannelCqrsTests.cs</c> (7 Fact + 1 Theory x5 =
-    /// 12 cases): the channel CQRS surface end to end through the mediator. Harness swapped (<see cref="NotificationCqrsHarness"/>:
+    /// The original channel CQRS cases (7 Fact + 1 Theory x5 =
+    /// 12 cases): the channel CQRS surface end to end through the mediator. Run on <see cref="NotificationCqrsHarness"/>:
     /// the module's startup on the File store, fake transports, a dictionary site secret store).
     /// </summary>
     /// <remarks>
     /// Per-case map: <c>Configure_CreatesChannel_AndStoresSecretInVaultByReferenceOnly</c> -&gt;
     /// <c>..._AndStoresSecretInTheSiteSecretStoreByReferenceOnly</c> (the Vault is <c>ISiteSecretStore</c>, the reference the
     /// DERIVED key); <c>Configure_SendGridWithoutFrom_IsRejectedByProviderValidation</c> -&gt;
-    /// <c>Configure_UnregisteredNamedProvider_IsRejected</c> (SendGrid does not travel, and a named provider nothing registers
+    /// <c>Configure_UnregisteredNamedProvider_IsRejected</c> (SendGrid is not shipped in this module, and a named provider nothing registers
     /// is now REJECTED rather than silently skipped); the Theory's two query rows expect <c>ManageChannels</c>, not the split
-    /// <c>notifications:view</c>. The other four facts are unchanged in intent. Added below the port (not the predecessor platform cases):
+    /// <c>notifications:view</c>. The other four facts are unchanged in intent. Added below the original cases:
     /// site isolation, the credential command, delete.
     /// </remarks>
     public sealed class NotificationChannelCqrsTests
@@ -158,7 +158,7 @@ namespace Stomme.Tests.Notifications
             Assert.Contains(requires, requirement => requirement.Permission == expected);
         }
 
-        // ---- added in Stomme (not the predecessor platform cases) ------------------------------------------------------------------
+        // ---- added after the original cases ----------------------------------------------------------------------------------------
 
         [Fact]
         public async Task A_channel_of_another_site_is_neither_listed_nor_readable_nor_addressable()

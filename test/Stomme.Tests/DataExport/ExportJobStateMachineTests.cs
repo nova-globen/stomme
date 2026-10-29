@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// The export job's life as a state machine, and the audit entry's invariants (D108 items 2, 4 and 9).
+    /// The export job's life as a state machine, and the audit entry's invariants.
     /// </summary>
     /// <remarks>
     /// What matters most here is the LEASE: a claim is a transition, a live render renews it, and only a lease
@@ -227,7 +227,7 @@ namespace Stomme.Tests.DataExport
             Assert.Equal(ExportFailureCode.RenderError, job.FailureCode);
             Assert.Null(job.LeaseExpiresOnUtc);
 
-            // the predecessor platform stored ex.Message and showed it to the requester. The defence here is structural: there is
+            // A failed job once stored ex.Message and showed it to the requester. The defence here is structural: there is
             // no string member a message could be written to.
             foreach (var property in typeof(ExportJobAggregate).GetProperties())
             {

@@ -29,7 +29,7 @@ namespace Stomme.Tests
     // The conformance suite (Stomme.Persistence.Conformance.Tests) proves the STORE and QUERY shapes on both
     // providers. This proves the things it structurally cannot: the repository ORCHESTRATION, the IAuditable audit
     // STAMPING through DbContextUtils (which the conformance fixtures do not run — they use a plain context and set
-    // the stamps as test data), the `version`-column shadow past AggregateRoot.Version, and the D19 read-then-write
+    // the stamps as test data), the `version`-column shadow past AggregateRoot.Version, and the read-then-write
     // module-discovery sync shape (session read, store writes) on ONE store instance. The context here overrides
     // SaveChangesAsync to call DbContextUtils exactly as MasterDBContext does.
     public sealed class ModuleDefinitionsOnTheSeamTests : IDisposable
@@ -38,7 +38,7 @@ namespace Stomme.Tests
         private readonly IRelationalDatabase _database = new SqliteDatabase();
 
         // ModuleDefinition exactly as the MASTER migration set leaves it, cross-checked column-for-column against
-        // the live stomme-pg-44357 database (host 45432): EXACTLY ten columns — module_definition_id,
+        // a live PostgreSQL database: EXACTLY ten columns — module_definition_id,
         // module_definition_name (NOT NULL), the audit quartet (all NOT NULL), and NULLABLE
         // name/description/categories/version. The `version` string is what AggregateRoot.Version shadows.
         private const string ModuleDefinitionSchemaDdl = """
@@ -298,7 +298,7 @@ namespace Stomme.Tests
             Assert.Contains(_settings.Deleted, item => item.entityId == 999);
         }
 
-        // THE D19 / hazard-6 guard, distilled from ProcessModuleDefinitionsAsync: on ONE store instance, ADD a
+        // The identity-map guard, distilled from ProcessModuleDefinitionsAsync: on ONE store instance, ADD a
         // newly discovered definition AND DELETE a DIFFERENT pre-existing (orphaned) definition that was read
         // through the session (never Added by this store). The harvested code mutated tracked entities; the seam
         // reads through a session (untracked) and attaches fresh aggregates for the writes, so the two writes

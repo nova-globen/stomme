@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace Stomme.Infrastructure.Backup.Participants
 {
     /// <summary>
-    /// The record format of a part that carries files (BL-81's <c>content:tenants</c>, BL-233's <c>pipelines:files</c>):
+    /// The record format of a part that carries files (<c>content:tenants</c>, <c>pipelines:files</c>):
     /// a sequence of <c>[root u8][path length i32][path, '/'-separated UTF-8][length i64][bytes]</c> - binary, streamed, no
-    /// file held in memory - and the one rule a carried path is held to (D106 refutation 16's sibling, zip-slip). Moved here
+    /// file held in memory - and the one rule a carried path is held to (zip-slip). Moved here
     /// from the content participant unchanged when a second part needed it, so both read and write the same bytes.
     /// </summary>
     public static class FileTreePart

@@ -17,7 +17,7 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 namespace Stomme.Identity.OpenIddict
 {
     /// <summary>
-    /// BL-196 (D61's correction, owner-confirmed option B): <c>api/*</c> accepts an access token issued by THIS host's
+    /// <c>api/*</c> accepts an access token issued by THIS host's
     /// authority. Registered only while <c>OpenIddict:Enabled</c> is on, so a stock install is unchanged. A request to
     /// <c>/api/</c> carrying <c>Authorization: Bearer</c> is validated by OpenIddict's own validation handler (signature,
     /// lifetime, the host-inferred issuer - another tenant's token is ID2088 - and the token's entry, so a revoked token

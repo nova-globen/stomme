@@ -16,8 +16,7 @@ namespace Stomme.Infrastructure.Connectivity
 {
     /// <summary>
     /// The host's egress for connectors: the ONE outbound policy the framework already has,
-    /// <see cref="OutboundConnectGuard"/> (BL-132 converged the webhook and upload guards onto it - the "extraction" D110
-    /// planned was done there), handed to a connector through <see cref="IConnectorEgress"/>. An HTTP connector gets a
+    /// <see cref="OutboundConnectGuard"/> (the webhook and upload guards go through it as well), handed to a connector through <see cref="IConnectorEgress"/>. An HTTP connector gets a
     /// client whose every connection is decided by the guard's connect step (loopback, RFC1918, link-local, ULA, mapped
     /// and metadata addresses refused where the bytes go; redirects off; one attempt with the timeout) with the site's
     /// allowlist carried on every request; a driver connector asks <see cref="ResolveAndPinAsync"/> for the one address it
@@ -74,7 +73,7 @@ namespace Stomme.Infrastructure.Connectivity
         /// The contract's reach: the address checked against the policy again where the bytes go - a denied address only
         /// for an allowlisted host it is an address of - then a TCP connect to it bounded by the timeout, and closed. libldap, which
         /// System.DirectoryServices.Protocols uses on Linux, connects synchronously with the system's own timeout and no
-        /// cancellation reaches it (measured on UAT 2026-10-17: a test to an address that drops packets hung past Cloudflare's
+        /// cancellation reaches it (measured: a test to an address that drops packets hung past Cloudflare's
         /// 125 s with a five-second timeout); reached first, such an address fails in the connection's time.
         /// </summary>
         public async Task ReachAsync(IPAddress address, int port, string host, TimeSpan timeout, string service, CancellationToken cancellationToken = default)
@@ -142,7 +141,7 @@ namespace Stomme.Infrastructure.Connectivity
         }
     }
 
-    /// <summary>Builds a site's egress from its allowlist setting - the per-site half D110 asks for.</summary>
+    /// <summary>Builds a site's egress from its allowlist setting - the per-site half.</summary>
     public interface IConnectorEgressFactory
     {
         Task<IConnectorEgress> ForSiteAsync(int siteId, CancellationToken cancellationToken = default);

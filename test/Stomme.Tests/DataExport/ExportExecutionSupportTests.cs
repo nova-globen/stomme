@@ -15,7 +15,7 @@ namespace Stomme.Tests.DataExport
 {
     /// <summary>
     /// The pieces around the export processor that need no store: stored options, the capped destination, the
-    /// pulsing document and the source registry (D108 items 3, 4, 9, 11 and the source-registration gate).
+    /// pulsing document and the source registry.
     /// </summary>
     public class ExportExecutionSupportTests
     {

@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95 increment (f), driven over the MCP endpoint of a scratch install with BOTH modules on: the pipelines
+    /// Driven over the MCP endpoint of a scratch install with BOTH modules on: the pipelines
     /// contributor's resources and tools are listed for a key holder and not for a registered-only user; the read-only
     /// tools and resources answer through the module's mediator; the two mutating tools are listed as Confirm and a call
     /// is DENIED by the MCP server (no approval pipeline exists - its posture, not this module's). With Pipelines off the

@@ -147,7 +147,7 @@ namespace Stomme.Portability
 
     /// <summary>
     /// A module's contribution to a person's DATA package (a subject-access request): what it holds about one user on one
-    /// site. Export only - subject data is never imported (D107 Q4). Registered SCOPED and explicitly.
+    /// site. Export only - subject data is never imported. Registered SCOPED and explicitly.
     /// </summary>
     public interface ISubjectDataContributor
     {

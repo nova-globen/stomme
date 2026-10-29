@@ -27,7 +27,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// One installed SQLite host for the BL-100 F1 file-ingestion suites, composed with SMALL caps (so a bomb is a
+    /// One installed SQLite host for the file-ingestion suites, composed with SMALL caps (so a bomb is a
     /// few hundred KiB, not gigabytes) and a switchable scanner registered before <c>AddStomme</c> - the framework
     /// registers <see cref="NullFileScanner"/> with <c>TryAdd</c>, so this one wins exactly the way a real scanner
     /// would. Every test works in a folder of its own, so the tests share the install but never a folder.
@@ -93,7 +93,7 @@ namespace Stomme.Tests
             await App.StartAsync();
         }
 
-        /// <summary>The store the host installs on - SQLite here; BL-100's drive runs the same host on PostgreSQL and RavenDB.</summary>
+        /// <summary>The store the host installs on - SQLite here; the drive runs the same host on PostgreSQL and RavenDB.</summary>
         private protected virtual IGateStore NewStore() => new SqliteGateStore();
 
         public async Task DisposeAsync()
@@ -129,7 +129,7 @@ namespace Stomme.Tests
         }
     }
 
-    /// <summary>The HTTP verbs and the folder/staging observations the F1 suites share.</summary>
+    /// <summary>The HTTP verbs and the folder/staging observations the file-ingestion suites share.</summary>
     internal sealed class FileIngestionDrive
     {
         private readonly FileIngestionHostFixture _fixture;

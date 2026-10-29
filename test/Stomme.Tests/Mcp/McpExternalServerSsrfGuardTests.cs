@@ -21,7 +21,7 @@ namespace Stomme.Tests.Mcp
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Registering must not dial, and refreshing must not reach an internal address.</b> the predecessor platform's registration
+    /// <b>Registering must not dial, and refreshing must not reach an internal address.</b> an earlier version's registration
     /// DIALLED the address and rendered the answer, which made the registration form an SSRF oracle: anyone who could
     /// reach it learned what was listening inside. So the first case here counts CONNECTIONS on a real listener and
     /// asserts the count is zero after a registration.

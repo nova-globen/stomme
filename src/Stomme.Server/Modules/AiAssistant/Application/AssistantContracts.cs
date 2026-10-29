@@ -30,9 +30,9 @@ namespace Stomme.Modules.AiAssistant.Application
     public sealed record AssistantResourceRef(AssistantResourceKind Kind, Guid ResourceId);
 
     /// <summary>
-    /// A request to the assistant: the conversation, the messages so far, the resources it targets. <b>CHANGED:</b> the predecessor platform
-    /// passed the user id in the request; here the user is the request's principal, always - a caller cannot ask on
-    /// somebody else's behalf, the rule D102's meter follows.
+    /// A request to the assistant: the conversation, the messages so far, the resources it targets. The user is not
+    /// passed in the request; it is the request's principal, always - a caller cannot ask on
+    /// somebody else's behalf, the rule the usage meter follows.
     /// </summary>
     public sealed record AssistantRequest(Guid ConversationId, IReadOnlyList<AssistantMessage> Messages, IReadOnlyList<AssistantResourceRef>? ReferencedResources = null);
 

@@ -41,7 +41,7 @@ namespace Stomme.Tests
     /// provider hands a scalar <c>DateTime</c> back with no kind, RavenDB and File hand back UTC, and this module's
     /// convention is "kind-less means UTC" rather than a re-stamp in the getter. What must agree is the INSTANT.
     /// PostgreSQL and RavenDB FAIL rather than skip. Placed in <c>Stomme.Tests</c>: the conformance project has
-    /// no File-store module fixture (the BL-78 F11 precedent).
+    /// no File-store module fixture (as in the earlier suite).
     /// </para>
     /// </remarks>
     public abstract class MeteringAggregateConformanceTests : IAsyncLifetime

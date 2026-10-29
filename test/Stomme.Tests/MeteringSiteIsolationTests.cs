@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D102 item 8, binding item 8: metering is metered per SITE, and a by-id handler cannot reach another site's
+    /// Metering is metered per SITE, and a by-id handler cannot reach another site's
     /// quota - not even inside the same tenant, where the rows share one physical store.
     /// </summary>
     /// <remarks>

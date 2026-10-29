@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// What a health alert is allowed to say, and to whom (D104 items 6 and 7).
+    /// What a health alert is allowed to say, and to whom.
     /// </summary>
     public class HealthAlertSinkTests
     {
@@ -83,7 +83,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task A_shared_dependency_goes_to_the_operator_and_a_site_dependency_to_the_site()
         {
-            // The refinement of D104 item 7: telling every site's administrators that the SHARED database is down
+            // A refinement of the alert rule: telling every site's administrators that the SHARED database is down
             // would be one alert per site for one fault.
             var roles = new StubUserRoles(userIds: new[] { 1 });
             var dispatcher = new FakeDispatcher();

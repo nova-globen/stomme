@@ -18,11 +18,11 @@ namespace Stomme.Tests.Collaboration
 {
     /// <summary>
     /// Collaboration DRIVEN on installed hosts on SQLite and PostgreSQL, over HTTP, with TWO signed-in
-    /// editors (D114's honest limit, met at the API): the host takes a board's lock and the second administrator is told who
+    /// editors (a known limit, met at the API): the host takes a board's lock and the second administrator is told who
     /// holds it; both join ONE session; the holder's change is seen by the other, whose own change is refused for want of a
     /// lock; presence moves; the overview shows the lock and the session; an administrator takes the lock over and the other
     /// then gets it; a board that does not exist and a malformed reference are refused; the last one out closes the session
-    /// and gives up their locks; a user without the keys is refused. the predecessor platform's <c>CollaborationApiTests</c> covered the same
+    /// and gives up their locks; a user without the keys is refused. The <c>CollaborationApiTests</c> cases covered the same
     /// surface over its in-memory host.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]

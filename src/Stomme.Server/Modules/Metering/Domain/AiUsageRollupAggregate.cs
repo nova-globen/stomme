@@ -14,8 +14,8 @@ namespace Stomme.Modules.Metering.Domain
     /// </summary>
     /// <remarks>
     /// The id is DETERMINISTIC over the normalized slice key INCLUDING the site, which is what makes the rollup
-    /// job idempotent: a re-run recomputes the same rows rather than appending duplicates. the predecessor platform's job rescanned
-    /// the entire ledger every night and never deleted orphans; this one recomputes touched windows and removes
+    /// job idempotent: a re-run recomputes the same rows rather than appending duplicates. The job does not rescan
+    /// the entire ledger every night; it recomputes touched windows and removes
     /// rollups whose ledger rows are gone.
     /// </remarks>
     public sealed class AiUsageRollupAggregate : AggregateRoot<Guid>, ITenantOwned

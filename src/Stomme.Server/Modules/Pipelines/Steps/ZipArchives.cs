@@ -19,8 +19,8 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// A file, or a folder's files, from the site's pipeline folder as a ZIP archive in it (BL-95's residue "ZIP file shapes",
-    /// 2026-10-03). The entries are named relative to the folder, with forward slashes. What is written can be read back by
+    /// A file, or a folder's files, from the site's pipeline folder as a ZIP archive in it.
+    /// The entries are named relative to the folder, with forward slashes. What is written can be read back by
     /// <see cref="ExtractZipArchive"/>: no more entries than <c>Files:Unzip:MaxEntries</c> and no more bytes in all than
     /// <c>Files:Unzip:MaxTotalBytes</c>, the caps every unzip on this host has; no source file larger than
     /// <c>Pipelines:Files:MaxFileBytes</c>, and no archive larger either. It is written beside its destination and moved over
@@ -150,7 +150,7 @@ namespace Stomme.Modules.Pipelines.Steps
         internal static long MaxFileBytes(StepExecutionContext context) =>
             context.GetService<IOptions<PipelineStepOptions>>()?.Value.Files.MaxFileBytes ?? new FileStepOptions().MaxFileBytes;
 
-        // The caps every unzip on this host has (the file manager's, BL-100 F1), from THIS host's configuration root.
+        // The caps every unzip on this host has (the file manager's), from THIS host's configuration root.
         internal static FileIngestionOptions UnzipCaps(StepExecutionContext context) =>
             FileIngestionOptions.FromConfiguration(context.GetService<IConfigurationRoot>());
     }

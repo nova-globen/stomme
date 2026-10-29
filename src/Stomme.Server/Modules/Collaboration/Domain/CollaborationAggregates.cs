@@ -10,17 +10,17 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Collaboration.Domain
 {
     // ============================================================================================================
-    // The Collaboration domain, lifted from the predecessor platform's Collaboration at 183f5c52: an advisory
-    // ResourceLock living on a lease, and an EditSession of who is present on one resource and what they changed. What
-    // CHANGED for both: they belong to a SITE of their tenant (every Stomme page-owned aggregate does), a user is a
+    // The Collaboration domain: an advisory
+    // ResourceLock living on a lease, and an EditSession of who is present on one resource and what they changed. Both
+    // belong to a SITE of their tenant (every Stomme page-owned aggregate does), a user is a
     // Stomme user id (an int), a resource id is a string (a pipeline's is the engine's definition id), and times are
     // UTC DateTimes. Storage-blind: the participants and the change stream ride the module store's JSON collection columns.
     // ============================================================================================================
 
     /// <summary>
     /// The resource a lock or a session coordinates on: a lowercase type token (<c>pipeline</c>, <c>dashboard</c>) and the
-    /// resource's id. The scalar is <c>{type}/{id}</c>. <b>CHANGED:</b> the id is a string - the predecessor platform's was a Guid, which a
-    /// pipeline's definition id is not.
+    /// resource's id. The scalar is <c>{type}/{id}</c>. The id is a string, not a Guid, because a
+    /// pipeline's definition id is not a Guid.
     /// </summary>
     public sealed class ResourceRef : ValueObject, IStringValueObject
     {
@@ -266,7 +266,7 @@ namespace Stomme.Modules.Collaboration.Domain
             }
         }
 
-        // the predecessor platform's Lease value object, as the one number the lease is: its length, positive and bounded.
+        // The lease reduced to the one number it is: its length, positive and bounded.
         private static int LeaseSeconds_(TimeSpan lease)
         {
             if (lease <= TimeSpan.Zero)
@@ -312,11 +312,11 @@ namespace Stomme.Modules.Collaboration.Domain
     public sealed record ChangeBroadcastEvent(Guid SessionId, int SiteId, string Resource, int AuthorUserId, string Descriptor, DateTime AtUtc) : DomainEvent;
 
     /// <summary>
-    /// A live editing session over ONE resource (the predecessor platform's <c>EditSession</c>): who is present, where they are, and the
+    /// A live editing session over ONE resource: who is present, where they are, and the
     /// stream of changes that tells the others to reload. Closing it releases every presence. Whether a change may be
     /// broadcast also needs the author to hold a live lock - the service's cross-aggregate check; the session requires a
-    /// joined participant. <b>ADDED:</b> the change stream keeps the last <see cref="MaxChanges"/> entries (the predecessor platform's grew
-    /// without bound inside one row).
+    /// joined participant. The change stream keeps only the last <see cref="MaxChanges"/> entries, so it cannot grow
+    /// without bound inside one row.
     /// </summary>
     public sealed class EditSessionAggregate : AggregateRoot<Guid>, ITenantOwned
     {
@@ -391,9 +391,9 @@ namespace Stomme.Modules.Collaboration.Domain
         }
 
         /// <summary>
-        /// <b>ADDED (increment 12):</b> the participant's heartbeat - still here. Raises nothing: the others are told of a
-        /// presence that CHANGES, not of one that stays. the predecessor platform released a crashed editor's presence when its hub connection
-        /// dropped; here the editor talks through the API, so a presence lives on its heartbeat and the sweep forgets one not
+        /// The participant's heartbeat - still here. Raises nothing: the others are told of a
+        /// presence that CHANGES, not of one that stays. The editor talks through the API rather than a held hub
+        /// connection, so a presence lives on its heartbeat and the sweep forgets one not
         /// heard from (<see cref="ForgetAbsent"/>).
         /// </summary>
         public void Touch(int userId, DateTime nowUtc)
@@ -403,7 +403,7 @@ namespace Stomme.Modules.Collaboration.Domain
         }
 
         /// <summary>
-        /// <b>ADDED (increment 12):</b> removes every participant last seen before <paramref name="cutoffUtc"/> - a browser that
+        /// Removes every participant last seen before <paramref name="cutoffUtc"/> - a browser that
         /// crashed or lost its network, which never said it left - with a Left for each; a session they leave empty closes.
         /// Returns who was removed; a closed session has nobody to remove.
         /// </summary>

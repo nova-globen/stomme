@@ -15,19 +15,19 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-78 CORRECTION / D101 - the shared per-site secret store (<see cref="ISiteSecretStore"/>), DRIVEN through the
+    /// The shared per-site secret store (<see cref="ISiteSecretStore"/>), DRIVEN through the
     /// production composition of an INSTALLED host on SQLite, PostgreSQL and RavenDB.
     /// </summary>
     /// <remarks>
     /// <para>
     /// This is the ONLY parity cover the store has: it rides the Setting seam and lives outside
-    /// <c>Stomme.Repository.Stores</c>, so <c>RavenFrameworkStoreRegistrationTests</c> never discovers it (F14).
+    /// <c>Stomme.Repository.Stores</c>, so <c>RavenFrameworkStoreRegistrationTests</c> never discovers it.
     /// PostgreSQL and RavenDB FAIL rather than skip when unreachable.
     /// </para>
     /// <para>
     /// Pinned: set/get/delete round trip in fresh scopes; per-site isolation; the stored row is PRIVATE and its value
     /// is not the plaintext; a replace updates the one row; a tampered value and a value protected under a FOREIGN key
-    /// ring (the F8 lost-key-ring shape) read as <see cref="SiteSecretStatus.Unreadable"/> without throwing; a
+    /// ring (a lost key ring) read as <see cref="SiteSecretStatus.Unreadable"/> without throwing; a
     /// maximum-length (200) reference key persists; a malformed key is rejected.
     /// </para>
     /// </remarks>

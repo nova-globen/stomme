@@ -15,7 +15,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// The framework-store conformance suite against the EF Core provider — the reference implementation, and the
 /// side that must not regress.
 /// <para>
-/// <b>Two SQLite databases, mirroring D23's two contexts.</b> The tenant connection carries the whole
+/// <b>Two SQLite databases, mirroring the tenant and master contexts.</b> The tenant connection carries the whole
 /// framework store; the master connection carries Setting alone, because that is the ONE aggregate the master
 /// database legitimately holds (<c>ConfigureMasterFrameworkStore</c>). Two connections, not two tables — the
 /// stores differ by DATABASE, which is the property the Setting cluster's separation test checks.
@@ -54,9 +54,9 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
     /// <summary>
     /// FALSE — and it is the fixture's answer, not EF Core's. EF translates <c>StartsWith</c> to <c>LIKE</c>,
     /// and <b>SQLite's <c>LIKE</c> is case-INSENSITIVE for ASCII</b>. PostgreSQL's is case-SENSITIVE, so the
-    /// live product would answer <c>true</c> here — measured directly on stomme-pg-44357
+    /// live product would answer <c>true</c> here — measured directly on the PostgreSQL test server
     /// (<c>SELECT 'running' LIKE 'RUN%'</c> returns <c>f</c>). This fixture is SQLite, so that case is
-    /// not represented in this suite at all. See D50.
+    /// not represented in this suite at all.
     /// </summary>
     protected override bool ProviderPrefixFilterIsOrdinal => false;
 
@@ -140,9 +140,8 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
 
     protected override IPageModuleStore NewPageModules() => new TestPageModuleStore(NewTenantContext());
 
-    // Folder. Tenant connection only: no master half. NOTE (corrected 2026-07-20): this previously read
-    // "there is no File store — the File cluster is NOT on the seam". That was true at D48 (escalated under
-    // rule 9) but D49 lifted the blocker via the normalized-column pattern: IFileStore exists (ISiteStore.cs)
+    // Folder. Tenant connection only: no master half. The File cluster is on the seam too: the
+    // normalized-column pattern removed the blocker that once kept it off, and IFileStore exists (ISiteStore.cs)
     // and is exercised by NewFiles() immediately below.
     protected override IFolderStore NewFolders() => new TestFolderStore(NewTenantContext());
 
@@ -342,7 +341,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
         """;
 
     // The MASTER schema: Setting, plus the Job/JobLog pair, Theme, ModuleDefinition, and the Tenant/Alias
-    // routing pair that completed the D52 wave. These SEVEN are the only framework-store aggregates the master
+    // routing pair that completed the set. These SEVEN are the only framework-store aggregates the master
     // database holds — everything else is a per-tenant table. tenant has EXACTLY 9 columns — tenant_id, name (NOT
     // NULL, UNIQUE), db_connection_string (NOT NULL), NULLABLE version + db_type (db_type is absent from
     // TenantEntityBuilder — migration 02010001 adds it — yet present in the live table; version is the string

@@ -9,14 +9,14 @@ namespace Stomme.Persistence.RavenDb;
 /// Adapts the standard LINQ the seam's callers write to the dialect RavenDB's query provider understands.
 /// <para>
 /// <b>Why this has to exist.</b> <see cref="Persistence.Abstractions.IQuerySession.Query{TEntity}"/> hands back
-/// a bare <see cref="IQueryable{T}"/>, and D7 says the code composing it must not know which provider is
+/// a bare <see cref="IQueryable{T}"/>, and the code composing it must not know which provider is
 /// underneath. So the framework store writes the shape every LINQ provider defines —
 /// <c>roleIds.Contains(item.RoleId)</c>, which EF Core translates to <c>WHERE RoleId IN (...)</c>. RavenDB's
 /// LINQ provider does NOT implement it: it throws
 /// <see cref="NotSupportedException"/> ("Could not understand expression"), and its own spelling for the same
 /// predicate is the RavenDB-specific extension <c>RavenQueryableExtensions.In</c>. Writing <c>.In(...)</c> in
 /// the repository would bind that read to RavenDB and break it on the relational provider — the exact coupling
-/// D7 forbids. So the translation belongs HERE, in the provider, which is what a provider is for.
+/// the seam forbids. So the translation belongs HERE, in the provider, which is what a provider is for.
 /// </para>
 /// <para>
 /// <b>This is not a theoretical shape.</b> <c>UserRoleRepository</c> issues it four times, including

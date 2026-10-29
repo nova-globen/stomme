@@ -12,12 +12,12 @@ namespace Stomme.Database.RavenDb
     /// <c>DatabaseManager</c> branches on <c>is IRelationalDatabase</c> — which this is not — to skip the
     /// EF-Core create/migrate path and use <c>RavenDatabaseBootstrap.EnsureDatabaseAsync</c> instead.
     /// <para>
-    /// <b>Install-selectable since D56</b>: a wizard entry in <c>AvailableDatabases</c> (appsettings.json) and
+    /// <b>Install-selectable</b>: a wizard entry in <c>AvailableDatabases</c> (appsettings.json) and
     /// in <c>DatabaseController.DefaultDatabases</c> — the read-time catalog that replaced the old
     /// <c>ValidateConfiguration</c> boot rewrite; keep those two lists in lockstep or the RavenDB
     /// option silently vanishes from installs without the config section. Store-provider wiring
-    /// (<c>AddRavenFrameworkStore</c>) and the hand-written Raven <c>IUserStore</c> are D54; the module
-    /// contract is D55.
+    /// (<c>AddRavenFrameworkStore</c>) and the hand-written Raven <c>IUserStore</c> are separate pieces; the
+    /// module contract is its own.
     /// </para>
     /// </summary>
     public class RavenDatabase : IDatabase

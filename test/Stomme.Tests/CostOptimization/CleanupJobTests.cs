@@ -13,11 +13,11 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// The predecessor platform's <c>CleanupJobTests</c> (its seven temp-file cases) and the cleanup cases of
+    /// The <c>CleanupJobTests</c> cases (seven temp-file cases) and the cleanup cases of
     /// <c>CostOptimizationRegistrationTests</c>, by name, over the sweep the daily job runs. CHANGED: the three
     /// recommendation cases - a dry run REPORTS the reclaimable space (the host's job log) and raises no recommendation, since
     /// its evidence would carry the host's directory layout to a site's administrators; and the job is off by default.
-    /// the predecessor platform's four stale-cache cases are not ported: the eviction job has no equivalent over <c>ICacheManager</c>, which
+    /// The four stale-cache cases are not ported: the eviction job has no equivalent over <c>ICacheManager</c>, which
     /// carries no tags, and a response-cache entry is retired by its TTL (<c>ModelResponseCachingTests</c>).
     /// </summary>
     public sealed class CleanupJobTests : IDisposable
@@ -96,7 +96,7 @@ namespace Stomme.Tests.CostOptimization
             Assert.Equal(0, missing.Count);
         }
 
-        // CHANGED: the predecessor platform's TempFiles_DryRun_RaisesOneCleanupRecommendationOverTheThreshold - the finding is reported, not raised.
+        // CHANGED: the TempFiles_DryRun_RaisesOneCleanupRecommendationOverTheThreshold case - the finding is reported, not raised.
         [Fact]
         public void TempFiles_DryRun_ReportsTheReclaimableSpaceWithoutARecommendation()
         {
@@ -110,7 +110,7 @@ namespace Stomme.Tests.CostOptimization
             Assert.Contains(_root, result.Report); // the host's path, in the host's log - never in a site's recommendation
         }
 
-        // CHANGED: the predecessor platform's TempFiles_DryRun_BelowTheThreshold_RaisesNothing - there is no threshold; a small finding is still counted.
+        // CHANGED: the TempFiles_DryRun_BelowTheThreshold_RaisesNothing case - there is no threshold; a small finding is still counted.
         [Fact]
         public void TempFiles_DryRun_CountsASmallCandidateToo()
         {
@@ -121,7 +121,7 @@ namespace Stomme.Tests.CostOptimization
             Assert.Equal((1, 5L), (result.Count, result.Bytes)); // still counted as a candidate
         }
 
-        // CHANGED: the predecessor platform's TempFiles_LiveMode_RaisesNoRecommendation - live mode reports what it removed.
+        // CHANGED: the TempFiles_LiveMode_RaisesNoRecommendation case - live mode reports what it removed.
         [Fact]
         public void TempFiles_LiveMode_ReportsWhatItRemoved()
         {
@@ -134,7 +134,7 @@ namespace Stomme.Tests.CostOptimization
             Assert.DoesNotContain("Would Remove", result.Report);
         }
 
-        // --- The options (the predecessor platform's CostOptimizationRegistrationTests cleanup cases) ---
+        // --- The options (the CostOptimizationRegistrationTests cleanup cases) ---
 
         // CHANGED: the section is CostOptimization:Cleanup in the HOST's configuration; the recommendation and stale-cache keys are gone.
         [Fact]
@@ -156,7 +156,7 @@ namespace Stomme.Tests.CostOptimization
             Assert.Equal(new[] { "/var/stomme/spill" }, options.TempFiles.Directories);
         }
 
-        // CHANGED: the temp-file job is OFF by default (BL-97 default 5), where the predecessor platform's was on and dry-run.
+        // CHANGED: the temp-file job is OFF by default, where the original's was on and dry-run.
         [Fact]
         public void CleanupOptions_DefaultToTheReversibleSafeMode()
         {
@@ -168,7 +168,7 @@ namespace Stomme.Tests.CostOptimization
             Assert.Empty(options.TempFiles.Directories); // no hard-coded sweep paths
         }
 
-        // CHANGED: the predecessor platform's AddCostOptimization_RegistersTheAdvisorAndCleanupJobs - the jobs are HostedServiceBase types the
+        // CHANGED: the AddCostOptimization_RegistersTheAdvisorAndCleanupJobs case - the jobs are HostedServiceBase types the
         // framework's assembly scan finds, so the case pins the two job types and their cadence.
         [Fact]
         public void AddCostOptimization_RegistersTheAdvisorAndCleanupJobs()

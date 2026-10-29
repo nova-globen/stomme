@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// The authorization requirement of a lifted <c>resource:operation</c> permission KEY (D99 point 9,
-    /// BL-99) - the controller/hub counterpart of <see cref="PermissionRowAccessGuard"/>, which decides the
+    /// The authorization requirement of a lifted <c>resource:operation</c> permission KEY - the controller/hub counterpart of <see cref="PermissionRowAccessGuard"/>, which decides the
     /// same keys on the mediator path.
     /// </summary>
     /// <remarks>

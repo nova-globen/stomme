@@ -24,7 +24,7 @@ namespace Stomme.Infrastructure
         bool UninstallPackage(string PackageName);
         /// <summary>
         /// Hands the upgrade to the Updater. Null when it was started; otherwise why it was not (no package, a
-        /// package older than this framework, a pre-upgrade snapshot that refused - BL-172 - or no Updater), so a caller
+        /// package older than this framework, a pre-upgrade snapshot that refused, or no Updater), so a caller
         /// can show it instead of the log alone holding it.
         /// </summary>
         Task<string> UpgradeFramework(bool backup);

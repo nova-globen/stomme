@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84 increment 7 (D103 items 8-9, refutations 10 and 15): <c>api/Help</c> DRIVEN over HTTP as an anonymous
+    /// <c>api/Help</c> DRIVEN over HTTP as an anonymous
     /// visitor, a registered user and the host - what each may do, what the wire can send without producing a 500, and
     /// what a stock install exposes (nothing).
     /// </summary>
@@ -120,7 +120,7 @@ namespace Stomme.Tests.Help
                 Assert.Equal(HttpStatusCode.NotFound, (await SendAsync(app, asHost, HttpMethod.Post, $"{Api}/{Guid.NewGuid()}/publish?published=true", null, "host: publish unknown")).Status);
                 Assert.Equal(HttpStatusCode.NotFound, (await SendAsync(app, asHost, HttpMethod.Post, Api, new { Id = Guid.NewGuid(), Anchor = "page:x", Locale = "en", Title = "X", Markdown = "X" }, "host: save unknown id")).Status);
 
-                // The manage list is ordered by anchor, then locale (the predecessor platform's List_IsSortedByAnchorThenLocale).
+                // The manage list is ordered by anchor, then locale.
                 using (var listed = JsonDocument.Parse((await GetAsync(asHost, Api, "host: list order")).Body))
                 {
                     var keys = listed.RootElement.EnumerateArray()
@@ -170,7 +170,7 @@ namespace Stomme.Tests.Help
         [InlineData("anchor=page:admin%7Cen")]
         public async Task A_malformed_query_is_NO_TOPIC_or_a_fallback_and_never_a_500(string query)
         {
-            // D103 refutation 10: the anchor arrives from the wire on an endpoint an ANONYMOUS visitor can reach.
+            // The anchor arrives from the wire on an endpoint an ANONYMOUS visitor can reach.
             using var scratch = await GateInstallTemplates.CloneAsync(new SqliteGateStore(), Host, _output,
                 colocateModuleAggregates: false, extraSettings: HelpContributorConflictTests.HelpEnabled());
             var app = await GateDrive.InstallAsync(scratch, _output);

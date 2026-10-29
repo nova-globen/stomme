@@ -11,7 +11,7 @@ using static Stomme.Tests.Connectors.RecordingHandler;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 3 - the predecessor platform's AzureVirtualMachinesConnectorTests (8) by name over the port.</summary>
+    /// <summary>The AzureVirtualMachinesConnectorTests cases (8), kept by name over the port.</summary>
     public sealed class AzureVirtualMachinesConnectorTests
     {
         private const string SubscriptionsJson = """{"value":[{"subscriptionId":"s1","displayName":"Production"},{"subscriptionId":"s2","displayName":"Sandbox"}]}""";

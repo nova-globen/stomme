@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// THE GATE for the per-write-store invariant (the BL-11 residual): a class holding a
+    /// THE GATE for the per-write-store invariant (the residual that kept the job scheduler dead): a class holding a
     /// constructor-injected framework store must not write the same row twice through that one store
     /// instance in one method. Until now the rule was tribal — three worked examples
     /// (<c>UrlMappingRepository</c>, <c>JobRepository</c>, <c>JobLogRepository</c>) and nothing stopping a
@@ -25,7 +25,7 @@ namespace Stomme.Tests
     /// database as JobLog rows opened and never finalized, every run cycle. The sanctioned shapes are:
     /// reads through a query session, never the store; a FRESH store per write for any
     /// read-then-write / multi-write-per-scope cluster (<c>NewStore() =&gt;
-    /// _services.GetRequiredService&lt;IXxxStore&gt;()</c>, the D47 UrlMapping pattern); read-then-DELETE of
+    /// _services.GetRequiredService&lt;IXxxStore&gt;()</c>, the UrlMapping pattern); read-then-DELETE of
     /// the very instance loaded is fine, because tracking is what a delete wants.
     /// </para>
     /// <para>
@@ -40,11 +40,11 @@ namespace Stomme.Tests
     /// have lied in this repository seven times.
     /// </para>
     /// <para>
-    /// SCOPE — WIDENED 2026-09-20 by D102 (BL-79 binding item 4). It used to be fields whose declared type
+    /// SCOPE — WIDENED after a rollup pass exposed the gap. It used to be fields whose declared type
     /// matches the closed framework-store naming contract (<c>I…Store</c>) alone, exempting the clean-arch
     /// modules because "their handlers write once per scope by construction" — and saying that widening the
-    /// gate there would be a new decision rather than a pin of the existing one. D102 IS that decision, and
-    /// the exemption's premise was falsified by the row that prompted it: BL-79's rollup pass reads a site's
+    /// gate there would have been a new decision rather than a pin of the existing one. Widening it is that decision, and
+    /// the exemption's premise was falsified by the row that prompted it: a rollup pass reads a site's
     /// quotas and updates them in one method, and its jobs write repeatedly through one injected repository.
     /// So INSIDE MODULE SOURCE the scope also covers a module's own closed <c>IXxxRepository</c> contract, the
     /// open generic <c>IRepository&lt;TAggregate,TId&gt;</c>, and PRIMARY-CONSTRUCTOR parameters of either —
@@ -74,7 +74,7 @@ namespace Stomme.Tests
                     "twice and throw — the harvested code survived that by re-marking the same tracked instance. " +
                     "Malformed input, not a reachable production shape; move to per-write stores if it ever is.",
 
-                // ---- The MODULE half, added when D102 widened the scope (BL-79 binding item 4). ------------
+                // ---- The MODULE half, added when the scope was widened. ------------
                 // MEASURED at the widening: 7 methods flagged. Refining the scanner to count the busiest single
                 // EXECUTION PATH rather than every descendant removed one (a true if/else). The six below were
                 // each READ before being justified, not assumed: five are the early-return upsert (the update
@@ -135,7 +135,7 @@ namespace Stomme.Tests
                     "rows read BEFORE the adds, filtered to ids absent from the live set - disjoint from every id " +
                     "written above, and each delete targets the instance that was read.",
 
-                // ---- Added 2026-09-20. Two methods, each read before it was justified. --------
+                // ---- Two methods, each read before it was justified. --------
                 ["src/Stomme.Server/Modules/Health/Application/HealthRollupPass.cs::HealthRollupPass.FoldAsync"] =
                     "The same deterministic-id upsert as RecordAsync below, one window at a time: the coarse row's " +
                     "id is computed, read, and then either added as a NEW instance (absent) or Set and updated " +
@@ -143,7 +143,7 @@ namespace Stomme.Tests
                     "per call because the groups are keyed by (subject, period) which maps 1:1 onto the id, and no " +
                     "mapper-fresh instance is ever constructed for an id that was also read. The SOURCE rows it " +
                     "reads are a different window from the rows it writes, so the two sets are disjoint.",
-                // ---- Added 2026-09-20. One method, read before it was justified. -----------
+                // ---- One method, read before it was justified. -----------
                 ["src/Stomme.Server/Modules/Health/Application/HealthProbePass.cs::HealthProbePass.RecordAsync"] =
                     "Read-then-update of THE VERY INSTANCE loaded, over a DETERMINISTIC id - the shape this " +
                     "gate's own remarks call safe, because tracking is what the update wants. The method computes " +
@@ -172,7 +172,7 @@ namespace Stomme.Tests
                     "with the same name falls to the add branch, a new identity); orphan deletes are exactly the " +
                     "rows never matched. At most one write per row per call.",
 
-                // ---- Added 2026-09-23. One method, read before it was justified. ------------
+                // ---- One method, read before it was justified. ------------
                 ["src/Stomme.Server/Modules/ContextualHelp/Infrastructure/HelpTopicReconciler.cs::HelpTopicReconciler.ReconcileAsync"] =
                     "The deterministic-id upsert, once per contributed topic: the loop walks the registry, whose keys " +
                     "are UNIQUE by construction (a duplicate (anchor, locale) is rejected on every side), and each key " +
@@ -186,7 +186,7 @@ namespace Stomme.Tests
                     "the existing branch edits THAT instance, updates it and returns; the add branch is reached only " +
                     "when the read found nothing, and adds a NEW identity. Exactly one write per call.",
 
-                // ---- Added 2026-10-09 by BL-229 (step comments). One method, read before it was justified. ------------
+                // ---- One method, read before it was justified. ------------
                 ["src/Stomme.Server/Modules/Pipelines/Comments/PipelineStepComments.cs::PipelineStepCommentErasureParticipant.EraseAsync"] =
                     "Two loops over DISJOINT rows, each row written once through the instance just read: the deletes are " +
                     "the subject's own comments (UserId == subject), the updates others' comments the subject resolved - " +
@@ -243,7 +243,7 @@ namespace Stomme.Tests
                 {
                     private readonly IWidgetStore _store;
 
-                    // MULTI-WRITE: add then update through one store — the BL-11 scheduler shape.
+                    // MULTI-WRITE: add then update through one store — the job scheduler's shape.
                     public async System.Threading.Tasks.Task A(Widget w)
                     {
                         await _store.AddAsync(w);
@@ -279,7 +279,7 @@ namespace Stomme.Tests
                     private readonly IWidgetStore _store;
                     private readonly System.IServiceProvider _services;
 
-                    // The D47/BL-11 pattern: a FRESH store per write is not a field access.
+                    // The fresh-store pattern: a FRESH store per write is not a field access.
                     private IWidgetStore NewStore() => Resolve();
                     private IWidgetStore Resolve() => null;
 
@@ -289,7 +289,7 @@ namespace Stomme.Tests
                         await NewStore().UpdateAsync(w);
                     }
 
-                    // Read-then-DELETE of the very instance loaded (D19's sanctioned exception).
+                    // Read-then-DELETE of the very instance loaded (the identity map's sanctioned exception).
                     public async System.Threading.Tasks.Task B(int id)
                     {
                         var aggregate = await _store.GetByIdAsync(id);
@@ -339,11 +339,11 @@ namespace Stomme.Tests
         private static readonly Regex StoreTypeName = new(@"^I[A-Z]\w*Store$", RegexOptions.Compiled);
 
         /// <summary>
-        /// The MODULE half of the scope, widened by D102 (BL-79 binding item 4).
+        /// The MODULE half of the scope, widened after a rollup pass exposed the gap.
         /// </summary>
         /// <remarks>
         /// The scope note above used to exempt the clean-arch modules on the grounds that "their handlers write once
-        /// per scope by construction". BL-79 falsified that: its rollup pass reads a site's quotas and updates them
+        /// per scope by construction". A rollup pass falsified that: it reads a site's quotas and updates them
         /// in one method, and its jobs write repeatedly through one injected repository - so the exemption named a
         /// property the code no longer has. The widening is deliberately NARROW: a module's own closed repository
         /// contract (<c>Stomme.Modules.*</c> / the module persistence namespaces declare <c>IXxxRepository</c>

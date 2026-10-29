@@ -146,7 +146,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("```", AskAi.Unfenced("```"));
         }
 
-        // BL-229, n8n's Structured Output Parser: the shape told the model in the system message, after the instructions; an answer
+        // n8n's Structured Output Parser: the shape told the model in the system message, after the instructions; an answer
         // that fits is the result at once.
         [Fact]
         public async Task An_answer_shape_is_told_the_model_and_an_answer_that_fits_is_the_result()

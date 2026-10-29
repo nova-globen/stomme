@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// A site that requires a second factor gets one at the page that sets the cookie. Found by BL-239's fact-check:
+    /// A site that requires a second factor gets one at the page that sets the cookie. Found by reading the login flow:
     /// the login UI checks the password and the mailed code over the API, then posts the username and password to
     /// <c>/pages/login</c> to set the cookie - and that page checked the password alone, so anyone holding a password signed
     /// in there directly, skipping the second factor (and the confirmed-address rule). Driven on an installed host.

@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// A step test stores nothing (BL-229 increment 6's promise, kept since 2026-10-06): its run is the engine's like any other,
+    /// A step test stores nothing: its run is the engine's like any other,
     /// so the engine's commit handler saved it - every step test left a run of definition "1" in the site's All runs, with its log
     /// (measured on a scratch host: five of them). This wraps the engine's handler and commits nothing for a run marked as a step
     /// test (<see cref="PropertyKey"/> on the run's properties, set by <see cref="TestStepCommandHandler"/>); every other run - a

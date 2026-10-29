@@ -25,7 +25,7 @@ namespace Stomme.Tests.Pipelines
             context.GetRequiredService<ResultSink>().Value = Value;
     }
 
-    /// <summary>BL-229 increment 9: fails its first try (marking the sink), then writes its value - a retry's witness.</summary>
+    /// <summary>Fails its first try (marking the sink), then writes its value - a retry's witness.</summary>
     [Step("Stomme.Tests", "Tests", "Fails its first try, then writes its value to the sink.")]
     public sealed class FailOnceSinkStep : CodeStep
     {

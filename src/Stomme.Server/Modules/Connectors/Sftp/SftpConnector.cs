@@ -152,7 +152,7 @@ namespace Stomme.Modules.Connectors.Sftp
     /// or its public key's line, as <c>ssh-keyscan</c> prints it. A connection that names none, or a server whose key is
     /// another, is refused before anything is sent to it - the password or the key's signature included - as the contract's
     /// <see cref="ConnectorHostKeyUntrustedException"/>, whose category's text says what to set; the key the server offered is
-    /// in its message alone, never shown (D110's correction of 2026-10-17: a key is trusted for what was learned of it
+    /// in its message alone, never shown (a key is trusted for what was learned of it
     /// elsewhere, not for what a server answered).
     /// </summary>
     /// <remarks>

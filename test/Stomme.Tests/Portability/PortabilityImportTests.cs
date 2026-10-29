@@ -64,8 +64,8 @@ namespace Stomme.Tests.Portability
 
     /// <summary>
     /// Validate EVERYTHING, then change anything. Each way a package can be wrong is refused with a
-    /// reason and ZERO import calls on any contributor - the predecessor platform ran its providers in document order and validated
-    /// afterwards, so a bad entity left side effects with no report.
+    /// reason and ZERO import calls on any contributor. Validating as each provider ran, in document order, meant
+    /// a bad entity could leave side effects with no report.
     /// </summary>
     public class PortabilityImportValidatesBeforeSideEffectsTests
     {
@@ -208,7 +208,7 @@ namespace Stomme.Tests.Portability
         }
     }
 
-    /// <summary>BL-82 - dependencies are imported first, and a dependant sees what its dependency became on this site.</summary>
+    /// <summary>Dependencies are imported first, and a dependant sees what its dependency became on this site.</summary>
     public class PortabilityImportDependencyOrderTests
     {
         private static readonly DateTime Now = new(2026, 9, 23, 12, 0, 0, DateTimeKind.Utc);
@@ -243,7 +243,7 @@ namespace Stomme.Tests.Portability
         }
     }
 
-    /// <summary>BL-82 (the BL-105 posture) - a type claimed twice is claimed by nobody, loudly, and the host goes on.</summary>
+    /// <summary>A type claimed twice is claimed by nobody, loudly, and the host goes on.</summary>
     public class PortabilityContributorConflictTests
     {
         [Fact]
@@ -262,7 +262,7 @@ namespace Stomme.Tests.Portability
         }
     }
 
-    /// <summary>BL-82 - an export is the requested entities plus their dependency closure, or a refusal - never a broken package.</summary>
+    /// <summary>An export is the requested entities plus their dependency closure, or a refusal - never a broken package.</summary>
     public class PortabilityExporterTests
     {
         private static PortabilityExporter Exporter(params IPortableEntityContributor[] contributors) =>

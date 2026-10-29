@@ -20,14 +20,14 @@ namespace Stomme.Modules.CloudUsage.Application
     }
 
     /// <summary>
-    /// the predecessor platform's Web adapter (<c>ConnectivityCloudCostConnectionResolver</c>) on Stomme's Connectivity:
+    /// Resolves a cost connection on Stomme's Connectivity:
     /// the connection through the REQUEST's site - another site's connection is not found - and its credential through the
     /// per-site secret store, never a log or a view.
     /// </summary>
     /// <remarks>
-    /// the predecessor platform sent one vault secret as a Bearer token to every cost API. Here the credential is the connection's <c>token</c>
+    /// Sending one shared secret as a Bearer token to every cost API would leak it across providers. The credential is the connection's <c>token</c>
     /// field - the Bearer scheme the Azure and SaaS cost connectors declare. An AWS (key pair, SigV4) or GCP connection holds
-    /// no such field and resolves with no secret, which the sync refuses by name; the signing is a booked follow-up.
+    /// no such field and resolves with no secret, which the sync refuses by name; signing for those is not yet supported.
     /// </remarks>
     public sealed class CloudCostConnectionResolver(IConnectionRepository connections, ConnectionSecrets secrets, SiteState siteState) : ICloudCostConnectionResolver
     {
@@ -52,7 +52,7 @@ namespace Stomme.Modules.CloudUsage.Application
         }
     }
 
-    /// <summary>The cost connector type each source is fetched through (BL-96's family); a connection of another type is refused.</summary>
+    /// <summary>The cost connector type each source is fetched through; a connection of another type is refused.</summary>
     public static class CloudCostConnectorTypes
     {
         public static string For(CloudProvider provider) => provider switch

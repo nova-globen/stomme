@@ -6,7 +6,7 @@ namespace Stomme.CloudUsage
 {
     // ============================================================================================================
     // The CloudUsage views and requests: what the page and the API read and send. Totals are per
-    // ISO 4217 currency - costs in different currencies are never summed together (no FX, as the predecessor platform).
+    // ISO 4217 currency - costs in different currencies are never summed together (no FX conversion).
     // ============================================================================================================
 
     public sealed record CloudCostCurrencyTotal(string Currency, decimal TotalCost, long RecordCount);

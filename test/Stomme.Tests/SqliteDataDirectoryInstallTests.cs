@@ -12,7 +12,7 @@ namespace Stomme.Tests
     /// The installer's SQLite default lands in the host's data directory, not the process's working directory.
     /// </summary>
     /// <remarks>
-    /// Reported 2026-10-02 by the Didin session: the wizard proposed <c>Data Source=Stomme-&lt;ts&gt;.db;</c>, a path relative
+    /// Before the fix the wizard proposed <c>Data Source=Stomme-&lt;ts&gt;.db;</c>, a path relative
     /// to the working directory, so in a container (WORKDIR <c>/app</c>, the data mounted at <c>/app/Data</c>) the database
     /// went into the image's layer and was lost when the container was recreated.
     /// </remarks>

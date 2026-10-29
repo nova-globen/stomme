@@ -16,7 +16,7 @@
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-    <!-- D83 security pin: EF Core Sqlite pulls SQLitePCLRaw.bundle_e_sqlite3 2.1.11 transitively, whose
+    <!-- Security pin: EF Core Sqlite pulls SQLitePCLRaw.bundle_e_sqlite3 2.1.11 transitively, whose
          native lib carries GHSA-2m69-gcr7-jv3q (HIGH, NU1903). A direct reference picks up the central
          3.0.3 pin (patched lib), mirroring what Conformance.Tests already does. -->
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />

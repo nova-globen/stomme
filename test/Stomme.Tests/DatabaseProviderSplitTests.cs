@@ -16,8 +16,8 @@ namespace Stomme.Tests
     /// <see cref="IRelationalDatabase"/>, the metadata-only <see cref="RavenDatabase"/>, and the install
     /// branch predicate <c>DatabaseManager.IsRelationalProvider</c> that gates EF Core create/migrate.
     /// <para>
-    /// These are the parts verifiable WITHOUT a live RavenDB install (which is not drivable until D54 wires the
-    /// store provider and the Raven <c>IUserStore</c>). They do NOT claim a RavenDB install works — they pin the
+    /// These are the parts verifiable WITHOUT a live RavenDB install (which is not drivable until the RavenDB
+    /// store provider and its <c>IUserStore</c> are wired in). They do NOT claim a RavenDB install works — they pin the
     /// type shape and the branch predicate the install path keys on.
     /// </para>
     /// </summary>
@@ -56,8 +56,8 @@ namespace Stomme.Tests
         [Fact]
         public void RavenDatabase_is_constructible_reflectively_like_the_other_providers()
         {
-            // The installer resolves a provider by Type.GetType(dbtype) + Activator.CreateInstance (D56 will add
-            // the AvailableDatabases entry). RavenDatabase.TypeName must round-trip through that path.
+            // The installer resolves a provider by Type.GetType(dbtype) + Activator.CreateInstance (the
+            // AvailableDatabases entry names it). RavenDatabase.TypeName must round-trip through that path.
             var typeName = new RavenDatabase().TypeName;
             Assert.Equal(RavenType, typeName);
 

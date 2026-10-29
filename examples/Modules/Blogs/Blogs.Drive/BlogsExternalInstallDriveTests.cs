@@ -241,7 +241,7 @@ namespace NovaGloben.Module.Blogs.Drive
             public string DatabaseType => "Stomme.Database.PostgreSQL.PostgreSQLDatabase, Stomme.Server";
             public string DefaultConnection(string contentRoot) => $"Server={Host};Port={Port};Database={SiteDb};User Id={User};Password={Password};";
             // Co-locate the module store on PostgreSQL, in a SEPARATE database so EnsureCreated (which is a no-op
-            // against an already-created database — the D79 standalone-store requirement) actually creates it.
+            // against an already-created database, so the module store needs a database of its own) actually creates it.
             public string ModuleAggregatesConnection(string contentRoot) => $"Server={Host};Port={Port};Database={ModuleDb};User Id={User};Password={Password};";
             public void VerifySchema(ScratchInstall scratch, ITestOutputHelper output)
             {

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-// Lifted from the predecessor platform: the classification is unchanged. CHANGED: the options are read from the
+// The options are read from the
 // HOST's configuration section CostOptimization:ModelTiers, not bound through IOptions.
 namespace Stomme.Modules.CostOptimization.Application
 {

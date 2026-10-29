@@ -9,7 +9,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// PostgreSQL test-endpoint resolution for the conformance fixtures — a local equivalent of
 /// <c>Stomme.Tests.PostgresTestEndpoint</c> (this project cannot reference that one), following the same
 /// convention: env-overridable via <c>POSTGRES_TEST_HOST</c>/<c>POSTGRES_TEST_PORT</c>/<c>POSTGRES_TEST_USER</c>/
-/// <c>POSTGRES_TEST_PASSWORD</c>, defaulting to the shared INFRA TIER UAT instance (<c>192.168.10.20:5433</c>)
+/// <c>POSTGRES_TEST_PASSWORD</c>, defaulting to the shared test server (<c>192.168.10.20:5433</c>)
 /// with the password from <c>DEFAULT_PASSWORD</c>. Set <c>POSTGRES_TEST_*</c> to point the suites at your own server.
 /// </summary>
 /// <remarks>
@@ -23,7 +23,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// under. Like the Raven janitor, the sweep assumes one test process at a time per server.
 /// </para>
 /// <para>
-/// The account must be able to <c>CREATE DATABASE</c>; the infra <c>postgres</c> superuser satisfies this.
+/// The account must be able to <c>CREATE DATABASE</c>; the <c>postgres</c> superuser of the test server satisfies this.
 /// </para>
 /// </remarks>
 internal static class PostgresConformanceEndpoint
@@ -39,7 +39,7 @@ internal static class PostgresConformanceEndpoint
     public static string User =>
         Environment.GetEnvironmentVariable("POSTGRES_TEST_USER") ?? "postgres";
 
-    // No password literal (2026-10-28, the public-release review): without POSTGRES_TEST_PASSWORD or DEFAULT_PASSWORD
+    // No password literal is kept in the source: without POSTGRES_TEST_PASSWORD or DEFAULT_PASSWORD
     // the server refuses the sign-in (28P01), which names the cause. Mirrors Stomme.Tests.PostgresTestEndpoint.
     public static string Password =>
         Environment.GetEnvironmentVariable("POSTGRES_TEST_PASSWORD")
@@ -65,7 +65,7 @@ internal static class PostgresConformanceEndpoint
 
     /// <summary>
     /// Creates a scratch database. NOT best-effort: a failure here must fail the fixture loudly — an
-    /// unreachable PostgreSQL means the PG half of the suite cannot run, which per D46 is a FAILURE, never
+    /// unreachable PostgreSQL means the PG half of the suite cannot run, which is a FAILURE, never
     /// a skip (see <see cref="PostgresParityCoverageTests"/> for the named diagnosis).
     /// </summary>
     public static async Task CreateDatabaseAsync(string database)
@@ -168,12 +168,12 @@ internal static class PostgresConformanceEndpoint
 /// say what to start. This converts the pile into one named diagnosis.
 /// </summary>
 /// <remarks>
-/// <b>Deliberately not a skip.</b> Both EF fixtures in this suite are SQLite, and D46's own stated limit is
+/// <b>Deliberately not a skip.</b> Both EF fixtures in this suite are SQLite, and the stated limit of the SQLite fixtures is
 /// that the suite therefore structurally cannot see PostgreSQL's answers — measured, not hypothetical:
 /// SQLite's <c>LIKE</c> is case-INSENSITIVE for ASCII while PostgreSQL's is case-SENSITIVE, so
 /// <c>A_prefix_filter_is_expressible_on_every_provider</c> answered <c>false</c> on the EF half while the
 /// live product on PostgreSQL answers <c>true</c>. The PG fixtures exist to put that answer IN the suite;
-/// a run without them proves nothing about it, so PG untested must read as failure (the D46 principle).
+/// a run without them proves nothing about it, so PG untested must read as failure (the fail-not-skip principle).
 /// </remarks>
 public sealed class PostgresParityCoverageTests
 {

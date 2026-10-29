@@ -8,14 +8,14 @@ using Xunit;
 namespace Stomme.Tests.Licensing
 {
     /// <summary>
-    /// D105 design items 3-5: the <c>SLK1</c> verifier, driven over an EPHEMERAL test ring. Every rejection reason is
+    /// The <c>SLK1</c> verifier, driven over an EPHEMERAL test ring. Every rejection reason is
     /// pinned to the exact enum value, so a verifier that merely "rejects" cannot pass.
     /// </summary>
     /// <remarks>
-    /// Adapted from the predecessor platform <c>tests/Licensing.Tests/LicenseKeyTests.cs</c> (by name):
+    /// Adapted by name from an earlier licensing test suite:
     /// <c>SignedKey_RoundTrips_AndRejectsTamperingOrGarbage</c> (whole fact) and the VERIFICATION half of
     /// <c>ImportLicenseKey_ActivatesFromAValidKey_AndRejectsInvalidOrExpired</c> (its activation half is dropped with
-    /// the predecessor platform's key-less Activate/Import feature).
+    /// the key-less Activate/Import feature, which this product does not have).
     /// </remarks>
     public sealed class LicenceKeyVerificationTests : IDisposable
     {
@@ -294,8 +294,8 @@ namespace Stomme.Tests.Licensing
         [Fact]
         public void SignedKey_RoundTrips_AndRejectsTamperingOrGarbage()
         {
-            // Adapted by name from the predecessor platform LicenseKeyTests: issue → verify round-trips the signed fields; an appended
-            // character and a garbage string are both rejected. the predecessor platform's '*' entitlement is NOT carried: '*' is
+            // Adapted by name from an earlier licensing test suite: issue → verify round-trips the signed fields; an appended
+            // character and a garbage string are both rejected. the wildcard '*' entitlement is NOT carried: '*' is
             // Malformed.
             var payload = _issuer.Payload(Installation, new[] { "novagloben.enterprise" }, nbf: Now.AddDays(-1), exp: Now.AddYears(1));
             var signed = _issuer.Issue(payload);
@@ -313,8 +313,8 @@ namespace Stomme.Tests.Licensing
         [Fact]
         public void ImportLicenseKey_ActivatesFromAValidKey_AndRejectsInvalidOrExpired()
         {
-            // Adapted by name from the predecessor platform LicenseKeyTests — the VERIFICATION half only (the predecessor platform's Import/Activate
-            // mediator path is not absorbed).
+            // Adapted by name from an earlier licensing test suite — the VERIFICATION half only (its Import/Activate
+            // mediator path is not carried over).
             var valid = ValidKey(exp: Now.AddYears(1), ent: new[] { "reports:export" });
             var result = Verify(valid);
             Assert.Equal(LicenceKeyReason.Valid, result.Reason);

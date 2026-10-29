@@ -22,8 +22,8 @@ namespace Stomme.Modules.Health.Contributions
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Three probes, not five.</b> the predecessor platform registered five; two of them — the message bus and SignalR — only
-    /// called <c>GetRequiredService</c>, which proves the container can build a client and nothing about whether
+    /// <b>Three probes, not five.</b> Probes for the message bus and SignalR would only
+    /// call <c>GetRequiredService</c>, which proves the container can build a client and nothing about whether
     /// anything is reachable. Such a probe can only ever report Healthy, so it is a green light wired to nothing,
     /// and it is worse than having no probe at all because it answers the question falsely. They do not ship here
     /// until those dependencies expose a real liveness call; the gap is recorded rather than papered over with a
@@ -40,8 +40,8 @@ namespace Stomme.Modules.Health.Contributions
     /// which is the store that most needs to be up.
     /// </para>
     /// <para>
-    /// <b>The SMTP probe is enumerated only when the site has a host configured.</b> the predecessor platform gated it on
-    /// <c>SMTPEnabled</c>, which defaults to "True" with an empty host — so a stock site would have reported its
+    /// <b>The SMTP probe is enumerated only when the site has a host configured.</b> Gating it on
+    /// <c>SMTPEnabled</c> would not do: that defaults to "True" with an empty host — so a stock site would report its
     /// mail server unreachable for ever, having never been asked to have one. A site with no host has nothing to
     /// probe, and says nothing rather than something false.
     /// </para>

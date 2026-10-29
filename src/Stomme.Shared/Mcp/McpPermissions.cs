@@ -16,12 +16,12 @@ namespace Stomme.Mcp
     /// gate themselves with it, and the Server's controller and contributors carry it.
     /// </para>
     /// <para>
-    /// <b>D101 named TWO keys, <c>mcp:view</c> and <c>mcp:manage</c>. There are THREE here</b>, and the extra one is a
-    /// SPLIT, not an addition: D101 item 7 would have gated both the published catalog and the AUDIT LEDGER on
+    /// <b>There are THREE keys, not just <c>mcp:view</c> and <c>mcp:manage</c></b>, and the extra one is a
+    /// SPLIT, not an addition: a single view key would gate both the published catalog and the AUDIT LEDGER on
     /// <c>mcp:view</c>. The catalog shows a user what THEY may use - every descriptor in it has already passed its own
     /// gate for that caller. The ledger shows EVERY user's calls on the site, arguments hashed but subjects and
-    /// principals in plain sight. One key over both is exactly the shape D100 had to unpick in Notifications, where
-    /// <c>notifications:view</c> gated a user's own inbox and the whole site's send log together. <see cref="ViewAudit"/>
+    /// principals in plain sight. One key over both would mix a user's own view with the whole site's, as a single
+    /// <c>notifications:view</c> gating a user's own inbox and the whole site's send log together would. <see cref="ViewAudit"/>
     /// is the operator's key; <see cref="View"/> is the one a user may hold.
     /// </para>
     /// <para>

@@ -19,9 +19,9 @@ public interface IRepository<TAggregate, in TId>
     /// <summary>
     /// Returns every aggregate matching <paramref name="predicate"/>, translated to the underlying store's
     /// native query (EF Core → SQL <c>WHERE</c>; RavenDB → an indexed session query) so the filter runs in the
-    /// database, not in memory (the "keep the filter in the database" rule, docs/decisions.md D21). This is the
+    /// database, not in memory (the "keep the filter in the database" rule). This is the
     /// ONE provider-neutral filtered read a storage-blind module needs, so it no longer has to ship an EF query
-    /// plus a RavenDB twin (src/Stomme.SharedKernel/README.md Phase 1 / D78).
+    /// plus a RavenDB twin.
     /// <para>
     /// <b>THE CONTRACT — READ THIS.</b> The providers translate the same LINQ differently, and the compiler
     /// cannot see the divergence (CLAUDE.md "Providers diverge where the compiler cannot see it"). The predicate
@@ -35,11 +35,11 @@ public interface IRepository<TAggregate, in TId>
     /// <b>STRINGS ARE NOT SAFE and this method does NOT make them safe.</b> A raw string comparison DIVERGES:
     /// bare <c>==</c> is case-SENSITIVE on EF/PostgreSQL but case-INSENSITIVE on RavenDB; <c>StartsWith</c>
     /// splits three ways (SQLite insensitive, PostgreSQL SENSITIVE, RavenDB insensitive); and <c>.ToLower()</c>
-    /// THROWS on RavenDB. To filter on text, apply the D49 normalized-column pattern — persist a
+    /// THROWS on RavenDB. To filter on text, apply the normalized-column pattern — persist a
     /// <c>*_normalized</c> (e.g. upper-invariant) column and compare the NORMALIZED column against the SAME
     /// normalization of the argument (<c>e =&gt; e.NameNormalized == name.ToUpperInvariant()</c>, the constant
     /// normalized in code, not translated by the provider). Do NOT pass a raw <c>.ToLower()</c>/mixed-case
-    /// string comparison and expect agreement; it is measured to diverge (see the D78 conformance suite, which
+    /// string comparison and expect agreement; it is measured to diverge (see the FindAsync conformance suite, which
     /// drives both the divergence and the normalized agreement).
     /// <b>A string VALUE OBJECT is a string here (measured on EF/SQLite, RavenDB and File).</b>
     /// <c>e =&gt; e.Author == AuthorName.Create("ada lovelace")</c> TRANSLATES on every provider, and diverges exactly

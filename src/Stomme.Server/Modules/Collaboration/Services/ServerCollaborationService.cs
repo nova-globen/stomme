@@ -10,7 +10,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Collaboration.Services
 {
     /// <summary>
-    /// The collaboration service on the server (the Guestbook pattern) - the overview's and, since increment 12, an editor's
+    /// The collaboration service on the server (the Guestbook pattern) - the overview's and an editor's
     /// panel's on an Interactive Server circuit: the same gated requests the API sends, through the mediator, each refusal
     /// turned into the same code and message the API answers with.
     /// </summary>

@@ -3,7 +3,7 @@ namespace Stomme.FeatureManagement.Application;
 /// <summary>
 /// Resolves a feature key's state from an external <em>configuration</em> source — a <c>features.json</c>,
 /// an <c>appsettings</c> section, an environment variable, or (later, with no code change) Azure App
-/// Configuration — independent of the per-tenant DB flag store. This is the config layer of the D84
+/// Configuration — independent of the per-tenant DB flag store. This is the config layer of the
 /// precedence rule <b>config → DB → catalog default</b>: the evaluator consults this first and, when it
 /// returns a non-null value, that value overrides the admin toggle and the catalog default.
 /// <para>

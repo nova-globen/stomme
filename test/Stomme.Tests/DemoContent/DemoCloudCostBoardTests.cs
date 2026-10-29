@@ -23,13 +23,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DemoContent
 {
     /// <summary>
-    /// The predecessor platform's <c>CloudUsageDashboardSeedingTests.Host_SeedsCloudCostAnalyticsDashboard_BoundToCostDatasets</c>
-    /// by name on an installed SQLite host with <c>DemoContent:Enabled</c>: the install path writes the published "Cloud Cost
+    /// The seeded cost board, checked on an installed SQLite host with <c>DemoContent:Enabled</c>: the install path writes the published "Cloud Cost
     /// Analytics" board - three KPIs, two charts, one grid - every widget bound to a dataset whose schema has its columns, a
     /// chart spec on the charts alone; a second pass changes nothing. The port's own: a site that already holds the canonical
     /// "Multi-cloud cost" dataset gets its board bound to THAT dataset, not a sample; an operator's delete survives.
-    /// the predecessor platform's navigation case (<c>Host_ContributesCloudUsageNavigation_ToTheSeededDashboard</c>) is the module's own
-    /// <c>admin/cloud-usage</c> page here, which <c>CloudUsageModuleDriveTests</c> reaches.
+    /// The navigation to the seeded board is the module's own <c>admin/cloud-usage</c> page, which
+    /// <c>CloudUsageModuleDriveTests</c> reaches.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     public sealed class DemoCloudCostBoardTests(ITestOutputHelper output)

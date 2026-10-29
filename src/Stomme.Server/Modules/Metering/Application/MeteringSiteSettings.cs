@@ -78,7 +78,7 @@ namespace Stomme.Modules.Metering.Application
         {
             var raw = await _settings.GetSettingValueAsync(EntityNames.Site, siteId, MeteringSiteSettingNames.LastRollupPass, string.Empty);
             // RoundtripKind ALONE: combined with AdjustToUniversal this throws ArgumentException - the defect the
-            // BL-78 dispatch pass hit on every site before it was measured.
+            // dispatch pass hit on every site before it was measured.
             return DateTime.TryParse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var last)
                 ? DateTime.SpecifyKind(last.Kind == DateTimeKind.Local ? last.ToUniversalTime() : last, DateTimeKind.Utc)
                 : null;

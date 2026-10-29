@@ -8,9 +8,9 @@ namespace Stomme.Tests;
 
 /// <summary>
 /// Guards <c>AddSecretProtection()</c> and the Data Protection-backed <see cref="ISecretProtector"/> in
-/// <c>Stomme.Infrastructure.Security.Cryptography</c>. Until BL-100 retired the lifted Stomme.Identity.*
-/// model, the only cover was <c>IdentityRelationalStoreTests.The_mfa_secret_is_stored_protected_and_gates_sign_in</c>
-/// in the retired <c>Stomme.Stores.EfCore.Identity.Tests</c>; the project survives because BL-78's shared
+/// <c>Stomme.Infrastructure.Security.Cryptography</c>. Before the lifted Stomme.Identity.* model was retired,
+/// the only cover was <c>IdentityRelationalStoreTests.The_mfa_secret_is_stored_protected_and_gates_sign_in</c>
+/// in the retired <c>Stomme.Stores.EfCore.Identity.Tests</c>; the project survives because the shared
 /// site secret store wires it, so its cover survives too.
 /// </summary>
 public class SecretProtectionTests

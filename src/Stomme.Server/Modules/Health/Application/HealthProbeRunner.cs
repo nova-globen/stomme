@@ -111,12 +111,12 @@ namespace Stomme.Modules.Health.Application
         }
 
         /// <summary>
-        /// The worst state in a set — the predecessor platform's <c>HealthAggregator</c> fold, which relies on
+        /// The worst state in a set - a fold that relies on
         /// <see cref="HealthState"/>'s numeric order.
         /// </summary>
         /// <remarks>
-        /// <b>An empty set is reported as <paramref name="whenEmpty"/>, not silently as Healthy.</b> the predecessor platform's
-        /// aggregator folded nothing to Healthy, which means an installation whose probes all failed to be
+        /// <b>An empty set is reported as <paramref name="whenEmpty"/>, not silently as Healthy.</b> An aggregator that
+        /// folded nothing to Healthy would mean an installation whose probes all failed to be
         /// REGISTERED reports perfect health — the one answer a monitor must never give by accident. Callers that
         /// genuinely have nothing to check (readiness before anything is installed) pass Healthy deliberately.
         /// </remarks>

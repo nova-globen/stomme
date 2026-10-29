@@ -1,13 +1,13 @@
 ﻿@namespace Stomme.Modules.Controls
 @inherits LocalizableComponent
 
-@* Migrated to the --db-* design system (Phase 4).
+@* Migrated to the --db-* design system.
    Collapsing used to be pure Bootstrap JS (data-bs-toggle="collapse") with no @onclick handler.
-   That JS went away with the CDN in Phase 1 and the compat shim never defined a .collapse rule, so
+   That JS went away when the CDN was dropped, and the compat shim never defined a .collapse rule, so
    every Section rendered permanently OPEN -- even the ones reporting aria-expanded="false" -- and no
    header click could ever collapse one. Toggling is now Stomme's own, dual-mode like
    TabStrip/Pager: Blazor state when interactive, a native <details> element (which needs no script
-   at all) when statically rendered. See D18.
+   at all) when statically rendered.
 
    ChildContent is always rendered and hidden with CSS rather than removed from the render tree:
    the inputs inside a collapsed section must keep their DOM identity (and stay measurable). *@

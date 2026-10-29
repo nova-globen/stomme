@@ -17,8 +17,8 @@ using LogLevel = Stomme.Shared.LogLevel;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The owner's decision of 2026-10-10: a request refused to an ANONYMOUS caller is logged as a Warning - in the site's
-    /// log, never mailed to its hosts - and one refused to a SIGNED-IN user stays an Error, mailed. Found on UAT the day both
+    /// The rule: a request refused to an ANONYMOUS caller is logged as a Warning - in the site's
+    /// log, never mailed to its hosts - and one refused to a SIGNED-IN user stays an Error, mailed. Observed once both
     /// sites were wired to the mail relay: every anonymous probe of a key-gated API mailed the host.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]

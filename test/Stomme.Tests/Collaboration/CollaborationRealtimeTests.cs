@@ -27,7 +27,7 @@ namespace Stomme.Tests.Collaboration
     /// naming the resource and who caused it and nothing else; a board stored by the Dashboards module is a Saved notice;
     /// with the switch off or outside a site's scope nothing is told; the notice rides the bus when one is composed and is
     /// delivered in-process otherwise, to the site key's signal and the site's hub group; the push is a no-op while the
-    /// SignalR transport is off. the predecessor platform's <c>EditSessionPresencePublicationTests</c> and its change-feed push, by what they
+    /// SignalR transport is off. The <c>EditSessionPresencePublicationTests</c> cases and their change-feed push, by what they
     /// proved: an editor of the resource is told, on every path a change can take.
     /// </summary>
     public sealed class CollaborationRealtimeTests

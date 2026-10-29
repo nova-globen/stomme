@@ -35,7 +35,7 @@ namespace Stomme.Tests
     //
     // The FILE ROW did not, and TheToLowerTranslationGapTests below is the measurement that says why: the two
     // File name lookups filter with .ToLower() on a COLUMN, RavenDB's LINQ provider throws on it, and there is
-    // no portable spelling. That is D22 rule 9's escalate condition. See src/Stomme.Server/README.md (persistence seam).
+    // no portable spelling. That is the escalation condition for the persistence seam. See src/Stomme.Server/README.md (persistence seam).
     public class FolderAggregateMappingTests
     {
         private sealed class ProbeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
@@ -78,7 +78,7 @@ namespace Stomme.Tests
         }
 
         // AggregateRoot<TId>.Version has no column in the harvested schema — parity with the IDatabase path,
-        // which has no optimistic concurrency on Folder either. Phase 5 owns the column.
+        // which has no optimistic concurrency on Folder either. A later change owns the column.
         [Fact]
         public void The_seam_concurrency_token_is_not_mapped_because_no_harvested_table_has_a_column_for_it()
         {
@@ -92,7 +92,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// The column list, VERIFIED against the migrated PostgreSQL database (stomme-pg-44357), not against
+        /// The column list, VERIFIED against the migrated PostgreSQL database, not against
         /// FolderEntityBuilder — which would have produced a wrong answer twice over. It omits Type, Capacity,
         /// ImageSizes and CacheControl (all four added by later migrations) and it CREATES DeletedBy, DeletedOn
         /// and IsDeleted, none of which survive.
@@ -117,7 +117,7 @@ namespace Stomme.Tests
                 "order",
                 "parent_id",
                 "path",
-                // D49. The SIXTEENTH column, added and backfilled by 10020003_AddFolderFileNormalizedColumns.
+                // The sixteenth column, added and backfilled by 10020003_AddFolderFileNormalizedColumns.
                 // It is what let the File cluster cross the seam: the render path's folder lookup filters this
                 // with a plain == that both providers agree on, where it used to fold case on `path` and throw
                 // on RavenDB. Derived in FolderAggregate.Path's setter, so it cannot drift from `path`.
@@ -128,7 +128,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// <b>THE mutation check of this increment, and the standing lesson's sharpest case yet.</b>
+        /// <b>The mutation check for this change, and the sharpest case of the lesson so far.</b>
         /// FolderEntityBuilder extends DeletableAuditableBaseEntityBuilder and calls AddDeletableColumns, so
         /// reading the builder says Folder is soft-deletable. It is not: 03020201 drops all three columns,
         /// 03030201 restores IsDeleted for non-SQLite, and 10000201 drops it everywhere. The live database has
@@ -269,7 +269,7 @@ namespace Stomme.Tests
         }
     }
 
-    // Rule (g)/D19/D22 rule 6: deleting the DbSet is NOT enough — EF rediscovers CLR types through
+    // Deleting the DbSet is NOT enough: EF rediscovers CLR types through
     // NAVIGATIONS. THIS WAS NOT HYPOTHETICAL FOR THIS CLUSTER, and it is the reason Folder could not move
     // alone. Mapping FolderAggregate while File.Folder was still a navigation broke the model, OBSERVED:
     //
@@ -282,13 +282,13 @@ namespace Stomme.Tests
     {
         // The neighbours that are STILL genuinely unmigrated — the shape of TenantDBContext.
         //
-        // File stood here until D49 put it on the seam, and it was the BEST probe this context ever had: it is
+        // File stood here until it moved onto the seam, and it was the BEST probe this context ever had: it is
         // the entity whose navigation caused the blocker, so declaring it also proved the [NotMapped] severance
         // held. That proof did not disappear with it — No_entity_in_the_model_navigates_into_the_folder_contract
         // below now sweeps the FileAggregate mapping instead, which is a STRONGER form: an aggregate has no
         // navigation member to sever in the first place.
         //
-        // SearchContent was what was left to probe with, and D50 took it — so THIS CONTEXT IS NOW EMPTY.
+        // SearchContent was what was left to probe with, and it moved too — so THIS CONTEXT IS NOW EMPTY.
         // See the note in LeafClustersOnTheSeamTests: the neighbour DbSet was decoration.
         private sealed class TenantLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
@@ -384,8 +384,8 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// The readers of the severed navigation (D45's lesson 5). File.Folder is dereferenced in roughly thirty
-    /// production places — FileController, Pages/Files.cshtml.cs (THE render path) and SynchronizationJob —
+    /// The readers of the severed navigation. File.Folder is dereferenced in roughly thirty
+    /// production places — FileController, Pages/Files.cshtml.cs (the render path) and SynchronizationJob —
     /// so severing it would have thrown NullReferenceException on the first file request had FileRepository
     /// not stitched it back on. These pin that every read path populates it.
     /// </summary>
@@ -424,7 +424,7 @@ namespace Stomme.Tests
         // The folder table exactly as the migration set leaves it: FolderEntityBuilder, PLUS 02010003 (Type),
         // 02030001 (ImageSizes, Capacity), the widening of Name/Path, 10020003 (PathNormalized), MINUS the
         // three deletable columns 03020201/10000201 remove. Cross-checked column-for-column against
-        // stomme-pg-44357.
+        // the migrated PostgreSQL database.
         protected override string TableDdl => """
             CREATE TABLE "Folder" (
                 "FolderId" INTEGER NOT NULL CONSTRAINT "PK_Folder" PRIMARY KEY AUTOINCREMENT,

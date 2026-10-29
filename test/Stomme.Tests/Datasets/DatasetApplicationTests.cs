@@ -10,9 +10,9 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// The predecessor platform's mediator, registrar and catalog cases by name over the module's real startup
-    /// on the File store: DatasetTests (the register/list/preview/registrar/delete ones; the upload ones are increment
-    /// 13's), DatasetClassificationTests (4, with a settable classifier), DatasetCatalogTests (3). CHANGED on purpose: a
+    /// The mediator, registrar and catalog cases, ported by name over the module's real startup
+    /// on the File store: DatasetTests (the register/list/preview/registrar/delete ones; the upload ones are not ported here
+    /// ), DatasetClassificationTests (4, with a settable classifier), DatasetCatalogTests (3). CHANGED on purpose: a
     /// preview is refused for Restricted as well as Confidential (Q1); the registrar's identity is the origin's.
     /// </summary>
     public sealed class DatasetApplicationTests

@@ -218,7 +218,7 @@ namespace Stomme.Tests.Pipelines
             cut.Find("#pipelines-editor-save").Click();
             cut.WaitForAssertion(() => Assert.Equal(PipelineStepDataKeeping.WhenFailed, service.Saved!.KeepStepData));
 
-            // BL-229, n8n's "save execution progress": off unless ticked, and saved as the pipeline's setting.
+            // n8n's "save execution progress": off unless ticked, and saved as the pipeline's setting.
             Assert.False(cut.Find("#pipelines-editor-save-progress").HasAttribute("checked"));
             Assert.StartsWith("Ticked, a run is stored after each step it runs", cut.Find("#pipelines-editor-save-progress-help").TextContent.Trim());
             cut.Find("#pipelines-editor-save-progress").Change(true);
@@ -962,7 +962,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.False(cut.Find("#pipelines-editor-step-search").HasAttribute("disabled")));
 
             // Found by a word it answers to, its keys said; Enter adds a sticky note, as Shift+S does, and empties the search.
-            // The search's results render after its input: waited for, as a full run's load can make it lag (measured 2026-10-17).
+            // The search's results render after its input: waited for, as a full run's load can make it lag.
             cut.Find("#pipelines-editor-step-search").Input("annotate");
             cut.WaitForAssertion(() => Assert.Equal("Add a sticky note Action · Shift+S", string.Join(" ", cut.Find("#pipelines-editor-command-note").TextContent.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries))));
             Assert.Empty(cut.FindAll(".db-note"));
@@ -1535,7 +1535,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(3, Nodes()));
             cut.Find("#pipelines-editor-copy").Click();
             // Waited for: a selection change queues its render (InvokeAsync), and under a loaded gate the copy's lands after it
-            // (one red of the fast gate, 2026-10-06; eight of eight alone).
+            // (it failed once under the fast gate's load; eight of eight alone pass).
             cut.WaitForAssertion(() => Assert.Equal("Copied 1 step.", cut.Find("#pipelines-editor-message").TextContent.Trim()));
             cut.Find("#pipelines-editor-paste").Click();
             cut.WaitForAssertion(() => Assert.Equal(4, Nodes()));
@@ -1900,7 +1900,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.StartsWith("Ran with the steps before it: done", cut.Find("#pipelines-editor-test-status").TextContent.Trim()));
             Assert.Equal(new[] { "Write Line - done" }, cut.FindAll("#pipelines-editor-test-steps li").Select(item => item.TextContent.Trim()));
 
-            // A step before it that failed and took its Failed path is listed as that, not as done (found on UAT, 10.13.0).
+            // A step before it that failed and took its Failed path is listed as that, not as done.
             cut.Find("#pipelines-editor-find").Input("write line");
             cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll(".db-pipeline-editor__find-result")));
             cut.FindAll(".db-pipeline-editor__find-result")[0].Click();
@@ -1914,7 +1914,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(new[] { "Write Line - failed, and took its Failed path: boom" }, cut.FindAll("#pipelines-editor-test-steps li").Select(item => item.TextContent.Trim())));
         }
 
-        // BL-229, n8n's mapping: each variable, and each field of a record it holds, is offered to drag into an input; one dropped
+        // n8n's mapping: each variable, and each field of a record it holds, is offered to drag into an input; one dropped
         // on a value makes the value an expression ending in it (what was typed kept before it); a drop that is not a placeholder,
         // or on an input the step does not have, changes nothing.
         [Fact]
@@ -2009,7 +2009,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Empty(cut.FindAll("#pipelines-editor-find-none")));
         }
 
-        // BL-229, found driving: a value naming a variable in {{ }} is sent as typed - the input says so, and one click makes it
+        // Found driving: a value naming a variable in {{ }} is sent as typed - the input says so, and one click makes it
         // an expression holding the same text, which fills it in.
         [Fact]
         public void A_value_with_a_placeholder_is_made_an_expression_in_one_click()
@@ -2039,7 +2039,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-editor-input-Text"));
         }
 
-        // BL-229 (n8n's pinned data): a value typed for a test is kept WITH the pipeline on request - saved with it, marked kept,
+        // n8n's pinned data: a value typed for a test is kept WITH the pipeline on request - saved with it, marked kept,
         // and what the next session's tests use - and forgotten on request, back to the starting value.
         [Fact]
         public void Test_values_are_kept_with_the_pipeline_on_request_and_forgotten_on_request()
@@ -3427,7 +3427,7 @@ namespace Stomme.Tests.Pipelines
             // "Add a step here": the step chosen next lands on that spot, connected to nothing.
             var stepAt = Diagram().GetRelativeMousePoint(700, 500);
             cut.Find("#pipelines-editor-canvas").ContextMenu(new MouseEventArgs { ClientX = 700, ClientY = 500 });
-            // Waited for like the two menus above: under the gate's load the item was not rendered yet (2026-10-29, once in 6,393).
+            // Waited for like the two menus above: under the gate's load the item was not rendered yet (it failed once in 6,393 runs).
             cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll("#pipelines-editor-menu-add-step")));
             cut.Find("#pipelines-editor-menu-add-step").Click();
             cut.Find("#pipelines-editor-step-search").Input("csv");
@@ -4499,7 +4499,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.False(cut.Find("#pipelines-editor-step-search").HasAttribute("disabled")));
             cut.Find("#pipelines-editor-variable-name").Change("who");
             cut.Find("#pipelines-editor-variable-add").Click();
-            // The new variable's row, once rendered - under the full suite's load it was not yet (the fast gate of 2026-10-09).
+            // The new variable's row, once rendered - under the full suite's load it was not yet (seen under the fast gate).
             cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll("input[id^='pipelines-editor-variable-value-']")));
             cut.Find("input[id^='pipelines-editor-variable-value-']").Change("world");
             cut.Find("#pipelines-editor-step-search").Input("write line");
@@ -4953,7 +4953,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("Nightly report", link.Closest("td")!.TextContent);
         }
 
-        // Found looking at UAT with fresh eyes: below a list of 32 pipelines, New pipeline was out of sight, and six buttons
+        // Seen with fresh eyes: below a list of 32 pipelines, New pipeline was out of sight, and six buttons
         // alike to a row made Delete look like Edit. New pipeline opens the form at the top (open by itself on a site with none);
         // a row's other actions sit behind More.
         [Fact]
@@ -5107,7 +5107,7 @@ namespace Stomme.Tests.Pipelines
             Assert.All(layers, style => Assert.Contains(transform, style));
         }
 
-        // BL-229, found driving Guardrails: a tick no value was given for shows the step's own default, as the run reads it - a tick on
+        // Found driving the Guardrails step: a tick no value was given for shows the step's own default, as the run reads it - a tick on
         // unless switched off (CSV's Has header) shows ticked; one switched off shows unticked and stays so, written as false.
         [Fact]
         public void A_tick_with_no_value_shows_the_steps_default_as_the_run_reads_it()
@@ -5270,7 +5270,7 @@ namespace Stomme.Tests.Pipelines
 
             public Task<GraphSaveResult> SaveGraphMergedAsync(string definitionId, PipelineGraph graph, PipelineGraph loaded) => throw new NotSupportedException();
 
-            /// <summary>BL-229: the pipelines made, in order - each answered as "def-made-n".</summary>
+            /// <summary>The pipelines made, in order - each answered as "def-made-n".</summary>
             public List<CreatePipelineRequest> Created { get; } = new();
 
             public Task<PipelineView> CreatePipelineAsync(CreatePipelineRequest request)
@@ -5279,7 +5279,7 @@ namespace Stomme.Tests.Pipelines
                 return Task.FromResult(new PipelineView { Id = "v-made-" + Created.Count, DefinitionId = "def-made-" + Created.Count, Name = request.Name, Description = request.Description, Version = 1, IsLatest = true });
             }
 
-            /// <summary>BL-229 increment 10: what was imported as a new pipeline, in order.</summary>
+            /// <summary>What was imported as a new pipeline, in order.</summary>
             public List<ImportPipelineRequest> Imported { get; } = new();
 
             public Task<PipelineView> ImportPipelineAsync(ImportPipelineRequest request)
@@ -5288,7 +5288,7 @@ namespace Stomme.Tests.Pipelines
                 return Task.FromResult(new PipelineView { Id = "v-new", DefinitionId = "def-new", Name = request.Name, Version = 1, IsLatest = true });
             }
 
-            /// <summary>BL-229 increment 10: what the trigger panel is told, and the call a listen hears.</summary>
+            /// <summary>What the trigger panel is told, and the call a listen hears.</summary>
             public List<(string Type, string Value)> TriggerQueries { get; } = new();
 
             /// <summary>Whether the site serves forms, as the trigger panel is told.</summary>
@@ -5337,7 +5337,7 @@ namespace Stomme.Tests.Pipelines
                 return Task.FromResult(NewestEmail);
             }
 
-            /// <summary>D111a: the webhook names with a secret of their own; each new secret made, in order; each removal asked for.</summary>
+            /// <summary>The webhook names with a secret of their own; each new secret made, in order; each removal asked for.</summary>
             public HashSet<string> OwnSecrets { get; } = new(StringComparer.OrdinalIgnoreCase); // the receiver is case-blind
 
             public bool OwnSecretUnreadable { get; set; }
@@ -5363,7 +5363,7 @@ namespace Stomme.Tests.Pipelines
                 return Task.CompletedTask;
             }
 
-            /// <summary>BL-229 increment 5b: what the site allows, and each preview asked for (answered with the script and its values).</summary>
+            /// <summary>What the site allows, and each preview asked for (answered with the script and its values).</summary>
             public PipelineCapabilitiesView Capabilities { get; set; } = new();
 
             public List<ScriptPreviewRequest> Previews { get; } = new();
@@ -5376,7 +5376,7 @@ namespace Stomme.Tests.Pipelines
                 return Task.FromResult(new ScriptPreviewView { Value = "ran " + request.Script + " with who=" + request.Values.GetValueOrDefault("who") });
             }
 
-            /// <summary>BL-229: what the editor asked the AI, and how the server answers: the canvas it was sent, changed - or a refusal.</summary>
+            /// <summary>What the editor asked the AI, and how the server answers: the canvas it was sent, changed - or a refusal.</summary>
             public List<PipelineGraphDesignRequest> Designs { get; } = new();
 
             public Func<PipelineGraph, PipelineGraph>? Design { get; set; }
@@ -5542,7 +5542,7 @@ namespace Stomme.Tests.Pipelines
                 return Task.FromResult(new PublishResult { Succeeded = true });
             }
 
-            /// <summary>BL-229: what each publish said changed, in order (null for none).</summary>
+            /// <summary>What each publish said changed, in order (null for none).</summary>
             public List<string> PublishedNotes { get; } = new();
 
             public Task RetractPipelineAsync(string definitionId) => throw new NotSupportedException();
@@ -5560,7 +5560,7 @@ namespace Stomme.Tests.Pipelines
             public Task DeletePipelineAsync(string definitionId) => throw new NotSupportedException();
 
             public Task<List<string>> SetTagsAsync(string definitionId, List<string> tags) => throw new NotSupportedException();
-            /// <summary>BL-229: each pipeline moved to a folder, in order.</summary>
+            /// <summary>Each pipeline moved to a folder, in order.</summary>
             public List<(string DefinitionId, string Folder)> Moved { get; } = new();
 
             public Task<string> SetFolderAsync(string definitionId, string folder)
@@ -5573,7 +5573,7 @@ namespace Stomme.Tests.Pipelines
 
             public Task<List<PipelineFoundView>> FindInPipelinesAsync(string text) => throw new NotSupportedException();
 
-            /// <summary>BL-229: the map the editor is told (the pipelines that start when this one fails); how many times it was read.</summary>
+            /// <summary>The map the editor is told (the pipelines that start when this one fails); how many times it was read.</summary>
             public PipelineMapView Map { get; set; } = new();
 
             public int MapReads { get; private set; }
@@ -5584,7 +5584,7 @@ namespace Stomme.Tests.Pipelines
                 return Task.FromResult(Map);
             }
 
-            /// <summary>BL-229: the site's pipeline activity the editor is told, and each pipeline it was asked for.</summary>
+            /// <summary>The site's pipeline activity the editor is told, and each pipeline it was asked for.</summary>
             public List<PipelineAuditEntryView> Audit { get; } = new();
 
             public List<string> AuditAsked { get; } = new();
@@ -5670,7 +5670,7 @@ namespace Stomme.Tests.Pipelines
             public Task<List<PipelineRunLogLine>> GetRunLogAsync(string runId) => Task.FromResult(new List<PipelineRunLogLine>());
             public Task<List<PipelineStepRunView>> GetRunStepsAsync(string runId) => Task.FromResult(new List<PipelineStepRunView>());
 
-            /// <summary>BL-229 increment 7: the versions the fake pipeline has, and each one's graph.</summary>
+            /// <summary>The versions the fake pipeline has, and each one's graph.</summary>
             public List<PipelineVersionView> Versions { get; } = new();
 
             public Dictionary<int, PipelineGraph> VersionGraphs { get; } = new();

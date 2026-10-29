@@ -79,7 +79,7 @@ public static partial class StepExecutionContextExtensions
             catch (Exception e)
             {
                 // The cause belongs in the message: a run's incident shows this message alone, and "failed to evaluate" without
-                // the reason (an expression naming no variable, say) left the author guessing (Stomme BL-229 increment 5).
+                // the reason (an expression naming no variable, say) left the author guessing.
                 throw new InputEvaluationException(inputDescriptor.Name, $"Failed to evaluate step input '{inputDescriptor.Name}': {e.Message}", e);
             }
         }

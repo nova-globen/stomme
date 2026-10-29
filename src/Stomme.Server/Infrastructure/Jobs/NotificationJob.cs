@@ -64,7 +64,7 @@ namespace Stomme.Infrastructure
                     // off after upgrading); the flag is the installation-wide capability switch.
                     if (settingRepository.GetSettingValue(settings, "SMTPEnabled", "True") == "True")
                     {
-                        // Mail queued more than a day ago is not sent (2026-10-10): the queue keeps every undelivered row
+                        // Mail queued more than a day ago is not sent: the queue keeps every undelivered row
                         // for as long as SMTP is off, so switching it on used to send everything since the install - a
                         // reset link long expired, an error notice months old - through a relay with an hourly cap.
                         var stale = NotificationQueueAge.TooOld(notifications, DateTime.UtcNow);
@@ -374,7 +374,7 @@ namespace Stomme.Infrastructure
     public static class NotificationMail
     {
         /// <summary>
-        /// A Message-ID at the sender's own domain (2026-10-10, infra's finding on the first mail through the relay): MimeKit's
+        /// A Message-ID at the sender's own domain: MimeKit's
         /// default takes the machine name - in a container a hex id like <c>deee53a6f9d6</c> - which spam filters read as a
         /// sign of a careless sender; the sender's domain (the relay's, e.g. <c>notify.example.com</c>) is the one the mail is sent for.
         /// </summary>

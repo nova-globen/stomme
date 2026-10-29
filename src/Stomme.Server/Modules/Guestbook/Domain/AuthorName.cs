@@ -5,7 +5,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.Guestbook.Domain
 {
     /// <summary>
-    /// A VALUE OBJECT (docs/decisions.md D1; <see cref="ValueObject"/>) for a guestbook signer's name. It has
+    /// A VALUE OBJECT (<see cref="ValueObject"/>) for a guestbook signer's name. It has
     /// no identity — two <see cref="AuthorName"/>s with the same normalized value are equal — and it is
     /// immutable. Constructing one is the invariant: the name is trimmed and must be non-empty and at most
     /// <see cref="MaxLength"/> characters. Modelling the name as a value object (rather than a bare string on

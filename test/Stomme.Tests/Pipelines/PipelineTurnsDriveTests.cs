@@ -97,7 +97,7 @@ namespace Stomme.Tests.Pipelines
                 // In the order they ran (one at a time, so the order they finished): Run's last; each call ran once, with the body it
                 // was called with. The first to start is whichever call the engine took first - it takes calls on more than one worker
                 // - and the ones that waited went in the order they were SENT: each call's arrival is stamped as it is handed to the
-                // engine (on UAT, 10.36.0, three calls sent one after another were stored, and so run, in reverse).
+                // engine (three calls sent one after another were stored, and so run, in reverse).
                 var inOrder = runs.OrderBy(run => run.FinishedOnUtc).ToList();
                 foreach (var run in inOrder)
                 {

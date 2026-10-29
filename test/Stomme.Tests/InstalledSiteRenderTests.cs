@@ -27,7 +27,7 @@ namespace Stomme.Tests
     /// <para>
     /// This is the only test that answers the question "does an installed site actually SERVE A PAGE".
     /// Everything else in the suite can be green while every Blazor route hangs or blank-pages — that has
-    /// shipped a dead master twice (a rename that desynced assembly discovery, and the D29 renderer
+    /// shipped a dead master twice (a rename that desynced assembly discovery, and a renderer
     /// deadlock, which reported 262 passed / 1 skipped while no route rendered at all).
     /// </para>
     /// <para>
@@ -45,9 +45,9 @@ namespace Stomme.Tests
     /// <c>RendererSynchronizationContext</c> — the Blazor endpoint's own renderer dispatcher is. So
     /// <c>App.OnInitializedAsync</c> -> <c>SiteService.GetSiteAsync</c> -> <c>ThemeRepository.ProcessThemes</c>
     /// -> <c>PermissionRepository.UpdatePermissions</c> runs here on the serialized renderer pump, exactly as
-    /// in production. That claim is not taken on faith: reverting the D29 fix makes the PostgreSQL case stop
+    /// in production. That claim is not taken on faith: reverting the renderer-deadlock fix makes the PostgreSQL case stop
     /// responding, which can only happen if the renderer's context is genuinely installed on the thread that
-    /// reaches the repository. See docs/decisions.md D30.
+    /// reaches the repository.
     /// </para>
     /// <para>
     /// WHY IT INSTALLS FRESH EVERY RUN. <c>ProcessThemes</c> only writes when theme permissions are MISSING,
@@ -58,15 +58,14 @@ namespace Stomme.Tests
     /// <para>
     /// PROVIDER DIMENSION — AND A WARNING. The cases are parameterized by provider so a new one slots in
     /// without redesign. SQLite is the always-on case and needs no external infrastructure, so this genuinely
-    /// runs on every commit. But do NOT read the SQLite case as cover for the D29 deadlock. It is not, and
-    /// this was measured, not assumed: with the D29 fix reverted, the SQLite case PASSES (200, 12450 chars,
+    /// runs on every commit. But do NOT read the SQLite case as cover for the renderer deadlock. It is not, and
+    /// this was measured, not assumed: with the fix reverted, the SQLite case PASSES (200, 12450 chars,
     /// 4s) while the PostgreSQL case FAILS on the 60s deadline. The deadlock needs the store write to
     /// actually suspend; Microsoft.Data.Sqlite's async surface completes synchronously and never posts a
-    /// continuation to the blocked pump, whereas Npgsql's real async socket I/O does. See docs/decisions.md
-    /// D30. So: the SQLite case guards the blank-page / broken-install / installer-served-instead-of-site
-    /// class on every commit, and the PostgreSQL case — the shared infra PostgreSQL (see PostgresTestEndpoint),
+    /// continuation to the blocked pump, whereas Npgsql's real async socket I/O does. So: the SQLite case guards the blank-page / broken-install / installer-served-instead-of-site
+    /// class on every commit, and the PostgreSQL case — the shared PostgreSQL test server (see PostgresTestEndpoint),
     /// gated on a reachable instance — is the ONLY case here that guards the deadlock class. RavenDB IS
-    /// install-selectable (D56 added it as a 6th <c>AvailableDatabases</c> entry with a
+    /// install-selectable (it is a sixth <c>AvailableDatabases</c> entry with a
     /// <c>RavenDBConfig</c> control), but this render guard's <see cref="Providers"/> matrix is
     /// RELATIONAL-only and does not include it; RavenDB's render is covered by the standalone
     /// <c>RavenInstalledSiteRenderTests</c> (automated) and <c>RavenWizardInstallRenderTests</c> (wizard).
@@ -114,7 +113,7 @@ namespace Stomme.Tests
             // Always on: no external infrastructure, so the guard actually runs on every commit.
             yield return new object[] { SqliteProvider.ProviderName };
 
-            // Additional, service-gated. Absent a reachable PostgreSQL (the shared infra UAT instance, or
+            // Additional, service-gated. Absent a reachable PostgreSQL (the shared PostgreSQL test server, or
             // whatever POSTGRES_TEST_HOST/PORT point at) the case is simply not generated — the
             // every-commit path must never depend on it. That silence is what
             // Deadlock_class_is_covered_by_a_real_async_provider exists to break.
@@ -130,12 +129,12 @@ namespace Stomme.Tests
         /// <remarks>
         /// Without this, an absent container does not skip the PostgreSQL case — it never generates it. The
         /// theory quietly drops from two cases to one and the suite still reports green, while the ONLY cover
-        /// for the D29 deadlock class silently disappears. That is the precise failure mode this whole file
+        /// for the renderer deadlock class silently disappears. That is the precise failure mode this whole file
         /// exists to end: a green gate that does not cover the thing. `262 passed / 1 skipped` was green while
         /// every Blazor route hung, because the one skip WAS the guard.
         /// <para>
         /// So the coverage itself is asserted, not assumed. SQLite cannot stand in — measured, not inferred:
-        /// with the D29 fix reverted the SQLite case PASSES and only the PostgreSQL case FAILS, because
+        /// with the renderer-deadlock fix reverted the SQLite case PASSES and only the PostgreSQL case FAILS, because
         /// Microsoft.Data.Sqlite's async surface completes synchronously and never suspends.
         /// </para>
         /// </remarks>
@@ -242,7 +241,7 @@ namespace Stomme.Tests
                 var requestTask = client.GetAsync("/", renderCts.Token);
                 if (await Task.WhenAny(requestTask, Task.Delay(RenderTimeout)) != requestTask)
                 {
-                    // This is the D29 signature. The request does not fail, it stops responding: the
+                    // This is the renderer-deadlock signature. The request does not fail, it stops responding: the
                     // renderer's serialized pump is blocked on a sync-over-async wait whose continuation
                     // was posted back to that same pump.
                     throw new TimeoutException(
@@ -370,7 +369,7 @@ namespace Stomme.Tests
         {
             public const string ProviderName = "PostgreSQL";
 
-            // Endpoint + credentials are resolved centrally (PostgresTestEndpoint): the shared INFRA TIER UAT
+            // Endpoint + credentials are resolved centrally (PostgresTestEndpoint): the shared test server
             // instance by default, env-overridable. The account must be able to CREATE DATABASE — the guard
             // CREATEs a fresh database per run and drops it in Cleanup.
             private static readonly string DatabaseName =
@@ -386,7 +385,7 @@ namespace Stomme.Tests
             public void Cleanup(string connectionString, string contentRoot)
             {
                 // Drop the throwaway database this run created — otherwise a stomme_render_guard_* database
-                // accumulates on the (persistent, now SHARED infra) instance per run. Best-effort by design.
+                // accumulates on the (persistent, shared) instance per run. Best-effort by design.
                 var database = new Npgsql.NpgsqlConnectionStringBuilder(connectionString).Database;
                 PostgresTestEndpoint.DropDatabase(database);
             }
@@ -400,7 +399,7 @@ namespace Stomme.Tests
         /// <remarks>
         /// Performing an install persists DefaultDBType, the connection string and InstallationId — which
         /// these cases do, because every one of them runs a REAL install. That is correct behaviour, not the
-        /// old self-mutation defect: since D32 a boot with no install intent writes nothing at all (pinned by
+        /// old self-mutation defect: since a boot with no install intent writes nothing at all (pinned by
         /// <see cref="BootDoesNotMutateConfigTests"/>), but an actual install still writes, so the redirect
         /// below is still what keeps the repository's appsettings.json clean.
         /// <para>

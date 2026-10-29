@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// BL-82 (refutation 3) - the portability aggregates keep the shape every module-aggregate store maps
+    /// The portability aggregates keep the shape every module-aggregate store maps
     /// without surprises: a stamped <c>TenantId</c> beside a <c>SiteId</c>; members that are scalars, enums, UTC
     /// <c>DateTime</c>s or <see cref="IStringValueObject"/> value objects; no collections (the shared EF context has no
     /// owned-collection mapping); no <c>DateTimeOffset</c> (the UTC converter is for <c>DateTime</c>); no computed

@@ -26,7 +26,7 @@ namespace Stomme.Repository.Stores
     /// DbContexts adapt per-<c>OnConfiguring</c> without a container rebuild.
     /// </para>
     /// <para>
-    /// <b>Why this keeps the D42 gate green.</b> The gate exercises each extension on its own collection and
+    /// <b>Why this keeps the registration gate green.</b> The gate exercises each extension on its own collection and
     /// asserts every contract is registered; it never runs this selector. Both extensions still register every
     /// twin, unchanged.
     /// </para>
@@ -106,11 +106,11 @@ namespace Stomme.Repository.Stores
 
         /// <summary>
         /// Whether the configured database provider is relational (EF Core) rather than a document store. Shared
-        /// with the identity-store swap (D54b), which selects EF's <c>UserStore</c> vs the hand-written
+        /// with the identity-store swap, which selects EF's <c>UserStore</c> vs the hand-written
         /// <c>RavenIdentityUserStore</c> by the SAME resolve-time key, so a relational and a document install make
         /// the framework store and the identity store agree on provider.
         /// <para>
-        /// PUBLIC since D55 (orchestrator decision 2): a module's own resolve-time selector needs the same key, and
+        /// PUBLIC because a module's own resolve-time selector needs the same key, and
         /// external modules live in another assembly. This is the <see cref="IServiceProvider"/> form, read at
         /// resolve time from live config; <see cref="IsRelationalProvider(string)"/> is the string form for code
         /// that already holds a <c>Tenant.DBType</c> (e.g. a module's <c>InstallAsync</c>).

@@ -15,8 +15,8 @@ namespace Stomme.Tests.Pipelines
     /// <summary>
     /// The spreadsheet and ZIP steps on an installed SQLite host, in a pipeline authored, published and run over the API on the
     /// engine's worker: CSV parsed into records, written as a spreadsheet in the site's pipeline folder through the host's own
-    /// renderer and cell formatter (the Formats module's, scoped), its folder zipped and unzipped into another (BL-95's ZIP
-    /// residue, 2026-10-03), read back from there, validated at exactly its row count, logged. What the engine-level tests cannot
+    /// renderer and cell formatter (the Formats module's, scoped), its folder zipped and unzipped into another
+    /// read back from there, validated at exactly its row count, logged. What the engine-level tests cannot
     /// see: the host's composition of the renderer registry, the formatter, the file root and the unzip caps from its own
     /// configuration root.
     /// </summary>

@@ -18,10 +18,10 @@ namespace Stomme.Modules.CloudUsage.Providers
     /// the Connection and the per-site secret store) and the HOST's egress for the connection's site.
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED from the predecessor platform</b>: the query carries <see cref="Egress"/>, the one way this module reaches
+    /// The query carries <see cref="Egress"/>, the one way this module reaches
     /// the network - the connectors' own egress over the framework's outbound guard (pinned address, per-site allowlist).
-    /// the predecessor platform's payload source built its own client over its own socket handler; the egress source gate now scans this
-    /// module as it scans the Connectors family.
+    /// A payload source building its own client over its own socket handler would bypass that guard; the egress source gate
+    /// scans this module as it scans the Connectors family.
     /// </remarks>
     public sealed record CloudCostQuery(DateOnly From, DateOnly To, IReadOnlyDictionary<string, string> ConnectionSettings, IConnectorEgress? Egress = null);
 
@@ -51,7 +51,7 @@ namespace Stomme.Modules.CloudUsage.Providers
     }
 
     /// <summary>
-    /// The connection-backed payload source (the predecessor platform's <c>ConnectorCostPayloadSource</c>): a Bearer GET -
+    /// The connection-backed payload source: a Bearer GET -
     /// or a POST with the configured JSON body - against the connection's cost-API endpoint, <c>{from}</c> and <c>{to}</c>
     /// substituted in the endpoint and the body, through the query's host egress and nothing else. A missing endpoint,
     /// credential or egress is a configuration error; a non-success answer an <see cref="HttpRequestException"/>.

@@ -12,14 +12,14 @@ using Stomme.Connectivity;
 namespace Stomme.Modules.Connectors.Xml
 {
     /// <summary>
-    /// The XML file-transform connector (lifted from the predecessor platform's `xml`): drives an external processor
+    /// The XML file-transform connector: drives an external processor
     /// (<c>TelecomBridge.exe</c> by default) that reads vendor telecom XML exports from a source folder and writes CSV to a
     /// destination folder; the <c>transform</c> operation streams one outcome record per processed input file.
     /// </summary>
     /// <remarks>
     /// <b>HostOnly, by contract:</b> this connector starts a process on the host and reads and moves files in host
     /// folders, so creating or editing a connection of its type requires the Host role - the Connectivity module refuses
-    /// an administrator (BL-94's HostOnly gate). The processor is a host-provided Windows binary absent from this
+    /// an administrator. The processor is a host-provided Windows binary absent from this
     /// environment, so the live run is host-gated; the file matching and argument templating run headlessly through the
     /// <see cref="IXmlProcessRunner"/> seam, and a test honestly reports the processor or the source folder as absent.
     /// </remarks>

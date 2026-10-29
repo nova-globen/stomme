@@ -16,7 +16,7 @@ namespace Stomme.Modules.DataExport.Domain
         /// <summary>Its owner or an administrator paused it.</summary>
         Manual = 1,
 
-        /// <summary>A run found the owner no longer allowed to make this export (D108's correction: never run without them).</summary>
+        /// <summary>A run found the owner no longer allowed to make this export.</summary>
         OwnerNotAllowed = 2,
 
         /// <summary>A run found the source gone from the host.</summary>
@@ -24,7 +24,7 @@ namespace Stomme.Modules.DataExport.Domain
     }
 
     /// <summary>
-    /// A recurring export (D108's correction of 2026-10-05): each occurrence of its cron queues an ORDINARY export job
+    /// A recurring export: each occurrence of its cron queues an ORDINARY export job
     /// whose requester is the schedule's OWNER, re-authorised from stored rows at every run - so a schedule never carries a
     /// permission of its own, and a run the owner may no longer make PAUSES it instead of running.
     /// </summary>

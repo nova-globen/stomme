@@ -9,10 +9,10 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The janitor's contract (BL wave 2026-07-22): a database left behind by a KILLED prior run — the case
+    /// The janitor's contract: a database left behind by a KILLED prior run — the case
     /// per-fixture teardown structurally cannot cover — is hard-deleted by the NEXT run's fixture
-    /// initialization. Runs against the LIVE local RavenDB and FAILS (not skips) when it is unreachable,
-    /// per the D46 principle: a janitor that silently never runs is how 4.6 GB of leftovers accumulated.
+    /// initialization. Runs against the LIVE local RavenDB and FAILS (not skips) when it is unreachable:
+    /// a janitor that silently never runs is how 4.6 GB of leftovers accumulated.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class RavenTestDatabaseJanitorTests : IAsyncLifetime

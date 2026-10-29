@@ -179,7 +179,7 @@ namespace Stomme.Tests.Help
         [Fact]
         public void GenericAttributes_writes_an_event_handler_EVEN_WITH_DisableHtml_which_is_why_it_is_banned()
         {
-            // D103's claim about UseAdvancedExtensions, measured rather than quoted.
+            // The claim about UseAdvancedExtensions, measured rather than quoted.
             var advanced = new MarkdownPipelineBuilder().UseGenericAttributes().DisableHtml().Build();
             var raw = Markdown.ToHtml("# Heading {onclick=\"alert(1)\"}", advanced);
             _output.WriteLine("raw: " + raw);

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Stomme.Models
 {
     /// <summary>
-    /// The Host-only licensing status (D105 design item 10), answered by <c>GET api/Licence</c> only under
+    /// The Host-only licensing status, answered by <c>GET api/Licence</c> only under
     /// <c>Deployment:Mode=OnPrem</c> - every other mode answers 404, which the admin page reads as "licensing is not
     /// enabled". It NEVER carries a key blob.
     /// </summary>

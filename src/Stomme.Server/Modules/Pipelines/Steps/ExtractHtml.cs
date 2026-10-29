@@ -17,12 +17,12 @@ using Stomme.Engine.Pipelines.UIHints;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// the predecessor platform's rules-based web extraction as an engine step over HTML TEXT (the fetch is <see cref="SendHttpRequest"/>'s,
+    /// Rules-based web extraction as an engine step over HTML TEXT (the fetch is <see cref="SendHttpRequest"/>'s,
     /// with its egress guard): a row selector names the elements that become records (none: the document is one record),
     /// and each field line is <c>name = css selector</c> (the element's text), <c>name = css selector @attribute</c>
     /// (an attribute), or <c>name = regex: pattern</c> (the first group, or the match, over the row's HTML). The parser is
-    /// AngleSharp, already a dependency; a selector that does not parse is a failure that names the field. the predecessor platform's
-    /// crawling, robots policy, API discovery and AI extraction are not carried.
+    /// AngleSharp, already a dependency; a selector that does not parse is a failure that names the field.
+    /// Crawling, robots policy, API discovery and AI extraction are not carried.
     /// </summary>
     [FlowNode(DoneOutcome, FailedOutcome)]
     [Step("Stomme", "Data", "Extract records from HTML by CSS selector or pattern.", DisplayName = "Extract from HTML")]

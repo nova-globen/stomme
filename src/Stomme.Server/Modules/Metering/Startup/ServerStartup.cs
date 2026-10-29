@@ -58,7 +58,7 @@ namespace Stomme.Modules.Metering.Startup
             services.AddScoped<IAiUsageRecordRepository, AiUsageRecordRepository>();
             services.AddScoped<IAiUsageRollupRepository, AiUsageRollupRepository>();
 
-            // CostOptimization's AI-usage read port (D102's marked correction): the module that holds the
+            // CostOptimization's AI-usage read port: the module that holds the
             // AI ledger implements it, so the advisor never reads Metering's repositories.
             services.AddScoped<Stomme.CostOptimization.IAssistantUsageSignalSource, MeteringAssistantUsageSignalSource>();
 
@@ -71,7 +71,7 @@ namespace Stomme.Modules.Metering.Startup
             services.TryAddScoped<IMeteringSiteSettings, SettingRepositoryMeteringSiteSettings>();
             services.TryAddScoped(sp => new QuotaFold(sp.GetService<IDistributedLock>()));
 
-            // Quotas on the boot/upgrade path (D102 item 6 + the D103 correction): additive, create-if-absent per
+            // Quotas on the boot/upgrade path: additive, create-if-absent per
             // site, run by the framework's SiteContentReconciliationRunner - never from a hosted service's
             // StartAsync, which has whichever tenant the ambient scope happened to hold. The module ships NO
             // IDeclaredQuotaSource: a stock install seeds nothing, and a later module that meters brings its own.
@@ -81,8 +81,8 @@ namespace Stomme.Modules.Metering.Startup
             // are HostedServiceBase types found by the framework's assembly scan, never AddHostedService'd here.
             services.AddScoped<UsageRollupPass>();
 
-            // Quota crossings reach the site's administrators through BL-78's producer port, and the two templates
-            // this module needs join BL-78's per-site template reconciliation through its own source seam.
+            // Quota crossings reach the site's administrators through the notification producer port, and the two templates
+            // this module needs join the per-site template reconciliation through its own source seam.
             services.TryAddEnumerable(ServiceDescriptor.Singleton<Modules.Notifications.Application.Templates.INotificationTemplateSource, MeteringTemplateSource>());
             services.TryAddScoped<QuotaCrossingNotifier>();
 
@@ -99,7 +99,7 @@ namespace Stomme.Modules.Metering.Startup
             // The USER-FACING CQRS surface: every request carries [Requires] with one of the three
             // keys, and none of them names a site, a tenant or a user. Handlers are registered EXPLICITLY - never
             // AddMediator()/AddMediatorBehavior() here: Guestbook's startup already composed the mediator, and a
-            // second AddMediator would double every pipeline behavior (BL-78 F13). Nothing on the JOB path carries
+            // second AddMediator would double every pipeline behavior. Nothing on the JOB path carries
             // [Requires]: a job has no HttpContext and would be denied by its own authorization behavior.
             services.AddScoped<IRequestHandler<ListQuotasQuery, IReadOnlyList<QuotaView>>, ListQuotasQueryHandler>();
             services.AddScoped<IRequestHandler<GetQuotaQuery, QuotaView>, GetQuotaQueryHandler>();

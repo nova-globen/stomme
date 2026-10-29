@@ -98,7 +98,7 @@ public class LocalPipelineClient(
         var pipelineState = await pipelineCanceler.CancelPipelineAsync(pipelineGraph, pipelineInstance.PipelineState, cancellationToken).ConfigureAwait(false);
         await pipelineInstanceManager.SaveAsync(pipelineState, cancellationToken).ConfigureAwait(false);
 
-        // Stomme BL-229: what the run waited on goes with it. The canceller ends the run's state but no commit diffs its
+        // What the run waited on goes with it. The canceller ends the run's state but no commit diffs its
         // bookmarks, so they stayed stored - a cancelled run's approval was listed as waiting, a decision on it answered
         // "Approved" (the run itself refused to go on), and a due wait was resumed again at every tick (measured).
         await bookmarkManager.DeleteManyAsync(new BookmarkFilter { PipelineInstanceId = pipelineInstance.Id }, cancellationToken).ConfigureAwait(false);

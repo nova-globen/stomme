@@ -80,8 +80,7 @@ namespace Stomme.Infrastructure
     public sealed record FileIngestionTarget(Alias Alias, Folder? Folder, string Directory);
 
     /// <summary>
-    /// The ONE ingestion pipeline every path that brings bytes into a folder runs through (BL-100 F1, D109 items 1, 10,
-    /// 14, 15): extension allowlist, then size, then scan, then (for an archive) the entry-count / decompressed-total /
+    /// The ONE ingestion pipeline every path that brings bytes into a folder runs through: extension allowlist, then size, then scan, then (for an archive) the entry-count / decompressed-total /
     /// ratio caps, then the folder capacity - all on a STAGING copy outside every folder, which is moved into the
     /// target folder only once every check has passed. A refusal leaves the folder exactly as it was.
     /// </summary>
@@ -109,12 +108,12 @@ namespace Stomme.Infrastructure
     /// <inheritdoc cref="IFileIngestionGuard"/>
     /// <remarks>
     /// <para>
-    /// <b>Why one service.</b> Refutation 15: inline guards cannot be reused, which is how a weaker internal path is
-    /// born. the predecessor platform's <c>ManagedFileWriter</c> kept ONE storage path for its gated and ungated commands; this is that
-    /// shape for Stomme's three controller paths now and the booked managed-file port later.
+    /// <b>Why one service.</b> Inline guards cannot be reused, which is how a weaker internal path is
+    /// born. ONE storage path serves the gated and ungated commands alike; this is that
+    /// shape for Stomme's three controller paths now and a managed-file port later.
     /// </para>
     /// <para>
-    /// <b>Why staging.</b> Refutations 10 and the 2026-09-15 correction: the pre-guard unzip extracted straight into the
+    /// <b>Why staging.</b> The pre-guard unzip extracted straight into the
     /// folder with <c>overwrite: true</c>, the upload merged straight into it after deleting the existing file, and a
     /// later capacity refusal then deleted that path AND the existing <c>File</c> row - silent destruction of a file the
     /// user already had. Here nothing touches the folder until the move, the move replaces a same-named file in one

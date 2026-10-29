@@ -20,7 +20,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95 increment (a), D111: the engine reaches the host only through <c>Pipelines:Enabled</c>. Three things a
+    /// The engine reaches the host only through <c>Pipelines:Enabled</c>. Three things a
     /// unit test on the stores cannot see: a STOCK host composes not one engine type (the switch is the only thing
     /// deciding, and the convention scan never registers the engine's hosted services on its own); an ENABLED host
     /// composes under the Development validation (ValidateOnBuild + ValidateScopes), every hosted service constructs,
@@ -85,7 +85,7 @@ namespace Stomme.Tests.Pipelines
             Assert.NotNull(scope.ServiceProvider.GetRequiredService<Stomme.Modules.Pipelines.Audit.IPipelineAuditRepository>());
         }
 
-        // BL-229, found driving "Ask for approval" over MCP: the module registers its handlers one by one (never AddMediator()),
+        // Found by driving "Ask for approval" over MCP: the module registers its handlers one by one (never AddMediator()),
         // so a new query or command with no line in the startup composes, builds, passes every handler-level test - and answers
         // "No handler registered" to every caller. Each request the module declares has its handler in an enabled host.
         [Fact]

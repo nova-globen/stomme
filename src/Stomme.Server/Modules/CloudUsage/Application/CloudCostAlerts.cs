@@ -30,7 +30,7 @@ namespace Stomme.Modules.CloudUsage.Application
 {
     /// <summary>
     /// The alert switches (<c>CloudUsage:Alerts</c>, read from the HOST's configuration - the override file included):
-    /// OFF by default (the predecessor platform's were on; a stock install gains no job work), a 7-day anomaly baseline and a 20 % spike.
+    /// OFF by default (a stock install gains no job work), a 7-day anomaly baseline and a 20 % spike.
     /// </summary>
     public sealed class CloudUsageAlertOptions
     {
@@ -51,15 +51,15 @@ namespace Stomme.Modules.CloudUsage.Application
     }
 
     /// <summary>
-    /// A site's cloud-cost alerts (the predecessor platform's <c>CloudCostAlertService</c>): each budget's month-to-date
+    /// A site's cloud-cost alerts: each budget's month-to-date
     /// spend against 80 % (Warning) and 100 % (Critical) - one alert per pass, the highest newly crossed threshold, every
     /// crossed threshold marked so a jump past 100 % never back-fills an 80 % warning - and the latest full day against the
     /// rolling average per currency. Every alert is raised once: a marker keyed by site and key, written only after the
     /// dispatch succeeded, so a failed dispatch is retried by the next pass.
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED from the predecessor platform: no address list.</b> the predecessor platform dispatched to e-mail addresses, user ids and webhook endpoints
-    /// taken from configuration - an open relay by another name, which D100's dispatcher refuses. Here the recipients are
+    /// <b>No address list.</b> Dispatching to e-mail addresses, user ids and webhook endpoints
+    /// taken from configuration would be an open relay by another name, which the notification dispatcher refuses. The recipients are
     /// the SITE's operators by user id (<see cref="SiteOperators"/>: its administrators and the Host Users - a fresh install's
     /// site has no administrator at all), as the metering and health alerts address them; with none, nothing is sent
     /// and the pass says so in the log.
@@ -254,7 +254,7 @@ namespace Stomme.Modules.CloudUsage.Application
     }
 
     /// <summary>
-    /// The daily alert pass (the predecessor platform's <c>CloudCostAlertJob</c>, 01:45 daily there): each site of the tenant in its own DI
+    /// The daily alert pass: each site of the tenant in its own DI
     /// scope with its alias set, gated at run time by <c>CloudUsage:Alerts:Enabled</c> read from the HOST's configuration.
     /// A HostedServiceBase found by the framework's assembly scan, as every job is.
     /// </summary>
@@ -321,7 +321,7 @@ namespace Stomme.Modules.CloudUsage.Application
         }
     }
 
-    /// <summary>The two templates this module contributes to BL-78's per-site template reconciliation.</summary>
+    /// <summary>The two templates this module contributes to the per-site template reconciliation.</summary>
     public static class CloudUsageTemplateCatalogue
     {
         public static IReadOnlyList<NotificationTemplateAggregate> All(TenantId tenantId, int siteId)
@@ -353,7 +353,7 @@ namespace Stomme.Modules.CloudUsage.Application
         }
     }
 
-    /// <summary>Contributes <see cref="CloudUsageTemplateCatalogue"/> to the per-site template reconciliation (BL-78's seam).</summary>
+    /// <summary>Contributes <see cref="CloudUsageTemplateCatalogue"/> to the per-site template reconciliation.</summary>
     public sealed class CloudUsageTemplateSource : INotificationTemplateSource
     {
         public string Name => "Cloud usage alert templates";

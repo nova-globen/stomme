@@ -6,8 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Engine.Tests;
 
 /// <summary>
-/// The BL-93 CONTACT SURFACE. This is the whole of what a Stomme module (BL-95's Pipelines module, and
-/// the predecessor platform's pipeline runtime before it) ever asked of this engine: compose it with
+/// The CONTACT SURFACE. This is the whole of what a Stomme module (the Pipelines module) ever asks of this engine: compose it with
 /// <see cref="ModuleExtensions.AddEngine"/>, resolve a SCOPED <see cref="IPipelineRunner"/>, hand it one
 /// step, and read what the step produced. Everything else in the eleven vendored projects exists to make
 /// that work.

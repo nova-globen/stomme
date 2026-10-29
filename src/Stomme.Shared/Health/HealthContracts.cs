@@ -77,7 +77,7 @@ namespace Stomme.Health
     /// <para>
     /// <b>A probe that only resolves a service is not a probe.</b> Asking the container for a client proves the
     /// container can build it, never that the dependency is reachable, so such a probe can only ever report
-    /// Healthy — a green light wired to nothing. Two of the five probes inherited from the predecessor platform were exactly that.
+    /// Healthy — a green light wired to nothing. Such a probe is a common trap.
     /// A scanner enforces it, and until a dependency exposes a real liveness call, its probe does not ship.
     /// </para>
     /// <para>

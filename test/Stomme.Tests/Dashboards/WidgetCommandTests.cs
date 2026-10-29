@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Stomme.Tests.Dashboards
 {
-    /// <summary>BL-96 increment 9 - the predecessor platform's WidgetCommandTests (10) by name over the port's application layer.</summary>
+    /// <summary>The WidgetCommandTests cases (10), ported by name over the application layer.</summary>
     public sealed class WidgetCommandTests
     {
         private const string BarChartJson = """{ "series": [ { "type": "bar", "encode": { "y": "$amount" } } ] }""";

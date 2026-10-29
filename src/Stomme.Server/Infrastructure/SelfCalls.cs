@@ -13,7 +13,7 @@ namespace Stomme.Infrastructure
     /// <summary>
     /// Where the host's calls to its OWN API go. The client's services run on the server too - in a prerender (the
     /// install wizard's, measured) and behind an Interactive Server circuit - and call the API over HTTP at the site's PUBLIC
-    /// address, so a host with no egress (a container behind a tunnel, a game app's host, 2026-10-13) failed every such call -
+    /// address, so a host with no egress (a container behind a tunnel, a game app's host) failed every such call -
     /// the wizard answered 500 on every request - and a host with egress sent each round trip out through the edge and back.
     /// They go to the host's own plain-HTTP listener instead, carrying the public host and scheme as the edge would, so the
     /// same alias and site answer them.

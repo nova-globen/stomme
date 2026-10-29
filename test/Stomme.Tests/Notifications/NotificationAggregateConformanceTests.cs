@@ -27,11 +27,10 @@ namespace Stomme.Tests.Notifications
     /// value object populated, every collection non-empty and a request carrying two <see cref="DeliveryAttempt"/>s,
     /// round-trip member for member on EVERY module-aggregate provider - EF (SQLite), EF (PostgreSQL), RavenDB and File
     /// - through the module's own <c>ServerStartup</c> and closed repositories, plus the provider-neutral predicates the
-    /// dispatch pipeline will use (due work, digest flush, site scoping, the D49 normalized key/name lookups).
+    /// dispatch pipeline will use (due work, digest flush, site scoping, the normalized key/name lookups).
     /// <para>
-    /// <b>Placement (F11).</b> The gate list names <c>Stomme.Persistence.Conformance.Tests</c>, but that project has
-    /// no File-store module fixture; the EF/Raven/File module-aggregate harness lives HERE (Guestbook, the BL-78 step 1
-    /// collection suite), so this suite reuses its shape in <c>Stomme.Tests</c>.
+    /// <b>Placement.</b> The persistence conformance project has no File-store module fixture; the EF/Raven/File
+    /// module-aggregate harness lives HERE (Guestbook, the first collection suite), so this suite reuses its shape in <c>Stomme.Tests</c>.
     /// </para>
     /// <para>
     /// <b>DateTime Kind (the SQLite trap).</b> SQLite materializes a scalar DateTime column as Unspecified, RavenDB and
@@ -293,7 +292,7 @@ namespace Stomme.Tests.Notifications
 
         // ---- the pipeline's FindAsync predicates ----
 
-        // BL-78 step 4 CHANGED these predicates (the step-2 residue): the due-work predicate is no longer
+        // These predicates changed once Status became derived: the due-work predicate is no longer
         // "Status == Queued" - Status is DERIVED from the attempts, so a request whose first pass failed is Failed and a
         // retry would never be selected - but the scalar in-flight marker "CompletedOn == null", excluding digest holds
         // ("DigestDeferredUntil == null"), per SITE. Null checks on nullable DateTimes join the conformance set here.

@@ -27,7 +27,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// The <c>SettingController</c> sync path must actually invalidate what a setting write makes
-    /// stale. Two defects, both driven over real HTTP against the composed host (the D88 harness shape):
+    /// stale. Two defects, both driven over real HTTP against the composed host:
     /// <list type="number">
     ///   <item><b>The Host case.</b> <c>ServerSiteService.GetSiteAsync</c> caches the merged Site object, and
     ///     the sync switch refreshed it only for Module/Page/Site — so a Host-level setting change did not
@@ -35,7 +35,7 @@ namespace Stomme.Tests
     ///     setting PUT must fire a <see cref="EntityNames.Site"/>/<see cref="SyncEventActions.Refresh"/>
     ///     sync event.</item>
     ///   <item><b>The mangle.</b> The sync path still ran entity names through the title-casing
-    ///     <c>FormatName</c> (the surviving half of the D88 root cause), so a multi-word entity's setting
+    ///     <c>FormatName</c> (the surviving half of the root cause), so a multi-word entity's setting
     ///     event was published as e.g. <c>ModuledefinitionSetting</c> — a name no subscriber matching
     ///     <c>ModuleDefinitionSetting</c> ever sees. The event must carry the exact
     ///     <see cref="EntityNames"/> casing.</item>

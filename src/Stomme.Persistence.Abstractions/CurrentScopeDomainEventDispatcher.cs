@@ -6,13 +6,13 @@ namespace Stomme.Persistence.Abstractions;
 /// <summary>
 /// The framework's <see cref="IDomainEventDispatcher"/>: resolves and invokes the registered
 /// <see cref="IDomainEventHandler{TEvent}"/> handlers for each domain event <b>in the current DI scope</b>
-/// — the same scope, and therefore the same unit of work, that raised the events (docs/decisions.md D40).
+/// — the same scope, and therefore the same unit of work, that raised the events.
 /// </summary>
 /// <remarks>
 /// <para>
 /// CURRENT SCOPE IS THE DECISION, AND THE TYPE NAME IS THE DECISION. This class takes
 /// <see cref="IServiceProvider"/>, not <c>IServiceScopeFactory</c>: there is no scope to create, so
-/// new-scope dispatch is not a configuration mistake away — it is unrepresentable here. D9 puts domain
+/// new-scope dispatch is not a configuration mistake away — it is unrepresentable here. The design puts domain
 /// events *inside* one bounded context and writes the outbox row *inside the aggregate's transaction*;
 /// dispatching in the current scope is that model. A child scope would put the handler outside the
 /// aggregate's transaction, which is exactly what the outbox does deliberately, for integration events.
@@ -23,7 +23,7 @@ namespace Stomme.Persistence.Abstractions;
 /// under which the audit trail CAN be atomic with the change it audits — commit in scope A and audit in scope
 /// B, and a failing B leaves a change with no audit record. Note "can": today it is not, because the seam has
 /// no transaction and <c>IUnitOfWork.SaveChangesAsync</c> dispatches without saving. Current scope keeps the
-/// option open; docs/decisions.md D41 is the step that takes it.
+/// option open for a later step that takes it.
 /// </para>
 /// <para>
 /// WHAT IT COSTS, AND THE CONTRACT THAT PAYS FOR IT. Handlers share the caller's unit of work, so a handler

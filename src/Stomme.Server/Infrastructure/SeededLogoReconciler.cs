@@ -15,8 +15,8 @@ namespace Stomme.Infrastructure
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>The defect, measured on the hosting server (2026-10-02).</b> UAT's and production's containers wrote their files into their own
-    /// writable layer until infra BL-134 mounted the content folders on 2026-09-29; the next deploy recreated each container,
+    /// <b>The defect, measured on a hosting server.</b> Containers wrote their files into their own
+    /// writable layer until the content folders were mounted; the next deploy recreated each container,
     /// so every file the sites held was gone while the database still listed it - the logo answered 404 on both sites. A
     /// deployment that loses its files keeps losing the logo the same way, and the logo is the one file the framework itself
     /// put there: <c>DefaultSiteTemplate</c> copies <c>images/logo-white.png</c> into the site's root folder at install.
@@ -25,7 +25,7 @@ namespace Stomme.Infrastructure
     /// <b>Narrow by construction.</b> It acts only on the file the site's logo names, only when that file is the seeded one
     /// (<c>logo-white.png</c> in the site's root folder), and only when the file is missing - it copies the shipped asset
     /// back and changes no row. An upload an operator chose as the logo under any other name cannot be restored and is left
-    /// a 404 (the owner re-uploads it); a present file, whatever it holds, is never overwritten. Runs on every boot through
+    /// a 404 (the operator re-uploads it); a present file, whatever it holds, is never overwritten. Runs on every boot through
     /// the shared runner, per site of every tenant; a second boot finds the file and does nothing.
     /// </para>
     /// </remarks>

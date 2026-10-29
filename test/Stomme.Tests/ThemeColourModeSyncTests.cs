@@ -61,7 +61,7 @@ namespace Stomme.Tests
         public void The_theme_apply_function_hands_the_mode_to_FluentUI_5()
         {
             // FluentUI 5 has no <fluent-design-theme> element to set; its own script keeps the mode. Without this
-            // line the --db-* surfaces turn dark while every FluentUI control stays light - the same split BL-49 measured
+            // line the --db-* surfaces turn dark while every FluentUI control stays light - the same split measured
             // for Bootstrap.
             var apply = ExtractApplyFunction(ReadAppRazor());
             Assert.Matches(@"setThemeMode\(\s*mode\s*\)", apply);
@@ -72,7 +72,7 @@ namespace Stomme.Tests
         public void With_no_stored_choice_the_mode_is_the_VISITORS_system_preference_not_dark()
         {
             // The bootstrap fell back to a hardcoded 'dark' - a light-preferring visitor got a dark site - and the
-            // FluentUI theme state defaulted to Dark the same way. Both now start at "system". Since BL-198 the visitor's
+            // FluentUI theme state defaulted to Dark the same way. Both now start at "system". The visitor's
             // choice is read by stored(), which answers "system" when nothing is stored AND when the browser refuses storage
             // (the bootstrap used to give such a browser no mode at all); a theme's fixed mode is the only thing above it.
             var app = ReadAppRazor();

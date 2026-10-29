@@ -24,7 +24,7 @@ namespace Stomme.Controllers
     /// operator counterpart to the declarative <c>OpenIddict:Applications</c>/<c>OpenIddict:Scopes</c> config
     /// seeder (client/scope work a). Everything here is <b>Host-only</b>: creating an OAuth client mints
     /// credentials against the tenant's authority, which is a host-level act (never Admin — the same posture as
-    /// the D88 module-settings gate). All actions no-op with <c>404</c> when OpenIddict is disabled, so a stock
+    /// the module-settings gate). All actions no-op with <c>404</c> when OpenIddict is disabled, so a stock
     /// install exposes nothing.
     /// </summary>
     /// <remarks>

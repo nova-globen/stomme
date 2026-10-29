@@ -18,13 +18,13 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// The webhook receiver's security (BL-95 increment (e), the predecessor platform's webhook trigger re-homed): every request carries
+    /// The webhook receiver's security: every request carries
     /// <c>X-Signature-256: sha256=&lt;hex HMAC-SHA256 of the raw body&gt;</c> under the site's configured secret, compared
     /// in constant time; a request without a valid signature is 401 with no detail; the receiver is rate-limited per
     /// site and caller address with the host's own rate limiter (the policy below, the same shape as the MCP server's);
     /// and it answers 202 whether or not a pipeline listens under the name, so an outsider cannot enumerate the site's
-    /// webhooks. the predecessor platform's per-endpoint IP allowlist and its deduplication window arrived 2026-09-28 as configuration beside the
-    /// secret (<see cref="IsCallerAllowed"/>, <see cref="IsFirstDeliveryAsync"/>); its expression-keyed deduplication is not carried.
+    /// webhooks. A per-endpoint IP allowlist and a deduplication window are configuration beside the
+    /// secret (<see cref="IsCallerAllowed"/>, <see cref="IsFirstDeliveryAsync"/>); expression-keyed deduplication is not offered.
     /// </summary>
     public static class PipelineWebhooks
     {
@@ -60,7 +60,7 @@ namespace Stomme.Modules.Pipelines.Triggers
         }
 
         /// <summary>
-        /// the predecessor platform's rule for a webhook's allowlist: empty admits any caller; otherwise the caller's address must equal an entry
+        /// The rule for a webhook's allowlist: empty admits any caller; otherwise the caller's address must equal an entry
         /// (parsed, so equivalent spellings match; an IPv4-mapped IPv6 address is its IPv4 address) or fall in an entry's CIDR
         /// range. No known address (none, or one that does not parse) is refused by a non-empty list.
         /// </summary>

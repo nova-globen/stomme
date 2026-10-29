@@ -33,7 +33,7 @@ namespace Stomme.CostOptimization
 
     public sealed record AssistantUsageSignal(string Month, string Currency, IReadOnlyList<AssistantModelUsageSignal> ByModel, AssistantQuotaSignal? Quota);
 
-    /// <summary>The request's site's AI usage this month (implemented by Metering, increment 7).</summary>
+    /// <summary>The request's site's AI usage this month (implemented by Metering).</summary>
     public interface IAssistantUsageSignalSource
     {
         Task<AssistantUsageSignal> GetCurrentMonthUsageAsync(CancellationToken ct = default);

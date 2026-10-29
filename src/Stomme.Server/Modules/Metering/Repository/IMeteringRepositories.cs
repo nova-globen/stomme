@@ -20,7 +20,7 @@ namespace Stomme.Metering.Persistence
     /// <b><see cref="IQuotaRepository.GetForCurrentSiteAsync"/> is the by-id rule, not a convention.</b> Every
     /// by-id handler (edit, redefine, reset, override, suspend) goes through it, so a caller naming another site's
     /// quota gets the SAME not-found answer as one naming a quota that does not exist - a by-id read that only
-    /// checked existence would let one site probe another's configuration by id (the §J.BL-80 item 4 precedent).
+    /// checked existence would let one site probe another's configuration by id.
     /// </remarks>
     public interface IQuotaRepository : IRepository<QuotaAggregate, Guid>
     {

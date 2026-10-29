@@ -26,7 +26,7 @@ using File = System.IO.File;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-258 (infra ruling C30): <c>Backup:Schedule:IntervalHours</c>, <c>RetentionDays</c> and <c>KeepLast</c>, given as
+    /// <c>Backup:Schedule:IntervalHours</c>, <c>RetentionDays</c> and <c>KeepLast</c>, given as
     /// ENVIRONMENT VARIABLES the way a compose file declares them, seed the installation's first backup schedule at boot and
     /// enable the Backup Schedule Job - so an unattended host takes backups with nobody at admin/backup. A restart seeds
     /// nothing twice and keeps what the Host changed; an invalid schedule refuses the boot by name with nothing written.

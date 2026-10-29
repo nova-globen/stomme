@@ -27,23 +27,23 @@ using TenantId = Stomme.Tenancy.Domain.TenantId;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84 increment 5 (refutations 1, 2, 6 and 7): contributed help topics reach every site of every
+    /// Contributed help topics reach every site of every
     /// tenant on the boot path, under THAT tenant, once - and an upgrade touches only what it owns.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>The arrangement is the point.</b> Two tenants share ONE database and BOTH have an alias onto the SAME site id -
-    /// the site-per-alias topology, and the one where a site id means nothing without its tenant. D103 refutation 1:
-    /// <c>DatabaseManager.InitializeSitesAsync</c> ran every tenant in one DI scope until BL-205, whose tenant context caches the
+    /// the site-per-alias topology, and the one where a site id means nothing without its tenant. Before the fix,
+    /// <c>DatabaseManager.InitializeSitesAsync</c> ran every tenant in one DI scope, and its tenant context cached the
     /// first tenant, so a reconciler called there would write tenant 2's topics under tenant 1 - invisible to tenant 2,
     /// and re-created on every boot because no provider has a unique index. The shared runner enters each tenant's
     /// scope BEFORE it creates a DI scope; this suite is how that is proven for help.
     /// </para>
     /// <para>
-    /// <b>Validated by mutation - and the spec's prediction was wrong.</b> D103 said "validated by removing
+    /// <b>Validated by mutation - and the first prediction was wrong.</b> The prediction said "validated by removing
     /// <c>BeginScope</c>". Measured: removing it alone leaves this suite GREEN, and so does sharing one DI scope across
     /// sites while keeping it - the runner has two guards and each suffices (see <c>SiteContentReconciliationRunner</c>).
-    /// Removing BOTH, which was <c>InitializeSitesAsync</c>'s shape until BL-205, turns the two-tenant cases red on all three providers.
+    /// Removing BOTH, which was <c>InitializeSitesAsync</c>'s shape before the fix, turns the two-tenant cases red on all three providers.
     /// </para>
     /// <para>
     /// <b>The upgrade is driven the only way that class of defect shows</b>: TWO hosts over ONE database, never a
@@ -98,7 +98,7 @@ namespace Stomme.Tests.Help
                 Assert.All(mine, topic => Assert.Equal(first.TenantId, topic.TenantId));
                 Assert.All(theirs, topic => Assert.Equal(second.TenantId, topic.TenantId));
 
-                // Same site id, same anchor, same locale - DIFFERENT rows (the D103 correction's key).
+                // Same site id, same anchor, same locale - DIFFERENT rows (the tenant is part of the key).
                 var mineIds = mine.Select(topic => topic.Id).ToHashSet();
                 Assert.DoesNotContain(theirs, topic => mineIds.Contains(topic.Id));
 
@@ -119,7 +119,7 @@ namespace Stomme.Tests.Help
         [Fact]
         public async Task A_reconciler_that_THROWS_first_costs_itself_and_help_still_reaches_both_tenants()
         {
-            // D103 refutation 2: InitializeSitesAsync's loop sat inside ONE catch (until BL-205), so a throwing step on site 1 silently
+            // InitializeSitesAsync's loop sat inside ONE catch (before the fix), so a throwing step on site 1 silently
             // aborted everything after it. The runner contains each reconciler per site - asserted with the thrower
             // registered FIRST, so it runs before help on every site.
             using var scratch = new ScratchGateInstall(new SqliteGateStore(), Host, colocateModuleAggregates: false,
@@ -216,12 +216,12 @@ namespace Stomme.Tests.Help
                 Assert.Equal("Version TWO.", topics["upgrade:changed|en"].Markdown);
                 Assert.Equal(2, topics["upgrade:changed|en"].ContentVersion);
 
-                // An UNCHANGED seed writes NOTHING: same version, same timestamp (refutation 7 - and so its cache key survives).
+                // An UNCHANGED seed writes NOTHING: same version, same timestamp, so its cache key survives.
                 var same = topics["upgrade:same|en"];
                 Assert.Equal(phase1["upgrade:same|en"].Version, same.ContentVersion);
                 Assert.Equal(phase1["upgrade:same|en"].Updated, same.UpdatedOnUtc);
 
-                // Another contributor's row is NOT taken over (refutation 6).
+                // Another contributor's row is NOT taken over.
                 Assert.Equal("Upgrade's text.", topics["upgrade:handed|en"].Markdown);
                 Assert.Equal("upgrade", topics["upgrade:handed|en"].SeedContributorId);
 
@@ -271,8 +271,8 @@ namespace Stomme.Tests.Help
         [Fact]
         public async Task The_module_knob_OFF_excludes_the_module_while_Help_itself_is_on()
         {
-            // The D85 knob, module.contextualhelp.enabled, read from the MERGED configuration (the override file) - not
-            // the container's IConfiguration, which BL-162 measured does not carry it.
+            // The module.contextualhelp.enabled knob, read from the MERGED configuration (the override file) - not
+            // the container's IConfiguration, which was measured not to carry it.
             var settings = HelpContributorConflictTests.HelpEnabled();
             settings["FeatureManagement"] = new JsonObject { [ModuleFeatureFlags.FeatureKey(HelpTopicReconciler.ModuleName)] = false };
 

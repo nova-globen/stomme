@@ -25,13 +25,13 @@ namespace Stomme.Tests
 {
     // Visitor, UrlMapping and PageModule on the persistence seam.
     //
-    // WHAT MAKES THESE THREE A GROUP: not one of them needed a navigation severed FOR it. D22 had already cut
-    // Visitor.User; D19 and D21 had already cut PageModule.Page and PageModule.Module while deliberately
-    // leaving the PageModule ROW in TenantDBContext; UrlMapping never had a navigation at all. So where D45's
+    // WHAT MAKES THESE THREE A GROUP: not one of them needed a navigation severed FOR it. An earlier round had
+    // already cut Visitor.User; another cut PageModule.Page and PageModule.Module while deliberately
+    // leaving the PageModule ROW in TenantDBContext; UrlMapping never had a navigation at all. So where an earlier
     // pair was indivisible because a live navigation joined them, this increment is three independent ROW
     // MOVES. The [NotMapped] attributes those earlier decisions added are exactly what made it that cheap.
     //
-    // That did NOT make the move free, and the D19 blocker was observed here too — from an angle no previous
+    // That did NOT make the move free, and the same blocker was observed here too — from an angle no previous
     // cluster hit. Mapping PageModuleAggregate broke FIVE OTHER CLUSTERS' test fixtures at once:
     //
     //   "The table 'page_module' cannot be used for entity type 'PageModuleAggregate' since it is being used
@@ -52,7 +52,7 @@ namespace Stomme.Tests
     //   * UrlMappingEntityBuilder omits Referrer entirely (10000301_FixUrlMappingReferrer adds it; its
     //     predecessor 10000203 is an empty stub) and is wrong about two widths: Url is 750, not 500, and
     //     MappedUrl is 2048, not 500. The UNIQUE index on (site_id, url) is likewise the migration's, not the
-    //     builder's — the D45 lesson repeating.
+    //     builder's — the standing lesson, repeating.
     //   * PageModuleEntityBuilder omits EffectiveDate, ExpiryDate, Header and Footer.
     //
     // Every DDL below is the table as the migration set leaves it, written BY HAND — never EnsureCreated,
@@ -171,7 +171,7 @@ namespace Stomme.Tests
                 entityType.GetProperties().Select(p => p.GetColumnName()).OrderBy(name => name, StringComparer.Ordinal));
         }
 
-        // THE NINE COLUMNS THE LIVE DATABASE ACTUALLY HAS AFTER D57. UrlMappingEntityBuilder builds only SEVEN
+        // THE NINE COLUMNS THE LIVE DATABASE ACTUALLY HAS. UrlMappingEntityBuilder builds only SEVEN
         // — it omits referrer (which 10000301_FixUrlMappingReferrer adds) and knows nothing of url_normalized
         // (which 10020004_AddUrlMappingNormalizedColumn adds, the case-insensitive lookup key). The aggregate
         // maps url_normalized by convention (public getter, private setter derived from Url's setter), exactly
@@ -225,7 +225,7 @@ namespace Stomme.Tests
 
         // LESSON 2, THE ONE THE COMPILER CANNOT SEE. DbContextUtils decides whether to stamp by RUNTIME TYPE
         // TEST (`item.Entity is IAuditable` / `is IDeletable`) against the entity the context tracks. Before
-        // D47 that entity was the PageModule CONTRACT, which implements both; now it is the aggregate. Drop
+        // the move that entity was the PageModule CONTRACT, which implements both; now it is the aggregate. Drop
         // either interface and everything compiles, registers, renders, and silently stops stamping.
         //
         // PageModule is the FIRST aggregate on the seam to need BOTH — NotificationAggregate is IDeletable but
@@ -306,7 +306,7 @@ namespace Stomme.Tests
     /// </summary>
     public class VisitorUrlMappingAndPageModuleMapperTests
     {
-        // Visitor.User is [NotMapped] view state severed by D22 — VisitorRepository.GetVisitors re-populates it
+        // Visitor.User is [NotMapped] view state severed from the model — VisitorRepository.GetVisitors re-populates it
         // from the User aggregate AFTER the mapper has run. Round-tripping LOSES it by design; UserId is the
         // persisted reference. If this ever starts passing with a User attached, the navigation is back.
         [Fact]
@@ -467,7 +467,7 @@ namespace Stomme.Tests
         }
     }
 
-    // Rule (g)/D19/D22 rule 6: deleting the DbSet is NOT enough — EF rediscovers CLR types through
+    // Deleting the DbSet is NOT enough — EF rediscovers CLR types through
     // NAVIGATIONS, and this file's own increment proved the blocker reaches beyond TenantDBContext into any
     // context that maps the contract alongside the framework store. These pin the state reflectively, so a
     // contract quietly re-mapped anywhere fails here.
@@ -476,7 +476,7 @@ namespace Stomme.Tests
         // The neighbours that are STILL genuinely unmigrated — the shape of TenantDBContext.
         private sealed class TenantLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
-            // Folder stood here until D48, File until D49, and the SearchContent family until D50 —
+            // Folder, File and the SearchContent family each stood here until it moved to the seam —
             // declaring any of them now would map its table twice and break the model.
             //
             // THIS CONTEXT IS NOW EMPTY, and that is the END OF THE PATTERN rather than a gap. The neighbour
@@ -486,7 +486,7 @@ namespace Stomme.Tests
             // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
-            // protection now, and it needed no edit across D47, D48, D49 or D50.
+            // protection now, and it needed no edit as those clusters moved.
 
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureFrameworkStore(database);
         }
@@ -508,7 +508,7 @@ namespace Stomme.Tests
         };
 
         // Mutation check: re-add `public DbSet<PageModule> PageModule { get; set; }` to the context above and
-        // this fails — the model throws while building with the D19 blocker. That is not hypothetical: it is
+        // this fails — the model throws while building. That is not hypothetical: it is
         // exactly what five other clusters' fixtures did, and exactly how this increment's blocker surfaced.
         [Theory]
         [MemberData(nameof(ContractAggregateAndTable))]
@@ -554,8 +554,8 @@ namespace Stomme.Tests
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureMasterFrameworkStore(database);
         }
 
-        // NONE of the three aggregates may carry a navigation. This is the strongest form of the D19/D21/D22
-        // guarantee: the contracts relied on [NotMapped] to hide theirs, but the aggregates have no such
+        // NONE of the three aggregates may carry a navigation. This is the strongest form of the guarantee:
+        // the contracts relied on [NotMapped] to hide theirs, but the aggregates have no such
         // member to hide. Reflective, so a navigation added to any of them fails here without a test edit.
         [Theory]
         [MemberData(nameof(ContractAggregateAndTable))]

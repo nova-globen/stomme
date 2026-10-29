@@ -38,7 +38,7 @@ namespace Stomme.FeatureManagement.Application;
 /// <see cref="IFeatureRegistry"/> holds a <see cref="FeatureDescriptor"/> for the key, ITS
 /// <see cref="FeatureDescriptor.RequiredEntitlement"/> is the only entitlement consulted -- on the row path AND on
 /// the row-less config path. The row's stored value applies only when no descriptor is registered. This closes
-/// two holes: a config-true key with no backing row used to turn on with no entitlement gate at all (D84's
+/// two holes: a config-true key with no backing row used to turn on with no entitlement gate at all (the
 /// row-less bypass), and a release whose descriptor starts (or stops) requiring an entitlement never reached the
 /// existing row (<see cref="FeatureFlag.RequiredEntitlement"/> has no mutator and the seeder only creates missing
 /// rows). A stale row value for an uninstalled module (no descriptor) still applies and stays denied -- harmless,

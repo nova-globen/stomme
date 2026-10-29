@@ -31,7 +31,7 @@ namespace Stomme.Repository
     /// </summary>
     /// <remarks>
     /// <para>
-    /// MASTER, not tenant (D23's master half): Theme is installation-wide, so reads go through
+    /// MASTER, not tenant: Theme is installation-wide, so reads go through
     /// <see cref="IMasterStoreSessionFactory"/> — NOT the tenant <see cref="IFrameworkStoreSessionFactory"/> —
     /// and writes through a store bound to <see cref="MasterDBContext"/>. The Theme table persists only four
     /// columns (theme_name, name, the version string and the audit quartet); the rest of the <see cref="Theme"/>
@@ -439,8 +439,8 @@ namespace Stomme.Repository
     /// </summary>
     /// <remarks>
     /// <c>FilterThemes</c> lives here rather than on <see cref="IThemeRepository"/> because it is an
-    /// in-memory copy of a list the caller passes in — it performs no I/O and has nothing to await. D32 bans
-    /// sync members on store-touching interfaces; the honest response for genuinely synchronous work is to
+    /// in-memory copy of a list the caller passes in — it performs no I/O and has nothing to await. Sync
+    /// members are banned on store-touching interfaces; the honest response for genuinely synchronous work is to
     /// take it OFF the store-touching interface, not to wrap it in <c>Task.FromResult</c> and call it async.
     /// An extension on <see cref="IThemeRepository"/> keeps the existing call site
     /// (<c>_themes.FilterThemes(...)</c>) compiling unchanged.

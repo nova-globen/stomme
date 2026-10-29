@@ -14,8 +14,7 @@ using Xunit;
 namespace Stomme.FeatureManagement.Tests;
 
 /// <summary>
-/// Pins the audit trail's tenant stamp (BL-100 FM1, ported from the predecessor platform's
-/// <c>TogglingAFlag_UnderATenantScope_StampsThatTenantOnTheAuditEntry</c>): a flag toggled under a tenant scope
+/// Pins the audit trail's tenant stamp: a flag toggled under a tenant scope
 /// writes its <see cref="FeatureFlagAudit"/> row stamped with THAT tenant, and the row is visible only under
 /// that tenant - never under another tenant, nor the default one.
 /// </summary>
@@ -114,7 +113,7 @@ public sealed class FeatureFlagAuditTenantStampTests
 
     private static void DropDb(string databasePath)
     {
-        // Targeted: only this test's pool lets go of its file (BL-104 - never ClearAllPools).
+        // Targeted: only this test's pool lets go of its file (never ClearAllPools).
         using (var connection = new SqliteConnection(ConnectionString(databasePath)))
         {
             SqliteConnection.ClearPool(connection);

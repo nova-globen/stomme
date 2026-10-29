@@ -26,7 +26,7 @@ namespace Stomme.Repository.Stores
     /// <b>Why an index at all.</b> The harvested query is a two-level JOIN — it filters
     /// <c>SearchContent.SiteId</c> THROUGH <c>SearchContentWord.SearchContent</c>. A document store has no
     /// joins, and a dynamic RavenDB query cannot <c>LoadDocument</c>. Without this index the site arm would
-    /// have to run in memory, which D22 rule 9 forbids. With it, every filter arm stays in the store —
+    /// have to run in memory, which the seam forbids. With it, every filter arm stays in the store —
     /// measured: the other site's row is excluded by the server, not by the client.
     /// </para>
     /// <para>
@@ -37,7 +37,7 @@ namespace Stomme.Repository.Stores
     /// against a real <c>FieldIndexing.Search</c> index, in both directions: it MISSES <c>state-of*</c> (0 docs
     /// where <c>StartsWith</c> finds 1) and INVENTS <c>art*</c> (1 doc where <c>StartsWith</c> finds 0). The
     /// default analyzer indexes the whole value, so <c>StartsWith</c> means the same thing here as it does in
-    /// <c>WHERE word LIKE 'run%'</c>. See D50 §3 and <see cref="SearchWordAggregate"/>.
+    /// <c>WHERE word LIKE 'run%'</c>. See <see cref="SearchWordAggregate"/>.
     /// </para>
     /// <para>
     /// The word is always lowercase (<c>GetWords</c> lowercases on write, <c>SearchUtils.GetKeywords</c> on

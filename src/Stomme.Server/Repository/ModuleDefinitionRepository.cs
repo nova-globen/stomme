@@ -36,7 +36,7 @@ namespace Stomme.Repository
     /// </summary>
     /// <remarks>
     /// <para>
-    /// MASTER, not tenant (D23's master half): ModuleDefinition is installation-wide — the registry of installed
+    /// MASTER, not tenant: ModuleDefinition is installation-wide — the registry of installed
     /// module types, read during module discovery at startup — so reads go through
     /// <see cref="IMasterStoreSessionFactory"/> (NOT the tenant <see cref="IFrameworkStoreSessionFactory"/>) and
     /// writes through a store bound to <see cref="MasterDBContext"/>. The table persists only six columns
@@ -52,9 +52,9 @@ namespace Stomme.Repository
     /// deletes the very instance it loaded — tracking is what we want there.
     /// </para>
     /// <para>
-    /// Honest negatives (D52 survey, measured): the harvested startup path passes a <c>-1</c> sentinel siteId,
+    /// Honest negatives (measured): the harvested startup path passes a <c>-1</c> sentinel siteId,
     /// but it is a C# BRANCH (<c>if (siteId != -1)</c>), never a query filter — the DB read is an unconditional
-    /// <c>Query&lt;ModuleDefinitionAggregate&gt;()</c>, so the D45 <c>-1</c> fold cannot bite. And no navigation
+    /// <c>Query&lt;ModuleDefinitionAggregate&gt;()</c>, so the <c>-1</c> constant fold cannot bite. And no navigation
     /// into this aggregate exists anywhere — <c>Module.ModuleDefinition</c> is <c>[NotMapped]</c> — so no reader
     /// breaks.
     /// </para>
@@ -365,7 +365,7 @@ namespace Stomme.Repository
         /// <c>ModuleDefinitionName</c> it computes is byte-identical to the one the install pipeline persists, so a
         /// name is a stable key from the installer's config-collection through to the master settings write.
         /// <para>
-        /// STATIC and deliberately OFF <see cref="IModuleDefinitionRepository"/>: it does no store I/O, and D33 bans
+        /// STATIC and deliberately OFF <see cref="IModuleDefinitionRepository"/>: it does no store I/O, and the convention bans
         /// sync members on store-touching interfaces — genuinely synchronous work belongs off the interface (the same
         /// treatment <c>FilterModuleDefinition</c> gets).
         /// </para>
@@ -656,7 +656,7 @@ namespace Stomme.Repository
         /// API policies (<c>User:Write:Administrators</c> on the stock Users module), and those have never been
         /// materialised as rows - the dynamic policy handler falls back to role membership for them. Seeding
         /// them here would put new rows into a stock install's permission table and change its behaviour, which
-        /// D99 requires stay byte-for-byte unchanged. <see cref="PermissionKeys.ParseKeys"/> is the
+        /// must stay byte-for-byte unchanged. <see cref="PermissionKeys.ParseKeys"/> is the
         /// discriminator: an entry whose resource is an <see cref="EntityNames"/> constant is a framework
         /// policy and is left alone.
         /// </para>
@@ -848,7 +848,7 @@ namespace Stomme.Repository
     /// <remarks>
     /// <c>FilterModuleDefinition</c> lives here rather than on <see cref="IModuleDefinitionRepository"/>
     /// because it is a property-by-property copy of the object passed in — it performs no I/O and has
-    /// nothing to await. D32 bans sync members on store-touching interfaces; the honest response for
+    /// nothing to await. The convention bans sync members on store-touching interfaces; the honest response for
     /// genuinely synchronous work is to take it OFF the store-touching interface, not to wrap it in
     /// <c>Task.FromResult</c> and call it async. An extension on <see cref="IModuleDefinitionRepository"/>
     /// keeps every existing call site (<c>_moduleDefinitions.FilterModuleDefinition(...)</c>) compiling

@@ -10,7 +10,7 @@ namespace Stomme.FeatureManagement.Tests;
 
 /// <summary>
 /// The feature-flag system's observable contract, expressed ONCE and driven against EVERY store provider it
-/// can run on (D73 / brief 06 §"both-providers invariant"). A subclass supplies a fixture — the relational
+/// can run on. A subclass supplies a fixture — the relational
 /// (EF Core / SQLite) store or the RavenDB document store — and the tests below know nothing about either.
 /// Both providers must produce the SAME observable results: seed the declared catalog, toggle, target by role,
 /// pin a per-user override, and read the audit trail — so a provider-divergence bug (the deepest class in this

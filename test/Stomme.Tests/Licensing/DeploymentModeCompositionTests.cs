@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Licensing
 {
     /// <summary>
-    /// D105 "The gate", composition half, over the REAL <c>AddStomme</c>. Falsification F-C: no hook composes AddStomme
+    /// The composition half of the deployment-mode gate, over the REAL <c>AddStomme</c>. The refutation to rule out: no hook composes AddStomme
     /// WITHOUT the licensing call, so "equal to a composition without licensing" is measured as: absent == <c>Hosted</c>
     /// descriptor-for-descriptor, with ZERO licensing descriptors in either, and <c>OnPrem</c> == <c>Hosted</c> once the
     /// licensing descriptors are removed. The admin page template half is <see cref="The_admin_site_template_offers_admin_licensing_only_under_OnPrem"/>; the <c>/api/Licence</c> 404 half is driven\n    /// over real HTTP by <c>LicenceControllerAuthorizationTests.With_the_mode_unset_the_Host_gets_404_on_every_verb</c> (as the Host - F-J).

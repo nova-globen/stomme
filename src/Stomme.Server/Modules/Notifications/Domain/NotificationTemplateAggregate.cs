@@ -11,8 +11,8 @@ namespace Stomme.Modules.Notifications.Domain
     /// <summary>
     /// A reusable, parameterized message keyed uniquely per SITE: the channel kinds it supports, a localized
     /// <see cref="Content"/> per <see cref="Locale"/>, and the <see cref="PlaceholderSchema"/> its content may
-    /// reference. Lifted from the predecessor platform <c>NotificationTemplate</c>, tenant-owned + <see cref="SiteId"/>, with
-    /// <see cref="KeyNormalized"/> maintained here for the D49 lookup (key uniqueness is enforced by the application
+    /// reference. Tenant-owned + <see cref="SiteId"/>, with
+    /// <see cref="KeyNormalized"/> maintained here for the normalized lookup (key uniqueness is enforced by the application
     /// layer through that column, both sides normalized).
     /// </summary>
     public sealed class NotificationTemplateAggregate : AggregateRoot<Guid>, ITenantOwned
@@ -37,7 +37,7 @@ namespace Stomme.Modules.Notifications.Domain
         /// <summary>The site-unique template key producers reference (e.g. <c>generic.message</c>).</summary>
         public string Key { get; private set; }
 
-        /// <summary><see cref="Key"/> upper-invariant - the D49 normalized lookup column.</summary>
+        /// <summary><see cref="Key"/> upper-invariant - the normalized lookup column.</summary>
         public string KeyNormalized { get; private set; }
 
         public IReadOnlyList<ChannelKind> SupportedChannels => _supportedChannels;
@@ -46,7 +46,7 @@ namespace Stomme.Modules.Notifications.Domain
 
         public PlaceholderSchema Placeholders { get; private set; }
 
-        /// <summary>The D49 normalization of a template key: trimmed, upper-invariant. Apply to BOTH sides of a lookup.</summary>
+        /// <summary>The normalization of a template key: trimmed, upper-invariant. Apply to BOTH sides of a lookup.</summary>
         public static string NormalizeKey(string key) => NotificationRequestAggregate.NormalizeTemplateKey(key);
 
         public static NotificationTemplateAggregate Create(

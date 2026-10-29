@@ -12,8 +12,8 @@ namespace Stomme.Tests.Connectors
 {
     /// <summary>
     /// The handler the OAuth connector tests hand their <see cref="StubEgress"/>: every request is
-    /// recorded with its body, and a responder answers by request and body - the shape the predecessor platform's per-file RoutingHandler
-    /// classes had, made one. A token endpoint is answered by <see cref="TokenRoute"/> when set (by host or path), and the
+    /// recorded with its body, and a responder answers by request and body - one handler in place of a routing handler
+    /// class per test file. A token endpoint is answered by <see cref="TokenRoute"/> when set (by host or path), and the
     /// forms it received are kept apart from the API calls.
     /// </summary>
     internal sealed class RecordingHandler(Func<HttpRequestMessage, string, int, HttpResponseMessage> responder) : HttpMessageHandler

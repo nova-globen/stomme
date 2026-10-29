@@ -17,8 +17,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-234 DRIVEN - the install wizard of a host whose public name it cannot reach (a container with no egress, as
-    /// a game app's host was on 2026-10-13: here a name that never resolves, <c>.invalid</c>) renders, because its server
+    /// DRIVEN - the install wizard of a host whose public name it cannot reach (a container with no egress; here a
+    /// name that never resolves, <c>.invalid</c>) renders, because its server
     /// render's call to its own API goes to its own listener. The REAL host on Kestrel, uninstalled, from the shipped
     /// appsettings, asked over its loopback listener with the public host and scheme an edge would forward: with
     /// <c>Installation:InternalUrl</c> set to <c>public</c> in the override file - the address before the fix - the wizard

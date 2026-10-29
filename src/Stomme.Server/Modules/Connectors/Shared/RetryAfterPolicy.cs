@@ -9,8 +9,8 @@ namespace Stomme.Modules.Connectors.Shared
 {
     /// <summary>
     /// Retries an HTTP 429 (and 503) answer, honouring Retry-After when present and falling back to a short exponential
-    /// backoff when absent; retries are bounded and delays capped; any other status passes through untouched (BL-96
-    /// increment 3, lifted from the predecessor platform's <c>RetryAfterHandler</c>). The port is a policy AROUND a send rather than a
+    /// backoff when absent; retries are bounded and delays capped; any other status passes through untouched.
+    /// It is a policy AROUND a send rather than a
     /// handler INSIDE a client, because the client is the host's: a connector cannot wrap the egress's handler
     /// chain, so it asks the policy to send for it, handing a factory - a request message cannot be sent twice, and a
     /// throttled attempt is disposed before the next one is built. Safe for a request whose content can be rebuilt:

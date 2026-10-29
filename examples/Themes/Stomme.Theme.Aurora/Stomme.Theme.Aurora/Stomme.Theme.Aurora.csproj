@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <!--
-    D87. An INDEPENDENT, packages-only external THEME for Stomme — the general/public UI theme (Aurora),
+    An INDEPENDENT, packages-only external THEME for Stomme — the general/public UI theme (Aurora),
     the sibling of the Slate admin theme. Same shape as examples/Modules/Blogs: references Stomme ONLY through
     the Stomme.Sdk meta-package from the local feed (examples/local-feed), ZERO project/source references.
     The assembly name MUST contain "Stomme" or the convention loader never loads it. Ships its Theme.css as a
@@ -37,8 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Stomme.Client, NOT the Stomme.Sdk meta. The meta includes Stomme.Server, which since
-         D92 depends on the theme PACKAGES — so packing this theme against the meta pulled the theme's own
+    <!-- Stomme.Client, NOT the Stomme.Sdk meta. The meta includes Stomme.Server, which
+         depends on the theme PACKAGES — so packing this theme against the meta pulled the theme's own
          OLDER package into its static-web-asset graph (same SourceId as this project), and the generated
          pack props declared a stale second asset for the same target path. Every consumer building
          Stomme.Server against such a pack dies on 'Conflicting assets'. A theme is client-side; the
@@ -49,7 +49,7 @@
 
   <ItemGroup>
     <!-- The folder's own restore configuration, not content of the theme: the host references both stock themes, and their two
-         nuget.config files collided in its publish output (NETSDK1152, measured 2026-10-28). -->
+         nuget.config files collided in its publish output (NETSDK1152). -->
     <Content Update="nuget.config" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
     <None Update="nuget.config" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
   </ItemGroup>

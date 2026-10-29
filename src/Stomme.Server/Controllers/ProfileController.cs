@@ -128,7 +128,7 @@ namespace Stomme.Controllers
             return profile;
         }
 
-        // BL-143 (the BL-87 class): the admin form marks both required, but the server checked only ModelState and the model
+        // The admin form marks both required, but the server checked only ModelState and the model
         // carries no annotation, so a nameless or untitled profile item could be written through the API - measured, 200
         // and a row. The name is the item's key as well as its label.
         private static bool IsBlank(Profile profile) =>

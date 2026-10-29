@@ -2,7 +2,7 @@ namespace Stomme.Models.Notifications
 {
     /// <summary>
     /// The transport a producer asks a notification to be delivered over - the published mirror of the module's
-    /// channel kinds. The numeric values are the WIRE contract (lifted from the predecessor platform) and never change.
+    /// channel kinds. The numeric values are the WIRE contract and never change.
     /// </summary>
     public enum NotificationChannelKind
     {
@@ -29,7 +29,7 @@ namespace Stomme.Models.Notifications
         Email = 1,
 
         /// <summary>
-        /// A literal endpoint (phone number, webhook URL) addressed directly. Kept for wire stability with the predecessor platform's
+        /// A literal endpoint (phone number, webhook URL) addressed directly. Kept for wire stability with the
         /// published enum; the dispatcher REJECTS it (an unguarded literal endpoint is an open relay and bypasses
         /// the per-channel SSRF guard).
         /// </summary>

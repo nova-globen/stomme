@@ -8,14 +8,14 @@
 @*
     The contextual-help launcher. ControlPanel renders it in every theme's header under its OWN
     ShowHelp parameter - outside the ShowLanguageSwitcher @if and outside the admin/editor gate, because help is for the
-    reader of the page (D103 refutation 3a).
+    reader of the page.
 
-    It must NOT open a circuit for an anonymous page view (refutation 3b): it carries no @rendermode of its own, so on a
+    It must NOT open a circuit for an anonymous page view: it carries no @rendermode of its own, so on a
     Static page it renders server-side as a native <details> disclosure - no JS, no circuit - and the drawer (which needs
     a click handler) is used only when the page is ALREADY interactive.
 
     The anchors are the PAGE (page:{path}) and every CONTROL on it (PageState.Modules[].ModuleType, which the router has
-    already resolved per action - so admin/users and ?action=Edit are different anchors, refutation 5). Anything not
+    already resolved per action - so admin/users and ?action=Edit are different anchors). Anything not
     resolved renders NOTHING: no topic, help switched off, or a caller without help:view.
 
     The HTML is the SERVER's: SafeHtml has been through the Markdig pipeline and the allowlist before it left the server,

@@ -5,7 +5,7 @@ using System.Globalization;
 namespace Stomme.Modules.Pipelines.Tenancy
 {
     /// <summary>
-    /// The engine's tenant is a Stomme SITE (BL-95 increment (a), the tenant bridge). Pipelines are authored and
+    /// The engine's tenant is a Stomme SITE. Pipelines are authored and
     /// run per site - a site is what an admin page belongs to and what a job iterates - while the engine's store
     /// database is shared by every site of an installation (the relational sidecar) or of a Stomme tenant (the
     /// RavenDB routing), so the id has to name the site UNIQUELY across Stomme tenants: it is

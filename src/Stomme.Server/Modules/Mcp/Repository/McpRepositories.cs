@@ -11,7 +11,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Mcp.Persistence
 {
     /// <summary>
-    /// The external-server registrations' closed read surface (D101 items 4 and 6).
+    /// The external-server registrations' closed read surface.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -21,8 +21,8 @@ namespace Stomme.Mcp.Persistence
     /// <c>IRepository</c> - and are gated by <c>ModuleAggregateProviderNeutralityTests</c> instead.
     /// </para>
     /// <para>
-    /// <b>There is no by-id read that does not name a site.</b> the predecessor platform's five by-id handlers (refresh, enable, disable,
-    /// remove, secret) took an id and nothing else, so any row in the tenant answered - and the default install puts
+    /// <b>There is no by-id read that does not name a site.</b> By-id handlers (refresh, enable, disable,
+    /// remove, secret) that took an id and nothing else would answer for any row in the tenant - and the default install puts
     /// every site in ONE tenant. <see cref="GetForSiteAsync"/> is the only way this module fetches one, and it gives the
     /// same answer - null - for "no such registration" and "another site's registration", or the id space is an oracle.
     /// </para>

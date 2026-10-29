@@ -75,7 +75,7 @@ namespace Stomme.Repository.Stores
             // Job/JobLog pair. No tenant twin: neither table exists in a tenant database. TenantResolver/AliasAccessor
             // resolve Alias -> Site -> Tenant on every request; the installer creates the Tenant then its Aliases.
             // Registered as a pair because they land as a pair. When these land, MasterDBContext holds no content
-            // DbSet — the compiler's proof D52 is complete.
+            // DbSet — the compiler's proof that move is complete.
             services.AddTransient<ITenantStore, EfTenantStore>();
             services.AddTransient<IAliasStore, EfAliasStore>();
 
@@ -112,13 +112,13 @@ namespace Stomme.Repository.Stores
             // TenantDBContext and needs no store registered here.
             services.AddTransient<IFolderStore, EfFolderStore>();
 
-            // File — the last framework cluster onto the seam, and the one D48 escalated rather than
+            // File — the last framework cluster onto the seam, and the one held back rather than
             // shipped on one provider. Its DbSet is gone from TenantDBContext; see IFileStore for how the
             // normalized lookup columns removed the provider disagreement that blocked it.
             services.AddTransient<IFileStore, EfFileStore>();
 
-            // The SearchContent cluster — Phase 3's last. Four tables, tenant-side only. After this,
-            // TenantDBContext maps only MigrationHistory (D43's permanent [Keyless] exception).
+            // The SearchContent cluster — the last to cross. Four tables, tenant-side only. After this,
+            // TenantDBContext maps only MigrationHistory (a permanent [Keyless] exception).
             services.AddTransient<ISearchContentStore, EfSearchContentStore>();
             services.AddTransient<ISearchContentPropertyStore, EfSearchContentPropertyStore>();
             services.AddTransient<ISearchContentWordStore, EfSearchContentWordStore>();

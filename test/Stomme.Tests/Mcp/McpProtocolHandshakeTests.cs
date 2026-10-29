@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// A REAL MCP client, from the SDK, talking to Stomme's endpoint (D101's handshake gate).
+    /// A REAL MCP client, from the SDK, talking to Stomme's endpoint, as the handshake check.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -125,7 +125,7 @@ namespace Stomme.Tests.Mcp
                 Assert.Equal(beforeAnonymous, McpTestContributor.Invocations);    // nothing of this contributor's ran for it
 
                 // WHAT THE ENDPOINT ACTUALLY ANSWERS AN ANONYMOUS CALLER, PER VERB - measured, because the three
-                // differ and only one of them is the decision D101 and the owner settled:
+                // differ and only one of them is the decided behaviour:
                 //
                 //   POST   401  the JSON-RPC path, and the status this protocol's authorization flow keys on. It is
                 //               the carve-out from this host's usual bare 403, by endpoint METADATA.

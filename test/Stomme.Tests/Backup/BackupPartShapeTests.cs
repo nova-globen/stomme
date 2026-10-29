@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-170 step (1): a backup part's schema version is the SHAPE of what it carries, and a restore takes an archive from
+    /// A backup part's schema version is the SHAPE of what it carries, and a restore takes an archive from
     /// the same version or an older one whose parts' shapes are the host's own.
     /// </summary>
     /// <remarks>

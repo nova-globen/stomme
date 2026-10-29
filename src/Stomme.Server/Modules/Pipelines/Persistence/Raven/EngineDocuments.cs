@@ -11,7 +11,7 @@ using Stomme.Engine.Pipelines.State;
 namespace Stomme.Modules.Pipelines.Persistence.Raven
 {
     /// <summary>
-    /// The RavenDB shape of an engine entity (BL-95 increment (a)): every scalar the engine's filters test
+    /// The RavenDB shape of an engine entity: every scalar the engine's filters test
     /// is a plain field with the entity's own name, so the hand-written query translation reads like the filter
     /// it mirrors; every non-scalar member is the SAME text the relational columns hold, produced by
     /// <see cref="EngineEntitySerializer"/>. Timestamps are UTC <see cref="DateTime"/>s: RavenDB orders and

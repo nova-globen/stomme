@@ -17,7 +17,7 @@ namespace Stomme.Tests.Mcp
     /// <remarks>
     /// <para>
     /// <b>The MCP policy exists only when the endpoint does and a limit is configured</b> - which is why the absence is
-    /// asserted as well as the presence. The limiter MIDDLEWARE is the host's since BL-121 (the account endpoints'), and
+    /// asserted as well as the presence. The limiter MIDDLEWARE is the host's, shared with the account endpoints, and
     /// the first case also shows it counts an MCP request ONCE: exactly three served, not fewer.
     /// </para>
     /// <para>
@@ -90,7 +90,7 @@ namespace Stomme.Tests.Mcp
                 }
 
                 // ...and the MCP endpoint carries NO rate-limiting policy at all, so "no limiter" is ABSENCE and not a
-                // generously configured one. (Since BL-121 the HOST always has a limiter - the account endpoints' - so this
+                // generously configured one. (The HOST always has a limiter - the account endpoints' - so this
                 // is asked of the endpoint itself rather than of the host-wide options it used to be asked of.)
                 var mcpEndpoints = app.Services.GetServices<Microsoft.AspNetCore.Routing.EndpointDataSource>()
                     .SelectMany(source => source.Endpoints)

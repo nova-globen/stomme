@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// BL-80 (D101 items 4 and 6), increment 2 - the registration and audit aggregates and the three reshaped value
+    /// The registration and audit aggregates and the three reshaped value
     /// objects: what each refuses, and what each deliberately has no way to do.
     /// </summary>
     public class McpDomainTests
@@ -45,7 +45,7 @@ namespace Stomme.Tests.Mcp
         [InlineData("mcp.example.com/v1")]                    // not absolute
         [InlineData("ftp://mcp.example.com/")]
         [InlineData("file:///etc/passwd")]
-        [InlineData("stdio:npx some-server")]                 // the predecessor platform's second transport: an admin-supplied COMMAND
+        [InlineData("stdio:npx some-server")]                 // a second, earlier transport: an admin-supplied COMMAND
         [InlineData("npx -y @some/mcp-server")]
         [InlineData("javascript:alert(1)")]
         [InlineData("https://user:secret@mcp.example.com/")]  // a credential in a URL ends up in logs and on the page
@@ -205,7 +205,7 @@ namespace Stomme.Tests.Mcp
         [Fact]
         public void A_server_that_offers_NOTHING_is_still_Verified_by_a_refresh()
         {
-            // Found by reconciling the predecessor platform's cases BY NAME (ReplaceDiscoveredTools_AcceptsAnEmptySet_AndStillVerifies):
+            // Found by reconciling an earlier suite's cases by name (ReplaceDiscoveredTools_AcceptsAnEmptySet_AndStillVerifies):
             // nothing here asserted it, and the distinction matters to an operator. A server that legitimately offers
             // no tools has still ANSWERED - if an empty answer left it Unverified, the admin page would read
             // "Unverified" forever and the only thing to do about it would be to press Refresh again.

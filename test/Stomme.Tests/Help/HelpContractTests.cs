@@ -18,8 +18,8 @@ namespace Stomme.Tests.Help
     /// to depend on.
     /// </summary>
     /// <remarks>
-    /// The seam is NEW design, not a lift - D103 falsified "its topics travel with their modules" (0 of the predecessor platform's 36
-    /// modules shipped one), and what the predecessor platform called a contribution seam was a two-method read port. So every refusal
+    /// The seam is new design, not a copy of an earlier one: topics do not travel with their modules (none of 36 modules in an
+    /// earlier implementation shipped one), and what that implementation called a contribution seam was a two-method read port. So every refusal
     /// here answers something the design decided, and each one says which.
     /// </remarks>
     public class HelpContractTests
@@ -52,8 +52,8 @@ namespace Stomme.Tests.Help
         [InlineData("has\nnewline")]
         public void An_unusable_anchor_is_REFUSED_and_does_not_throw(string? input)
         {
-            // D103 refutation 10: this input arrives as ?anchor= on an endpoint an ANONYMOUS visitor can reach.
-            // the predecessor platform's factory threw, which turns a malformed query string into a 500. "No topic" is the answer.
+            // This input arrives as ?anchor= on an endpoint an ANONYMOUS visitor can reach.
+            // a factory that threw would turn a malformed query string into a 500. "No topic" is the answer.
             Assert.False(HelpKeys.TryNormalizeAnchor(input, out var normalized));
             Assert.Equal(string.Empty, normalized);
         }
@@ -186,7 +186,7 @@ namespace Stomme.Tests.Help
         {
             var baseline = HelpTopicIds.For(Tenant, 7, "page:admin/users", "en");
 
-            // The TENANT first, because it is the one that was missing (BL-151's class): site ids repeat across tenants,
+            // The TENANT first, because it is the one that was missing: site ids repeat across tenants,
             // and the module store is one store for the whole install.
             Assert.NotEqual(baseline, HelpTopicIds.For(OtherTenant, 7, "page:admin/users", "en"));
             Assert.NotEqual(baseline, HelpTopicIds.For(Tenant, 8, "page:admin/users", "en"));
@@ -220,9 +220,9 @@ namespace Stomme.Tests.Help
         {
             // A regression here re-keys every topic in every install, which is a migration and not an edit. Recorded
             // so that a change to the namespace or the construction cannot be made by accident. The value was computed
-            // by an INDEPENDENT re-implementation of RFC 4122 section 4.3 (PowerShell, 2026-09-23), which also reproduced
+            // by an INDEPENDENT re-implementation of RFC 4122 section 4.3 (in PowerShell), which also reproduced
             // the previous tenant-less value exactly - so it is an oracle, not a copy of this code's own output.
-            // CHANGED 2026-09-23 from 52582910-f71f-5b88-b8d2-646369a2281f when the tenant joined the key; no install
+            // CHANGED from 52582910-f71f-5b88-b8d2-646369a2281f when the tenant joined the key; no install
             // held a help topic yet (the reconciler had not been built), so nothing was re-keyed.
             Assert.Equal(Guid.Parse("9ad4cf9d-8e3a-5cf8-8514-2506c9b0b66e"), HelpTopicIds.For(Tenant, 1, "page:admin", "en"));
         }
@@ -232,7 +232,7 @@ namespace Stomme.Tests.Help
         [Fact]
         public void Three_keys_and_only_VIEW_is_held_by_everyone()
         {
-            // D103 refutation 15: the UNIFORM Declare applies one role segment to every key, so declaring these with
+            // The UNIFORM Declare applies one role segment to every key, so declaring these with
             // Everyone would seed help:manage to All Users - and UserSecurity.IsAuthorized admits All Users at
             // userId -1, so an ANONYMOUS visitor would author and manage help.
             Assert.Equal(new[] { HelpPermissions.View, HelpPermissions.Author, HelpPermissions.Manage }, HelpPermissions.All);

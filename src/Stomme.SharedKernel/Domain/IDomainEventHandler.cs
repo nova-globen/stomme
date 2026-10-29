@@ -7,7 +7,7 @@ namespace Stomme.SharedKernel.Domain;
 /// </summary>
 /// <remarks>
 /// <para>
-/// THE HANDLER CONTRACT — STAGE WORK, NEVER MANAGE IT (docs/decisions.md D40).
+/// THE HANDLER CONTRACT — STAGE WORK, NEVER MANAGE IT.
 /// </para>
 /// <para>
 /// A handler runs in the <b>caller's DI scope</b>, inside the caller's unit of work — that is the whole
@@ -33,8 +33,8 @@ namespace Stomme.SharedKernel.Domain;
 ///     <b>DO stage</b>: add/update through the injected repository and return. The caller's
 ///     <c>IUnitOfWork.SaveChangesAsync</c> is what will commit your work together with the change that raised
 ///     the event. <b>Today it does not</b>: there is no transaction in the seam, repositories save per call,
-///     and <c>SaveChangesAsync</c> only dispatches events (docs/decisions.md D41 is the step that fixes this).
-///     Write to this contract anyway — it is what makes D41 a change to the seam rather than to every handler.
+///     and <c>SaveChangesAsync</c> only dispatches events (a transactional unit of work is the planned fix).
+///     Write to this contract anyway — it is what makes that fix a change to the seam rather than to every handler.
 ///   </item>
 /// </list>
 /// <para>

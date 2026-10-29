@@ -15,7 +15,7 @@ namespace Stomme.Modules.Guestbook.Services
     /// <see cref="IMediator"/> — a query for reads, a command for the write, a stream for incremental reads —
     /// so the business logic lives in mediator handlers behind the behavior pipeline, and this service is a
     /// thin transport shim. This is exactly the shape the parked <c>FeatureAdminService</c> anticipated
-    /// ("when the mediator lands, these become thin wrappers", docs/decisions.md D14); the Guestbook module
+    /// ("when the mediator lands, these become thin wrappers"); the Guestbook module
     /// is the first place in the host where it is real.
     /// <para>
     /// It is an <see cref="ITransientService"/>, registered explicitly in the module's <c>ServerStartup</c>

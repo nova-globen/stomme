@@ -27,15 +27,15 @@ namespace Stomme.Models.Pipelines
         public PipelineGraph? Graph { get; set; }
 
         /// <summary>
-        /// BL-229, in a file of many: the pipeline's definition id where it was exported - what the others in the file call it by,
+        /// In a file of many: the pipeline's definition id where it was exported - what the others in the file call it by,
         /// so their calls are pointed at the pipeline it becomes (<see cref="PipelineExchange.Repoint"/>). Nothing for one file.
         /// </summary>
         public string? Id { get; set; }
 
-        /// <summary>BL-229, in a file of many: its folder below the folder exported - placed below the folder it is imported into.</summary>
+        /// <summary>In a file of many: its folder below the folder exported - placed below the folder it is imported into.</summary>
         public string? Folder { get; set; }
 
-        /// <summary>BL-229: where a file came from when it was not this site's own format - <c>n8n</c> - and nothing when it was.</summary>
+        /// <summary>Where a file came from when it was not this site's own format - <c>n8n</c> - and nothing when it was.</summary>
         [JsonIgnore]
         public string? ConvertedFrom { get; set; }
     }

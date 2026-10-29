@@ -29,7 +29,7 @@ namespace Stomme.Tests
     // The conformance suite (Stomme.Persistence.Conformance.Tests) proves the STORE and QUERY shapes on both
     // providers. This proves the things it structurally cannot: the repository ORCHESTRATION, the IAuditable
     // audit STAMPING through DbContextUtils (which the conformance fixtures do not run — they use a plain context
-    // and set the stamps as test data), the `version`-column shadow past AggregateRoot.Version, and the D19
+    // and set the stamps as test data), the `version`-column shadow past AggregateRoot.Version, and the
     // read-then-write theme-sync shape (session read, store writes) on ONE store instance. The context here
     // overrides SaveChangesAsync to call DbContextUtils exactly as MasterDBContext does.
     public sealed class ThemesOnTheSeamTests : IDisposable
@@ -287,7 +287,7 @@ namespace Stomme.Tests
             Assert.Contains(_settings.Deleted, item => item.entityId == 999);
         }
 
-        // THE D19 / hazard-6 guard, distilled from ProcessThemesAsync: on ONE store instance, ADD a newly
+        // THE read-then-write guard, distilled from ProcessThemesAsync: on ONE store instance, ADD a newly
         // discovered theme AND UPDATE a DIFFERENT pre-existing theme that was read through the session (never
         // Added by this store). The harvested code mutated tracked entities; the seam reads through a session
         // (untracked) and attaches fresh aggregates for the writes, so the two writes touch distinct keys and no

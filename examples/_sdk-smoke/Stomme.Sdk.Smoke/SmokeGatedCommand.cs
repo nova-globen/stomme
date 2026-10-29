@@ -4,7 +4,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Sdk.Smoke;
 
 /// <summary>
-/// D99/BL-99 PROOF, packages only: a module DECLARES its gates against the SDK's authorization surface -
+/// Packages-only proof: a module DECLARES its gates against the SDK's authorization surface -
 /// <c>[Requires("resource:operation")]</c> on the mediator command, <see cref="ICurrentUser"/> for "who is
 /// acting", <see cref="IAccessGuard"/> for a question the attribute cannot express (a conditional gate).
 /// The module writes NO enforcement code: the host's outermost <c>AuthorizationBehavior</c> denies the

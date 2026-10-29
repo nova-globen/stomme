@@ -11,13 +11,13 @@ namespace Stomme.Modules.Pipelines.Triggers
     /// <summary>A published form as the site serves it (n8n's Form trigger): what the Form step says, literally.</summary>
     public sealed record PipelineFormSpec(string Name, string Title, string? Description, IReadOnlyList<PipelineFormField> Fields, string SubmitLabel, string? Answer)
     {
-        /// <summary>BL-229: a next page may follow it (a Wait for a form with Next page in its pipeline) - a submission waits to be taken on.</summary>
+        /// <summary>a next page may follow it (a Wait for a form with Next page in its pipeline) - a submission waits to be taken on.</summary>
         public bool LeadsOn { get; init; }
 
-        /// <summary>BL-229: a next page's - the name of the Form trigger's form it follows, whose thank-you ends the pages; null for any other form.</summary>
+        /// <summary>a next page's - the name of the Form trigger's form it follows, whose thank-you ends the pages; null for any other form.</summary>
         public string? StartedBy { get; init; }
 
-        /// <summary>BL-229, n8n's redirect after a submission: where the thank-you takes the person on to; null shows the Answer.</summary>
+        /// <summary>n8n's redirect after a submission: where the thank-you takes the person on to; null shows the Answer.</summary>
         public string? Redirect { get; init; }
     }
 
@@ -146,7 +146,7 @@ namespace Stomme.Modules.Pipelines.Triggers
             var value = given is not null && given.TryGetValue(key, out var typed) ? typed ?? "" : "";
             if (field.Type == PipelineFormFieldTypes.Hidden)
             {
-                // BL-229, n8n's Hidden Field: carried unseen - from the address, else its own value - encoded as every value here is.
+                // n8n's Hidden Field: carried unseen - from the address, else its own value - encoded as every value here is.
                 var carried = given is not null && given.ContainsKey(key) ? value : field.Value ?? "";
                 html.Append("<input type=\"hidden\" name=\"").Append(Encode(key)).Append("\" value=\"").Append(Encode(carried)).Append("\">");
                 return;

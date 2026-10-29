@@ -38,7 +38,7 @@ namespace Stomme.Modules.Connectors.MongoDb
     /// <para>
     /// <b>The driver dials only the server the host checked, and no other.</b> Its host goes to
     /// <see cref="IConnectorEgress.ResolveAndPinAsync"/> first; the permitted address replaces it, unless TLS needs the name to
-    /// check the certificate (then the name stays, and the driver resolves it again - D110's window for drivers that re-resolve,
+    /// check the certificate (then the name stays, and the driver resolves it again - a known window for drivers that re-resolve,
     /// stated, not solved). The driver is held to a DIRECT connection, so it never dials the replica set's members a server
     /// names, and every connection it opens is checked against that one server and refused otherwise. So a <c>mongodb+srv</c>
     /// address (its members are DNS's), a list of servers, a replica set, a proxy and a password in the address are refused

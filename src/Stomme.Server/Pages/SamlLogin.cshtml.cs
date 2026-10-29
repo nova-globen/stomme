@@ -12,7 +12,7 @@ namespace Stomme.Pages
     /// <summary>
     /// The explicit SAML2 login challenge (the installation-wide analogue of <c>External.cshtml</c> for
     /// the per-site OIDC consumer). Issues a <see cref="ChallengeResult"/> for the "Saml2" scheme ONLY when that
-    /// scheme is registered (config-gated), so it is never a default/global challenge — the D30 render guard is
+    /// scheme is registered (config-gated), so it is never a default/global challenge — the render guard is
     /// unaffected. Sustainsys builds the AuthnRequest and redirects to the IdP; after the assertion it signs the
     /// raw principal into the external cookie and returns to <c>/signin-saml2</c> (this challenge's RedirectUri),
     /// where the async provisioning bridge runs.

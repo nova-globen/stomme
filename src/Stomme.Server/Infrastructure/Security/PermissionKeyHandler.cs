@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// Decides a <see cref="PermissionKeyRequirement"/> the way D99 requires: ALWAYS against the site's
+    /// Decides a <see cref="PermissionKeyRequirement"/> the way the permission model requires: ALWAYS against the site's
     /// Permission rows <c>(EntityName = resource, EntityId = -1, PermissionName = operation)</c>, through the
     /// FIVE-argument <see cref="IUserPermissions"/> overload - the one with no roles fallback.
     /// </summary>

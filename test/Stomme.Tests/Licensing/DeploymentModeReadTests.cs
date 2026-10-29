@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Stomme.Tests.Licensing
 {
-    /// <summary>D105 "The gate": the pure <c>Deployment:Mode</c> reader. (Step 3 adds the composition tests beside it.)</summary>
+    /// <summary>The pure <c>Deployment:Mode</c> reader. The composition tests sit beside it.</summary>
     public sealed class DeploymentModeReadTests
     {
         private static IConfiguration Config(string? mode)

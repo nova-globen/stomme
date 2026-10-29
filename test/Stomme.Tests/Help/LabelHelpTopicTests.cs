@@ -16,7 +16,7 @@ namespace Stomme.Tests.Help
     /// <remarks>
     /// <para>
     /// <b>The unset markup is pinned to strings RECORDED from the label as it was before this parameter existed</b>
-    /// (2026-09-23: the pre-change <c>Label.razor</c> was checked out, rendered by this fixture's own probe, and the output
+    /// (the pre-change <c>Label.razor</c> was checked out, rendered by this fixture's own probe, and the output
     /// copied here; the new label then rendered identically). <c>Label</c> has hundreds of uses, so "unchanged" is a
     /// measurement, not an intention.
     /// </para>
@@ -87,7 +87,7 @@ namespace Stomme.Tests.Help
         [Fact]
         public void A_labels_panel_opens_RIGHTWARDS_and_never_wider_than_the_viewport()
         {
-            // FOUND BY DRIVING (2026-09-23): the label's disclosure inherited the header launcher's `right: 0`, and a
+            // Found by driving: the label's disclosure inherited the header launcher's `right: 0`, and a
             // label sits near the LEFT edge - the panel opened at x = -273, off-screen. bUnit and HTTP render the right
             // markup either way; only a browser measured it. This pins the stylesheet rule that fixed it.
             var css = System.IO.File.ReadAllText(System.IO.Path.Combine(RepositoryRoot(), "src", "Stomme.Server", "wwwroot", "css", "app.css"));

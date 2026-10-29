@@ -6,7 +6,7 @@ namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
     /// RFC 4180 reading and writing for the CSV steps: a quoted field may hold the delimiter, a doubled quote and a
-    /// line break; CR, LF and CRLF all end a record; an empty line is skipped. Small on purpose - the predecessor platform's CsvHelper
+    /// line break; CR, LF and CRLF all end a record; an empty line is skipped. Small on purpose - a CsvHelper-style
     /// dependency is not carried for two steps.
     /// </summary>
     internal static class Csv

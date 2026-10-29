@@ -20,15 +20,15 @@ using LicenceKeyStatusModel = Stomme.Models.LicenceKeyStatus;
 namespace Stomme.Controllers
 {
     /// <summary>
-    /// The Host-only licensing surface (D105 design item 10): the status of every configured <c>Licensing:Keys:&lt;lid&gt;</c>
+    /// The Host-only licensing surface: the status of every configured <c>Licensing:Keys:&lt;lid&gt;</c>
     /// entry, adding a pasted <c>SLK1</c> key, and removing one. It exists only under <c>Deployment:Mode=OnPrem</c>: every
-    /// action checks the mode FIRST and answers 404 otherwise - there is no conditional controller mapping in this host
-    /// (refutation 4), so the check lives in the action path. Authorization still runs before any of this (falsification
-    /// F-J): anonymous is 403, an Administrator is 403 in every mode, and the 404 is visible only to a Host.
+    /// action checks the mode FIRST and answers 404 otherwise - there is no conditional controller mapping in this host,
+    /// so the check lives in the action path. Authorization still runs before any of this:
+    /// anonymous is 403, an Administrator is 403 in every mode, and the 404 is visible only to a Host.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>A write is proven by READ-BACK</b> (refutation 7). <see cref="IConfigManager.AddOrUpdateSetting{T}(string, T, bool)"/>
+    /// <b>A write is proven by READ-BACK</b>. <see cref="IConfigManager.AddOrUpdateSetting{T}(string, T, bool)"/>
     /// and <see cref="IConfigManager.RemoveSetting(string, bool)"/> return void and swallow every exception into a log, and
     /// the documented Docker path mounts <c>appsettings.Production.json</c> read-only - so after every write this controller
     /// reads the merged <see cref="IConfigurationRoot"/> back and, when the value in force is not what it wrote, answers

@@ -22,12 +22,11 @@ namespace Stomme.Tests.Connectivity
     /// <summary>
     /// The Connectivity module on an installed host, over real HTTP, on SQLite, PostgreSQL and
     /// RavenDB, with a fixture connector composed into the host: the admin page exists from the module's own template and
-    /// renders for the Host; the catalog lists the fixture with its scheme's credential fields (the predecessor platform's
-    /// <c>ConnectorPlugins_AreDiscoveredByThePluginHost_AndRegisteredInTheCatalog</c>); a connection is created with a
+    /// renders for the Host; the catalog lists the fixture with its scheme's credential fields; a connection is created with a
     /// credential the response never carries; the host is RESTARTED and the secret still unprotects for a test; an edit
     /// rotates one credential field and keeps the other; a delete removes the row and every secret row; the refusals are
-    /// the caller's input (the predecessor platform's ConnectivityApiTests by name in the comments); a registered user holds neither key;
-    /// a user granted the keys may create. The browser click-through is the owner's (BL-94's DoD).
+    /// the caller's input; a registered user holds neither key; a user granted the keys may create. A browser click-through
+    /// is a manual check, not part of this drive.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

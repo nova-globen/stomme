@@ -18,7 +18,7 @@ namespace Stomme.Shared
     {
         /// <summary>
         /// <c>Uri.TryCreate(value, UriKind.Absolute, out uri)</c> that refuses a bare path. On Linux and macOS .NET reads
-        /// <c>/relative/only</c> as the absolute <c>file:///relative/only</c> (measured 2026-10-28; Windows refuses it), so a
+        /// <c>/relative/only</c> as the absolute <c>file:///relative/only</c> (Windows refuses it), so a
         /// path passed every absolute-URL check on the platform the product is hosted on. An explicit <c>file:</c> URI is still
         /// absolute. Use this, never the bare call: <c>AbsoluteUriGateTests</c> fails the build on one.
         /// </summary>
@@ -118,7 +118,7 @@ namespace Stomme.Shared
         /// A root-relative URL of the site's own: <c>SiteUrl("didin", "/api/stream/7")</c> is <c>/didin/api/stream/7</c>, and
         /// the same call for a root site is <c>/api/stream/7</c>. For a module's API, its streams and its hubs
         /// (<c>NavigationManager.ToAbsoluteUri(Utilities.SiteUrl(PageState.Alias.Path, "/hubs/game"))</c>): the host strips the
-        /// folder from <c>api/</c>, <c>pages/</c>, <c>files/</c> and <c>hubs/</c> URLs and resolves the folder's site (M2 row 7).
+        /// folder from <c>api/</c>, <c>pages/</c>, <c>files/</c> and <c>hubs/</c> URLs and resolves the folder's site.
         /// The page's <c>&lt;base href&gt;</c> is the host's root, so a relative URL would NOT carry the folder.
         /// </summary>
         public static string SiteUrl(string aliasPath, string rootRelativePath)

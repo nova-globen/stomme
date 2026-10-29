@@ -46,7 +46,7 @@ namespace Stomme.Infrastructure
         bool HostPasswordAvailable,
         string DataDirectory,
         string DefaultDatabaseType,
-        // M2 row 12: the top-level page paths of the root site at each host name a folder entry names - a folder site
+        // The top-level page paths of the root site at each host name a folder entry names - a folder site
         // there would hide the root's page of the same name (the longest alias wins). Null: none read.
         IReadOnlyDictionary<string, IReadOnlyCollection<string>> RootPagePaths = null);
 
@@ -126,7 +126,7 @@ namespace Stomme.Infrastructure
                         problems.Add($"{at}: the alias '{alias}' already exists on this installation (another site's, or one left by a site that was never completed).");
                     }
 
-                    // M2 row 12, the collision rule: a folder's first segment that the host reserves would never reach the
+                    // The collision rule: a folder's first segment that the host reserves would never reach the
                     // site, and one that names a top-level page of the root site there would hide that page.
                     var (host, folder) = SplitFolder(alias);
                     if (folder is null)

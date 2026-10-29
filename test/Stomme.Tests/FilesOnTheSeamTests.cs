@@ -25,14 +25,14 @@ using File = Stomme.Models.File;
 
 namespace Stomme.Tests
 {
-    // The File cluster on the persistence seam — the LAST framework cluster to cross, and the one
-    // D48 escalated under D22 rule 9 rather than ship on one provider.
+    // The File store on the persistence seam: the last framework store to cross, and the one
+    // that was escalated rather than shipped on one provider.
     //
-    // D48 measured the blocker on both live servers: FileRepository's two name lookups folded case on the
+    // The blocker was measured on both live servers: FileRepository's two name lookups folded case on the
     // COLUMN, which the relational providers translate and RavenDB THROWS on, while the portable == means
     // case-SENSITIVE on relational and case-INSENSITIVE on RavenDB. One expression, two semantics.
     //
-    // D49's answer is not a translation, it is a SCHEMA change: folder.path_normalized and file.name_normalized
+    // The answer is not a translation but a SCHEMA change: folder.path_normalized and file.name_normalized
     // hold a lowercase copy beside the stored case, and the reads filter them with a plain == that both
     // providers agree on — because for two lowercase strings ordinal and case-insensitive equality are the same
     // relation. That is ASP.NET Identity's NormalizedUserName split, which TenantDBContext already runs.
@@ -68,8 +68,8 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// THIRTEEN columns: the twelve the live database has, plus name_normalized which D49 adds. VERIFIED
-        /// against stomme-pg-44357 rather than read off FileEntityBuilder, which is wrong about this table in
+        /// THIRTEEN columns: the twelve the live database has, plus name_normalized, which the normalization adds. VERIFIED
+        /// against the live database rather than read off FileEntityBuilder, which is wrong about this table in
         /// two separate ways — see the mutation check below, and note it also omits `description`, which is
         /// real.
         /// </summary>
@@ -91,15 +91,15 @@ namespace Stomme.Tests
                 "modified_by",
                 "modified_on",
                 "name",
-                // D49, added and backfilled by 10020003_AddFolderFileNormalizedColumns. The column that let
-                // this cluster cross the seam at all.
+                // Added and backfilled by 10020003_AddFolderFileNormalizedColumns. The column that let
+                // this store cross the seam at all.
                 "name_normalized",
                 "size"
             ], columns);
         }
 
         /// <summary>
-        /// <b>THE mutation check, and the same trap D48 documented for Folder — re-measured here, not
+        /// <b>The mutation check, and the same trap documented for Folder, re-measured here, not
         /// inherited.</b> FileEntityBuilder extends DeletableAuditableBaseEntityBuilder and calls
         /// AddDeletableColumns, so reading the builder says File is soft-deletable. IT IS NOT: 03020201 drops
         /// all three columns, 03030201 restores IsDeleted for non-SQLite, and 10000201 drops it everywhere. The
@@ -145,7 +145,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// The derivation that makes D49 structural rather than a convention. These are the tests that would fail
+    /// The derivation that makes the normalization structural rather than a convention. These are the tests that would fail
     /// if someone "tidied" the normalization back into the mapper.
     /// </summary>
     public class TheNormalizedDerivationTests
@@ -319,13 +319,13 @@ namespace Stomme.Tests
         }
     }
 
-    // The D19 blocker, for the entity that CAUSED it. File.Folder was the mapped navigation that made EF
-    // rediscover the Folder contract and claim FolderAggregate's table. D49 maps FileAggregate onto the
+    // The blocker, for the entity that caused it. File.Folder was the mapped navigation that made EF
+    // rediscover the Folder contract and claim FolderAggregate's table. The FileAggregate mapping now sits on the
     // same `file` table the File contract used to own, so the contract must be gone from the tenant model —
     // and the DbSet<File> deletion from TenantDBContext is the compiler's half of that proof.
     public class FileMustNotBeResurrectedTests
     {
-        // File stood here until D49; the SearchContent family stood here until D50 and was the last
+        // File stood here until it moved to the seam; the SearchContent family stood here until it moved too and was the last
         // unmigrated tenant-side entity there was. THIS CONTEXT IS NOW EMPTY — see the note in
         // LeafClustersOnTheSeamTests: the neighbour DbSet was decoration, and the proof is
         // ConfigureFrameworkStore plus the assertion.
@@ -346,8 +346,8 @@ namespace Stomme.Tests
         /// <summary>
         /// Re-add <c>DbSet&lt;File&gt;</c> to this context (or to TenantDBContext) and this throws while
         /// building the model — "the table 'file' cannot be used for entity type 'FileAggregate' since it is
-        /// being used for entity type 'File'". That is the failure D49 had to clear, and it is the same one
-        /// D45/D48 met.
+        /// being used for entity type 'File'". That is the failure the move had to clear, and it is the same one
+        /// earlier moves met.
         /// </summary>
         [Fact]
         public void The_file_table_is_owned_by_the_aggregate_alone()
@@ -390,7 +390,7 @@ namespace Stomme.Tests
         // The file table exactly as the migration set leaves it: FileEntityBuilder, PLUS 03000101 (the
         // Name/Extension widening), the later Description column, 10020003 (NameNormalized), MINUS the three
         // deletable columns 03020201/10000201 remove. Cross-checked column-for-column against
-        // stomme-pg-44357: TWELVE live columns + the one D49 adds.
+        // the live database: twelve columns, plus the one the normalization adds.
         protected override string TableDdl => """
             CREATE TABLE "File" (
                 "FileId" INTEGER NOT NULL CONSTRAINT "PK_File" PRIMARY KEY AUTOINCREMENT,
@@ -456,7 +456,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// D49 did NOT move ix_file onto the normalized column, so two names differing only by case still
+        /// ix_file was NOT moved onto the normalized column, so two names differing only by case still
         /// coexist in one folder — exactly as they did before. If this starts failing, someone has changed the
         /// index and narrowed what the product accepts.
         /// </summary>
@@ -507,8 +507,8 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// D48 checked Folder for this hazard and correctly found nothing, so it did NOT cargo-cult D47's
-    /// workaround. File is different, and the difference was found by reading the call graph rather than by
+    /// The Folder store was checked for this hazard and correctly found nothing, so the per-write
+    /// workaround was not copied over. File is different, and the difference was found by reading the call graph rather than by
     /// assuming: <c>FileController.Put</c> calls <c>CreateFile</c>, which calls
     /// <see cref="IFileRepository.DeleteFileAsync"/> when the target folder is over capacity — a store
     /// Get-then-Delete on key N — and then Put UNCONDITIONALLY calls
@@ -718,7 +718,7 @@ namespace Stomme.Tests
         /// detaches it on save), so this never reaches the identity map. It fails on the ROW BEING GONE —
         /// a <see cref="ConcurrencyConflictException"/>, which a fresh context per write would produce
         /// identically. So it is a pre-existing product-logic wrinkle, not a lifetime one, and it is recorded
-        /// here rather than fixed: correcting Put's guard is a behaviour change this increment does not own.
+        /// here rather than fixed: correcting Put's guard is a behaviour change this change does not own.
         /// </remarks>
         [Fact]
         public async Task A_delete_then_an_update_of_the_same_file_fails_on_the_missing_row_not_the_identity_map()
@@ -739,7 +739,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// The zip-extraction loop (FileController.cs:302-330): many writes, then a delete, all through ONE
-        /// repository instance. Different keys, so this is the shape D44 accepted for the leaf clusters — but
+        /// repository instance. Different keys, so this is the shape accepted for the leaf stores, but
         /// it is asserted rather than assumed, because "different keys" is exactly the reasoning that was wrong
         /// about UrlMapping.
         /// </summary>
@@ -768,7 +768,7 @@ namespace Stomme.Tests
         /// <b>THE HAZARD, DEMONSTRATED — and the test that stops this fixture being vacuous.</b> Add-then-Update
         /// of the SAME key through ONE repository instance THROWS: <see cref="EfRepository{T, TId}"/> leaves
         /// what it writes tracked, and a store owns one context, so the second write collides with the identity
-        /// map. This is D44's finding and the shape D47 was bitten by.
+        /// map. This is the shape that bit the URL-mapping store.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -777,11 +777,11 @@ namespace Stomme.Tests
         /// production actually uses, and those pass.
         /// </para>
         /// <para>
-        /// <b>This is why the shape matters, and why it does NOT make File a D47 cluster.</b> No File call site
+        /// <b>This is why the shape matters, and why it does NOT make File a per-write-store case.</b> No File call site
         /// reaches it — every write path is an if/else or a loop over distinct keys (see the remarks on
         /// <see cref="FileRepository"/>). So <see cref="FileRepository"/> constructor-injects its store like
         /// Folder and the eleven before it, rather than cargo-culting UrlMapping's per-write resolve.
-        /// D44 called this "not reachable in production, but one line away". This test is that line, kept
+        /// An earlier review called this "not reachable in production, but one line away". This test is that line, kept
         /// executable.
         /// </para>
         /// </remarks>

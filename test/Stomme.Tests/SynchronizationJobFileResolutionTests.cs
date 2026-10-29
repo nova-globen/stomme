@@ -14,7 +14,6 @@ namespace Stomme.Tests
     // onto the secondary site by (folder path, file name). Both lookups can legitimately return null — a
     // dangling FileId on the primary, or a file the secondary site simply does not have — and the job runs
     // in the background where an unhandled NullReferenceException aborts the whole site synchronization.
-    // docs/backlog.md §BL-32.
     public class SynchronizationJobFileResolutionTests
     {
         // Only the two reads ResolveFileIdAsync performs are answered; everything else throws, so the job

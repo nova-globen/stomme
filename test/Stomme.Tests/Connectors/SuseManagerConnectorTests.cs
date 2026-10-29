@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 4 - the predecessor platform's SuseManagerConnectorTests (9) by name over the port: the XML-RPC session through the egress's client.</summary>
+    /// <summary>The SUSE Manager connector cases (9), carried over by name over the port: the XML-RPC session through the egress's client.</summary>
     public sealed class SuseManagerConnectorTests
     {
         private const string Server = "https://suma.example.com";

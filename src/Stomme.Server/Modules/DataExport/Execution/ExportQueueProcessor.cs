@@ -58,7 +58,7 @@ namespace Stomme.Modules.DataExport.Execution
     }
 
     /// <summary>
-    /// Decides, from STORED rows, whether the requester may still run this export (D108 refutation 8).
+    /// Decides, from STORED rows, whether the requester may still run this export.
     /// </summary>
     /// <remarks>
     /// A job has no <c>HttpContext</c> and no claims, and the requester's roles may have changed since the
@@ -75,7 +75,7 @@ namespace Stomme.Modules.DataExport.Execution
     /// </summary>
     /// <remarks>
     /// Module-internal on purpose: artifacts are framework File rows in the site's private <c>Exports</c> folder,
-    /// not a second blob port. Each ATTEMPT gets its own destination (refutation 9) - two attempts of one job
+    /// not a second blob port. Each ATTEMPT gets its own destination - two attempts of one job
     /// must never share a temp file, or a reclaimed render and the one that lost its lease race on the same bytes.
     /// </remarks>
     public interface IExportArtifactStore
@@ -99,7 +99,7 @@ namespace Stomme.Modules.DataExport.Execution
     /// <remarks>
     /// <para>
     /// <b>Exactly-once is the store's concurrency check, nothing else.</b> No lock and no semaphore: the host
-    /// registers no <c>IDistributedLock</c> on any provider (refutation 2). A drain loads a Queued job, calls
+    /// registers no <c>IDistributedLock</c> on any provider. A drain loads a Queued job, calls
     /// <see cref="ExportJobAggregate.Claim"/> and saves; of two drains doing that at once, the store accepts one
     /// write and gives the other a <see cref="ConcurrencyConflictException"/>, which here means "someone else
     /// has it" and is not an error. The File store has no such check, which is sound only because it is
@@ -265,7 +265,7 @@ namespace Stomme.Modules.DataExport.Execution
 
                 if (_formatter is IExportCellFormatterPreparation preparation)
                 {
-                    await preparation.PrepareAsync(job.SiteId, timeout.Token); // Formats' per-site definitions, once per export (D110 increment 8)
+                    await preparation.PrepareAsync(job.SiteId, timeout.Token); // Formats' per-site definitions, once per export
                 }
 
                 await using (var document = await source.OpenAsync(context, timeout.Token))

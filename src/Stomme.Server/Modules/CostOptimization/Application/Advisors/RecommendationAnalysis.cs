@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 namespace Stomme.Modules.CostOptimization.Application.Advisors
 {
     /// <summary>
-    /// One savings opportunity an analyzer found (the predecessor platform's <c>RecommendationDraft</c>): everything a recommendation needs
+    /// One savings opportunity an analyzer found: everything a recommendation needs
     /// except the tenant, the site and the instant, which the raise command stamps. The key is the finding's deterministic
     /// identity - the command deduplicates drafts by it against open and cooling-down recommendations.
     /// </summary>
@@ -21,7 +21,7 @@ namespace Stomme.Modules.CostOptimization.Application.Advisors
         EstimatedSaving EstimatedSaving);
 
     /// <summary>
-    /// One advisor rule (the predecessor platform's): reads its signal source(s) for the request's site and drafts evidence-cited
+    /// One advisor rule: reads its signal source(s) for the request's site and drafts evidence-cited
     /// recommendations. Rule-threshold based (<see cref="AdvisorOptions"/>), and it drafts NOTHING - never a guess - when
     /// its signal source is not composed into the host.
     /// </summary>
@@ -31,10 +31,10 @@ namespace Stomme.Modules.CostOptimization.Application.Advisors
     }
 
     /// <summary>
-    /// The advisor's thresholds and the dismissal default (the predecessor platform's <c>AdvisorOptions</c>), read from the HOST's
+    /// The advisor's thresholds and the dismissal default, read from the HOST's
     /// configuration section <c>CostOptimization:Advisor</c> (never the container's <c>IConfiguration</c>). Every
-    /// value has the predecessor platform's default; the savings RATES are declared assumptions the analyzers cite in their evidence, not
-    /// measurements. CHANGED: the section drops the predecessor platform's <c>the predecessor platform:</c> prefix, as every lifted module's does.
+    /// value has a default; the savings RATES are declared assumptions the analyzers cite in their evidence, not
+    /// measurements.
     /// </summary>
     public sealed class AdvisorOptions
     {

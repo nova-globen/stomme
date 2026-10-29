@@ -25,9 +25,9 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// The HARNESS SWAP for the predecessor platform's Datasets suites (<c>AddInMemoryPersistence</c> + <c>AddMediator</c> + <c>AddDatasetsServices</c>):
+    /// The harness swap for the Datasets suites (<c>AddInMemoryPersistence</c> + <c>AddMediator</c> + <c>AddDatasetsServices</c>):
     /// the module's own <c>ServerStartup</c> on the in-process FILE store, the mediator with the host's behavior order, an
-    /// allow-all guard, a settable current user, the REAL classifier over the lifted scanner unless a test hands in its
+    /// allow-all guard, a settable current user, the REAL classifier over the PII scanner unless a test hands in its
     /// own, and the request's site as a scoped <see cref="SiteState"/> (null when a test asks for "no site").
     /// </summary>
     internal sealed class DatasetsApplicationHarness : IAsyncDisposable

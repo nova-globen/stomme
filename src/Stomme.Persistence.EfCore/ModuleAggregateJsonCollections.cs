@@ -13,13 +13,12 @@ using Newtonsoft.Json.Serialization;
 namespace Stomme.Persistence.EfCore;
 
 /// <summary>
-/// The JSON COLLECTION convention of the shared <see cref="ModuleAggregatesDbContext"/> (BL-78 / D100 design
-/// point 7). A public collection property of a storage-blind aggregate — <c>IReadOnlyList&lt;T&gt; X =&gt; _x;</c>
+/// The JSON COLLECTION convention of the shared <see cref="ModuleAggregatesDbContext"/>. A public collection property of a storage-blind aggregate — <c>IReadOnlyList&lt;T&gt; X =&gt; _x;</c>
 /// over a private backing list, whatever <c>T</c> is (enum, string, record, a record carrying a string value object,
 /// an <see cref="Entity{TId}"/> child) — is mapped as ONE string column holding the collection's JSON, read and
 /// written through the backing field, with a value comparer so an in-place mutation is detected.
 /// <para>
-/// <b>Why (MEASURED 2026-09-14, <c>ModuleAggregateCollectionMappingTests</c>, SQLite).</b> Without it the five
+/// <b>Why (MEASURED, <c>ModuleAggregateCollectionMappingTests</c>, SQLite).</b> Without it the five
 /// element shapes did three different things: an enum list and a string list were SILENTLY UNMAPPED (no column,
 /// round-trip empty); an <see cref="Entity{TId}"/> child list became an EF NAVIGATION (a second table with a shadow
 /// FK — EF-only, so the providers diverged in shape); a keyless record list THREW at model build ("requires a

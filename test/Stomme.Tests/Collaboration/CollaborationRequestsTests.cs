@@ -21,10 +21,10 @@ using static Stomme.Tests.Collaboration.CollaborationRig;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// The predecessor platform's <c>LockCqrsTests</c>, <c>SessionCqrsTests</c>, <c>CollaborationLockSweepJobTests</c> and
+    /// The <c>LockCqrsTests</c>, <c>SessionCqrsTests</c>, <c>CollaborationLockSweepJobTests</c> and
     /// <c>CollaborationRegistrationTests</c>, by name: each handler does what its service does, each request carries its key
     /// (view for an editor's act, manage for closing a session and taking a lock over), the sweep expires only lapsed leases,
-    /// and the module composes. <b>CHANGED:</b> the sweep job's switch is <c>Collaboration:Enabled</c> (the predecessor platform: a tenant
+    /// and the module composes. The sweep job's switch is <c>Collaboration:Enabled</c> (an earlier design gated it on a tenant
     /// directory) and no request carries a user.
     /// </summary>
     public sealed class CollaborationRequestsTests
@@ -74,7 +74,7 @@ namespace Stomme.Tests.Collaboration
             Assert.Equal(CollaborationPermissions.View, Key<ReleaseLockCommand>());
             Assert.Equal(CollaborationPermissions.View, Key<GetLockQuery>());
 
-            // ADDED: taking another user's lock over is the administrator's.
+            // Taking another user's lock over is the administrator's.
             Assert.Equal(CollaborationPermissions.Manage, Key<ForceReleaseLockCommand>());
             Assert.Equal(CollaborationPermissions.Manage, Key<GetCollaborationOverviewQuery>());
         }
@@ -170,7 +170,7 @@ namespace Stomme.Tests.Collaboration
             Assert.Equal(session.Id, (await handler.Handle(new GetOpenEditSessionQuery("dashboard", Board.ResourceId), CancellationToken.None))!.Id);
             Assert.Null(await handler.Handle(new GetOpenEditSessionQuery("pipeline", "def-9"), CancellationToken.None));
 
-            // ADDED: a resource the caller may not edit shows no session at all.
+            // A resource the caller may not edit shows no session at all.
             rig.Access.Denied.Add(Board.Value);
             Assert.Null(await handler.Handle(new GetOpenEditSessionQuery("dashboard", Board.ResourceId), CancellationToken.None));
         }
@@ -230,7 +230,7 @@ namespace Stomme.Tests.Collaboration
         [Fact]
         public async Task ExecuteAsync_WithoutATenantDirectory_DoesNothing()
         {
-            // CHANGED: the job's own switch is Collaboration:Enabled - off, it touches no site at all.
+            // The job's own switch is Collaboration:Enabled - off, it touches no site at all.
             var services = new ServiceCollection();
             services.AddSingleton(new CollaborationOptions { Enabled = false });
             await using var provider = services.BuildServiceProvider();

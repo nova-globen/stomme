@@ -55,7 +55,7 @@ namespace Stomme.Infrastructure.Tenancy
     /// therefore only ever entered on purpose, via <c>BeginScope(null)</c>.
     /// </para>
     /// <para>
-    /// <b>SiteState's alias can be SET later in a scope, and the tenant follows it (2026-09-28).</b> A job, and the engine's
+    /// <b>SiteState's alias can be SET later in a scope, and the tenant follows it.</b> A job, and the engine's
     /// worker running a dispatched pipeline, start a scope with no alias and set one when they need a site
     /// (<c>ITenantManager.SetAliasAsync</c>; the pipeline steps through <c>StommeSiteScope</c>). This context used to
     /// resolve once per scope, so a read BEFORE that - measured on RavenDB, where the run's first tenant read happens in the

@@ -16,8 +16,8 @@ using Stomme.Modules.Pipelines.Tenancy;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// Records from one of the site's CONNECTIONS, through its connector (BL-95's residue "a Connection with a vaulted secret",
-    /// closed by the extraction port D110 designed for exactly this step): the connection id, an operation and its parameters go
+    /// Records from one of the site's CONNECTIONS, through its connector (a Connection with a vaulted secret,
+    /// through the extraction port designed for exactly this step): the connection id, an operation and its parameters go
     /// to <see cref="IConnectorExtractionService"/>, which resolves the connection through the run's site, its connector, the
     /// credentials from the site's secret store and the HOST's egress, and answers the records up to the cap. The step never
     /// sees a credential or the aggregate - the author names a connection, not a password - and its result is the records as

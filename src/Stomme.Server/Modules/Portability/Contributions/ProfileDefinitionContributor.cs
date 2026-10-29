@@ -17,9 +17,9 @@ namespace Stomme.Modules.Portability.Contributions
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Matched by name, in memory, ordinal-ignore-case, over the CURRENT site's own profiles only</b> (refutation 13):
+    /// <b>Matched by name, in memory, ordinal-ignore-case, over the CURRENT site's own profiles only</b>:
     /// there is no normalized name column on Profile, so a store-side name comparison would answer differently per
-    /// provider (the D49 divergence). Host-level profiles (<c>SiteId</c> null) are neither exported nor matched.
+    /// provider (text comparison diverges between providers). Host-level profiles (<c>SiteId</c> null) are neither exported nor matched.
     /// </para>
     /// <para>
     /// <b>An import may make a field private, never public.</b> Overwriting a private field with a package's

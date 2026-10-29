@@ -12,7 +12,7 @@ namespace Stomme.Modules.HtmlText.Repository
     /// </summary>
     /// <remarks>
     /// A per-aggregate CLOSED interface rather than the open-generic <see cref="IRepository{TAggregate, TId}"/>, for
-    /// the reason documented at length on the framework's <c>ISiteStore</c> and enforced by D17 rule 1:
+    /// the reason documented at length on the framework's <c>ISiteStore</c>:
     /// <c>AddFeatureManagement</c> owns the open-generic <see cref="IRepository{TAggregate, TId}"/> in this host, so
     /// a second open-generic registration would be last-wins and silently re-point every live feature flag. A module
     /// MUST register its own closed store and session factory — never the ambient ones. This is a MODULE-owned
@@ -26,10 +26,10 @@ namespace Stomme.Modules.HtmlText.Repository
     }
 
     /// <summary>
-    /// Opens sessions over the HtmlText module's store for read queries (D19 — reads NEVER go through the store, so
+    /// Opens sessions over the HtmlText module's store for read queries (reads NEVER go through the store, so
     /// the store's change tracker stays clean for a later keyed write). A MODULE-owned closed session factory, the
     /// twin of the framework's <c>IFrameworkStoreSessionFactory</c>; on the document path it binds to the same
-    /// framework (tenant) database D54 already ensured, and on the relational path to the module's own
+    /// framework (tenant) database that is already ensured, and on the relational path to the module's own
     /// <see cref="HtmlTextContext"/>.
     /// </summary>
     [PrivateApi("Mark HtmlText classes as private, since it's not very useful in the public docs")]

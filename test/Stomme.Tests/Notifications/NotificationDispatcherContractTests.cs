@@ -21,12 +21,11 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// <c>NotificationDispatcherContractTests</c> (D100 points 3 and 4): a dependent referencing ONLY the
+    /// <c>NotificationDispatcherContractTests</c>: a dependent referencing ONLY the
     /// Shared port dispatches and reaches a fake channel; the four producer shapes dispatch; parameters survive
     /// persistence to render time; recipients - not callers - are constrained (an external e-mail only with the site's
-    /// opt-in, an Endpoint never (F9), a user only of THIS site). Also carries the 8 facts ported from the predecessor platform
-    /// <c>tests/Notifications.Tests/NotificationDispatchTests.cs</c>, harness swapped (the File store + a fake transport
-    /// for the in-memory store + capturing provider; the dispatch job's pass for the mediator command and the bus consumer).
+    /// opt-in, an Endpoint never, a user only of THIS site). Also carries 8 dispatch facts (the File store + a fake transport
+    /// with a capturing provider; the dispatch job's pass for the mediator command and the bus consumer).
     /// </summary>
     public sealed class NotificationDispatcherContractTests
     {
@@ -179,7 +178,7 @@ namespace Stomme.Tests.Notifications
             Assert.Equal("Run r-981 failed.", sent.Payload.Body);
         }
 
-        // ---- recipients are constrained (F9) ------------------------------------------------------
+        // ---- recipients are constrained ------------------------------------------------------
 
         [Fact]
         public async Task An_external_email_recipient_is_refused_unless_the_site_opts_in_and_nothing_is_persisted()
@@ -287,12 +286,12 @@ namespace Stomme.Tests.Notifications
             Assert.Null(request.CompletedOn);
         }
 
-        // ---- ported: the predecessor platform NotificationDispatchTests (8) ------------------------------------------------------
+        // ---- dispatch facts (8) ------------------------------------------------------------------------------------------------
 
         [Fact]
         public async Task Dispatch_PersistsQueuedRequest_AndEnqueuesDispatchMessage()
         {
-            // Harness swap: the bus is opt-in in Stomme, so it is registered here; the recipient is an external address,
+            // The bus is opt-in, so it is registered here; the recipient is an external address,
             // so the site opts in.
             await using var harness = await StartAsync(withEventBus: true);
             harness.Settings.ExternalRecipients[NotificationPipelineHarness.SiteId] = true;
@@ -387,7 +386,7 @@ namespace Stomme.Tests.Notifications
             await harness.RunSiteAsync();
             Assert.Equal(NotificationStatus.Failed, (await harness.GetAsync<NotificationRequestAggregate>(id))!.Status);
 
-            // Harness swap: the predecessor platform's RetryDeliveryCommand is the job's next pass once the back-off has elapsed.
+            // A retry is the job's next pass once the back-off has elapsed.
             webhook.Result = ChannelDeliveryResult.Ok();
             harness.Clock.Advance(NotificationDispatchProcessor.BackoffFor(1));
             await harness.RunSiteAsync();
@@ -409,7 +408,7 @@ namespace Stomme.Tests.Notifications
 
             await harness.RunSiteAsync();
 
-            // Harness swap: the predecessor platform deferred a RetryNotificationMessage(attempt 1) on the bus; Stomme re-arms the scalar
+            // The retry is re-armed on the request itself: the scalar
             // retry state the job selects on - one retry consumed, next attempt after the first back-off.
             var request = (await harness.GetAsync<NotificationRequestAggregate>(id))!;
             Assert.Equal(NotificationStatus.Failed, request.Status);
@@ -463,7 +462,7 @@ namespace Stomme.Tests.Notifications
         private static Task<IReadOnlyList<NotificationRequestAggregate>> ListRequestsAsync(NotificationPipelineHarness harness) =>
             harness.InScopeAsync(sp => sp.GetRequiredService<INotificationRequestRepository>().ListBySiteAsync(NotificationPipelineHarness.SiteId));
 
-        // the predecessor platform's BuildHost: a controllable capturing webhook + in-app provider.
+        // A controllable capturing webhook + in-app provider.
         private static async Task<(NotificationPipelineHarness Harness, FakeTransportChannel Webhook, FakeTransportChannel InApp)> BuildHostAsync()
         {
             var webhook = new FakeTransportChannel(ChannelKind.Webhook, WebhookProviderKey);

@@ -37,7 +37,7 @@ namespace Stomme.Modules.Formats.Startup
             services.AddModuleAggregatePersistence<FormatDefinitionAggregate, Guid>();
             services.AddScoped<IFormatDefinitionRepository, FormatDefinitionRepository>();
             services.AddScoped<IFormatService, SiteFormatService>();
-            // The D108 cell formatter: a later registration wins a single resolve, and DataExport's own is a TryAdd.
+            // The cell formatter: a later registration wins a single resolve, and DataExport's own is a TryAdd.
             services.AddScoped<Stomme.Export.IExportCellFormatter, FormatsExportCellFormatter>();
 
             services.AddScoped<IRequestHandler<SaveFormatDefinitionCommand, Guid>, SaveFormatDefinitionCommandHandler>();

@@ -20,8 +20,8 @@ namespace Stomme.Modules.Metering.Application
     /// <para>
     /// <b>What the lock is, per install.</b> The host registers ONE <see cref="IDistributedLock"/> that
     /// picks the install's primitive - PostgreSQL advisory, SQL Server app lock, RavenDB compare-exchange - and, on
-    /// SQLite and the File store, the explicit single-node in-process lock. Before BL-154 NOTHING was registered on
-    /// any provider, so this ran on its in-process fallback everywhere. <see cref="IsCrossNode"/> says which is in
+    /// SQLite and the File store, the explicit single-node in-process lock. Where no lock is registered the fold
+    /// runs on its in-process fallback. <see cref="IsCrossNode"/> says which is in
     /// force; where it is false the protection is within one host only - a RECORDED divergence, not a claim of safety,
     /// and the repair pass in the rollup job is what makes a missed update converge.
     /// </para>

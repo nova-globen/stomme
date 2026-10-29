@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (refutation 16) - the <c>DCBAK1</c> archive: parts and the manifest round-trip, and every way of
+    /// The <c>DCBAK1</c> archive: parts and the manifest round-trip, and every way of
     /// altering the file is REFUSED - the wrong passphrase, a flipped header, manifest or chunk byte, a dropped final chunk,
     /// reordered chunks, a chunk transplanted between parts, a truncated file. A version mismatch is refused before a part is
     /// read. Small chunks (4 KiB) so a part spans several without megabytes of test data.
@@ -44,7 +44,7 @@ namespace Stomme.Tests.Backup
             await reader.VerifyAsync();
         }
 
-        // the predecessor platform's Pack_emptyPartList_producesContainerThatUnpacksEmpty and Pack_leavesDestinationStreamOpen.
+        // Pack_emptyPartList_producesContainerThatUnpacksEmpty and Pack_leavesDestinationStreamOpen: an empty part list packs to a container that unpacks empty, and packing leaves the destination open.
         [Fact]
         public async Task An_archive_with_no_parts_opens_empty_and_the_output_stays_open()
         {
@@ -164,7 +164,7 @@ namespace Stomme.Tests.Backup
             Assert.Equal("This is not a Nova Globen Stomme backup archive.", refused.Message);
         }
 
-        // BL-170 (D106's correction): the same version or an older one, never a newer one, never across an upgrade step;
+        // The same version or an older one, never a newer one, never across an upgrade step;
         // whether each part's rows read unchanged is the parts' shapes (BackupPartShapeTests).
         [Fact]
         public async Task A_newer_archive_or_one_across_an_upgrade_step_is_refused_before_a_part_is_read_and_an_older_one_is_not()

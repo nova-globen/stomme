@@ -13,7 +13,7 @@ namespace Stomme.Modules.Notifications.Application
     /// <summary>
     /// The Notifications module's per-site settings: plain <see cref="Setting"/> rows on
     /// <see cref="EntityNames.Site"/>, read through <see cref="ISettingRepository"/>. Deliberately NOT in
-    /// <c>SettingKeys.cs</c> (D100's NOT CHANGED list) - they are the module's, not the framework's.
+    /// <c>SettingKeys.cs</c> - they are the module's, not the framework's.
     /// </summary>
     public static class NotificationSiteSettingNames
     {

@@ -10,7 +10,7 @@ namespace Stomme.Modules.IdentityAudit
     /// </summary>
     /// <remarks>
     /// <b>No permission keys.</b> Reading a site's account record is the framework's question - the Administrators role,
-    /// decided again by the controller on every call - and <c>identity.*</c> is the prefix D109 reserves.
+    /// decided again by the controller on every call - and <c>identity.*</c> is the prefix the framework reserves for identity permissions.
     /// </remarks>
     public class ModuleInfo : IModule
     {

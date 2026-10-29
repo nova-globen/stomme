@@ -29,7 +29,7 @@ namespace Stomme.Repository
     /// </summary>
     /// <remarks>
     /// <para>
-    /// MASTER, not tenant (D23's master half): Job is installation-wide, so reads go through
+    /// MASTER, not tenant: Job is installation-wide, so reads go through
     /// <see cref="IMasterStoreSessionFactory"/> — NOT the tenant <see cref="IFrameworkStoreSessionFactory"/> —
     /// and writes through a store bound to <see cref="MasterDBContext"/>. The scheduler
     /// (<c>HostedServiceBase</c>) calls this from a background scope with no request and no tenant, which the
@@ -73,7 +73,7 @@ namespace Stomme.Repository
             _cache = cache;
         }
 
-        // A store bound to a FRESH unit of work per write (BL-11 / the D47 UrlMapping pattern). IJobStore is
+        // A store bound to a FRESH unit of work per write (the same pattern UrlMapping uses). IJobStore is
         // registered transient, so every call yields a new store over a new MasterDBContext with an empty change
         // tracker; the scope disposes them. This is what lets the scheduler write the same job row twice in one
         // scope without hitting the identity map. See the class remarks.
@@ -119,7 +119,7 @@ namespace Stomme.Repository
             var aggregate = JobMapper.ToAggregate(job, assignId: false);
             await NewStore().AddAsync(aggregate);
             JobMapper.CopyPersistedValues(aggregate, job);
-            // Invalidate the negative cache that GetJobAsync(string) writes for a miss (D19 read path caches
+            // Invalidate the negative cache that GetJobAsync(string) writes for a miss (the read path caches
             // null under Job:{jobType}). Without this, the scheduler's auto-registration reads a stale null on
             // every subsequent tick and re-INSERTs an existing JobType — UNIQUE constraint failed: Job.JobType,
             // forever. UpdateJobAsync/DeleteJobAsync already invalidate this key; AddJobAsync must too.

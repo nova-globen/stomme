@@ -15,28 +15,28 @@ using Stomme.Shared;
 namespace Stomme.Modules.ContextualHelp.Infrastructure
 {
     /// <summary>
-    /// Resolves and renders help for the CURRENT site (D103 items 4 and 12) - the port the launcher, the
-    /// controller and BL-97's assistant all read through.
+    /// Resolves and renders help for the CURRENT site - the port the launcher, the
+    /// controller and the assistant all read through.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>PUBLISHED topics of the CURRENT site only, by construction</b> (D103 refutation 12). This port sits outside
-    /// the mediator's authorization behavior, and the predecessor platform's equivalent returned every topic on the site, drafts
-    /// included - so an assistant reading it would have quoted unpublished text back to a user. Every path here ends in
+    /// <b>PUBLISHED topics of the CURRENT site only, by construction</b>. This port sits outside
+    /// the mediator's authorization behavior, and a port that returned every topic on the site, drafts
+    /// included, would let an assistant reading it quote unpublished text back to a user. Every path here ends in
     /// an <c>IsPublished</c> test, the site comes from the resolved alias (through the closed repository), and drafts
     /// are reachable only through the <c>help:manage</c> list.
     /// </para>
     /// <para>
-    /// <b>ONE locale chain</b> (the predecessor platform duplicated it): the asked locale → its <see cref="CultureInfo.Parent"/> chain →
+    /// <b>ONE locale chain</b> (not duplicated): the asked locale → its <see cref="CultureInfo.Parent"/> chain →
     /// the site's DEFAULT language → <see cref="Constants.DefaultCulture"/>. Each step is a by-id read on the
     /// deterministic id - never a string query, which this repository has measured three different answers to. The
     /// first PUBLISHED topic wins; a draft in a closer locale does not hide a published one further down.
     /// </para>
     /// <para>
     /// <b>What is cached is the RENDERED HTML, keyed on the row's id AND its <c>ContentVersion</c></b> - a key that
-    /// cannot go stale, because every text change bumps the version (and an unchanged boot does not, refutation 7). The
+    /// cannot go stale, because every text change bumps the version (and an unchanged boot does not). The
     /// by-id read itself is not cached: it is what tells us the version, and on RavenDB it is a document load, which
-    /// does not wait for an index (refutation 3(c)'s <c>WaitForNonStaleResults</c> is a QUERY cost).
+    /// does not wait for an index (<c>WaitForNonStaleResults</c> is a QUERY cost).
     /// </para>
     /// </remarks>
     public sealed class HelpTopicProvider : IHelpTopicProvider
@@ -64,7 +64,7 @@ namespace Stomme.Modules.ContextualHelp.Infrastructure
             var alias = _siteState.Alias;
             if (alias is null || alias.SiteId <= 0 || !HelpKeys.TryNormalizeAnchor(anchor, out var normalizedAnchor))
             {
-                return null;   // from the wire: "no topic", never an exception (D103 refutation 10)
+                return null;   // from the wire: "no topic", never an exception
             }
 
             foreach (var candidate in await LocaleChainAsync(locale, alias.SiteId))

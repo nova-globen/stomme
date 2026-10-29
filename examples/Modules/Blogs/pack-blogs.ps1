@@ -1,5 +1,5 @@
 #!/usr/bin/env pwsh
-# BL-13 (was THE FINALE). Packs the independent, storage-blind, WASM-download-safe SPLIT Blogs module
+# Packs the independent, storage-blind, WASM-download-safe SPLIT Blogs module
 # (Client/Server/Shared) to a single Stomme module .nupkg.
 #
 # Prerequisite: examples/pack-sdk.ps1 has produced examples/local-feed (the Stomme.Sdk packages the

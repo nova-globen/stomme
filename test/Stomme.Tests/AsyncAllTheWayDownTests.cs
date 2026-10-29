@@ -13,9 +13,9 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// THE GATE for D33: sync-over-async is banned in framework code, and Stomme-owned store-touching
-    /// interfaces are async-only. This is a gate, not a sentence — D29 wrote the rule down in prose and the
-    /// next commit shipped a master that could not render a page.
+    /// The gate for the sync-over-async ban: sync-over-async is banned in framework code, and Stomme-owned store-touching
+    /// interfaces are async-only. This is a gate, not a sentence - a rule written down in prose alone was followed by a
+    /// commit that shipped a build which could not render a page.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -27,7 +27,7 @@ namespace Stomme.Tests
     /// <c>Task.Result</c>), one <c>context.Result = new AntiforgeryValidationFailedResult()</c> in
     /// <c>AutoValidateAntiforgeryTokenFilter.cs</c> (an assignment to an MVC property), and one occurrence
     /// inside a <c>&lt;remarks&gt;</c> COMMENT in <c>SeamInterop.cs</c>. A gate that cries wolf gets
-    /// suppressed, and a suppressed gate is how D29 shipped. The C# parser tells a call from a comment and a
+    /// suppressed, and a suppressed gate is how such a defect ships. The C# parser tells a call from a comment and a
     /// read from a write by construction.
     /// </para>
     /// <para>
@@ -56,7 +56,7 @@ namespace Stomme.Tests
         // ------------------------------------------------------------------------------------------------
         // THE PERMITTED-BOUNDARY ALLOWLIST. Keep it SMALL and keep every entry justified — a boundary kept
         // for convenience is a violation. Each entry names a platform contract Stomme does NOT own.
-        // Every entry here is also enumerated in docs/decisions.md D33. Do not add one without doing both.
+        // Every entry here must also be recorded in the sync-over-async decision. Do not add one without doing both.
         // ------------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Stomme.Tests
         private static readonly IReadOnlyDictionary<string, string> AllowedBlockingWaits =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                // ONE entry. See docs/decisions.md D33 for the full argument and the rejected alternative.
+                // ONE entry. See the sync-over-async decision for the full argument and the rejected alternative.
                 //
                 // .NET MAUI's entry point is `protected override MauiApp CreateMauiApp()` on
                 // MauiWinUIApplication / MauiApplication / MauiUIApplicationDelegate. It is SYNCHRONOUS and
@@ -74,7 +74,7 @@ namespace Stomme.Tests
                 // must download the client assemblies BEFORE it finishes, because RegisterModuleServices
                 // reflects over them to populate the DI container it is in the middle of building.
                 //
-                // This is NOT the D29 deadlock class: the wait is wrapped in Task.Run, so the awaits happen
+                // This is NOT the deadlock class: the wait is wrapped in Task.Run, so the awaits happen
                 // on a threadpool thread that has no SynchronizationContext to capture, and nothing here
                 // touches EF Core, Npgsql, or a Blazor renderer.
                 //
@@ -94,7 +94,7 @@ namespace Stomme.Tests
         private static readonly IReadOnlyDictionary<string, string> AllowedSyncMembers =
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
-                // (empty — see docs/decisions.md D33.)
+                // (empty - see the sync-over-async decision.)
             };
 
         // ------------------------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// SeamInterop was the sanctioned home of the framework's blocking waits. D33 retires it. This
+        /// SeamInterop was the sanctioned home of the framework's blocking waits. It is retired, not improved. This
         /// asserts the file is gone, so the debt cannot be re-parked in a helper that the allowlist above
         /// would then have to name.
         /// </summary>
@@ -175,7 +175,7 @@ namespace Stomme.Tests
                     async System.Threading.Tasks.Task<int> C(System.Threading.Tasks.Task<int> t)
                         => await t;
 
-                    // BL-93, the vendored pipeline engine's own vocabulary. Seven shapes of this family were
+                    // The vendored pipeline engine's own vocabulary. Seven shapes of this family were
                     // reported as blocking waits by the syntactic rules; not one of them is a Task.
                     object? D(StepCompletedContext context) => context.Result;
                     object? E(IStep step) => step.GetResult(0);
@@ -197,7 +197,7 @@ namespace Stomme.Tests
         /// <summary>
         /// An allowlist entry that no longer names a blocking wait is a permission nobody needs — and a
         /// permission nobody needs is how an allowlist grows. It also proves the receiver-type-aware rules
-        /// still SEE the one boundary D33 permits (MAUI's <c>Task.Run(...).GetAwaiter().GetResult()</c>):
+        /// still SEE the one boundary the decision permits (MAUI's <c>Task.Run(...).GetAwaiter().GetResult()</c>):
         /// that file is silent in the gate because it is ALLOWED, not because the scan stopped finding it.
         /// </summary>
         [Fact]
@@ -257,7 +257,7 @@ namespace Stomme.Tests
         /// <summary>
         /// Guards the guard: if the discovery predicate stops matching (a namespace rename, a moved
         /// assembly), <see cref="Store_touching_interfaces_expose_no_synchronous_methods"/> would pass
-        /// vacuously over an empty set — green, and blind. That is precisely how the D30 skip shipped.
+        /// vacuously over an empty set — green, and blind. That is precisely how a skipped gate ships.
         /// </summary>
         [Fact]
         public void The_store_touching_interface_discovery_is_not_vacuous()
@@ -271,7 +271,7 @@ namespace Stomme.Tests
                 "Expected the scan to find the framework's repository/store interfaces; found " +
                 found.Count + ". The discovery predicate has probably stopped matching.");
 
-            // The clusters D29 names, by name, so a silent narrowing of the scan is a failure.
+            // The clusters the rule names, by name, so a silent narrowing of the scan is a failure.
             foreach (var required in new[]
                      {
                          "IPermissionRepository", "ISiteRepository", "IPageRepository", "IModuleRepository",
@@ -475,7 +475,7 @@ namespace Stomme.Tests
         /// <summary>
         /// SEMANTICS — the verdict. A candidate is a violation only when the receiver's TYPE makes it one.
         /// A receiver whose type cannot be resolved is reported as a violation too: a precision rule that
-        /// fails open is a gate that passes vacuously, which is exactly the failure mode D30 shipped.
+        /// fails open is a gate that passes vacuously, which is exactly the failure mode of a skipped gate.
         /// </summary>
         private static Violation? Judge(Candidate candidate, SemanticModel? model)
         {
@@ -514,7 +514,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// Task/Task&lt;T&gt;/ValueTask&lt;T&gt;, or anything deriving from one. Reading `Result` on one of
-        /// these is the D29 deadlock shape; reading `Result` on anything else is reading a property that
+        /// these is the deadlock shape; reading `Result` on anything else is reading a property that
         /// merely happens to be called Result.
         /// </summary>
         private static bool IsTaskLike(ITypeSymbol type, Compilation compilation)

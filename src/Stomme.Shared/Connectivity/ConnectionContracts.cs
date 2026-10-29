@@ -37,7 +37,7 @@ namespace Stomme.Connectivity
     }
 
     /// <summary>
-    /// How a connector call ended, as a CATEGORY (D110 refutation 3): a connector's own text - which may echo the
+    /// How a connector call ended, as a CATEGORY: a connector's own text - which may echo the
     /// endpoint, a user name or a password - never reaches a page, an event or a log; the category does, and the log
     /// carries the exception TYPE.
     /// </summary>
@@ -201,7 +201,7 @@ namespace Stomme.Connectivity
     /// A connector's catalog icon: the connector's own inline SVG when it declares one, otherwise a brand-neutral monogram
     /// tile - a rounded square tinted by the primary category carrying the display name's initials. Only letters and
     /// digits reach the initials and the text is escaped besides, so a display name carrying markup renders as text
-    /// (the predecessor platform's renderer let a leading <c>&lt;</c> through).
+    /// (a renderer that let a leading <c>&lt;</c> through would inject it).
     /// </summary>
     public static class ConnectorIcons
     {

@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Portability.Controllers
 {
     /// <summary>
-    /// The portability HTTP surface (D107 items 3, 9, 12).
+    /// The portability HTTP surface.
     /// </summary>
     /// <remarks>
     /// <para>

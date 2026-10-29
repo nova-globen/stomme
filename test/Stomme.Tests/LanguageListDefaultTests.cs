@@ -17,7 +17,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-22's depth-2 pass - the Languages list's Default column showed "Permission Disabled" on every row, so
+    /// The Languages list's Default column showed "Permission Disabled" on every row, so
     /// it never said which language is the site's default. It drew the value through <c>TriStateCheckBox</c> with
     /// <c>Disabled="true"</c>, and that control draws a disabled box as the disabled icon whatever its value - right for
     /// the permission grid, where disabled means "you may not change this", and no use for a read-only column.

@@ -46,7 +46,7 @@ namespace Stomme.Tests
     /// <list type="number">
     /// <item><b>SAML end to end</b> — a self-hosted test IdP mints a SIGNED SAML assertion, POSTed to the real
     /// Sustainsys ACS endpoint. Sustainsys validates the signature against the IdP metadata, signs the raw
-    /// principal into the external cookie, and returns to <c>/signin-saml2</c>, where the D65 provisioning bridge
+    /// principal into the external cookie, and returns to <c>/signin-saml2</c>, where the provisioning bridge
     /// routes the principal through <c>ValidateUser</c> — creating-or-linking the IdentityUser + writing a
     /// <c>UserLogin</c> row (provider <c>saml2:{siteId}</c>) and setting the Identity cookie. Asserted on the real
     /// DB across every reachable provider.</item>
@@ -351,7 +351,7 @@ namespace Stomme.Tests
             // GET /api/Site/{id} runs that exact service over HTTP, so this asserts the flag the login page's
             // `@if (_allowsamllogin)` gates on is delivered as "true" only when enabled — driven end to end.
             //
-            // Honest limit (same as D64): the literal interactive button render is NOT asserted here — the login
+            // Limit of this test: the literal interactive button render is NOT asserted here — the login
             // module renders as an interactive Blazor island that a plain HTTP GET does not prerender, so proving
             // the pixel needs a browser circuit this harness does not host. The button itself is a trivial
             // per-flag `@if` over this surfaced setting; the challenge endpoints it targets are driven above

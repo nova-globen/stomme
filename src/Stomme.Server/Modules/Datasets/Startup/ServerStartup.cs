@@ -20,14 +20,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Datasets.Startup
 {
     /// <summary>
-    /// The Datasets module's server composition (BL-94 increments 9, 10 and 13): the tenant-owned
+    /// The Datasets module's server composition: the tenant-owned
     /// <see cref="DatasetAggregate"/> on the storage-blind seam, the module's repository, the Shared read and write ports'
     /// implementations, the PII scanner and the classifier over it, the CQRS handlers (registered EXPLICITLY - never
-    /// AddMediator() here), the validators, the managed-file reader and the upload source (13), and the client contract's server twin.
+    /// AddMediator() here), the validators, the managed-file reader and the upload source, and the client contract's server twin.
     /// </summary>
     public class ServerStartup : IServerStartup
     {
-        /// <summary>The host's configuration as the composition seam sees it (the layered root when it is registered, else the builder's - BL-162's reading, before DI exists).</summary>
+        /// <summary>The host's configuration as the composition seam sees it (the layered root when it is registered, else the builder's - read before DI exists).</summary>
         private static Microsoft.Extensions.Configuration.IConfiguration? HostCompositionConfiguration(IServiceCollection services) =>
             services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(Microsoft.Extensions.Configuration.IConfigurationRoot))?.ImplementationInstance as Microsoft.Extensions.Configuration.IConfiguration
             ?? services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(Microsoft.Extensions.Configuration.IConfiguration))?.ImplementationInstance as Microsoft.Extensions.Configuration.IConfiguration;
@@ -70,7 +70,7 @@ namespace Stomme.Modules.Datasets.Startup
             // The export half: a dataset's rows as an export source; the engine checks datasets:preview.
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Export.IExportSource, DatasetRowsExportSource>());
 
-            // Demo content (increment 14): three datasets per site on the boot path, ONLY while DemoContent:Enabled is
+            // Demo content: three datasets per site on the boot path, ONLY while DemoContent:Enabled is
             // true (default off) - while it is off the reconciler is not even registered, so a stock install is untouched.
             if (DemoContentSettings.Enabled(HostCompositionConfiguration(services)))
             {
@@ -78,7 +78,7 @@ namespace Stomme.Modules.Datasets.Startup
                 services.AddScoped<ISiteContentReconciler, DatasetsDemoContentReconciler>();
             }
 
-            // The MCP surface (increment 12): needs the mediator, so registered here rather than discovered; its flag is
+            // The MCP surface: needs the mediator, so registered here rather than discovered; its flag is
             // discovered. Registered ONLY while the MCP server half is composed (Mcp:Server:Enabled, read at composition
             // from the host's root): with the server half off there is no catalog at all, and no contributor either
             // (McpCatalogDriveTests pins that for every module).

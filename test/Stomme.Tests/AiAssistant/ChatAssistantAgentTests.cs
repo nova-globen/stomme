@@ -11,10 +11,10 @@ using static Stomme.Tests.AiAssistant.TurnScriptChatClient;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// The predecessor platform's <c>ChatAssistantAgentTests</c>, by name, over a scripted model behind the REAL metered
-    /// client. <b>CHANGED:</b> metering is per MODEL CALL through <see cref="MeteredChatClient"/> - a tool round and the answer
-    /// are two rows, each attributed to the agent (the predecessor platform recorded one aggregate row per turn with a latency); a disabled
-    /// assistant surfaces <see cref="AssistantUnavailableException"/> with its reason (the predecessor platform: InvalidOperationException).
+    /// The chat agent, over a scripted model behind the REAL metered client. Metering is per MODEL CALL through
+    /// <see cref="MeteredChatClient"/> - a tool round and the answer are two rows, each attributed to the agent, rather
+    /// than one aggregate row per turn; a disabled assistant surfaces <see cref="AssistantUnavailableException"/> with
+    /// its reason.
     /// </summary>
     public sealed class ChatAssistantAgentTests
     {
@@ -76,7 +76,7 @@ namespace Stomme.Tests.AiAssistant
             Assert.True(router.LastRequest!.ToolCount > 0);
             Assert.True(router.LastRequest.TokenEstimate > 0);
 
-            // ADDED: the meter records the model the call was MADE with, not the site's default.
+            // The meter records the model the call was MADE with, not the site's default.
             Assert.All(models.Usage.Events, usage => Assert.Equal("cheap-model", usage.Model));
         }
 
@@ -107,7 +107,7 @@ namespace Stomme.Tests.AiAssistant
             Assert.Equal("cached answer", reply.Message.Content);
             Assert.Equal(0, model.Turns);
 
-            // The hit is metered as cached, with the original counts (D102 bills a cached call at nothing).
+            // The hit is metered as cached, with the original counts (a cached call is billed at nothing).
             var usage = Assert.Single(models.Usage.Events);
             Assert.Equal(("test", "test-model", "assistant", 10L, 5L, AiCallStatus.Cached), (usage.Provider, usage.Model, usage.Agent, usage.InputTokens, usage.OutputTokens, usage.Status));
             Assert.Empty(models.Quotas.Asked);
@@ -154,7 +154,7 @@ namespace Stomme.Tests.AiAssistant
         }
 
         /// <summary>
-        /// ADDED (BL-98 increments 3-4, found by driving): a model that never stops calling a tool is cut off at
+        /// A model that never stops calling a tool is cut off at
         /// <see cref="AssistantTurn.MaxToolRounds"/>. The library's default is 40 rounds, each a metered, billed call.
         /// </summary>
         [Fact]

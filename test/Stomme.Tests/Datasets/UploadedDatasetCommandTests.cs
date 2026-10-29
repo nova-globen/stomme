@@ -15,10 +15,9 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// The predecessor platform's upload cases by name (DatasetTests:
-    /// <c>RegisterUploadedDataset_MaterializesFile_AsUploadOriginDataset</c>, <c>RegisterUploadedDataset_ExplicitName_OverridesTheFileName</c>;
-    /// <c>RegisterUploadedDataset_WithoutSourceWired_Throws</c> is CHANGED - the module's startup always wires the source, so the
-    /// case here is a refusal from the source registering nothing) over the module's real startup on the File store, with
+    /// The upload cases: the file materialises as an upload-origin dataset, and an explicit name overrides the file name.
+    /// <c>RegisterUploadedDataset_WithoutSourceWired_Throws</c> is changed - the module's startup always wires the source, so the
+    /// case here is a refusal from the source registering nothing. The cases run over the module's real startup on the File store, with
     /// the managed-file source swapped for a fake: the row count is the FILE's, not the sample's; the origin is
     /// <c>file:&lt;id&gt;</c> so the same file registered again refreshes its one row; a parser refusal registers nothing;
     /// a file id of zero fails validation before anything is read.

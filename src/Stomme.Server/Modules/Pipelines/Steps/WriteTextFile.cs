@@ -14,8 +14,8 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// Write (or append) text to a file in the site's pipeline folder (the predecessor platform's file <c>write</c>/<c>append</c>,
-    /// per-site). The content passes through as the result, so a chain can keep going after storing.
+    /// Write (or append) text to a file in the site's pipeline folder.
+    /// The content passes through as the result, so a chain can keep going after storing.
     /// </summary>
     [FlowNode(DoneOutcome, FailedOutcome)]
     [Step("Stomme", "Files", "Write text to a file in the site's pipeline folder.", DisplayName = "Write text file")]

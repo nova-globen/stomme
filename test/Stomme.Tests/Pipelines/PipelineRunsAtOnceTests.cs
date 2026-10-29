@@ -199,8 +199,8 @@ namespace Stomme.Tests.Pipelines
         }
 
         // The waiting runs take their turns in the order their calls ARRIVED - stamped as each is handed to the engine, which
-        // takes them on several workers and so stores them in no fixed order (on UAT three calls sent one after another were
-        // stored in reverse). Here c is stored before b but arrived after it: b goes first.
+        // takes them on several workers and so stores them in no fixed order (three calls sent one after another were
+        // stored in reverse on a live host). Here c is stored before b but arrived after it: b goes first.
         [Fact]
         public async Task In_turn_the_waiting_runs_go_in_the_order_their_calls_arrived_not_the_order_they_were_stored()
         {

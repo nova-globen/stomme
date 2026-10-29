@@ -9,9 +9,9 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// The catalogue's rules: the snapshot's life (the predecessor platform's <c>BackupSnapshotTests</c>, ported by name
+    /// The catalogue's rules: the snapshot's life (the cases of <c>BackupSnapshotTests</c>, carried over by name
     /// in the module README, with <c>FailRestore</c> INVERTED - a failed restore is <c>RestoreFailed</c>, not Available), the
-    /// staged restore D106 adds, the schedule's due rule, and the value objects (the predecessor platform's <c>BackupValueObjectTests</c>).
+    /// staged restore, the schedule's due rule, and the value objects (<c>BackupValueObjectTests</c>).
     /// </summary>
     public class BackupSnapshotAggregateTests
     {
@@ -33,7 +33,7 @@ namespace Stomme.Tests.Backup
             var snapshot = Started();
             Assert.Equal(BackupSnapshotStatus.Creating, snapshot.Status);
             Assert.Null(snapshot.GetChecksum());
-            Assert.Equal($"{snapshot.Id:N}.stbak", snapshot.StorageLocation.Value); // BL-261; a row stored as .dcbak keeps its name
+            Assert.Equal($"{snapshot.Id:N}.stbak", snapshot.StorageLocation.Value); // a row stored as .dcbak keeps its name
             Assert.Equal(("10.2.3", Now, 0L), (snapshot.FrameworkVersion, snapshot.CreatedOnUtc, snapshot.SizeBytes));
             Assert.Throws<ArgumentNullException>(() => BackupSnapshotAggregate.Start(Guid.NewGuid(), null!, "10.2.3", Now));
             Assert.Throws<ArgumentException>(() => BackupSnapshotAggregate.Start(Guid.NewGuid(), RetentionTag.Manual, " ", Now));
@@ -91,7 +91,7 @@ namespace Stomme.Tests.Backup
             Assert.True(snapshot.CanBeDeleted());
         }
 
-        // INVERTED from the predecessor platform's FailRestore_LeavesSnapshotAvailable: a restore that did not finish is shown, not hidden.
+        // Inverted against FailRestore_LeavesSnapshotAvailable: a restore that did not finish is shown, not hidden.
         [Fact]
         public void A_failed_restore_is_RestoreFailed_and_the_snapshot_stays_restorable()
         {
@@ -152,7 +152,7 @@ namespace Stomme.Tests.Backup
             Assert.Throws<ArgumentOutOfRangeException>(() => BackupScheduleAggregate.Create(BackupScheduleAggregate.MaximumIntervalHours + 1, 30, 3, true, Now));
         }
 
-        // ---- value objects (the predecessor platform's BackupValueObjectTests) -----------------------------------------------------------------
+        // ---- value objects -----------------------------------------------------------------
 
         [Fact]
         public void Checksum_is_64_lower_hex_and_compares_case_blind_on_input()

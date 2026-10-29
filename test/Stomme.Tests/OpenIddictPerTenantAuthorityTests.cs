@@ -40,7 +40,7 @@ namespace Stomme.Tests
     /// only the transport swapped for TestServer) with OpenIddict co-hosted, installs TWO isolated tenants
     /// (two databases on two aliases/hosts), registers a DIFFERENT client-credentials client in each tenant's
     /// DEDICATED OpenIddict store, then drives the token endpoint over real HTTP for both and asserts the four
-    /// spike claims:
+    /// claims:
     /// </para>
     /// <list type="number">
     /// <item><b>Co-hosting</b> — <c>/connect/token</c> is served from inside Stomme's Blazor SSR pipeline
@@ -56,8 +56,8 @@ namespace Stomme.Tests
     /// </list>
     /// <para>
     /// PROVIDER DIMENSION. SQLite is the always-on case (two files = true per-tenant DB isolation, no external
-    /// service). PostgreSQL runs additionally when reachable (shared infra by default; see PostgresTestEndpoint). Unlike the
-    /// D30 render guard there is NO "must have a real async provider" assertion here, and that is deliberate:
+    /// service). PostgreSQL runs additionally when reachable (shared test servers by default; see PostgresTestEndpoint). Unlike the
+    /// render guard there is NO "must have a real async provider" assertion here, and that is deliberate:
     /// the isolation mechanism under test — per-alias store routing, host-inferred issuer, the validation
     /// issuer check — lives above the database and is provider-independent, so SQLite is genuine cover, not a
     /// stand-in. PostgreSQL is added as extra confidence on a real relational server, not because SQLite is
@@ -93,7 +93,7 @@ namespace Stomme.Tests
                 yield return new object[] { PostgresOidcProvider.ProviderName };
             }
 
-            // RavenDB is ALWAYS yielded — never conditional on reachability (D62/D46 principle): an EF-only run
+            // RavenDB is ALWAYS yielded — never conditional on reachability (the parity principle): an EF-only run
             // proves nothing about EF↔Raven parity, so an unreachable RavenDB must FAIL the test, not skip it. If
             // Raven is down, the tenant-A install (which bootstraps the Raven database) fails and the install
             // assertion below trips — a hard red, not a silent shrink.
@@ -200,7 +200,7 @@ namespace Stomme.Tests
                     "(native OpenIddict issuer check: the token's iss is not this host's inferred issuer)");
                 Assert.NotEqual(HttpStatusCode.OK, rejectedAtB);
 
-                // ==== BL-196: a client-credentials token is valid at the authority but carries no PERSON, so it
+                // ==== A client-credentials token is valid at the authority but carries no PERSON, so it
                 // signs no one in to api/* (until a service identity exists) - accepted above, anonymous here.
                 var apiRequest = new HttpRequestMessage(HttpMethod.Get, $"http://{TenantAHost}/api/User/authenticate");
                 apiRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenA.AccessToken);
@@ -222,16 +222,15 @@ namespace Stomme.Tests
         /// </summary>
         /// <remarks>
         /// <para>
-        /// OAuth2/OIDC defines <c>client_id</c> as case-SENSITIVE (RFC 6749). <b>FALSIFICATION of the D70 brief's
-        /// premise:</b> there is NO observable EF-vs-Raven divergence at the token endpoint, because OpenIddict's
+        /// OAuth2/OIDC defines <c>client_id</c> as case-SENSITIVE (RFC 6749). <b>Checked and falsified:</b> there is NO observable EF-vs-Raven divergence at the token endpoint, because OpenIddict's
         /// <c>OpenIddictApplicationManager.FindByClientIdAsync</c> applies its OWN ordinal second pass ABOVE the
         /// store ("a second pass using string.Equals(StringComparison.Ordinal) is manually made here … enforced
         /// independently of the … collation used by the store"). So a mixed-case client_id is correctly rejected
         /// on EF <i>and</i> RavenDB even with the naive store — verified: this test's end-to-end half passes on
-        /// all three providers with OR without the D70 store fix.
+        /// all three providers with OR without the store fix.
         /// </para>
         /// <para>
-        /// The D70 store fix (an in-memory ordinal post-filter in <c>OpenIddictRavenApplicationStore</c>) is
+        /// The store fix (an in-memory ordinal post-filter in <c>OpenIddictRavenApplicationStore</c>) is
         /// therefore DEFENSE-IN-DEPTH: it makes the Raven store's own contract case-sensitive rather than relying
         /// solely on the manager's guard (which OpenIddict lets callers disable via <c>DisableAdditionalFiltering</c>).
         /// To keep the fix non-vacuous, the RavenDB leg ALSO drives the store DIRECTLY (below the manager): with
@@ -296,7 +295,7 @@ namespace Stomme.Tests
 
                 // ---- Store level (RavenDB): the fix-sensitive gate. Resolve the RavenDB OpenIddict application
                 //      store directly (below the manager) in a warmed tenant scope and assert IT is case-sensitive.
-                //      Without the D70 fix this MISSES/HITS pair flips (wrong case returns the doc). --------------
+                //      Without the fix this MISSES/HITS pair flips (wrong case returns the doc). --------------
                 if (providerName == RavenOidcProvider.ProviderName)
                 {
                     using var scope = app.Services.CreateScope();
@@ -309,7 +308,7 @@ namespace Stomme.Tests
                     var exactCaseAtStore = await store.FindByClientIdAsync(mixedCaseClientId, CancellationToken.None);
                     _output.WriteLine($"[{provider.Name}][store] wrong-case -> {(wrongCaseAtStore is null ? "null" : "FOUND")}; " +
                         $"exact-case -> {(exactCaseAtStore is null ? "null" : "FOUND")}");
-                    Assert.Null(wrongCaseAtStore);   // fix-sensitive: without D70 the case-insensitive Raven query returns the doc
+                    Assert.Null(wrongCaseAtStore);   // fix-sensitive: without the fix the case-insensitive Raven query returns the doc
                     Assert.NotNull(exactCaseAtStore);
                 }
             }
@@ -552,7 +551,7 @@ namespace Stomme.Tests
         /// <summary>
         /// The RavenDB provider. Tenant A/B each get their own RavenDB database, and each tenant's
         /// dedicated OpenIddict database is a SEPARATE RavenDB database again — the document-store analogue of
-        /// B1's per-tenant relational databases, so tenant A's clients/tokens are physically invisible at tenant
+        /// the per-tenant relational databases, so tenant A's clients/tokens are physically invisible at tenant
         /// B. Connection strings are RavenDB descriptors (<c>Url=…;Database=…</c>) against the local server on
         /// <c>RAVENDB_TEST_URL</c> (default <c>http://127.0.0.1:7000</c>). Unlike PostgreSQL this provider is
         /// yielded UNCONDITIONALLY: an unreachable RavenDB fails the install (and thus the test), never skips.

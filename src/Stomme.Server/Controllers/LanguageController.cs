@@ -164,7 +164,7 @@ namespace Stomme.Controllers
             return language;
         }
 
-        // BL-143 (the BL-87 class): a language IS its culture code. Blank, whitespace and the Add form's "-" placeholder were
+        // A language IS its culture code. Blank, whitespace and the Add form's "-" placeholder were
         // all written through the API - measured, 200 and a row each - and a blanked PUT answered an empty 500.
         private static bool HasNoCode(Language language) =>
             string.IsNullOrWhiteSpace(language?.Code) || language.Code.Trim() == "-";

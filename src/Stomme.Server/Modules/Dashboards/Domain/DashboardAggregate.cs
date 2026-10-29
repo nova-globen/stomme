@@ -22,8 +22,8 @@ namespace Stomme.Modules.Dashboards.Domain
     /// layout grid - no two widgets overlap, none reaches past the last column, a layout change that would orphan one is
     /// refused - published once and cloned as a fresh draft. Storage-blind: the widgets ride the module store's JSON
     /// collection column, the layout is one scalar, and every store round-trips the same shape (the conformance suite).
-    /// <b>CHANGED:</b> the predecessor platform's dashboard belonged to a tenant only; here it belongs to a SITE of that tenant too, as
-    /// every Stomme page-owned aggregate does, so one tenant's sites keep their boards apart.
+    /// <b>A dashboard belongs to a tenant and to a SITE of that tenant</b>, as
+    /// every page-owned aggregate does, so one tenant's sites keep their boards apart.
     /// </summary>
     public sealed class DashboardAggregate : AggregateRoot<Guid>, ITenantOwned
     {

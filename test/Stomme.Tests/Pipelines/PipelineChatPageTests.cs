@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Stomme.Tests.Pipelines
 {
-    /// <summary>BL-229, the site's chats: a visitor's session is one the site made (random, never guessable from another), and the page is text.</summary>
+    /// <summary>The site's chats: a visitor's session is one the site made (random, never guessable from another), and the page is text.</summary>
     public sealed class PipelineChatPageTests
     {
         [Fact]

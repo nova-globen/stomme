@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Stomme.Tests.Datasets
 {
-    /// <summary>BL-94 increment 9 (D110 Q7) - the predecessor platform's PiiScannerTests (7) by name on the lifted scanner: each category detected and masked, clean text untouched, every occurrence in mixed text masked, a Luhn-invalid digit run not over-masked.</summary>
+    /// <summary>The PII scanner: each category detected and masked, clean text untouched, every occurrence in mixed text masked, a Luhn-invalid digit run not over-masked.</summary>
     public sealed class PiiScannerTests
     {
         private readonly IPiiScanner _scanner = new PiiScanner();

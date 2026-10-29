@@ -12,8 +12,8 @@
 
   <!--
     Live provider smoke test for Stomme.Persistence.RavenDb. GATED in Stomme.slnx
-    (2026-08-03), fail-not-skip per D46: it needs a live RavenDB server and FAILS loudly when the one
-    named by RAVENDB_TEST_URL (default: the infra UAT tier, http://192.168.10.20:8081) is unreachable —
+    fail-not-skip: it needs a live RavenDB server and FAILS loudly when the one
+    named by RAVENDB_TEST_URL (default: the shared test server, http://192.168.10.20:8081) is unreachable —
     a suite that quietly shrinks reports green while proving nothing.
   -->
   <ItemGroup>
@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Stomme.Persistence.RavenDb\Stomme.Persistence.RavenDb.csproj" />
-    <!-- BL-100 O2: DeadLetterSweeper, driven over the real RavenDB dead-letter queue by RavenDeadLetterSweepLiveTests. -->
+    <!-- DeadLetterSweeper, driven over the real RavenDB dead-letter queue by RavenDeadLetterSweepLiveTests. -->
     <ProjectReference Include="..\..\src\Stomme.Infrastructure.EventBus\Stomme.Infrastructure.EventBus.csproj" />
     <ProjectReference Include="..\..\src\Stomme.Persistence.Abstractions\Stomme.Persistence.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Stomme.SharedKernel\Stomme.SharedKernel.csproj" />

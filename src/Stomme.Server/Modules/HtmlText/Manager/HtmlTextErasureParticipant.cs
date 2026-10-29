@@ -13,7 +13,7 @@ using Stomme.Repository.Stores;
 namespace Stomme.Modules.HtmlText.Manager
 {
     /// <summary>
-    /// The HtmlText module's authorship stamps under D112: its content rows carry the author's
+    /// The HtmlText module's authorship stamps: its content rows carry the author's
     /// username in <c>CreatedBy</c> / <c>ModifiedBy</c>; once the account is gone from the tenant they are replaced by
     /// the same placeholder the framework's stamps get (Anonymise - the content and its dates stay). The module owns
     /// its store and session factory (the integer-keyed seam shape), so the framework's reflective participant cannot

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Stomme.Landing
 {
     // ============================================================================================================
-    // The Landing module's Shared contracts (the predecessor platform's feature 44 - planned there, never started): a site's landing
+    // The Landing module's Shared contracts: a site's landing
     // page on its home page, made one of three ways. BCL-only like every Shared contract.
     // ============================================================================================================
 

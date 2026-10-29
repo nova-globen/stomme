@@ -31,13 +31,13 @@ namespace Stomme.Modules.Portability.Execution
         /// <summary>Off by default: a stock install gains no page, no API, no folder, no build.</summary>
         public bool Enabled { get; set; }
 
-        /// <summary>An import larger than this is refused before it is read (D107 refutation 12).</summary>
+        /// <summary>An import larger than this is refused before it is read.</summary>
         public long MaxPackageBytes { get; set; } = 10 * 1024 * 1024;
 
         /// <summary>A package still Building after this long is Failed as abandoned.</summary>
         public int BuildTimeoutHours { get; set; } = 24;
 
-        /// <summary>How long the portability audit is kept - three years, pending BL-116's erasure posture (D107 Q3).</summary>
+        /// <summary>How long the portability audit is kept - three years, pending a settled erasure posture.</summary>
         public int AuditRetentionDays { get; set; } = 1095;
 
         public int FolderCapacityMb { get; set; } = 256;
@@ -298,7 +298,7 @@ namespace Stomme.Modules.Portability.Execution
     /// <summary>
     /// Portability's retention, drained per site by <c>PurgeJob</c>: a Ready or Failed package whose stated expiry
     /// has passed, or that is older than the site's <c>PortabilityRetention</c>, loses its artifact (file AND row) and
-    /// becomes Expired; a subject package is never kept past seven days whatever the setting says (D107 Q3). Audit rows
+    /// becomes Expired; a subject package is never kept past seven days whatever the setting says. Audit rows
     /// go after <see cref="PortabilityOptions.AuditRetentionDays"/>. Does nothing while <c>Portability:Enabled</c> is off.
     /// </summary>
     public sealed class PortabilityRetentionPurger(

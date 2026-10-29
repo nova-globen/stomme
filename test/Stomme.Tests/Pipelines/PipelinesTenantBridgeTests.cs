@@ -23,7 +23,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95 increment (a), the tenant bridge: on a REAL install, the engine's tenants are the install's sites, a request
+    /// The tenant bridge: on a REAL install, the engine's tenants are the install's sites, a request
     /// runs inside its site's engine tenant (the middleware after Stomme's tenant resolution), and a run DISPATCHED from
     /// inside a site lands under that site - the worker restores the tenant from the command header through the Tenants
     /// feature, which the conformance suite measured a dispatch losing without it.

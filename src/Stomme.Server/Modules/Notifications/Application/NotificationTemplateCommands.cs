@@ -18,9 +18,9 @@ using FluentValidation;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    // Lifted from the predecessor platform NotificationTemplateCommands.cs, site-scoped: the key is unique per SITE through
+    // Site-scoped: the key is unique per SITE through
     // KeyNormalized (both sides normalized), a template of another site is "does not exist", and the save runs the
-    // hardened renderer's validate-at-save (the step-3 residue: EnsureValidForSave had no caller until now).
+    // hardened renderer's validate-at-save (EnsureValidForSave).
 
     /// <summary>
     /// Creates a template (null or unknown <see cref="Id"/>) or replaces an existing one's channels, localized content and
@@ -133,7 +133,7 @@ namespace Stomme.Modules.Notifications.Application
                 throw new InvalidOperationException($"Template '{request.Id}' does not exist.");
             }
 
-            // A FindAsync on two FindAsync-safe terms: an int and a D49 normalized column, the argument normalized in code.
+            // A FindAsync on two FindAsync-safe terms: an int and a normalized column, the argument normalized in code.
             var normalized = template.KeyNormalized;
             var referenced = await requests.FindAsync(item => item.SiteId == siteId && item.TemplateKeyNormalized == normalized, ct);
             if (referenced.Count > 0)

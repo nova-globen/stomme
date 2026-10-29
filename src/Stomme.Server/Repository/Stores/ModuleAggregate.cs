@@ -35,7 +35,7 @@ namespace Stomme.Repository.Stores
     {
         /// <summary>
         /// A reference to the Site aggregate BY ID. Cross-aggregate references are ids, never navigations
-        /// (D7/D19) — this is the column <c>PageModuleRepository</c> filters a site's modules on.
+        /// — this is the column <c>PageModuleRepository</c> filters a site's modules on.
         /// </summary>
         public int SiteId { get; set; }
 

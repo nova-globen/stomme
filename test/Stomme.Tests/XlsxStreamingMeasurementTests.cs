@@ -23,7 +23,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// The measurement D108 refutation 12 demands before XLSX may be called streaming.
+    /// The measurement required before XLSX may be called streaming.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -48,7 +48,7 @@ namespace Stomme.Tests
         /// What the live heap may grow by during a render, whatever the row count.
         /// </summary>
         /// <remarks>
-        /// Measured 2026-09-20: +0.2 MB at 100,000 rows and +0.0 MB at 1,000,000 through the write-only package,
+        /// Measured: +0.2 MB at 100,000 rows and +0.0 MB at 1,000,000 through the write-only package,
         /// against +384.1 MB for the same code over a read-write one. 16 MB is headroom for collector noise, and is
         /// still a twentieth of what buffering costs - the two outcomes cannot be confused.
         /// </remarks>

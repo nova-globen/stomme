@@ -24,7 +24,7 @@ namespace Stomme.Repository
 
         public async Task<IEnumerable<MigrationHistory>> GetMigrationHistoryAsync()
         {
-            // D43 addendum: the ledger is EF Core's own migration bookkeeping. A non-relational tenant
+            // The ledger is EF Core's own migration bookkeeping. A non-relational tenant
             // has no such ledger — return an empty list rather than opening an EF context a document store
             // cannot back (or inventing a bootstrap record that would present fiction as history).
             var tenant = await _tenantManager.GetTenantAsync();

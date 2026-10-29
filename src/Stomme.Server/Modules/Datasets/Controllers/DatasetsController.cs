@@ -19,7 +19,7 @@ namespace Stomme.Modules.Datasets.Controllers
     /// The Datasets API: <c>api/Datasets</c>. Each action is gated on its key by
     /// <c>[RequiresPermissionKey]</c> (an authorization POLICY, so it runs before the body); the request is decided again by
     /// the mediator's authorization behavior. The site is the request's. A preview needs the higher key and is refused
-    /// for a sensitive dataset whoever asks; a list or a get never carries raw rows. <c>upload</c> (increment 13) registers a
+    /// for a sensitive dataset whoever asks; a list or a get never carries raw rows. <c>upload</c> registers a
     /// dataset from a managed file: another site's file is 404, a folder the caller may not view 403, a refused file 400.
     /// </summary>
     [Route(ControllerRoutes.ApiRoute)]

@@ -26,9 +26,9 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The B1/D64 authority signs tokens with a SHARED EPHEMERAL key — regenerated every process — so the
-    /// JWKS <c>kid</c> and every issued token change on each restart, which breaks a real deployment. D66 lets
-    /// the authority load a signing certificate from configuration (<c>OpenIddict:SigningCertificatePath</c>)
+    /// The authority signs tokens with a SHARED EPHEMERAL key — regenerated every process — so the
+    /// JWKS <c>kid</c> and every issued token change on each restart, which breaks a real deployment. The
+    /// authority can load a signing certificate from configuration (<c>OpenIddict:SigningCertificatePath</c>)
     /// and fall back to the ephemeral key when none is configured.
     /// </para>
     /// <para>
@@ -47,7 +47,7 @@ namespace Stomme.Tests
     /// </list>
     /// <para>
     /// SQLite is sufficient cover here: the signing key lives in the OpenIddict server options, ABOVE the
-    /// database, so it is provider-independent (same rationale as the per-tenant authority spike). The install
+    /// database, so it is provider-independent (same rationale as the per-tenant authority tests). The install
     /// exists only to get the pipeline past tenant resolution so the well-known endpoints serve.
     /// </para>
     /// </remarks>

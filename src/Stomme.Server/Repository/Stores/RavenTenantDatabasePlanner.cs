@@ -26,7 +26,7 @@ namespace Stomme.Repository.Stores
     /// sharing one connection string share one database.</item>
     /// <item>A tenant listed in <c>Database:RavenSharedTenants</c> stays in the installation's database (see 5).</item>
     /// <item>A tenant whose own database exists uses it (the search index deployed there, idempotently).</item>
-    /// <item>A tenant whose own database does NOT exist but which has aliases is a tenant created BEFORE BL-176: every
+    /// <item>A tenant whose own database does NOT exist but which has aliases is a tenant created BEFORE tenants had databases of their own: every
     /// tenant's rows were then written to the installation's database whatever its connection string named, so its rows are
     /// there. It stays there - listed in <c>Database:RavenSharedTenants</c> so the answer is stable, and logged - rather than
     /// being routed to an empty database, which would hide its sites.</item>

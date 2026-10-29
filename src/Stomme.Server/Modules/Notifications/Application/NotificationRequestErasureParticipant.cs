@@ -12,7 +12,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.Notifications.Application
 {
     /// <summary>
-    /// The notification requests (the module's send log) under D112: a request names its recipients as
+    /// The notification requests (the module's send log) on erasure: a request names its recipients as
     /// <c>User:&lt;id&gt;</c> entries, so the subject's entries are REMOVED from every request on the site (Anonymise -
     /// the request, its template, parameters and delivery attempts stay as the record of a send, with no link to the
     /// person), and a request left with no recipient at all is deleted. The recipients are a value-object list, not a

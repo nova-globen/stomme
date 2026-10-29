@@ -17,7 +17,7 @@ namespace Stomme.Tests
     /// <remarks>
     /// <para>
     /// <b>The fast tier is NOT the commit gate</b> - <c>dotnet test Stomme.slnx</c>, unfiltered, is. A tier that leaves
-    /// out both real providers cannot see a provider divergence, the D29 renderer deadlock or a parity break, which is
+    /// out both real providers cannot see a provider divergence, the renderer deadlock or a parity break, which is
     /// most of what has actually gone wrong here. It exists so that an edit-and-run loop is not twenty minutes long.
     /// </para>
     /// <para>
@@ -41,7 +41,7 @@ namespace Stomme.Tests
         {
             "RavenGateStore", "PostgresGateStore", "SqlServerGateStore", "PostgresTestEndpoint", "RAVENDB_TEST_URL", "ResolveStore",
             "RavenTestDatabaseJanitor", "CreateDatabaseOperation", "DocumentStore", "NpgsqlConnection",
-            // The SQL Server leg of the module-aggregate conformance suites (infra UAT :1434).
+            // The SQL Server leg of the module-aggregate conformance suites (the shared test server).
             "SqlServerTestEndpoint", "SqlConnection",
             // The MySQL connector's live tests (a throwaway MySQL on this machine's loopback, scripts/mysql-test-server.ps1).
             "MySqlTestEndpoint",

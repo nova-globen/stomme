@@ -37,8 +37,8 @@ namespace Stomme.Modules.Notifications.Application
     public sealed record NotificationDispatchHint(Guid RequestId);
 
     /// <summary>
-    /// The implementation of the published <see cref="INotificationDispatcher"/> port (D100 points 3 and 4),
-    /// lifted from the predecessor platform <c>NotificationDispatcher</c>: validate, constrain the RECIPIENTS, persist a <c>Queued</c> request
+    /// The implementation of the published <see cref="INotificationDispatcher"/> port:
+    /// validate, constrain the RECIPIENTS, persist a <c>Queued</c> request
     /// WITH its parameters, and - only when a bus is registered - send a latency hint. Delivery is the
     /// <c>NotificationDispatchJob</c>'s.
     /// </summary>
@@ -47,8 +47,8 @@ namespace Stomme.Modules.Notifications.Application
     /// <b>No open relay.</b> The port carries no principal - producers are server code - so the constraint is on who can be
     /// reached, not on who asks: <see cref="RecipientKind.User"/> must be a user of THIS site;
     /// <see cref="RecipientKind.Email"/> only when the site setting <see cref="NotificationSiteSettingNames.ExternalRecipients"/>
-    /// is "True" (and the address parses); <see cref="RecipientKind.Endpoint"/> is ALWAYS refused (BL-78 F9: D100 omitted the
-    /// kind the predecessor platform publishes; accepted, it is an open relay and a route around the webhook channel's SSRF guard). A refusal
+    /// is "True" (and the address parses); <see cref="RecipientKind.Endpoint"/> is ALWAYS refused (accepted, it would be an
+    /// open relay and a route around the webhook channel's SSRF guard). A refusal
     /// is logged with its reason and persists nothing.
     /// </para>
     /// <para>
@@ -57,7 +57,7 @@ namespace Stomme.Modules.Notifications.Application
     /// <see cref="ITenantContext"/>.
     /// </para>
     /// <para>
-    /// <b>No <c>[Requires]</c> here, nor on anything the job calls</b> (BL-78 F3): <c>PermissionRowAccessGuard</c> denies
+    /// <b>No <c>[Requires]</c> here, nor on anything the job calls</b>: <c>PermissionRowAccessGuard</c> denies
     /// every requirement when there is no <c>HttpContext</c>, which is every job and every in-process producer.
     /// </para>
     /// </remarks>

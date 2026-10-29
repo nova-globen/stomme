@@ -40,8 +40,8 @@ namespace Stomme.Tests
     /// rejection is the lockout, not a broken credential.
     /// </para>
     /// <para>
-    /// PROVIDER DIMENSION (the D46/D62 discipline): SQLite is the EF control — the behaviour a relational
-    /// install has always had — and RavenDB runs UNCONDITIONALLY (fail-not-skip), because until BL-6 the Raven
+    /// PROVIDER DIMENSION: SQLite is the EF control — the behaviour a relational
+    /// install has always had — and RavenDB runs UNCONDITIONALLY (fail-not-skip), because until lockout support was added, the Raven
     /// <c>IUserStore</c> omitted <c>IUserLockoutStore</c>/<c>IUserTwoFactorStore</c> and this exact drive let
     /// the sixth, correct-password login STRAIGHT IN after five failures. Identical steps on both providers,
     /// identical assertions: a Raven install must behave like the EF install.
@@ -112,7 +112,7 @@ namespace Stomme.Tests
                 await app.StartAsync();
 
                 // ---- Arrange: the store must SUPPORT lockout, and the host account must have it enabled. ----
-                // (On Raven before BL-6 this assert is the first RED: SupportsUserLockout was false, so every
+                // (On Raven, before lockout support was added, this assert is the first RED: SupportsUserLockout was false, so every
                 // lockout knob was silently inert.) LockoutEnabled is forced true identically on both providers
                 // so the drive is deterministic regardless of what AllowedForNewUsers was at install time.
                 int maxFailed;

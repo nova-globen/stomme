@@ -15,16 +15,16 @@ using Stomme.Pipelines;
 namespace Stomme.Modules.Pipelines.Mcp
 {
     /// <summary>
-    /// The pipelines' MCP surface (BL-95 increment (f), over BL-80's contributor seam): four resources (the site's
-    /// pipelines, one pipeline, one run with its log, and - a residue of (f), 2026-09-28 - the step catalog an agent
+    /// The pipelines' MCP surface: four resources (the site's
+    /// pipelines, one pipeline, one run with its log, and the step catalog an agent
     /// authors against) and eight tools - the fifth lists the runs waiting for a person's decision, read-only: the
     /// decision is a person's, on the run's page; the sixth says how the pipelines have been running (n8n's Insights); the
     /// seventh and eighth list the site's data tables and read a table's rows, read-only (n8n's Data tables). Every
     /// read and every call goes through the
-    /// module's mediator messages, so the D99 keys decide a second time behind the MCP gates; the two tools that
+    /// module's mediator messages, so the permission keys decide a second time behind the MCP gates; the two tools that
     /// change something (`run_pipeline`, `send_pipeline_event`) carry the mutating prefixes and are `Confirm` - which
     /// the MCP server DENIES until an approval pipeline exists (its own posture, logged as such), so an agent can list,
-    /// read and observe today and cannot start a run. the predecessor platform's `execute_pipeline` (ran through its concurrency policy)
+    /// read and observe today and cannot start a run. A tool that runs a pipeline through a concurrency policy
     /// is not carried: the engine's activation strategy is the policy here. Since 10.30.0, `list_pipeline_activity` reads
     /// the site's pipeline activity - who did what, and when - under <c>pipelines:manage</c>, as the list's Activity does.
     /// </summary>

@@ -8,7 +8,7 @@ using File = System.IO.File;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-22's depth-2 pass - a list shows its times in the viewer's time zone. Every audit time (CreatedOn,
+    /// A list shows its times in the viewer's time zone. Every audit time (CreatedOn,
     /// ModifiedOn, DeletedOn, ...) is stored in UTC; the Recycle Bin printed DeletedOn as it was stored, so a page deleted at
     /// 11:44 local read "9:44 AM" beside lists that convert - and the profile's notification lists and the HtmlText version
     /// history did the same. This gate reads every page and control: a row's <c>context.SomethingOn</c> is shown through

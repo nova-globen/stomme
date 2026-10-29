@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// THE DATA-LEAK PIN for D37. <c>DbContext.OnConfiguring</c> is a sync EF platform virtual that must read
+    /// THE DATA-LEAK PIN. <c>DbContext.OnConfiguring</c> is a sync EF platform virtual that must read
     /// no store, so it routes via <c>ITenantManager.GetResolvedTenant()</c> -> <c>ITenantStoreBindings</c>.
     /// </summary>
     /// <remarks>
@@ -69,7 +69,7 @@ namespace Stomme.Tests
             Assert.Equal("ConnA", manager.GetResolvedTenant().DBConnectionString);
         }
 
-        // The other half of D37: the routing read must not reach a store. If GetResolvedTenant ever queries,
+        // The other half: the routing read must not reach a store. If GetResolvedTenant ever queries,
         // the sync platform virtual is touching a store again and the decision has silently regressed.
         [Fact]
         public void The_routing_read_never_touches_the_store()

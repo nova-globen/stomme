@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Stomme.CloudUsage;
 
-// Lifted from the predecessor platform: the payload mapping is unchanged; only the namespaces moved.
+// JSON reading helpers shared by the cost providers.
 namespace Stomme.Modules.CloudUsage.Providers
 {
     /// <summary>Shared defensive-parsing helpers for the native billing-payload adapters.</summary>

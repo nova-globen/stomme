@@ -20,7 +20,7 @@ namespace Stomme.Pages
     /// <see cref="StommeSiteAuthenticationBuilderExtensions.ProvisionExternalPrincipalAsync"/> link-or-create
     /// bridge (provider <c>negotiate:{siteId}</c>) and swapped for the Identity cookie. Negotiate is challenged
     /// ONLY here — never a default/global challenge — so it never forces Windows auth on other requests (which
-    /// would break the D30 render guard). Real Kerberos requires a domain-joined host (sanctioned deferral).
+    /// would break the render guard). Real Kerberos requires a domain-joined host (a deliberate deferral).
     /// </summary>
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]

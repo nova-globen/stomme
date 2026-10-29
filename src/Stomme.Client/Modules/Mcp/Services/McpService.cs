@@ -48,7 +48,7 @@ namespace Stomme.Modules.Mcp.Services
     /// <summary>The browser implementation: the module's Web API over HTTP (<c>api/Mcp</c>).</summary>
     public class McpService : ServiceBase, IMcpService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason, which this module's page shows.</summary>
+        /// <summary>A refusal throws with the server's reason, which this module's page shows.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public McpService(HttpClient http, SiteState siteState) : base(http, siteState) { }

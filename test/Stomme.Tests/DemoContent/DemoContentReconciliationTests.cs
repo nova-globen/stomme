@@ -25,12 +25,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DemoContent
 {
     /// <summary>
-    /// BL-94 increment 14 (D110 Q7) - demo content is OFF by default and ADDITIVE when on: a stock install carries no
+    /// Demo content is OFF by default and ADDITIVE when on: a stock install carries no
     /// demo connection and no demo dataset and registers neither reconciler; with <c>DemoContent:Enabled</c> in the
     /// override file the install path writes two connections and three datasets per site (the customers set Restricted
     /// by the classifier, masked, its preview refused); a second boot changes nothing; an operator's rename and delete
     /// survive every later boot because the site is stamped; clearing the stamp is a "reset to seed" that completes the
-    /// set; and a second tenant on the SAME site id receives its own rows under its own tenant (D103's two guards).
+    /// set; and a second tenant on the SAME site id receives its own rows under its own tenant (the tenant is part of every row's identity).
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     public sealed class DemoContentReconciliationTests(ITestOutputHelper output)

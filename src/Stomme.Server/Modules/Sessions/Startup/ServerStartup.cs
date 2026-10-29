@@ -33,7 +33,7 @@ namespace Stomme.Modules.Sessions.Startup
             services.AddScoped<ISessionRegistry, SessionRegistry>();
             services.AddScoped<IRetentionPurger, Infrastructure.SessionRetentionPurger>();
             services.AddScoped<Stomme.Portability.ISubjectDataContributor, SessionSubjectContributor>();
-            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, SessionErasureParticipant>(); // The subject's sessions go // BL-82: a person's sessions in their data package
+            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, SessionErasureParticipant>(); // The subject's sessions go with their erasure
 
             // The controller calls the server service directly; and it wins over the client HTTP implementation on the
             // server (the Health / Guestbook pattern).

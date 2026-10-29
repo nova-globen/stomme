@@ -23,7 +23,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The DRIVEN half of D52: the Job/JobLog REPOSITORIES exercised end-to-end against a real database whose
+    // The driven half of the seam contract: the Job/JobLog REPOSITORIES exercised end-to-end against a real database whose
     // schema is written by hand to match the MASTER migration set — not EnsureCreated, which would build the
     // schema from the very model under test (and would also silently GIVE JobLog audit columns if JobLogAggregate
     // ever became IAuditable, defeating the mutation guard below).
@@ -190,7 +190,7 @@ namespace Stomme.Tests
 
             // The DI graph the repositories actually get: IJobStore/IJobLogStore registered TRANSIENT, so each
             // resolve is a fresh store over a fresh context — which is what JobRepository.NewStore()/
-            // JobLogRepository.NewStore() depend on (BL-11 / the D47 UrlMapping per-write-store pattern). A store
+            // JobLogRepository.NewStore() depend on (the per-write-store pattern, as UrlMapping uses it). A store
             // constructor-injected as a singleton would fail every Add-then-Update in one scope; that this is
             // transient is the fix under test.
             _jobStoreServices = new ServiceCollection()
@@ -390,7 +390,7 @@ namespace Stomme.Tests
             Assert.Equal(3, (await NewJobLogRepository().GetJobLogsAsync()).Count()); // the -1 overload: everything
         }
 
-        // BL-11 SITE 1. The scheduler auto-registers a job and then, in the SAME scope (ONE repository
+        // Write site 1. The scheduler auto-registers a job and then, in the SAME scope (ONE repository
         // instance, ONE store, ONE MasterDBContext), immediately flips IsExecuting and updates it
         // (HostedServiceBase lines 109 then 151). AddJobAsync leaves the added aggregate tracked in the store's
         // context — EfRepository leaves writes tracked — so UpdateJobAsync attaching a DIFFERENT
@@ -413,7 +413,7 @@ namespace Stomme.Tests
             Assert.NotNull(reloaded.NextExecution);
         }
 
-        // BL-11 SITE 2. The scheduler opens a JobLog running (AddJobLogAsync) and, at the end of the run,
+        // Write site 2. The scheduler opens a JobLog running (AddJobLogAsync) and, at the end of the run,
         // finalizes the SAME log (UpdateJobLogAsync) through the SAME repository instance in the SAME scope
         // (HostedServiceBase lines 162 then 186). Before the fix the finalizing Update hit the identity map and
         // threw, so EVERY run cycle left Succeeded=0 / FinishDate=NULL — the job started but never finished. This
@@ -438,7 +438,7 @@ namespace Stomme.Tests
             Assert.True(reloaded.Succeeded);
         }
 
-        // BL-11, the FULL run-tick shape end to end (HostedServiceBase lines 151-196), the exact sequence a live
+        // The FULL run-tick shape end to end (HostedServiceBase lines 151-196), the exact sequence a live
         // fresh install runs every minute for an enabled, due job: flip the job executing, open a log, finalize
         // the log, then advance the job (NextExecution set, IsExecuting cleared). The job repository takes TWO
         // writes in one scope (Update then Update) and the log repository takes two (Add then Update) — both

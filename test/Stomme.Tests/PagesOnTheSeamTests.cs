@@ -59,7 +59,7 @@ namespace Stomme.Tests
             Assert.Equal("default_container_type", columns[nameof(PageAggregate.DefaultContainerType)]);
             Assert.Equal("is_navigation", columns[nameof(PageAggregate.IsNavigation)]);
             Assert.Equal("parent_id", columns[nameof(PageAggregate.ParentId)]);
-            // D58. The lowercase lookup key added and backfilled by 10020005_AddPageNormalizedColumn — derived
+            // The lowercase lookup key added and backfilled by 10020005_AddPageNormalizedColumn is derived
             // in PageAggregate.Path's setter so it cannot drift from `path`, and mapped by convention exactly
             // as UrlMapping.UrlNormalized and Folder.PathNormalized.
             Assert.Equal("path_normalized", columns[nameof(PageAggregate.PathNormalized)]);
@@ -191,22 +191,22 @@ namespace Stomme.Tests
     {
         private sealed class TenantLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
-            // Folder is the unmigrated neighbour. The PageModule CONTRACT stood here until D47 put PageModule
-            // on the seam: it is mapped as PageModuleAggregate by ConfigureFrameworkStore now, so declaring
-            // the contract would put two entity types on the `page_module` table and break the model. The
-            // reference that matters to THIS class — page_module -> page, by id and never by navigation — is
-            // still proven below, just through the aggregate.
-            // Folder stood here until D48, File until D49, and the SearchContent family until D50 —
-            // declaring any of them now would map its table twice and break the model.
+            // The PageModule contract was removed from this context once PageModule moved onto the seam: it is
+            // mapped as PageModuleAggregate by ConfigureFrameworkStore now, so declaring the contract would put
+            // two entity types on the `page_module` table and break the model. The reference that matters to THIS
+            // class — page_module -> page, by id and never by navigation — is still proven below, just through
+            // the aggregate.
+            // Folder, File and the SearchContent family were removed the same way; declaring any of them now
+            // would map its table twice and break the model.
             //
-            // THIS CONTEXT IS NOW EMPTY, and that is the END OF THE PATTERN rather than a gap. The neighbour
+            // THIS CONTEXT IS NOW EMPTY, and that is the end of the pattern rather than a gap. The neighbour
             // DbSet was never what the probe rested on: measured both ways, removing it leaves the assertions
             // green, and re-adding a migrated contract still fails them with EF's "the table '...' cannot be
             // used for entity type" — so the proof comes from ConfigureFrameworkStore plus the assertion,
             // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
-            // protection now, and it needed no edit across D47, D48, D49 or D50.
+            // protection now, and it needed no edit across the later store moves.
 
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureFrameworkStore(database);
         }
@@ -221,8 +221,8 @@ namespace Stomme.Tests
         }
 
         // Mutation check: give PageModuleAggregate a `public Page Page { get; set; }` navigation and this
-        // fails (the model throws while building) — which is exactly the protection being asserted. Until D47
-        // the same check was "remove [NotMapped] from PageModule.Page", back when the PageModule CONTRACT was
+        // fails (the model throws while building) — which is exactly the protection being asserted. Before the
+        // move to the seam the same check was "remove [NotMapped] from PageModule.Page", back when the PageModule contract was
         // the entity this context tracked; the hazard is identical, only the type carrying it changed.
         [Fact]
         public void The_page_table_is_owned_by_the_aggregate_alone()
@@ -243,10 +243,10 @@ namespace Stomme.Tests
             Assert.Null(BuildModel().FindEntityType(typeof(Page)));
         }
 
-        // PageModule moved to the seam. This test used to read
+        // PageModule now lives on the seam. This test used to read
         // "Page_module_is_still_a_plain_entity_referencing_the_page_by_id" and assert over the PageModule
-        // CONTRACT; the contract is not an entity type any more, so the assertion is made over the AGGREGATE
-        // that replaced it. What is being pinned is unchanged and is D19's, not D47's: whatever entity holds
+        // contract; the contract is not an entity type any more, so the assertion is made over the aggregate
+        // that replaced it. What is being pinned is unchanged by that move: whatever entity holds
         // the page_module row must reach the Page cluster BY ID, because a navigation would rediscover Page as
         // a second entity type on the `page` table and break the model at startup.
         [Fact]
@@ -254,7 +254,7 @@ namespace Stomme.Tests
         {
             var model = BuildModel();
 
-            // The contract is gone from the model — D47 replaced it with the aggregate.
+            // The contract is gone from the model; the aggregate replaced it.
             Assert.Null(model.FindEntityType(typeof(PageModule)));
 
             var pageModule = model.FindEntityType(typeof(PageModuleAggregate))!;

@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace NovaGloben.Module.KnowledgeBase.Drive
 {
     /// <summary>
-    /// BL-86 increment 7 (the Blogs example's BL-13 proof, carried by the exemplar now): the assemblies a WebAssembly site
+    /// The assemblies a WebAssembly site
     /// streams to the BROWSER - the Client and the Shared - reference no server-only assembly, read from the PACKED module's
     /// metadata. A browser assembly that references the server host makes <c>Assembly.GetTypes()</c> throw in the browser and
     /// the module's services silently under-register. The detector is validated on the Server assembly, which must fire.

@@ -41,13 +41,13 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     /// The N-way registry keyed on <c>Database:DefaultDBType</c>. It maps the active provider type to the
     /// factory that registers the closed <c>IRepository</c> for it — relational EF providers, RavenDB, and the
-    /// D80 file store, each an <see cref="IModuleRepositoryProvider"/>. <see cref="Resolve"/> FAILS LOUDLY on a
+    /// file store, each an <see cref="IModuleRepositoryProvider"/>. <see cref="Resolve"/> FAILS LOUDLY on a
     /// <c>DefaultDBType</c> no provider handles, rather than silently defaulting — an unknown provider is a
     /// misconfiguration, not a fall-through to EF or Raven.
     /// <para>
     /// <b>Extensible:</b> a new store provider calls <see cref="Register"/> once (e.g. from a startup) and every
     /// storage-blind module can then persist on it with no module edit — which is exactly how the file store was
-    /// added, and what the D80 proof drives.
+    /// added, and what the file-store proof drives.
     /// </para>
     /// </summary>
     public static class ModuleRepositoryProviderRegistry
@@ -62,7 +62,7 @@ namespace Microsoft.Extensions.DependencyInjection
             new FileModuleRepositoryProvider(),
         ];
 
-        /// <summary>Adds a provider, taking precedence over the built-ins. The hook for a new store (D80 Part A).</summary>
+        /// <summary>Adds a provider, taking precedence over the built-ins. The hook for a new store.</summary>
         public static void Register(IModuleRepositoryProvider provider)
         {
             ArgumentNullException.ThrowIfNull(provider);
@@ -177,7 +177,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         // THIS host's data directory (the |DataDirectory| token the framework/SQLite stores resolve), falling
         // back to an App_Data folder beside the running assembly when there is no host to ask (a minimal
-        // test/fixture). Asking the composing host rather than the process is BL-153 - see HostDataDirectory.
+        // test/fixture). Asking the composing host rather than the process is deliberate - see HostDataDirectory.
         private static string DataDirectory(IServiceCollection services)
         {
             var dataDirectory = HostDataDirectory.Resolve(services);

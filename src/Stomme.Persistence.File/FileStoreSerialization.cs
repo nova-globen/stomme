@@ -17,7 +17,7 @@ namespace Stomme.Persistence.File;
 /// are internal to it) so the file provider is self-contained, but it is contract-identical: a document written
 /// by one store reconstructs through the other. System.Text.Json is NOT used here — it cannot invoke a private
 /// parameterless constructor nor a value object's static factory, so it would silently fail to rebuild the
-/// aggregate (the risk the D80 brief flagged; driven green via the conformance suite).
+/// aggregate (a risk the conformance suite covers).
 /// </summary>
 internal static class FileStoreSerializer
 {
@@ -145,8 +145,8 @@ internal sealed class FileStoreContractResolver : DefaultContractResolver
 
         // The aggregates and value objects expose PRIVATE/PROTECTED property setters (Id, ModuleId, Author,
         // Message, ...). Newtonsoft's DefaultContractResolver leaves such a property non-Writable, so a loaded
-        // document reads back with every property at its default (0/null) — the deserialisation failure D80
-        // drove out. Force Writable when a non-public setter exists so the deserializer populates it (the
+        // document reads back with every property at its default (0/null) — the deserialisation failure
+        // that this avoids. Force Writable when a non-public setter exists so the deserializer populates it (the
         // RavenDB seam's resolver does the same; EF materialises through the setter directly).
         if (!property.Writable && member is PropertyInfo { } propertyInfo)
         {

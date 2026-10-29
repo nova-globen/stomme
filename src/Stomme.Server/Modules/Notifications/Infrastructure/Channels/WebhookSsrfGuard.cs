@@ -11,7 +11,7 @@ namespace Stomme.Modules.Notifications.Infrastructure.Channels
     /// <summary>
     /// The webhook channel's use of the framework's ONE outbound guard (collapsed). A
     /// webhook endpoint is operator-typed and a notification is sent by the server, so without a guard a channel is a way
-    /// to make the host POST to its own loopback services, the LAN (the shared infra tier is RFC1918) or the cloud metadata
+    /// to make the host POST to its own loopback services, the LAN (RFC1918 addresses) or the cloud metadata
     /// endpoint.
     /// </summary>
     /// <remarks>

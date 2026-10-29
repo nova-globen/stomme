@@ -17,13 +17,13 @@ namespace Stomme.Tests
     /// The SAME Guestbook conformance suite against a LIVE RavenDB document store, each run in its own
     /// database (<c>RAVENDB_TEST_URL</c>, default http://127.0.0.1:7000). Composed the way a RavenDB install
     /// composes the module: <c>AddRavenFrameworkStore</c> supplies the host's Raven singletons in the
-    /// composition root, then the D76 helper selects the Raven branch so the closed
+    /// composition root, then a helper selects the Raven branch so the closed
     /// <see cref="IGuestbookRepository"/> delegates to a <c>RavenRepository</c> — so the guestbook keeps its
-    /// entries in the install's document store, not a stray SQLite file. Since D78 the single provider-neutral
+    /// entries in the install's document store, not a stray SQLite file. The single provider-neutral
     /// <see cref="GuestbookRepository"/> serves BOTH providers (its by-module read goes through
     /// <c>IRepository.FindAsync</c>), so this run and the EF run register the SAME repository type.
     /// <para>
-    /// Like the D46 parity suite this FAILS rather than skips when RavenDB is unreachable: an EF-only run proves
+    /// Like the parity suite this FAILS rather than skips when RavenDB is unreachable: an EF-only run proves
     /// nothing about the both-providers guarantee this exists to hold. This is the suite that DRIVES the
     /// <see cref="AuthorName"/> value object round-trip on a real server.
     /// </para>
@@ -47,7 +47,7 @@ namespace Stomme.Tests
             await _store.Maintenance.Server.SendAsync(new CreateDatabaseOperation(new DatabaseRecord(_database)));
         }
 
-        /// <summary>BL-150, measured.</summary>
+        /// <summary>Measured against a live store, not assumed.</summary>
 
         protected override bool ValueObjectEqualityIsCaseInsensitive => true;
 

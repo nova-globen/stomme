@@ -129,7 +129,7 @@ namespace Stomme.Security
         /// <summary>
         /// Builds the <c>PermissionNames</c> declaration from keys that each carry their OWN default roles:
         /// <c>"View,Edit,notifications:view-own:Registered Users;Administrators,notifications:send:Administrators"</c>
-        /// (BL-78 - a module whose keys are not all held by the same roles).
+        /// (for a module whose keys are not all held by the same roles).
         /// </summary>
         /// <remarks>
         /// Identical rules to the uniform overload: <c>View,Edit</c> first, <see cref="RoleNames.Admin"/> appended

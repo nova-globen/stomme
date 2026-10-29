@@ -14,16 +14,15 @@ namespace Stomme.Modules.Notifications.Domain
 
     /// <summary>
     /// The dispatch unit a producer creates to "tell someone something": recipients, a template key WITH its
-    /// parameters, the channels to reach them over, and the resulting <see cref="DeliveryAttempt"/>s. Lifted from
-    /// the predecessor platform <c>NotificationRequest</c>; <see cref="Status"/> is still always derived from the attempts.
+    /// parameters, the channels to reach them over, and the resulting <see cref="DeliveryAttempt"/>s. <see cref="Status"/> is always derived from the attempts.
     /// <para>
-    /// <b>Reshaped for Stomme (D100 points 3 and 7).</b> Tenant-owned AND site-scoped (<see cref="SiteId"/>);
+    /// <b>Shape.</b> Tenant-owned AND site-scoped (<see cref="SiteId"/>);
     /// every instant a UTC <see cref="DateTime"/>; <see cref="TemplateKeyNormalized"/> maintained here so a key lookup
     /// normalizes both sides; and the Job-backed pipeline's state is SCALAR so the provider-neutral
     /// <c>FindAsync</c> can select due work: <see cref="AttemptCount"/> + <see cref="NextAttemptOn"/> (retry), and
-    /// <see cref="DigestDeferredUntil"/>, which replaces the predecessor platform's <c>Attempts.Any(a =&gt; a.Status == DigestQueued)</c>
-    /// (a collection predicate FindAsync cannot express). The dispatch <see cref="Parameters"/> are persisted - the
-    /// first design lost them, so a deferred render would have seen an empty context.
+    /// <see cref="DigestDeferredUntil"/>, which stands in for <c>Attempts.Any(a =&gt; a.Status == DigestQueued)</c>
+    /// (a collection predicate FindAsync cannot express). The dispatch <see cref="Parameters"/> are persisted -
+    /// otherwise a deferred render would see an empty context.
     /// </para>
     /// <para>
     /// The retry/deferral POLICY (3 retries, 30 s x2, cap 1 h; quiet-hours deferral; the hourly digest flush) belongs
@@ -57,7 +56,7 @@ namespace Stomme.Modules.Notifications.Domain
         /// <summary>The <see cref="NotificationTemplateAggregate"/> key whose content this request renders.</summary>
         public string TemplateKey { get; private set; }
 
-        /// <summary><see cref="TemplateKey"/> upper-invariant - the D49 normalized lookup column.</summary>
+        /// <summary><see cref="TemplateKey"/> upper-invariant - the normalized lookup column.</summary>
         public string TemplateKeyNormalized { get; private set; }
 
         /// <summary>How urgent this request is - drives per-user severity filtering and quiet-hours handling.</summary>
@@ -111,7 +110,7 @@ namespace Stomme.Modules.Notifications.Domain
         public bool AllChannelsAttempted =>
             _requestedChannels.All(channel => _attempts.Any(attempt => attempt.Channel == channel));
 
-        /// <summary>The D49 normalization of a template key: trimmed, upper-invariant. Apply to BOTH sides of a lookup.</summary>
+        /// <summary>The normalization of a template key: trimmed, upper-invariant. Apply to BOTH sides of a lookup.</summary>
         public static string NormalizeTemplateKey(string templateKey) => (templateKey ?? string.Empty).Trim().ToUpperInvariant();
 
         public static NotificationRequestAggregate Create(

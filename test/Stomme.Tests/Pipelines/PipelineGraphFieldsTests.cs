@@ -102,7 +102,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("how many runs of the pipeline may go at once", PipelineGraphFields.Describe(change.Path, graph));
         }
 
-        // BL-229, n8n's "save execution progress": a structured field - absent while off - that a file carries too.
+        // n8n's "save execution progress": a structured field - absent while off - that a file carries too.
         [Fact]
         public void Saving_progress_round_trips_as_a_structured_field()
         {
@@ -200,7 +200,7 @@ namespace Stomme.Tests.Pipelines
         [Fact]
         public void Variables_and_the_steps_bound_to_them_round_trip_and_a_removed_variable_still_bound_is_a_conflict()
         {
-            // The pipeline editor walk (2026-10-02): an output reaches a later input through a variable, and a collaborating
+            // An output reaches a later input through a variable, and a collaborating
             // save must carry the variables and every binding - or a merge would drop them.
             var graph = Sample();
             graph.Variables.Add(new PipelineGraphVariable { Id = "v-rows", Name = "rows", TypeName = "String", Value = "" });
@@ -355,7 +355,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("something/else", PipelineGraphFields.Describe("something/else", graph));
         }
 
-        // BL-95: a step in a body - a loop's Body, an If's branch - carries the step it sits in as ONE more field,
+        // A step in a body - a loop's Body, an If's branch - carries the step it sits in as ONE more field,
         // so the merge treats a body's steps exactly as the pipeline's own: field by field.
         private static PipelineGraph Looping() => new()
         {

@@ -20,15 +20,15 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Connectivity.Startup
 {
     /// <summary>
-    /// The Connectivity module's server composition (BL-94 increments 5 and 6): the tenant-owned
+    /// The Connectivity module's server composition: the tenant-owned
     /// <see cref="ConnectionAggregate"/> on the storage-blind seam, the module's repository, the connection secrets
     /// over the per-site secret store, the test runner, the extraction port's implementation, and the CQRS handlers
     /// (registered EXPLICITLY - never AddMediator() here, the host composed the mediator once). The connector catalog
-    /// and the egress factory are the host's (the composition root). The API and the page are increment 7.
+    /// and the egress factory are the host's (the composition root). The API and the page are registered below.
     /// </summary>
     public class ServerStartup : IServerStartup
     {
-        /// <summary>The host's configuration as the composition seam sees it (the same reading BL-162 fixed for readers with DI: the layered root when it is registered, else the builder's).</summary>
+        /// <summary>The host's configuration as the composition seam sees it (the same reading used by readers with DI: the layered root when it is registered, else the builder's).</summary>
         private static Microsoft.Extensions.Configuration.IConfiguration? HostDataDirectoryConfiguration(IServiceCollection services) =>
             services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(Microsoft.Extensions.Configuration.IConfigurationRoot))?.ImplementationInstance as Microsoft.Extensions.Configuration.IConfiguration
             ?? services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(Microsoft.Extensions.Configuration.IConfiguration))?.ImplementationInstance as Microsoft.Extensions.Configuration.IConfiguration;
@@ -48,7 +48,7 @@ namespace Stomme.Modules.Connectivity.Startup
             services.AddScoped<IConnectionRepository, ConnectionRepository>();
             services.AddScoped<ConnectionSecrets>();
             services.AddScoped<ConnectionTestRunner>();
-            // The health contribution (increment 11): one Site-scope probe over the site's connections, gated by
+            // The health contribution: one Site-scope probe over the site's connections, gated by
             // Connectivity:HealthProbes:Enabled (default OFF) read from THIS host's configuration - never IConfiguration.
             services.AddScoped<Stomme.Health.IHealthContributor>(sp => new ConnectionHealthContributor(
                 ConnectivityHealthProbes.Enabled(HostConfiguration.Resolve(sp)),
@@ -77,7 +77,7 @@ namespace Stomme.Modules.Connectivity.Startup
             // Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).
             services.AddTransient<IConnectionsService, ServerConnectionsService>();
 
-            // Demo content (increment 14): two connections per site on the boot path, ONLY while DemoContent:Enabled is
+            // Demo content: two connections per site on the boot path, ONLY while DemoContent:Enabled is
             // true (default off) - while it is off the reconciler is not even registered, so a stock install is untouched.
             if (DemoContentSettings.Enabled(HostDataDirectoryConfiguration(services)))
             {

@@ -292,7 +292,7 @@
                 _fingerprint = moduleDefinition.Fingerprint;
                 _permissions = moduleDefinition.PermissionList;
 
-                // D99 point 4 / F9: a module's declared permission KEYS get a grid column here, so the foreign
+                // A module's declared permission KEYS get a grid column here, so the foreign
                 // EntityId = -1 rows the read path merges in are visible and editable instead of silently
                 // dropped (a save of a grid that never rendered them DELETED the seeded Administrators row).
                 //

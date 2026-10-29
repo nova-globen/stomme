@@ -23,7 +23,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (gate <c>FrameworkStoreBackupRoundTripConformanceTests</c>) - the framework's own tables on an
+    /// <c>FrameworkStoreBackupRoundTripConformanceTests</c> - the framework's own tables on an
     /// INSTALLED host, SQLite and PostgreSQL: the part is taken; afterwards a setting is added, the site renamed and a user
     /// role removed; the restore brings the framework tables back BYTE FOR BYTE - original keys, audit columns and Identity
     /// rows included - and the next insert takes a fresh key (on PostgreSQL after its sequence was rewound to where a fresh
@@ -291,7 +291,7 @@ namespace Stomme.Tests.Backup
     }
 
     /// <summary>
-    /// SQL Server on infra UAT <c>:1434</c> - original keys through IDENTITY_INSERT, one table at a time, and no reseed:
+    /// SQL Server on a shared test server <c>:1434</c> - original keys through IDENTITY_INSERT, one table at a time, and no reseed:
     /// the Setting identity is rewound to where a fresh database would start, and the restore's explicit keys carry it past
     /// every restored row by themselves.
     /// </summary>

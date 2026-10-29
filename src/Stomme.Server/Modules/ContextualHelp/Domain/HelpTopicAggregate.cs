@@ -12,23 +12,23 @@ namespace Stomme.Modules.ContextualHelp.Domain
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Zero value objects and zero collections, deliberately.</b> D103 refutation 11 measured what the predecessor platform's three
-    /// plain <c>record</c> "value objects" would do here: they are not <c>ValueObject</c>s, so they fall straight
+    /// <b>Zero value objects and zero collections, deliberately.</b> Plain <c>record</c> types posing as
+    /// "value objects" would not be <c>ValueObject</c>s, so they would fall straight
     /// through to EF's conventions inside an initializer whose error is SWALLOWED - a missed reshape would read as
     /// empty rather than fail. Anchor and locale are plain normalized STRINGS, which also removes the value-object
-    /// <c>==</c> query D103 refutation 9 refused (no precedent in this repository, and three different answers across
+    /// <c>==</c> query that was refused (no precedent in this repository, and three different answers across
     /// the providers).
     /// </para>
     /// <para>
     /// <b>The id is DETERMINISTIC</b> (<see cref="HelpTopicIds.For"/>), which is what makes the boot reconciler safe to
     /// run every time: there is no unique index on any provider, so a reconciler that looked a topic up by its fields
-    /// and created it when it missed would accumulate a row per boot (D103 refutation 1).
+    /// and created it when it missed would accumulate a row per boot.
     /// </para>
     /// <para>
-    /// <b>Ownership, and why a seed update is so narrow.</b> the predecessor platform's <c>TryApplySeedUpdate</c> gated only on
-    /// <c>IsSeeded</c> and never read <c>SeedContributorId</c> (refutation 6), so any contributor could rewrite any
-    /// other's topic; and it bumped <c>ContentVersion</c> and the timestamp on EVERY call (refutation 7), so every
-    /// boot rewrote every seeded row and invalidated its cache key. Here a seed update applies only while the row is
+    /// <b>Ownership, and why a seed update is so narrow.</b> A seed update that gated only on
+    /// <c>IsSeeded</c> and never read <c>SeedContributorId</c> would let any contributor rewrite any
+    /// other's topic; and one that bumped <c>ContentVersion</c> and the timestamp on EVERY call would, every
+    /// boot, rewrite every seeded row and invalidate its cache key. Here a seed update applies only while the row is
     /// STILL seeded, only to the contributor that owns it, and only when the text has actually CHANGED.
     /// </para>
     /// <para>
@@ -71,7 +71,7 @@ namespace Stomme.Modules.ContextualHelp.Domain
 
         /// <summary>
         /// Bumped only when the text actually changes. It is part of the cache key, so bumping it on an unchanged
-        /// boot would invalidate every topic's cache for nothing (D103 refutation 7).
+        /// boot would invalidate every topic's cache for nothing.
         /// </summary>
         public int ContentVersion { get; private set; }
 
@@ -158,10 +158,10 @@ namespace Stomme.Modules.ContextualHelp.Domain
         /// Applies a contributor's newer text, and answers whether anything changed.
         /// </summary>
         /// <remarks>
-        /// <b>Three conditions, each one a measured refutation.</b> The row must still be SEEDED (an operator edit is
-        /// final); the contributor must be the one that OWNS it (refutation 6 - the predecessor platform never read this, so any
-        /// contributor could rewrite any other's topic); and the text must actually DIFFER (refutation 7 - the predecessor platform
-        /// bumped the version and the timestamp on every call, so every boot rewrote every seeded row and invalidated
+        /// <b>Three conditions, each guarding a measured failure.</b> The row must still be SEEDED (an operator edit is
+        /// final); the contributor must be the one that OWNS it (otherwise any
+        /// contributor could rewrite any other's topic); and the text must actually DIFFER (otherwise
+        /// every boot would bump the version and the timestamp, rewrite every seeded row and invalidate
         /// its cache key). Returning false means "nothing to write", and the reconciler writes nothing.
         /// </remarks>
         public bool TryApplySeedUpdate(HelpTopicContribution contribution, string contributorId, DateTime nowUtc)
@@ -208,7 +208,7 @@ namespace Stomme.Modules.ContextualHelp.Domain
 
         /// <summary>
         /// Hands an edited topic back to its contributor - the operator's explicit "reset to seed"
-        /// (<c>help:manage</c>), which is the ONLY way an ownership change happens (D103 refutation 6).
+        /// (<c>help:manage</c>), which is the ONLY way an ownership change happens.
         /// </summary>
         public void ResetToSeed(HelpTopicContribution contribution, string contributorId, DateTime nowUtc)
         {

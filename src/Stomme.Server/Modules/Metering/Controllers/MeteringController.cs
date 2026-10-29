@@ -25,8 +25,8 @@ namespace Stomme.Modules.Metering.Controllers
     /// <b>TWO gates per action, deliberately the SAME key.</b> <c>[RequiresPermissionKey]</c> is decided by the
     /// authorization middleware before the action runs; the request's own <c>[Requires]</c> is decided again by the
     /// mediator's authorization behavior - both over the site's <c>(metering, -1, operation)</c> rows, so they
-    /// cannot disagree. the predecessor platform's four AI endpoints reached their queries with three keys between them and its
-    /// usage pages hand-checked <c>HasClaim</c>; nothing here is gated by a page.
+    /// cannot disagree. Endpoints that reached their queries with different keys, or pages that
+    /// hand-checked <c>HasClaim</c>, could disagree; nothing here is gated by a page.
     /// </para>
     /// <para>
     /// <b>No action takes a site, a tenant or a user id.</b> All three are resolved server-side, which is what makes

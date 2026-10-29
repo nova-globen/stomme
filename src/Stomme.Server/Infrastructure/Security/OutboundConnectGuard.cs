@@ -12,9 +12,8 @@ using System.Threading.Tasks;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// The framework's outbound connect guard (BL-100 F1, D109 item 14, with D100's SSRF semantics): a request the
-    /// SERVER makes to an operator- or user-typed URL must not reach the host's own loopback services, the LAN (the
-    /// shared infra tier is RFC1918), or the cloud metadata endpoint.
+    /// The framework's outbound connect guard (SSRF protection): a request the
+    /// SERVER makes to an operator- or user-typed URL must not reach the host's own loopback services, the LAN (RFC1918), or the cloud metadata endpoint.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -32,8 +31,8 @@ namespace Stomme.Infrastructure.Security
     /// </para>
     /// <para>
     /// <b>ONE guard.</b> Every server-side outbound request to a URL somebody typed goes through this class:
-    /// the notification webhook channel, the file upload-by-URL path and the MCP client. BL-78 had shipped a
-    /// webhook-scoped copy (<c>WebhookSsrfGuard</c>) with the same deny set and the same connect step; it was collapsed
+    /// the notification webhook channel, the file upload-by-URL path and the MCP client. A webhook-scoped
+    /// copy (<c>WebhookSsrfGuard</c>) with the same deny set and the same connect step was collapsed
     /// onto this class, and what is left of it is only the webhook's own setting name and wording. A caller's allowlist
     /// is a caller-supplied option (<see cref="AllowedHostsOption"/>), never a second guard. <c>OneOutboundGuardTests</c>
     /// fails the build on a second connect callback anywhere in the server.

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.TestInfrastructure
 {
     /// <summary>
-    /// What the suites leave on disk, removed when a test host starts - measured 2026-09-23 after a full gate:
+    /// What the suites leave on disk, removed when a test host starts - counted after a full run of the suites:
     /// <list type="bullet">
     /// <item>13,787 RavenDB topology-cache files (<c>{database}.{hash}.raven-database-topology</c>) across five test
     /// <c>bin</c> folders - the client writes one per scratch database, and nothing ever removed one;</item>
@@ -30,10 +30,10 @@ namespace Stomme.TestInfrastructure
     /// covered without being listed here.
     /// </para>
     /// <para>
-    /// Kept too, however old: the throwaway test servers' folders, <c>stomme-{name}-test</c> (BL-229 - MySQL, Redis,
+    /// Kept too, however old: the throwaway test servers' folders, <c>stomme-{name}-test</c> (MySQL, Redis,
     /// MongoDB, FTP, SFTP, QuestDB, CrateDB, RabbitMQ: <c>scripts/*-test-server.ps1</c>). Each holds the password of a
     /// container that outlives a day of runs; swept at six hours, the live tests lost it mid-gate while its server still
-    /// ran (measured 2026-10-17: the MongoDB folder gone during the full gate, MySQL's and Redis's earlier, their servers
+    /// ran (observed: the MongoDB folder gone during the full gate, MySQL's and Redis's earlier, their servers
     /// made again at the gate's start).
     /// </para>
     /// </remarks>

@@ -6,7 +6,7 @@ using Stomme.Models;
 namespace Stomme.Transport
 {
     /// <summary>
-    /// The BL-53c enforcement: checks every module's declared <see cref="ModuleDefinition.Transports"/>
+    /// The transport-requirement enforcement: checks every module's declared <see cref="ModuleDefinition.Transports"/>
     /// requirement against the install's effective <see cref="TransportOptions"/> and logs an ERROR naming
     /// the module and the missing transport. Deliberately LOUD where <see cref="ModuleDefinition.Runtimes"/>
     /// enforcement is silent (the module just vanishes from pickers): a store-installed module whose

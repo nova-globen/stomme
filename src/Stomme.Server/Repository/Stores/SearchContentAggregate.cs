@@ -14,15 +14,15 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// One indexed document: a page, a file, or anything else implementing <c>ISearchable</c>. It is the head
     /// of a four-table cluster — <c>SearchContentProperty</c> hangs off it, and <c>SearchContentWord</c> /
-    /// <c>SearchWord</c> form the hand-rolled inverted index that ranks it. Tenant-side only, like the D44
-    /// leaves and unlike Setting, so one store and no <c>IsMaster</c> routing.
+    /// <c>SearchWord</c> form the hand-rolled inverted index that ranks it. Tenant-side only, like the leaf
+    /// clusters and unlike Setting, so one store and no <c>IsMaster</c> routing.
     /// </para>
     /// <para>
     /// <b>NEITHER <see cref="IAuditable"/> NOR <see cref="IDeletable"/>, and that is MEASURED, not inherited.</b>
     /// <c>SearchContentEntityBuilder</c> extends <c>BaseEntityBuilder</c> — not
     /// <c>DeletableAuditableBaseEntityBuilder</c> — and the live PostgreSQL <c>search_content</c> has exactly
     /// THIRTEEN columns with zero dropped stubs in <c>pg_attribute</c>. This is the first cluster on the seam
-    /// whose EntityBuilder tells the truth (contrast D44's Language, D48's Folder, D49's File). It follows
+    /// whose EntityBuilder tells the truth (contrast Language, Folder and File). It follows
     /// <c>LogAggregate</c>'s shape, not <c>FileAggregate</c>'s.
     /// </para>
     /// <para>

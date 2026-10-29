@@ -37,7 +37,7 @@ namespace Stomme.Modules.CostOptimization.Domain
         DateTime DismissedUntilUtc) : DomainEvent;
 
     /// <summary>
-    /// The projected saving of a recommendation (the predecessor platform's <c>EstimatedSaving</c>, lifted): a non-negative amount in a
+    /// The projected saving of a recommendation: a non-negative amount in a
     /// three-letter ISO 4217 code stored upper-case. Zero is valid - a hygiene finding is worth raising with no honest
     /// estimate. The aggregate stores its two scalars; this record is the one place their rules live.
     /// </summary>
@@ -75,16 +75,15 @@ namespace Stomme.Modules.CostOptimization.Domain
     }
 
     /// <summary>
-    /// A concrete, evidence-cited savings opportunity the advisor raised (the predecessor platform's
-    /// <c>OptimizationRecommendation</c>): it cites the observations it derives from (never none), carries a non-negative
+    /// A concrete, evidence-cited savings opportunity the advisor raised: it cites the observations it derives from (never none), carries a non-negative
     /// currency-qualified saving, and moves one way - Open, then Applied (the action taken recorded) or Dismissed (a reason
     /// and a cooldown, so the advisor does not nag). <see cref="RecommendationKey"/> is the finding's deterministic identity:
     /// the advisor deduplicates by key against open and cooling-down recommendations, while each raise stays its own
     /// aggregate so the decision history is kept.
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED from the predecessor platform:</b> the recommendation belongs to a SITE of its tenant - the signals it derives from are a
-    /// site's (the cost ledger is per site, BL-97 default 2) - so a key is deduplicated per site; the saving is stored as
+    /// <b>Per site:</b> the recommendation belongs to a SITE of its tenant - the signals it derives from are a
+    /// site's (the cost ledger is per site) - so a key is deduplicated per site; the saving is stored as
     /// two scalars (<see cref="EstimatedSavingAmount"/>, <see cref="EstimatedSavingCurrency"/>) validated through
     /// <see cref="EstimatedSaving"/>, because the module stores map scalars and value objects, not a nested record; and the
     /// instants are UTC <see cref="DateTime"/> values. <see cref="Evidence"/> rides the store's JSON collection column.

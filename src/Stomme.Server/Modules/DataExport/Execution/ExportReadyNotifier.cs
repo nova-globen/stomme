@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.DataExport.Execution
 {
     /// <summary>
-    /// Tells the requester their export is ready, through BL-78's producer port.
+    /// Tells the requester their export is ready, through the notification producer port.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -77,7 +77,7 @@ namespace Stomme.Modules.DataExport.Execution
             }
         }
 
-        /// <summary>BL-95: a schedule a run paused - its owner and the site's operators are told, in app; nothing about the data.</summary>
+        /// <summary>A schedule a run paused - its owner and the site's operators are told, in app; nothing about the data.</summary>
         public async Task NotifySchedulePausedAsync(ExportScheduleAggregate schedule, System.Collections.Generic.IReadOnlyList<int> recipients, CancellationToken ct = default)
         {
             ArgumentNullException.ThrowIfNull(schedule);
@@ -111,12 +111,12 @@ namespace Stomme.Modules.DataExport.Execution
         }
     }
 
-    /// <summary>The one template this module contributes to BL-78's per-site template reconciliation.</summary>
+    /// <summary>The one template this module contributes to the per-site template reconciliation.</summary>
     public static class ExportTemplateCatalogue
     {
         public const string ReadyKey = "dataexport.ready";
 
-        /// <summary>BL-95: a run found a schedule's owner no longer allowed, or its source gone, and paused it.</summary>
+        /// <summary>A run found a schedule's owner no longer allowed, or its source gone, and paused it.</summary>
         public const string SchedulePausedKey = "dataexport.schedule-paused";
 
         public static IReadOnlyList<NotificationTemplateAggregate> All(TenantId tenantId, int siteId)

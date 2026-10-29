@@ -17,7 +17,7 @@ namespace Stomme.Infrastructure.Security
     /// <list type="number">
     /// <item><c>DataProtection:KeysPath</c>, when the deployment names one;</item>
     /// <item>ASP.NET's default location when keys are already there - an existing installation, or a deployment that mounts
-    /// that folder (UAT and production do) - so nothing it protected becomes unreadable;</item>
+    /// that folder (a typical container deployment does) - so nothing it protected becomes unreadable;</item>
     /// <item>otherwise <c>DataProtection-Keys</c> beside the installation's override file (the folder
     /// <c>STOMME_APPSETTINGS_PATH</c> names), or in the host's data directory - where a container already keeps the
     /// installation.</item>

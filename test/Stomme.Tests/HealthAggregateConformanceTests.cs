@@ -34,9 +34,9 @@ namespace Stomme.Tests
     /// <b>Why it exists.</b> The installed-site drives (<c>InstalledSiteHealthDriveTests</c>, <c>HealthSiteIsolationTests</c>)
     /// cover SQLite, PostgreSQL and RavenDB - the three stores an install can choose. The File provider is a module-aggregate
     /// provider rather than an installable database, so no install reaches it, and until this suite it had never met these
-    /// aggregates: the booked "File store is undriven" line. This is the coverage the metering, notification,
-    /// help and MCP modules carry for the same provider (the BL-79 precedent); an INSTALLED File host needs a
-    /// <c>FileGateStore</c> in the harness, which BL-79 recorded as a shared harness gap.
+    /// aggregates, so the File store was never driven. This is the coverage the metering, notification,
+    /// help and MCP modules carry for the same provider; an INSTALLED File host needs a
+    /// <c>FileGateStore</c> in the harness, which is a known shared harness gap.
     /// </para>
     /// <para>
     /// The alert row is the interesting one: four nullable instants, a nullable ENUM, a nullable string and a value object.
@@ -420,8 +420,8 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// EF Core on a LIVE SQL Server scratch database (infra UAT, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
-    /// suite on SQL Server, added by BL-117 to MEASURE it. Fails, never skips, when SQL Server is down.
+    /// EF Core on a LIVE SQL Server scratch database (the shared test server, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
+    /// suite on SQL Server, added to measure it. Fails, never skips, when SQL Server is down.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class SqlServerHealthAggregateConformanceTests : HealthAggregateConformanceTests

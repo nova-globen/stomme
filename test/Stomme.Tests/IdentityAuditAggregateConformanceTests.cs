@@ -225,8 +225,8 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// EF Core on a LIVE SQL Server scratch database (infra UAT, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
-    /// suite on SQL Server, added by BL-117 to MEASURE it. Fails, never skips, when SQL Server is down.
+    /// EF Core on a LIVE SQL Server scratch database (the shared test server, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
+    /// suite on SQL Server, added to measure it. Fails, never skips, when SQL Server is down.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class SqlServerIdentityAuditAggregateConformanceTests : IdentityAuditAggregateConformanceTests

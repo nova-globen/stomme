@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-190, driven on an installed SQLite host: signing out is idempotent. Found on 2026-10-01 by deleting an account from
+    /// Driven on an installed SQLite host: signing out is idempotent. Found by deleting an account from
     /// its profile in a browser - the account was deleted and its erasure queued, then the page posted to <c>/pages/logout/</c>
     /// as Logout does, with a session the deletion had already revoked; the page's <c>[Authorize]</c> challenged, the cookie
     /// scheme answers a challenge with a bare 403, and the person who had just deleted their account saw a blank page. The

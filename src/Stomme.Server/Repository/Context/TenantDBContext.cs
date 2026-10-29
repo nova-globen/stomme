@@ -96,7 +96,7 @@ namespace Stomme.Repository
             base.OnModelCreating(builder);
 
             // EF's own ledger has no key. Said here and not by [Keyless] on the model, which made Stomme.Shared reference
-            // EF Core - and every WebAssembly site's browser download it (BL-206's payload).
+            // EF Core - and every WebAssembly site's browser download it.
             builder.Entity<MigrationHistory>().HasNoKey();
 
             // Relational-only: this context IS the ASP.NET Identity EF store and its aggregates map onto
@@ -129,7 +129,7 @@ namespace Stomme.Repository
         }
 
         // NOTE: there is deliberately no DbSet<Site>, no DbSet<Page>, no DbSet<Module>, no DbSet<User>, no
-        // DbSet<Role>, no DbSet<UserRole>, no DbSet<Setting>, no DbSet<Permission> and — since D44 — no
+        // DbSet<Role>, no DbSet<UserRole>, no DbSet<Setting>, no DbSet<Permission>, no
         // DbSet<Language>, no DbSet<Log>, no DbSet<Profile>, no DbSet<SiteTask> and no DbSet<Notification>.
         // Those clusters are on the seam: they are mapped by
         // ConfigureFrameworkStore as SiteAggregate/PageAggregate/ModuleAggregate/UserAggregate/RoleAggregate/
@@ -140,9 +140,9 @@ namespace Stomme.Repository
         // INotificationStore / IFrameworkStoreSessionFactory. Removing the DbSet is what makes the compiler
         // prove no caller bypasses the seam back to the context.
         //
-        // The D44 five are LEAF clusters — tenant-side only, one table each, nothing navigating in or out — so
-        // like Permission they have no master half and no IsMaster routing. Two of them break a pattern the
-        // first eight established, and both breaks are load-bearing: LogAggregate is NOT IAuditable (the Log
+        // Language, Log, Profile, SiteTask and Notification are LEAF clusters — tenant-side only, one table each,
+        // nothing navigating in or out — so like Permission they have no master half and no IsMaster routing. Two
+        // of them break the pattern the first eight established, and both breaks are load-bearing: LogAggregate is NOT IAuditable (the Log
         // table has no audit columns at all) and NotificationAggregate is IDeletable rather than IAuditable.
         // DbContextUtils decides both by RUNTIME TYPE TEST against the entity this context tracks, so getting
         // either wrong compiles cleanly and silently stops stamping. See the remarks on those aggregates.
@@ -164,11 +164,10 @@ namespace Stomme.Repository
         // PageModuleMustNotResurrectPageTests / ModuleMustNotBeResurrectedTests /
         // UserRoleMustNotResurrectUserOrRoleTests / VisitorMustNotResurrectUserTests, which pin all of them.
         //
-        // D47 took Visitor, UrlMapping and PageModule — mapped now as VisitorAggregate/UrlMappingAggregate/
+        // Visitor, UrlMapping and PageModule are mapped as VisitorAggregate/UrlMappingAggregate/
         // PageModuleAggregate. That group was chosen precisely because none of them needed a navigation
-        // severed FOR it: D22 had already cut Visitor.User, D19 and D21 had already cut PageModule.Page and
-        // PageModule.Module while deliberately leaving the PageModule row here, and UrlMapping never had one.
-        // So all three were row moves. PageModuleAggregate is the first on the seam to be BOTH IAuditable and
+        // severed FOR it: Visitor.User, PageModule.Page and PageModule.Module had already been cut (leaving
+        // the PageModule row here), and UrlMapping never had one. So all three were row moves. PageModuleAggregate is the first on the seam to be BOTH IAuditable and
         // IDeletable — the two runtime type tests above apply to it at once.
         //
         // NOTE ALSO: this context IS the ASP.NET Identity store (it derives from
@@ -179,20 +178,20 @@ namespace Stomme.Repository
         // ConfigureFrameworkStore maps Stomme's own tables, and no navigation crosses between them. The
         // Stomme User row and Identity's AspNetUsers row are correlated BY USERNAME in application code.
         // Do not add a navigation between the two models; that is an identity cutover, not a mapping fix.
-        // D48 took FOLDER and D49 took FILE — mapped now as FolderAggregate/FileAggregate, reached through
+        // Folder and File are mapped as FolderAggregate/FileAggregate, reached through
         // IFolderStore/IFileStore and the session factory.
         //
-        // The File half was ESCALATED by D48 rather than shipped, and the reason is worth keeping because it
+        // The File half was held back at first rather than shipped, and the reason is worth keeping because it
         // is the only blocker on this seam that was resolved by changing the DATA rather than the code:
         // FileRepository's two name lookups filtered with .ToLower() on the COLUMN. That was load-bearing on
         // the relational providers (the live database stores mixed-case names and paths — 'Public/', 'Users/1/'
         // — while the render path lowercases the URL), and RavenDB's LINQ provider THROWS on it rather than
         // mistranslating. The portable spelling was no substitute: plain == is case-SENSITIVE on relational and
-        // case-INSENSITIVE on RavenDB. D49 added path_normalized/name_normalized — Identity's
+        // case-INSENSITIVE on RavenDB. The fix was path_normalized/name_normalized columns — Identity's
         // NormalizedUserName split, which this very context already runs — so the reads filter a lowercase
         // column with plain ==, which both providers agree on. See src/Stomme.Server/README.md (persistence seam).
         //
-        // D50 took the SEARCHCONTENT cluster — Phase 3's LAST — mapped now as SearchContentAggregate /
+        // The SEARCHCONTENT cluster — the last to cross — is mapped as SearchContentAggregate /
         // SearchContentPropertyAggregate / SearchContentWordAggregate / SearchWordAggregate, reached through
         // ISearchContentStore / ISearchContentPropertyStore / ISearchContentWordStore / ISearchWordStore, the
         // session factory, and — uniquely on this seam — ISearchQueryStore.
@@ -215,10 +214,10 @@ namespace Stomme.Repository
         //
         // The three navigations that would resurrect these contracts through the tenant model —
         // SearchContent.SearchContentProperties, SearchContentWord.SearchWord and SearchContentWord
-        // .SearchContent — are [NotMapped] (D45's mechanism). See src/Stomme.Server/README.md (persistence seam).
+        // .SearchContent — are [NotMapped] (the same mechanism as the other severed navigations). See src/Stomme.Server/README.md (persistence seam).
         //
         // What is left below is MigrationHistory ALONE, which is EF's own [Keyless] ledger and stays here
-        // permanently. That is the end state Phase 3 was aiming at: this context maps no Stomme entity.
+        // permanently. That is the intended end state: this context maps no Stomme entity.
         public virtual DbSet<MigrationHistory> MigrationHistory { get; set; }
 
         // SiteGroup and SiteGroupMember are GONE from this context — they are on the seam, mapped by

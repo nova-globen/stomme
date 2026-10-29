@@ -20,14 +20,14 @@ namespace Stomme.Modules.DataExport.Execution
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>It always exists, and does nothing while the feature is off (refutation 4).</b> The framework registers
+    /// <b>It always exists, and does nothing while the feature is off.</b> The framework registers
     /// every <c>IHostedService</c> it finds and inserts its Job row before any enabled check, so this type cannot
     /// be config-gated out of existence: a stock install gains ONE Job row and a per-minute tick whose body
     /// returns at once. <c>IsEnabled</c> is true on the class because it is copied to the row only at first
     /// registration - a row born disabled would stay disabled after the feature was switched on.
     /// </para>
     /// <para>
-    /// <b>The scope discipline is the whole job (refutation 3).</b> <c>BeginScope</c> sets the AsyncLocal the module
+    /// <b>The scope discipline is the whole job.</b> <c>BeginScope</c> sets the AsyncLocal the module
     /// aggregates read; it is entered BEFORE any fresh DI scope, because the seam's tenant context caches the first
     /// alias per scope. Each site then gets its own DI scope with <c>SetTenant</c> + <c>SetAliasAsync</c>, because the
     /// framework's File, Folder and Log repositories read <c>SiteState</c> instead - and
@@ -38,8 +38,7 @@ namespace Stomme.Modules.DataExport.Execution
     /// A site that throws is logged and skipped; the next site still drains.
     /// </para>
     /// <para>
-    /// <b><c>MaximumDuration</c> is the LEASE, not the render timeout - and it is NOT reconciled onto an existing row
-    /// (refutation 4's tail, settled 2026-09-21).</b> The framework's auto-heal clears a stuck <c>IsExecuting</c> once a
+    /// <b><c>MaximumDuration</c> is the LEASE, not the render timeout - and it is NOT reconciled onto an existing row.</b> The framework's auto-heal clears a stuck <c>IsExecuting</c> once a
     /// tick is <c>MaximumDuration</c> overdue. For most jobs that flag is what stops a second run, so it must outlast the
     /// longest run. Here it is not: exactly-once is the job ROW's lease, raced on three providers, so a second tick
     /// beside a live one is safe - and a LARGER value only lengthens how long exports stall after a host is killed

@@ -17,7 +17,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Write a message to the run's execution log (the predecessor platform's ControlFlow Log): the entry is on the run's page and in
+    /// Write a message to the run's execution log: the entry is on the run's page and in
     /// the run log API as the step's own event, and it goes to the host's logger at the same level.
     /// </summary>
     [Step("Stomme", "Control Flow", "Write a message to the run's execution log.", DisplayName = "Log")]

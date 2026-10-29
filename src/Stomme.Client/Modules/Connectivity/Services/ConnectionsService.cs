@@ -38,7 +38,7 @@ namespace Stomme.Modules.Connectivity.Services
     /// <summary>The BROWSER side: HTTP to <c>api/Connections</c>.</summary>
     public class ConnectionsService : ServiceBase, IConnectionsService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason, which this module's page shows.</summary>
+        /// <summary>A refusal throws with the server's reason, which this module's page shows.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public ConnectionsService(HttpClient http, SiteState siteState) : base(http, siteState) { }

@@ -11,7 +11,7 @@
     FusionCache x3, Redis, SkiaSharp, MailKit, AngleSharp, the stock theme packs...). Measured on
     examples/Modules/Blogs: the fat restore closure was 180 packages / ~1.2 GB in the global packages
     folder — and carried a known-critical System.Drawing.Common 4.7.0 via the Saml2 chain (NU1904),
-    because the D83 vuln pin protects the APP build but does not flow into the packed nuspec.
+    because the vulnerability pin protects the APP build but does not flow into the packed nuspec.
 
     Why a shim instead of re-packing Stomme.Server.csproj with different properties: `-p:PackageId=...`
     is a GLOBAL MSBuild property, so it renames every project in the reference graph ("Ambiguous project

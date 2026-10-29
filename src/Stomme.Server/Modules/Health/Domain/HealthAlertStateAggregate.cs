@@ -12,8 +12,8 @@ namespace Stomme.Modules.Health.Domain
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>This row is the reason the alerting is not a per-process dictionary.</b> the predecessor platform tracked transitions in
-    /// a <c>Dictionary</c> inside one process, which has three consequences it never paid: a restart forgets that
+    /// <b>This row is the reason the alerting is not a per-process dictionary.</b> Tracking transitions in
+    /// a <c>Dictionary</c> inside one process has three consequences: a restart forgets that
     /// an alert was already raised and raises it again; a second host over the same database alerts a second time
     /// for the same outage; and nothing can ever be acknowledged, because there is nowhere to record that someone
     /// did. Putting the state in a row fixes all three, and is what makes "a recovery is sent exactly once per
@@ -60,7 +60,7 @@ namespace Stomme.Modules.Health.Domain
         public DateTime? BadSinceUtc { get; private set; }
 
         /// <summary>
-        /// When a scheduled re-check comes due — the durable form of the predecessor platform's deferred re-check message. The
+        /// When a scheduled re-check comes due — the durable form of a deferred re-check message. The
         /// probe job sweeps it; nothing depends on a bus being enabled.
         /// </summary>
         public DateTime? NextEvaluationOnUtc { get; private set; }

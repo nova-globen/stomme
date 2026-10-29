@@ -134,7 +134,7 @@ namespace Stomme.Repository.Stores
     /// </summary>
     /// <remarks>
     /// The contract's <c>SearchWord</c> and <c>SearchContent</c> navigations are <c>[NotMapped]</c> view state
-    /// (D45) and are NOT round-tripped here. <c>SearchContentRepository.GetSearchContentWordsAsync</c>
+    /// and are NOT round-tripped here. <c>SearchContentRepository.GetSearchContentWordsAsync</c>
     /// populates the <c>SearchWord</c> member by hand from a second query, because
     /// <c>DatabaseSearchProvider</c> reads <c>existing.SearchWord?.Word</c> to decide insert-vs-update.
     /// </remarks>
@@ -184,8 +184,8 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// Translates between <see cref="SearchContentPropertyAggregate"/> and <see cref="SearchContentProperty"/>
-    /// (D50). NOTE the contract's key is <c>PropertyId</c>, not <c>SearchContentPropertyId</c>.
+    /// Translates between <see cref="SearchContentPropertyAggregate"/> and <see cref="SearchContentProperty"/>.
+    /// NOTE the contract's key is <c>PropertyId</c>, not <c>SearchContentPropertyId</c>.
     /// </summary>
     public static class SearchContentPropertyMapper
     {

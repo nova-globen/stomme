@@ -17,7 +17,7 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (gate <c>TenantContentFilesParticipantTests</c>) - the tenants' files under BOTH roots: a restore
+    /// <c>TenantContentFilesParticipantTests</c> - the tenants' files under BOTH roots: a restore
     /// puts each tree back exactly (a file added later is gone, a changed one reverted, a deleted one back); a path that
     /// escapes, a repeated path and a truncated part are refused - and a refused replace leaves the live trees untouched,
     /// with no staging folder left behind.

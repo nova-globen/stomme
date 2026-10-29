@@ -15,7 +15,7 @@ namespace Stomme.Modules.ContextualHelp.Contributions
     /// <b>It is found by the same convention as a third-party package's contributor</b> - a public parameterless
     /// constructor in a <c>Stomme</c> assembly - and it lands in the same registry, so its keys are checked for
     /// collision exactly like anyone else's. The framework is not privileged: a package shipping one of these keys
-    /// costs BOTH sides the key (BL-105's rule), which is why nothing here is load-bearing.
+    /// costs BOTH sides the key, which is why nothing here is load-bearing.
     /// </para>
     /// <para>
     /// The control anchors are derived from <c>typeof</c>, not typed out, so renaming a control cannot silently orphan

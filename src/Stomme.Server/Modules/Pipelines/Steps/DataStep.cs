@@ -12,18 +12,18 @@ namespace Stomme.Modules.Pipelines.Steps
     /// <summary>What a data step does when its work fails as a matter of course (a failed validation, a non-2xx response).</summary>
     public enum FailurePolicy
     {
-        /// <summary>The run faults with the error (the predecessor platform's "Stop", the default).</summary>
+        /// <summary>The run faults with the error (the default).</summary>
         Fault,
 
-        /// <summary>The step completes through its <c>Failed</c> port with the error in its <c>Error</c> output (the predecessor platform's "Branch").</summary>
+        /// <summary>The step completes through its <c>Failed</c> port with the error in its <c>Error</c> output.</summary>
         Continue,
     }
 
     /// <summary>
-    /// The base of the step families absorbed from the predecessor platform (BL-95 increment (d)): a step whose RESULT is text -
+    /// The base of the data step families: a step whose RESULT is text -
     /// records as a JSON array, a document, a response body - and whose failure is either a fault or an outcome.
     /// <para>
-    /// <b>The records convention.</b> the predecessor platform passed "the upstream step's payload" implicitly; the engine's own
+    /// <b>The records convention.</b> A data step needs "the upstream step's payload" without naming it; the engine's own
     /// equivalent is the LAST RESULT, which it records whenever a step sets its <c>Result</c> output. A data step's
     /// text input therefore falls back to the last result when left empty, so a chain (parse, map, validate, write)
     /// authors without a variable, while an explicit value or a variable-bound input still wins.

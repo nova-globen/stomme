@@ -29,7 +29,7 @@ namespace Stomme.Modules.Pipelines.Application
         }
     }
 
-    /// <summary>D111a: removes a webhook's own secret on the request's site, so it takes the installation's again; false when it had none.</summary>
+    /// <summary>Removes a webhook's own secret on the request's site, so it takes the installation's again; false when it had none.</summary>
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.Manage)]
     public sealed record RemoveWebhookSecretCommand(string Name) : ICommand<bool>;
 

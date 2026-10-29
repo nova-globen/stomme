@@ -304,7 +304,7 @@ namespace Stomme.Tests.Connectors
 
     /// <summary>
     /// MISP LIVE, against this machine's throwaway MISP 2.5 (scripts/misp-test-server.ps1) - fail-not-skip without it
-    /// (D46): an event made, an attribute of its own type put on it, both searched for and found, the event tagged and untagged,
+    /// It covers an event made, an attribute of its own type put on it, both searched for and found, the event tagged and untagged,
     /// published and unpublished, changed, read without its attributes, and everything deleted again; a wrong key refused with
     /// MISP's own words.
     /// </summary>

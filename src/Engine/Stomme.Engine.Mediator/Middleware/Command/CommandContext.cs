@@ -52,7 +52,7 @@ public class CommandContext
     
     /// <summary>
     /// Gets or sets the command's result. (Named <c>CommandResult</c>, not <c>Result</c>: this is the handler's return
-    /// value, not a <see cref="Task{TResult}"/> being blocked on — D33.)
+    /// value, not a <see cref="Task{TResult}"/> being blocked on.)
     /// </summary>
     public object? CommandResult { get; set; }
 }

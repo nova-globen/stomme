@@ -26,7 +26,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// The predecessor platform's ConnectorCatalogueMetadataTests (5) by name over the port, plus the brand rules of the
+    /// The ConnectorCatalogueMetadataTests cases (5), kept by name, over the port, plus the brand rules of the
     /// icon and logo licensing review as tests: every catalogue icon is the brand-neutral monogram (no in-tree connector
     /// declares an icon of its own, no image asset sits under the family), and the connections page carries the
     /// third-party trademark notice.
@@ -135,7 +135,7 @@ namespace Stomme.Tests.Connectors
 
         // A connector's own example endpoint is one a connection to it can be made with: an address that is not HTTP's declares the
         // connection-string kind. The Active Directory connector named ldap:// and ldaps:// hosts while keeping the URL kind, so
-        // every connection it was offered was refused at the API (found on UAT, 2026-10-17).
+        // every connection it was offered was refused at the API.
         [Fact]
         public void Every_connectors_example_endpoint_is_one_a_connection_accepts()
         {
@@ -190,7 +190,7 @@ namespace Stomme.Tests.Connectors
         }
     }
 
-    /// <summary>BL-96 increment 6 - the predecessor platform's ConnectorTypeIdStabilityTests (1) by name: the persisted connector type ids are exactly this set, and a rename is a migration, not an edit.</summary>
+    /// <summary>The ConnectorTypeIdStabilityTests case, kept by name: the persisted connector type ids are exactly this set, and a rename is a migration, not an edit.</summary>
     public sealed class ConnectorTypeIdStabilityTests
     {
         [Fact]

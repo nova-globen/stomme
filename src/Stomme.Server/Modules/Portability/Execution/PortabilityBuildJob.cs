@@ -22,11 +22,11 @@ namespace Stomme.Modules.Portability.Execution
     /// <para>
     /// <b>A Building row IS the queue.</b> The spec queued a <c>SiteTask</c> per build; it is not used, because
     /// <c>SiteTaskController</c> accepts any task body from any Administrator and <c>SiteTaskJob</c> instantiates whatever
-    /// type it names (D107 refutation 15) - a module-owned job draining its own rows has none of that surface, and it is
+    /// type it names - a module-owned job draining its own rows has none of that surface, and it is
     /// the pattern <c>ExportQueueJob</c> already proves. Nothing a request supplies names a type to run.
     /// </para>
     /// <para>
-    /// <b>The scope discipline is <c>ExportQueueJob</c>'s</b> (D107 refutation 2): <c>BeginScope</c> for the tenant, then a
+    /// <b>The scope discipline is <c>ExportQueueJob</c>'s</b>: <c>BeginScope</c> for the tenant, then a
     /// fresh DI scope per site with <c>SetTenant</c> + <c>SetAliasAsync</c>, because the folder path comes from the
     /// resolved TENANT and user-scoped caches from the alias.
     /// </para>

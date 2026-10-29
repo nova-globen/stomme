@@ -10,19 +10,19 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// THE GATE for D40's handler contract: a domain-event handler STAGES work into the caller's unit of
+    /// THE GATE for the handler contract: a domain-event handler STAGES work into the caller's unit of
     /// work and NEVER manages it — no <c>SaveChanges</c>, no scope juggling, no committing or disposing the
     /// ambient session.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// WHY THIS EXISTS AS A TEST AND NOT A PARAGRAPH. D40 chose current-scope dispatch: handlers share the
+    /// WHY THIS EXISTS AS A TEST AND NOT A PARAGRAPH. Dispatch uses the current scope: handlers share the
     /// caller's DI scope and therefore the caller's session. That is what keeps the audit trail atomic with
     /// the change it audits and carries the scoped tenant context in without re-propagation — and it is
     /// exactly what makes a handler's <c>SaveChanges</c> a re-entrancy bug, because it flushes the OUTER unit
-    /// of work's pending changes mid-operation. The contract is the price of the decision. This project's
-    /// standing rule is that written rules do not hold and failing tests do: D29 wrote "async all the way
-    /// down" in prose and the next commit shipped a master that could not render a page.
+    /// of work's pending changes mid-operation. The contract is the price of the decision. Written rules do not
+    /// hold and failing tests do: a rule written in prose ("async all the way
+    /// down") was followed by a build that could not render a page.
     /// </para>
     /// <para>
     /// WHY THE REAL PARSER AND NOT A TEXT SCAN. Naive scanning has produced false positives in this
@@ -82,10 +82,10 @@ namespace Stomme.Tests
                 .SelectMany(file => HandlerDeclarations(Parse(file)).Select(h => h.Identifier.ValueText))
                 .ToList();
 
-            // The floor and the names below were RE-PINNED on 2026-09-17, not relaxed to go
+            // The floor and the names below were re-pinned to the current handler set, not relaxed to go
             // green: five of the six named handlers (UserRegistered, RoleAssigned, UserDeactivated, UserLockedOut
-            // and SessionRevoked) lived in the lifted Stomme.Identity.* model, which was DEAD code - nothing
-            // composed it - and was retired with that row. They are gone from the tree, so pinning them would
+            // and SessionRevoked) lived in the Stomme.Identity.* model, which was dead code - nothing
+            // composed it - and was removed. They are gone from the tree, so pinning them would
             // assert the existence of deleted files. What the guard still does is the job it was written for:
             // if the discovery predicate stops matching, the count drops below the surviving set and this fails.
             Assert.True(

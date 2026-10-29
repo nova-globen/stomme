@@ -197,14 +197,13 @@ public sealed class RavenFrameworkStoreStalenessTests : IAsyncLifetime
     // attempt 1 waits the full budget either way: the first query has nothing cached under that etag. That
     // is why the Assert.ThrowsAny step above never flaked while the recovered read did.
     //
-    // Repeat-stability, measured against the infra UAT server (192.168.10.20:8081, BL-18 close-out,
-    // 2026-08-03). With the MaxHttpCacheSize line above temporarily reverted, this test failed
+    // Repeat-stability, measured against the shared test server (192.168.10.20:8081). With the MaxHttpCacheSize line above temporarily reverted, this test failed
     // 13/20 filtered runs and 9/12 full-suite runs (two suite instances looping concurrently as load) —
     // every failure the same "Waited 10-40 ms" 304 signature, and NO OTHER test in the 154 ever failed.
     // Against the LAN server the pre-fix shape is ~65-75% failure, far above the ~25% recorded against
     // local Raven: the fast client reaches the server before the resumed index maps the doc almost every
     // time, so the etag has not moved and the 304 replay is near-certain. With the line in place the same
-    // conditions produce 0 failures (counts in the BL-18 close-out report/commit).
+    // conditions produce 0 failures.
     //
     // This is kept because it is cheap and it makes the setup's completion explicit, so that a failure of
     // the recovered read is a failure of the thing under test rather than of this method's setup.

@@ -13,7 +13,7 @@ namespace Stomme.Modules.HtmlText.Repository
     /// <summary>
     /// The HtmlText module's repository, on the persistence seam — the module twin of the framework's
     /// <c>PermissionRepository</c>. Writes go through <see cref="IHtmlTextStore"/>, reads through
-    /// <see cref="IHtmlTextStoreSessionFactory"/> (D19 — reads NEVER go through the store, or a later keyed write
+    /// <see cref="IHtmlTextStoreSessionFactory"/> (reads NEVER go through the store, or a later keyed write
     /// would attach a different instance with the same key and EF would reject it). This class holds no
     /// <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -27,7 +27,7 @@ namespace Stomme.Modules.HtmlText.Repository
     }
 
     /// <remarks>
-    /// Every write method takes a FRESH store (<see cref="NewStore"/>; BL-193, measured 2026-10-02). The store was held for
+    /// Every write method takes a FRESH store (<see cref="NewStore"/>). The store was held for
     /// the repository's life, and an Interactive Server circuit keeps one for as long as the page is open: the rows a circuit
     /// ADDED stayed tracked, and once its saves passed the version limit the pruning deleted one of them through an instance
     /// read by a query session - a second instance with the same key, refused by EF Core. <see cref="IHtmlTextStore"/> is
@@ -55,7 +55,7 @@ namespace Stomme.Modules.HtmlText.Repository
         // The IQueryable is materialized inside this method, so it never leaves the repository; the LINQ
         // operators are plain LINQ, not EF Core's async ones, which would bind the read to the relational provider.
         // The Where(ModuleId)/OrderByDescending(CreatedOn) compose identically on both providers — no string
-        // equality, no .ToLower() (ModuleId is an int, CreatedOn a DateTime), so the D48/D49 case split cannot
+        // equality, no .ToLower() (ModuleId is an int, CreatedOn a DateTime), so the providers' string-case split cannot
         // reach this read (verified by driving a Raven render).
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {

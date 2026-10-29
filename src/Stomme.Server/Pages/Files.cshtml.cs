@@ -266,7 +266,7 @@ namespace Stomme.Pages
 
         private IActionResult BrokenFile()
         {
-            // broken link. BL-159: the placeholder is a nicety - without it PhysicalFile threw FileNotFoundException and
+            // broken link. The placeholder is a nicety - without it PhysicalFile threw FileNotFoundException and
             // the refusal the caller had just set (403/404) went out as a 500. The status never depended on the picture.
             //
             // A refusal is never a 200. One branch above (no such file, no URL mapping) reaches here without setting a

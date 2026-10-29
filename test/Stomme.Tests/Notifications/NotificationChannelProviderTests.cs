@@ -12,13 +12,13 @@ namespace Stomme.Tests.Notifications
 {
     /// <summary>
     /// The channel seam: resolution by kind (+ the <c>provider</c> selector), the skip cases, the
-    /// kind-specific settings validation, and each shipped channel's send. Ported from the predecessor platform
-    /// <c>NotificationChannelProviderTests</c> (11 facts) and EXTENDED, not merely carried.
+    /// kind-specific settings validation, and each shipped channel's send. The 11 original facts are carried over
+    /// and EXTENDED, not merely carried.
     /// <para>
-    /// Reconciliation (11 in / 11 accounted for), by the predecessor platform name:
+    /// Reconciliation (11 in / 11 accounted for), by the original test name:
     /// <list type="bullet">
-    /// <item><c>Resolver_PicksSmtp_AsTheEmailDefault</c> -> <see cref="Resolver_PicksTheQueueEmailChannel_AsTheEmailDefault"/> (SMTP does not travel; the default e-mail transport is the inherited queue).</item>
-    /// <item><c>Resolver_PicksSendGrid_WhenProviderOptionSelectsIt</c> -> <see cref="Resolver_PicksTheNamedProvider_WhenProviderOptionSelectsIt"/> (SendGrid does not travel; a second e-mail transport double is named instead).</item>
+    /// <item><c>Resolver_PicksSmtp_AsTheEmailDefault</c> -> <see cref="Resolver_PicksTheQueueEmailChannel_AsTheEmailDefault"/> (SMTP is not used here; the default e-mail transport is the queue).</item>
+    /// <item><c>Resolver_PicksSendGrid_WhenProviderOptionSelectsIt</c> -> <see cref="Resolver_PicksTheNamedProvider_WhenProviderOptionSelectsIt"/> (SendGrid is not shipped here; a second e-mail transport double is named instead).</item>
     /// <item><c>Resolver_SkipsDisabledChannel</c> -> <see cref="Resolver_SkipsDisabledChannel"/>.</item>
     /// <item><c>Resolver_ReturnsNull_ForKindWithNoProvider</c> -> <see cref="Resolver_ReturnsNull_ForKindWithNoProvider"/>.</item>
     /// <item><c>SmtpProvider_ValidatesMissingHostAndCredential</c> -> <see cref="EmailChannel_RequiresNeitherHostNorCredential"/> (CHANGED - the relaxed e-mail invariant: a credential-free queue channel is valid).</item>
@@ -109,7 +109,7 @@ namespace Stomme.Tests.Notifications
         [Fact]
         public void Resolver_ReturnsNull_ForAnUnregisteredNamedProvider_InsteadOfTheFirstCandidate()
         {
-            // the predecessor platform: "?? candidates[0]" silently delivered over the first same-kind transport. Dropped.
+            // A "?? candidates[0]" fallback silently delivered over the first same-kind transport, so it was dropped.
             var resolver = Resolver(out var logger, AllChannels());
             var channel = Channel(ChannelKind.Email,
                 new TransportSettings(ChannelKind.Email, null, null, [new TransportOption(NotificationProviderKeys.SelectorOption, "sendgrid")]));
@@ -135,7 +135,7 @@ namespace Stomme.Tests.Notifications
             Assert.Contains(services, descriptor => descriptor.ServiceType == typeof(NotificationChannelResolver));
             Assert.Contains(services, descriptor => descriptor.ServiceType == typeof(WebhookHttpClient)
                 && descriptor.Lifetime == Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton);
-            // F13: the module must not add the mediator a second time.
+            // The module must not add the mediator a second time.
             Assert.DoesNotContain(services, descriptor => descriptor.ServiceType.FullName?.Contains("IMediator", StringComparison.Ordinal) == true);
         }
 
@@ -162,7 +162,7 @@ namespace Stomme.Tests.Notifications
             Assert.True(result.Succeeded, result.Error);
             var row = Assert.Single(rows.Rows);
             Assert.Equal(Site, row.SiteId);
-            Assert.Null(row.FromUserId); // F16: the inherited purge only removes FromUserId == null rows
+            Assert.Null(row.FromUserId); // The inherited purge only removes FromUserId == null rows
             Assert.Null(row.ToUserId);
             Assert.Equal("dev@example.com", row.ToEmail);
             Assert.Equal("Alert &lt;b&gt;", row.Subject);

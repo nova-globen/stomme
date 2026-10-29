@@ -115,7 +115,7 @@ namespace Stomme.Controllers
         }
 
         // A POST (antiforgery-checked like every other state-changing call; it was a GET, which a cross-site link could
-        // trigger for a signed-in Host) that AWAITS the upgrade's hand-off, so a refusal - BL-172's pre-upgrade snapshot
+        // trigger for a signed-in Host) that AWAITS the upgrade's hand-off, so a refusal - the pre-upgrade snapshot
         // included - reaches the page instead of only the log.
         [HttpPost("upgrade")]
         [Authorize(Roles = RoleNames.Host)]

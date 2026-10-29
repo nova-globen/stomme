@@ -356,7 +356,7 @@ else
 
     private static string ChartElementId(Guid widgetId) => DashboardWidgetBody.ChartElementId(widgetId);
 
-    // LIVE UPDATE (increment 10): in the browser the page connects to the dashboards hub (HubRoutes.Dashboards, dashboards:view)
+    // LIVE UPDATE: in the browser the page connects to the dashboards hub (HubRoutes.Dashboards, dashboards:view)
     // and re-reads every widget bound to the dataset the push names - the push is the dataset's id and the kind of change,
     // never a row. The transport is opt-in (Transport:SignalR); a refused or absent hub degrades silently to the intervals.
     private async Task ConnectLiveUpdateAsync()

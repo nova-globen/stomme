@@ -6,9 +6,8 @@ using Raven.Client.ServerWide.Operations;
 namespace Stomme.Persistence.Conformance.Tests;
 
 /// <summary>
-/// Creating a test's own database - SETUP, never the behaviour under test. BL-209 named its intermittent CI failure on
-/// 2026-10-07 (10.18.0, failing twice on one commit): "An exception occurred while contacting .../admin/databases?name=..." - the
-/// job-local RavenDB container, on a 2 GiB runner creating one database per test, failed to create one. So the creation is tried
+/// Creating a test's own database - SETUP, never the behaviour under test. A CI run once failed intermittently (a 10.18.0 build, failing twice on one commit): "An exception occurred while contacting .../admin/databases?name=..." - the
+/// job-local RavenDB container, on a small CI runner creating one database per test, failed to create one. So the creation is tried
 /// a few times with a short pause; an assertion of the suite is never retried, and a server that cannot create a database at all
 /// still fails the test (fail, never skip).
 /// </summary>

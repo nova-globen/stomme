@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.CostOptimization.Controllers
 {
     /// <summary>
-    /// <c>api/CostOptimization</c> (the predecessor platform's <c>CostOptimizationApi</c>): the site's recommendations under
+    /// <c>api/CostOptimization</c>: the site's recommendations under
     /// <c>cost-optimization:view</c>; an advisor pass, apply and dismiss under <c>cost-optimization:manage</c>. A decision the
     /// recommendation refuses answers with its code - 404 for <c>not-found</c>, 409 for <c>not-open</c>, 400 for
     /// <c>invalid-cooldown</c> - and a blank action or reason is a validation problem.

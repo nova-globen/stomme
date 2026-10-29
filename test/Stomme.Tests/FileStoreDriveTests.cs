@@ -13,13 +13,13 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Drives the D80 file store end-to-end and INSPECTS the artefact on disk — the evidence that the file
+    /// Drives the file store end-to-end and INSPECTS the artefact on disk — the evidence that the file
     /// provider actually persists, not just that the abstract conformance suite is green. It signs the unchanged
     /// Guestbook on a <c>DefaultDBType=File</c> install, then asserts (a) a real <c>{id}.json</c> file exists
     /// under the per-tenant directory, (b) its raw JSON stores the <see cref="AuthorName"/> value object as a
     /// PLAIN STRING (not a nested <c>{"Value":...}</c> object — proving the same scalar-VO serialization the
     /// RavenDB store uses), and (c) a fresh-scope re-read reconstructs the private-ctor aggregate with
-    /// <c>AuthorName.Value</c> intact. This is the round-trip the brief flagged as the serialization RISK.
+    /// <c>AuthorName.Value</c> intact. This is the round-trip that carries the serialization risk.
     /// </summary>
     public sealed class FileStoreDriveTests : IAsyncLifetime
     {

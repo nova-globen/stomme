@@ -50,7 +50,7 @@
     private bool _busy;
 
     // Prerender the module so its list + form appear in the server-rendered HTML (they otherwise only
-    // materialize after the interactive circuit connects). Safe against the D29 renderer-deadlock class:
+    // materialize after the interactive circuit connects). Safe against a renderer deadlock on a synchronously blocking data path:
     // the module's data path is its own SQLite store, whose async surface completes synchronously.
     public override bool? Prerender => true;
 

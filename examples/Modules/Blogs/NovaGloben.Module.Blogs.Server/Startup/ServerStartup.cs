@@ -30,7 +30,7 @@ namespace NovaGloben.Module.Blogs.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // ---- STORAGE-BLIND persistence (owner's bar #2) ------------------------------------------------
+            // ---- STORAGE-BLIND persistence ------------------------------------------------
             // ONE call gives a working IRepository<BlogPost, Guid> on WHATEVER provider the install selected —
             // relational EF (the aggregate is mapped into the host's shared ModuleAggregatesDbContext, the
             // PostTitle value object becomes a plain string column by the IStringValueObject convention),

@@ -14,8 +14,8 @@ using Stomme.Shared;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    // Lifted from the predecessor platform NotificationTemplateQueries.cs. CHANGED: every template read - and the PREVIEW -
-    // requires ManageTemplates, never a view key. the predecessor platform gated preview on notifications:view, which let any viewer run
+    // Every template read - and the PREVIEW -
+    // requires ManageTemplates, never a view key. Gating preview on a view key would let any viewer run
     // arbitrary Liquid over arbitrary parameters against the site's templates.
 
     /// <summary>Lists the current site's templates, by key.</summary>

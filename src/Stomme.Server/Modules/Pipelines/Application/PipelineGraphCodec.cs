@@ -14,8 +14,8 @@ using StepDescriptor = Stomme.Engine.Pipelines.Models.StepDescriptor;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// The engine's Flowchart document to the editor's <see cref="PipelineGraph"/> and back (BL-95 increment (c)).
-    /// The wire format is the engine's own, measured 2026-09-26 by serialising a flowchart through the engine's step
+    /// The engine's Flowchart document to the editor's <see cref="PipelineGraph"/> and back.
+    /// The wire format is the engine's own, measured by serialising a flowchart through the engine's step
     /// serializer: a step is <c>{"id","type","version","name","metadata":{"designer":{"position":{"x","y"}}},
     /// "&lt;input&gt;":{"typeName","expression":{"type":"Literal","value"}}}</c>, a connection is
     /// <c>{"source":{"step","port"},"target":{"step"}}</c>, and the start step is resolved by the engine
@@ -34,7 +34,7 @@ namespace Stomme.Modules.Pipelines.Application
         };
 
         /// <summary>
-        /// BL-229 (n8n's pinned data): a body without the pinned test values and the steps' pinned results - what anyone but an
+        /// (n8n's pinned data): a body without the pinned test values and the steps' pinned results - what anyone but an
         /// author is given. Both can be real data (a webhook call heard, a failure, an API's answer), so they reach an author only,
         /// as a run's data does.
         /// </summary>
@@ -182,7 +182,7 @@ namespace Stomme.Modules.Pipelines.Application
             return PipelineTimeZone.Normalize(value);
         }
 
-        /// <summary>BL-229: which pipelines a pipeline's body says may call it (<see cref="PipelineCallers"/>) - null for any.</summary>
+        /// <summary>Which pipelines a pipeline's body says may call it (<see cref="PipelineCallers"/>) - null for any.</summary>
         public static string? CalledBy(string? body)
         {
             try
@@ -232,7 +232,7 @@ namespace Stomme.Modules.Pipelines.Application
             return PipelineRunTimeout.Minutes(minutes);
         }
 
-        /// <summary>BL-229: the minutes a pipeline's body says one run that finishes well saves, or null.</summary>
+        /// <summary>The minutes a pipeline's body says one run that finishes well saves, or null.</summary>
         public static int? MinutesSaved(string? body)
         {
             try
@@ -248,7 +248,7 @@ namespace Stomme.Modules.Pipelines.Application
         private static int? MinutesSaved(JsonObject flowchart) =>
             flowchart["metadata"]?["designer"]?["minutesSaved"] is JsonValue saved && saved.TryGetValue<int>(out var minutes) ? PipelineInsights.MinutesSaved(minutes) : null;
 
-        /// <summary>BL-229: whether a pipeline's body says to keep the runs that finish well - false only when it says not to.</summary>
+        /// <summary>Whether a pipeline's body says to keep the runs that finish well - false only when it says not to.</summary>
         public static bool? KeepsSuccessfulRuns(string? body)
         {
             try
@@ -264,7 +264,7 @@ namespace Stomme.Modules.Pipelines.Application
         private static bool? KeepsSuccessfulRuns(JsonObject flowchart) =>
             flowchart["metadata"]?["designer"]?["keepSuccessfulRuns"] is JsonValue keep && keep.TryGetValue<bool>(out var value) && !value ? false : null;
 
-        /// <summary>BL-229: what a pipeline's body says its runs keep of their steps' data - null for always (PipelineStepDataKeeping).</summary>
+        /// <summary>What a pipeline's body says its runs keep of their steps' data - null for always (PipelineStepDataKeeping).</summary>
         public static string? KeepsStepData(string? body)
         {
             try
@@ -585,7 +585,7 @@ namespace Stomme.Modules.Pipelines.Application
                     metadata["designer"] = new JsonObject { ["notes"] = new JsonArray(notes) };
                 }
 
-                // BL-229 (n8n's pinned data): the variables' pinned test values, on the pipeline's own flowchart - for the editor,
+                // (n8n's pinned data): the variables' pinned test values, on the pipeline's own flowchart - for the editor,
                 // never read by a run.
                 if (parent is null)
                 {
@@ -854,7 +854,7 @@ namespace Stomme.Modules.Pipelines.Application
                 }
 
                 // Each body holding at least one step is a flowchart of its own in the port, the engine's shape (measured
-                // 2026-10-05 through its step serializer: "body": {"id","type":"Stomme.Flowchart",...,"steps","connections"});
+                // through its step serializer: "body": {"id","type":"Stomme.Flowchart",...,"steps","connections"});
                 // an empty body is left out - the step then holds nothing there, which the engine runs as an empty body.
                 foreach (var bodyPort in PlaceableBodies(descriptor))
                 {
@@ -1035,7 +1035,7 @@ namespace Stomme.Modules.Pipelines.Application
                 throw new ArgumentException($"'{text}' is not a webhook name (letters, digits, '-', '_', '.', at most 100 characters).");
             }
 
-            // BL-229, the Form trigger: a name that can be its address, and fields the editor wrote. A form still being built (no
+            // The Form trigger: a name that can be its address, and fields the editor wrote. A form still being built (no
             // field yet, a dropdown with no choice) saves - the problems panel says what is missing, and publishing refuses it.
             if (!string.IsNullOrWhiteSpace(text) && stepType == Steps.Form.StepTypeName && input.Name == nameof(Steps.Form.FormName) && !Steps.Webhook.IsValidName(text))
             {
@@ -1047,7 +1047,7 @@ namespace Stomme.Modules.Pipelines.Application
                 throw new ArgumentException(fieldsError);
             }
 
-            // BL-229, n8n's redirect after a submission: only a web address a person can be sent on to - never javascript: or a path.
+            // n8n's redirect after a submission: only a web address a person can be sent on to - never javascript: or a path.
             if (!string.IsNullOrWhiteSpace(text) && stepType == Steps.Form.StepTypeName && input.Name == nameof(Steps.Form.Redirect) && !Steps.Form.IsRedirect(text))
             {
                 throw new ArgumentException($"Then go to '{text.Trim()}' is not an https:// or http:// address.");
@@ -1058,7 +1058,7 @@ namespace Stomme.Modules.Pipelines.Application
                 throw new ArgumentException($"'{text}' is not a chat name (letters, digits, '-', '_', '.', at most 100 characters).");
             }
 
-            // BL-229, the AI agent: a tool's name is what the model calls it by - the model APIs' own rule.
+            // The AI agent: a tool's name is what the model calls it by - the model APIs' own rule.
             if (!string.IsNullOrWhiteSpace(text) && stepType == Steps.AgentTool.StepTypeName && input.Name == nameof(Steps.AgentTool.ToolName) && !Steps.AgentTool.IsValidName(text))
             {
                 throw new ArgumentException($"'{text}' is not a tool name (letters, digits, '_' and '-', at most 64).");
@@ -1077,7 +1077,7 @@ namespace Stomme.Modules.Pipelines.Application
             };
         }
 
-        // The variables in the engine's own shape (measured 2026-10-02 by serialising a flowchart through its step serializer):
+        // The variables in the engine's own shape (measured by serialising a flowchart through its step serializer):
         // {"id","name","typeName","value"}, in the order the graph names them. An id and a name are each unique.
         private static readonly HashSet<string> VariableTypes = new(StringComparer.Ordinal) { "Object", "String", "Int32", "Double", "Boolean" };
 

@@ -24,11 +24,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-95 (D108's correction of 2026-10-05) - a recurring export, driven over HTTP and through the real export queue job:
-    /// authored only by someone who may make the export now; each run an ordinary export requested AS THE OWNER with the
-    /// schedule's id, missed occurrences collapsed into one; the owner's access revoked - the next run PAUSES the schedule and
+    /// A recurring export, driven over HTTP and through the real export queue job:
+    /// authored only by someone who may make the export now; each run an ordinary export requested AS THE CREATOR with the
+    /// schedule's id, missed occurrences collapsed into one; the creator's access revoked - the next run PAUSES the schedule and
     /// queues nothing; a manager takes it over and resumes it - the next run is requested as the manager; someone else cannot
-    /// touch it; the owner deletes it.
+    /// touch it; the creator deletes it.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     public abstract class ExportScheduleDriveTests
@@ -98,7 +98,7 @@ namespace Stomme.Tests.DataExport
                 Assert.Equal(HttpStatusCode.OK, created.Status);
                 var scheduleId = JsonNode.Parse(created.Body)!["id"]!.GetValue<Guid>();
 
-                // ---- missed occurrences collapse: three days late is ONE run, requested as the owner -------------------
+                // ---- missed occurrences collapse: three days late is ONE run, requested as the creator -----------------
                 clock.Shift(TimeSpan.FromDays(3));
                 await RunQueueAsync(app);
                 var (schedule, jobs) = await SettledAsync(app, scheduleId, expectedJobs: 1);
@@ -107,13 +107,13 @@ namespace Stomme.Tests.DataExport
                 Assert.Equal(first.Id, schedule!.LastJobId);
                 Assert.False(schedule.IsDue(clock.UtcNow));
 
-                // ---- someone else may not touch it; the owner's list shows it -------------------------------------------
+                // ---- someone else may not touch it; the creator's list shows it ----------------------------------------
                 Assert.Equal(HttpStatusCode.NotFound, (await PostAsync(app, asOther, $"{Api}/schedules/{scheduleId}/pause", null, "other pauses")).Status);
                 Assert.Equal(HttpStatusCode.NotFound, (await SendAsync(app, asOther, HttpMethod.Delete, $"{Api}/schedules/{scheduleId}", "other deletes")).Status);
                 Assert.Contains("Daily rows", (await GateDrive.GetAsync(asOwner.Client, asOwner.Cookies, Host, $"{Api}/schedules", _output, "owner lists")).Body);
                 Assert.DoesNotContain("Daily rows", (await GateDrive.GetAsync(asOther.Client, asOther.Cookies, Host, $"{Api}/schedules", _output, "other lists")).Body);
 
-                // ---- the owner loses the data permission: the next run PAUSES the schedule and queues nothing ----------
+                // ---- the creator loses the data permission: the next run PAUSES the schedule and queues nothing --------
                 await GateDrive.InTenantAsync(app, Host, async (sp, _) =>
                 {
                     var permissions = sp.GetRequiredService<IPermissionRepository>();

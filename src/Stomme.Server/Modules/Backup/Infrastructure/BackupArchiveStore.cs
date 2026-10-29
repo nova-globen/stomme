@@ -48,7 +48,7 @@ namespace Stomme.Modules.Backup.Infrastructure
 
     /// <summary>
     /// Archives under <c>|DataDirectory|backups</c> - the content root's <c>Data</c> folder, which is NOT web-served (the
-    /// web root's <c>Content</c> is; D106 refutation 17). A name is a <see cref="StorageLocation"/>, which admits no
+    /// web root's <c>Content</c> is). A name is a <see cref="StorageLocation"/>, which admits no
     /// separator and no "..", and every resolved path is checked to sit directly in the root besides.
     /// </summary>
     public sealed class LocalFileBackupArchiveStore : IBackupArchiveStore

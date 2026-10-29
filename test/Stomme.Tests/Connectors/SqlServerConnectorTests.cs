@@ -13,10 +13,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The predecessor platform's SqlServerConnectorTests (10) by name over the port, plus the pin: the data source is
+    /// The SQL Server connector cases (10), carried over by name over the port, plus the pin: the data source is
     /// parsed (a tcp: prefix, host,port), a named instance without a port is refused before any pin, the driver dials the
-    /// pinned address with the certificate still checked against the original name. CHANGED: the legacy single-credential
-    /// fallback is gone (the scheme's fields are the only credentials), so
+    /// pinned address with the certificate still checked against the original name. CHANGED: there is no legacy
+    /// single-credential fallback (the scheme's fields are the only credentials), so
     /// <c>BuildConnectionString_FallsBackToTheLegacySingleCredential_AsThePassword</c> asserts the endpoint's own user id survives with no password.
     /// </summary>
     public sealed class SqlServerConnectorTests
@@ -130,7 +130,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// The SQL Server connector against the infra UAT server through the HOST's egress (fails, never
+    /// The SQL Server connector against a shared SQL Server through the HOST's egress (fails, never
     /// skips): refused until the site allowlists the private address; then connected with the scheme's credentials
     /// and the certificate accepted through the connection's own setting (the shared server's certificate is self-signed);
     /// the query operation streams real rows.

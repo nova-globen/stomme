@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Infrastructure.Licensing
 {
     /// <summary>
-    /// D105 "One gate, closed properly" — the POST-BUILD validation of the entitlement leg (refutations 2, 3 and 8). Called
+    /// The POST-BUILD validation of the entitlement leg. Called
     /// FIRST in <c>UseStommeAsync</c>: after the container is built (so every module's registrations are visible) and
     /// before <c>app.StartAsync</c> starts <c>FeatureSeeder</c> — whose catch-all would otherwise swallow a failure raised
     /// in the lazily built <c>FeatureRegistry</c> and leave every later flag evaluation to 500.

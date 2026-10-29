@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Stomme.Tests.Landing
 {
-    /// <summary>BL-98 increment 1 - the landing page aggregate: one per site, made from the template, published, hidden, forgotten.</summary>
+    /// <summary>The landing page aggregate: one per site, made from the template, published, hidden, forgotten.</summary>
     public sealed class LandingPageTests
     {
         private static readonly DateTime Now = new(2026, 9, 28, 9, 0, 0, DateTimeKind.Utc);

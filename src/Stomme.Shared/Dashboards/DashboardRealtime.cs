@@ -16,8 +16,7 @@ namespace Stomme.Dashboards
     }
 
     /// <summary>
-    /// The in-process fan-out of a dataset change to the widgets rendered on THIS host (the predecessor platform's IDashboardDataSignal by
-    /// name): an Interactive Server circuit has no browser cookie to open the hub with, so a page rendered on the server
+    /// The in-process fan-out of a dataset change to the widgets rendered on THIS host: an Interactive Server circuit has no browser cookie to open the hub with, so a page rendered on the server
     /// subscribes here and re-reads without a round-trip; a browser page uses the hub. A singleton, registered by the
     /// Server; absent in the browser, where the page asks for it optionally. The site key scopes a change to its site.
     /// </summary>

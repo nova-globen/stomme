@@ -106,7 +106,7 @@ namespace Stomme.Repository.Stores
         /// suite writes aggregates straight through <see cref="IFolderStore"/>, and so may any future caller —
         /// and a write that bypassed the mapper would persist a NULL normalized column, which reads as "this
         /// folder does not exist" on both providers. Silently. Deriving it here makes an unnormalized row
-        /// unrepresentable rather than merely discouraged, which is the same standard D49 sets for the read
+        /// unrepresentable rather than merely discouraged, which is the same standard applied to the read
         /// side (<c>FileRepository</c> normalizes its own arguments so a caller cannot forget).
         /// </para>
         /// <para>

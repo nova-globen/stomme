@@ -24,7 +24,7 @@ namespace Stomme.Infrastructure.Security
     }
 
     /// <summary>
-    /// The headless twin of <see cref="PermissionRowAccessGuard"/> (D108 refutation 8).
+    /// The headless twin of <see cref="PermissionRowAccessGuard"/>.
     /// </summary>
     /// <remarks>
     /// <para>

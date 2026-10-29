@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Stomme.Connectivity
 {
     // ============================================================================================================
-    // The connector contract: BCL-ONLY, so the connectors of BL-96 reference
+    // The connector contract: BCL-ONLY, so the connectors reference
     // Stomme.Shared and nothing else. The catalog implementation and the DI extension live in the Server;
     // egress is HOST-supplied through the contexts (a guarded HttpClient, a resolve-check-and-pin call), never a
     // connector's own socket policy. SharedConnectivityDependencyTests pins the BCL-only rule.
@@ -350,7 +350,7 @@ namespace Stomme.Connectivity
         IAsyncEnumerable<ConnectorRecord> ExtractAsync(ConnectorExtractContext context, CancellationToken cancellationToken = default);
     }
 
-    /// <summary>Every registered connector, by type key (case-insensitive). The host's catalog REFUSES a duplicate key at composition (the predecessor platform's first-registration-wins is the hijack D101 and D103 refused).</summary>
+    /// <summary>Every registered connector, by type key (case-insensitive). The host's catalog REFUSES a duplicate key at composition (a first-registration-wins rule would let a later package hijack a key).</summary>
     public interface IConnectorCatalog
     {
         IConnector? Find(string connectorType);

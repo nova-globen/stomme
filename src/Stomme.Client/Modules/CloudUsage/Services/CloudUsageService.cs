@@ -31,7 +31,7 @@ namespace Stomme.Modules.CloudUsage.Services
     /// <summary>The page's client over <c>api/CloudUsage</c>.</summary>
     public class CloudUsageService : ServiceBase, ICloudUsageService, IClientService
     {
-        /// <summary>BL-222: a refusal throws with the server's reason, which this module's page shows.</summary>
+        /// <summary>A refusal throws with the server's reason, which this module's page shows.</summary>
         protected override bool ThrowOnRefusal => true;
 
         public CloudUsageService(HttpClient http, SiteState siteState) : base(http, siteState)

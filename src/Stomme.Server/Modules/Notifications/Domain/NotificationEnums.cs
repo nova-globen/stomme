@@ -1,7 +1,6 @@
 namespace Stomme.Modules.Notifications.Domain
 {
-    // Lifted from the predecessor platform src/Modules/Notifications/the predecessor platform.Notifications.Domain/NotificationEnums.cs. The
-    // numeric values are the WIRE contract shared with the published mirrors in Stomme.Shared
+    // The numeric values are the WIRE contract shared with the published mirrors in Stomme.Shared
     // (Stomme.Models.Notifications.NotificationChannelKind / NotificationRecipientKind) and never change.
     // NotificationSeverity is NOT redeclared here: the domain uses the published Stomme.Models.Notifications
     // enum directly (identical members and values), so a request's severity needs no mapping at dispatch.
@@ -35,8 +34,8 @@ namespace Stomme.Modules.Notifications.Domain
         Email = 1,
 
         /// <summary>
-        /// A literal endpoint addressed directly. Kept for wire stability with the predecessor platform's published enum; the
-        /// dispatcher REJECTS it (an open relay and a path around the per-channel SSRF guard - BL-78 F9).
+        /// A literal endpoint addressed directly. Kept for wire stability with the published enum; the
+        /// dispatcher REJECTS it (an open relay and a path around the per-channel SSRF guard).
         /// </summary>
         Endpoint = 2,
     }

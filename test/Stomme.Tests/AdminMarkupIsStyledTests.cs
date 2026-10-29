@@ -18,7 +18,7 @@ namespace Stomme.Tests
     /// Bootstrap arrives ONLY under <c>BlazorTheme</c> (CDN). So an admin module that borrows a Bootstrap
     /// utility, or invents a class nobody defined, renders **unstyled on the default theme** — silently. The
     /// page still renders; it just looks wrong, and only on themes the author was not looking at. That is
-    /// exactly how BL-49's breadcrumbs and this sweep's eleven classes survived unnoticed.
+    /// exactly how an earlier breadcrumb defect and this sweep's eleven classes survived unnoticed.
     /// </para>
     /// <para>
     /// The first run of the equivalent script over-reported, because it did not index the per-module

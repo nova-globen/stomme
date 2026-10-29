@@ -19,8 +19,8 @@ namespace Stomme.Modules.Pipelines.Application
     /// The step types the editor can place: the engine's registry, browsable entries only, ordered by category then name.
     /// A step with an EMBEDDED port - a loop's Body, an If's Then and Else - is offered with those ports as its
     /// <see cref="StepCatalogEntry.Bodies"/>: the editor opens each as a flowchart of its own. Until then
-    /// such a step was left out, because its child slots were drawn as outcome ports and it could only be saved empty (found
-    /// walking the editor in a browser, 2026-10-02); <see cref="StepCatalogEntry.Ports"/> now names the FLOW ports alone.
+    /// such a step was left out, because its child slots were drawn as outcome ports and it could only be saved empty;
+    /// <see cref="StepCatalogEntry.Ports"/> now names the FLOW ports alone.
     /// A container whose children are a LIST (Sequence, Parallel, the flowchart itself) is still not offered - the canvas is
     /// that list - and neither is <c>Switch</c>, whose every case holds a step of its own that no body can name. The
     /// flowchart's own branching (Decision, Switch (flow), Fork, Join) stays.
@@ -108,7 +108,7 @@ namespace Stomme.Modules.Pipelines.Application
         /// gives an input it can run without a starting value (<c>= new(new Literal&lt;int&gt;(1))</c>) or declares it nullable
         /// (<c>Input&lt;string?&gt;</c>); an input it leaves null (<c>= null!</c>) with a reference type that holds no null is one
         /// the author must fill. A step that reads an input with <c>GetOrDefault</c> and a fallback declares it nullable (Fault,
-        /// Fork, Complete and Publish Event were corrected so on 2026-10-06). A step that cannot be made here has none required -
+        /// Fork, Complete and Publish Event do so). A step that cannot be made here has none required -
         /// the save stays the judge of it.
         /// </summary>
         internal static Func<string, bool> RequiredInputs(Stomme.Engine.Pipelines.Models.StepDescriptor descriptor)

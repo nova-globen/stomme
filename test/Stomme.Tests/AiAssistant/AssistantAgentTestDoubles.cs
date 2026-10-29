@@ -16,7 +16,7 @@ namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
     /// A model that plays a SCRIPT of assistant turns - a tool call, then an answer - and lets the real function-invocation
-    /// loop drive the tools in between (the predecessor platform's <c>ScriptedChatClient</c>). It records every call's model and messages.
+    /// loop drive the tools in between. It records every call's model and messages.
     /// </summary>
     internal sealed class TurnScriptChatClient : IChatClient
     {
@@ -190,7 +190,7 @@ namespace Stomme.Tests.AiAssistant
         }
     }
 
-    /// <summary>the predecessor platform's <c>FakeResponseCache</c>: every key asked, the entries stored, or one primed answer for any key.</summary>
+    /// <summary>A fake response cache: every key asked, the entries stored, or one primed answer for any key.</summary>
     internal sealed class FakeResponseCache : IModelResponseCache
     {
         private CachedModelResponse? _primed;

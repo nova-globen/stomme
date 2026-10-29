@@ -9,9 +9,9 @@ using Stomme.Shared;
 namespace Stomme.Tests.Fixtures.GateTestModule
 {
     /// <summary>
-    /// The permission-key vocabulary of the BL-99 gate fixture - the shape a lifted the predecessor platform module's
-    /// <c>XxxPermissions</c> class takes (a flat static class of <c>resource:operation</c> constants, lifted
-    /// verbatim; its <c>IPermissionContributor</c> registration is dropped at lift).
+    /// The permission-key vocabulary of the gate fixture - the shape a module's
+    /// <c>XxxPermissions</c> class takes (a flat static class of <c>resource:operation</c> constants),
+    /// without its <c>IPermissionContributor</c> registration.
     /// </summary>
     public static class GateTestPermissions
     {
@@ -22,9 +22,9 @@ namespace Stomme.Tests.Fixtures.GateTestModule
     }
 
     /// <summary>
-    /// A test-only module that declares permission KEYS, used by the BL-99 gates. Discovered by the very same
+    /// A test-only module that declares permission KEYS, used by the permission gates. Discovered by the very same
     /// assembly scan every other suite already runs over this test assembly (<c>IsStommeAssembly</c> matches
-    /// on the name "Stomme.Tests"), exactly like the BL-74 and BL-53c fixtures beside it - and it cannot leak
+    /// on the name "Stomme.Tests"), exactly like the other fixtures beside it - and it cannot leak
     /// into a production scan, because the only assembly that carries it is the test assembly.
     /// </summary>
     /// <remarks>
@@ -32,7 +32,7 @@ namespace Stomme.Tests.Fixtures.GateTestModule
     /// seeds no page; its keys live under the <c>gatetest</c> resource, which nothing else declares.
     /// <para>
     /// <see cref="DeclaredKeys"/> is settable so ONE process can boot two hosts over one database with a
-    /// DIFFERENT declaration each time - the upgrade shape the reconciliation gate drives (the BL-53c
+    /// DIFFERENT declaration each time - the upgrade shape the reconciliation gate drives (the
     /// <c>TransportDeclaringTestModule</c> precedent). Every value it is ever set to must still be a valid
     /// declaration, because the declaration gate may run concurrently in the same process.
     /// </para>
@@ -61,7 +61,7 @@ namespace Stomme.Tests.Fixtures.GateTestModule
         public bool? Prerender => null;
     }
 
-    /// <summary>A gated command: the shape every one of the predecessor platform's 140 <c>[Requires]</c> declarations takes.</summary>
+    /// <summary>A gated command: the shape every <c>[Requires]</c> declaration takes.</summary>
     [Requires(GateTestPermissions.Manage)]
     public sealed class GateTestManageCommand : IRequest<string>
     {

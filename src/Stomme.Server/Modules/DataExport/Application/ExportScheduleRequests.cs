@@ -16,7 +16,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.DataExport.Application
 {
     /// <summary>
-    /// Recurring exports (D108's correction of 2026-10-05): the schedule is authored by a person who may make the
+    /// Recurring exports: the schedule is authored by a person who may make the
     /// export NOW - its request is validated by the request path's own validator - and every run is requested as its owner,
     /// re-authorised then (<c>ExportSchedulePass</c>). A manager sees and manages every schedule of the site and may take one
     /// over; anyone else, their own.
@@ -144,7 +144,7 @@ namespace Stomme.Modules.DataExport.Application
         }
     }
 
-    /// <summary>A manager takes a schedule over: every later run is requested as them (D108's correction).</summary>
+    /// <summary>A manager takes a schedule over: every later run is requested as them.</summary>
     [Requires(ExportPermissions.Manage)]
     public sealed record TakeOverExportScheduleCommand(Guid Id) : ICommand<bool>;
 

@@ -24,7 +24,7 @@ namespace Stomme.Tests.Connectors
     /// children, files or folders, types, the trash - page by page no further than asked; a download into the run's folder, a
     /// Google file exported to n8n's default for its kind or to what is asked, a path ending with / taking the file's name; an
     /// upload multipart, sent whole again after a throttle, converted when asked; an update, a copy, a move by its parents, a
-    /// delete to the trash or for good, a share with no one e-mailed unless asked and the owner's only transferred; folders and
+    /// delete to the trash or for good, a share with no one e-mailed unless asked and ownership transferred only on request; folders and
     /// shared drives; what could go wrong refused before a token is asked for; Google's reason and message on a failure.
     /// </summary>
     public sealed class GoogleDriveConnectorTests : IDisposable

@@ -129,7 +129,7 @@ namespace Stomme.Modules.DataExport.Execution
     }
 
     /// <summary>
-    /// Wraps a source's document so the render reports back between tables and every N rows (D108 refutation 9).
+    /// Wraps a source's document so the render reports back between tables and every N rows.
     /// </summary>
     /// <remarks>
     /// The renderers know nothing of jobs or leases, and should not. The pulse is injected where the rows are

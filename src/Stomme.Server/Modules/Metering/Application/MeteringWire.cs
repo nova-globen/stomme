@@ -10,8 +10,8 @@ namespace Stomme.Modules.Metering.Application
     /// Aggregate to view model, and the one place the handled site id is resolved.
     /// </summary>
     /// <remarks>
-    /// <b>The site is RESOLVED, never accepted.</b> the predecessor platform's override command took the tenant from the request
-    /// body, so a caller could grant themselves capacity on another tenant. Here no metering request carries a site
+    /// <b>The site is RESOLVED, never accepted.</b> A command that took the tenant from the request
+    /// body would let a caller grant themselves capacity on another tenant. Here no metering request carries a site
     /// or a tenant at all: <see cref="RequireSiteId"/> reads the alias the request was routed with, and a scope
     /// that resolved no site throws rather than defaulting to anything.
     /// </remarks>

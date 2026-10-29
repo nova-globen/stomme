@@ -12,8 +12,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The Landing Page Designer (BL-98 increments 3 and 4; the predecessor platform's planned <c>LandingPageDesignerAgent</c>, never built
-    /// there): a site's landing page as static HTML from an administrator's brief, and one section of it rewritten from an
+    /// The Landing Page Designer: a site's landing page as static HTML from an administrator's brief, and one section of it rewritten from an
     /// instruction. The model is the SITE's (quota-gated and metered like every agent); it SUBMITS through one tool, and what
     /// the tool accepts is only what the landing sanitizer leaves unchanged - anything it had to take out is reported back
     /// for the model to put right, within <see cref="MaxAttempts"/> submissions. It PROPOSES: nothing is stored here.

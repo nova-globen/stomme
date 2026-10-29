@@ -15,13 +15,13 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.CloudUsage.Infrastructure
 {
     /// <summary>
-    /// The "Cloud Cost Analytics" board (the predecessor platform's <c>CloudUsageDashboardCatalogue</c> and its seeder):
+    /// The "Cloud Cost Analytics" board:
     /// six widgets - total spend, month-over-month and cost-vs-budget KPIs, the cost trend by provider and the top services
     /// as charts, the underutilized resources as a grid - over three datasets, published, per site.
     /// </summary>
     /// <remarks>
-    /// <para><b>CHANGED from the predecessor platform.</b> the predecessor platform seeded it on every start of every host, into the default tenant, with
-    /// well-known ids. Here it is DEMO CONTENT: written per site on the boot path through the framework's site-content
+    /// <para>It is DEMO CONTENT, not seeded on every start of every host into a default tenant with
+    /// well-known ids: written per site on the boot path through the framework's site-content
     /// runner ONLY while <c>DemoContent:Enabled</c> is true (default off; the reconciler is not even registered otherwise),
     /// additively under the per-site stamp, with fresh ids - the module store is one per installation, so a well-known id
     /// would collide across sites and tenants.</para>

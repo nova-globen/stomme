@@ -162,7 +162,7 @@ namespace Stomme.Database.Sqlite
         /// <para>
         /// <b>The hazard is real on a supported install, not just in tests.</b> A file-backed SQLite database
         /// admits ONE writer, and a composed Stomme host writes from two places at once: the request being
-        /// served, and the D34 log drain flushing from a background thread. Under SQLite's default journal mode
+        /// served, and the log drain flushing from a background thread. Under SQLite's default journal mode
         /// a READER also blocks a writer that has already begun its transaction, so the loser gets
         /// <c>SQLite Error 5: 'database is locked'</c>. Measured on the test harness: the host-installing suites
         /// failed this way about one full run in three, a different case each time. Nothing about that is
@@ -178,11 +178,10 @@ namespace Stomme.Database.Sqlite
         /// was given.
         /// </para>
         /// <para>
-        /// <b>A busy timeout is NOT added, because there already is one</b> — measured 2026-09-20:
-        /// <c>SqliteConnectionStringBuilder.DefaultTimeout</c> is 30 seconds with nothing set. An earlier note
-        /// beside the test harness read as though its explicit <c>Default Timeout=30</c> supplied that wait; it
-        /// restates the default and changes nothing. Recorded so the next reader does not add a third copy of it.
-        /// <b>CORRECTION 2026-10-28:</b> the wait is now EXPLICIT - <see cref="BusyTimeoutSeconds"/> applies it to every
+        /// <b>A busy timeout is NOT added, because there already is one</b> — measured:
+        /// <c>SqliteConnectionStringBuilder.DefaultTimeout</c> is 30 seconds with nothing set. An explicit
+        /// <c>Default Timeout=30</c> in a connection string restates the default and changes nothing, so none is added.
+        /// The wait is EXPLICIT:<see cref="BusyTimeoutSeconds"/> applies it to every
         /// command, 30 seconds unless the connection string's <c>Default Timeout</c> says otherwise - and pinned by a test,
         /// so it no longer rests on the library's default staying 30.
         /// </para>

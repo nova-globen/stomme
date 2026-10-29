@@ -216,7 +216,7 @@ namespace Stomme.Tests
             Assert.Null(context.CurrentTenantId);
         }
 
-        // Found 2026-09-28 by the Extract from connection drive on RavenDB. The engine's worker runs a dispatched run in a
+        // Found while running an extract-from-connection job against RavenDB. The engine's worker runs a dispatched run in a
         // scope with NO alias; a step that needs its site sets one on SiteState (StommeSiteScope, as every headless job
         // does). The context had already answered "no tenant" to an earlier read in that scope and cached it for the scope's
         // life, so every tenant-owned read after it failed closed - the site's connection "was not found". It now follows

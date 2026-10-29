@@ -341,7 +341,7 @@ namespace Stomme.Tests
             Assert.Equal("=1+1", parsed.RootElement.GetProperty("tables")[0].GetProperty("rows")[0].GetProperty("Value").GetString());
         }
 
-        // ---- found by reconciling the predecessor platform's cases BY NAME (BL-85 residue 7): three options nothing here exercised -------
+        // ---- three options nothing here exercised -------
 
         [Fact]
         public async Task CSV_can_leave_the_header_out_and_the_row_count_is_unchanged()
@@ -360,7 +360,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task JSON_carries_every_table_by_name_in_the_order_the_source_produced_them()
         {
-            // the predecessor platform keyed a multi-table document BY table name, so two tables named alike lost one. An array of
+            // Keying a multi-table document by table name lost one of two tables named alike. An array of
             // named tables cannot.
             using var sink = new MemoryStream();
             var outcome = await new JsonTabularRenderer().RenderAsync(

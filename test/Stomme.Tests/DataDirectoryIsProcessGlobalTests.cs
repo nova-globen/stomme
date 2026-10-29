@@ -19,7 +19,7 @@ namespace Stomme.Tests
     /// the framework resolve the <c>|DataDirectory|</c> token by reading it back —
     /// <c>ModuleAggregatePersistenceExtensions</c>, <c>ModuleRepositoryProviderRegistry</c>,
     /// <c>StommeTenantConnectionResolver</c>, <c>DatabaseManager</c> (three), FeatureManagement's
-    /// <c>ServerStartup</c>, and the three <c>DBContext</c> bases. In production that is sound: one host, one
+    /// <c>ServerStartup</c>, and the three <c>DBContext</c> bases. In a deployed install that is sound: one host, one
     /// process, one content root.
     /// </para>
     /// <para>
@@ -30,18 +30,18 @@ namespace Stomme.Tests
     /// <c>LicensingHostComposition</c>).
     /// </para>
     /// <para>
-    /// <b>That is the best explanation yet for BL-153</b>, where
+    /// <b>This is the best explanation so far for one failure seen in the test run</b>, where
     /// <c>SqliteNotificationAggregateConformanceTests</c> died on
     /// <c>DirectoryNotFoundException: …\stomme-host-composition\{guid}\Data</c> — a content root that suite
     /// never creates, owned by a class whose <c>Dispose</c> deletes it. A suite reading the global after that
-    /// owner disposed gets a path that no longer exists. The row's first hypothesis (a fresh root missing its
+    /// owner disposed gets a path that no longer exists. The first hypothesis (a fresh root missing its
     /// <c>Data</c> folder) was refuted by an isolation run; this is not refuted by one, because it needs two
     /// hosts.
     /// </para>
     /// <para>
     /// This suite PINS the mechanism; it does not fix it. The fix is to stop resolving the token from process
     /// state — the value is already derivable per host from <c>IWebHostEnvironment.ContentRootPath</c> — and that
-    /// touches all ten read sites, so it is its own increment.
+    /// touches all ten read sites, so it is separate work.
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -104,7 +104,7 @@ namespace Stomme.Tests
 
             // And when that sibling's Dispose deletes its content root - which every one of these fixtures does -
             // the path this process now hands out points at a directory that no longer exists. That is the shape
-            // of the BL-153 failure, down to the DirectoryNotFoundException naming another suite's root.
+            // of the failure above, down to the DirectoryNotFoundException naming another suite's root.
             Assert.False(Directory.Exists(Path.GetDirectoryName(resolved.Replace("Data Source=", string.Empty))),
                 "the sibling's root was never created here, standing in for one already disposed");
         }

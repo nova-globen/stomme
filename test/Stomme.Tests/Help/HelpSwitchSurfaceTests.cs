@@ -16,8 +16,8 @@ namespace Stomme.Tests.Help
     /// </summary>
     /// <remarks>
     /// The launcher asked <c>api/Help/topic</c> on every page; with <c>Help:Enabled</c> off - the default - the router
-    /// answers 404, and a WebAssembly site's browser logged it on every page (found driving BL-201). The
-    /// switch travels in the site's settings, the channel D70 made for SAML's and Windows' switches; this reads it as a client
+    /// answers 404, and a WebAssembly site's browser logged it on every page. The
+    /// switch travels in the site's settings, the channel the SAML and Windows switches use; this reads it as a client
     /// does, over <c>GET api/Site/{id}</c>, from an installation with Help off and one with it on.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]

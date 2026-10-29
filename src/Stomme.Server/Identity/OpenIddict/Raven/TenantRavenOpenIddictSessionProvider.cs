@@ -19,15 +19,14 @@ namespace Stomme.Identity.OpenIddict.Raven
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is the RavenDB counterpart of <see cref="TenantOpenIddictDbContext"/>'s per-alias routing. the predecessor platform's
-    /// Raven OpenIddict stores were single-authority (one shared <see cref="IDocumentStore"/>, one database);
-    /// Stomme is PER-TENANT, so isolation has to be built the way B1/EF builds it — a physically separate
+    /// This is the RavenDB counterpart of <see cref="TenantOpenIddictDbContext"/>'s per-alias routing. A single-authority store would use one shared <see cref="IDocumentStore"/> and one database;
+    /// Stomme is PER-TENANT, so isolation has to be built the way the EF store builds it — a physically separate
     /// OpenIddict database per tenant, addressed by the SAME connection-string convention
     /// (<c>{tenant.DBConnectionString}_OpenIddict</c>). There is no "per-tenant IDocumentStore keyed on
     /// SiteState.Alias" in this codebase: the framework store's <see cref="IDocumentStore"/> is a single host-wide
     /// singleton and isolates tenants by a query filter, not by a second store. OpenIddict's store calls carry no
     /// tenant filter, so a shared database would leak clients/tokens across tenants; a separate database per
-    /// tenant reproduces B1's invisibility property exactly.
+    /// tenant reproduces the EF store's invisibility property exactly.
     /// </para>
     /// <para>
     /// The tenant is read fresh per request through <see cref="ITenantManager.GetResolvedTenant"/> — the alias off

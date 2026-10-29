@@ -17,7 +17,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The marketplace-arrival schema gap, reproduced exactly as the BL-1 drive found it.
+    /// The marketplace-arrival schema gap, reproduced exactly as a drive found it.
     /// The shared module-aggregates store brings its schema up with <c>EnsureCreated</c>, which creates the FULL
     /// schema only when the DATABASE does not exist. The sidecar database is created at FIRST boot with whatever
     /// aggregates are then registered — so a clean-arch module arriving LATER (marketplace nupkg → restart →

@@ -15,17 +15,17 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// A name belongs to ONE contributor (D101 items 1-2).
+    /// A name belongs to ONE contributor.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// What this answers, measured on the predecessor platform: descriptors and handlers were unioned by NAME, first registration wins -
+    /// What this answers, measured on an earlier version: descriptors and handlers were unioned by NAME, first registration wins -
     /// so a module registered earlier could publish a same-named descriptor with no gates and have the real invoker run
     /// behind it, or register a same-named invoker and be handed the caller's arguments.
     /// </para>
     /// <para>
-    /// <b>Here there is nothing to win: EVERY side of a collision is dropped, and the host starts</b> (owner decision
-    /// 2026-09-22, BL-105, D101 correction 3 - D101 originally made it a fatal startup check, which let a third-party
+    /// <b>Here there is nothing to win: EVERY side of a collision is dropped, and the host starts</b> (a deliberate decision:
+    /// an earlier design made it a fatal startup check, which let a third-party
     /// package in <c>/bin</c> brick an install with no admin UI left to remove it). The security property is
     /// unchanged and is what these cases assert: a same-named descriptor can neither downgrade a gate nor hijack a
     /// handler, because the name stops being served at all.
@@ -234,7 +234,7 @@ namespace Stomme.Tests.Mcp
         [Fact]
         public async Task A_host_with_a_colliding_contributor_STARTS_and_serves_NEITHER_side_of_the_collision()
         {
-            // The BL-105 decision, driven on a real host (owner). D101 made this fatal; contributor
+            // Driven on a real host. An earlier design made this fatal; contributor
             // discovery matches ANY assembly in /bin whose name contains Stomme, including a package
             // InstallationManager unpacked there - so a fatal check let a third-party package brick an install, and
             // after the restart there is no admin UI left to remove it.
@@ -287,7 +287,7 @@ namespace Stomme.Tests.Mcp
         [Fact]
         public void No_two_IN_TREE_contributors_publish_the_same_name()
         {
-            // THE BUILD GATE (D103's posture, adopted for MCP). A collision between contributors that ship
+            // THE BUILD GATE (the posture adopted for MCP). A collision between contributors that ship
             // in THIS repository is our own mistake, and the runtime rejection - correct for a package we do not
             // control - would quietly cost a name we meant to serve. So it fails here, before it ships.
             var contributors = AppDomain.CurrentDomain.GetAssemblies()

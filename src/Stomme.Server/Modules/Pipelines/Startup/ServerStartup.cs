@@ -78,7 +78,7 @@ namespace Stomme.Modules.Pipelines.Startup
                 });
                 // The step families (increment (d)): every public step in this assembly joins the engine's registry.
                 module.AddStepsFrom<PipelineStepsMarker>();
-                // BL-229, n8n's "save execution progress": the strategy a pipeline that asks names - its run stored after each step.
+                // n8n's "save execution progress": the strategy a pipeline that asks names - its run stored after each step.
                 PipelineRunPolicy.UseSaveProgress(module);
                 // Which pipelines may call a pipeline - added before the retry, so it sits inside it and a refused call
                 // takes the step's Failed path like any failure of the step.
@@ -229,7 +229,7 @@ namespace Stomme.Modules.Pipelines.Startup
             services.AddScoped<PipelineCallReceiver>();
             services.AddScoped<PipelineFormWaits>(); // A run waiting for a form - its page and its submission
             services.AddSingleton<Triggers.PipelineWebhookAnswers>(); // the calls waiting for their pipeline's answer, in this process
-            // BL-229, n8n's multi-page forms: the submissions waiting to be taken on to their next page, in this process - and a burst
+            // n8n's multi-page forms: the submissions waiting to be taken on to their next page, in this process - and a burst
             // that ends without one says so, so the person is thanked at once.
             services.AddSingleton<Triggers.PipelineFormContinuations>();
             services.AddNotificationHandler<Triggers.FormContinuationOnCommit, Stomme.Engine.Pipelines.Runtime.Notifications.PipelineStateCommitted>();
@@ -285,7 +285,7 @@ namespace Stomme.Modules.Pipelines.Startup
             // The MCP surface (increment (f)): a contributor the MCP module publishes when IT is composed; inert otherwise.
             services.AddScoped<Stomme.Mcp.IMcpContributor, Mcp.PipelinesMcpContributor>();
 
-            // A run's execution log as a D108 export source (re-booked): registered with the module, so it exists only
+            // A run's execution log as an export source: registered with the module, so it exists only
             // while Pipelines is on; the export job resolves it per site and it enters that site's engine tenant itself.
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Export.IExportSource, PipelineRunLogExportSource>());
         }

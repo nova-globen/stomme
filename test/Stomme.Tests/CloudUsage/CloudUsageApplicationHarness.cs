@@ -38,7 +38,7 @@ namespace Stomme.Tests.CloudUsage
 {
     /// <summary>
     /// The CloudUsage application layer over the File store through the module's OWN startup: the
-    /// mediator with the authorization and validation behaviours, a resolved site and tenant, and the edges the predecessor platform's tests
+    /// mediator with the authorization and validation behaviours, a resolved site and tenant, and the edges that tests
     /// stubbed - the payload source (a captured sample), the connection resolver, the dataset registrar, the notification
     /// dispatcher, the site's administrators, the host egress.
     /// </summary>
@@ -46,7 +46,7 @@ namespace Stomme.Tests.CloudUsage
     {
         public const int SiteId = 1;
 
-        // the predecessor platform's clock: today is 2026-07-15, so the evaluated month is 2026-07 and the latest full day 2026-07-14.
+        // The fixed clock: today is 2026-07-15, so the evaluated month is 2026-07 and the latest full day 2026-07-14.
         public static readonly DateTime Start = new(2026, 7, 15, 12, 0, 0, DateTimeKind.Utc);
 
         public const string AzurePayload = """

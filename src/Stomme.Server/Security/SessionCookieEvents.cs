@@ -71,7 +71,7 @@ namespace Stomme.Security
             catch (Exception ex)
             {
                 // The sign-out itself must still happen: the cookie is deleted either way, and a row left open simply
-                // shows in the owner's list until it expires or they revoke it.
+                // shows in the user's session list until it expires or they revoke it.
                 context.HttpContext.RequestServices.GetService<ILogger<SessionRegistry>>()?
                     .LogError(ex, "Session {SessionId} could not be ended at sign-out.", sessionId);
             }

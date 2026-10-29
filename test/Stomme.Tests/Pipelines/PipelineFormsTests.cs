@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Stomme.Tests.Pipelines
 {
-    /// <summary>BL-229 - n8n's Form trigger: the fields' rules (the editor's, the publish's and the receiver's alike) and the page the site serves.</summary>
+    /// <summary>n8n's Form trigger: the fields' rules (the editor's, the publish's and the receiver's alike) and the page the site serves.</summary>
     public sealed class PipelineFormsTests
     {
         private static List<PipelineFormField> Contact() =>
@@ -187,7 +187,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("enctype", PipelineFormPage.Render(new PipelineFormSpec("in", "In", null, [new() { Label = "Name" }], "Send", null)));
         }
 
-        // BL-229, n8n's redirect after a submission: the thank-you takes the person on - a refresh and a link, the address encoded; an
+        // n8n's redirect after a submission: the thank-you takes the person on - a refresh and a link, the address encoded; an
         // address that is not http(s) is never followed, and a form with none shows its Answer.
         [Fact]
         public void A_form_with_an_address_to_go_to_takes_the_person_there_from_its_thank_you()
@@ -206,7 +206,7 @@ namespace Stomme.Tests.Pipelines
                 Stomme.Modules.Pipelines.Steps.Form.IsRedirect("javascript:alert(1)"), Stomme.Modules.Pipelines.Steps.Form.IsRedirect("/welcome"), Stomme.Modules.Pipelines.Steps.Form.IsRedirect(null)));
         }
 
-        // BL-229, n8n's Hidden Field: a value carried unseen - from the form's address, else its own - kept as sent, never required;
+        // n8n's Hidden Field: a value carried unseen - from the form's address, else its own - kept as sent, never required;
         // a hidden field needs a name, not a label; the address fills any field but a file field, never past the longest answer.
         [Fact]
         public void A_hidden_field_carries_its_value_and_the_address_fills_a_form()

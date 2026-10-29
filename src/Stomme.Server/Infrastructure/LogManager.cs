@@ -20,7 +20,7 @@ namespace Stomme.Infrastructure
     /// <remarks>
     /// Do not "fix" this to be async. It is called from ~443 sites; the reason it may stay sync is that its
     /// body no longer reaches a database, NOT that it is exempt. If you add a store call here you
-    /// have reintroduced the sync-over-async that D29 shipped a dead master with — put it in
+    /// have reintroduced the sync-over-async that once deadlocked the renderer — put it in
     /// <see cref="LogDrainService"/> instead.
     /// </remarks>
     public interface ILogManager
@@ -146,7 +146,7 @@ namespace Stomme.Infrastructure
                 log.Feature = log.Category;
             }
             log.Function = Enum.GetName(typeof(LogFunction), function);
-            // Owner, 2026-10-10: an inherited refusal of an ANONYMOUS caller is a Warning - logged, never mailed.
+            // An inherited refusal of an ANONYMOUS caller is a Warning - logged, never mailed.
             level = Stomme.Infrastructure.Security.SecurityRefusals.LevelFor(level, function, message, principal);
             log.Level = Enum.GetName(typeof(Shared.LogLevel), level);
             if (exception != null)
@@ -233,7 +233,7 @@ namespace Stomme.Infrastructure
                     if (log.SiteId != -1)
                     {
                         // Hand off to LogDrainService. The store write and the notification used to happen
-                        // right here, synchronously; since D33 made the repositories async they cannot, and
+                        // right here, synchronously; now that the repositories are async they cannot, and
                         // blocking on them is the banned shape. Enrichment above already captured everything
                         // that needed the request, so the drain only needs the entry and its tenant.
                         var entry = new LogEntry(log, _siteState?.Alias, CurrentAlias());
@@ -379,7 +379,7 @@ namespace Stomme.Infrastructure
         /// <para>
         /// <b>This is a denylist, with a denylist's honest limit:</b> it protects the names it knows. The
         /// durable answer is to keep credentials out of URLs altogether — the reset token should travel in the
-        /// request BODY, which is the same change BL-148 needs for private setting values (there the value is a
+        /// request BODY, which is the same change private setting values need (there the value is a
         /// PATH segment, which this does not touch).
         /// </para>
         /// </remarks>

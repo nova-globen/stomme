@@ -42,7 +42,7 @@ public static class FeatureManagementServiceExtensions
         services.AddEfDocumentSessions<FeatureManagementDbContext>();
 
         // The module's two aggregates are read through NON-tracking repositories. The open generic above tracks,
-        // and MEASURED (2026-09-21) that made the admin list go stale in a long-lived DI scope: list, toggle from
+        // and MEASURED: that made the admin list go stale in a long-lived DI scope: list, toggle from
         // another scope, list again -> the OLD value. Its one consumer today is an HTTP controller, a scope per request,
         // so nothing showed - but a server-side IFeatureService, or a module calling the admin surface from a component,
         // would have inherited it silently. A CLOSED registration wins over the open generic in MS.DI whatever the load
@@ -89,18 +89,18 @@ public static class FeatureManagementServiceExtensions
         services.TryAddScoped<ITenantContext, DefaultTenantContext>();
         services.TryAddScoped<IFeatureContextProvider, AnonymousFeatureContextProvider>();
 
-        // In-process domain-event dispatch in the CURRENT scope, driving the audit trail (docs/decisions.md
-        // D40). The module used to ship its own FeatureDomainEventDispatcher here, rivalling the one
-        // Stomme.Persistence's AddDomainEvents TryAdd'd; D40 consolidated both onto the single
+        // In-process domain-event dispatch in the CURRENT scope, driving the audit trail. The module
+        // used to ship its own FeatureDomainEventDispatcher here, rivalling the one
+        // Stomme.Persistence's AddDomainEvents TryAdd'd; both are now consolidated onto the single
         // CurrentScopeDomainEventDispatcher, so whichever Add*() runs first the semantics are identical.
         // Current scope is what keeps the audit trail atomic with the flag change it audits, and what carries
         // the scoped ITenantContext into FeatureFlagAuditHandler without re-propagating it by hand.
         services.TryAddScoped<IDomainEventDispatcher, CurrentScopeDomainEventDispatcher>();
 
-        // The framework's single UnitOfWork (docs/decisions.md D41 / D67): the module used to ship its own
+        // The framework's single UnitOfWork: the module used to ship its own
         // FeatureUnitOfWork here, rivalling Stomme.Persistence.UnitOfWork that AddDomainEvents TryAdd'd,
         // with the two differing on clear-vs-dispatch order — an ordering accident with no compile error to
-        // announce it. D67 collapsed both onto this one clear-before-dispatch type in
+        // announce it. both are now collapsed onto this one clear-before-dispatch type in
         // Stomme.Persistence.Abstractions (the assembly both paths reference), so whichever Add*() runs
         // first the registration is order-inert, the same shape as the dispatcher line above.
         services.TryAddScoped<IUnitOfWork, UnitOfWork>();

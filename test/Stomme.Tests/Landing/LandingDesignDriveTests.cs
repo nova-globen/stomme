@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Landing
 {
     /// <summary>
-    /// BL-98 increments 3 and 4 - the AI mode and the edit mode DRIVEN over HTTP on an installed host, through the REAL Landing
+    /// The AI mode and the edit mode, driven over HTTP on an installed host, through the REAL Landing
     /// Page Designer and the site's metered model (a scripted one composed into the host as a provider): the site's assistant
     /// off is the refusal that says so; a brief is designed - the model's first submission carrying a script and a handler,
     /// which the sanitizer takes out and sends back, its second accepted - and PROPOSED, nothing stored; the page accepted with

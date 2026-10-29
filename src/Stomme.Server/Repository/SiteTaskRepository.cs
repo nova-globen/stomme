@@ -32,7 +32,7 @@ namespace Stomme.Repository
     /// (<c>HostedServiceBase</c>). It resolves this repository once per tenant, AFTER that call, which is what
     /// makes a per-instance context tenant-correct — and is why this repository and its store must stay
     /// TRANSIENT. See <c>EfFrameworkStore&lt;TAggregate&gt;</c>. (This used to say the job runs every tenant
-    /// inside ONE DI scope; since BL-107 / <c>ff19714</c>, 2026-09-17, each tenant gets its own tenant scope and
+    /// inside ONE DI scope; now each tenant gets its own tenant scope and
     /// its own DI scope. TRANSIENT is still required: it is what stops a cached context binding to one tenant.)
     /// </para>
     /// </remarks>

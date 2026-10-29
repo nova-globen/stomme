@@ -15,7 +15,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// The Guestbook clean-arch store's observable contract, expressed ONCE and DRIVEN against BOTH
-    /// providers it must run on (the same shape as D73's <c>FeatureFlagStoreConformanceTests</c>). A subclass
+    /// providers it must run on (the same shape as <c>FeatureFlagStoreConformanceTests</c>). A subclass
     /// supplies the fixture — the relational (EF Core / SQLite) store or the live RavenDB document store — and
     /// the tests below know nothing about either. Both providers must produce the SAME observable results:
     /// signing persists, a re-read in a FRESH scope returns the entry with its <see cref="AuthorName"/> value
@@ -44,7 +44,7 @@ namespace Stomme.Tests
         /// Provider hook: whether <c>FindAsync</c> over the <see cref="AuthorName"/> value object matches a
         /// DIFFERENT case. Measured: EF/SQLite no (it compares the converted string), RavenDB yes (case-insensitive), File
         /// yes (the value object's own <c>Equals</c>, which lower-cases). Encoded as a provider fact, like the string
-        /// boundary in the D78 suite - so a store that starts to disagree with its recorded answer goes red.
+        /// boundary in the string-filter suite - so a store that starts to disagree with its recorded answer goes red.
         /// </summary>
         protected abstract bool ValueObjectEqualityIsCaseInsensitive { get; }
 
@@ -94,7 +94,7 @@ namespace Stomme.Tests
             });
 
         /// <summary>
-        /// BL-111 (D79's correction), the three-way divergence the survey predicted and the probe measured: a signature
+        /// Tenant isolation, where the providers diverged as measured: a signature
         /// for module 4242 under tenant ONE was returned to tenant TWO on EF and RavenDB (a module id repeats across
         /// tenants; the store is one per installation) and not on File (it partitions by tenant). Tenant-owned now, every
         /// provider isolates it: tenant TWO reads an empty book for the same module id, tenant ONE still reads its row.

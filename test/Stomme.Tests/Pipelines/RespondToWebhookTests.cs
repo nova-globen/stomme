@@ -177,7 +177,7 @@ namespace Stomme.Tests.Pipelines
             Assert.True((await publisher.PublishAsync(await publisher.NewAsync(flowchart))).Succeeded);
         }
 
-        // BL-229, n8n's Respond to Webhook headers and binary file: the headers the answer carries, a file of the pipeline folder
+        // n8n's Respond to Webhook headers and binary file: the headers the answer carries, a file of the pipeline folder
         // answered with its type from its name and a name to save it under; the site's own headers, a line that is no header, a file
         // outside the folder, one missing and one too large refused - the run faults, nothing is answered.
         [Fact]

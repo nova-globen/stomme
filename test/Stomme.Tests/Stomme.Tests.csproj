@@ -15,7 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <!-- Transport (brief 04 / D10): drive the opt-in gRPC + SignalR transports live against a real Kestrel host. -->
+    <!-- Transport: drive the opt-in gRPC + SignalR transports live against a real Kestrel host. -->
     <PackageReference Include="Grpc.Net.Client" />
     <PackageReference Include="Grpc.Net.Client.Web" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
@@ -25,7 +25,7 @@
     <!-- Boot/install/render guard: drives the REAL host in-process (Program.BuildApp + TestServer transport)
          so GET / goes through the actual middleware pipeline and the actual MapRazorComponents<App> endpoint. -->
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
-    <!-- The architecture gates: D33 (async-all-the-way) and D40 (domain-event handler contract) parse source
+    <!-- The architecture gates: async-all-the-way and the domain-event handler contract parse source
          with the real C# parser. See AsyncAllTheWayDownTests.cs, DomainEventHandlerContractTests.cs, and
          Directory.Packages.props for why a text scan is not good enough. -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
@@ -59,7 +59,7 @@
   <!-- The PackageVersion is declared HERE (not Directory.Packages.props) so it is fully scoped to this
        opt-in flag and can never perturb central package management for the rest of the solution. -->
   <ItemGroup Condition="'$(IncludeDemoModules)' == 'true'">
-    <!-- 2.0.0 is the BL-13 split package (Client/Server/Shared DLLs in one nupkg); the bundling drive is
+    <!-- 2.0.0 is the split package (Client/Server/Shared DLLs in one nupkg); the bundling drive is
          layout-agnostic — all three .Stomme assemblies bake into /bin and ride the same convention scan. -->
     <PackageVersion Include="NovaGloben.Module.Blogs" Version="2.0.0" />
     <PackageReference Include="NovaGloben.Module.Blogs" />

@@ -20,7 +20,7 @@ using Preferences = Stomme.Modules.Notifications.Preferences;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-54 for the Notifications module: the controls' <c>@onclick</c> handlers are BOUND. A Razor file compiled
+    /// The Notifications module's controls: their <c>@onclick</c> handlers are BOUND. A Razor file compiled
     /// without <c>@using Microsoft.AspNetCore.Components.Web</c> turns <c>@onclick</c> into a plain HTML attribute - the module
     /// builds green, renders, and every click is silently dead. bUnit's <c>Click()</c> THROWS
     /// (<c>MissingEventHandlerException</c>) on an element with no bound handler, so these facts go RED on exactly that defect.
@@ -44,7 +44,7 @@ namespace Stomme.Tests.Notifications
             Services.AddSingleton<INotificationService>(_inbox);
         }
 
-        // BL-229, found driving "Ask for approval": the inbox showed a notice's subject alone, so an approver was told a decision
+        // Found by driving "Ask for approval": the inbox showed a notice's subject alone, so an approver was told a decision
         // waits but not what, nor where. A notice opens to its body as text - the renderer's encoded breaks and an error's <br />
         // as lines, markup never - with an address on this site as a link and any other left as text.
         [Fact]

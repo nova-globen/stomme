@@ -19,7 +19,7 @@ namespace Stomme.Modules.Mcp.Domain
         /// <summary><c>tools/call</c>.</summary>
         ToolCall = 0,
 
-        /// <summary><c>resources/read</c> - which the predecessor platform never audited at all.</summary>
+        /// <summary><c>resources/read</c> - audited like a tool call.</summary>
         ResourceRead = 1,
     }
 

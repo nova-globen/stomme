@@ -47,7 +47,7 @@ namespace Stomme.Modules.Backup.Startup
             services.TryAddSingleton<IS3ObjectClient>(provider => new AwsS3ObjectClient(provider.GetRequiredService<BackupArchiveOptions>().S3));
 
             // The local root is asked of THIS host (IConfigManager.GetDataDirectory), never the AppDomain-global DataDirectory
-            // (BL-153); the S3 store stages under it. A snapshot is read from the store its row names, never assumed.
+            // (a process-wide slot that several hosts in one process would share); the S3 store stages under it. A snapshot is read from the store its row names, never assumed.
             services.TryAddSingleton(provider =>
             {
                 var options = provider.GetRequiredService<BackupArchiveOptions>();

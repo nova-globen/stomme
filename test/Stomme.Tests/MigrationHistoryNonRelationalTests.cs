@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-9 / D43 addendum — on a non-relational install, <c>GET /api/migrationhistory</c> returns an
+    /// On a non-relational install, <c>GET /api/migrationhistory</c> returns an
     /// <b>empty list</b>: a document store has no EF migration ledger, and inventing a bootstrap record would
     /// present fiction as history. The guard lives in <see cref="MigrationHistoryRepository"/>, keyed on the
     /// current tenant's <c>DBType</c> through the same predicate the install pipeline branches on

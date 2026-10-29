@@ -6,8 +6,8 @@ using Stomme.Models.Notifications;
 namespace Stomme.Notifications
 {
     /// <summary>
-    /// The published producer port every module calls to "tell someone something" - lifted
-    /// from the predecessor platform's <c>the predecessor platform.Notifications.Abstractions.INotificationDispatcher</c>. Dependency-free and in
+    /// The published producer port every module calls to "tell someone something".
+    /// Dependency-free and in
     /// <c>Stomme.Shared</c>, so a producer depends on this and never on the Notifications module.
     /// </summary>
     /// <remarks>

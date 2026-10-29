@@ -125,7 +125,7 @@ public static class ModuleAggregateModelGuard
 /// unfiltered). Aggregates are added to the model BEFORE the base reflection runs, exactly as a hand-written
 /// module context did.
 /// <para>
-/// <b>Value objects by convention (the D76 "EntityBuilders lie" risk).</b> For any aggregate property whose type
+/// <b>Value objects by convention (hand-written entity builders can drift from the real schema).</b> For any aggregate property whose type
 /// implements <see cref="IStringValueObject"/> the context applies a generic
 /// <see cref="ValueConverter{TModel, TProvider}"/> that writes <c>Value</c> and reconstructs through the value
 /// object's public <c>static Create(string)</c> factory — so the column is a plain string and the module hand-
@@ -164,7 +164,7 @@ public sealed class ModuleAggregatesDbContext : StommeDbContext
     /// Every module-aggregate <see cref="System.DateTime"/> is UTC, and reads back SAYING so.
     /// </summary>
     /// <remarks>
-    /// MEASURED 2026-09-23 (<c>HealthAggregateConformanceTests</c>, five stores): SQLite and SQL Server hand a stored
+    /// MEASURED (<c>HealthAggregateConformanceTests</c>, five stores): SQLite and SQL Server hand a stored
     /// instant back with <c>Kind = Unspecified</c>; PostgreSQL (<c>timestamptz</c>), RavenDB and the File store return
     /// <c>Utc</c>. <c>DateTime</c> equality ignores <c>Kind</c>, so every round-trip assertion passed while the kinds
     /// diverged - and a later <c>ToUniversalTime()</c> or ISO rendering then shifts by the host's offset on a non-UTC
@@ -252,9 +252,9 @@ public sealed class ModuleAggregatesDbContext : StommeDbContext
                     // GLOBAL TenantId -> Guid conversion (TenantIdConverter), so EF maps this as a scalar
                     // column exactly like a hand-written module context would. The reflective guard below
                     // predates any tenant-owned module aggregate and did not know that.
-                    // MEASURED (endgame proof-of-life, 2026-08-04; ported under D98 Wave 0 / BL-92): without
-                    // this branch EVERY aggregate implementing ITenantOwned — i.e. every tenant-scoped the predecessor platform
-                    // aggregate, 38 of 47 — threw at model build. The throw was caught and logged by
+                    // MEASURED: without
+                    // this branch EVERY aggregate implementing ITenantOwned — i.e. every tenant-scoped
+                    // aggregate — threw at model build. The throw was caught and logged by
                     // ModuleAggregateStoreInitializer ("it will read as empty"), so the module silently
                     // persisted NOTHING until the first query surfaced the same exception through the mediator.
                     // The existing storage-blind modules (Guestbook, Blogs) are module-scoped rather than
@@ -273,7 +273,7 @@ public sealed class ModuleAggregatesDbContext : StommeDbContext
                 {
                     // A value object EF cannot map as a scalar by convention (it has no key and a private
                     // constructor). Fail loudly rather than let EF interpret it as an owned entity and silently
-                    // mis-map it — the D79 brief's required outcome for an unsupported VO shape.
+                    // mis-map it — the required outcome for an unsupported VO shape.
                     throw new System.NotSupportedException(
                         $"The shared module store cannot map property '{aggregate.Name}.{property.Name}' of type " +
                         $"'{property.PropertyType.Name}': only string value objects (IStringValueObject with a public " +

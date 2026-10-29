@@ -18,7 +18,7 @@ using Xunit;
 
 namespace Stomme.Tests.Datasets
 {
-    /// <summary>BL-94 increment 12 (D110 Q6) - the feature flag is declared by discovery and DEFAULT OFF, every gate names it, and the one tool changes nothing.</summary>
+    /// <summary>The feature flag is declared by discovery and DEFAULT OFF, every gate names it, and the one tool changes nothing.</summary>
     public sealed class DatasetMcpFeatureDefaultTests
     {
         [Fact]
@@ -44,7 +44,7 @@ namespace Stomme.Tests.Datasets
         }
     }
 
-    /// <summary>BL-94 increment 12 - a summary or a tool call for ANOTHER site's dataset id is not found: the catalog scopes every read by the request's site.</summary>
+    /// <summary>A summary or a tool call for ANOTHER site's dataset id is not found: the catalog scopes every read by the request's site.</summary>
     public sealed class DatasetMcpSiteIsolationTests
     {
         [Fact]
@@ -72,7 +72,7 @@ namespace Stomme.Tests.Datasets
         }
     }
 
-    /// <summary>BL-94 increment 12 (D110 Q1) - Confidential AND Restricted are refused by <c>query_dataset</c> and masked in the summary resource; Public and Internal are served.</summary>
+    /// <summary>Confidential AND Restricted are refused by <c>query_dataset</c> and masked in the summary resource; Public and Internal are served.</summary>
     public sealed class DatasetMcpClassificationTests
     {
         [Theory]

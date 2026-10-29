@@ -10,7 +10,7 @@ namespace Stomme.CostOptimization
     // ============================================================================================================
 
     /// <summary>
-    /// The kind of savings opportunity a recommendation addresses (the predecessor platform's, lifted). Values start at 1 so the CLR default
+    /// The kind of savings opportunity a recommendation addresses. Values start at 1 so the CLR default
     /// is not a category and the domain's raise refuses it.
     /// </summary>
     public enum RecommendationCategory
@@ -28,7 +28,7 @@ namespace Stomme.CostOptimization
         RightSizing = 4,
     }
 
-    /// <summary>The one-way lifecycle of a recommendation: Open, then Applied or Dismissed (the predecessor platform's).</summary>
+    /// <summary>The one-way lifecycle of a recommendation: Open, then Applied or Dismissed.</summary>
     public enum RecommendationStatus
     {
         /// <summary>Raised and awaiting a decision.</summary>
@@ -41,7 +41,7 @@ namespace Stomme.CostOptimization
         Dismissed = 3,
     }
 
-    /// <summary>The module's keys (the predecessor platform's names), declared to Administrators as every Wave 2 and Wave 5 module's are.</summary>
+    /// <summary>The module's permission keys, declared to Administrators as every module's are.</summary>
     public static class CostOptimizationPermissions
     {
         public const string Resource = "cost-optimization";
@@ -60,7 +60,7 @@ namespace Stomme.CostOptimization
     }
 
     /// <summary>
-    /// One recommendation as the advisor surfaces it (the predecessor platform's <c>RecommendationView</c>). CHANGED: the instants are UTC
+    /// One recommendation as the advisor surfaces it. The instants are UTC
     /// <see cref="DateTime"/> values, as every module store holds them.
     /// </summary>
     public sealed record RecommendationView(
@@ -79,8 +79,8 @@ namespace Stomme.CostOptimization
         DateTime? DismissedUntilUtc);
 
     /// <summary>
-    /// The outcome of applying or dismissing a recommendation. CHANGED from the predecessor platform's <c>Result&lt;RecommendationView&gt;</c>,
-    /// which Stomme does not have: a refusal carries the predecessor platform's code (<c>not-found</c>, <c>not-open</c>,
+    /// The outcome of applying or dismissing a recommendation. Stomme has no generic <c>Result&lt;T&gt;</c> type, so
+    /// a refusal carries a code (<c>not-found</c>, <c>not-open</c>,
     /// <c>invalid-cooldown</c>) and a reason; a success carries the decided recommendation.
     /// </summary>
     public sealed record RecommendationDecisionView(bool Success, string? Code, string? Reason, RecommendationView? Recommendation)
@@ -97,7 +97,7 @@ namespace Stomme.CostOptimization
     }
 
     /// <summary>
-    /// One advisor pass (the predecessor platform's): how many recommendations it raised, their keys in analyzer order, and how many drafts it
+    /// One advisor pass: how many recommendations it raised, their keys in analyzer order, and how many drafts it
     /// suppressed because their key was already open, cooling down, or drafted twice in the pass.
     /// </summary>
     public sealed record AdvisorRunView(int RaisedCount, IReadOnlyList<string> RaisedKeys, int SuppressedCount);

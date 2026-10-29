@@ -86,8 +86,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// The predecessor platform's live PostgreSqlConnectorTests (3, from its Aspire suite) by name against the infra
-    /// UAT PostgreSQL through the HOST's egress: the private address is refused until the site allowlists it, and with it
+    /// The live PostgreSQL connector cases (3), run by name against a shared PostgreSQL server through the HOST's egress:
+    /// the private address is refused until the site allowlists it, and with it
     /// allowlisted the test succeeds with the credentials applied from the scheme and the query operation streams real rows
     /// that serialise to the wire shape. Fails, never skips, when the server is unreachable.
     /// </summary>
@@ -101,7 +101,7 @@ namespace Stomme.Tests.Connectors
         [Fact]
         public async Task TestConnection_Succeeds_AgainstLivePostgres_WithCredentialAppliedAsPassword()
         {
-            // Without the allowlist the private infra address is refused before any socket (the egress's job, not the driver's).
+            // Without the allowlist the private address is refused before any socket (the egress's job, not the driver's).
             await Assert.ThrowsAsync<ConnectorEgressDeniedException>(() => new PostgreSqlConnector().TestConnectionAsync(Contexts.Test(new HostConnectorEgress(Array.Empty<string>()), Endpoint, credentials: Credentials, timeoutSeconds: 15)));
 
             var result = await new PostgreSqlConnector().TestConnectionAsync(Contexts.Test(new HostConnectorEgress(new[] { PostgresTestEndpoint.Host }), Endpoint, credentials: Credentials, timeoutSeconds: 15));

@@ -8,11 +8,11 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationChannelTests.cs</c> (8 facts): the
+    /// The channel tests (8 facts): the
     /// <see cref="NotificationChannelAggregate"/> and its <see cref="TransportSettings"/> - kind/transport agreement,
     /// the no-inline-secret invariant, enable/disable, the <see cref="ChannelConfiguredEvent"/>, and round-trip
-    /// persistence of the transport value graph. Harness swap: the round-trip runs on the module's File store.
-    /// DEVIATED by name: <c>EmailTransport_WithoutVaultReference_Throws</c> became
+    /// persistence of the transport value graph. The round-trip runs on the module's File store.
+    /// Renamed: <c>EmailTransport_WithoutVaultReference_Throws</c> became
     /// <see cref="EmailTransport_WithoutSecretReference_IsAccepted"/> - a credential-free email channel is valid.
     /// </summary>
     public sealed class NotificationChannelTests
@@ -61,7 +61,7 @@ namespace Stomme.Tests.Notifications
             Assert.Empty(channel.DomainEvents);
         }
 
-        // DEVIATED: the predecessor platform threw for an Email transport without a vault reference, which a
+        // Deliberate change: the first design threw for an Email transport without a vault reference, which a
         // credential-free email channel (the existing SMTP queue) cannot supply. The reference requirement moves to
         // the channel PROVIDER that declares it; the domain accepts the transport.
         [Fact]

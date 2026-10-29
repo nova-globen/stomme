@@ -2,9 +2,9 @@ namespace Stomme.Modules.Metering.Domain
 {
     /// <summary>The window a quota counts over.</summary>
     /// <remarks>
-    /// the predecessor platform had TWO rival authorities with different windows: <c>Quota.IsPeriodElapsed</c> slid from the period
-    /// start, while the AI guard counted the raw ledger from a CALENDAR month start. One had to win, and the
-    /// calendar window did: it is the one an operator can reason about ("this month"), and it is the one a repair
+    /// There is ONE authority for the window, not two rivals (a window sliding from the period start versus a guard
+    /// counting the raw ledger from a CALENDAR month start). The
+    /// calendar window wins: it is the one an operator can reason about ("this month"), and it is the one a repair
     /// pass can recompute from the ledger without knowing when the quota row was created.
     /// </remarks>
     public enum QuotaPeriod

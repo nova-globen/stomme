@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.Licensing
 {
     /// <summary>
-    /// D105 design item 7: <see cref="OfflineLicenceEntitlementProvider"/> grants a capability iff a Valid key under
+    /// <see cref="OfflineLicenceEntitlementProvider"/> grants a capability iff a Valid key under
     /// <c>Licensing:Keys:&lt;lid&gt;</c> lists it, reading the map FRESH on every call over a shared <see cref="LicenceState"/>.
     /// </summary>
     /// <remarks>
@@ -21,10 +21,10 @@ namespace Stomme.Tests.Licensing
     /// overload and need no collection.
     /// </para>
     /// <para>
-    /// Reconciled BY NAME from the predecessor platform <c>tests/Licensing.Tests/LicensingTests.cs</c>:
+    /// Reconciled by name with an earlier licensing test suite:
     /// <c>License_Entitlement_RespectsValidityWindowAndWildcard</c> → <see cref="License_Entitlement_RespectsValidityWindowAndWildcard"/>
     /// (validity window and listed-capability half kept; the Revoke half is dropped with Revoke; the wildcard half is
-    /// deliberately INVERTED — D105 does not carry <c>*</c>, which the verifier rejects as Malformed).
+    /// deliberately INVERTED — this product does not carry <c>*</c>, which the verifier rejects as Malformed).
     /// </para>
     /// </remarks>
     [Collection("LicenceRing")]
@@ -188,10 +188,10 @@ namespace Stomme.Tests.Licensing
         }
 
         /// <summary>
-        /// Adapted BY NAME from the predecessor platform <c>LicensingTests.License_Entitlement_RespectsValidityWindowAndWildcard</c>: listed
+        /// Adapted by name from an earlier suite, <c>LicensingTests.License_Entitlement_RespectsValidityWindowAndWildcard</c>: listed
         /// capability inside the window → granted; an unlisted one → denied; before <c>nbf</c> and at/after <c>exp</c> → denied.
-        /// The WILDCARD half is deliberately NOT carried: D105 has no <c>*</c> capability, the verifier rejects a key listing
-        /// it as Malformed, so here a <c>*</c> key grants NOTHING (the predecessor platform's version asserted it granted everything).
+        /// The WILDCARD half is deliberately NOT carried: there is no <c>*</c> capability, the verifier rejects a key listing
+        /// it as Malformed, so here a <c>*</c> key grants NOTHING (an earlier version of this test asserted that it granted everything).
         /// </summary>
         [Fact]
         public async Task License_Entitlement_RespectsValidityWindowAndWildcard()

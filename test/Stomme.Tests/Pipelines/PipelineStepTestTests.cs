@@ -157,7 +157,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("not a whole number", refused.Error);
         }
 
-        // BL-229 (n8n tests a step with what leads to it): up to here runs every step that leads to the one tested, in its own
+        // n8n tests a step with what leads to it: up to here runs every step that leads to the one tested, in its own
         // flowchart, then it - not the steps after it, not the ones beside; a step before it switched off stays off; one before
         // it failing stops the test before it; a step with nothing before it runs alone, as Test step does.
         [Fact]
@@ -195,7 +195,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "inside" }, (await TestAsync(services, Graph(), "inside", upToHere: true)).Steps.Select(step => step.StepId));
         }
 
-        // BL-229 (n8n's "Test workflow"): the whole pipeline as it stands goes as a run would - its chain in order, with the
+        // n8n's "Test workflow": the whole pipeline as it stands goes as a run would - its chain in order, with the
         // values given, the log written - a switched-off step skipped as a run skips it, and no step at all refused.
         [Fact]
         public async Task The_whole_pipeline_runs_as_a_run_would_with_the_values_given()

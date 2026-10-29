@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Stomme.Infrastructure.Licensing
 {
-    /// <summary>The two deployment shapes D105 distinguishes.</summary>
+    /// <summary>The two deployment shapes.</summary>
     internal enum DeploymentModeKind
     {
         /// <summary>The default: nothing licensing-related is registered and a stock install is unchanged.</summary>
@@ -15,7 +15,7 @@ namespace Stomme.Infrastructure.Licensing
     }
 
     /// <summary>
-    /// Reads <c>Deployment:Mode</c> (D105 "The gate"). Absent, empty or whitespace is <see cref="DeploymentModeKind.Hosted"/>;
+    /// Reads <c>Deployment:Mode</c>. Absent, empty or whitespace is <see cref="DeploymentModeKind.Hosted"/>;
     /// <c>Hosted</c> and <c>OnPrem</c> match case-insensitively; ANY other value is a loud failure naming the key, because
     /// a typo that silently fell back to Hosted would switch the licence ring off without a word.
     /// </summary>

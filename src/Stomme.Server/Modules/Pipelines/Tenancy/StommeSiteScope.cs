@@ -15,7 +15,7 @@ namespace Stomme.Modules.Pipelines.Tenancy
     /// site's alias before dispatching" - its own words). The rule is the one every headless job here follows: enter
     /// the site through <c>ITenantManager.SetAliasAsync</c>, for the CACHE as much as the path.
     /// </summary>
-    /// <remarks>Public since BL-251: an app's own pipeline step or recurring task needs the same entry, and copied it by hand.</remarks>
+    /// <remarks>Public because an app's own pipeline step or recurring task needs the same entry, and copied it by hand.</remarks>
     public static class StommeSiteScope
     {
         /// <summary>Enters the step's site when this scope has none; false when there is no engine tenant to enter.</summary>

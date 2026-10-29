@@ -17,7 +17,7 @@ using SiteState = Stomme.Shared.SiteState;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-83's open SITE-isolation item: two sites in ONE tenant, driven against a real store, refuse each other's health
+    /// Site isolation for health: two sites in ONE tenant, driven against a real store, refuse each other's health
     /// rows - through the repository and through the handlers that read the site from the resolved alias.
     /// </summary>
     /// <remarks>

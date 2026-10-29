@@ -7,7 +7,7 @@ using Stomme.Transport.V1;
 namespace Stomme.Transport.Grpc
 {
     /// <summary>
-    /// The reference gRPC-Web service for Stomme's opt-in typed transport (brief 04 / D10) — the end-to-end
+    /// The reference gRPC-Web service for Stomme's opt-in typed transport — the end-to-end
     /// proof that a module can expose a typed surface: the <c>transport.proto</c> contract (in Stomme.Shared)
     /// generates <see cref="TransportDemo.TransportDemoBase"/>, this thin adapter implements it, and
     /// <see cref="TransportDemoEndpoints"/> maps it onto the host through the <see cref="IModuleEndpointContributor"/>

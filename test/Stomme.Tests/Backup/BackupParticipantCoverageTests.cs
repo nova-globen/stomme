@@ -15,11 +15,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (gate <c>BackupParticipantCoverageTests</c>) - nothing the installation holds is left out of a snapshot by
+    /// <c>BackupParticipantCoverageTests</c> - nothing the installation holds is left out of a snapshot by
     /// accident. On an INSTALLED host (the registrations that really run): every framework store is carried by
     /// <c>framework:databases</c> or is one of the four search stores, which are rebuilt; every storage-blind module
     /// aggregate has exactly one participant or a stated <see cref="BackupExcludedAttribute"/>; every <c>IPortable</c> is
-    /// accounted for; participant names are unique. A D42-style FLOOR, never an exact count - and the scanner is validated on
+    /// accounted for; participant names are unique. A floor, never an exact count - and the scanner is validated on
     /// planted types that are uncovered, covered twice, and covered while excluded.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]

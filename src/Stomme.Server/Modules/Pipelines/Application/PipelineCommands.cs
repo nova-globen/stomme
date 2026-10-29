@@ -44,8 +44,8 @@ namespace Stomme.Modules.Pipelines.Application
     public sealed record UpdatePipelineCommand(string DefinitionId, string Name, string? Description, string? Body) : ICommand<PipelineView?>;
 
     // The body is the ROOT STEP's document (what NewAsync writes), so the step serializer judges it - not the pipeline
-    // serializer, which reads a whole pipeline and would refuse every real body (measured with the wire-format probe). BL-229:
-    // the editor renames a pipeline through it, so it says who saved the version and tells the pipeline's other editors, as
+    // serializer, which reads a whole pipeline and would refuse every real body (measured with the wire-format probe).
+    // The editor renames a pipeline through it, so it says who saved the version and tells the pipeline's other editors, as
     // the graph's save does.
     public sealed class UpdatePipelineCommandHandler(IPipelineDefinitionPublisher publisher, IStepSerializer serializer,
         Stomme.Modules.Collaboration.Realtime.ICollaborationNotifier notifier, ICurrentUser currentUser)
@@ -177,7 +177,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// Starts a run of the PUBLISHED version. D111 item 3: the run is dispatched to the engine's background dispatcher
+    /// Starts a run of the PUBLISHED version. The run is dispatched to the engine's background dispatcher
     /// and never awaited here - what comes back is the id the caller polls. The dispatch carries the request's engine
     /// tenant to the worker (the tenant bridge), so the run belongs to the site that started it.
     /// </summary>

@@ -23,11 +23,10 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Collaboration.Infrastructure
 {
     /// <summary>
-    /// The lock sweep (the predecessor platform's <c>CollaborationLockSweepJob</c>): every minute, per SITE of the job's
+    /// The lock sweep: every minute, per SITE of the job's
     /// tenant, the lapsed leases are expired so their release reaches the other editors. Switched off with the feature
-    /// (<c>Collaboration:Enabled</c>, read from this host's configuration each run - BL-162); one site's failure is logged
-    /// and contained. <b>CHANGED:</b> the framework's job scheduler and a pass per site, the advisor job's shape, instead
-    /// of the predecessor platform's cron over a tenant directory.
+    /// (<c>Collaboration:Enabled</c>, read from this host's configuration each run, not the container's plain configuration); one site's failure is logged
+    /// and contained. It runs on the framework's job scheduler with a pass per site.
     /// </summary>
     public class CollaborationSweepJob : HostedServiceBase
     {
@@ -79,7 +78,7 @@ namespace Stomme.Modules.Collaboration.Infrastructure
                         log.Append("Collaboration Lock Sweep For Site: ").Append(site.Name).Append(" - Expired ").Append(expired).Append("<br />");
                     }
 
-                    // Increment 12: the participants a crashed browser left behind, forgotten once silent past their presence window.
+                    // The participants a crashed browser left behind, forgotten once silent past their presence window.
                     var absent = siteScope.ServiceProvider.GetService<PresenceSweeper>() is { } presence ? await presence.SweepSiteAsync(site.SiteId) : 0;
                     if (absent > 0)
                     {
@@ -99,7 +98,7 @@ namespace Stomme.Modules.Collaboration.Infrastructure
     }
 
     /// <summary>
-    /// Collaboration's right-to-erasure participant (D114 over D112): a user's locks are DELETED - live ones included, their
+    /// Collaboration's right-to-erasure participant: a user's locks are DELETED - live ones included, their
     /// holder is gone - and the user is removed from every session of the site, their presence and their change entries
     /// with it. Idempotent: a second run finds nothing.
     /// </summary>

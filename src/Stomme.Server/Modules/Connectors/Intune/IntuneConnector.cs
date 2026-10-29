@@ -12,7 +12,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Intune
 {
     /// <summary>
-    /// Microsoft Intune (lifted from the predecessor platform's <c>intune</c>): OAuth2 client credentials over Microsoft
+    /// Microsoft Intune: OAuth2 client credentials over Microsoft
     /// Graph through the family's one token provider; the <c>managed-devices</c> operation streams
     /// <c>deviceManagement/managedDevices</c> pages following <c>@odata.nextLink</c>. Every request rides the client the
     /// host's egress hands the connector; throttling is retried per Retry-After by the family's policy; an

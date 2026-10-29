@@ -34,7 +34,7 @@ namespace Stomme.Tests
     /// sentinel is absent", never as "the body is empty".
     /// </para>
     /// <para>
-    /// Both directions: the OWNER and a site ADMINISTRATOR still get 200 and the sentinel, so the fix is not
+    /// Both directions: the folder's OWNER and a site ADMINISTRATOR still get 200 and the sentinel, so the fix is not
     /// simply "nobody can read it".
     /// </para>
     /// </remarks>
@@ -143,7 +143,7 @@ namespace Stomme.Tests
                     }
                 }
 
-                // ---- allowed: the owner, and a site administrator ------------------------------------------
+                // ---- allowed: the folder's owner, and a site administrator ---------------------------------
                 foreach (var (username, password, who) in new[] { ("bl115owner", OwnerPassword, "owner"), ("bl115admin", AdminPassword, "administrator") })
                 {
                     using var client = GateDrive.NewClient(app, Host);

@@ -29,7 +29,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-85 (D108 refutations 2 and 9) - the export queue's lease, driven against real stores.
+    /// The export queue's lease, driven against real stores.
     /// </summary>
     /// <remarks>
     /// <para>

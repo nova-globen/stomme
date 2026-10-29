@@ -39,9 +39,9 @@ namespace Stomme.Modules.HtmlText.Manager
         public async Task<bool> InstallAsync(Tenant tenant, string version)
         {
             // Provider-aware. EF migrations ARE the relational schema; a document store is schemaless and
-            // reuses the framework tenant database D54 already ensured, so its bootstrap is a NO-OP — the aggregate's
+            // reuses the framework tenant database that is already ensured, so its bootstrap is a NO-OP — the aggregate's
             // dynamic Where+OrderBy auto-indexes on first read. This guard is load-bearing: MigrateModulesAsync calls
-            // InstallAsync UNCONDITIONALLY and SWALLOWS the throw (the confirmed D51 mechanism), so an unguarded EF
+            // InstallAsync UNCONDITIONALLY and SWALLOWS the throw (a confirmed mechanism), so an unguarded EF
             // migrator would throw on Raven (the context has no relational provider configured) and the site would
             // silently ship without its content module, the failure surfacing only at render.
             if (!FrameworkStoreProviderSelection.IsRelationalProvider(tenant.DBType))

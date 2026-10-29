@@ -22,9 +22,8 @@ namespace Stomme.Infrastructure
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Scopes (the trap this job is built around) - premise corrected 2026-09-20, behaviour unchanged.</b> This said
-    /// <c>HostedServiceBase</c> runs every tenant of a run through ONE DI scope. Since <c>ff19714</c>
-    /// it does not: each tenant gets its own ambient tenant scope and its own DI scope. The job still does no module work
+    /// <b>Scopes (the trap this job is built around).</b>
+    /// <c>HostedServiceBase</c> gives each tenant of a run its own ambient tenant scope and its own DI scope. The job still does no module work
     /// in the scope it is HANDED, so that it is correct whatever its caller's scope is rather than only under a
     /// well-behaved base class. The hazard is unchanged: the seam's <c>StommeTenantContext</c> caches the first alias's
     /// tenant per DI scope, so a module-store read in a mis-scoped scope is silently filtered as the WRONG tenant, and one
@@ -33,7 +32,7 @@ namespace Stomme.Infrastructure
     /// site with the site's alias set - the <c>FeatureSeeder</c> order. A site's failure is logged and contained.
     /// </para>
     /// <para>
-    /// No cancellation token reaches <c>ExecuteJobAsync</c> (BL-78 F1): the processor bounds each render itself.
+    /// No cancellation token reaches <c>ExecuteJobAsync</c>: the processor bounds each render itself.
     /// </para>
     /// </remarks>
     public class NotificationDispatchJob : HostedServiceBase

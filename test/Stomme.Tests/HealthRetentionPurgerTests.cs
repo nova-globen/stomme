@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// What the health retention pass deletes, and — more importantly — what it must not (D104 binding item 11).
+    /// What the health retention pass deletes, and — more importantly — what it must not.
     /// </summary>
     public class HealthRetentionPurgerTests
     {

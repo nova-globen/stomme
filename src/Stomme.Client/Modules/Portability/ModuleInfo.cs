@@ -5,7 +5,7 @@ using Stomme.Security;
 namespace Stomme.Modules.Portability
 {
     /// <summary>
-    /// The portability module's definition (D107 items 9 and 10).
+    /// The portability module's definition.
     /// </summary>
     /// <remarks>
     /// It DECLARES the keys - which is what seeds them per site - and no page template: the one admin page is added by

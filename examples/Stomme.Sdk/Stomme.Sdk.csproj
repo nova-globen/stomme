@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    D81. The Stomme.Sdk META-package: one PackageReference for a downstream module -> the whole
+    The Stomme.Sdk META-package: one PackageReference for a downstream module -> the whole
     module-facing surface. Standard meta-package shape: IncludeBuildOutput=false (no lib, deps-only),
     SuppressDependenciesWhenPacking=false (the PackageReferences below flow as package dependencies).
     NU5128 (deps but no lib for the TFM) is expected for a meta-package and suppressed.

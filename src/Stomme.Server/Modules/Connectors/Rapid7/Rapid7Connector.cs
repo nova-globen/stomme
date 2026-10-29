@@ -13,7 +13,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Rapid7
 {
     /// <summary>
-    /// Rapid7 InsightVM (lifted from the predecessor platform's <c>rapid7</c>): the /api/3 collections paged by the API's
+    /// Rapid7 InsightVM: the /api/3 collections paged by the API's
     /// own <c>totalPages</c>, assets scoped to at most one of site, asset group or scan, a versioned custom path, the
     /// hypermedia <c>links</c> dropped from every row. Basic credentials; every request through the host's egress.
     /// </summary>

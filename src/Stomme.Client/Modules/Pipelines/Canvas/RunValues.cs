@@ -9,9 +9,9 @@ namespace Stomme.Modules.Pipelines.Canvas
     /// <summary>
     /// What a run left in the pipeline's variables, read from what its steps produced: for each variable, the
     /// output that the LAST execution of a step saving to it gave. The editor previews an expression with these. They come from
-    /// the step records an author is shown (increment 2) - a viewer gets no outputs, so no values - because the engine keeps
+    /// the step records an author is shown - a viewer gets no outputs, so no values - because the engine keeps
     /// nothing better to ask: its variable reader reads the pipeline's own variables, the editor's are its flowchart's, and a
-    /// finished run keeps no flowchart context to read them from (measured 2026-10-06).
+    /// finished run keeps no flowchart context to read them from (measured).
     /// </summary>
     public static class RunValues
     {

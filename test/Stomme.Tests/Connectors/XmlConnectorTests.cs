@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Stomme.Tests.Connectors
 {
-    /// <summary>BL-96 increment 2 - the predecessor platform's XmlConnectorTests (11 + 6 pattern rows) by name over the port, plus the port's rule: the connector is HostOnly, since it starts a process on the host.</summary>
+    /// <summary>The XML connector cases (11, plus 6 pattern rows), carried over by name over the port, plus the port's rule: the connector is HostOnly, since it starts a process on the host.</summary>
     public sealed class XmlConnectorTests
     {
         private sealed class FakeRunner : IXmlProcessRunner

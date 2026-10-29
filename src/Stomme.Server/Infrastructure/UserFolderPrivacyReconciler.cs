@@ -14,12 +14,12 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// Takes the <c>Everyone</c> View grant off user folders created before BL-115.
+    /// Takes the <c>Everyone</c> View grant off user folders created before they became private by default.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>This is a security backfill, and the exposure is live on every install older than 2026-09-17.</b>
-    /// BL-115 closed the two places that SEED a user's "My Folder", so folders created since are private. It did
+    /// <b>This is a security backfill, and the exposure is live on every install that predates the fix.</b>
+    /// The two places that SEED a user's "My Folder" no longer grant Everyone, so folders created since are private. It did
     /// nothing for folders that already existed — including the one the installer creates for the host account.
     /// Those still carry a View row naming <see cref="RoleNames.Everyone"/>, and <c>UserSecurity.IsAuthorized</c>
     /// treats Everyone as granted to everybody INCLUDING an anonymous caller, so every file under
@@ -31,7 +31,7 @@ namespace Stomme.Infrastructure
     /// <c>Users/{digits}/</c>, and the folder still carries an authorized View row for Everyone. The
     /// <c>Users/</c> parent is not a user folder and is left alone; a public folder anywhere else is left alone;
     /// and every other row on a matched folder — the owner's, the administrators', an operator's extra grant — is
-    /// written back untouched. What it removes is precisely the row BL-115 stopped writing.
+    /// written back untouched. What it removes is precisely the row the seeding no longer writes.
     /// </para>
     /// <para>
     /// <b>Additive and idempotent.</b> A folder with no Everyone row is skipped without a write, so the second

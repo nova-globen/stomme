@@ -2,7 +2,7 @@
 
   <!--
     The SERVER layer of the exemplar - the domain, the storage-blind persistence wiring, the commands and queries,
-    the server-side service and (from increment 2) the API. The host's convention scan loads it from /bin like the other
+    the server-side service and the API. The host's convention scan loads it from /bin like the other
     two assemblies, but it NEVER streams to a browser: a WebAssembly site is sent only the ModuleDefinition's AssemblyName
     (the Client) and its Dependencies (the Shared).
     INDEPENDENT: Stomme arrives only through the slim SDK meta-package from examples/local-feed.

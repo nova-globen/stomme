@@ -11,8 +11,8 @@ namespace Stomme.Modules.Formats.Domain
     /// <summary>
     /// The compiled system presets: dates, numbers, currencies and locales every site can render with,
     /// each under a DETERMINISTIC id derived from its kind and name so a reference survives every install and every
-    /// provider. No two presets share a (kind, pattern, culture) triple - the predecessor platform's "Unix epoch seconds" duplicated the
-    /// ISO UTC preset under a name it did not honour, and is dropped.
+    /// provider. No two presets share a (kind, pattern, culture) triple - a "Unix epoch seconds" preset would duplicate the
+    /// ISO UTC preset under a name it did not honour, so there is none.
     /// </summary>
     public static class SystemFormats
     {

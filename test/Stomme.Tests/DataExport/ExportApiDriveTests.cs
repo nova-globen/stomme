@@ -24,7 +24,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-85 (refutations 10, 11 and 14) - the export HTTP surface, driven with real sessions.
+    /// The export HTTP surface, driven with real sessions.
     /// </summary>
     /// <remarks>
     /// The question throughout is WHO gets WHAT: a requester reaches their own export and nobody else's; a manage

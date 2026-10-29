@@ -1,5 +1,5 @@
 #!/usr/bin/env pwsh
-# D87. Packs the two independent, packages-only external THEMES (Aurora = public, Slate = admin) to Stomme
+# Packs the two independent, packages-only external THEMES (Aurora = public, Slate = admin) to Stomme
 # theme .nupkgs, the same way examples/Modules/Blogs/pack-blogs.ps1 packs the Blogs module.
 #
 # Prerequisite: examples/pack-sdk.ps1 has produced examples/local-feed (the Stomme.Sdk packages the themes

@@ -30,7 +30,7 @@ namespace Stomme.Tests.Pipelines
     /// <remarks>
     /// A run is DISPATCHED: Run returns the run's id and the page opens at once, before the engine's worker has
     /// stored the run. The page polled only a run it had found, so on a Server site and a WebAssembly site alike every new
-    /// run read "There is no such run on this site" until Refresh was pressed (2026-10-02). It now reads a just-started run
+    /// run read "There is no such run on this site" until Refresh was pressed. It now reads a just-started run
     /// again, shown as starting, for <see cref="RunPage.StartingPolls"/> reads before it calls it missing; a link opened any
     /// other way is answered at once.
     /// </remarks>
@@ -48,8 +48,8 @@ namespace Stomme.Tests.Pipelines
         }
 
         // Each poll is FIRED by the test on a manual clock: the page polls through a timer, and on a wall clock its callbacks
-        // waited for a thread under a loaded run - the first case failed now and then in the gate's busy rest part, on 2026-10-02
-        // under memory pressure and again on 2026-10-03 with the machine idle but a thousand tests starting at once.
+        // waited for a thread under a loaded run - the first case failed now and then under memory pressure
+        // and again with the machine idle but a thousand tests starting at once.
         [Fact]
         public void A_run_started_from_its_button_is_shown_once_the_engine_has_stored_it()
         {
@@ -257,8 +257,8 @@ namespace Stomme.Tests.Pipelines
 
             Assert.Equal(new[] { "Nightly report", "Alert on failures", "Nightly report" }, Shown(cut));
             Assert.All(cut.FindAll(".db-pipeline-runs-took"), took => Assert.Equal("0 ms", took.TextContent.Trim()));
-            // The state in a word - the engine's two in the title - and the start to the minute, in full in the title (found looking at
-            // UAT with fresh eyes: "Finished / Finished" and the full date wrapped over three lines each).
+            // The state in a word - the engine's two in the title - and the start to the minute, in full in the title (a manual look found
+            // "Finished / Finished" and the full date wrapped over three lines each).
             var state = cut.FindAll(".db-pipeline-runs-state")[0];
             Assert.Equal(("Failed", "Finished / Faulted"), (state.TextContent.Trim(), state.GetAttribute("title")));
             var started = state.ParentElement!.QuerySelector("td[title]")!;
@@ -2093,7 +2093,7 @@ namespace Stomme.Tests.Pipelines
                 return Task.FromResult(PipelineTags.Normalize(tags, out _));
             }
 
-            /// <summary>BL-229 - n8n's folders: each move asked for, in order; a folder that cannot be one throws its reason.</summary>
+            /// <summary>n8n's folders: each move asked for, in order; a folder that cannot be one throws its reason.</summary>
             public List<(string DefinitionId, string Folder)> Moved { get; } = new();
 
             public Task<string> SetFolderAsync(string definitionId, string folder)
@@ -2113,17 +2113,17 @@ namespace Stomme.Tests.Pipelines
                 return Task.FromResult(kept);
             }
 
-            /// <summary>BL-229 - find in every pipeline: what each search asked for, and what it answers.</summary>
+            /// <summary>Find in every pipeline: what each search asked for, and what it answers.</summary>
             public List<string> FindQueries { get; } = new();
 
             public List<PipelineFoundView> Found { get; } = new();
 
-            /// <summary>BL-229 - the map the list is answered with.</summary>
+            /// <summary>The map the list is answered with.</summary>
             public PipelineMapView Map { get; set; } = new();
 
             public Task<PipelineMapView> GetMapAsync() => Task.FromResult(Map);
 
-            /// <summary>BL-229: the site's pipeline activity the list is told.</summary>
+            /// <summary>The site's pipeline activity the list is told.</summary>
             public List<PipelineAuditEntryView> Audit { get; } = new();
 
             public Task<List<PipelineAuditEntryView>> GetAuditAsync(string definitionId = null, int take = PipelineAuditLimits.DefaultTake) =>
@@ -2135,7 +2135,7 @@ namespace Stomme.Tests.Pipelines
                 return Task.FromResult(Found.ToList());
             }
 
-            /// <summary>BL-229 - a folder renamed, moved or removed: each asked for, in order; the pipelines in it move as the server moves them.</summary>
+            /// <summary>A folder renamed, moved or removed: each asked for, in order; the pipelines in it move as the server moves them.</summary>
             public List<PipelineFolderMoveRequest> FolderMoves { get; } = new();
 
             public Task<PipelineFolderMoveResult> MoveFolderAsync(PipelineFolderMoveRequest request)
@@ -2170,7 +2170,7 @@ namespace Stomme.Tests.Pipelines
 
             public List<string> Deleted { get; } = new();
 
-            /// <summary>BL-229: the days the runs list asked for, in order (from, to).</summary>
+            /// <summary>The days the runs list asked for, in order (from, to).</summary>
             public List<(DateOnly? From, DateOnly? To)> Days { get; } = new();
 
             public Task<List<PipelineRunView>> GetRunsAsync(string definitionId = null, int take = 100, string state = null, string search = null, DateOnly? from = null, DateOnly? to = null)

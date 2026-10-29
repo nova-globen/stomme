@@ -13,7 +13,7 @@ namespace Stomme.Tests
     /// A request its caller cancelled is not logged as a fault by the mediator's exception boundary.
     /// </summary>
     /// <remarks>
-    /// Found driving BL-206 on a WebAssembly scratch site: navigating away from a dashboard landing page while its
+    /// Found by driving a WebAssembly scratch site: navigating away from a dashboard landing page while its
     /// query ran aborted the request, EF Core's connection open threw <see cref="TaskCanceledException"/>, and the host's log
     /// carried "fail: [Mediator] Unhandled exception while processing GetDashboardQuery" with the stack - an error for every
     /// visitor who clicks on before a page has loaded. A cancellation the request's own token asked for is re-thrown untouched

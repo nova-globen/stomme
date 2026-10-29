@@ -40,7 +40,7 @@ namespace Stomme.Tests
         //
         // AddRavenPersistence DOES register it (services.AddScoped(typeof(IRepository<,>),
         // typeof(RavenRepository<,>))), which is exactly why AddRavenFrameworkStore must not call it and must
-        // register closed interfaces only. See D17 rule 1 and src/Stomme.Persistence.RavenDb/README.md.
+        // register closed interfaces only. See the registration rules in src/Stomme.Persistence.RavenDb/README.md.
         [Fact]
         public void The_raven_framework_store_never_registers_the_open_generic_repository()
         {
@@ -88,7 +88,7 @@ namespace Stomme.Tests
         //
         // WHY REFLECTIVE. The list this replaced was eight hand-written [InlineData] lines and a comment
         // asserting they were "all present". It was true when written and it could never notice becoming
-        // false: D24 added IPermissionStore to the EF provider, nobody added the Raven twin, and this test
+        // false: IPermissionStore was added to the EF provider, nobody added the Raven twin, and this test
         // kept passing because the interface it never mentioned could not fail a case it never ran. An
         // enumerated gate can only re-state what its author already knew; it cannot gate what comes next.
         //
@@ -123,7 +123,7 @@ namespace Stomme.Tests
                 .OrderBy(type => type.Name, StringComparer.Ordinal);
 
         // A contract of the framework store: it closes the seam's open-generic repository over one aggregate,
-        // it is one of D19/D23's read-path session factories, or it is D50's ISearchQueryStore. The open
+        // it is one of the read-path session factories, or it is ISearchQueryStore. The open
         // generics themselves are excluded — they are the seam's own vocabulary, not this store's surface, and
         // registering them here is the very thing the tests above forbid.
         //
@@ -133,7 +133,7 @@ namespace Stomme.Tests
         // it is deliberately NOT an IRepository<,>, because the read it serves is a prefix filter plus a
         // runtime-keyed aggregation rather than CRUD over an aggregate (see ISearchQueryStore). Discovering
         // only IRepository<,> descendants would have left the seam's single most provider-divergent contract
-        // ungated, which is precisely the drift D42 was written to stop. This EXTENDS the rule; it does not
+        // ungated, which is precisely the drift this gate was written to stop. This EXTENDS the rule; it does not
         // weaken it.
         private static bool IsClosedStoreContract(Type type)
         {
@@ -161,7 +161,7 @@ namespace Stomme.Tests
             Assert.Contains(typeof(IPermissionStore), contracts);
             Assert.Contains(typeof(IFrameworkStoreSessionFactory), contracts);
 
-            // D50's contract, which is NOT an IRepository<,> and so is matched by name rather than by
+            // ISearchQueryStore, which is NOT an IRepository<,> and so is matched by name rather than by
             // derivation. Asserted here so that deleting the special case in IsClosedStoreContract fails
             // loudly instead of silently shrinking the gate's surface by one.
             Assert.Contains(typeof(ISearchQueryStore), contracts);
@@ -172,7 +172,7 @@ namespace Stomme.Tests
 
         // THE GATE. Every closed contract the seam declares is registered by the RavenDB provider.
         // Symmetrically enforced with the EF theory below: neither provider is the reference, the INTERFACE
-        // SET is. This is the test that was red on IPermissionStore before D42 added RavenPermissionStore.
+        // SET is. This is the test that was red on IPermissionStore until RavenPermissionStore was added.
         [Theory]
         [MemberData(nameof(ClosedStoreContracts))]
         public void The_raven_framework_store_registers_every_closed_store_interface(Type serviceType)

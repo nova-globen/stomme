@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The pure half of BL-83: the rollup math lifted from the predecessor platform, the transition machine, and the two guards
+    /// The pure half of the health monitor: the rollup math, the transition machine, and the two guards
     /// that stop a row being stored under the wrong identity.
     /// </summary>
     /// <remarks>
@@ -133,7 +133,7 @@ namespace Stomme.Tests
         [Fact]
         public void The_window_start_is_snapped_in_utc_and_an_unspecified_instant_is_not_shifted()
         {
-            // The D102 defect, guarded here before it can happen again: a stored instant comes back Unspecified
+            // A defect guarded here before it can happen again: a stored instant comes back Unspecified
             // and is ALREADY UTC. Converting it subtracts the machine offset - invisible on a UTC machine such as
             // CI, which is why this asserts ticks rather than behaviour.
             var stored = new DateTime(2026, 9, 20, 0, 30, 0, DateTimeKind.Unspecified);

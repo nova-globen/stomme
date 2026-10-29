@@ -41,13 +41,12 @@ namespace Stomme.Modules.Notifications.Application.Templates
     }
 
     /// <summary>
-    /// The hardened Liquid renderer for notification templates, lifted from the predecessor platform
-    /// <c>LiquidTemplateRenderer</c> and closed against what the survey measured there.
+    /// The hardened Liquid renderer for notification templates.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Encoding by channel.</b> the predecessor platform rendered UNENCODED and every e-mail path set <c>IsBodyHtml=true</c> - a
-    /// parameter carrying markup was injected into the message. Here the encoder is chosen by the
+    /// <b>Encoding by channel.</b> Rendering UNENCODED into an e-mail body (<c>IsBodyHtml=true</c>) would inject a
+    /// parameter carrying markup into the message. The encoder is chosen by the
     /// <see cref="NotificationRenderTarget"/>: <see cref="HtmlEncoder.Default"/> for the BODY of e-mail, in-app and preview
     /// (only the PARAMETER values are encoded; the template's own markup is the operator's), <see cref="NullEncoder"/> for
     /// webhook, whose envelope JSON-escapes the rendered text exactly once. The SUBJECT is text everywhere it is shown and
@@ -58,13 +57,13 @@ namespace Stomme.Modules.Notifications.Application.Templates
     /// <b>Bounded.</b> A DEDICATED <see cref="TemplateOptions"/> - never the process-wide
     /// <see cref="TemplateOptions.Default"/> another component could loosen - with <see cref="MaxSteps"/> and
     /// <see cref="MaxRecursion"/>; exceeding either is a render ERROR. Fluid has no timeout, and
-    /// <c>HostedServiceBase.ExecuteJobAsync</c> passes no cancellation token (BL-78 F1), so a caller creates a per-render
+    /// <c>HostedServiceBase.ExecuteJobAsync</c> passes no cancellation token, so a caller creates a per-render
     /// budget with <see cref="CreateRenderCancellation"/> and the renderer checks it before and after rendering.
     /// Member access is a fresh <see cref="DefaultMemberAccessStrategy"/> with NOTHING registered: parameters are a
     /// string-to-string map, so no CLR member is ever reachable from a template.
     /// </para>
     /// <para>
-    /// <b>Includes read no file (F15, MEASURED).</b> With <c>FileProvider = null</c> Fluid 2.31.0 throws
+    /// <b>Includes read no file (MEASURED).</b> With <c>FileProvider = null</c> Fluid 2.31.0 throws
     /// <see cref="NullReferenceException"/> on <c>{% include %}</c> (pinned by
     /// <c>Measured_fluid_with_a_null_FileProvider_on_include</c>) - a crash, not inertness. The options therefore carry
     /// <see cref="EmptyFileProvider"/>, which answers every path with an existing EMPTY file: an include renders
@@ -72,9 +71,8 @@ namespace Stomme.Modules.Notifications.Application.Templates
     /// </para>
     /// <para>
     /// <b>Validate at save.</b> <see cref="Validate"/> parses (<c>TryParse</c>) and checks every <c>{{ root }}</c> output
-    /// root (whitespace-control <c>{{-</c> included, which the predecessor platform's regex missed) against the template's
-    /// <see cref="PlaceholderSchema"/>; an undeclared root is rejected. <c>{% %}</c> tags stay unvalidated, as the predecessor platform
-    /// documents. The save command (a later BL-78 step) calls <see cref="EnsureValidForSave"/>.
+    /// root (whitespace-control <c>{{-</c> included, which a naive regex would miss) against the template's
+    /// <see cref="PlaceholderSchema"/>; an undeclared root is rejected. <c>{% %}</c> tags stay unvalidated. The save command calls <see cref="EnsureValidForSave"/>.
     /// </para>
     /// </remarks>
     public sealed partial class NotificationTemplateRenderer
@@ -202,7 +200,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
             }
 
             // The subject is TEXT on every target - an e-mail's Subject header, and in the app a line Blazor escapes itself - so it
-            // is never HTML-encoded (2026-10-10: a mention's subject arrived as "host mentioned you on &#x27;Orders&#x27;", and
+            // is never HTML-encoded (a mention's subject once arrived as "host mentioned you on &#x27;Orders&#x27;", and
             // every export-ready mail read "Your export &#x27;Q3 invoices&#x27; is ready"). The body keeps its target's encoder.
             var subject = await RenderOneAsync(content.Subject, parameters, NullEncoder.Default);
             if (subject.Error is not null)
@@ -283,7 +281,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
         /// </para>
         /// <para>
         /// <b>What it cannot see:</b> a range whose bound is not a literal - <c>(1..count)</c>, <c>(1..i)</c> inside another
-        /// loop - is known only while rendering. Parameters are server-derived strings; that residue is recorded on BL-155.
+        /// loop - is known only while rendering. Parameters are server-derived strings; that residue is accepted.
         /// </para>
         /// </remarks>
         internal static string? OversizedRange(object template)
@@ -376,7 +374,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
     /// <summary>
     /// The built-in notification templates: <c>generic.message</c> ONLY - a subject and a body placeholder
     /// that a producer fills verbatim. Every later module brings its own templates. Created per SITE (the template key
-    /// is site-unique); the boot/upgrade reconciler (a later BL-78 step) creates an absent one and never overwrites an
+    /// is site-unique); the boot/upgrade reconciler creates an absent one and never overwrites an
     /// operator's edit.
     /// </summary>
     public static class NotificationTemplateCatalogue

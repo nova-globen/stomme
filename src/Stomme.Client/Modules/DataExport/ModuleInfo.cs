@@ -5,7 +5,7 @@ using Stomme.Security;
 namespace Stomme.Modules.DataExport
 {
     /// <summary>
-    /// The data-export module's definition (D108 items 1 and 9).
+    /// The data-export module's definition.
     /// </summary>
     /// <remarks>
     /// <para>

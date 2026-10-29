@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// BL-82 (D107 gates) - two sites in ONE tenant, over HTTP, per store: a package built on site A is not listed on site B,
+    /// Two sites in ONE tenant, over HTTP, per store: a package built on site A is not listed on site B,
     /// cannot be downloaded through site B's address, and a person asking site B for their own data gets site B's data -
     /// not site A's roles or sessions. The module store is shared by every site of a tenant, so this is the property the
     /// site filter on every read exists for.

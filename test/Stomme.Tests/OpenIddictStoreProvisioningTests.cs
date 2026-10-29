@@ -37,12 +37,12 @@ namespace Stomme.Tests
     /// <c>EnsureCreated</c> themselves, while NOTHING in <c>src/</c> or <c>setup/</c> does either — so the
     /// suites were green while a deployed install threw
     /// <c>"no per-tenant OpenIddict connection string was found under ConnectionStrings:…_OpenIddict"</c> on
-    /// the first store touch (driven on a real SQLite install, 2026-07-22; the D47/BL-52 class of green-gate
+    /// the first store touch (driven on a real SQLite install; a class of green-gate
     /// broken-product). This suite pins the fix by reproducing PRODUCTION conditions: <b>zero</b>
     /// <c>_OpenIddict</c> keys, <b>zero</b> test-side <c>EnsureCreated</c>.
     /// </para>
     /// <para>
-    /// Provider dimension, per D46: SQLite always; PostgreSQL when the local service is reachable; RavenDB
+    /// Provider dimension: SQLite always; PostgreSQL when the local service is reachable; RavenDB
     /// UNCONDITIONALLY — an unreachable RavenDB fails the run, never skips it, because an EF-only pass proves
     /// nothing about the Raven authority path.
     /// </para>
@@ -189,7 +189,7 @@ namespace Stomme.Tests
                 Assert.False(string.IsNullOrEmpty(token.AccessToken), $"No access_token in: {token.Body}");
 
                 // Negative control — an UNKNOWN client must get OpenIddict's own invalid_client error, not
-                // the swallowed empty 200 the missing store used to produce (BL-55's observed symptom).
+                // the swallowed empty 200 the missing store used to produce (an earlier observed symptom).
                 var unknown = await PostTokenAsync(client, "no-such-client", "wrong");
                 _output.WriteLine($"[unknown-client] {unknown.Status} {Truncate(unknown.Body)}");
                 Assert.NotEqual(HttpStatusCode.OK, unknown.Status);
@@ -257,7 +257,7 @@ namespace Stomme.Tests
             string DatabaseType { get; }
             string TenantConnectionString { get; }
 
-            /// <summary>Database:DefaultDBType preseed (D62 composition-time store selection), or null.</summary>
+            /// <summary>Database:DefaultDBType preseed (composition-time store selection), or null.</summary>
             string? DatabaseTypePreseed { get; }
 
             void BindToScratch(string scratchDirectory);
@@ -376,7 +376,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// A throwaway content root whose override file carries ONLY <c>OpenIddict:Enabled</c> (and, for
-        /// RavenDB, the D62 composition-time provider preseed) — deliberately NO <c>_OpenIddict</c>
+        /// RavenDB, the composition-time provider preseed) — deliberately NO <c>_OpenIddict</c>
         /// connection strings, because production never has them. The installer's own writes land here via
         /// the override env var and never touch the repository's appsettings.json.
         /// </summary>

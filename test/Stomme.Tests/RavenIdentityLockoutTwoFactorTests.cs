@@ -17,20 +17,20 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The LOCKOUT + TWO-FACTOR facets of the hand-written Raven <c>IUserStore</c> (D54b), driven through
+    /// The LOCKOUT + TWO-FACTOR facets of the hand-written Raven <c>IUserStore</c>, driven through
     /// <c>UserManager&lt;IdentityUser&gt;</c> against a LIVE RavenDB, exactly as the login page's
     /// <c>CheckPasswordSignInAsync(..., lockoutOnFailure: true)</c> path exercises them.
     /// <para>
     /// EF's <c>UserStoreBase</c> implements <c>IUserLockoutStore</c>/<c>IUserTwoFactorStore</c> as IN-MEMORY
     /// mutators persisted by <c>UpdateAsync</c> (LockoutEnd/AccessFailedCount/LockoutEnabled/TwoFactorEnabled are
-    /// plain columns on AspNetUsers); until BL-6 the Raven store omitted both facets, so
+    /// plain columns on AspNetUsers); the Raven store once omitted both facets, so
     /// <c>SupportsUserLockout</c>/<c>SupportsUserTwoFactor</c> were false and every lockout/2FA
     /// <c>IdentityOptions</c> knob was SILENTLY INERT on a RavenDB install — five wrong passwords and the sixth
     /// correct one still logged in. These tests assert the EF semantics hold identically on Raven, including the
     /// physical round-trip (raw document assertions, not just what the manager reports back).
     /// </para>
     /// <para>
-    /// GATED — FAILS rather than skips when RavenDB is unreachable (the D46 principle): a run that cannot reach
+    /// GATED — FAILS rather than skips when RavenDB is unreachable: a run that cannot reach
     /// the document store proves nothing about parity. Point <c>RAVENDB_TEST_URL</c> at a reachable server.
     /// </para>
     /// </summary>
@@ -58,7 +58,7 @@ namespace Stomme.Tests
             using var manager = CreateUserManager();
 
             // UserManager guards every lockout/2FA call with these flags; false means the whole feature is
-            // silently skipped, which is exactly the BL-6 defect.
+            // silently skipped, which is exactly the defect this suite exists to catch.
             Assert.True(manager.SupportsUserLockout,
                 "SupportsUserLockout is false — the Raven IUserStore does not implement IUserLockoutStore, so " +
                 "MaxFailedAccessAttempts/DefaultLockoutTimeSpan are inert on a RavenDB install.");

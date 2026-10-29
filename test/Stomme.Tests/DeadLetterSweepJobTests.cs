@@ -13,20 +13,20 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-100 O2 — <see cref="DeadLetterSweepJob"/> ages dead letters by the time they became visible
+    /// <see cref="DeadLetterSweepJob"/> ages dead letters by the time they became visible
     /// in the dead-letter queue (<see cref="DeadLetterMessage.VisibleUtc"/>), NOT by
     /// <see cref="DeadLetterMessage.EnqueuedUtc"/>, which the RavenDB queue fills from the Rebus SentTime
-    /// header — the ORIGINAL send time. the predecessor platform's job aged by that send time, so a message sent months ago
+    /// header — the ORIGINAL send time. Aging by that send time would discard a message sent months ago
     /// and dead-lettered an hour ago was discarded on the next sweep; the first two tests pin that it is not.
     /// </summary>
     /// <remarks>
     /// These drive the job's <see cref="DeadLetterSweepJob.ExecuteJobAsync"/> over a scripted in-memory
     /// port. The real RavenDB queue is covered only by <c>RavenDeadLetterSweepLiveTests</c>
     /// (Stomme.Persistence.Raven.Tests); on every other transport the sweep is a stated no-op.
-    /// the predecessor platform fates: <c>DiscardsOnlyMessagesPastTheConfiguredWindow</c> is ported as
-    /// <see cref="A_message_visible_before_the_retention_window_is_discarded"/> (aged by VisibleUtc);
-    /// <c>NonAgeWindow_SweepsNothing</c> has no count/size window to port (the window is the
-    /// <c>RetentionDays</c> config key) and becomes <see cref="A_non_positive_retention_sweeps_nothing"/>.
+    /// The retention window is pinned by two cases: a message visible before the window is discarded, aged by
+    /// VisibleUtc (<see cref="A_message_visible_before_the_retention_window_is_discarded"/>), and a window that is not
+    /// positive sweeps nothing, the window being the <c>RetentionDays</c> config key
+    /// (<see cref="A_non_positive_retention_sweeps_nothing"/>).
     /// </remarks>
     public class DeadLetterSweepJobTests
     {

@@ -8,13 +8,13 @@ using Stomme.IdentityAudit.Persistence;
 namespace Stomme.Modules.IdentityAudit.Infrastructure
 {
     /// <summary>
-    /// Ages out the identity audit ledger, drained per site by <c>PurgeJob</c> (the D104 contributed-pass seam).
+    /// Ages out the identity audit ledger, drained per site by <c>PurgeJob</c> (the contributed-pass seam).
     /// </summary>
     /// <remarks>
     /// <b>The floor is the point</b> - the MCP ledger's argument: this is where a lockout, a password reset or a
     /// role grant is recorded, so a per-site setting of <c>0</c> must not be a way to erase that record through a text
     /// box. A value below <see cref="MinimumRetentionDays"/> is read AS the minimum. There is no ceiling. Erasure of a
-    /// person's rows under a right-to-erasure request is BL-116's decision, not this pass's.
+    /// person's rows under a right-to-erasure request is a separate decision, not this pass's.
     /// </remarks>
     public sealed class IdentityAuditRetentionPurger(IIdentityAuditRepository audit) : IRetentionPurger
     {

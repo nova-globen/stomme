@@ -102,7 +102,7 @@ namespace Stomme.Modules.DataExport.Application
 
         public static List<ExportJobView> ToViews(IEnumerable<ExportJobAggregate> jobs, DateTime nowUtc) =>
             jobs.OrderByDescending(job => job.RequestedOnUtc)
-                // The LIST answers from the row alone; the download itself re-asserts where the file is (refutation 14).
+                // The LIST answers from the row alone; the download itself re-asserts where the file is.
                 .Select(job => ToView(job, job.IsDownloadable(nowUtc)))
                 .ToList();
     }
@@ -170,7 +170,7 @@ namespace Stomme.Modules.DataExport.Application
             }
 
             // Nothing is opened at request time and the document is lazy, so "this export has two tables" cannot be
-            // discovered here - the source DECLARES it (refutation 10). The CSV renderer fails the job as well.
+            // discovered here - the source DECLARES it. The CSV renderer fails the job as well.
             if (format == ExportFormat.Csv && source.TableCardinality == TableCardinality.Multiple)
             {
                 throw new ExportRequestRejectedException("This source produces several tables, which CSV cannot hold. Choose XLSX or JSON.");
@@ -203,7 +203,7 @@ namespace Stomme.Modules.DataExport.Application
                     ?? throw new ExportRequestRejectedException("The PDF orientation must be one of: " + string.Join(", ", ExportRenderOptions.AllowedPdfOrientations) + ".");
             }
 
-            // Turning the formula guard OFF is a privileged act (refutation 11): any holder of export:create could
+            // Turning the formula guard OFF is a privileged act: any holder of export:create could
             // otherwise disable it for data they do not own, and the file is opened on someone else's machine.
             var neutralise = request.NeutraliseFormulas ?? true;
             if (!neutralise && !await caller.HoldsAsync(ExportPermissions.Manage, ct))

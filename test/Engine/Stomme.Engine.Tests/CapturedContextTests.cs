@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Engine.Tests;
 
 /// <summary>
-/// BL-95 Step 0 (backlog section J.BL-93 "DECIDED"): a pipeline run started on a single-threaded
+/// A pipeline run started on a single-threaded
 /// <see cref="SynchronizationContext"/> - a Blazor circuit's dispatcher, a renderer - must never post its
 /// continuations back to it. Upstream's engine awaited without <c>ConfigureAwait(false)</c> (its Fody weaver was
 /// configured to change nothing), so a step that truly suspends brought the rest of the run back onto the

@@ -24,16 +24,16 @@ namespace Stomme.Models.Pipelines
 
         public DateTime CreatedOnUtc { get; set; }
 
-        /// <summary>BL-229: its tags (<see cref="PipelineTags"/>) - on the pipelines list; empty elsewhere.</summary>
+        /// <summary>Its tags (<see cref="PipelineTags"/>) - on the pipelines list; empty elsewhere.</summary>
         public List<string> Tags { get; set; } = new List<string>();
 
-        /// <summary>BL-229 - n8n's folders: the folder it sits in on the pipelines list (<see cref="PipelineFolders"/>); empty at the top, and elsewhere.</summary>
+        /// <summary>n8n's folders: the folder it sits in on the pipelines list (<see cref="PipelineFolders"/>); empty at the top, and elsewhere.</summary>
         public string Folder { get; set; } = "";
 
-        /// <summary>BL-229: its newest run - when the list was asked for it (the pipelines page); null otherwise, and for none.</summary>
+        /// <summary>Its newest run - when the list was asked for it (the pipelines page); null otherwise, and for none.</summary>
         public PipelineRunView LastRun { get; set; }
 
-        /// <summary>BL-229: its runs waiting their turn - Queued (a pipeline that runs one at a time, the rest in turn); read with the last runs.</summary>
+        /// <summary>Its runs waiting their turn - Queued (a pipeline that runs one at a time, the rest in turn); read with the last runs.</summary>
         public int Queued { get; set; }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Stomme.Models.Pipelines
         public string Body { get; set; }
     }
 
-    /// <summary>BL-229 - n8n's folders: where a pipeline is moved to (<see cref="PipelineFolders"/>); empty for the top.</summary>
+    /// <summary>n8n's folders: where a pipeline is moved to (<see cref="PipelineFolders"/>); empty for the top.</summary>
     /// <summary>
     /// n8n's folder rename and move, and delete: <see cref="Folder"/> becomes <see cref="NewFolder"/> (a path - another
     /// name, or another place), what is in it going along; or, with <see cref="Remove"/>, it is gone and what was in it is in the
@@ -130,7 +130,7 @@ namespace Stomme.Models.Pipelines
         public const string ConnectorOperation = "connector-operation";
     }
 
-    /// <summary>BL-229: one of the site's AI agent tools - a published pipeline that starts with "AI agent tool".</summary>
+    /// <summary>One of the site's AI agent tools - a published pipeline that starts with "AI agent tool".</summary>
     public class AgentToolView
     {
         /// <summary>The name the model calls it by.</summary>
@@ -162,7 +162,7 @@ namespace Stomme.Models.Pipelines
         public bool Ai { get; set; }
     }
 
-    /// <summary>BL-229 - n8n's AI workflow builder: what the author asks of the pipeline on the canvas, and the canvas as it stands.</summary>
+    /// <summary>n8n's AI workflow builder: what the author asks of the pipeline on the canvas, and the canvas as it stands.</summary>
     public class PipelineGraphDesignRequest
     {
         public PipelineGraph Graph { get; set; }
@@ -243,7 +243,7 @@ namespace Stomme.Models.Pipelines
         public string Kind { get; set; }
     }
 
-    /// <summary>BL-229 - n8n's Code node linting: scripts to check they parse as their step runs them, nothing run.</summary>
+    /// <summary>n8n's Code node linting: scripts to check they parse as their step runs them, nothing run.</summary>
     public class PipelineScriptCheckRequest
     {
         public List<PipelineScriptCheck> Scripts { get; set; } = new List<PipelineScriptCheck>();
@@ -398,12 +398,12 @@ namespace Stomme.Models.Pipelines
         public Dictionary<string, string> Input { get; set; }
     }
 
-    /// <summary>What starting a run returns: the id to poll, never the run itself (D111 item 3 - a run is dispatched, not awaited).</summary>
+    /// <summary>What starting a run returns: the id to poll, never the run itself (a run is dispatched, not awaited).</summary>
     public class PipelineRunStarted
     {
         public string RunId { get; set; }
 
-        /// <summary>BL-229: the run waits its turn - its pipeline runs one at a time, the rest in turn, and a run of it is going.</summary>
+        /// <summary>The run waits its turn - its pipeline runs one at a time, the rest in turn, and a run of it is going.</summary>
         public bool Queued { get; set; }
     }
 
@@ -411,10 +411,10 @@ namespace Stomme.Models.Pipelines
     {
         public string Id { get; set; }
 
-        /// <summary>BL-229: what the run saved about itself with "Save run data" (<see cref="PipelineRunData"/>) - key and value.</summary>
+        /// <summary>What the run saved about itself with "Save run data" (<see cref="PipelineRunData"/>) - key and value.</summary>
         public Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
 
-        /// <summary>BL-229: what a person said about the run (<see cref="PipelineRunReview"/>, n8n's execution annotations); null when nobody has.</summary>
+        /// <summary>What a person said about the run (<see cref="PipelineRunReview"/>, n8n's execution annotations); null when nobody has.</summary>
         public PipelineRunReview Review { get; set; }
 
         public string DefinitionId { get; set; }
@@ -443,7 +443,7 @@ namespace Stomme.Models.Pipelines
 
         public bool IsFinished => Status == "Finished";
 
-        /// <summary>BL-229: the pipeline's name (its latest version's), so a list of every pipeline's runs says whose each is.</summary>
+        /// <summary>The pipeline's name (its latest version's), so a list of every pipeline's runs says whose each is.</summary>
         public string PipelineName { get; set; }
 
         /// <summary>What the run was started with, as JSON (n8n's execution data) - one run read by an author only; null otherwise.</summary>
@@ -466,15 +466,15 @@ namespace Stomme.Models.Pipelines
 
         public string FailedPipelineName { get; set; }
 
-        /// <summary>BL-229: for a run another pipeline's run started (Execute or Dispatch Pipeline), that run and its pipeline's name.</summary>
+        /// <summary>For a run another pipeline's run started (Execute or Dispatch Pipeline), that run and its pipeline's name.</summary>
         public string ParentRunId { get; set; }
 
         public string ParentPipelineName { get; set; }
 
-        /// <summary>BL-229: for a run that went on from a failed run's failed step, the failed run - where the steps before it ran.</summary>
+        /// <summary>For a run that went on from a failed run's failed step, the failed run - where the steps before it ran.</summary>
         public string RetryOfRunId { get; set; }
 
-        /// <summary>BL-229: the runs this one started - its sub-pipelines' (one run read only; empty in a list).</summary>
+        /// <summary>The runs this one started - its sub-pipelines' (one run read only; empty in a list).</summary>
         public List<PipelineRunView> ChildRuns { get; set; } = new List<PipelineRunView>();
     }
 
@@ -496,11 +496,11 @@ namespace Stomme.Models.Pipelines
 
         public string SavedBy { get; set; }
 
-        /// <summary>BL-229: what the author said changed when publishing it - shown for a version that was published; null for none.</summary>
+        /// <summary>What the author said changed when publishing it - shown for a version that was published; null for none.</summary>
         public string Note { get; set; }
     }
 
-    /// <summary>BL-229: a publish, with what changed in the author's words (optional, at most <see cref="MaxNoteLength"/>).</summary>
+    /// <summary>A publish, with what changed in the author's words (optional, at most <see cref="MaxNoteLength"/>).</summary>
     public class PublishPipelineRequest
     {
         public const int MaxNoteLength = 500;
@@ -520,10 +520,10 @@ namespace Stomme.Models.Pipelines
 
         public Dictionary<string, string> Values { get; set; } = new Dictionary<string, string>();
 
-        /// <summary>BL-229 (n8n's test of a step with what leads to it): every step that leads to this one runs first, then it.</summary>
+        /// <summary>(n8n's test of a step with what leads to it) Every step that leads to this one runs first, then it.</summary>
         public bool UpToHere { get; set; }
 
-        /// <summary>BL-229 (n8n's "Test workflow"): the whole pipeline as it stands, as a run would go through it; no step named.</summary>
+        /// <summary>(n8n's "Test workflow") The whole pipeline as it stands, as a run would go through it; no step named.</summary>
         public bool Whole { get; set; }
     }
 
@@ -591,7 +591,7 @@ namespace Stomme.Models.Pipelines
         /// <summary>What the step produced, as JSON - under the same rule as <see cref="InputsJson"/>.</summary>
         public string OutputsJson { get; set; }
 
-        /// <summary>BL-229: what the step received and produced was not kept - the pipeline keeps it only for a run that fails, or never.</summary>
+        /// <summary>What the step received and produced was not kept - the pipeline keeps it only for a run that fails, or never.</summary>
         public bool DataNotKept { get; set; }
 
         /// <summary>True when a value was longer than the editor is sent and was cut.</summary>

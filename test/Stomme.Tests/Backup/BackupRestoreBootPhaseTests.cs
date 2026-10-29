@@ -26,7 +26,7 @@ using Stomme.Tenancy.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (gate <c>BackupRestoreBootPhaseTests</c>) - the engine end to end on an INSTALLED host, across a
+    /// <c>BackupRestoreBootPhaseTests</c> - the engine end to end on an INSTALLED host, across a
     /// real restart (a second host over the same store runs <c>Program.InstallAsync</c>, exactly as <c>Main</c> does before
     /// <c>RunAsync</c>): a staged restore is applied in the boot phase and the site renders; a restore that fails half-way is
     /// rolled back to the SAFETY snapshot; when that fails too the host refuses to serve, and keeps refusing; a pre-flight

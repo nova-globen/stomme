@@ -180,8 +180,7 @@ namespace Stomme.Tests.Connectors
     /// which checks every SigV4 signature against the IAM key it issued, through the HOST's egress: loopback refused until
     /// allowlisted; a test; an application load balancer created in two of moto's default subnets with a tag, found by name and by
     /// ARN; an HTTPS listener on it (made by the test, with a target group and an ACM certificate of moto's) listed, a second
-    /// certificate added to it, listed and removed; the load balancer deleted and gone. Fails, never skips, when moto is absent
-    /// (D46).
+    /// certificate added to it, listed and removed; the load balancer deleted and gone. Fails, never skips, when moto is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class AwsElbConnectorLiveTests(ITestOutputHelper output)

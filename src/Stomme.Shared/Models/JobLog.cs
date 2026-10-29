@@ -52,10 +52,10 @@ namespace Stomme.Models
         /// Reference to the Job.
         /// </summary>
         /// <remarks>
-        /// <c>[NotMapped]</c> since D52: this was a MAPPED EF navigation the harvested repository eager-loaded
+        /// <c>[NotMapped]</c>: this was a MAPPED EF navigation the repository eager-loaded
         /// with <c>.Include(item =&gt; item.Job)</c>. Now that JobLog is on the persistence seam
         /// (<c>JobLogAggregate</c> references the job by id only), this is view state <c>JobLogRepository</c>
-        /// populates from a second query — the D45 mechanism, mirroring <c>SiteGroupMember.SiteGroup</c>. It is
+        /// populates from a second query, mirroring <c>SiteGroupMember.SiteGroup</c>. It is
         /// still serialized to the client (the Admin &gt; Jobs &gt; Log screen reads <c>Job.Name</c> and
         /// <c>Job.IsExecuting</c>); <c>[NotMapped]</c> affects EF only, never JSON.
         /// </remarks>

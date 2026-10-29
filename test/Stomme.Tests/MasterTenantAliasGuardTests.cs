@@ -25,7 +25,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-100 T1 (spec refutation 1): deleting the LAST alias of the Master tenant through
+    /// Deleting the LAST alias of the Master tenant through
     /// <c>DELETE /api/Alias/{id}</c> must be refused, and the controller's delete log must say what actually happened.
     /// </summary>
     /// <remarks>
@@ -282,11 +282,11 @@ namespace Stomme.Tests
         /// read back from the site's Log table.
         /// </summary>
         /// <remarks>
-        /// The first version of this suite read the Log table after waiting for the D34 drain to catch up, and it was
+        /// The first version of this suite read the Log table after waiting for the log drain to catch up, and it was
         /// wrong on SQLite: the drain's write collided with the request's own master-store write
         /// (<c>SQLite Error 5: 'database is locked'</c>, captured in the host log) and the drain swallows a failed
         /// write, so <c>Alias Deleted</c> lines were silently missing from the table while the controller had logged
-        /// them - the BL-104 single-writer class. What the controller SAYS is what this suite is about, so it is
+        /// them - the single-writer class of SQLite. What the controller SAYS is what this suite is about, so it is
         /// captured where it is said. The collection is serial, so a static sink is not shared across live tests.
         /// </remarks>
         private static readonly ConcurrentQueue<string> Captured = new();

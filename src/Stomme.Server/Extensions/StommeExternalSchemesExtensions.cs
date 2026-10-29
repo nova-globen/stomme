@@ -17,8 +17,8 @@ namespace Stomme.Extensions
     /// unaffected. Neither is ever a default or global challenge: <c>DefaultScheme</c> stays the Identity
     /// cookie (set in <see cref="StommeServiceCollectionExtensions"/>), and both are challenged ONLY
     /// explicitly by their login pages — exactly as OIDC is challenged by <c>Pages/External.cshtml</c>. Making
-    /// Negotiate a default/global challenge would force Windows auth on every request and break the D30 render
-    /// guard; keeping it explicit is the whole safety story (survey §7).
+    /// Negotiate a default/global challenge would force Windows auth on every request and break the installed-site render
+    /// guard; keeping it explicit is the whole safety story.
     /// </summary>
     public static class StommeExternalSchemesExtensions
     {
@@ -33,7 +33,7 @@ namespace Stomme.Extensions
         /// callback then reads it, runs the provisioning bridge, and swaps in the real Identity cookie. Using a
         /// dedicated external cookie (rather than Sustainsys's synchronous <c>AcsCommandResultCreated</c>
         /// notification) keeps the bridge fully async — the notification is an <c>Action</c>, so provisioning
-        /// inside it would be sync-over-async and violate D33.
+        /// inside it would be sync-over-async, which this codebase bans.
         /// </summary>
         public const string Saml2ExternalScheme = "saml2.external";
 
@@ -100,8 +100,8 @@ namespace Stomme.Extensions
 
             // The Negotiate handler is a Windows-runtime contract: on a non-Windows host without a configured
             // Kerberos stack it 500s on every request. Register it only on Windows unless an operator explicitly
-            // opts in (WindowsAuth:AllowNonWindows for a Kerberos-configured Linux host). the predecessor platform warns via an
-            // IHostedService here; Stomme CANNOT — the assembly convention scan auto-registers EVERY
+            // opts in (WindowsAuth:AllowNonWindows for a Kerberos-configured Linux host). A warning would naturally be an
+            // IHostedService, but that is not possible here — the assembly convention scan auto-registers EVERY
             // IHostedService in the host assembly unconditionally (StommeServiceCollectionExtensions:524), so
             // a warning service would run on a stock install too. A Debug trace is the gated-safe substitute.
             if (OperatingSystem.IsWindows() || configuration.GetValue("WindowsAuth:AllowNonWindows", false))

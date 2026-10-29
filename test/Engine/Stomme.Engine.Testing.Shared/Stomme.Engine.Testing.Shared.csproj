@@ -7,8 +7,8 @@
         <PackageTags>stomme, unit testing</PackageTags>
         <!-- A LIBRARY, not a suite (0 [Fact]/[Theory] in its 12 files). The xunit package's own .props sets
              IsTestProject=true unconditionally, so dotnet test Stomme.slnx launched a testhost for it,
-             which died on a missing Castle.Core and ABORTED the whole solution run - exit 1 with all 16
-             suites green (measured 2026-09-13). Directory.Build.props cannot fix this: it is imported BEFORE
+             which died on a missing Castle.Core and ABORTED the whole solution run - exit 1 with all
+             suites green. Directory.Build.props cannot fix this: it is imported BEFORE
              the package props. This PropertyGroup is imported after, so it wins.
         -->
         <IsTestProject>false</IsTestProject>

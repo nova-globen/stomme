@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Stomme.Collaboration
 {
     // ============================================================================================================
-    // The conflict-resolution seam, lifted from the predecessor platform's Collaboration.Abstractions at 183f5c52:
+    // The conflict-resolution seam:
     // bounded coordination, not CRDT or OT. The owning module presents its resource as field paths and values; the
     // resolver reconciles an editor's proposed changes against what is stored now. BCL-ONLY like the other Shared contracts,
     // so a page can show a rejection's conflicts and a merge's warnings. CHANGED for all of it: a user is a Stomme user
@@ -159,7 +159,7 @@ namespace Stomme.Collaboration
     }
 
     /// <summary>
-    /// The conflict-resolution port (the predecessor platform's <c>IConflictResolver</c>): no concurrent change applies as it is; concurrent
+    /// The conflict-resolution port: no concurrent change applies as it is; concurrent
     /// changes to disjoint fields merge field by field; a same-field change on a structured field rejects the save with the
     /// current value; on a text field it is last-writer-wins with a warning naming what, and whose, was overwritten.
     /// Artifact-agnostic: the owning module presents its resource as a <see cref="ResourceSnapshot"/> and stores the merged

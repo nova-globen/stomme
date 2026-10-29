@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-083 (infra backlog, confirmed live 2026-08-08): <see cref="RichTextEditor"/>'s <c>OnAfterRenderAsync</c>
+    /// A defect worth pinning: <see cref="RichTextEditor"/>'s <c>OnAfterRenderAsync</c>
     /// called <c>ITextEditor.Initialize(Content)</c> on EVERY render, not just the first. Any render pass that
     /// includes RichTextEditor in its output re-invokes <c>Initialize</c> - and this happens whenever an
     /// ancestor re-renders and repeats the SAME markup, even with an unchanged <c>Content</c> value, because

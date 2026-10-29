@@ -9,7 +9,7 @@ namespace Stomme.Tests.Pipelines
 {
     /// <summary>
     /// The Pipelines module's stylesheet is linked only by a page that DECLARES it (a component's <c>Resources</c>), not
-    /// whenever the module is on the page. Found driving run reviews on a scratch host (2026-10-07): the runs list, the pipelines
+    /// whenever the module is on the page. The runs list, the pipelines
     /// list and a run's page used its classes (the tag chips, run data, the reviews) but only the editor declared it, so each of
     /// them opened directly rendered its chips as plain buttons run together - styled only when the editor had been opened first
     /// in the same session. <see cref="AdminMarkupIsStyledTests"/> counts every module stylesheet as defined, so it cannot see

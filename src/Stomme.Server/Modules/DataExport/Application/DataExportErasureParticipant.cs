@@ -10,7 +10,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.DataExport.Application
 {
     /// <summary>
-    /// The data-export ledgers under D112: the subject's export jobs are operational rows the module keeps for days
+    /// The data-export ledgers: the subject's export jobs are operational rows the module keeps for days
     /// and go at once (Delete; the exported file follows the job through the module's own retention); the export
     /// audit - who exported what - is a SECURITY record, retained one year (Article 17(3)) and then deleted by the
     /// same job. The subject's export SCHEDULES go too: a schedule runs as its owner, and with the owner gone it

@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D102 item 6 (with the D103 correction): a quota a NEWER release declares reaches an ALREADY-INSTALLED site on
+    /// A quota a NEWER release declares reaches an ALREADY-INSTALLED site on
     /// the boot path, an operator's edit to an existing quota survives the upgrade, and a stock install - which
     /// declares nothing - seeds nothing at all.
     /// </summary>

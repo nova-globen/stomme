@@ -12,7 +12,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The read-only workspace tools every agent may call (lifted from the predecessor platform's <c>AssistantQueryTools</c>). The descriptions
+    /// The read-only workspace tools every agent may call. The descriptions
     /// are what the model reads; the cancellation token is supplied by the runtime and left out of the schema.
     /// </summary>
     internal sealed class AssistantQueryTools(IAssistantQueryGateway gateway)
@@ -38,7 +38,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The Pipeline Architect's tools (the predecessor platform's <c>AssistantPipelineTools</c>): the step catalog, and
+    /// The Pipeline Architect's tools: the step catalog, and
     /// <see cref="ProposePipeline"/>, which refuses a connection the user cannot reach BEFORE validating, then judges the draft
     /// the way the editor's save does. Only an authorized, valid draft is captured; anything else goes back to the model to
     /// fix, and is never staged.
@@ -119,7 +119,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The Dashboard Designer's tools (the predecessor platform's <c>AssistantDashboardTools</c>): the Widget Generator as ONE tool, and
+    /// The Dashboard Designer's tools: the Widget Generator as ONE tool, and
     /// <see cref="ProposeDashboard"/>. <b>ADDED:</b> a widget bound to a dataset the user cannot see is refused the way the
     /// architect refuses a connection, and a widget kind the Dashboards module does not have is refused before the user
     /// meets it on apply.
@@ -204,7 +204,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The Widget Generator's authoring tool (the predecessor platform's <c>WidgetSpecTools</c>): a submitted spec is checked (theme-free, every
+    /// The Widget Generator's authoring tool: a submitted spec is checked (theme-free, every
     /// <c>$Column</c> in the dataset) and returned to the model with its problems; at most <see cref="MaxAttempts"/> submissions.
     /// </summary>
     internal sealed class WidgetSpecTools(AssistantDataSummary summary)
@@ -251,7 +251,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The orchestrator's one routing tool (the predecessor platform's <c>OrchestratorRoutingTools</c>): the model names the specialists, the
+    /// The orchestrator's one routing tool: the model names the specialists, the
     /// code dispatches. Only known names are kept, in the order given, once each.
     /// </summary>
     internal sealed class OrchestratorRoutingTools(IReadOnlySet<string> knownSpecialists)
@@ -287,7 +287,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// the predecessor platform's <c>ChartSpecValidator</c>, verbatim in its rules: a generated spec must be theme-free (the renderer injects the
+    /// The chart-spec rules: a generated spec must be theme-free (the renderer injects the
     /// theme) and every <c>$Column</c> it names must be in the dataset's summary. The Dashboards module refuses a themed spec
     /// again on apply; this check exists so the MODEL can repair before the user sees anything.
     /// </summary>
@@ -363,7 +363,7 @@ namespace Stomme.Modules.AiAssistant.Application
         private static partial Regex ColumnReference();
     }
 
-    /// <summary>The ONE serialized form of a draft: an agent writes it into the artifact, the applier reads it back (the predecessor platform's <c>AssistantDraftJson</c>).</summary>
+    /// <summary>The ONE serialized form of a draft: an agent writes it into the artifact, the applier reads it back.</summary>
     internal static class AssistantDraftJson
     {
         private static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web);

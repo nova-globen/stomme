@@ -25,7 +25,7 @@ namespace Stomme.Modules.Backup.Infrastructure
     }
 
     /// <summary>
-    /// <c>Backup:Archive:S3</c>: the object store (infra's shared store: LAN-direct, path-style, SigV4 the gate). The key pair is
+    /// <c>Backup:Archive:S3</c>: the S3-compatible object store (path-style addressing, SigV4 signatures). The key pair is
     /// read from FILES when <see cref="AccessKeyIdFile"/>/<see cref="SecretAccessKeyFile"/> are set - a deployed container gets
     /// two read-only files and never the key in its environment - and from the plain keys otherwise (a test run gets them from
     /// its environment). A value is never logged, returned to a page or written to a row.

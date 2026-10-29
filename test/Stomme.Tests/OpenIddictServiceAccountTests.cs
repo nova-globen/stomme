@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-224 (D61's correction and amendment) - a client-credentials application's SERVICE ACCOUNT, driven over HTTP on an
+    /// A client-credentials application's SERVICE ACCOUNT, driven over HTTP on an
     /// installed host with <c>OpenIddict:Enabled</c> and <c>OpenIddict:ServiceAccounts:Enabled</c> in its override file: a
     /// client token signs no one in to <c>api/*</c> until the Host creates the account, then signs in THAT account (its own
     /// roles, read per request); the account is locked out of sign-in for good; a person who holds the derived name first is

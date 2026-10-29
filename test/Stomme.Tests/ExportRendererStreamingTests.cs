@@ -26,7 +26,7 @@ namespace Stomme.Tests
     /// flight - the only moment a buffered artifact would be visible.
     /// </para>
     /// <para>
-    /// <b>Both directions.</b> A planted renderer that does what the predecessor platform's did - build the artifact in a
+    /// <b>Both directions.</b> A planted renderer that builds the artifact in a
     /// <see cref="MemoryStream"/> and copy it out at the end - is measured the same way and REQUIRED to blow the bound.
     /// Without it, a flat reading could as easily mean "the sampler cannot see buffering" as "nothing is buffered".
     /// </para>
@@ -108,7 +108,7 @@ namespace Stomme.Tests
 
         private static string Mb(long bytes) => (bytes / 1024d / 1024d).ToString("F1", CultureInfo.InvariantCulture);
 
-        /// <summary>What the predecessor platform's renderers did: the whole artifact in memory, copied out at the end.</summary>
+        /// <summary>A renderer that buffers the whole artifact in memory and copies it out at the end.</summary>
         private sealed class BufferingCsvRenderer : ITabularRenderer
         {
             public ExportFormat Format => ExportFormat.Csv;

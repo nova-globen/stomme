@@ -14,16 +14,16 @@ using Raven.Client.Documents.Session;
 namespace Stomme.Repository.Identity
 {
     /// <summary>
-    /// A hand-written RavenDB ASP.NET Identity store (D54b), the document-store counterpart of EF Core's
+    /// A hand-written RavenDB ASP.NET Identity store, the document-store counterpart of EF Core's
     /// <c>UserOnlyStore&lt;IdentityUser, TenantDBContext&gt;</c>. It implements the EIGHT interfaces stock
     /// Identity actually exercises in this host — CRUD + email + password + security stamp + external logins +
-    /// passkeys + lockout + two-factor — and persists through the LAZY <see cref="IDocumentStore"/> D54a wired,
+    /// passkeys + lockout + two-factor — and persists through the LAZY <see cref="IDocumentStore"/> the host wires,
     /// NOT the framework seam (<c>IFrameworkStoreSessionFactory</c>): Identity is a separate concern with its
     /// own lifecycle.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Lockout/two-factor parity (BL-6 — closes the STEP-5 gap this remark used to declare).</b> EF's
+    /// <b>Lockout/two-factor parity </b> EF's
     /// <c>UserStoreBase</c> implements <c>IUserLockoutStore</c>/<c>IUserTwoFactorStore</c> as IN-MEMORY mutators
     /// persisted by <c>UpdateAsync</c> (LockoutEnd/AccessFailedCount/LockoutEnabled/TwoFactorEnabled are plain
     /// columns on AspNetUsers; <c>UserManager</c> calls the store facet then <c>UpdateUserAsync</c>); this store
@@ -37,7 +37,7 @@ namespace Stomme.Repository.Identity
     /// host — so <c>UserManager</c>'s <c>Supports*</c> guards report them false and skip those paths. Deliberate
     /// scope edge: the two-factor FLAG persists, but <c>IUserAuthenticatorKeyStore</c>/
     /// <c>IUserTwoFactorRecoveryCodeStore</c> are still absent, so authenticator-app 2FA cannot enrol on Raven
-    /// (exactly as before BL-6); the email/phone token providers work off the security stamp, which this store
+    /// (as it always has been); the email/phone token providers work off the security stamp, which this store
     /// has always persisted.
     /// </para>
     /// <para>

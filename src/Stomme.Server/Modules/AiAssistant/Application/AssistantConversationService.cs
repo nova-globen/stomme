@@ -13,7 +13,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// Applies a proposed PIPELINE (the predecessor platform's <c>PipelineArtifactApplier</c>): the draft goes through the Pipelines module's
+    /// Applies a proposed PIPELINE: the draft goes through the Pipelines module's
     /// own create and save-graph commands as the user, and only then is the artifact marked applied - a failed create leaves
     /// it Proposed. It runs only on the user's explicit apply; nothing is auto-applied.
     /// </summary>
@@ -29,7 +29,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// Applies a proposed BOARD (the predecessor platform's <c>DashboardArtifactApplier</c>): through the Dashboards module's own create and
+    /// Applies a proposed BOARD: through the Dashboards module's own create and
     /// add-widget commands as the user - which refuse a themed chart spec again - and only then is the artifact marked applied.
     /// </summary>
     public sealed class DashboardArtifactApplier(IAssistantCommandGateway commands, TimeProvider time)
@@ -65,12 +65,12 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The conversation lifecycle the chat panel and the API use (the predecessor platform's <c>AssistantConversationService</c>): start, read,
+    /// The conversation lifecycle the chat panel and the API use: start, read,
     /// send, apply, discard - always the CURRENT user's conversation on the CURRENT site (another's answers as absent, never
     /// as forbidden, so ids cannot be probed).
     /// </summary>
     /// <remarks>
-    /// <b>CHANGED:</b> the user is the request's principal, always (the predecessor platform accepted a principal or fell back to a user name or
+    /// The user is the request's principal, always (never a caller-supplied name, and no fallback to a user name or
     /// <c>"system"</c>); a turn is stored only once the agent has answered, so a refused message (the guardrail, a spent quota,
     /// an unconfigured site) leaves the transcript as it was; and before a proposal is staged, every dataset it binds is read
     /// again AS THE USER and attached as the conversation's context - one the user cannot see withholds the proposal and says so,

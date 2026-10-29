@@ -15,9 +15,9 @@ using Stomme.Tenancy.Abstractions;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    // Lifted from the predecessor platform NotificationPreferenceCommands.cs. Self-service: each user reads and writes their OWN
-    // preferences on the current site - the user is ICurrentUser.UserId (int, F10), never a request field, so there is no
-    // parameter a caller could point at someone else. Gated by ViewOwn (the predecessor platform: the single view key).
+    // Self-service: each user reads and writes their OWN
+    // preferences on the current site - the user is ICurrentUser.UserId (int), never a request field, so there is no
+    // parameter a caller could point at someone else. Gated by ViewOwn.
 
     /// <summary>The caller's preferences on the current site; permissive defaults when none are saved.</summary>
     [Requires(NotificationsPermissions.ViewOwn)]

@@ -172,11 +172,11 @@ namespace Stomme.Tests
         private sealed class MasterLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
             // THIS CONTEXT IS NOW EMPTY of raw DbSets, and that is the END OF THE PATTERN for the master side. Job
-            // and JobLog left in D52's first wave; Theme and ModuleDefinition followed; Tenant and Alias — the last
+            // and JobLog left first; Theme and ModuleDefinition followed; Tenant and Alias — the last
             // two — leave here. ConfigureMasterFrameworkStore now maps every master-side aggregate (Setting,
             // Job/JobLog, Theme, ModuleDefinition, Tenant, Alias) to its table, so declaring the raw CONTRACT DbSet
-            // for any of them (e.g. DbSet<Tenant>) alongside it would put two entity types on the same table — the
-            // D45 mechanism, and exactly what this probe would hit. The proof now comes from
+            // for any of them (e.g. DbSet<Tenant>) alongside it would put two entity types on the same table —
+            // exactly what this probe would hit. The proof now comes from
             // ConfigureMasterFrameworkStore plus the assertions below, not from a neighbour DbSet.
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureMasterFrameworkStore(database);
         }
@@ -225,7 +225,7 @@ namespace Stomme.Tests
 
         // The master database's migration set creates Tenant, Alias, Job, JobLog, ModuleDefinition and Theme
         // — NOT Site, Page, Module, User, Role or UserRole. ConfigureMasterFrameworkStore maps the master-side
-        // framework-store aggregates (Setting, D23; Job/JobLog/Theme/ModuleDefinition/Tenant/Alias) but must
+        // framework-store aggregates (Setting; Job/JobLog/Theme/ModuleDefinition/Tenant/Alias) but must
         // NOT map the per-TENANT ones: mapping those here would invent entity types over tables that do not exist.
         // Mutation check: make ConfigureMasterFrameworkStore delegate to ConfigureFrameworkStore and this fails.
         [Fact]
@@ -275,7 +275,7 @@ namespace Stomme.Tests
         // The master side now has NO raw content neighbours: Tenant and Alias — the last two — left for the seam,
         // so their CONTRACT CLR types are no longer entity types on the master model. They are mapped as AGGREGATES
         // (asserted above). Mutation check: re-declare DbSet<Tenant> on MasterLikeContext and the whole master model
-        // fails to build (two entity types on the `tenant` table — the D45 mechanism), which is what END OF THE
+        // fails to build (two entity types on the `tenant` table), which is what END OF THE
         // PATTERN means here.
         [Fact]
         public void The_master_side_has_no_raw_content_contract_types_left()
@@ -287,7 +287,7 @@ namespace Stomme.Tests
         }
     }
 
-    // The rule Pages paid for and Users generalised (D22 rule 6): sweep for EF navigations INTO the
+    // The rule Pages paid for and Users generalised: sweep for EF navigations INTO the
     // cluster's CLR type before trusting that removing the DbSet is enough.
     //
     // The sweep found NONE for Setting — every `Settings` member in the framework is either a [NotMapped]
@@ -301,12 +301,12 @@ namespace Stomme.Tests
         private sealed class TenantLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
             // The unmigrated neighbours that settings hang off, as TenantDBContext still holds them.
-            // NOTE: Permission was here until D24 moved it onto the seam. It is now mapped as
+            // NOTE: Permission was here until it moved onto the seam. It is now mapped as
             // PermissionAggregate by ConfigureFrameworkStore, so declaring the Permission CONTRACT here would
             // put two entity types on the `permission` table and break the model — which is precisely what
             // these tests exist to catch, and what they did catch when the cluster moved.
             // PageModule left the same way, and caught the same failure on the way out.
-            // Folder stood here until D48, File until D49, and the SearchContent family until D50 —
+            // Folder, File and the SearchContent family each stood here until they moved onto the seam —
             // declaring any of them now would map its table twice and break the model.
             //
             // THIS CONTEXT IS NOW EMPTY, and that is the END OF THE PATTERN rather than a gap. The neighbour
@@ -316,7 +316,7 @@ namespace Stomme.Tests
             // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
-            // protection now, and it needed no edit across D47, D48, D49 or D50.
+            // protection now, and it needed no edit as the neighbouring clusters moved onto the seam.
 
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureFrameworkStore(database);
         }
@@ -555,7 +555,7 @@ namespace Stomme.Tests
             Assert.Empty(verifyContext.Set<SettingAggregate>().Where(item => item.EntityName == "Module" && item.EntityId == 7));
         }
 
-        // The D19 pair. This is the bug that made Pages' PUT return 200 and persist NOTHING, and it is live
+        // The pair that pins it. This is the bug that made Pages' PUT return 200 and persist NOTHING, and it is live
         // in this cluster's shape: SettingController.Put calls GetSetting to authorize, then UpdateSetting —
         // one repository instance, one store, one context.
         [Fact]

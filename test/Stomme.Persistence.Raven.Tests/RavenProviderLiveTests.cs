@@ -13,9 +13,9 @@ namespace Stomme.Persistence.Raven.Tests;
 
 // Live smoke test proving the RavenDB provider satisfies the persistence seam end-to-end against a
 // real server (aggregate round-trip, query session, optimistic concurrency, transactional outbox).
-// GATED in Stomme.slnx, fail-not-skip per D46: an unreachable server fails
-// InitializeAsync loudly. Defaults to the infra UAT tier (env-overridable via RAVENDB_TEST_URL — the
-// PostgresTestEndpoint convention); the old default :8091 was a Docker-era port that never existed here.
+// GATED in Stomme.slnx, fail-not-skip: an unreachable server fails
+// InitializeAsync loudly. Defaults to the shared test server (env-overridable via RAVENDB_TEST_URL — the
+// PostgresTestEndpoint convention); the older default :8091 never existed here.
 public sealed class RavenProviderLiveTests : IAsyncLifetime
 {
     private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") ?? "http://localhost:8080";
@@ -90,7 +90,7 @@ public sealed class RavenProviderLiveTests : IAsyncLifetime
     // (_store.OpenAsyncSession()), NOT through the seam's IQuerySession. It proves the provider's writes
     // land as readable documents; it proves NOTHING about the seam's read contract.
     //
-    // This test was previously described as "reads via IQuerySession", and that claim reached the owner as
+    // This test was previously described as "reads via IQuerySession", and that claim was taken as
     // evidence the seam was verified on RavenDB. It was not: at the time the RavenDB project had no
     // IQuerySession implementation at all. The seam's read path is now implemented
     // (RavenDocumentSession/RavenDocumentSessionFactory) and exercised through its OWN API by

@@ -15,9 +15,9 @@ namespace Stomme.Notifications
     /// controls with it, the Server's requests and controller carry it.
     /// </para>
     /// <para>
-    /// <b>the predecessor platform's single <c>notifications:view</c> is SPLIT and does not exist here.</b> It gated a user's own inbox AND the
-    /// whole tenant's send log (and the template preview) with one grant, so every user who could read their own
-    /// notifications could read everyone's. <see cref="ViewOwn"/> is the self-service key every registered user holds;
+    /// <b>There is no single <c>notifications:view</c>; it is SPLIT.</b> One grant over a user's own inbox AND the
+    /// whole tenant's send log (and the template preview) would let every user who could read their own
+    /// notifications read everyone's. <see cref="ViewOwn"/> is the self-service key every registered user holds;
     /// <see cref="ViewLog"/> is the operator's.
     /// </para>
     /// </remarks>

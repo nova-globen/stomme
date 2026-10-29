@@ -20,7 +20,7 @@ namespace Stomme.Modules.IdentityAudit.Controllers
     /// </summary>
     /// <remarks>
     /// Gated by a FRAMEWORK policy - the Administrators role - and deliberately by no permission key: <c>identity.*</c> is
-    /// the prefix D109 reserves, and who may read the account record of a site is the framework's question, not a
+    /// a prefix reserved for the framework, and who may read the account record of a site is the framework's question, not a
     /// module grant a site could hand out. The site is the request's own; nothing here takes one.
     /// </remarks>
     [Route(ControllerRoutes.ApiRoute)]

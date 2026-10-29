@@ -153,7 +153,7 @@ namespace Stomme.Infrastructure
                     log += $"Error Purging Completed Site Tasks - {ex.Message}<br />";
                 }
 
-                // purge orphaned upload parts and dead staging directories (BL-100 F1, absorbing BL-114): the site's
+                // purge orphaned upload parts and dead staging directories: the site's
                 // staging tree, and the chunk parts the pre-guard upload left in its content folders
                 try
                 {
@@ -180,7 +180,7 @@ namespace Stomme.Infrastructure
                     var purgerRetention = Retention(settingRepository, settings, purger.SettingKey, ref log, purger.DefaultDays);
                     try
                     {
-                        // No token: ExecuteJobAsync is handed none (BL-107 gave the tenant loop the job's token,
+                        // No token: ExecuteJobAsync is handed none (the tenant loop has the job's token,
                         // not the body).
                         count = await purger.PurgeAsync(site.SiteId, purgerRetention, default);
                         log += count.ToString() + " " + purger.DisplayName + " Purged<br />";

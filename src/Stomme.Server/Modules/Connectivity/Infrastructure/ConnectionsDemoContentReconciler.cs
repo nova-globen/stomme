@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Connectivity.Infrastructure
 {
     /// <summary>
-    /// The Connectivity module's demo content (D110 Q7): two connections an evaluator can open, test
+    /// The Connectivity module's demo content: two connections an evaluator can open, test
     /// and edit - a REST endpoint and a PostgreSQL database - written per site on the boot/upgrade path through the
     /// framework's <see cref="SiteContentReconciliationRunner"/>, ONLY while <c>DemoContent:Enabled</c> is true (default
     /// off; while it is off this type is not registered), and ADDITIVELY: a site stamped at <see cref="Version"/> is left
@@ -22,7 +22,7 @@ namespace Stomme.Modules.Connectivity.Infrastructure
     /// </summary>
     /// <remarks>
     /// The connections are written through the repository, not the create command: the command validates the connector
-    /// TYPE against the catalog, and the in-tree catalog is empty until BL-96 lands the per-connector code - the demo rows
+    /// TYPE against the catalog, and the in-tree catalog can be empty when no connector code is installed - the demo rows
     /// therefore show <c>Untested</c> with the connector marked "not installed" on the page, and a Test answers
     /// <see cref="ConnectorOutcomes.ConnectorUnavailable"/> until a connector of that type is installed. That is the
     /// honest state, not a stub. No credential is written: the PostgreSQL connection declares a <c>password</c> field an

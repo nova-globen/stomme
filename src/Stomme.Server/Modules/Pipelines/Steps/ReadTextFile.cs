@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace Stomme.Modules.Pipelines.Steps
 {
-    /// <summary>Read a text file from the site's pipeline folder (the predecessor platform's file <c>read</c> operation, per-site).</summary>
+    /// <summary>Read a text file from the site's pipeline folder (per-site).</summary>
     [FlowNode(DoneOutcome, FailedOutcome)]
     [Step("Stomme", "Files", "Read a text file from the site's pipeline folder.", DisplayName = "Read text file")]
     public class ReadTextFile : DataStep

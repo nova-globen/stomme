@@ -260,7 +260,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// EF Core on a LIVE SQL Server scratch database (infra UAT, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
+    /// EF Core on a LIVE SQL Server scratch database (<see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
     /// suite on SQL Server, as every module-aggregate suite. Fails, never skips, when SQL Server is down.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]

@@ -31,18 +31,18 @@ namespace Stomme.Repository
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Its File half did NOT move, and that is D48's finding rather than an omission.</b> The two were
+    /// <b>Its File half did NOT move, and that is a finding rather than an omission.</b> The two were
     /// planned to land together because <c>File.Folder</c> was a mapped navigation into the Folder contract;
     /// that half is done (the navigation is severed and <see cref="FileRepository"/> stitches the member on by
     /// hand). What blocked the File ROW is that its two name lookups filter with <c>.ToLower()</c> on the
     /// COLUMN, and no portable spelling of that exists on this seam — see src/Stomme.Server/README.md (persistence seam).
     /// </para>
     /// <para>
-    /// <b>The one outbound edge is <see cref="IPermissionRepository"/>, and it is acyclic (D22 rule 8).</b>
+    /// <b>The one outbound edge is <see cref="IPermissionRepository"/>, and it is acyclic.</b>
     /// Re-checked per edge rather than inherited: this cluster ALREADY held that edge before the move, so the
     /// container already proved it resolves. The chain is Folder → Permission → Role → Setting, and Setting
     /// takes no repository that reaches back here. Nothing this increment adds is new, so the
-    /// store-instead-of-repository escape D24 needed for Permission is not needed here.
+    /// store-instead-of-repository escape that Permission needed is not needed here.
     /// </para>
     /// <para>
     /// <b><see cref="ITenantManager"/> is NOT a persistence edge</b>, which is why it survives the move
@@ -51,7 +51,7 @@ namespace Stomme.Repository
     /// part of that path. Nothing about it reads or writes the database.
     /// </para>
     /// <para>
-    /// <b>No read here writes, so this cluster does NOT need D47's per-write store.</b> Checked deliberately,
+    /// <b>No read here writes, so this cluster does NOT need a per-write store.</b> Checked deliberately,
     /// because that is the hazard every gate missed: <c>UrlMappingRepository</c> had to resolve a store per
     /// write because its READ recorded a request, so one repository instance wrote the same row twice and hit
     /// the identity map. Every method below is either a pure read or a single write, and no caller does
@@ -217,7 +217,7 @@ namespace Stomme.Repository
         /// mixed case (<c>Public/</c>, <c>Users/1/</c>), so this works — but note it is NOT the same filter
         /// <see cref="FileRepository"/> needs, which is case-INSENSITIVE because it resolves a lowercased URL
         /// segment. Do not "reuse" this one there: <c>Public/</c> would not match a request for
-        /// <c>public/</c> and every file would 404. That distinction is what D48 measured; see
+        /// <c>public/</c> and every file would 404. That distinction was measured; see
         /// src/Stomme.Server/README.md (persistence seam).
         /// <para>
         /// The <c>(site_id, path)</c> UNIQUE index is what makes this a single-row lookup rather than a "pick

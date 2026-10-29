@@ -23,7 +23,7 @@ namespace Stomme.Tests.Backup
     /// <summary>
     /// The object-store archive backend DRIVEN on an installed host: the real engine, the real boot phase, the
     /// settings in the override FILE, and an in-memory bucket in place of the SDK (the live round trip against
-    /// infra's store is <c>test/Stomme.Backup.S3.Live.Tests</c>, outside the solution). A snapshot taken to the bucket is
+    /// the real store is <c>test/Stomme.Backup.S3.Live.Tests</c>, outside the solution). A snapshot taken to the bucket is
     /// restored from it after a restart; switching the provider leaves an earlier snapshot readable where it is; and a
     /// provider of S3 without its settings fails the snapshot rather than writing it locally.
     /// </summary>

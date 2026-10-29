@@ -189,7 +189,7 @@ namespace Stomme.Tests
             var previous = Thread.CurrentThread.CurrentCulture;
             try
             {
-                // sv-SE writes 1,5 - which in a numeric cell is a corrupt workbook, on exactly the owner's laptop.
+                // sv-SE writes 1,5 - which in a numeric cell is a corrupt workbook.
                 Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("sv-SE");
 
                 var bytes = await RenderAsync(new[]
@@ -359,7 +359,7 @@ namespace Stomme.Tests
             Assert.Empty(new OpenXmlValidator(FileFormatVersions.Office2019).Validate(document));
         }
 
-        // Found by reconciling the predecessor platform's cases by name (BL-85 residue 7): the several-sheet case above renders EMPTY
+        // The several-sheet case above renders EMPTY
         // tables, so nothing asserted that a table's rows land on its OWN sheet.
         [Fact]
         public async Task Each_table_lands_on_a_sheet_of_its_own_with_its_own_rows()

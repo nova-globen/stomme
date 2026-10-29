@@ -36,8 +36,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
     /// <summary>
     /// Creates, per site, every declared template the site does not have yet - keyed by <c>KeyNormalized</c> - and never
     /// touches one that exists, so an operator's edit survives every boot (additive, create-if-absent).
-    /// the predecessor platform's seeder was already create-if-absent but ran once for the default tenant from a hosted service; here it
-    /// runs per SITE on the boot/upgrade path through the framework's <see cref="SiteContentReconciliationRunner"/>.
+    /// It runs per SITE on the boot/upgrade path through the framework's <see cref="SiteContentReconciliationRunner"/>.
     /// </summary>
     /// <remarks>
     /// Residue (not solved here): the module store has no unique index on (site, key) on any provider, so two hosts

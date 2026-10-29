@@ -18,7 +18,7 @@ namespace Stomme.Tests.Notifications
     /// loopback is refused AT CONNECT, which is what defeats rebinding); redirects are never followed; a site's
     /// allowlisted in-test loopback receiver still RECEIVES the body.
     /// <para>Validated both directions: with <c>IsDenied</c> stubbed to allow-all, the denial facts go red (recorded in the step report).</para>
-    /// <para><b>Since BL-132 every fact here drives the framework's ONE outbound guard</b> (<see cref="OutboundConnectGuard"/>):
+    /// <para><b>Every fact here drives the framework's ONE outbound guard</b> (<see cref="OutboundConnectGuard"/>):
     /// the webhook keeps only its setting name and its wording, and the client's connect step is pinned to the guard's.</para>
     /// </summary>
     public sealed class WebhookSsrfGuardTests

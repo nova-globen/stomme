@@ -15,7 +15,7 @@ namespace Stomme.Infrastructure.SiteTemplates
         // IConfigurationRoot, NOT IConfiguration: AddStomme registers the fully-merged configuration (which
         // includes the appsettings.override.json used by the test harness) as IConfigurationRoot, so a plain
         // IConfiguration would resolve to the host's default config WITHOUT the override — and the opt-in page
-        // would never seed under test. SiteRepository injects IConfigurationRoot for exactly this reason. (Since BL-251 the
+        // would never seed under test. SiteRepository injects IConfigurationRoot for exactly this reason. (The
         // container's IConfiguration has the override file too, but still not features.json: the root stays the answer.)
         private readonly IConfigurationRoot _configuration;
 
@@ -969,7 +969,7 @@ namespace Stomme.Infrastructure.SiteTemplates
 
             // The per-tenant OpenIddict authority is OPT-IN (OpenIddict:Enabled), and so is its admin page: a
             // stock install must be byte-for-byte unaffected, and an "Identity Provider" page that can only ever
-            // say "disabled" is noise in the admin menu. Same gating posture as the D85 bundled-module knob —
+            // say "disabled" is noise in the admin menu. Same gating posture as the bundled-module knob —
             // read config here, seed conditionally.
             if (_configuration.GetValue<bool>("OpenIddict:Enabled"))
             {
@@ -1073,7 +1073,7 @@ namespace Stomme.Infrastructure.SiteTemplates
                     }
                 });
             }
-            // Pipelines is OPT-IN (Pipelines:Enabled), and so is its admin page (BL-95 increment (b)). Administrators,
+            // Pipelines is OPT-IN (Pipelines:Enabled), and so is its admin page. Administrators,
             // because every pipelines key defaults there; each action is decided per key by the server, on the request's site.
             if (_configuration.GetValue<bool>("Pipelines:Enabled"))
             {
@@ -1179,7 +1179,7 @@ namespace Stomme.Infrastructure.SiteTemplates
                 });
             }
 
-            // Contextual help is OPT-IN (Help:Enabled, default FALSE - D103 refutation 14), and so is its admin page - the Data
+            // Contextual help is OPT-IN (Help:Enabled, default FALSE), and so is its admin page - the Data
             // Export posture above: a stock install gains no page, and switching help on later reaches an EXISTING site
             // through the additive boot-path reconciliation. Administrators, because help:author and help:manage default
             // there; what the control offers is decided per key, and again by the server on every request.

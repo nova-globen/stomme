@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The admin write paths BL-87's role fix did not reach. <c>ProfileController</c> and <c>LanguageController</c>
+    /// The admin write paths an earlier role fix did not reach. <c>ProfileController</c> and <c>LanguageController</c>
     /// checked only <c>ModelState</c>, and neither model carries an annotation, so a profile item with no name or title and a
     /// language with no culture code could be written through the API although both admin forms mark the field required.
     /// </summary>
@@ -125,7 +125,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task A_user_with_a_blank_username_is_NOT_created_ASP_NET_Identity_refuses_it()
         {
-            // The row's third suspect. Measured rather than fixed: the user path is not the BL-87 shape - it runs through
+            // The third suspect in the list. Measured rather than fixed: the user path is not the same shape as that role fix - it runs through
             // ASP.NET Identity's UserManager, whose UserValidator refuses a blank user name. This pins that it stays so.
             using var scratch = await GateInstallTemplates.CloneAsync(new SqliteGateStore(), Host, _output);
             var app = await GateDrive.InstallAsync(scratch, _output);

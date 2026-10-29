@@ -22,15 +22,14 @@ namespace Stomme.Modules.Metering.Domain
     /// first rather than relying on the id alone.
     /// </para>
     /// <para>
-    /// <b>The TENANT is part of every key, and it was missing until BL-151.</b> Two tenants can share
+    /// <b>The TENANT is part of every key.</b> Two tenants can share
     /// one physical database and point at the SAME site — site-per-alias is a supported topology, and
     /// <c>MeteringJobTenantScopeTests</c> constructs exactly it. Without the tenant, both tenants' rows for that
     /// site hash to the SAME Guid, which in one shared table is a primary-key collision: on EF the second tenant's
     /// write throws, and where the write is the idempotent GetById-then-Update the tenant query filter hides the
     /// other tenant's row, so the second tenant reads a MISS and overwrites. The defect was found while writing
-    /// the equivalent ids for BL-83, which carries the tenant from the start, and is fixed here while nothing is
-    /// deployed — <c>Metering:Enabled</c> defaults to false — because the fix changes the identity of every
-    /// metering row and is far more expensive once anyone has data.
+    /// equivalent ids elsewhere, and is fixed here by keying on the tenant, because changing the identity of every
+    /// metering row would be far more expensive once anyone has data (<c>Metering:Enabled</c> defaults to false).
     /// </para>
     /// </remarks>
     public static class QuotaIds

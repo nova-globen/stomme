@@ -31,7 +31,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// The module-definition PUT must accept only the FOREIGN-entity permission rows that definition itself
-    /// declares, and must not let a save lock the Administrators role out of a declared key (F10).
+    /// declares, and must not let a save lock the Administrators role out of a declared key.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -318,8 +318,8 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// Clearing every cell of a declared KEY in the grid must actually revoke it (the operator action BL-99
-        /// makes load-bearing), and the lazy additive reconcile's answer to a deliberate revocation is MEASURED
+        /// Clearing every cell of a declared KEY in the grid must actually revoke it (an operator action that
+        /// makes it load-bearing), and the lazy additive reconcile's answer to a deliberate revocation is observed
         /// here rather than assumed.
         /// </summary>
         /// <remarks>

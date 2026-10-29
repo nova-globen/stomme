@@ -10,11 +10,11 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 and BL-169 - the archive store contract, run against the local folder AND the S3 store over an
+    /// The archive store contract, run against the local folder AND the S3 store over an
     /// in-memory bucket that keeps S3's rules: an archive is invisible until PUBLISHED (a snapshot that dies mid-write leaves
     /// nothing that looks whole), carries its checksum sidecar, deletes with it, and lists only published archives. Every
     /// name is a <see cref="StorageLocation"/>, so nothing resolves outside the root or the prefix.
-    /// the predecessor platform's <c>LocalFileSystemBackupArchiveStore</c> path-escape guard lands here.
+    /// the path-escape guard of <c>LocalFileSystemBackupArchiveStore</c> is covered here.
     /// </summary>
     public abstract class BackupArchiveStoreContractTests : IDisposable
     {
