@@ -100,6 +100,9 @@ Read from the host's configuration, the installation's override file included:
 | `Backup:Enabled` | `false` | The surface, the `admin/backup` page, the schedule job, the boot-time restore and the pre-upgrade snapshot. Off, a staged restore is not applied. |
 | `Backup:Schedule:Passphrase` | empty | The passphrase scheduled and pre-upgrade snapshots use. Without it the schedule takes nothing and says why. |
 | `Backup:Schedule:PassphraseFile` | empty | A file holding the passphrase; wins over `Passphrase`. The way to give a container the secret. |
+| `Backup:Schedule:IntervalHours` | none | Set, the installation's FIRST schedule is created from configuration at start-up and the schedule job is enabled - backups with nobody at `admin/backup`. 1 to 8784. |
+| `Backup:Schedule:RetentionDays` | 30 | The seeded schedule's retention, in days (at least 1). Needs `IntervalHours`. |
+| `Backup:Schedule:KeepLast` | 7 | The seeded schedule's keep-last-N (at least 1). Needs `IntervalHours`. |
 | `Backup:Archive:Provider` | `Local` | `Local` (the `backups` folder in the installation's data directory) or `S3`. Each snapshot remembers its store, so switching leaves earlier ones restorable. |
 | `Backup:Archive:S3:Endpoint` | none | `http(s)` address of the S3-compatible store. Dialled directly. |
 | `Backup:Archive:S3:Bucket` | none | Required for `S3`. |
@@ -113,6 +116,22 @@ Read from the host's configuration, the installation's override file included:
 With `S3` and an incomplete setting, a snapshot fails naming the missing setting and writes nothing locally. Schedules
 (interval, keep-last-N, retention days) are set on the `admin/backup` page; the schedule job is created disabled and
 also needs `Backup:Enabled`.
+
+**An unattended host** (a container nobody clicks through) gets its schedule from configuration instead, as environment
+variables alone if you like:
+
+```
+Backup__Enabled=true
+Backup__Schedule__IntervalHours=24
+Backup__Schedule__PassphraseFile=/run/secrets/backup-passphrase
+```
+
+The rule: configuration seeds the FIRST schedule, and only that. A start that finds no schedule creates one from these
+settings and enables the job; a start that finds any schedule - seeded or made on the page - writes nothing, so a
+restart never adds a second and every edit made on `admin/backup` afterwards (another interval, the schedule or the job
+switched off) is kept. To change a seeded schedule, edit it on the page; changing the settings later changes nothing. A
+schedule setting out of range, or a missing passphrase, stops the start with the setting's name and nothing written.
+With `Backup:Enabled` off the schedule settings are ignored (and the log says so).
 
 ## Rules and pitfalls
 

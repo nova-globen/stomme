@@ -170,6 +170,15 @@ namespace Stomme.Server
                 }
             }
 
+            // BL-258: the backup schedule Backup:Schedule:IntervalHours configures, seeded on a boot that finds none and the
+            // job enabled with it. An invalid one refuses to serve, by name, with nothing written.
+            if (install.Success && string.IsNullOrEmpty(install.Message)
+                && await Stomme.Modules.Backup.Application.ConfiguredBackupSchedule.SeedAsync(app.Services, DateTime.UtcNow) is { } refusal)
+            {
+                install.Success = false;
+                install.Message = refusal;
+            }
+
             return install;
         }
     }

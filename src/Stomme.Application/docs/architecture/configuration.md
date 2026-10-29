@@ -193,7 +193,7 @@ at the next start. Restart after changing any switch unless you know its reader 
 | Windows login (Negotiate) | `WindowsAuth:Enabled` | `false` | Registered on Windows only, unless `WindowsAuth:AllowNonWindows` is `true`. |
 | Data export (tabular exports to private files) | `DataExport:Enabled` | `false` | |
 | A user's own data package | `Portability:Enabled` | `false` | |
-| Backup and restore | `Backup:Enabled` | `false` | `Backup:Archive:Provider`: `Local` (default; `<data directory>/backups`) or `S3` with `Backup:Archive:S3:*`. Scheduled runs need `Backup:Schedule:Passphrase` or `Backup:Schedule:PassphraseFile`. See [Backup and restore](../services/backup-restore.md). |
+| Backup and restore | `Backup:Enabled` | `false` | `Backup:Archive:Provider`: `Local` (default; `<data directory>/backups`) or `S3` with `Backup:Archive:S3:*`. Scheduled runs need `Backup:Schedule:Passphrase` or `Backup:Schedule:PassphraseFile`; `Backup:Schedule:IntervalHours` (with `RetentionDays`, `KeepLast`) seeds the first schedule at start-up for an unattended host. See [Backup and restore](../services/backup-restore.md). |
 | Pipelines (the workflow engine) | `Pipelines:Enabled` | `false` | Restart. See [Pipelines](../pipelines/overview.md). |
 | - schedule triggers | `Pipelines:Schedules:Enabled` | `true` | Only matters when pipelines are on. |
 | - public webhook triggers | `Pipelines:Webhooks:Enabled` | `false` | Answers nothing without a secret: `Pipelines:Webhooks:Secret` or `Pipelines:Webhooks:SecretFile`, or a webhook's own. |

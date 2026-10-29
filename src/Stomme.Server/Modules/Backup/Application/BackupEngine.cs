@@ -52,6 +52,19 @@ namespace Stomme.Modules.Backup.Application
             /// </summary>
             public string PassphraseFile { get; set; } = string.Empty;
 
+            /// <summary>
+            /// The schedule an unattended host is given by configuration (BL-258): how often, in hours. Set, it seeds the
+            /// installation's FIRST schedule at boot and enables the Backup Schedule Job; once any schedule exists the Host's
+            /// page owns it (<see cref="ConfiguredBackupSchedule"/>).
+            /// </summary>
+            public int? IntervalHours { get; set; }
+
+            /// <summary>The seeded schedule's retention in days (default <see cref="ConfiguredBackupSchedule.DefaultRetentionDays"/>).</summary>
+            public int? RetentionDays { get; set; }
+
+            /// <summary>The seeded schedule's keep-last-N (default <see cref="ConfiguredBackupSchedule.DefaultKeepLast"/>).</summary>
+            public int? KeepLast { get; set; }
+
             /// <summary>The setting the passphrase comes from - what a refusal names; never the value.</summary>
             public string SettingName => string.IsNullOrWhiteSpace(PassphraseFile) ? SectionName + ":Schedule:Passphrase" : SectionName + ":Schedule:PassphraseFile";
 

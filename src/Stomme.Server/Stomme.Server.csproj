@@ -127,6 +127,10 @@
        install registers neither and is byte-for-byte unaffected. -->
   <ItemGroup>
     <PackageReference Include="Sustainsys.Saml2.AspNetCore2" />
+    <!-- Security pin (D83, now in the PACKAGE): Sustainsys.Saml2 -> System.Security.Cryptography.Xml 4.7.1 ->
+         System.Security.Permissions -> System.Windows.Extensions -> System.Drawing.Common 4.7.0 (GHSA-rxg9-xrhp-64gj,
+         critical) reached every plain-SDK consumer of this package. See Directory.Packages.props. -->
+    <PackageReference Include="System.Drawing.Common" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" />
   </ItemGroup>
 

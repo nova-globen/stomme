@@ -59,6 +59,15 @@
     <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
   </ItemGroup>
 
+  <!-- CORRECTION 2026-10-29 to the System.Drawing.Common pin above (found by a consumer's restore of 10.74.1): the pin
+       reached the conformance tests and the slim server SDK, never the Stomme.Server PACKAGE. A Web SDK project never sees
+       the chain - the ASP.NET Core shared framework carries System.Security.Cryptography.Xml, so the restore prunes it -
+       which is why Stomme.Server's own restore was clean; a PLAIN SDK project referencing the package (a class library, a
+       test project) restored all four and reported NU1904. Stomme.Server now references System.Drawing.Common directly, so
+       its package carries 10.0.13. Raising System.Security.Cryptography.Xml instead does not work: a reference to a package
+       the shared framework carries is left out of the packed dependencies even when kept from pruning (measured).
+       scripts/release-dry-run.ps1's consumer audit is the gate. -->
+
   <!-- Entity Framework Core + database providers. HELD AT 10.0.9 (BL-192, measured 2026-10-02): the 10.0.12 SQL Server
        provider requires Microsoft.Data.SqlClient 6.1.6, which (unlike 6.1.1) depends on Microsoft.Identity.Client.Broker,
        which brings Microsoft.Identity.Client.NativeInterop - licensed under Microsoft terms that forbid distributing it

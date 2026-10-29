@@ -62,6 +62,11 @@ How it works, and what each path holds: [Deploy](../../../docs/operations/deploy
 10. **Health checks.** Liveness: `GET /healthz` (`200 alive`), for any `Host` header - the container check needs no
    site's host name. Readiness for a load balancer: `GET /readyz`, which is `503` until the first health probe has run
    after installation. Never use `/readyz` for liveness.
+11. **Backups, if nobody will click through admin.** `Backup__Enabled=true`,
+   `Backup__Schedule__IntervalHours=24` and `Backup__Schedule__PassphraseFile=<a mounted secret>` create the first backup
+   schedule at start-up and switch its job on; archives go to `/app/Data/backups` (on the data volume) unless
+   `Backup:Archive` names S3. A restart never adds a second schedule; later changes are made at `admin/backup`. See
+   `docs/services/backup-restore.md`.
 
 ## Verify
 

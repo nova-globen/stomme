@@ -7,8 +7,10 @@
 #   pwsh scripts/release-dry-run.ps1 -Out D:\feed         # and keeps the packages there (a local feed)
 #   pwsh scripts/release-dry-run.ps1 -Check D:\feed       # runs the guards on packages already packed, packs nothing
 #
-# The guards mirror release.yml's three "Guard -" steps one for one; a change to one changes the other. Every guard
-# runs even when an earlier one fails, so one run reports everything. Nothing is pushed, nothing is signed in.
+# The first three guards mirror release.yml's three "Guard -" steps one for one; a change to one changes the other. The
+# fourth, the consumer audit, is this script's own: a plain-SDK project over every package, failing on a high or critical
+# NuGet advisory a consumer would inherit. Every guard runs even when an earlier one fails, so one run reports everything.
+# Nothing is pushed, nothing is signed in.
 param(
     [string]$Out = '',
     [string]$Check = ''
@@ -68,6 +70,8 @@ $packages = foreach ($file in Get-ChildItem $push -Filter '*.nupkg' | Sort-Objec
         [pscustomobject]@{
             Name = $file.Name
             Id = [regex]::Match($nuspec, '<id>([^<]*)</id>').Groups[1].Value
+            Version = [regex]::Match($nuspec, '<version>([^<]*)</version>').Groups[1].Value
+            IsTemplate = $nuspec -match '<packageType name="Template"'
             Nuspec = $nuspec
             Entries = $entries
             AssetsProps = & $read 'build/Microsoft.AspNetCore.StaticWebAssets.props'
@@ -91,6 +95,8 @@ foreach ($p in $packages | Where-Object { $_.Name -like 'Stomme.Theme.*.nupkg' }
     $declared = if ($p.AssetsProps) { ([regex]::Matches($p.AssetsProps, '<StaticWebAsset ')).Count } else { 0 }
     "  $($p.Name): packaged=$packaged declared=$declared"
     if ($packaged -ne $declared) { $failures.Add("theme assets: POISONED PACK: $($p.Name) (packaged $packaged, declared $declared)") }
+    # BL-259: a stock theme carries the release's version, so changed content never ships under a number already out.
+    if ($p.Version -ne $version) { $failures.Add("theme version: $($p.Name) is $($p.Version), not the release's $version") }
 }
 'guard: theme assets - checked'
 
@@ -104,6 +110,55 @@ foreach ($p in $packages) {
     }
 }
 'guard: dependencies - checked'
+
+# ---- Guard - no consumer inherits a high or critical advisory (2026-10-29) --------------------------------------------
+# A PLAIN SDK project referencing every package, restored with NuGet's audit over the whole graph: what a class library
+# or test project built on Stomme sees. The framework's own restore cannot stand in for it - a Web SDK project prunes what
+# the ASP.NET Core shared framework carries, and so missed GHSA-rxg9-xrhp-64gj (System.Drawing.Common 4.7.0, NU1904),
+# which reached every plain-SDK consumer of Stomme.Server 10.74.1. The Stomme.* folders of the audit's package folder are
+# emptied first, so a cached package of the same version never stands in for the one packed here.
+$audit = Join-Path ([IO.Path]::GetTempPath()) 'stomme-release-audit'
+$auditPackages = Join-Path $audit 'packages'
+New-Item -ItemType Directory -Force $auditPackages | Out-Null
+Get-ChildItem $auditPackages -Directory -Filter 'stomme.*' -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+Remove-Item -Recurse -Force (Join-Path $audit 'obj') -ErrorAction SilentlyContinue
+$references = $packages | Where-Object { -not $_.IsTemplate } | ForEach-Object { "    <PackageReference Include=""$($_.Id)"" Version=""$($_.Version)"" />" }
+@(
+    '<Project Sdk="Microsoft.NET.Sdk">',
+    '  <PropertyGroup>',
+    '    <TargetFramework>net10.0</TargetFramework>',
+    '    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>',
+    '    <NuGetAudit>true</NuGetAudit>',
+    '    <NuGetAuditMode>all</NuGetAuditMode>',
+    '    <NuGetAuditLevel>low</NuGetAuditLevel>',
+    '  </PropertyGroup>',
+    '  <ItemGroup>'
+) + $references + @('  </ItemGroup>', '</Project>') | Set-Content -Encoding utf8 (Join-Path $audit 'Consumer.csproj')
+@(
+    '<?xml version="1.0" encoding="utf-8"?>',
+    '<configuration>',
+    '  <packageSources>',
+    '    <clear />',
+    "    <add key=""packed"" value=""$push"" />",
+    '    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />',
+    '  </packageSources>',
+    '  <packageSourceMapping>',
+    '    <packageSource key="packed"><package pattern="Stomme.*" /></packageSource>',
+    '    <packageSource key="nuget.org"><package pattern="*" /></packageSource>',
+    '  </packageSourceMapping>',
+    '</configuration>'
+) | Set-Content -Encoding utf8 (Join-Path $audit 'NuGet.config')
+$auditLog = Join-Path $logs 'consumer-audit.log'
+& dotnet restore (Join-Path $audit 'Consumer.csproj') --packages $auditPackages --configfile (Join-Path $audit 'NuGet.config') --force-evaluate -nologo *> $auditLog
+if ($LASTEXITCODE) { $failures.Add("consumer audit: the consumer's restore failed (exit $LASTEXITCODE): see $auditLog") }
+$advisories = Select-String -LiteralPath $auditLog -Pattern 'NU190\d' | ForEach-Object {
+    [regex]::Match($_.Line, "NU190\d: Package '[^']+' [^ ]+ has a known [a-z]+ severity vulnerability, \S+").Value
+} | Where-Object { $_ } | Sort-Object -Unique
+foreach ($advisory in $advisories) {
+    "  $advisory"
+    if ($advisory -match '^NU190[34]') { $failures.Add("consumer audit: $advisory") }
+}
+"guard: consumer audit - checked ($(@($advisories).Count) advisories; high and critical fail)"
 
 ''
 $packages | ForEach-Object { "  $($_.Name)" }

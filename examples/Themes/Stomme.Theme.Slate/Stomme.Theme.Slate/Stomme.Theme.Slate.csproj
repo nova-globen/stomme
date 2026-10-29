@@ -16,7 +16,7 @@
          extraction path and the ThemeInfo stylesheet URL) instead of the .Stomme assembly name -->
     <StaticWebAssetBasePath>_content/Stomme.Theme.Slate</StaticWebAssetBasePath>
     <RootNamespace>Stomme.Themes.Slate</RootNamespace>
-    <Version>1.0.0</Version>
+    <!-- No <Version> of its own (BL-259): the framework's - see the Aurora csproj. -->
     <Authors>Nova Globen AB</Authors>
     <Company>Nova Globen AB</Company>
     <Product>Stomme.Theme.Slate</Product>

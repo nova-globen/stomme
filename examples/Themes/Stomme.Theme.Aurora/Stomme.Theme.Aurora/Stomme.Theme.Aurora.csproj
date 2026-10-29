@@ -16,7 +16,8 @@
          extraction path and the ThemeInfo stylesheet URL) instead of the .Stomme assembly name -->
     <StaticWebAssetBasePath>_content/Stomme.Theme.Aurora</StaticWebAssetBasePath>
     <RootNamespace>Stomme.Themes.Aurora</RootNamespace>
-    <Version>1.0.0</Version>
+    <!-- No <Version> of its own (BL-259): the framework's, from examples/Directory.Build.props, so every release moves it -
+         1.0.0 kept its number while 10.74.1 changed its content, and machines that had it cached kept the old package. -->
     <Authors>Nova Globen AB</Authors>
     <Company>Nova Globen AB</Company>
     <Product>Stomme.Theme.Aurora</Product>
