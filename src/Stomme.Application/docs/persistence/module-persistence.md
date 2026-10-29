@@ -287,12 +287,21 @@ that omits it compiles and then fails when called. See the
 - **Set the `Guid` id yourself** (`Guid.NewGuid()` in the factory). Do not rely on a store to generate it.
 - **Give every stored property a setter** (`{ get; private set; }`) and give the class a private parameterless
   constructor. Stores build the aggregate through that constructor and set the properties.
-- **One bad aggregate breaks the whole relational module store.** All module aggregates - the framework's too - share
-  one EF Core model. If yours cannot be mapped (an unsupported value object, a collection with no backing field, an
-  element type with no usable constructor, two aggregate classes with the same name, which EF Core cannot put in one
-  table), building the model fails, the host logs "Unable to initialize the ModuleAggregatesDbContext module store; it
-  will read as empty.", and every module on that store reads nothing. Run the app and read the log after adding or
-  changing an aggregate.
+- **An aggregate the relational store cannot map switches its own module off.** All module aggregates - the framework's
+  too - share one EF Core model. If yours cannot be mapped (an unsupported value object, a collection with no backing
+  field, an element type with no usable constructor, two aggregate classes with the same name, which EF Core cannot put
+  in one table), it is left out of that model: the host logs at startup "Module aggregate <its full type name> cannot be
+  mapped into the shared module store, so its module is switched off on this host; every other module works." with the
+  reason, and every call to its repository throws `InvalidOperationException` naming it. Every other module on the
+  store keeps reading and writing. When two modules' aggregates share a class name, both are switched off; when yours
+  shares one with a Stomme aggregate, yours is. Run the app and read the log after adding or changing an aggregate.
+- **Binary data: a `byte[]` property is stored, for small values only.** It round-trips byte for byte on every store
+  (a binary column on SQLite, PostgreSQL and SQL Server; base64 inside the document on RavenDB and the file store), and a
+  `byte[]?` may be null. Keep it to small values - a hash, a key, a thumbnail of a few kilobytes: the whole aggregate is
+  loaded on every read, including every match of `FindAsync`. Files, uploads and anything large belong in the site's
+  folders, through the file repository and its ingestion guard ([files and folders](../services/files-and-folders.md),
+  the [stomme-store-files](../../.claude/skills/stomme-store-files/SKILL.md) skill); keep the file's id in the
+  aggregate.
 - **Name aggregate classes distinctly.** The class name is the table name in one store shared with every other module
   and with Stomme's own aggregates.
 - **Make a property you add to an existing aggregate nullable** (`int?`, `DateTime?`, a `string`). Its new column is

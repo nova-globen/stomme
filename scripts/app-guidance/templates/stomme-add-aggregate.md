@@ -111,8 +111,9 @@ does not, run [stomme-create-module](../stomme-create-module/SKILL.md) first.
 2. `cd Server`, `dotnet run`, and open the site. On a new installation, complete the installer.
 3. Read the host's console output (these lines are written through .NET logging at startup, not to Admin > Event Log).
    There must be NO line
-   "Unable to initialize the ModuleAggregatesDbContext module store; it will read as empty." and NO line
-   "Module aggregate ... is not tenant-owned". On SQLite, PostgreSQL and SQL Server the store creates a table named after
+   "Unable to initialize the ModuleAggregatesDbContext module store; it will read as empty.", NO line
+   "Module aggregate ... cannot be mapped into the shared module store, so its module is switched off on this host" (it
+   names your class and why; every other module keeps working) and NO line "Module aggregate ... is not tenant-owned". On SQLite, PostgreSQL and SQL Server the store creates a table named after
    the class (`CREATE TABLE "Note"` in the console on a new installation, `[Note]` on SQL Server); on an installation
    that existed before the aggregate, there is one line "Module store ModuleAggregatesDbContext: created 1 missing table(s) ...: Note".
 4. Create a note through the module (after the command and endpoint skills), stop the app, start it again, and read it

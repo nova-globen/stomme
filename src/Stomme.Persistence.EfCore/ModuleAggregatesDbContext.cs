@@ -23,12 +23,96 @@ namespace Stomme.Persistence.EfCore;
 public sealed class ModuleAggregateRegistry
 {
     private readonly HashSet<System.Type> _types = [];
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<System.Type, string> _quarantined = new();
 
     /// <summary>Enrols an aggregate type into the shared context's model. Idempotent.</summary>
     public void Add(System.Type aggregateType) => _types.Add(aggregateType);
 
-    /// <summary>The registered aggregate types.</summary>
-    public IReadOnlyCollection<System.Type> AggregateTypes => _types;
+    /// <summary>
+    /// The aggregate types the shared model maps: every registered one except those quarantined. Every module aggregate
+    /// shares ONE model, so a single unmappable aggregate used to fail the model - and every module on the store with
+    /// it (BL-263, measured). It is quarantined instead: left out of the model, its repository refusing by name.
+    /// </summary>
+    public IReadOnlyCollection<System.Type> AggregateTypes => _types.Where(type => !_quarantined.ContainsKey(type)).ToList();
+
+    /// <summary>Every registered aggregate type, quarantined ones included.</summary>
+    public IReadOnlyCollection<System.Type> RegisteredTypes => _types;
+
+    /// <summary>The quarantined aggregate types and why each could not be mapped.</summary>
+    public IReadOnlyDictionary<System.Type, string> Quarantined => _quarantined;
+
+    /// <summary>Leaves <paramref name="aggregateType"/> out of the shared model. True the first time.</summary>
+    public bool Quarantine(System.Type aggregateType, string reason) => _quarantined.TryAdd(aggregateType, reason);
+
+    public bool IsQuarantined(System.Type aggregateType, out string reason) =>
+        _quarantined.TryGetValue(aggregateType, out reason!);
+}
+
+/// <summary>
+/// The repository a quarantined module aggregate gets (BL-263): every call refuses, naming the aggregate and why it could
+/// not be mapped - never an empty read that looks like "no data". The rest of the module store is unaffected.
+/// </summary>
+public sealed class QuarantinedModuleRepository<TAggregate, TId>(string reason) : Stomme.SharedKernel.Domain.IRepository<TAggregate, TId>
+    where TAggregate : AggregateRoot<TId>
+    where TId : notnull
+{
+    private System.InvalidOperationException Refusal() => new(
+        $"The module aggregate {typeof(TAggregate).FullName} cannot be mapped into the shared module store, so its module " +
+        $"is switched off on this host (every other module works): {reason}");
+
+    public System.Threading.Tasks.Task<TAggregate?> GetByIdAsync(TId id, System.Threading.CancellationToken ct = default) => throw Refusal();
+
+    public System.Threading.Tasks.Task<IReadOnlyList<TAggregate>> GetAllAsync(System.Threading.CancellationToken ct = default) => throw Refusal();
+
+    public System.Threading.Tasks.Task AddAsync(TAggregate aggregate, System.Threading.CancellationToken ct = default) => throw Refusal();
+
+    public System.Threading.Tasks.Task UpdateAsync(TAggregate aggregate, System.Threading.CancellationToken ct = default) => throw Refusal();
+
+    public System.Threading.Tasks.Task DeleteAsync(TAggregate aggregate, System.Threading.CancellationToken ct = default) => throw Refusal();
+
+    public System.Threading.Tasks.Task<IReadOnlyList<TAggregate>> FindAsync(Expression<System.Func<TAggregate, bool>> predicate, System.Threading.CancellationToken ct = default) => throw Refusal();
+}
+
+/// <summary>
+/// Builds the shared model with each aggregate isolated (BL-263). A mapping failure inside the per-aggregate step is
+/// caught by <see cref="ModuleAggregatesDbContext.OnModelCreating"/> itself; one EF Core only raises when it validates the
+/// FINISHED model is found here, by building each aggregate's model alone and quarantining those that fail.
+/// </summary>
+public static class ModuleAggregateModelGuard
+{
+    /// <summary>Builds the shared model, quarantining what cannot be mapped. Returns the newly quarantined types.</summary>
+    public static IReadOnlyCollection<System.Type> Build(
+        DbContextOptions<ModuleAggregatesDbContext> options, ITenantContext tenantContext, ModuleAggregateRegistry registry)
+    {
+        var before = registry.Quarantined.Keys.ToHashSet();
+        try
+        {
+            using var context = new ModuleAggregatesDbContext(options, tenantContext, registry);
+            _ = context.Model;
+        }
+        catch (System.Exception)
+        {
+            foreach (var type in registry.AggregateTypes)
+            {
+                var alone = new ModuleAggregateRegistry();
+                alone.Add(type);
+                try
+                {
+                    using var probe = new ModuleAggregatesDbContext(options, tenantContext, alone);
+                    _ = probe.Model;
+                }
+                catch (System.Exception ex)
+                {
+                    registry.Quarantine(type, ex.Message);
+                }
+            }
+
+            using var rebuilt = new ModuleAggregatesDbContext(options, tenantContext, registry);
+            _ = rebuilt.Model; // what is left maps; if not, the failure is not one aggregate's and surfaces as before
+        }
+
+        return registry.Quarantined.Keys.Where(type => !before.Contains(type)).ToList();
+    }
 }
 
 /// <summary>
@@ -100,7 +184,52 @@ public sealed class ModuleAggregatesDbContext : StommeDbContext
     {
         var jsonElementTypes = new HashSet<System.Type>();
 
+        // BL-263: the class name is the table name in this one store, and EF cannot put two classes in one table. A clash
+        // quarantines the module's aggregate when exactly one framework aggregate holds the name (it keeps it), and every
+        // one of them otherwise - two modules, or two framework assemblies, have no rightful owner.
+        foreach (var clash in _registry.AggregateTypes.GroupBy(type => type.Name).Where(group => group.Count() > 1))
+        {
+            var framework = clash.Where(type => type.Assembly.GetName().Name?.StartsWith("Stomme.", System.StringComparison.Ordinal) == true).ToList();
+            foreach (var type in clash.Where(type => framework.Count != 1 || !framework.Contains(type)))
+            {
+                _registry.Quarantine(type, $"another module aggregate is also named '{type.Name}', and the class name is its table name in the shared store; rename it.");
+            }
+        }
+
         foreach (var aggregate in _registry.AggregateTypes)
+        {
+            try
+            {
+                MapAggregate(modelBuilder, aggregate, jsonElementTypes);
+            }
+            catch (System.Exception ex) when (ex is System.NotSupportedException or System.InvalidOperationException or System.ArgumentException)
+            {
+                // BL-263: one aggregate that cannot be mapped is left out - quarantined, its repository refusing by name -
+                // instead of failing the model every other module on the store shares.
+                _registry.Quarantine(aggregate, ex.Message);
+                modelBuilder.Ignore(aggregate);
+            }
+        }
+
+        // EF's discovery ran when each aggregate was added (before its collection was configured explicitly) and may
+        // have left an element type behind as an entity of its own — MEASURED: an Entity<Guid> child list still
+        // produced an empty "CollectionProbeAttempt" table beside the JSON column. The collection lives in the column,
+        // so an element type that is not itself a registered aggregate is removed from the model.
+        foreach (var elementType in jsonElementTypes)
+        {
+            if (!_registry.AggregateTypes.Contains(elementType) && modelBuilder.Model.FindEntityType(elementType) is not null)
+            {
+                modelBuilder.Ignore(elementType);
+            }
+        }
+
+        // Base config (aggregate version token, outbox table, tenant query filter, domain-event ignore) runs
+        // after the aggregates are in the model, so its reflective loop sees them.
+        base.OnModelCreating(modelBuilder);
+    }
+
+    private static void MapAggregate(ModelBuilder modelBuilder, System.Type aggregate, HashSet<System.Type> jsonElementTypes)
+    {
         {
             var entity = modelBuilder.Entity(aggregate);
 
@@ -154,22 +283,6 @@ public sealed class ModuleAggregatesDbContext : StommeDbContext
                 }
             }
         }
-
-        // EF's discovery ran when each aggregate was added (before its collection was configured explicitly) and may
-        // have left an element type behind as an entity of its own — MEASURED: an Entity<Guid> child list still
-        // produced an empty "CollectionProbeAttempt" table beside the JSON column. The collection lives in the column,
-        // so an element type that is not itself a registered aggregate is removed from the model.
-        foreach (var elementType in jsonElementTypes)
-        {
-            if (!_registry.AggregateTypes.Contains(elementType) && modelBuilder.Model.FindEntityType(elementType) is not null)
-            {
-                modelBuilder.Ignore(elementType);
-            }
-        }
-
-        // Base config (aggregate version token, outbox table, tenant query filter, domain-event ignore) runs
-        // after the aggregates are in the model, so its reflective loop sees them.
-        base.OnModelCreating(modelBuilder);
     }
 
     // A public const/static int named MaxLength on the value object (AuthorName.MaxLength) sizes the column,

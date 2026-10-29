@@ -10,8 +10,8 @@
 # It builds and writes only; publishing is a release act done after it: copy the folder to <base>/<version>/, then make
 # <base>/latest/ an exact copy of it. (Nova Globen's own publishing commands are in its internal release notes.)
 #
-#   pwsh setup/release/build-release.ps1 -Version 10.75.0
-#   pwsh setup/release/build-release.ps1 -Version 10.75.0 -Rids linux-x64 -Variants full   # a quick partial build
+#   pwsh setup/release/build-release.ps1 -Version 10.75.1
+#   pwsh setup/release/build-release.ps1 -Version 10.75.1 -Rids linux-x64 -Variants full   # a quick partial build
 param(
     [Parameter(Mandatory = $true)][string]$Version,
     [string[]]$Rids,

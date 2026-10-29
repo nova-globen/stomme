@@ -114,15 +114,21 @@ namespace Stomme.Tests
         }
 
         [Fact]
-        public void An_element_shape_the_convention_cannot_serialize_throws_loudly_at_model_build()
+        public async Task An_element_shape_the_convention_cannot_serialize_switches_its_aggregate_off_by_name()
         {
+            // BL-263: no longer a model-build failure every module shares - the aggregate is quarantined, the reason names
+            // the property, and its repository refuses every call by name.
             var path = NewDatabasePath();
-            using var provider = Compose<UnserializableElementProbeAggregate>(path);
-            using var scope = provider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ModuleAggregatesDbContext>();
+            await using var provider = Compose<UnserializableElementProbeAggregate>(path);
+            await using var scope = provider.CreateAsyncScope();
+            _ = scope.ServiceProvider.GetRequiredService<ModuleAggregatesDbContext>().Model;
 
-            var exception = Assert.Throws<NotSupportedException>(() => context.Model);
-            Assert.Contains(nameof(UnserializableElementProbeAggregate.Items), exception.Message);
+            Assert.True(scope.ServiceProvider.GetRequiredService<ModuleAggregateRegistry>()
+                .IsQuarantined(typeof(UnserializableElementProbeAggregate), out var reason));
+            Assert.Contains(nameof(UnserializableElementProbeAggregate.Items), reason);
+            var refusal = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                scope.ServiceProvider.GetRequiredService<IRepository<UnserializableElementProbeAggregate, Guid>>().GetAllAsync());
+            Assert.Contains(nameof(UnserializableElementProbeAggregate), refusal.Message);
         }
 
         private async Task AssertRoundTripsAsJsonColumnAsync<TAggregate, TElement>(

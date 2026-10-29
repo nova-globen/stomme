@@ -201,11 +201,24 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 // TrackReads = false (BL-160): a module page in an Interactive Server circuit holds ONE scope, hence one
                 // context, for as long as it is open - with tracking on it kept showing the first value it read.
-                services.AddScoped<IRepository<TAggregate, TId>>(sp => new EfRepository<TAggregate, TId>(
-                    sp.GetRequiredService<ModuleAggregatesDbContext>(),
-                    sp.GetRequiredService<IAggregateTracker>(),
-                    sp.GetRequiredService<ITenantContext>(),
-                    sp.GetServices<IDomainEventSerializer>()) { TrackReads = false });
+                services.AddScoped<IRepository<TAggregate, TId>>(sp =>
+                {
+                    // BL-263: the shared model is built (and an unmappable aggregate quarantined) before the first
+                    // repository is handed out; a quarantined aggregate gets a repository that refuses by name, and every
+                    // other module on the store keeps working.
+                    var context = sp.GetRequiredService<ModuleAggregatesDbContext>();
+                    _ = context.Model;
+                    if (sp.GetRequiredService<ModuleAggregateRegistry>().IsQuarantined(typeof(TAggregate), out var reason))
+                    {
+                        return new QuarantinedModuleRepository<TAggregate, TId>(reason);
+                    }
+
+                    return new EfRepository<TAggregate, TId>(
+                        context,
+                        sp.GetRequiredService<IAggregateTracker>(),
+                        sp.GetRequiredService<ITenantContext>(),
+                        sp.GetServices<IDomainEventSerializer>()) { TrackReads = false };
+                });
             });
 
             AddBackupParticipant<TAggregate, TId, ModuleAggregatesDbContext>(services);
@@ -579,6 +592,24 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         internal static async Task EnsureAllAsync(IServiceProvider scoped, ILogger logger, CancellationToken cancellationToken)
         {
+            // BL-263: build the shared model first, isolating what cannot be mapped, and say ONCE which aggregate is off
+            // and why. Before this one unmappable aggregate failed the model every module shares, and the whole store
+            // "read as empty" (measured: a healthy module's first write threw on its neighbour's property).
+            if (scoped.GetService<ModuleAggregateRegistry>() is { } registry &&
+                scoped.GetService<Microsoft.EntityFrameworkCore.DbContextOptions<ModuleAggregatesDbContext>>() is { } options)
+            {
+                ModuleAggregateModelGuard.Build(options, scoped.GetRequiredService<ITenantContext>(), registry);
+                foreach (var (type, reason) in registry.Quarantined)
+                {
+                    if (ReportedQuarantines.TryAdd(type, 0))
+                    {
+                        logger.LogError(
+                            "Module aggregate {Aggregate} cannot be mapped into the shared module store, so its module is switched off on this host; every other module works. {Reason}",
+                            type.FullName, reason);
+                    }
+                }
+            }
+
             foreach (var schema in scoped.GetServices<IModuleAggregateStoreSchema>())
             {
                 try
@@ -593,5 +624,8 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+        // A quarantine is logged once per process, though EnsureAllAsync runs on the boot path and again at host start.
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, byte> ReportedQuarantines = new();
     }
 }
