@@ -13,7 +13,7 @@ public sealed class SmokeModuleInfo : IModule
     public ModuleDefinition ModuleDefinition => new ModuleDefinition
     {
         Name = "SdkSmoke",
-        Description = "D81 SDK independence smoke module",
+        Description = "SDK independence smoke module",
         Version = "1.0.0",
         ReleaseVersions = "1.0.0",
         PackageName = "Stomme.Sdk.Smoke"

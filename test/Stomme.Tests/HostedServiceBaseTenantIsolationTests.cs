@@ -99,7 +99,7 @@ namespace Stomme.Tests
         {
             public ProbeJob(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
             {
-                Name = "BL-107 Probe";
+                Name = "Tenant isolation probe";
             }
 
             public string ThrowForTenant { get; init; } = "";

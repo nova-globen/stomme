@@ -410,7 +410,7 @@ namespace Stomme.Infrastructure.Backup.Participants
 
             if (!relational.SupportsLogicalRestore)
             {
-                throw new NotSupportedException($"A logical restore is not supported on {type.Name} (D106).");
+                throw new NotSupportedException($"A logical restore is not supported on {type.Name}.");
             }
         }
 

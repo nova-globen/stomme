@@ -43,13 +43,13 @@ namespace Stomme.Tests
 
                 Profile Item(string name, string title) => new()
                 {
-                    SiteId = siteId, Name = name, Title = title, Description = "bl143", Category = "BL143", ViewOrder = 0,
+                    SiteId = siteId, Name = name, Title = title, Description = "blank-name", Category = "BLANKNAME", ViewOrder = 0,
                     MaxLength = 50, DefaultValue = "", IsRequired = false, IsPrivate = false, Options = "", Validation = "", Rows = 1, Autocomplete = ""
                 };
 
                 var before = (await ProfilesAsync(app, siteId)).Count;
                 var failures = new List<string>();
-                foreach (var (label, name, title) in new[] { ("empty name", "", "Title"), ("whitespace name", "   ", "Title"), ("empty title", "Bl143Field", ""), ("whitespace title", "Bl143Field", "  ") })
+                foreach (var (label, name, title) in new[] { ("empty name", "", "Title"), ("whitespace name", "   ", "Title"), ("empty title", "BlankNameField", ""), ("whitespace title", "BlankNameField", "  ") })
                 {
                     var sent = await GateDrive.SendJsonAsync(app, client, cookies, Host, hostUserId, HttpMethod.Post, "/api/Profile", Item(name, title), _output, $"POST profile ({label})");
                     if (sent.Status != HttpStatusCode.BadRequest) failures.Add($"POST {label}: expected 400, got {(int)sent.Status}");
@@ -57,11 +57,11 @@ namespace Stomme.Tests
                 }
 
                 // Non-vacuity: an ordinary item saves - and then a PUT blanking it is refused and changes nothing.
-                var created = await GateDrive.SendJsonAsync(app, client, cookies, Host, hostUserId, HttpMethod.Post, "/api/Profile", Item("Bl143Field", "BL-143 field"), _output, "POST profile (valid)");
+                var created = await GateDrive.SendJsonAsync(app, client, cookies, Host, hostUserId, HttpMethod.Post, "/api/Profile", Item("BlankNameField", "Blank-name field"), _output, "POST profile (valid)");
                 Assert.Equal(HttpStatusCode.OK, created.Status);
-                var saved = (await ProfilesAsync(app, siteId)).Single(profile => profile.Name == "Bl143Field");
+                var saved = (await ProfilesAsync(app, siteId)).Single(profile => profile.Name == "BlankNameField");
 
-                foreach (var (label, name, title) in new[] { ("empty name", "", "BL-143 field"), ("whitespace title", "Bl143Field", " ") })
+                foreach (var (label, name, title) in new[] { ("empty name", "", "Blank-name field"), ("whitespace title", "BlankNameField", " ") })
                 {
                     var blanked = Item(name, title);
                     blanked.ProfileId = saved.ProfileId;
@@ -70,7 +70,7 @@ namespace Stomme.Tests
                 }
 
                 var after = (await ProfilesAsync(app, siteId)).Single(profile => profile.ProfileId == saved.ProfileId);
-                if (after.Name != "Bl143Field" || after.Title != "BL-143 field") failures.Add($"PUT: the row changed to '{after.Name}' / '{after.Title}'");
+                if (after.Name != "BlankNameField" || after.Title != "Blank-name field") failures.Add($"PUT: the row changed to '{after.Name}' / '{after.Title}'");
 
                 Assert.True(failures.Count == 0, string.Join("; ", failures));
             }
@@ -140,7 +140,7 @@ namespace Stomme.Tests
                 foreach (var (label, username) in new[] { ("empty", ""), ("whitespace", "   ") })
                 {
                     var sent = await GateDrive.SendJsonAsync(app, client, cookies, Host, hostUserId, HttpMethod.Post, "/api/User",
-                        new User { SiteId = siteId, Username = username, Password = "Bl143!Blank$2026", Email = $"bl143-{label}@gate.test", DisplayName = "BL-143" },
+                        new User { SiteId = siteId, Username = username, Password = "Blank!Name$2026", Email = $"blankname-{label}@gate.test", DisplayName = "Blank-name test" },
                         _output, $"POST user ({label} username)");
                     _output.WriteLine($"[POST user ({label})] -> {(int)sent.Status} {GateDrive.Truncate(sent.Body)}");
                     Assert.Equal(before, await UserCountAsync(app));
@@ -148,7 +148,7 @@ namespace Stomme.Tests
 
                 // Non-vacuity: an ordinary user IS created through the same call.
                 await GateDrive.SendJsonAsync(app, client, cookies, Host, hostUserId, HttpMethod.Post, "/api/User",
-                    new User { SiteId = siteId, Username = "bl143user", Password = "Bl143!Blank$2026", Email = "bl143user@gate.test", DisplayName = "BL-143" },
+                    new User { SiteId = siteId, Username = "blanknameuser", Password = "Blank!Name$2026", Email = "blanknameuser@gate.test", DisplayName = "Blank-name test" },
                     _output, "POST user (valid)");
                 Assert.Equal(before + 1, await UserCountAsync(app));
             }

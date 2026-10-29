@@ -183,8 +183,8 @@ public sealed class PostgresParityCoverageTests
             $"PostgreSQL is not reachable at {PostgresConformanceEndpoint.Host}:{PostgresConformanceEndpoint.Port}, " +
             $"so the PostgreSQL half of this conformance suite cannot run — and both EF fixtures are SQLite, " +
             $"which structurally cannot represent PostgreSQL's answers (PG's LIKE is case-SENSITIVE where " +
-            $"SQLite's is not, the divergence BL-16 exists to represent). This is a FAILURE and not a skip on " +
-            $"purpose, per D46. Make the shared infra UAT instance reachable (192.168.10.20:5433, password in " +
+            $"SQLite's is not, the divergence this suite exists to represent). This is a FAILURE and not a skip on " +
+            $"purpose. Make the shared test PostgreSQL server reachable (password in " +
             $"DEFAULT_PASSWORD) or point POSTGRES_TEST_HOST/PORT/USER/PASSWORD at another PostgreSQL. " +
             $"Set POSTGRES_TEST_HOST/PORT/USER/PASSWORD to a reachable PostgreSQL.");
 }

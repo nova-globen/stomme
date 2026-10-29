@@ -37,7 +37,7 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
-      - name: no-uat-host (D28) and no old names
+      - name: no private host and no old names
         # The public tree only: the private repository's history documents name the old host and names on purpose.
         if: github.repository == 'nova-globen/stomme'
         shell: bash
@@ -46,7 +46,7 @@ jobs:
           # searched, and the old host's name is assembled rather than written.
           stem=di; stem="${stem}da"
           if git grep -nIiE "${stem}bit|\\b${stem}(core|deck|bin|game|code)?\\b|\\btond\\b" -- . ':!**/*.lock' ':!**/package-lock.json' ':!.github/workflows/ci.yml'; then
-            echo "::error::the old UAT host or an old product name is in the published tree (D28; the owner's no-trace rule)"
+            echo "::error::a private host name or an old product name is in the published tree"
             exit 1
           fi
       - uses: actions/setup-dotnet@v4
@@ -74,7 +74,7 @@ jobs:
           name: fast-tier-log
           path: ${{ runner.temp }}/fast-tier.log
           retention-days: 3
-      - name: Licence gate (permissive-only, D2)
+      - name: Licence gate (permissive-only)
         if: always()
         shell: pwsh
         run: pwsh -NoProfile -File scripts/check-licenses.ps1
@@ -112,7 +112,7 @@ jobs:
         run: |
           dotnet build test/Stomme.Tests/Stomme.Tests.csproj --configuration Release
           dotnet build test/Stomme.Persistence.Conformance.Tests/Stomme.Persistence.Conformance.Tests.csproj --configuration Release
-      - name: Render guard (D30) - installs a site and asserts it renders
+      - name: Render guard - installs a site and asserts it renders
         # Namespace-qualified: a bare ~InstalledSiteRenderTests also selects the RavenDB render tests, which need a store
         # this job does not run and fail rather than skip without one.
         run: >-
@@ -156,7 +156,7 @@ jobs:
           done
           echo "RavenDB did not become reachable within 120 s" >&2
           exit 1
-      - name: Parity suite (D46) - EF Core == RavenDB
+      - name: Parity suite - EF Core == RavenDB
         run: >-
           dotnet test test/Stomme.Persistence.Conformance.Tests/Stomme.Persistence.Conformance.Tests.csproj --configuration Release --no-build
           --filter "FullyQualifiedName!~Postgres" --blame-hang-timeout 8m

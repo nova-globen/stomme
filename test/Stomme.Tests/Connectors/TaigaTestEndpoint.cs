@@ -26,7 +26,7 @@ namespace Stomme.Tests.Connectors
         public static async Task<long> MakeProjectAsync(string name)
         {
             using var client = await ClientAsync();
-            using var made = await client.PostAsync("projects", Json(new JsonObject { ["name"] = name, ["description"] = "BL-229's live test", ["is_issues_activated"] = true }));
+            using var made = await client.PostAsync("projects", Json(new JsonObject { ["name"] = name, ["description"] = "live test", ["is_issues_activated"] = true }));
             made.EnsureSuccessStatusCode();
             return JsonNode.Parse(await made.Content.ReadAsStringAsync())!["id"]!.GetValue<long>();
         }

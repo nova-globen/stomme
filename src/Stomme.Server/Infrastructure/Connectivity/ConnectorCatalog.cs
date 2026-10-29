@@ -33,7 +33,7 @@ namespace Stomme.Infrastructure.Connectivity
                 if (_byType.TryGetValue(connector.ConnectorType, out var existing))
                 {
                     throw new InvalidOperationException(
-                        $"Connector type key '{connector.ConnectorType}' is published twice: by {existing.GetType().FullName} and by {connector.GetType().FullName}. A key has one owner (D110).");
+                        $"Connector type key '{connector.ConnectorType}' is published twice: by {existing.GetType().FullName} and by {connector.GetType().FullName}. A key has one owner, so neither is registered under it.");
                 }
 
                 _byType.Add(connector.ConnectorType, connector);

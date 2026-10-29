@@ -102,7 +102,7 @@ jobs:
           cp examples/local-feed/Stomme.*.nupkg pkg-out/Stomme.*.nupkg push/ 2>/dev/null || true
           ls -1 push
 
-      - name: Guard - every package carries the LICENSE file (D115)
+      - name: Guard - every package carries the LICENSE file
         run: |
           set -eu
           bad=0
@@ -112,7 +112,7 @@ jobs:
           done
           exit $bad
 
-      - name: Guard - the theme packs declare exactly the assets they package (BL-70)
+      - name: Guard - the theme packs declare exactly the assets they package
         run: |
           set -eu
           for pkg in push/Stomme.Theme.*.nupkg; do

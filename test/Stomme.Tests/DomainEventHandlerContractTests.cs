@@ -65,7 +65,7 @@ namespace Stomme.Tests
             Assert.True(
                 violations.Count == 0,
                 "Domain-event handlers must stage work into the caller's unit of work, never manage it " +
-                "(docs/decisions.md D40; see the contract on IDomainEventHandler<T>). Found " +
+                "(see the contract on IDomainEventHandler<T>). Found " +
                 violations.Count + " violation(s):" + Environment.NewLine +
                 string.Join(Environment.NewLine, violations.Select(v => "  " + v)));
         }

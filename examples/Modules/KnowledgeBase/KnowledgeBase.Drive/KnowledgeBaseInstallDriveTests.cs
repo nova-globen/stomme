@@ -607,7 +607,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                     var cookies = await LoginAsync(app, client);
                     var hostId = await UserIdAsync(app, HostUsername);
                     var created = await Send<JsonObject>(app, client, cookies, hostId, "/api/ModuleDefinition",
-                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.75.2", moduleDefinitionName = "[Owner].Module.[Module]" },
+                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.75.3", moduleDefinitionName = "[Owner].Module.[Module]" },
                         HttpStatusCode.OK);
                     Assert.Equal("Acme.Module.FieldNotes.Manager.FieldNotesManager, Acme.Module.FieldNotes.Server.Stomme", (string?)created["serverManagerType"]);
                 }
@@ -1123,7 +1123,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
             public override string ModuleAggregatesConnection(string contentRoot) => Connection(ModuleDb);
 
             public override void RequireReachable() =>
-                Assert.True(TcpReachable(Server, Port), $"PostgreSQL is not reachable at {Server}:{Port}; the drive FAILS rather than skips (D46).");
+                Assert.True(TcpReachable(Server, Port), $"PostgreSQL is not reachable at {Server}:{Port}; the drive FAILS rather than skips.");
 
             public override void VerifySchema(ScratchInstall scratch, ITestOutputHelper output)
             {
@@ -1180,7 +1180,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
             public override void RequireReachable()
             {
                 var uri = new Uri(Url);
-                Assert.True(TcpReachable(uri.Host, uri.Port), $"RavenDB is not reachable at {Url}; the drive FAILS rather than skips (D46).");
+                Assert.True(TcpReachable(uri.Host, uri.Port), $"RavenDB is not reachable at {Url}; the drive FAILS rather than skips.");
             }
 
             // RavenDB is schemaless: the fresh-request re-read above is the persistence proof.

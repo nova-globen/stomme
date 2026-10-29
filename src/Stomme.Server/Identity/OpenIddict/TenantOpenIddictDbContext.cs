@@ -92,8 +92,8 @@ namespace Stomme.Identity.OpenIddict
                 // This store is relational/EF only (RavenDB has its own OpenIddict stores). A non-relational
                 // tenant reaching here is a misconfiguration, not a silent no-op.
                 throw new InvalidOperationException(
-                    $"The OpenIddict per-tenant store (D61) is relational/EF only, but tenant {tenant.TenantId} " +
-                    $"uses the non-relational provider '{tenant.DBType}'. RavenDB OpenIddict stores are phase C.");
+                    $"The relational OpenIddict per-tenant store was asked for tenant {tenant.TenantId}, which " +
+                    $"uses the non-relational provider '{tenant.DBType}'; a RavenDB tenant uses the RavenDB OpenIddict store.");
             }
 
             base.OnConfiguring(optionsBuilder);

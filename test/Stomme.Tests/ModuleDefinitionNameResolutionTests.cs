@@ -71,7 +71,7 @@ namespace Stomme.Tests.Bl74DeclaredFixture
         public ModuleDefinition ModuleDefinition => new ModuleDefinition
         {
             Name = "Bl74DeclaredName",
-            Description = "BL-74 fixture: declared Name and Index Title disagree",
+            Description = "Fixture: declared Name and Index Title disagree",
         };
     }
 

@@ -203,9 +203,15 @@ proxy's public name) as an alias, or requests to it get a 404.
   cookie and the release marker it sets are named `<name>-<folder>` and scoped to `Path=/<folder>`, and a same-named
   cookie another site on the host set at a wider path is never read there - so a sign-in at `example.com` is not a
   sign-in at `example.com/shop`, and the reverse. The culture cookie keeps its name and takes the folder's path
-  (`Utilities.SitePath(alias.Path)`). A module that sets a cookie of its own scopes it the same way. The calls an
-  interactive page's services make to the site's API from the server carry the folder site's cookies under its own
-  names (since 10.75.2; before, an interactive folder site's sign-in form answered 400 and no server-side call was signed in).
+  (`Utilities.SitePath(alias.Path)`). A module that sets a cookie of its own scopes it the same way.
+- **A folder site's interactive circuit connects under the folder** (since 10.75.3): its page carries
+  `<html data-site-path="/shop">`, the framework's JS initializer points the circuit at `/shop/_blazor`, and the tenant
+  middleware strips the folder before the hub. So the circuit resolves the folder site and carries the folder site's
+  cookies: the interactive sign-in works, the page's interactive auth state is the folder site's user, and a sign-in at the
+  root site never signs a folder page's circuit in. Before 10.75.3 the circuit connected at the host's `/_blazor`, which
+  resolved the ROOT site: an interactive folder site's sign-in form answered 400, and a root sign-in reached the folder
+  page's circuit. No site or top-level page may be named `_blazor`. The calls an interactive page's services make to the
+  site's API from the server carry the folder site's cookies under its own names (since 10.75.2).
 
 ## Related
 

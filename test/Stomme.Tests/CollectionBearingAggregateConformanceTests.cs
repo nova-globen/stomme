@@ -199,7 +199,7 @@ namespace Stomme.Tests
         {
             Assert.True(PostgresTestEndpoint.IsReachable(),
                 $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port} (POSTGRES_TEST_HOST/PORT). " +
-                "The collection conformance suite FAILS rather than skips (D46).");
+                "The collection conformance suite FAILS rather than skips.");
             return Task.CompletedTask;
         }
 

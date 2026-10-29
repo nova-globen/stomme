@@ -377,7 +377,7 @@ namespace Stomme.Tests.Backup
         {
             Assert.True(PostgresTestEndpoint.IsReachable(),
                 $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port} (POSTGRES_TEST_HOST/PORT). " +
-                "The backup round-trip suite FAILS rather than skips (D46).");
+                "The backup round-trip suite FAILS rather than skips (a skipped round-trip proves nothing).");
             return Task.CompletedTask;
         }
 

@@ -206,7 +206,7 @@ namespace Stomme.Tests
                 apiRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenA.AccessToken);
                 var apiResponse = await client.SendAsync(apiRequest);
                 var apiBody = await apiResponse.Content.ReadAsStringAsync();
-                _output.WriteLine($"[{provider.Name}][BL-196] client token @ api/User/authenticate -> {(int)apiResponse.StatusCode} {apiBody}");
+                _output.WriteLine($"[{provider.Name}] client token @ api/User/authenticate -> {(int)apiResponse.StatusCode} {apiBody}");
                 Assert.Equal(HttpStatusCode.OK, apiResponse.StatusCode);
                 Assert.False(System.Text.Json.Nodes.JsonNode.Parse(apiBody)?["isAuthenticated"]?.GetValue<bool>());
             }

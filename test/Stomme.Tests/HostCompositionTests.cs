@@ -307,7 +307,7 @@ namespace Stomme.Tests
                 "domain-event dispatch to outbox capture (EfRepository.AfterPersist), which SILENTLY kills the " +
                 "feature-flag audit trail (FeatureFlagAuditHandler). Wiring AddOutbox is therefore NOT a " +
                 "paperwork step to 'finish DoD #3'. The activation model (per-context switch vs. routing the FM " +
-                "audit through the outbox) is an UNRESOLVED OWNER decision — see docs/decisions.md D69/D75. If you " +
+                "audit through the outbox) is an UNRESOLVED design decision. If you " +
                 "are intentionally activating the outbox, you must FIRST resolve that design and THEN update " +
                 "this guard; do not delete it to go green.");
         }

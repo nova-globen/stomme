@@ -62,7 +62,7 @@ namespace Stomme.Modules.Pipelines.Persistence
             throw new NotSupportedException(
                 $"The pipeline engine's stores have no implementation for Database:DefaultDBType '{databaseType}'. " +
                 "Supported: SQLite, PostgreSQL and SQL Server (the relational stores) and RavenDB (the document stores). " +
-                "The File store is not among them (D111); disable Pipelines:Enabled on such an install.");
+                "The File store is not among them; disable Pipelines:Enabled on such an install.");
         }
 
         /// <summary>Points every engine store factory at the Stomme-backed implementation of the chosen kind.</summary>

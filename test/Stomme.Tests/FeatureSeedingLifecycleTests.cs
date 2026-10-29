@@ -224,7 +224,7 @@ namespace Stomme.Tests
             Assert.True(PostgresTestEndpoint.IsReachable(),
                 $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port} " +
                 "(set the " +
-                "POSTGRES_TEST_* settings). D68's seeder lifecycle can only be settled by driving a " +
+                "POSTGRES_TEST_* settings). The seeder lifecycle can only be settled by driving a " +
                 "real install; SQLite proves nothing here.");
         }
 

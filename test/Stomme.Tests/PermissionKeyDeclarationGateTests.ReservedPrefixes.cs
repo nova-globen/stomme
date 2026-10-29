@@ -145,7 +145,7 @@ namespace Stomme.Tests
                 {
                     if (ReservedPrefixOf(key.Key) is { } prefix)
                     {
-                        violations.Add($"{name}: declares '{key.Key}' under the reserved prefix '{prefix}' of a module that DISSOLVED into a framework gate (D109) - map it to that gate instead of declaring a parallel key.");
+                        violations.Add($"{name}: declares '{key.Key}' under the reserved prefix '{prefix}' of a module that DISSOLVED into a framework gate - map it to that gate instead of declaring a parallel key.");
                     }
                 }
             }
@@ -154,7 +154,7 @@ namespace Stomme.Tests
             {
                 if (ReservedPrefixOf(requirement.Permission) is { } prefix)
                 {
-                    violations.Add($"{requirement.Owner}: [Requires(\"{requirement.Permission}\")] uses the reserved prefix '{prefix}' of a module that DISSOLVED into a framework gate (D109).");
+                    violations.Add($"{requirement.Owner}: [Requires(\"{requirement.Permission}\")] uses the reserved prefix '{prefix}' of a module that DISSOLVED into a framework gate.");
                 }
             }
 
@@ -162,7 +162,7 @@ namespace Stomme.Tests
             {
                 if (ReservedPrefixOf(endpoint.Key) is { } prefix)
                 {
-                    violations.Add($"{endpoint.Owner}: [RequiresPermissionKey(\"{endpoint.Key}\")] uses the reserved prefix '{prefix}' of a module that DISSOLVED into a framework gate (D109).");
+                    violations.Add($"{endpoint.Owner}: [RequiresPermissionKey(\"{endpoint.Key}\")] uses the reserved prefix '{prefix}' of a module that DISSOLVED into a framework gate.");
                 }
             }
 

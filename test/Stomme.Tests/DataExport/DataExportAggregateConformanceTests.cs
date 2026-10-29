@@ -450,7 +450,7 @@ namespace Stomme.Tests.DataExport
         {
             Assert.True(PostgresTestEndpoint.IsReachable(),
                 $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port} (POSTGRES_TEST_HOST/PORT). " +
-                "The data-export aggregate conformance suite FAILS rather than skips (D46).");
+                "The data-export aggregate conformance suite FAILS rather than skips.");
             return Task.CompletedTask;
         }
 

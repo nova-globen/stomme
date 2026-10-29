@@ -142,8 +142,8 @@ namespace Stomme.Tests
                     // SQLite cannot. If this fires, THAT is the finding.
                     throw new TimeoutException(
                         $"GET / did not respond within {RenderTimeout.TotalSeconds:0}s on RavenDB. The site did not " +
-                        "render — a renderer deadlock (docs/decisions.md D29) looks like exactly this, and RavenDB " +
-                        "had never met the renderer before D55a.");
+                        "render — a renderer deadlock looks like exactly this, and RavenDB " +
+                        "had not met the renderer before.");
                 }
 
                 var response = await requestTask;

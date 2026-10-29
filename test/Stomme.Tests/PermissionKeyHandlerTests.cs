@@ -233,7 +233,7 @@ namespace Stomme.Tests
             }
 
             public Task<bool> IsAuthorizedAsync(ClaimsPrincipal user, int siteId, string entityName, int entityId, string permissionName, string roles)
-                => throw new InvalidOperationException("The roles-fallback overload must not be used for a permission key (D99).");
+                => throw new InvalidOperationException("The roles-fallback overload must not be used for a permission key.");
 
             public Task<bool> IsAuthorizedAsync(ClaimsPrincipal user, string permissionName, List<Permission> permissions) => throw new NotSupportedException();
 

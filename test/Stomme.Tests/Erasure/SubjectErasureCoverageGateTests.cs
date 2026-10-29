@@ -71,7 +71,7 @@ namespace Stomme.Tests.Erasure
 
             // ---- left out, each for a stated reason ---------------------------------------------------------------------------
             ["UserAggregate"] = LeftOut + "the account row itself - UserManager.DeleteUser deletes it, and the ASP.NET Identity user, when the person holds no role on any other site of the install; while they do, the account is live on those sites and stays (the erasure is per site). Its DeletedBy / LastIPAddress go with the row.",
-            ["ErasureRequestAggregate"] = LeftOut + "the erasure request itself - it carries the subject's user id and identity subject only while a run or a retention is open and clears them on completion; what remains is the receipt, which names no one (D112).",
+            ["ErasureRequestAggregate"] = LeftOut + "the erasure request itself - it carries the subject's user id and identity subject only while a run or a retention is open and clears them on completion; what remains is the receipt, which names no one.",
             [StampsFamily] = Declared + "Authorship stamps",
             ["HtmlTextAggregate"] = Declared + "HtmlTextAggregate (stamps)",
         };

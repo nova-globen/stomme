@@ -479,7 +479,7 @@ namespace Stomme.Tests
             {
                 var roles = sp.GetRequiredService<IRoleRepository>();
                 var role = (await roles.GetRolesAsync(alias.SiteId)).FirstOrDefault(item => item.Name == GateRole)
-                    ?? await roles.AddRoleAsync(new Role { SiteId = alias.SiteId, Name = GateRole, Description = "BL-99 operator role", IsAutoAssigned = false, IsSystem = false });
+                    ?? await roles.AddRoleAsync(new Role { SiteId = alias.SiteId, Name = GateRole, Description = "Operator role", IsAutoAssigned = false, IsSystem = false });
 
                 var permissions = sp.GetRequiredService<IPermissionRepository>();
                 var submitted = (await permissions.GetPermissionsAsync(alias.SiteId, resource, operation)).ToList();

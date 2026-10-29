@@ -41,7 +41,7 @@ namespace Stomme.Tests
                 Regex.IsMatch(apply, @"setAttribute\(\s*'data-bs-theme'\s*,"),
                 "stommeTheme.apply() no longer sets 'data-bs-theme'. A Bootstrap-based theme (BlazorTheme " +
                 "loads Bootstrap 5.3) then keeps its light chrome while the --db-* layer goes dark, which " +
-                "measured as a white page carrying dark cards with unreadable near-black headings (BL-49).");
+                "measured as a white page carrying dark cards with unreadable near-black headings.");
         }
 
         [Fact]

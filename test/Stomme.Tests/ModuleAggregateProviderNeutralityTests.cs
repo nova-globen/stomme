@@ -195,7 +195,7 @@ namespace Stomme.Tests
 
             Assert.True(missingOnRaven.Count == 0,
                 $"{startupType.FullName} wires these aggregate repositories on a relational install but NOT on a " +
-                $"RavenDB install (the EF-only drift D76 exists to stop): {string.Join(", ", missingOnRaven)}");
+                $"RavenDB install (the EF-only drift this gate exists to stop): {string.Join(", ", missingOnRaven)}");
         }
     }
 }

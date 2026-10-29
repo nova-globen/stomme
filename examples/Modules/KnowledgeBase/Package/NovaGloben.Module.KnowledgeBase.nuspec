@@ -13,14 +13,14 @@
         <projectUrl>https://github.com/nova-globen/stomme</projectUrl>
         <icon>icon.png</icon>
         <tags>stomme module exemplar knowledge-base storage-blind cqrs ddd webassembly</tags>
-        <releaseNotes>BL-86 increment 1: the scaffold - the two tenant-owned aggregates on the installation's store, the keys, the list page.</releaseNotes>
+        <releaseNotes>The exemplar module: two tenant-owned aggregates on the installation's store, permission keys, a flat, a nested and a parameterised page.</releaseNotes>
         <!--
             The Stomme.Framework package type (with the minimum framework version) is how the InstallationManager
             recognises a Stomme module and gates it on the running framework's version.
         -->
         <packageTypes>
             <packageType name="Dependency" />
-            <packageType name="Stomme.Framework" version="10.75.2" />
+            <packageType name="Stomme.Framework" version="10.75.3" />
         </packageTypes>
     </metadata>
     <files>

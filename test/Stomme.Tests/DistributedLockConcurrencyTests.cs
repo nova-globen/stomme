@@ -96,7 +96,7 @@ namespace Stomme.Tests
 
         public override Task InitializeAsync()
         {
-            Assert.True(PostgresTestEndpoint.IsReachable(), "PostgreSQL is not reachable (POSTGRES_TEST_HOST/PORT); this gate FAILS rather than skips (D46).");
+            Assert.True(PostgresTestEndpoint.IsReachable(), "PostgreSQL is not reachable (POSTGRES_TEST_HOST/PORT); this gate FAILS rather than skips.");
             return Task.CompletedTask;
         }
     }
@@ -108,7 +108,7 @@ namespace Stomme.Tests
 
         public override Task InitializeAsync()
         {
-            Assert.True(SqlServerTestEndpoint.IsReachable(), "SQL Server is not reachable (SQLSERVER_TEST_HOST/PORT); this gate FAILS rather than skips (D46).");
+            Assert.True(SqlServerTestEndpoint.IsReachable(), "SQL Server is not reachable (SQLSERVER_TEST_HOST/PORT); this gate FAILS rather than skips.");
             return Task.CompletedTask;
         }
     }

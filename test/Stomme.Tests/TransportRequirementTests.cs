@@ -36,7 +36,7 @@ namespace Stomme.Tests
             public ModuleDefinition ModuleDefinition => new ModuleDefinition
             {
                 Name = "TransportDeclaringTestModule",
-                Description = "BL-53c test module declaring a transport requirement",
+                Description = "Test module declaring a transport requirement",
                 Transports = DeclaredTransports,
             };
         }

@@ -64,6 +64,24 @@ function onEnhancedLoad() {
     }
 }
 
+// A folder site's page (<html data-site-path="/shop">) connects its interactive circuit under its own path, /shop/_blazor,
+// not at the host's /_blazor under the page's <base href="/">. The browser sends a folder site's cookies only below its
+// path, and the circuit request must resolve the folder site: at the host's /_blazor it would resolve the root site and
+// carry the root site's sign-in instead. The tenant middleware strips the folder from /shop/_blazor.
+export function beforeWebStart(options) {
+    const sitePath = document.documentElement.dataset.sitePath;
+    if (!sitePath) {
+        return;
+    }
+
+    options.circuit = options.circuit || {};
+    const configured = options.circuit.configureSignalR;
+    options.circuit.configureSignalR = builder => {
+        configured?.(builder);
+        builder.withUrl(sitePath.replace(/\/+$/, '') + '/_blazor');
+    };
+}
+
 export function afterWebStarted(blazor) {
     // FluentUI 5 has started by now (its initializer follows this one); hand it the mode App.razor's bootstrap
     // applied before Blazor existed. Its colours are the theme's, bound in app.css.

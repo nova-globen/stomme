@@ -162,7 +162,7 @@ namespace Stomme.Tests
                 Assert.Equal(HttpStatusCode.Redirect, lockedOut.StatusCode);
                 Assert.False(HasIdentityCookie(lockedOut),
                     $"[{providerName}] the correct password STILL logged in after {maxFailed} failed attempts — " +
-                    "lockout did not bite (the exact BL-6 defect).");
+                    "lockout did not bite (the exact defect this test guards).");
 
                 // ---- Corroborate through the manager: locked out, lockout end in the future. ----------------
                 using (var scope = await CreateAliasScopeAsync(app))

@@ -13,7 +13,7 @@
         <projectUrl>https://github.com/nova-globen/stomme</projectUrl>
         <icon>icon.png</icon>
         <tags>stomme module blogs storage-blind cqrs ddd webassembly</tags>
-        <releaseNotes>BL-13: 2.0.0 splits the module Client/Server/Shared (a breaking layout change from the 1.0.0 single assembly) so a WebAssembly site can stream the Client + Shared assemblies to the browser while the Server assembly stays server-side.</releaseNotes>
+        <releaseNotes>2.0.0 splits the module Client/Server/Shared (a breaking layout change from the 1.0.0 single assembly) so a WebAssembly site can stream the Client + Shared assemblies to the browser while the Server assembly stays server-side.</releaseNotes>
         <!--
             The Stomme.Framework packageType (with the minimum framework version) is how
             InstallationManager.InstallPackages recognises this as a Stomme module and gates it on the running

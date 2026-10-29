@@ -111,7 +111,7 @@ namespace Stomme.Identity.OpenIddict
                 $"the tenant connection string \"{tenantConnectionString}\" — it names neither a database " +
                 $"(Database=/Initial Catalog=) nor a store file (Data Source=…/file.ext). Set the explicit " +
                 $"ConnectionStrings:{{tenant}}{TenantOpenIddictDbContext.ConnectionStringKeySuffix} key to a " +
-                $"DEDICATED store (never the tenant's own database — D61 isolates the authority store).");
+                $"DEDICATED store (never the tenant's own database - the authority's store is kept apart from it).");
         }
 
         /// <summary>

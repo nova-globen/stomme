@@ -23,8 +23,8 @@ namespace Stomme.Tests
         private static readonly (string File, string Handler, string Why)[] Confirmed =
         {
             (Path.Combine("src", "Stomme.Client", "Themes", "Controls", "Theme", "ControlPanelInteractive.razor"), "DeletePage", "the Delete button of its own db-admin-modal, opened by ConfirmDelete (Confirm.Page.Delete)"),
-            (Path.Combine("src", "Stomme.Client", "Modules", "Pipelines", "Editor.razor"), "DeleteSelection", "takes the selected steps off the canvas: nothing is stored until Save, and Undo (Ctrl+Z) brings them back - the canvas's Delete key, n8n's too (BL-229 increment 3)"),
-            (Path.Combine("src", "Stomme.Client", "Modules", "Pipelines", "Canvas", "StepNode.razor"), "Node.Delete", "the button over a step takes that step off the canvas through the same DeleteSelection: nothing is stored until Save, and Undo brings it back - n8n's bin over a node (BL-229)"),
+            (Path.Combine("src", "Stomme.Client", "Modules", "Pipelines", "Editor.razor"), "DeleteSelection", "takes the selected steps off the canvas: nothing is stored until Save, and Undo (Ctrl+Z) brings them back - the canvas's Delete key, n8n's too"),
+            (Path.Combine("src", "Stomme.Client", "Modules", "Pipelines", "Canvas", "StepNode.razor"), "Node.Delete", "the button over a step takes that step off the canvas through the same DeleteSelection: nothing is stored until Save, and Undo brings it back - n8n's bin over a node"),
         };
 
         [Fact]

@@ -500,7 +500,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
             "PathNormalized" TEXT NULL
         );
 
-        -- STILL uniquely (SiteId, Path) case-SENSITIVE conceptually; D58 added PathNormalized as a LOOKUP
+        -- STILL uniquely (SiteId, Path) case-SENSITIVE conceptually; PathNormalized was added as a LOOKUP
         -- column so PageRepository.GetPageAsync(path, siteId) agrees across providers (case-INSENSITIVE),
         -- matching SiteRouter's own OrdinalIgnoreCase primary match and the Folder/File/UrlMapping precedent.
         CREATE TABLE "Module" (
@@ -727,9 +727,9 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
             "UrlNormalized" TEXT NULL
         );
 
-        -- STILL on ("SiteId", "Url") and still case-SENSITIVE. D57 added UrlNormalized as a LOOKUP column and
+        -- STILL on ("SiteId", "Url") and still case-SENSITIVE. UrlNormalized was added as a LOOKUP column and
         -- deliberately did NOT move this index onto it: 'Foo/Bar' and 'foo/bar' are a legal pair today, and
-        -- forbidding them would be a silent behaviour change — exactly D49's choice for IX_Folder/IX_File.
+        -- forbidding them would be a silent behaviour change — exactly the choice made for IX_Folder/IX_File.
         CREATE UNIQUE INDEX "IX_UrlMapping" ON "UrlMapping" ("SiteId", "Url");
 
         CREATE TABLE "Folder" (
@@ -751,13 +751,13 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
             "PathNormalized" TEXT NULL
         );
 
-        -- STILL on ("SiteId", "Path") and still case-SENSITIVE. D49 added PathNormalized as a LOOKUP column
+        -- STILL on ("SiteId", "Path") and still case-SENSITIVE. PathNormalized was added as a LOOKUP column
         -- and deliberately did NOT move this index onto it: 'Docs/' and 'docs/' are a legal pair today, and
         -- forbidding them would be a silent behaviour change. It is also why the render path's folder
         -- resolution returns a LIST rather than a single id.
         CREATE UNIQUE INDEX "IX_Folder" ON "Folder" ("SiteId", "Path");
 
-        -- File (D49) — the last framework cluster onto the seam. TWELVE columns, matching the migrated
+        -- File — the last framework cluster onto the seam. TWELVE columns, matching the migrated
         -- PostgreSQL database exactly: NO is_deleted/deleted_by/deleted_on, because three migrations take the
         -- deletable trio away again even though FileEntityBuilder still calls AddDeletableColumns. Description
         -- is real despite the builder omitting it.
@@ -778,16 +778,16 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
         );
 
         -- As IX_Folder: on ("FolderId", "Name"), case-SENSITIVE, NOT on the normalized column. 'Logo.png' and
-        -- 'logo.png' may coexist in one folder exactly as they could before D49.
+        -- 'logo.png' may coexist in one folder exactly as they could before the normalized column.
         CREATE UNIQUE INDEX "IX_File" ON "File" ("FolderId", "Name");
 
-        -- The SearchContent cluster (D50) — Phase 3's last. FOUR tables: a hand-rolled inverted index.
+        -- The SearchContent cluster — FOUR tables: a hand-rolled inverted index.
         --
         -- NOTE WHAT IS ABSENT FROM ALL FOUR: the audit quartet and the deletable trio. That is not an
         -- omission, it is the measurement — all four EntityBuilders extend BaseEntityBuilder (not
         -- DeletableAuditableBaseEntityBuilder) and the live PostgreSQL tables have exactly 13/4/6/3 columns
         -- with ZERO dropped stubs in pg_attribute. This is the FIRST cluster on the seam whose builders tell
-        -- the truth (contrast D44's Language, D48's Folder, D49's File). The CreatedOn/ModifiedOn columns
+        -- the truth (contrast Language, Folder and File). The CreatedOn/ModifiedOn columns
         -- below are PLAIN columns the application sets — there is no CreatedBy/ModifiedBy anywhere here to
         -- pair them with, so none of the four aggregates is IAuditable and none is IDeletable.
         CREATE TABLE "SearchContent" (
@@ -836,7 +836,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
         );
 
         -- UNIQUE on the word alone: the dictionary is tenant-wide, with no site column. RavenDB has no
-        -- equivalent, as for every other unique index on this seam (D45/D48/D49).
+        -- equivalent, as for every other unique index on this seam.
         CREATE UNIQUE INDEX "IX_SearchWord" ON "SearchWord" ("Word");
 
         CREATE TABLE "PageModule" (

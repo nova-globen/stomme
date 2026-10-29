@@ -82,7 +82,7 @@ namespace Stomme.Infrastructure.Licensing
             if (violations.Count > 0)
             {
                 throw new InvalidOperationException(
-                    "Entitlement startup validation failed (D105):" + Environment.NewLine +
+                    "Entitlement startup validation failed:" + Environment.NewLine +
                     string.Join(Environment.NewLine, violations.Select(v => " - " + v)));
             }
         }

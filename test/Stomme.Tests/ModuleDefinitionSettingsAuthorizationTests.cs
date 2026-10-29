@@ -87,7 +87,7 @@ namespace Stomme.Tests
                 int moduleDefinitionId = await FirstModuleDefinitionIdAsync(app);
                 _output.WriteLine($"target ModuleDefinitionId = {moduleDefinitionId}");
 
-                const string settingName = "D88:Probe";
+                const string settingName = "Probe:Setting";
                 const string settingValue = "saved-by-host-over-http";
 
                 // ---- 1. HOST: login -> PUT ModuleDefinition setting -> 200 + read-back --------------------

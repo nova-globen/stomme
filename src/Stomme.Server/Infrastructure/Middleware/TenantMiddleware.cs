@@ -57,6 +57,13 @@ namespace Stomme.Infrastructure
                         {
                             context.Request.Path = path.Substring(alias.Path.Length + 1);
                         }
+                        // A folder site's interactive circuit connects under the folder (Stomme.Server.lib.module.js), so the
+                        // circuit request resolves this site and carries this site's cookies; the hub itself is the host's.
+                        else if (path.Equals("/" + alias.Path + "/_blazor", System.StringComparison.OrdinalIgnoreCase) ||
+                            path.StartsWith("/" + alias.Path + "/_blazor/", System.StringComparison.OrdinalIgnoreCase))
+                        {
+                            context.Request.Path = path.Substring(alias.Path.Length + 1);
+                        }
                     }
 
                     // handle sitemap.xml request

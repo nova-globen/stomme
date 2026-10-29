@@ -111,20 +111,20 @@ namespace Stomme.Tests
             var raven = await DriveProviderAsync("RavenDB", RavenType, RavenConnectionString(out var ravenDatabase), ravenDatabase);
 
             // ---- REPORT: everything OBSERVED, before any assertion can short-circuit ------------------------
-            _output.WriteLine("======== AGREEMENT 1 (D57 FIX) — UrlMapping normalized lookup (stored 'Foo/Bar', looked up 'foo/bar') ========");
+            _output.WriteLine("======== AGREEMENT 1 (FIX) — UrlMapping normalized lookup (stored 'Foo/Bar', looked up 'foo/bar') ========");
             _output.WriteLine($"  PostgreSQL  direct-session query : {pg.UrlMappingSessionResult}");
             _output.WriteLine($"  PostgreSQL  repository lookup     : {pg.UrlMappingRepoResult}");
             _output.WriteLine($"  RavenDB     direct-session query : {raven.UrlMappingSessionResult}");
             _output.WriteLine($"  RavenDB     repository lookup     : {raven.UrlMappingRepoResult}");
-            _output.WriteLine("======== AGREEMENT 3 (D58 FIX) — Page normalized lookup (stored 'Foo/Bar', looked up 'foo/bar') ============");
+            _output.WriteLine("======== AGREEMENT 3 (FIX) — Page normalized lookup (stored 'Foo/Bar', looked up 'foo/bar') ============");
             _output.WriteLine($"  PostgreSQL  direct-session query : {pg.PageSessionResult}");
             _output.WriteLine($"  PostgreSQL  repository lookup     : {pg.PageRepoResult}");
             _output.WriteLine($"  RavenDB     direct-session query : {raven.PageSessionResult}");
             _output.WriteLine($"  RavenDB     repository lookup     : {raven.PageRepoResult}");
-            _output.WriteLine("======== DIVERGENCE 4 (accepted, D48/D49) — Folder.Path RAW == (stored 'Users/Zzz/', looked up 'users/zzz/') =");
+            _output.WriteLine("======== DIVERGENCE 4 (accepted) — Folder.Path RAW == (stored 'Users/Zzz/', looked up 'users/zzz/') =");
             _output.WriteLine($"  PostgreSQL  {pg.FolderResult}");
             _output.WriteLine($"  RavenDB     {raven.FolderResult}");
-            _output.WriteLine("======== AGREEMENT 2 (D59 FIX) — Notification IDeletable stamp (soft-delete, read back) ======================");
+            _output.WriteLine("======== AGREEMENT 2 (FIX) — Notification IDeletable stamp (soft-delete, read back) ======================");
             _output.WriteLine($"  PostgreSQL  {pg.NotificationResult}");
             _output.WriteLine($"  RavenDB     {raven.NotificationResult}");
             _output.WriteLine("==============================================================================================================");
@@ -132,7 +132,7 @@ namespace Stomme.Tests
             // ---- AGREEMENT 3 verdict — Page.Path normalized lookup now agrees ------------------------
             Assert.True(pg.PageSessionHit,
                 "PostgreSQL did NOT match 'foo/bar' against stored 'Foo/Bar' via PathNormalized — expected a " +
-                "case-insensitive AGREEMENT after D58. If this fires, the normalized read is broken on PostgreSQL.");
+                "case-insensitive AGREEMENT after the fix. If this fires, the normalized read is broken on PostgreSQL.");
             Assert.True(raven.PageSessionHit,
                 "RavenDB did NOT match 'foo/bar' against stored 'Foo/Bar' via PathNormalized — expected a hit.");
             Assert.Equal("Foo/Bar", pg.PageStoredCase);
@@ -147,10 +147,10 @@ namespace Stomme.Tests
             // the divergence has changed and this fires so the record stays honest.
             Assert.False(pg.FolderSessionHit,
                 "PostgreSQL matched 'users/zzz/' against stored 'Users/Zzz/' via a RAW item.Path == — expected a " +
-                "case-SENSITIVE MISS (D48/D49). If this fires, PostgreSQL's folder path lookup is no longer case-sensitive.");
+                "case-SENSITIVE MISS. If this fires, PostgreSQL's folder path lookup is no longer case-sensitive.");
             Assert.True(raven.FolderSessionHit,
                 "RavenDB did NOT match 'users/zzz/' against stored 'Users/Zzz/' via a RAW item.Path == — expected a " +
-                "case-INSENSITIVE HIT. If this fires, the Folder.Path divergence has been closed and the D58 verdict is stale.");
+                "case-INSENSITIVE HIT. If this fires, the Folder.Path divergence has been closed and the recorded verdict is stale.");
 
             // ---- AGREEMENT 1 verdict ---------------------------------------------------------------
             // The pure observation is the direct session query (the repository's exact read expression against
@@ -158,7 +158,7 @@ namespace Stomme.Tests
             // STORED case must survive untouched on both.
             Assert.True(pg.UrlMappingSessionHit,
                 "PostgreSQL did NOT match 'foo/bar' against stored 'Foo/Bar' via UrlNormalized — expected a " +
-                "case-insensitive AGREEMENT after D57. If this fires, the normalized read is broken on PostgreSQL.");
+                "case-insensitive AGREEMENT after the fix. If this fires, the normalized read is broken on PostgreSQL.");
             Assert.True(raven.UrlMappingSessionHit,
                 "RavenDB did NOT match 'foo/bar' against stored 'Foo/Bar' via UrlNormalized — expected a hit.");
             Assert.Equal("Foo/Bar", pg.UrlMappingStoredCase);
@@ -179,7 +179,7 @@ namespace Stomme.Tests
             Assert.True(pg.NotificationDeletedOn.HasValue,
                 "PostgreSQL did NOT stamp DeletedOn on soft delete — expected DbContextUtils to stamp it.");
             Assert.True(raven.NotificationDeletedOn.HasValue,
-                "RavenDB did NOT stamp DeletedOn on soft delete — expected D59's AuditStamp.StampDeleted to stamp it. " +
+                "RavenDB did NOT stamp DeletedOn on soft delete — expected AuditStamp.StampDeleted to stamp it. " +
                 "If this fires, the RavenDB delete-stamp port has regressed.");
             // DeletedBy matches EF's observable outcome including the unauthenticated '' case (both hosts write
             // with no ambient user: EF's DbContextUtils username='' and Raven's SystemAuditContext(string.Empty)).

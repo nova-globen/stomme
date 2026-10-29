@@ -110,7 +110,7 @@ namespace Stomme.Tests
 
             Assert.True(
                 violations.Count == 0,
-                "Sync-over-async is banned in framework code (D33). Found " + violations.Count +
+                "Sync-over-async is banned in framework code. Found " + violations.Count +
                 " blocking wait(s):" + Environment.NewLine +
                 string.Join(Environment.NewLine, violations.Select(v => "  " + v)));
         }
@@ -127,7 +127,7 @@ namespace Stomme.Tests
 
             Assert.False(
                 File.Exists(seam),
-                "SeamInterop.cs must not exist: the sync-over-async bridge is retired, not improved (D33).");
+                "SeamInterop.cs must not exist: the sync-over-async bridge is retired, not improved.");
         }
 
         // ------------------------------------------------------------------------------------------------
@@ -211,8 +211,8 @@ namespace Stomme.Tests
             {
                 Assert.True(
                     files.Contains(entry),
-                    "Allowlist entry '" + entry + "' no longer contains a blocking wait. Delete the entry " +
-                    "(and its row in docs/decisions.md D33): a stale permission is how an allowlist grows.");
+                    "Allowlist entry '" + entry + "' no longer contains a blocking wait. Delete the entry: " +
+                    "a stale permission is how an allowlist grows.");
             }
         }
         // ------------------------------------------------------------------------------------------------
@@ -249,7 +249,7 @@ namespace Stomme.Tests
 
             Assert.True(
                 violations.Count == 0,
-                "Store-touching Stomme interfaces must be async all the way down (D33). Found " +
+                "Store-touching Stomme interfaces must be async all the way down. Found " +
                 violations.Count + " sync member(s):" + Environment.NewLine +
                 string.Join(Environment.NewLine, violations.OrderBy(v => v, StringComparer.Ordinal)));
         }

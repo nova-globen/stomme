@@ -38,7 +38,7 @@ public sealed class RavenParityCoverageTests
         Assert.True(reachable,
             $"RavenDB is not reachable at {url}, so the RavenDB half of this provider-parity suite cannot " +
             $"run — and a conformance suite that exercises only EF Core proves nothing about parity, which " +
-            $"is its entire purpose. This is a FAILURE and not a skip on purpose: D45 caught a `siteId == -1` " +
+            $"is its entire purpose. This is a FAILURE and not a skip on purpose: a past defect was a `siteId == -1` " +
             $"sentinel query returning 0 of 2 rows on RavenDB while passing on EF, and only the Raven half " +
             $"could see it. Start the local RavenDB instance (default http://127.0.0.1:7000) or point " +
             $"RAVENDB_TEST_URL at a reachable server.");

@@ -109,7 +109,7 @@ namespace Stomme.Tests
                 for (var i = 0; i < 3; i++)
                 {
                     registrations.Add((await GateDrive.SendJsonAsync(app, registrant, null, Host, null, HttpMethod.Post, "/api/User",
-                        new User { SiteId = alias.SiteId, Username = "bl121reg" + i, Password = "Bl121!Reg$2026", Email = $"bl121reg{i}@gate.test", DisplayName = "BL-121" },
+                        new User { SiteId = alias.SiteId, Username = "bl121reg" + i, Password = "Bl121!Reg$2026", Email = $"bl121reg{i}@gate.test", DisplayName = "Rate limit fixture" },
                         _output, $"anonymous registration {i + 1}")).Status);
                 }
 
@@ -122,7 +122,7 @@ namespace Stomme.Tests
                 for (var i = 0; i < 4; i++)
                 {
                     var added = await GateDrive.SendJsonAsync(app, admin, cookies, Host, hostId, HttpMethod.Post, "/api/User",
-                        new User { SiteId = alias.SiteId, Username = "bl121admin" + i, Password = "Bl121!Adm$2026", Email = $"bl121admin{i}@gate.test", DisplayName = "BL-121" },
+                        new User { SiteId = alias.SiteId, Username = "bl121admin" + i, Password = "Bl121!Adm$2026", Email = $"bl121admin{i}@gate.test", DisplayName = "Rate limit fixture" },
                         _output, $"admin adds user {i + 1}");
                     Assert.Equal(HttpStatusCode.OK, added.Status);
                 }

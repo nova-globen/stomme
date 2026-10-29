@@ -207,7 +207,7 @@ namespace Stomme.Tests.Datasets
 
         protected override Task InitializeStoreAsync()
         {
-            Assert.True(PostgresTestEndpoint.IsReachable(), $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port}. The Dataset store conformance suite FAILS rather than skips (D46).");
+            Assert.True(PostgresTestEndpoint.IsReachable(), $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port}. The Dataset store conformance suite FAILS rather than skips.");
             return Task.CompletedTask;
         }
 

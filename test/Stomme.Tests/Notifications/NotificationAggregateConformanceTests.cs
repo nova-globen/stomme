@@ -553,7 +553,7 @@ namespace Stomme.Tests.Notifications
         {
             Assert.True(PostgresTestEndpoint.IsReachable(),
                 $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port} (POSTGRES_TEST_HOST/PORT). " +
-                "The notification aggregate conformance suite FAILS rather than skips (D46).");
+                "The notification aggregate conformance suite FAILS rather than skips.");
             return Task.CompletedTask;
         }
 

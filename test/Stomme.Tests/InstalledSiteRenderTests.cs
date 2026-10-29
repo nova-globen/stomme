@@ -146,10 +146,10 @@ namespace Stomme.Tests
                 .Any(name => name != SqliteProvider.ProviderName);
 
             Assert.True(covered,
-                $"No deadlock-capable provider is reachable, so nothing here guards the D29 renderer-deadlock " +
+                $"No deadlock-capable provider is reachable, so nothing here guards the renderer-deadlock " +
                 $"class — and the suite would otherwise pass green while that cover is absent. SQLite does not " +
                 $"count: its async surface completes synchronously, so it cannot reproduce the deadlock " +
-                $"(measured — see D30). Make PostgreSQL reachable: the shared infra UAT instance at " +
+                $"(measured). Make PostgreSQL reachable: the shared test PostgreSQL server at " +
                 $"{PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port} (or set POSTGRES_TEST_HOST/PORT). " +
                 $"Set POSTGRES_TEST_HOST/PORT/USER/PASSWORD to a reachable PostgreSQL.");
         }
@@ -247,7 +247,7 @@ namespace Stomme.Tests
                     throw new TimeoutException(
                         $"GET / did not respond within {RenderTimeout.TotalSeconds:0}s for " +
                         $"{scratch.Provider.Name}. The site did not render — a renderer deadlock " +
-                        "(see docs/decisions.md D29) looks like exactly this.");
+                        "looks like exactly this.");
                 }
 
                 var response = await requestTask;

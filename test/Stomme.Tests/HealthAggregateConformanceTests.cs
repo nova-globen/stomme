@@ -398,7 +398,7 @@ namespace Stomme.Tests
         {
             Assert.True(PostgresTestEndpoint.IsReachable(),
                 $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port} (POSTGRES_TEST_HOST/PORT). " +
-                "The health aggregate conformance suite FAILS rather than skips (D46).");
+                "The health aggregate conformance suite FAILS rather than skips.");
             return Task.CompletedTask;
         }
 
@@ -434,7 +434,7 @@ namespace Stomme.Tests
         {
             Assert.True(SqlServerTestEndpoint.IsReachable(),
                 $"SQL Server is not reachable at {SqlServerTestEndpoint.Host}:{SqlServerTestEndpoint.Port} (SQLSERVER_TEST_HOST/PORT). " +
-                "The health aggregate conformance suite FAILS rather than skips (D46).");
+                "The health aggregate conformance suite FAILS rather than skips.");
             return Task.CompletedTask;
         }
 

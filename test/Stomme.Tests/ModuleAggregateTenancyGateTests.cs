@@ -31,9 +31,9 @@ namespace Stomme.Tests
         /// </summary>
         private static readonly IReadOnlyDictionary<string, string> NotTenantOwnedByDesign = new Dictionary<string, string>(StringComparer.Ordinal)
         {
-            ["Stomme.Modules.Backup.Domain.BackupScheduleAggregate"] = "installation-wide by design (D106): ONE schedule per installation, set by the Host; a backup is of the whole installation, so every tenant's Host sees the same row on purpose",
-            ["Stomme.Modules.Backup.Domain.BackupSnapshotAggregate"] = "installation-wide by design (D106): a snapshot is of the whole installation and is listed to the Host only",
-            ["Stomme.Modules.HtmlText.Repository.HtmlTextAggregate"] = "not in the shared module store: the integer-keyed framework seam (D55), whose relational context is the TENANT's database (HtmlTextContext, IMultiDatabase) - isolation is the database, not a column; on RavenDB it follows the framework seam's tenancy shape (one tenant per database, BL-111's open half)",
+            ["Stomme.Modules.Backup.Domain.BackupScheduleAggregate"] = "installation-wide by design: ONE schedule per installation, set by the Host; a backup is of the whole installation, so every tenant's Host sees the same row on purpose",
+            ["Stomme.Modules.Backup.Domain.BackupSnapshotAggregate"] = "installation-wide by design: a snapshot is of the whole installation and is listed to the Host only",
+            ["Stomme.Modules.HtmlText.Repository.HtmlTextAggregate"] = "not in the shared module store: the integer-keyed framework seam, whose relational context is the TENANT's database (HtmlTextContext, IMultiDatabase) - isolation is the database, not a column; on RavenDB it follows the framework seam's tenancy shape (one tenant per database, still open)",
         };
 
         [Fact]
@@ -50,7 +50,7 @@ namespace Stomme.Tests
             var unaccounted = unowned.Where(name => !NotTenantOwnedByDesign.ContainsKey(name)).ToList();
             var stale = NotTenantOwnedByDesign.Keys.Where(name => !unowned.Contains(name)).ToList();
             Assert.True(unaccounted.Count == 0 && stale.Count == 0,
-                "Module aggregates that are not tenant-owned and not listed with a reason - on a multi-tenant installation their rows are shared by every tenant of the store (BL-111): " + string.Join(", ", unaccounted) + Environment.NewLine +
+                "Module aggregates that are not tenant-owned and not listed with a reason - on a multi-tenant installation their rows are shared by every tenant of the store: " + string.Join(", ", unaccounted) + Environment.NewLine +
                 "Stale entries (tenant-owned now, or gone): " + string.Join(", ", stale));
             foreach (var (name, reason) in NotTenantOwnedByDesign)
             {

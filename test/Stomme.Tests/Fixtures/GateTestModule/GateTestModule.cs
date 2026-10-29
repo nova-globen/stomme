@@ -44,7 +44,7 @@ namespace Stomme.Tests.Fixtures.GateTestModule
         public ModuleDefinition ModuleDefinition => new ModuleDefinition
         {
             Name = "GateTest",
-            Description = "BL-99 fixture: a module that declares permission keys",
+            Description = "Fixture: a module that declares permission keys",
             PermissionNames = PermissionKeys.Declare(DeclaredKeys, RoleNames.Admin)
         };
     }

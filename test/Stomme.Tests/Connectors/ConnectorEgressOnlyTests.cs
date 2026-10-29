@@ -26,7 +26,7 @@ namespace Stomme.Tests.Connectors
         /// <summary>Files allowed to start a process, with the reason - a HostOnly connector reaches the host itself, by contract.</summary>
         private static readonly IReadOnlyDictionary<string, string> ProcessAllowlist = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["Xml/XmlProcessRunner.cs"] = "HostOnly: the XML connector starts the transform process on the host; creating a connection of its type requires the Host role (D110), which XmlConnector.HostOnly declares.",
+            ["Xml/XmlProcessRunner.cs"] = "HostOnly: the XML connector starts the transform process on the host; creating a connection of its type requires the Host role, which XmlConnector.HostOnly declares.",
         };
 
         [Fact]

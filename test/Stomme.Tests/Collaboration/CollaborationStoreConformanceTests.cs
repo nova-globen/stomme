@@ -232,7 +232,7 @@ namespace Stomme.Tests.Collaboration
 
         protected override Task InitializeStoreAsync()
         {
-            Assert.True(PostgresTestEndpoint.IsReachable(), $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port}. The collaboration store conformance suite FAILS rather than skips (D46).");
+            Assert.True(PostgresTestEndpoint.IsReachable(), $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port}. The collaboration store conformance suite FAILS rather than skips.");
             return Task.CompletedTask;
         }
 

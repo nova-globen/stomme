@@ -51,7 +51,7 @@ namespace Stomme.Tests
             Assert.True(
                 violations.Count == 0,
                 "A probe whose ping body performs no await is not reaching its dependency, so it can only ever " +
-                "report Healthy - the predecessor platform failure this rule exists for. Make the ping do the round-trip, or " +
+                "report Healthy - the failure this rule exists for. Make the ping do the round-trip, or " +
                 "do not ship the probe until the dependency exposes a real liveness call. Found:" +
                 Environment.NewLine + string.Join(Environment.NewLine, violations.Select(v => "  " + v)));
         }

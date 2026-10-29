@@ -113,7 +113,7 @@ namespace Stomme.Tests
 
                         var after = await GateDrive.InTenantAsync(app, Host, async (fresh, _) =>
                             (await fresh.GetRequiredService<IQuotaRepository>().ListBySiteAsync(alias.SiteId)).Single(quota => quota.Metric == Metric));
-                        _output.WriteLine($"[BL-160][{storeName}] metering Suspend click #{attempt} from the same scope: {result}; database now Consumed={after.Consumed} Status={after.Status}");
+                        _output.WriteLine($"[{storeName}] metering Suspend click #{attempt} from the same scope: {result}; database now Consumed={after.Consumed} Status={after.Status}");
 
                         // The FIRST click works: it is checked against the version just read, not one read minutes
                         // ago - and it does not take the job's counter back with it.
@@ -254,8 +254,8 @@ namespace Stomme.Tests
                     var listedSecond = (await admin.ListAsync()).Single(view => view.Key == key).Enabled;
                     var evaluatedSecond = await evaluator.IsEnabledAsync(key);
 
-                    _output.WriteLine($"[BL-160][SQLite] featuremanagement admin list Enabled: first={listedFirst}; database now={truth}; re-read in the SAME scope={listedSecond} => {(listedSecond == truth ? "FRESH" : "STALE")}");
-                    _output.WriteLine($"[BL-160][SQLite] featuremanagement evaluator: first={evaluatedFirst}; re-evaluated in the SAME scope={evaluatedSecond} => {(evaluatedSecond == truth ? "FRESH" : "STALE")}");
+                    _output.WriteLine($"[SQLite] featuremanagement admin list Enabled: first={listedFirst}; database now={truth}; re-read in the SAME scope={listedSecond} => {(listedSecond == truth ? "FRESH" : "STALE")}");
+                    _output.WriteLine($"[SQLite] featuremanagement evaluator: first={evaluatedFirst}; re-evaluated in the SAME scope={evaluatedSecond} => {(evaluatedSecond == truth ? "FRESH" : "STALE")}");
                     Assert.NotEqual(listedFirst, truth);
 
                     // Measured earlier. The EVALUATOR - the only part of this module a circuit consults - is fresh:
@@ -287,7 +287,7 @@ namespace Stomme.Tests
         {
             var fresh = string.Equals(truth?.ToString(), second?.ToString(), StringComparison.Ordinal);
             _output.WriteLine(
-                $"[BL-160][{storeName}] {what}: page first={first}; database now={truth}; page re-read in the SAME scope={second} => " +
+                $"[{storeName}] {what}: page first={first}; database now={truth}; page re-read in the SAME scope={second} => " +
                 (fresh ? "FRESH" : "STALE"));
 
             // The write really happened - otherwise "fresh" would only mean "unchanged".

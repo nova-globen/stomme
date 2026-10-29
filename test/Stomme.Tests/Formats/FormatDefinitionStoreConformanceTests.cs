@@ -180,7 +180,7 @@ namespace Stomme.Tests.Formats
         protected override Task InitializeStoreAsync()
         {
             Assert.True(PostgresTestEndpoint.IsReachable(),
-                $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port} (POSTGRES_TEST_HOST/PORT). The Formats store conformance suite FAILS rather than skips (D46).");
+                $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port} (POSTGRES_TEST_HOST/PORT). The Formats store conformance suite FAILS rather than skips.");
             return Task.CompletedTask;
         }
 

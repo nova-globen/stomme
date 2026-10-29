@@ -245,7 +245,7 @@ namespace Stomme.Tests
                 {
                     throw new InvalidOperationException(
                         $"RavenDB is not reachable at {Url}, so nothing here proves the lockout/2FA facets work on " +
-                        "Raven — this suite FAILS rather than skips (D46). Point RAVENDB_TEST_URL at a reachable server.");
+                        "Raven — this suite FAILS rather than skips. Point RAVENDB_TEST_URL at a reachable server.");
                 }
 
                 Store = (DocumentStore)new DocumentStore { Urls = new[] { Url }, Database = _database }.InitializeStommeStore();

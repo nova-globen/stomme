@@ -6,14 +6,14 @@
         <authors>Nova Globen AB</authors>
         <owners>Nova Globen AB</owners>
         <title>Aurora (Public)</title>
-        <description>An independent, external general/public UI theme for Stomme, built against the Stomme.Sdk NuGet packages only (D87).</description>
+        <description>An independent, external general/public UI theme for Stomme, built against the Stomme.Sdk NuGet packages only.</description>
         <copyright>Nova Globen AB</copyright>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <license type="file">LICENSE</license>
         <projectUrl>https://github.com/nova-globen/stomme</projectUrl>
         <icon>icon.png</icon>
         <tags>stomme theme public</tags>
-        <releaseNotes>D87: external public theme, paired with the Slate admin theme + per-site Site.AdminThemeType.</releaseNotes>
+        <releaseNotes>External public theme, paired with the Slate admin theme + per-site Site.AdminThemeType.</releaseNotes>
         <packageTypes>
             <packageType name="Dependency" />
             <packageType name="Stomme.Framework" version="10.2.1" />

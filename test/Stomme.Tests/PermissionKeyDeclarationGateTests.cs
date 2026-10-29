@@ -586,7 +586,7 @@ namespace Stomme.Tests
                 {
                     // Refutation: RequiresAttribute is read by the mediator's AuthorizationBehavior and by
                     // nothing else. On a controller it is decoration - every caller reaches the action.
-                    violations.Add($"{requirement.Owner}: [Requires] on a controller type or action is NEVER enforced - no MVC filter reads it; dispatch a mediator request that carries [Requires] (D105)");
+                    violations.Add($"{requirement.Owner}: [Requires] on a controller type or action is NEVER enforced - no MVC filter reads it; dispatch a mediator request that carries [Requires]");
                 }
 
                 if (!hasPermission)

@@ -37,7 +37,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/nova-globen/stomme</PackageProjectUrl>
     <PackageTags>stomme;module;sdk;slim;storage-blind;provider-neutral</PackageTags>
-    <Description>Meta-package: the slim Stomme module-facing SDK (BL-44). The compile surface a storage-blind module actually uses — ModuleBase/IModuleControl (Client UI), IServerStartup + AddModuleAggregatePersistence (Server), the clean-arch SharedKernel and the mediator — without the full server dependency closure the fat Stomme.Sdk drags (EF providers, RavenDB, OpenIddict, gRPC, Saml2, ...).</Description>
+    <Description>Meta-package: the slim Stomme module-facing SDK. The compile surface a storage-blind module actually uses — ModuleBase/IModuleControl (Client UI), IServerStartup + AddModuleAggregatePersistence (Server), the clean-arch SharedKernel and the mediator — without the full server dependency closure the fat Stomme.Sdk drags (EF providers, RavenDB, OpenIddict, gRPC, Saml2, ...).</Description>
     <NoWarn>$(NoWarn);NU5128</NoWarn>
   </PropertyGroup>
 
@@ -47,24 +47,24 @@
          framework lib pins below (which stay at the app version the assemblies were built from). -->
     <PackageReference Include="Stomme.Server.Sdk" Version="$(Version)" />
     <PackageReference Include="Stomme.Client.Sdk" Version="$(Version)" />
-    <PackageReference Include="Stomme.Shared" Version="10.75.2" />
-    <PackageReference Include="Stomme.SharedKernel" Version="10.75.2" />
-    <PackageReference Include="Stomme.Mediator" Version="10.75.2" />
+    <PackageReference Include="Stomme.Shared" Version="10.75.3" />
+    <PackageReference Include="Stomme.SharedKernel" Version="10.75.3" />
+    <PackageReference Include="Stomme.Mediator" Version="10.75.3" />
     <!-- Stomme.Security.Abstractions — [Requires], IAccessGuard, ICurrentUser, IFeatureEvaluator.
          A lifted module DECLARES its gates against these four contracts, so they belong in the slim compile
          surface; the enforcement side (Stomme.Authorization's behavior + AddStommeAuthorization) is the
          HOST's composition and stays out, exactly like the persistence providers. Deps-only, no third party. -->
-    <PackageReference Include="Stomme.Security.Abstractions" Version="10.75.2" />
+    <PackageReference Include="Stomme.Security.Abstractions" Version="10.75.3" />
     <!-- The TENANCY contracts. A storage-blind aggregate is tenant-owned by contract (ITenantOwned, stamped
          from the ambient ITenantContext's TenantId), and an external module's aggregate that is not is NAMED at startup -
          so the slim surface must carry these contracts too, or a slim-built module could not honour the contract
          (found when building the exemplar). Deps-only, BCL plus SharedKernel. -->
-    <PackageReference Include="Stomme.Tenancy.Domain" Version="10.75.2" />
-    <PackageReference Include="Stomme.Tenancy.Abstractions" Version="10.75.2" />
-    <PackageReference Include="Stomme.Persistence.Abstractions" Version="10.75.2" />
+    <PackageReference Include="Stomme.Tenancy.Domain" Version="10.75.3" />
+    <PackageReference Include="Stomme.Tenancy.Abstractions" Version="10.75.3" />
+    <PackageReference Include="Stomme.Persistence.Abstractions" Version="10.75.3" />
     <!-- The BUS contract (IEventBus, IntegrationEvent, IIntegrationEventHandler) - a module announces
          across contexts through the host's opt-in bus; dependency-free. -->
-    <PackageReference Include="Stomme.EventBus" Version="10.75.2" />
+    <PackageReference Include="Stomme.EventBus" Version="10.75.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
   </ItemGroup>
 

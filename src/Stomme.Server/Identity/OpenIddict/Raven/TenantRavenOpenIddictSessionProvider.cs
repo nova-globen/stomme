@@ -74,7 +74,7 @@ namespace Stomme.Identity.OpenIddict.Raven
             if (tenant == null)
             {
                 throw new InvalidOperationException(
-                    "The RavenDB OpenIddict store (D62) was reached with no resolved tenant. The token/authority " +
+                    "The RavenDB OpenIddict store was reached with no resolved tenant. The token/authority " +
                     "endpoints run after tenant resolution, so a null tenant here is a misconfiguration, not the " +
                     "installer state.");
             }

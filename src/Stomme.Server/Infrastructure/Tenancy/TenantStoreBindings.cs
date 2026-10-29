@@ -103,7 +103,7 @@ namespace Stomme.Infrastructure.Tenancy
 
             throw new InvalidOperationException(
                 $"Tenant {tenantId} has not been resolved in this scope, so a DbContext cannot be routed to its " +
-                "database without reading the tenant store — which OnConfiguring must not do (D37). The alias on " +
+                "database without reading the tenant store — which OnConfiguring must not do. The alias on " +
                 "SiteState names this tenant, so something set a tenant without warming it. Set the tenant with " +
                 "ITenantManager.SetTenant(Tenant) or ITenantManager.SetAliasAsync(...), both of which warm this " +
                 "table. This throws rather than routing at whatever tenant happens to be at hand: a silent " +

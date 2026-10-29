@@ -39,7 +39,7 @@
 {
     <!DOCTYPE html>
     @* A theme that declares one colour mode fixes the page to it, here, before any script or stylesheet runs. *@
-    <html lang="@_language" data-theme-fixed="@_fixedColorMode" data-theme="@_fixedColorMode" style="@(_fixedColorMode == null ? null : "color-scheme: " + _fixedColorMode)">
+    <html lang="@_language" data-site-path="@_sitePath" data-theme-fixed="@_fixedColorMode" data-theme="@_fixedColorMode" style="@(_fixedColorMode == null ? null : "color-scheme: " + _fixedColorMode)">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -235,6 +235,9 @@
     private string _language = "en";
     // The page's theme's declared colour mode ("dark"/"light"), or null when it follows the visitor.
     private string _fixedColorMode;
+    // A folder site's path ("/shop"), or null for a root site: the interactive circuit connects under it (data-site-path,
+    // read by Stomme.Server.lib.module.js), so the circuit request resolves this site and carries this site's cookies.
+    private string _sitePath;
     private string _headResources = "";
     private string _bodyResources = "";
     private string _bodyContent = "";
@@ -263,6 +266,7 @@
             var alias = await TenantManager.GetAliasAsync();
             if (alias != null)
             {
+                _sitePath = string.IsNullOrWhiteSpace(alias.Path) ? null : "/" + alias.Path.Trim('/');
                 var url = WebUtility.UrlDecode(Context.Request.GetEncodedUrl());
 
                 if (!alias.IsDefault)

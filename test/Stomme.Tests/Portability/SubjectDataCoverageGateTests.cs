@@ -38,19 +38,19 @@ namespace Stomme.Tests.Portability
             ["PipelineStepCommentAggregate"] = "PipelineStepCommentSubjectContributor",
 
             // ---- left out, each for a stated reason (the allowlist, extended to what landed since) --------------------------
-            ["VisitorAggregate"] = "LEFT OUT: per-visit analytics (address, agent, url) aged out by VisitorRetention; D107 item 8 allowlist",
-            ["LogAggregate"] = "LEFT OUT: the operational event log - one row can name several people and hold request internals; aged out by LogRetention; D107 item 8 allowlist",
+            ["VisitorAggregate"] = "LEFT OUT: per-visit analytics (address, agent, url) aged out by VisitorRetention",
+            ["LogAggregate"] = "LEFT OUT: the operational event log - one row can name several people and hold request internals; aged out by LogRetention",
             ["PermissionAggregate"] = "LEFT OUT: a per-user permission row is the SITE's access configuration about the person, not data they gave; its effect is what they can reach",
             ["PortabilityPackageAggregate"] = "LEFT OUT: the record of a package request itself - the person sees their own packages in the list; expired with the package",
             ["PortabilityAuditEntryAggregate"] = "LEFT OUT: the portability audit - who asked for whose data; an accountability record, not the person's data",
             ["ExportJobAggregate"] = "LEFT OUT: an export job the person requested - operational, kept 7 days by DataExport's own retention",
             ["ExportAuditEntryAggregate"] = "LEFT OUT: the export audit - an accountability record of who exported what",
             ["ExportScheduleAggregate"] = "LEFT OUT: a recurring export the person set up - the site's operational configuration of a job, which they see and manage on the DataExport page; its runs are export jobs (above), and erasure deletes it",
-            ["McpAuditEntryAggregate"] = "LEFT OUT: the MCP tool-call ledger - a security record of actions taken through tools (D101); BL-116 decides erasure",
-            ["PipelineAuditEntryAggregate"] = "LEFT OUT: the pipeline activity ledger (BL-229) - an accountability record of who changed or ran which pipeline, as the export and portability audits are; erasure retains it a year as a security record (D112)",
-            ["UsageRecordAggregate"] = "LEFT OUT: the metering ledger - usage counted for quota and billing, not data the person provided (D102)",
-            ["AiUsageRecordAggregate"] = "LEFT OUT: AI token metering for cost and quota - counts, not content (D102)",
-            ["ErasureRequestAggregate"] = "LEFT OUT: the erasure request itself - it carries the subject's user id only while the run is open and clears it on completion; what remains is the receipt, the accountability record of the erasure, which names no one (D112)",
+            ["McpAuditEntryAggregate"] = "LEFT OUT: the MCP tool-call ledger - a security record of actions taken through tools; erasure is undecided",
+            ["PipelineAuditEntryAggregate"] = "LEFT OUT: the pipeline activity ledger - an accountability record of who changed or ran which pipeline, as the export and portability audits are; erasure retains it a year as a security record",
+            ["UsageRecordAggregate"] = "LEFT OUT: the metering ledger - usage counted for quota and billing, not data the person provided",
+            ["AiUsageRecordAggregate"] = "LEFT OUT: AI token metering for cost and quota - counts, not content",
+            ["ErasureRequestAggregate"] = "LEFT OUT: the erasure request itself - it carries the subject's user id only while the run is open and clears it on completion; what remains is the receipt, the accountability record of the erasure, which names no one",
         };
 
         [Fact]

@@ -86,37 +86,36 @@ namespace Stomme.Tests
                     "A read-then-update of the very instance loaded: the connection is read by id, its connector's checks " +
                     "and the name clash (a second read, by normalised name) run, its secrets are stored, then Reconfigure " +
                     "and ONE UpdateAsync on that same instance, through the storage-blind module repository that " +
-                    "AddModuleAggregatePersistence hands out NON-tracking (D79's correction) - no second instance of the " +
-                    "key is ever attached (BL-94 increment 6, D110).",
+                    "AddModuleAggregatePersistence hands out NON-tracking - no second instance of the " +
+                    "key is ever attached.",
                 ["src/Stomme.Server/Modules/Connectivity/Application/ConnectionRequests.cs::TestConnectionCommandHandler.Handle"] =
                     "A read-then-update of the very instance loaded: the connection is read by id, the runner tests it " +
                     "(no write of its own), RecordTestResult mutates that instance and ONE UpdateAsync follows, through " +
-                    "the NON-tracking module repository (D79's correction) - the shape this gate's own remarks call safe " +
-                    "(BL-94 increment 6, D110).",
+                    "the NON-tracking module repository - the shape this gate's own remarks call safe.",
                 ["src/Stomme.Server/Modules/Datasets/Application/DatasetRequests.cs::DatasetRegistrar.RegisterOrRefreshAsync"] =
                     "An early-return upsert: the origin's dataset is read by its deterministic id-shape (FindByOriginAsync) " +
                     "and the name clash by normalised name; when the origin's row exists it is refreshed and renamed on that " +
                     "SAME instance with ONE UpdateAsync and the method RETURNS; otherwise ONE AddAsync of a new aggregate. " +
                     "The two writes cannot both run (the scanner sums across the early return), and the repository is the " +
-                    "NON-tracking one AddModuleAggregatePersistence hands out (D79's correction) - BL-94 increment 10, D110.",
+                    "NON-tracking one AddModuleAggregatePersistence hands out.",
                 ["src/Stomme.Server/Modules/Datasets/Application/DatasetRequests.cs::RefreshDatasetCommandHandler.Handle"] =
                     "A read-then-update of the very instance loaded: the dataset is read by id, Refresh mutates that instance " +
-                    "and ONE UpdateAsync follows, through the NON-tracking module repository (D79's correction) - the shape " +
-                    "this gate's own remarks call safe (BL-94 increment 10, D110).",
+                    "and ONE UpdateAsync follows, through the NON-tracking module repository - the shape " +
+                    "this gate's own remarks call safe.",
                 ["src/Stomme.Server/Modules/Formats/Application/FormatRequests.cs::SaveFormatDefinitionCommandHandler.Handle"] =
                     "An upsert: the name clash is read by normalised name, then EITHER a create or a read-then-update of " +
                     "the very instance loaded (one write per path), through the storage-blind module repository that " +
-                    "AddModuleAggregatePersistence hands out NON-tracking (D79's correction: reads AsNoTracking, a saved " +
+                    "AddModuleAggregatePersistence hands out NON-tracking (reads AsNoTracking, a saved " +
                     "write detached), so the second attach the identity-map class needs cannot happen.",
 
                 ["src/Stomme.Server/Modules/Erasure/Controllers/ErasureController.cs::ErasureController.Retry"] =
                     "Read-then-update of the very instance loaded, through the storage-blind module repository that " +
-                    "AddModuleAggregatePersistence hands out NON-tracking (D79's correction: reads AsNoTracking, a saved " +
+                    "AddModuleAggregatePersistence hands out NON-tracking (reads AsNoTracking, a saved " +
                     "write detached), so the second attach the identity-map class needs cannot happen; one write per call.",
 
                 ["src/Stomme.Server/Modules/Erasure/Services/ServerErasureService.cs::ServerErasureService.RetryAsync"] =
-                    "The controller's Retry for a server-rendered page (BL-191), the same body: read-then-update of the very " +
-                    "instance loaded, through the NON-tracking storage-blind module repository (D79's correction), so the " +
+                    "The controller's Retry for a server-rendered page, the same body: read-then-update of the very " +
+                    "instance loaded, through the NON-tracking storage-blind module repository, so the " +
                     "second attach the identity-map class needs cannot happen; one write per call.",
 
                 ["src/Stomme.FeatureManagement/Application/FeatureAdminService.cs::FeatureAdminService.ToggleAsync"] =
@@ -179,7 +178,7 @@ namespace Stomme.Tests
                     "maps 1:1 onto one row id. For each, the row is read by that id and then EITHER added as a NEW " +
                     "instance (absent - and `continue`) OR updated THROUGH THE INSTANCE JUST READ (TryApplySeedUpdate " +
                     "on it); the branches cannot both run, and no mapper-fresh instance is ever built for an id that " +
-                    "was read. The storage-blind registration is non-tracking besides (BL-160).",
+                    "was read. The storage-blind registration is non-tracking besides.",
 
                 ["src/Stomme.Server/Modules/ContextualHelp/Application/HelpMessages.cs::SaveHelpTopicCommandHandler.Handle"] =
                     "Early-return upsert: the row is read ONCE (by id, or by its deterministic (anchor, locale) key); " +
@@ -191,7 +190,7 @@ namespace Stomme.Tests
                     "Two loops over DISJOINT rows, each row written once through the instance just read: the deletes are " +
                     "the subject's own comments (UserId == subject), the updates others' comments the subject resolved - " +
                     "filtered to UserId != subject, so no row is both deleted and updated, and no mapper-fresh instance is " +
-                    "built. The storage-blind registration is non-tracking besides (BL-160).",
+                    "built. The storage-blind registration is non-tracking besides.",
             };
 
         // ------------------------------------------------------------------------------------------------
@@ -208,7 +207,7 @@ namespace Stomme.Tests
 
             Assert.True(
                 violations.Count == 0,
-                "A ctor-injected store owns ONE context and EfRepository leaves writes TRACKED (BL-51/D47): " +
+                "A ctor-injected store owns ONE context and EfRepository leaves writes TRACKED: " +
                 "use a fresh store per write (the JobRepository NewStore() pattern), or justify the method in " +
                 "the allowlist. Found " + violations.Count + " unjustified method(s):" + Environment.NewLine +
                 string.Join(Environment.NewLine, violations.Select(v => "  " + v)));

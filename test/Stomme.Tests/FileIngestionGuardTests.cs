@@ -196,7 +196,7 @@ namespace Stomme.Tests
             var (schemeStatus, schemeBody) = await drive.UploadByUrlAsync(folder, "file:///C:/Windows/win.ini", "probe.txt");
             await AssertRefusedAsync(drive, folder, schemeStatus, schemeBody, "Destination");
 
-            Assert.True(receiver.Accepted == 0, $"expected no connection, the receiver accepted {receiver.Accepted}: {receiver.Connections} (BL-231)");
+            Assert.True(receiver.Accepted == 0, $"expected no connection, the receiver accepted {receiver.Accepted}: {receiver.Connections}");
         }
 
         [Fact]
@@ -212,7 +212,7 @@ namespace Stomme.Tests
             var file = await service.UploadFileAsync($"http://localhost:{receiver.Port}/hello.txt", folder.FolderId, "hello.txt");
 
             Assert.NotNull(file);
-            Assert.True(receiver.Accepted == 1, $"expected one connection, the receiver accepted {receiver.Accepted}: {receiver.Connections} (BL-231)");
+            Assert.True(receiver.Accepted == 1, $"expected one connection, the receiver accepted {receiver.Accepted}: {receiver.Connections}");
             Assert.Equal(new[] { "hello.txt" }, await drive.DiskNamesAsync(folder));
             Assert.Equal(new[] { "hello.txt" }, await drive.RowNamesAsync(folder));
             Assert.Equal(content, await System.IO.File.ReadAllBytesAsync(Path.Combine(await drive.FolderPathAsync(folder), "hello.txt")));

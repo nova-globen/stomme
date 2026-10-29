@@ -67,7 +67,7 @@ namespace Stomme.Tests
         [Fact]
         public void Every_sitemap_contract_member_is_asynchronous() =>
             Assert.All(typeof(ISitemap).GetMethods(), method =>
-                Assert.True(typeof(Task).IsAssignableFrom(method.ReturnType), $"ISitemap.{method.Name} returns {method.ReturnType.Name}: a module reading a store could only block on it (D33)."));
+                Assert.True(typeof(Task).IsAssignableFrom(method.ReturnType), $"ISitemap.{method.Name} returns {method.ReturnType.Name}: a module reading a store could only block on it."));
     }
 
     /// <summary>

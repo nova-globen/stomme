@@ -226,7 +226,7 @@ namespace Stomme.Tests
                     {
                         SiteId = alias.SiteId,
                         Name = roleName,
-                        Description = "BL-99 gate role",
+                        Description = "Gate role",
                         IsAutoAssigned = false,
                         IsSystem = false
                     });
@@ -755,8 +755,8 @@ namespace Stomme.Tests
         public string UnreachableMessage =>
             $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port}, so nothing here " +
             "proves the authorization bridge decides against a REAL relational store. This gate FAILS rather than " +
-            "skips (the D46 principle): a suite that quietly shrinks reports green while proving nothing. Point " +
-            "POSTGRES_TEST_HOST/POSTGRES_TEST_PORT at a reachable instance - the shared infra UAT tier is the default.";
+            "skips: a suite that quietly shrinks reports green while proving nothing. Point " +
+            "POSTGRES_TEST_HOST/POSTGRES_TEST_PORT at a reachable instance - the shared test server is the default.";
 
         public string CreateConnectionString(string scratchDirectory) => PostgresTestEndpoint.ConnectionString(_database);
 
@@ -798,8 +798,8 @@ namespace Stomme.Tests
 
         public string UnreachableMessage =>
             $"SQL Server is not reachable at {SqlServerTestEndpoint.Host}:{SqlServerTestEndpoint.Port}, so nothing here proves the " +
-            "behaviour on a real SQL Server. This gate FAILS rather than skips (the D46 principle). Point SQLSERVER_TEST_HOST/" +
-            "SQLSERVER_TEST_PORT at a reachable instance - the shared infra UAT tier is the default.";
+            "behaviour on a real SQL Server. This gate FAILS rather than skips. Point SQLSERVER_TEST_HOST/" +
+            "SQLSERVER_TEST_PORT at a reachable instance - the shared test server is the default.";
 
         public string CreateConnectionString(string scratchDirectory) => SqlServerTestEndpoint.ConnectionString(_database);
 
@@ -900,7 +900,7 @@ namespace Stomme.Tests
 
         public string UnreachableMessage =>
             $"RavenDB is not reachable at {Url}, so nothing here proves the authorization bridge decides the same " +
-            "way on a DOCUMENT store. This gate FAILS rather than skips (D46): an EF-only run proves nothing about " +
+            "way on a DOCUMENT store. This gate FAILS rather than skips: an EF-only run proves nothing about " +
             "the provider that has no rows table at all. Set RAVENDB_TEST_URL to a reachable server.";
 
         public string CreateConnectionString(string scratchDirectory) => $"Url={Url};Database={_database}";

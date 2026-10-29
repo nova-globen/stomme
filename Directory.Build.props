@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Configurations>Debug;Release</Configurations>
-    <Version>10.75.2</Version>
+    <Version>10.75.3</Version>
     <Product>Nova Globen Stomme</Product>
     <Authors>Nova Globen AB</Authors>
     <Company>Nova Globen AB</Company>

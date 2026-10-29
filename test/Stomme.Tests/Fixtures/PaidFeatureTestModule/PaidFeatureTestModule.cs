@@ -43,7 +43,7 @@ namespace Stomme.Tests.Fixtures.PaidFeatureTestModule
         {
             new FeatureDescriptor(
                 PaidFeatureTestFeatures.Key,
-                "BL-2 fixture: a paid feature enforced through the mediator",
+                "Test fixture: a paid feature enforced through the mediator",
                 Category: "Tests",
                 DefaultEnabled: true,
                 RequiredEntitlement: PaidFeatureTestFeatures.Entitlement)
