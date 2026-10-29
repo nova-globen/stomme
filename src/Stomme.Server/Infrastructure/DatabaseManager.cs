@@ -91,7 +91,7 @@ namespace Stomme.Infrastructure
                 }
                 else
                 {
-                    // D54: a non-relational (document-store) install has no EF InstallationContext to probe — its
+                    // A non-relational (document-store) install has no EF InstallationContext to probe — its
                     // provider is not IRelationalDatabase, so GetInstallationContext() yields an unconfigured
                     // context that throws on CanConnect. "Installed" is instead determined through the seam: a
                     // master Tenant document exists once CreateTenantAsync has run. A missing database or an
@@ -124,7 +124,7 @@ namespace Stomme.Infrastructure
         {
             var result = new Installation { Success = false, Message = string.Empty };
 
-            // BL-20: no config validation/rewrite here. Booting must never mutate appsettings.json (D32);
+            // No config validation/rewrite here. Booting must never mutate appsettings.json;
             // the AvailableDatabases catalog (missing section, pre-6.1.5 ", Stomme.Database." entries) is
             // resolved on READ by DatabaseController, the same way GetDatabaseType resolves DefaultDBType.
 
@@ -151,9 +151,17 @@ namespace Stomme.Infrastructure
                     install.HostEmail = GetInstallationConfig(SettingKeys.HostEmailKey, string.Empty);
                     install.HostName = GetInstallationConfig(SettingKeys.HostNameKey, UserNames.Host);
 
+                    var policyFailure = string.IsNullOrEmpty(install.HostPassword) ? null : UnattendedInstall.PolicyFailure(install.HostPassword, HostPasswordPolicy());
                     if (hostPasswordError != null)
                     {
                         result.Message = $"Error Installing Master Database For {SettingKeys.ConnectionStringKey}: {hostPasswordError}";
+                        install.ConnectionString = "";
+                    }
+                    else if (policyFailure != null && !string.IsNullOrEmpty(install.ConnectionString))
+                    {
+                        // Refused before anything is created: the identity store would refuse the account, and the installation
+                        // would come up with no host - on a public host, with no administrator at all.
+                        result.Message = $"Error Installing Master Database For {SettingKeys.ConnectionStringKey}: {UnattendedInstall.HostPasswordSource(_configManager)} fails the password policy ({policyFailure}).";
                         install.ConnectionString = "";
                     }
                     else if (!string.IsNullOrEmpty(install.ConnectionString) && !string.IsNullOrEmpty(install.Aliases) && !string.IsNullOrEmpty(install.HostPassword) && !string.IsNullOrEmpty(install.HostEmail))
@@ -230,7 +238,7 @@ namespace Stomme.Infrastructure
 
                 // Wait for the startup lock. This used to be `while (!TryAcquireLock(...)) { }` - a TIGHT SPIN
                 // with an empty body, which on a scale-out install burns a core at 100% for as long as another
-                // instance holds the lock (BL-108). It now waits between attempts, and gives up rather than
+                // instance holds the lock. It now waits between attempts, and gives up rather than
                 // spinning for ever: the lock's own expiry is a minute, so an instance that cannot take it in
                 // twice that has lost its holder to a crash, and proceeding is better than never starting.
                 // Read IDistributedLockManager's remarks before treating this as exclusion - on a single node it
@@ -265,7 +273,7 @@ namespace Stomme.Infrastructure
                                 result = await MigrateModulesAsync(install);
                                 if (result.Success)
                                 {
-                                    // D86: persist any module-wide config the installer's onboarding step collected,
+                                    // Persist any module-wide config the installer's onboarding step collected,
                                     // now that MigrateModulesAsync has created the module definitions in the master.
                                     await MigrateModuleSettingsAsync(install);
 
@@ -363,7 +371,7 @@ namespace Stomme.Infrastructure
                 tenants = (await scope.ServiceProvider.GetRequiredService<ITenantRepository>().GetTenantsAsync()).ToList();
             }
 
-            // Each tenant's site names, read in a FRESH scope entered through one of its aliases (BL-205: a scope binds its
+            // Each tenant's site names, read in a FRESH scope entered through one of its aliases (a scope binds its
             // store to the first tenant it serves).
             var siteNames = new Dictionary<string, IReadOnlyCollection<string>>(StringComparer.OrdinalIgnoreCase);
             foreach (var tenant in tenants)
@@ -425,11 +433,11 @@ namespace Stomme.Infrastructure
                         var database = Activator.CreateInstance(type) as Stomme.Databases.Interfaces.IDatabase;
 
                         // create data directory if does not exist (for LocalDB and SQLite)
-                        // THIS host's directory (BL-153) - see IConfigManager.GetDataDirectory.
+                        // THIS host's directory - see IConfigManager.GetDataDirectory.
                         var dataDirectory = _config.GetDataDirectory();
                         if (!Directory.Exists(dataDirectory)) Directory.CreateDirectory(dataDirectory ?? String.Empty);
 
-                        // D53: the create path branches on the provider's storage model. A relational provider
+                        // The create path branches on the provider's storage model. A relational provider
                         // (IRelationalDatabase) uses EF Core's IRelationalDatabaseCreator, which THROWS on any
                         // non-relational provider. A document-store provider (RavenDatabase) has no EF Core
                         // provider and no DbContextOptionsBuilder to hand it — it ensures its database exists
@@ -456,7 +464,7 @@ namespace Stomme.Infrastructure
                         }
                         else
                         {
-                            // D56: unlike the relational branch above — which threads install.ConnectionString
+                            // Unlike the relational branch above — which threads install.ConnectionString
                             // straight into the DbContext and never reads config — a non-relational store is a
                             // LAZY singleton whose ONLY connection-string source is ConnectionStrings:DefaultConnection
                             // (StommeServiceCollectionExtensions.BuildRavenFrameworkDocumentStore). The INTERACTIVE
@@ -473,7 +481,7 @@ namespace Stomme.Infrastructure
                             }
                             else
                             {
-                                // BL-176: a tenant ADDED to a RavenDB installation. Its connection string was saved under its
+                                // A tenant ADDED to a RavenDB installation. Its connection string was saved under its
                                 // own name above; its database is decided and created by the tenant loop
                                 // (RavenTenantDatabasePlanner). DefaultConnection is NOT rewritten: it names the installation's
                                 // own database, where the master rows are - rewriting it with the new tenant's string (as this
@@ -519,7 +527,7 @@ namespace Stomme.Infrastructure
                         UpdateConnectionString(install.ConnectionString);
                         UpdateDatabaseType(install.DatabaseType);
 
-                        // D53: EF Core migrations provision the RELATIONAL master schema. A non-relational
+                        // EF Core migrations provision the RELATIONAL master schema. A non-relational
                         // provider (RavenDatabase) has no migration set and no MasterDBContext to construct
                         // (OnConfiguring funnels through UseStommeDatabase → UseDatabase, a relational-only
                         // member); its database was already ensured in CreateDatabaseAsync, so there is nothing
@@ -560,7 +568,7 @@ namespace Stomme.Infrastructure
 
             if (!string.IsNullOrEmpty(install.TenantName) && !string.IsNullOrEmpty(install.Aliases))
             {
-                // D53: the installer's FIRST writes — the master Tenant and its Aliases — go through the seam's
+                // The installer's FIRST writes — the master Tenant and its Aliases — go through the seam's
                 // MASTER repositories instead of the raw EF InstallationContext, so a non-relational install can
                 // persist them through the same provider-neutral store the resolution READ path already uses
                 // (D52). On a relational install this writes IDENTICAL rows: Tenant/Alias are IAuditable, and
@@ -612,7 +620,7 @@ namespace Stomme.Infrastructure
                                 ModifiedOn = DateTime.UtcNow
                             };
                             // AddAliasAsync lower-cases the stored Name in C# (the routing lookup is
-                            // OrdinalIgnoreCase in memory, D52), which the harvested InstallationContext path did
+                            // OrdinalIgnoreCase in memory), which the harvested InstallationContext path did
                             // not do at insert — but CreateSiteAsync's UpdateAliasAsync lower-cases it there
                             // anyway, so the final stored casing is unchanged. CreateSiteAsync's alias matching
                             // is OrdinalIgnoreCase to stay robust to that normalization.
@@ -640,7 +648,7 @@ namespace Stomme.Infrastructure
                 var tenantManager = scope.ServiceProvider.GetRequiredService<ITenantManager>();
                 var DBContextDependencies = scope.ServiceProvider.GetRequiredService<IDBContextDependencies>();
 
-                // D54b: enumerate tenants through the seam's Tenant repository (D52) instead of the EF
+                // D54b: enumerate tenants through the seam's Tenant repository instead of the EF
                 // InstallationContext, so a non-relational install reaches this stage instead of throwing on an
                 // unconfigured EF context. On a relational install this reads the identical rows the raw
                 // db.Tenant enumeration did — the resolution read path already runs through this repository.
@@ -656,7 +664,7 @@ namespace Stomme.Infrastructure
                         var connectionString = _configManager.GetSetting($"{SettingKeys.ConnectionStringsSection}:{tenant.DBConnectionString}", "");
                         if (!string.IsNullOrEmpty(connectionString))
                         {
-                            // D53: EF Core migrations provision the RELATIONAL tenant schema. A non-relational
+                            // EF Core migrations provision the RELATIONAL tenant schema. A non-relational
                             // tenant (RavenDatabase) has no migration set; its database is ensured through the
                             // Raven bootstrap, not migrated here. The relational branch is unchanged.
                             if (IsRelationalProvider(tenant.DBType))
@@ -670,7 +678,7 @@ namespace Stomme.Infrastructure
                             }
                             else
                             {
-                                // BL-176: a RavenDB tenant's rows live in the database its connection string names.
+                                // A RavenDB tenant's rows live in the database its connection string names.
                                 await PlanRavenTenantDatabaseAsync(scope.ServiceProvider, tenant, connectionString);
                             }
                         }
@@ -726,7 +734,7 @@ namespace Stomme.Infrastructure
                 var sql = scope.ServiceProvider.GetRequiredService<ISqlRepository>();
                 var tenantManager = scope.ServiceProvider.GetRequiredService<ITenantManager>();
 
-                // D54b: enumerate tenants and persist module version bumps through the seam (D52) instead of the
+                // D54b: enumerate tenants and persist module version bumps through the seam instead of the
                 // EF InstallationContext. The raw db.Tenant enumeration here threw HARD on a non-relational
                 // install (it is NOT inside the swallow-try/catch below), so it was the concrete stage that
                 // broke a Raven install; routing it through ITenantRepository lets the stage complete. On a
@@ -799,7 +807,7 @@ namespace Stomme.Infrastructure
                             // update module if all migrations were successful and version is not current
                             if (string.IsNullOrEmpty(message) && moduleDefinition.Version != versions[versions.Length - 1])
                             {
-                                // D54b: version bump written through the seam's ModuleDefinition store (D52)
+                                // D54b: version bump written through the seam's ModuleDefinition store
                                 // instead of db.Entry(moduleDefinition).State = Modified on the EF
                                 // InstallationContext. The user-customizable Name/Description/Categories already
                                 // carry their DB values — GetModuleDefinitionsAsync() (siteId -1) merges them from
@@ -820,7 +828,7 @@ namespace Stomme.Infrastructure
             return new Installation { Success = true, Message = string.Empty };
         }
 
-        // D86: write the module-wide configuration the installer's onboarding step collected into the master
+        // Write the module-wide configuration the installer's onboarding step collected into the master
         // EntityNames.ModuleDefinition settings channel, keyed by ModuleDefinitionName → ModuleDefinitionId. This
         // runs server-side in the trusted install path (no auth barrier — the wizard never logs in) and AFTER
         // MigrateModulesAsync, so the definitions (and thus their ids) exist. ModuleDefinition settings route to
@@ -919,7 +927,7 @@ namespace Stomme.Infrastructure
                             var rendermode = (!string.IsNullOrEmpty(install.RenderMode)) ? install.RenderMode : _configManager.GetSection("RenderMode").Value;
                             var runtime = (!string.IsNullOrEmpty(install.Runtime)) ? install.Runtime : _configManager.GetSection("Runtime").Value;
 
-                            // BL-57: prerender is overridable. Historically it was hardcoded to (rendermode ==
+                            // Prerender is overridable. Historically it was hardcoded to (rendermode ==
                             // Interactive), which makes an Interactive/WASM site DEAD behind a reverse proxy whose
                             // container cannot resolve its own public host — the SSR prerender pass HTTP-calls the
                             // app's public URL and every page returns an empty 200. An explicit InstallConfig or
@@ -1018,7 +1026,7 @@ namespace Stomme.Infrastructure
             return result;
         }
 
-        // BL-205: each site is brought up to date in a FRESH DI scope, entered inside its tenant's scope - the shape of
+        // Each site is brought up to date in a FRESH DI scope, entered inside its tenant's scope - the shape of
         // SiteContentReconciliationRunner below. This loop used to walk every tenant and site inside ONE DI scope, and a
         // repository resolved there holds a store whose context binds to a tenant's connection on its first use: on an
         // installation with two tenants on two databases, the second tenant's READS went to its own database (a fresh
@@ -1134,7 +1142,7 @@ namespace Stomme.Infrastructure
 
         private string DenormalizeConnectionString(string connectionString)
         {
-            var dataDirectory = _config.GetDataDirectory();   // THIS host's directory - BL-153
+            var dataDirectory = _config.GetDataDirectory();   // THIS host's directory
             connectionString = connectionString.Replace(dataDirectory ?? String.Empty, $"|{Constants.DataDirectory}|");
             return connectionString;
         }
@@ -1144,7 +1152,7 @@ namespace Stomme.Infrastructure
             var connectionString = NormalizeConnectionString(_config.GetConnectionString(SettingKeys.ConnectionStringKey));
             var databaseType = _config.GetDatabaseType();
 
-            // D53: InstallationContext is an EF relational context. Narrow to IRelationalDatabase; a
+            // InstallationContext is an EF relational context. Narrow to IRelationalDatabase; a
             // non-relational provider yields null and the context stays unconfigured (it is never the store for
             // a document-store install). Its remaining callers (IsInstalled/MigrateTenants/MigrateModules) are
             // reached only on the relational install path today.
@@ -1158,7 +1166,7 @@ namespace Stomme.Infrastructure
             return new InstallationContext(database, connectionString);
         }
 
-        // D53: the storage-model branch predicate. A provider is constructed reflectively (like everywhere else
+        // The storage-model branch predicate. A provider is constructed reflectively (like everywhere else
         // in the install pipeline) and tested for the relational surface. RavenDatabase is IDatabase but not
         // IRelationalDatabase, so it takes the non-relational branch: no IRelationalDatabaseCreator, no
         // MasterDBContext/TenantDBContext MigrateAsync.
@@ -1177,7 +1185,7 @@ namespace Stomme.Infrastructure
             return type == null ? null : Activator.CreateInstance(type) as Stomme.Databases.Interfaces.IDatabase;
         }
 
-        // D54: a non-relational (document-store) provider ensures its databases exist through the Raven
+        // A non-relational (document-store) provider ensures its databases exist through the Raven
         // framework-store bootstrap instead of EF Core's IRelationalDatabaseCreator. AddRavenFrameworkStore is
         // now wired into the host (with a LAZY IDocumentStore), so resolving the store here is its first build
         // and the point at which the connection to RavenDB is actually opened. BootstrapRavenFrameworkStoreAsync
@@ -1216,6 +1224,13 @@ namespace Stomme.Infrastructure
                 async () => (await aliases.GetAliasesAsync()).Any(alias => alias.TenantId == tenant.TenantId && alias.SiteId > 0));
         }
 
+        // The password policy the host account is created under: the host's identity options (no site exists yet).
+        private PasswordOptions HostPasswordPolicy()
+        {
+            using var scope = _serviceScopeFactory.CreateScope();
+            return scope.ServiceProvider.GetService<Microsoft.Extensions.Options.IOptions<IdentityOptions>>()?.Value.Password ?? new PasswordOptions();
+        }
+
         private string GetInstallationConfig(string key, string defaultValue)
         {
             return _configManager.GetSetting(SettingKeys.InstallationSection, key, defaultValue);
@@ -1223,14 +1238,14 @@ namespace Stomme.Infrastructure
 
         private string NormalizeConnectionString(string connectionString)
         {
-            var dataDirectory = _config.GetDataDirectory();   // THIS host's directory - BL-153
+            var dataDirectory = _config.GetDataDirectory();   // THIS host's directory
             connectionString = connectionString.Replace($"|{Constants.DataDirectory}|", dataDirectory);
             return connectionString;
         }
 
         public void UpdateInstallation()
         {
-            // BL-20: the deliberate ensure step — mint the InstallationId and stamp version/date here on the
+            // The deliberate ensure step — mint the InstallationId and stamp version/date here on the
             // install/upgrade path (MigrateMasterAsync), never inside a getter a runtime read can trip.
             _config.EnsureInstallationId();
         }
@@ -1291,7 +1306,7 @@ namespace Stomme.Infrastructure
             return tenant.DBConnectionString;
         }
 
-        // BL-20: ValidateConfiguration is GONE. It rewrote AvailableDatabases at boot (missing section or
+        // ValidateConfiguration is GONE. It rewrote AvailableDatabases at boot (missing section or
         // pre-6.1.5 ", Stomme.Database." entries) from InstallAsync's first statement — before any
         // install-intent check, so serving the wizard mutated appsettings.json. The catalog is now resolved
         // on READ by DatabaseController (defaults + the 6.1.5 namespace migration), the same D32 pattern

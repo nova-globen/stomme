@@ -12,7 +12,7 @@
 
   <!--
     Live durable-transport round-trip tests over the RavenDB transport. GATED in Stomme.slnx since
-    BL-15 (2026-08-03), fail-not-skip per D46: needs a live RavenDB server and FAILS loudly when the one
+    BL-15, fail-not-skip per D46: needs a live RavenDB server and FAILS loudly when the one
     named by RAVENDB_TEST_URL (default: the infra UAT tier, http://192.168.10.20:8081) is unreachable.
 
     The RabbitMQ round-trip moved to test/Stomme.MessageBus.RabbitMq.Live.Tests (deliberately UNGATED:

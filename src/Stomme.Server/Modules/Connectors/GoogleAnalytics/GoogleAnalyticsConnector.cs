@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleAnalytics
 {
     /// <summary>
-    /// Google Analytics (BL-229, n8n's Google Analytics node) over the GA4 Data API
+    /// Google Analytics (n8n's Google Analytics node) over the GA4 Data API
     /// (<c>https://analyticsdata.googleapis.com/v1beta</c>) as a person signed in - an OAuth client's refresh token granted the
     /// analytics.readonly scope, exchanged at Google's token endpoint through the shared <see cref="OAuth2TokenProvider"/>, as
     /// Gmail's is. A test lists the dimensions and metrics every property has.

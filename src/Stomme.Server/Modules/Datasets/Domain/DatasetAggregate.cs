@@ -14,9 +14,9 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Datasets.Domain
 {
     /// <summary>
-    /// A schema-aware tabular dataset (BL-94 increment 9, D110): a REFERENCE to its origin (never a copy), an inferred
+    /// A schema-aware tabular dataset: a REFERENCE to its origin (never a copy), an inferred
     /// schema, a metadata-only summary, a bounded sample of rows for preview, and a classification that only ever
-    /// escalates. Tenant-owned and site-scoped, named with a normalised twin (D49); its id is the ORIGIN's
+    /// escalates. Tenant-owned and site-scoped, named with a normalised twin; its id is the ORIGIN's
     /// (<see cref="DatasetIdentity"/>), so two registrations of one origin are one row on every store. The published
     /// summary is masked and raw rows are refused for Confidential AND Restricted data (one classification order, Q1).
     /// </summary>
@@ -46,7 +46,7 @@ namespace Stomme.Modules.Datasets.Domain
         /// <summary>The origin reference: a pipeline id, a file id, a connection id plus query, a seed key; null when the origin is the name alone.</summary>
         public string? OriginReference { get; private set; }
 
-        /// <summary>The reference (or, without one, the name) normalised - what <see cref="DatasetIdentity"/> hashes and what a lookup compares (D49).</summary>
+        /// <summary>The reference (or, without one, the name) normalised - what <see cref="DatasetIdentity"/> hashes and what a lookup compares.</summary>
         public string OriginReferenceNormalized { get; private set; }
 
         public DataClassification Classification { get; private set; }
@@ -214,7 +214,7 @@ namespace Stomme.Modules.Datasets.Domain
         /// The id is the TENANT's, the site's and the origin's. The tenant is in the hash because the storage-blind module
         /// store is one per installation and a site id repeats across tenants (the site-per-alias topology): an id derived
         /// from the site and the origin alone COLLIDED on the store's primary key when a second tenant on the same site id
-        /// registered the same origin - measured by the demo-content two-tenant case (BL-94 increment 14), the BL-111
+        /// registered the same origin - measured by the demo-content two-tenant case, the BL-111
         /// class one level down.
         /// </summary>
         public static Guid For(TenantId tenantId, int siteId, OriginKind originKind, string reference)

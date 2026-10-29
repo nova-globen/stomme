@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// <c>api/Health</c> tells the page whether probing is ON (BL-83, found by a browser drive on 2026-09-23): with
+    /// <c>api/Health</c> tells the page whether probing is ON (found by a browser drive on 2026-09-23): with
     /// <c>Health:Enabled = false</c> - what the shipped configuration carried while BL-83 was incomplete, and what an operator
     /// can still set - the page promised a tick "every minute" that the job, logging "Health Probing Is Disabled", would never
     /// deliver.

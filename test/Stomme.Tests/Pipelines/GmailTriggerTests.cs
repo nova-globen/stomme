@@ -34,7 +34,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Gmail Trigger as "Email received" on a Gmail connection: the same watcher, task and handler as an IMAP
+    /// n8n's Gmail Trigger as "Email received" on a Gmail connection: the same watcher, task and handler as an IMAP
     /// mailbox's, the real Gmail connector against a scripted Gmail - a published pipeline watching a label starts once for each
     /// message added to it since, never for one there before, nor for one added to another label; it marks read by the messages'
     /// Gmail ids; a point Gmail no longer keeps is watched afresh; and the editor's Fetch test event asks Gmail for the label's

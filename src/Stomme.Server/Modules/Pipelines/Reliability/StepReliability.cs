@@ -14,7 +14,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Reliability
 {
     /// <summary>
-    /// A step's reliability settings (BL-229 increment 9), as the graph codec keeps them on the step's custom properties: how
+    /// A step's reliability settings, as the graph codec keeps them on the step's custom properties: how
     /// many times a failed step is tried again and how long to wait between tries, and whether the pipeline goes on past it
     /// when it still fails. Bounded here, wherever they come from.
     /// </summary>

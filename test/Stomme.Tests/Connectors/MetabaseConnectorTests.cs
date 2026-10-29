@@ -37,7 +37,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Metabase (n8n's Metabase node) without a server: every number, format and file held to its shape before anything is
+    /// Metabase (n8n's Metabase node) without a server: every number, format and file held to its shape before anything is
     /// sent; an API key sent as x-api-key, or a user's e-mail and password exchanged for a session sent as X-Metabase-Session and a
     /// refused sign-in said; questions simplified to what n8n kept or whole, held to the most; a question's result as rows or as a
     /// CSV saved into the run's folder; databases with their connection's details flattened, as n8n's Simplify did, from a page or
@@ -207,11 +207,11 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the Metabase connector against a real Metabase 0.63 (<c>scripts/metabase-test-server.ps1</c>'s throwaway on
+    /// The Metabase connector against a real Metabase 0.63 (<c>scripts/metabase-test-server.ps1</c>'s throwaway on
     /// loopback, its Sample Database and example content) through the HOST's egress: loopback refused until allowlisted; a test by
     /// the API key and one by the admin's e-mail and password, a wrong password and a wrong key refused in Metabase's words; the
     /// questions simplified, one read, its result as rows held to the most and as a CSV saved into a folder; the Sample Database
-    /// and its fields; the example metrics, one read; the alerts. Fails, never skips, when Metabase is absent (D46).
+    /// and its fields; the example metrics, one read; the alerts. Fails, never skips, when Metabase is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class MetabaseConnectorLiveTests(ITestOutputHelper output)

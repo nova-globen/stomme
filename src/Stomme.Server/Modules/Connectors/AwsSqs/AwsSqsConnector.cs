@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsSqs
 {
     /// <summary>
-    /// Amazon SQS (BL-229, n8n's AWS SQS node: a message sent): an account's queues over SQS's JSON protocol
+    /// Amazon SQS (n8n's AWS SQS node: a message sent): an account's queues over SQS's JSON protocol
     /// (<c>https://sqs.{region}.amazonaws.com</c>, <c>X-Amz-Target: AmazonSQS.*</c>), every call signed with AWS Signature Version
     /// 4 by an IAM user's access key and secret, over the host's egress. A test names how many queues the key sees.
     /// </summary>

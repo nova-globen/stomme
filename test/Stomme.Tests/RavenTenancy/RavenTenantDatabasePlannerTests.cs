@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests.RavenTenancy
 {
     /// <summary>
-    /// BL-176 - the rule that decides a RavenDB tenant's database, against infra UAT's RavenDB: the installation's own database
+    /// The rule that decides a RavenDB tenant's database, against infra UAT's RavenDB: the installation's own database
     /// when the connection string names it; the tenant's own database when it exists; a tenant created BEFORE BL-176 (its own
     /// database never created, its sites in the installation's) kept where its rows are and recorded so the answer is stable;
     /// a new tenant's database created with the search index; another server refused. And the resolver refuses a tenant it was

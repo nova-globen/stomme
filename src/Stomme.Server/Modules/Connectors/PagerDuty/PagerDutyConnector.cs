@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.PagerDuty
 {
     /// <summary>
-    /// PagerDuty (BL-229, n8n's PagerDuty node: incidents created, got, read and updated, their notes, the log entries, a user):
+    /// PagerDuty (n8n's PagerDuty node: incidents created, got, read and updated, their notes, the log entries, a user):
     /// PagerDuty's REST API v2 with an API token, over the host's egress - a write sent from a PagerDuty user's e-mail, the
     /// connection's or the step's. A test names how many abilities the account has.
     /// </summary>

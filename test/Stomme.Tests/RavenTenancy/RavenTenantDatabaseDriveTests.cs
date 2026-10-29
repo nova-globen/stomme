@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.RavenTenancy
 {
     /// <summary>
-    /// BL-176 - RavenDB's tenancy shape DRIVEN on an installed RavenDB host (infra UAT): a second tenant added the way the
+    /// RavenDB's tenancy shape DRIVEN on an installed RavenDB host (infra UAT): a second tenant added the way the
     /// admin's Add-site page adds one, through the real installation path, with a database of its own in its connection
     /// string. Its site, pages, users and guestbook live in THAT database and not the installation's; the installation's
     /// DefaultConnection still names the installation's database; both sites render; and across a restart the routing is
@@ -115,7 +115,7 @@ namespace Stomme.Tests.RavenTenancy
         }
 
         /// <summary>
-        /// A backup of a RavenDB installation carries EVERY tenant database (BL-176): the snapshot layout names tenant two's
+        /// A backup of a RavenDB installation carries EVERY tenant database: the snapshot layout names tenant two's
         /// database by the tenants in it, and a whole-installation restore across a restart puts both tenants back.
         /// </summary>
         [Fact]

@@ -87,7 +87,7 @@ namespace Stomme.Controllers
             List<Setting> settings = new List<Setting>();
             if (await IsAuthorized(alias, entityName, entityId, PermissionNames.View))
             {
-                // BL-147: the site secret store's rows are never listed - not even to the Host. Only the store reads them.
+                // The site secret store's rows are never listed - not even to the Host. Only the store reads them.
                 settings = (await _settings.GetSettingsAsync(entityName, entityId)).Where(item => !IsStoredSecret(item)).ToList();
                 if (await FilterPrivate(alias, entityName, entityId))
                 {
@@ -115,7 +115,7 @@ namespace Stomme.Controllers
             Setting setting = await _settings.GetSettingAsync(entityName, id);
             if (IsStoredSecret(setting))
             {
-                // BL-147: answered exactly like a row that does not exist.
+                // Answered exactly like a row that does not exist.
                 setting = null;
             }
 
@@ -182,14 +182,14 @@ namespace Stomme.Controllers
         {
             var alias = await _tenantManager.GetAliasAsync();
 
-            // BL-147: the row BY ID is what gets overwritten, whatever name the body claims.
+            // The row BY ID is what gets overwritten, whatever name the body claims.
             var existingById = setting == null ? null : await _settings.GetSettingAsync(setting.EntityName, id);
             if (WouldWriteStoredSecret(setting?.EntityName, setting?.SettingName, setting?.IsPrivate ?? false) || IsStoredSecret(existingById))
             {
                 return RefuseStoredSecret("Update", setting.EntityName, setting.EntityId, setting.SettingName);
             }
 
-            // BL-184: the BODY's entity is what gets authorized below, so the body must name the row's own entity - a
+            // The BODY's entity is what gets authorized below, so the body must name the row's own entity - a
             // registered user, allowed their own User settings, otherwise replaced a Site row by its id with a body calling
             // it theirs, and the site's setting was gone (driven).
             if (existingById != null && (!string.Equals(existingById.EntityName, setting.EntityName, StringComparison.OrdinalIgnoreCase) || existingById.EntityId != setting.EntityId))
@@ -226,7 +226,7 @@ namespace Stomme.Controllers
 
         // PUT api/<controller>/site/1/settingname  — the value travels in the BODY
         /// <summary>
-        /// Adds or updates one setting, with the value in the request body (BL-148).
+        /// Adds or updates one setting, with the value in the request body.
         /// </summary>
         /// <remarks>
         /// The route below puts the VALUE IN THE URL, and <c>LogManager</c> copies the request URL into
@@ -244,7 +244,7 @@ namespace Stomme.Controllers
         public Task Put(string entityName, int entityId, string settingName, string settingValue, bool isPrivate)
         {
             // This URL carries the value. Declare a safe one BEFORE anything can log, so no entry raised during
-            // this request records the secret (BL-148). The replacement route above avoids the problem entirely.
+            // this request records the secret. The replacement route above avoids the problem entirely.
             var request = HttpContext?.Request;
             if (request != null)
             {
@@ -316,7 +316,7 @@ namespace Stomme.Controllers
                 var existingSettings = (await _settings.GetSettingsAsync(entityName, entityId)).ToList();
                 foreach (Setting setting in settings)
                 {
-                    // BL-184: the ROUTE's entity is what was authorized, and a new row is added with the entity its BODY
+                    // The ROUTE's entity is what was authorized, and a new row is added with the entity its BODY
                     // names - so a registered user, allowed their own User settings, planted Site rows and Host rows in the
                     // master store (driven). A row naming another entity is not this request's to write; the client
                     // stamps every row with the route's entity, so a legitimate save never carries one.
@@ -330,7 +330,7 @@ namespace Stomme.Controllers
                     Setting existing = existingSettings.FirstOrDefault(item => item.SettingName.Equals(setting.SettingName, StringComparison.OrdinalIgnoreCase));
                     if (IsStoredSecret(existing) || WouldWriteStoredSecret(entityName, setting.SettingName, setting.IsPrivate))
                     {
-                        // BL-147: skipped, not failed - a bulk save carries a whole settings page, and one reserved row
+                        // Skipped, not failed - a bulk save carries a whole settings page, and one reserved row
                         // in it must not cost the administrator the rest of their edit.
                         _logger.Log(LogLevel.Error, this, LogFunction.Security, "Setting {SettingName} Skipped - It Belongs To The Site Secret Store", setting.SettingName);
                         continue;
@@ -338,7 +338,7 @@ namespace Stomme.Controllers
 
                     if (RefusesHostReserved(entityName, setting.SettingName))
                     {
-                        // BL-180: skipped, not failed - a site's settings page carries these rows back as it read them, and an
+                        // Skipped, not failed - a site's settings page carries these rows back as it read them, and an
                         // Administrator's save must not fail over them. Logged only when it would have changed something.
                         if (existing == null || existing.SettingValue != setting.SettingValue)
                         {
@@ -509,7 +509,7 @@ namespace Stomme.Controllers
                             var setting = await _settings.GetSettingAsync(cols[0], entityId, cols[2]);
                             if (IsStoredSecret(setting) || WouldWriteStoredSecret(cols[0], cols[2], isPrivate))
                             {
-                                // BL-147: an import never writes into the site secret store, and does not count the row.
+                                // An import never writes into the site secret store, and does not count the row.
                                 _logger.Log(LogLevel.Error, this, LogFunction.Security, "Imported Setting {SettingName} Skipped - It Belongs To The Site Secret Store", cols[2]);
                                 continue;
                             }
@@ -620,13 +620,13 @@ namespace Stomme.Controllers
                     authorized = User.IsInRole(RoleNames.Admin);
                     if (!authorized)
                     {
-                        // Only a visitor cookie this host issued proves the id (BL-185): one of the caller's own making
+                        // Only a visitor cookie this host issued proves the id: one of the caller's own making
                         // read and wrote any visitor's settings.
                         authorized = (entityId == _visitorCookie.VisitorIdOf(HttpContext.Request, alias.SiteId));
                     }
                     break;
                 default: // custom entity
-                    // BL-245: closed to anonymous callers. A custom entity is an app module's own, and a row its author
+                    // Closed to anonymous callers. A custom entity is an app module's own, and a row its author
                     // left non-private was readable by anyone; the framework's own pages read these only signed in
                     // (profile options, user administration). Site settings stay public: the browser client renders from them.
                     authorized = User.Identity?.IsAuthenticated == true;
@@ -732,7 +732,7 @@ namespace Stomme.Controllers
         // switches match a multi-word (camelCase) name like "ModuleDefinition". FormatName title-cases
         // ("ModuleDefinition" -> "Moduledefinition"), which never equals the constant, so ModuleDefinition —
         // the ONLY multi-word entity gated in those switches — silently fell through to the custom-entity
-        // default branch and was denied for the host (D88). Unknown/custom entities fall back to FormatName,
+        // default branch and was denied for the host. Unknown/custom entities fall back to FormatName,
         // preserving the existing default-branch behaviour.
         private string NormalizeEntityName(string name)
         {
@@ -747,7 +747,7 @@ namespace Stomme.Controllers
         }
 
         /// <summary>
-        /// True for a row of the SITE SECRET STORE (BL-147): a PRIVATE Site setting whose name is in the store's reference-key
+        /// True for a row of the SITE SECRET STORE: a PRIVATE Site setting whose name is in the store's reference-key
         /// namespace. <see cref="ISiteSecretStore"/> is the only thing that reads or writes one; through this API a site
         /// Administrator - who need not hold the module's own key - could otherwise read the ciphertext, overwrite the
         /// secret or delete it (measured: all three). The name is matched in LOWER CASE because SQL Server's default
@@ -767,7 +767,7 @@ namespace Stomme.Controllers
             && SiteSecretStore.IsValidReferenceKey(settingName.ToLowerInvariant());
 
         /// <summary>
-        /// BL-180: the Site settings that widen a site's egress to private and loopback addresses - the connector egress
+        /// The Site settings that widen a site's egress to private and loopback addresses - the connector egress
         /// (which the AI assistant's model endpoint rides too), the webhook channel's and the MCP client's. Opening the
         /// installation's own network is the Host's decision, not a site Administrator's (D110's correction), so every door
         /// refuses them to anyone else; the Connections page is where the Host sets the first. Matched case-insensitively and
@@ -804,7 +804,7 @@ namespace Stomme.Controllers
         }
 
         /// <summary>
-        /// A setting WITHOUT its value, for the event log (BL-112).
+        /// A setting WITHOUT its value, for the event log.
         /// </summary>
         /// <remarks>
         /// <c>LogManager</c> serialises every argument whole into BOTH <c>Log.Properties</c> and the interpolated

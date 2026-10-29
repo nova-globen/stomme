@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Reddit
 {
     /// <summary>
-    /// Reddit (BL-229, n8n's Reddit node: posts, comments, the profile, subreddits and users): an account over Reddit's OAuth API
+    /// Reddit (n8n's Reddit node: posts, comments, the profile, subreddits and users): an account over Reddit's OAuth API
     /// (<c>https://oauth.reddit.com</c>) through an app's client and a permanent refresh token, exchanged at Reddit's token
     /// endpoint (the client as HTTP Basic) through the shared <see cref="OAuth2TokenProvider"/>, the access token a bearer and the
     /// <c>user_agent</c> setting on every call, as Reddit asks. A test names the account.

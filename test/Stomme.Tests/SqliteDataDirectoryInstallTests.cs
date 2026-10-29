@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-194 - the installer's SQLite default lands in the host's data directory, not the process's working directory.
+    /// The installer's SQLite default lands in the host's data directory, not the process's working directory.
     /// </summary>
     /// <remarks>
     /// Reported 2026-10-02 by the Didin session: the wizard proposed <c>Data Source=Stomme-&lt;ts&gt;.db;</c>, a path relative

@@ -19,7 +19,7 @@ namespace Stomme.Modules.Pipelines.Steps
         public static string SiteRoot(StepExecutionContext context) =>
             SiteRoot(context.GetService<IOptions<PipelineStepOptions>>()?.Value ?? new PipelineStepOptions(), context.GetService<ITenantAccessor>()?.TenantId);
 
-        /// <summary>The site's folder for an engine tenant - the steps' and the Files page's one rule (BL-229).</summary>
+        /// <summary>The site's folder for an engine tenant - the steps' and the Files page's one rule.</summary>
         public static string SiteRoot(PipelineStepOptions options, string? tenant)
         {
             var root = options.Files.Root;
@@ -34,7 +34,7 @@ namespace Stomme.Modules.Pipelines.Steps
         /// <summary>The folder an engine tenant's files are in, under the root: its id made a name ("1/2" is "1-2"), "default" for none.</summary>
         public static string SiteFolder(string? tenant) => string.IsNullOrWhiteSpace(tenant) ? "default" : Sanitize(tenant);
 
-        /// <summary>The Stomme tenant a site's folder belongs to (BL-233, a tenant-scoped restore) - false for "default" and any other name.</summary>
+        /// <summary>The Stomme tenant a site's folder belongs to (a tenant-scoped restore) - false for "default" and any other name.</summary>
         public static bool TenantOfSiteFolder(string folder, out int tenantId)
         {
             tenantId = 0;

@@ -59,7 +59,7 @@ namespace Stomme.Tests
         {
             var services = new ServiceCollection();
 
-            // Stand-in for the host's lazily-built shared document store (D54/D56): the messaging wiring
+            // Stand-in for the host's lazily-built shared document store: the messaging wiring
             // resolves IDocumentStore at runtime, so composition needs only a registration — never a
             // connection. The real host registers this via AddRavenFrameworkStore before AddStommeMessaging.
             using var store = new DocumentStore();

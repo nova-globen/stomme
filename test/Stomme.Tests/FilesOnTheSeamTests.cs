@@ -25,7 +25,7 @@ using File = Stomme.Models.File;
 
 namespace Stomme.Tests
 {
-    // The File cluster on the persistence seam (D3/D7/D49) — the LAST framework cluster to cross, and the one
+    // The File cluster on the persistence seam — the LAST framework cluster to cross, and the one
     // D48 escalated under D22 rule 9 rather than ship on one provider.
     //
     // D48 measured the blocker on both live servers: FileRepository's two name lookups folded case on the
@@ -320,7 +320,7 @@ namespace Stomme.Tests
     }
 
     // The D19 blocker, for the entity that CAUSED it. File.Folder was the mapped navigation that made EF
-    // rediscover the Folder contract and claim FolderAggregate's table (D48). D49 maps FileAggregate onto the
+    // rediscover the Folder contract and claim FolderAggregate's table. D49 maps FileAggregate onto the
     // same `file` table the File contract used to own, so the contract must be gone from the tenant model —
     // and the DbSet<File> deletion from TenantDBContext is the compiler's half of that proof.
     public class FileMustNotBeResurrectedTests
@@ -502,7 +502,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// <b>THE WRITE-LIFETIME PIN (D47), and the reason FileRepository resolves its store PER WRITE where
+    /// <b>THE WRITE-LIFETIME PIN, and the reason FileRepository resolves its store PER WRITE where
     /// FolderRepository constructor-injects one.</b>
     /// </summary>
     /// <remarks>
@@ -780,7 +780,7 @@ namespace Stomme.Tests
         /// <b>This is why the shape matters, and why it does NOT make File a D47 cluster.</b> No File call site
         /// reaches it — every write path is an if/else or a loop over distinct keys (see the remarks on
         /// <see cref="FileRepository"/>). So <see cref="FileRepository"/> constructor-injects its store like
-        /// Folder (D48) and the eleven before it, rather than cargo-culting UrlMapping's per-write resolve.
+        /// Folder and the eleven before it, rather than cargo-culting UrlMapping's per-write resolve.
         /// D44 called this "not reachable in production, but one line away". This test is that line, kept
         /// executable.
         /// </para>

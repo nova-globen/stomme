@@ -26,11 +26,11 @@ using Xunit;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// BL-97 increment 11 - the lock and the session on every store an install can choose (D79/D80): the predecessor platform's
+    /// The lock and the session on every store an install can choose: the predecessor platform's
     /// <c>Repository_RoundTripsAResourceLock</c> and <c>Repository_RoundTripsAnEditSession</c> by name, on four stores instead
     /// of an in-memory one - the resource reference as one scalar, the participants and the change stream on the JSON
     /// collection columns, a release read back; a site reads its own and never another's; the erasure participant deletes
-    /// the user's locks and removes them from every session of the site (D112), idempotently; the data package carries them
+    /// the user's locks and removes them from every session of the site, idempotently; the data package carries them
     /// (D107). Composed through the module's OWN startup, the way the host does it.
     /// </summary>
     public abstract class CollaborationStoreConformanceTests : IAsyncLifetime

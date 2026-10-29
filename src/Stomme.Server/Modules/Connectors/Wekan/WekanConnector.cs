@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Wekan
 {
     /// <summary>
-    /// Wekan (BL-229, n8n's Wekan node: boards, lists, cards, comments, checklists and their items) over Wekan's REST API
+    /// Wekan (n8n's Wekan node: boards, lists, cards, comments, checklists and their items) over Wekan's REST API
     /// (<c>{address}/api</c>), signed in as n8n's credential does - a user's name or e-mail and password exchanged for a token
     /// (<c>POST /users/login</c>), sent as a bearer token - and signed out again when the run ends, so no token is left behind. A
     /// test names the user the connection signs in as.

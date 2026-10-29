@@ -24,8 +24,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 10b - the assistant DRIVEN on installed hosts on SQLite and PostgreSQL, over HTTP, with a scripted model
-    /// composed into the host as a provider (D113: no live model is called). The page is placed from the module's template; a
+    /// The assistant DRIVEN on installed hosts on SQLite and PostgreSQL, over HTTP, with a scripted model
+    /// composed into the host as a provider (no live model is called). The page is placed from the module's template; a
     /// user without <c>assistant:use</c> is refused; a site with the assistant off answers its reason; then the host asks for a
     /// board - the orchestrator routes to the Dashboard Designer, which reads the site's datasets through the Datasets module
     /// AS THE USER and proposes a board bound to one of them - nothing is created until the apply, which creates the board

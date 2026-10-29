@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Stomme.Dashboards
 {
-    /// <summary>What a site's dashboard viewers are told over the hub (BL-96 increment 10): which dataset changed and how - <c>Refreshed</c> or <c>SchemaChanged</c>. No rows, no values: the viewer re-reads through the API, under its own key.</summary>
+    /// <summary>What a site's dashboard viewers are told over the hub: which dataset changed and how - <c>Refreshed</c> or <c>SchemaChanged</c>. No rows, no values: the viewer re-reads through the API, under its own key.</summary>
     public sealed record DashboardDatasetChange(Guid DatasetId, string Kind);
 
     public static class DashboardHubMethods
@@ -30,7 +30,7 @@ namespace Stomme.Dashboards
 
     /// <summary>
     /// Each subscriber is called in the context it subscribed in (<see cref="Stomme.Transport.Realtime.SiteSignal{TMessage}"/>).
-    /// <b>CORRECTED (BL-97 increment 12):</b> it invoked its subscribers on the raiser's thread, so a viewer's circuit re-read
+    /// <b>CORRECTED:</b> it invoked its subscribers on the raiser's thread, so a viewer's circuit re-read
     /// its widgets as the user whose request refreshed the dataset.
     /// </summary>
     public sealed class DashboardDataSignal : Stomme.Transport.Realtime.SiteSignal<DashboardDatasetChange>, IDashboardDataSignal
@@ -48,7 +48,7 @@ namespace Stomme.Dashboards
     public sealed record PivotRow(string Key, int Count, double? Sum);
 
     /// <summary>
-    /// The pivot widget's computation (BL-96 increment 10), over the bounded preview rows the widget's data carries: the
+    /// The pivot widget's computation, over the bounded preview rows the widget's data carries: the
     /// rows grouped by the first bound column, counted, and the second bound column summed where it parses as a number
     /// (invariant culture); groups in first-seen order, a missing key as an empty string. BCL-only, so the page and a
     /// test compute the same table.

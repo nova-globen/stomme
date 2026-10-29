@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Monica CRM connector's live tests' server (BL-229): MONICA_TEST_URL / MONICA_TEST_TOKEN where set, otherwise this machine's
+    /// The Monica CRM connector's live tests' server: MONICA_TEST_URL / MONICA_TEST_TOKEN where set, otherwise this machine's
     /// throwaway Monica 4.1 that <c>scripts/monica-test-server.ps1</c> makes on 127.0.0.1:18094 - its user's API token, made by
     /// Monica's own application, in the file that script writes under the user's temp folder. Neither is a FAILURE that says how to
-    /// get one, never a skip (D46).
+    /// get one, never a skip.
     /// </summary>
     internal static class MonicaCrmTestEndpoint
     {

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Authorization;
 
 /// <summary>
-/// Composition of the authorization bridge (D99, BL-99): the three ports a gated context consumes, plus the
+/// Composition of the authorization bridge: the three ports a gated context consumes, plus the
 /// <see cref="AuthorizationBehavior{TRequest,TResponse}"/> that enforces <c>[Requires]</c> on every mediator
 /// <c>Send</c>.
 /// </summary>

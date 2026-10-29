@@ -45,7 +45,7 @@ namespace Stomme.Models
         /// </summary>
         /// <remarks>
         /// NOT an EF navigation any more, and it cannot become one again. The Role cluster moved onto the
-        /// persistence seam (D22): the Role table is owned by <c>RoleAggregate</c>, and an EF navigation from
+        /// persistence seam: the Role table is owned by <c>RoleAggregate</c>, and an EF navigation from
         /// here would make EF rediscover <see cref="Role"/> as a second entity type on that same table, which
         /// breaks the model at startup. <see cref="RoleId"/> is the persisted reference (the database foreign
         /// key <c>FK_UserRole_Role</c> is declared by <c>UserRoleEntityBuilder</c> in the migration set, not by

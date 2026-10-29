@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 5 (D110) - the predecessor platform's ConnectionTests (7) ported by name onto the reshaped aggregate (a site, a
+    /// The predecessor platform's ConnectionTests (7) ported by name onto the reshaped aggregate (a site, a
     /// normalised name, a lower-cased type, an endpoint value object that refuses a credential, settings as one JSON
     /// value, credential field NAMES only, a bounded timeout, UTC instants; CredentialRef and MaxRetries gone), plus the
     /// endpoint refusals (ConnectionEndpointCredentialRefusalTests) and the credential key grammar in both directions

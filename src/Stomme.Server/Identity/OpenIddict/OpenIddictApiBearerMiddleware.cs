@@ -23,7 +23,7 @@ namespace Stomme.Identity.OpenIddict
     /// lifetime, the host-inferred issuer - another tenant's token is ID2088 - and the token's entry, so a revoked token
     /// fails); it must be meant for Stomme's API (the <see cref="StommeOpenIddictExtensions.ApiResource"/> audience
     /// and the <c>api</c> scope) and carry a PERSON - or, for a client-credentials token, whose subject is its client, the
-    /// application's SERVICE ACCOUNT while <c>OpenIddict:ServiceAccounts:Enabled</c> is on (BL-224, <see cref="ServiceAccounts"/>);
+    /// application's SERVICE ACCOUNT while <c>OpenIddict:ServiceAccounts:Enabled</c> is on (<see cref="ServiceAccounts"/>);
     /// otherwise such a token authenticates no one. The subject is resolved to a user of the REQUEST's site and the
     /// principal is Stomme's own (<see cref="UserSecurity.CreateClaimsIdentity"/>), so roles and permissions are read
     /// at every request and never frozen into the token; a deleted user's token authenticates no one. Anything that fails
@@ -97,7 +97,7 @@ namespace Stomme.Identity.OpenIddict
             if (string.Equals(subject, client, StringComparison.Ordinal))
             {
                 // No person behind the token (client credentials): its application's SERVICE ACCOUNT, when the switch is on
-                // and the server made one (BL-224) - an account of the derived name that is not locked out for good is a
+                // and the server made one - an account of the derived name that is not locked out for good is a
                 // person's, never used for an application.
                 var configuration = context.RequestServices.GetRequiredService<Microsoft.Extensions.Configuration.IConfigurationRoot>();
                 if (!ServiceAccounts.IsEnabled(configuration))

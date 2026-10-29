@@ -126,7 +126,7 @@ namespace Stomme.Controllers
                         {
                             new Permission(PermissionNames.Browse, userId, true),
                             new Permission(PermissionNames.View, userId, true),
-                            // BL-115: a user's My Folder is PRIVATE. It used to grant View to Everyone, and an anonymous caller
+                            // A user's My Folder is PRIVATE. It used to grant View to Everyone, and an anonymous caller
                             // matches Everyone, so every file under Users/{id}/ was downloadable by anyone who guessed the
                             // sequential file id. The owner and site administrators see it; nobody else does.
                             new Permission(PermissionNames.View, RoleNames.Admin, true),
@@ -176,7 +176,7 @@ namespace Stomme.Controllers
                 }
                 if (await _userPermissions.IsAuthorizedAsync(User, PermissionNames.Edit, permissions))
                 {
-                    // BL-102: a row for another entity would be written as a SITE-WIDE row (EntityId -1), so Edit on
+                    // A row for another entity would be written as a SITE-WIDE row (EntityId -1), so Edit on
                     // the parent folder would be enough to grant any framework policy. Refused BEFORE any write.
                     var foreign = PermissionRowScope.ForeignRows(folder.PermissionList, EntityNames.Folder);
                     if (foreign.Any())
@@ -234,7 +234,7 @@ namespace Stomme.Controllers
 
             if (ModelState.IsValid && folder.SiteId == alias.SiteId && folder.FolderId == id && (await _folders.GetFolderAsync(folder.FolderId, false)) != null && await _userPermissions.IsAuthorizedAsync(User, folder.SiteId, EntityNames.Folder, folder.FolderId, PermissionNames.Edit))
             {
-                // BL-102: a row for another entity would be written as a SITE-WIDE row (EntityId -1). Refused BEFORE
+                // A row for another entity would be written as a SITE-WIDE row (EntityId -1). Refused BEFORE
                 // the directory move and the folder write below, so a refusal is never a partial write.
                 var foreign = PermissionRowScope.ForeignRows(folder.PermissionList, EntityNames.Folder);
                 if (foreign.Any())

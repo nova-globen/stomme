@@ -3,7 +3,7 @@
 @inject INotificationsService NotificationsService
 
 @*
-    Delivery channels (BL-78 step 5, NEW - the predecessor platform had no channel page) - manage-channels. The credential is WRITE-ONLY: it is sent
+    Delivery channels (NEW - the predecessor platform had no channel page) - manage-channels. The credential is WRITE-ONLY: it is sent
     once to the server's site secret store and never displayed; the page shows only whether the channel holds a reference.
 *@
 
@@ -124,7 +124,7 @@ else
         _rateLimit = null;
         _message = ""; // a message from the last save does not describe the form now open
         _editing = true;
-        BringIntoView("notifications-channel-editor"); // below the channels (BL-22)
+        BringIntoView("notifications-channel-editor"); // below the channels
     }
 
     private async Task EditAsync(Guid id)

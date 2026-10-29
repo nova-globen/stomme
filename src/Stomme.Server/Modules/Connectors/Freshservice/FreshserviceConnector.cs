@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Freshservice
 {
     /// <summary>
-    /// Freshservice (BL-229, n8n's Freshservice node: an IT service desk's tickets, changes, problems, releases, assets and the
+    /// Freshservice (n8n's Freshservice node: an IT service desk's tickets, changes, problems, releases, assets and the
     /// people and groups around them): a desk's API v2 with an API key as HTTP Basic, over the host's egress. A test names the
     /// desk's latest ticket.
     /// </summary>

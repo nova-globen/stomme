@@ -19,7 +19,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 10 - branching an author builds without code, run by the ENGINE: a Decision, an If and a While test a
+    /// Branching an author builds without code, run by the ENGINE: a Decision, an If and a While test a
     /// condition of rules (the module's <c>Condition</c> kind); a Switch (flow) goes out through the case that matches, or Default;
     /// a Fork (flow) goes out through every branch it names. Each comes back from the engine's document as written.
     /// </summary>
@@ -193,7 +193,7 @@ namespace Stomme.Tests.Pipelines
             var catalog = ListStepsQueryHandler.Catalog(scope.ServiceProvider.GetRequiredService<IStepRegistry>());
             Assert.Equal(StepCatalogEntry.CaseOutcomes, catalog.Single(entry => entry.Type == "Stomme.FlowSwitch").OutcomesFrom);
             Assert.Equal(StepCatalogEntry.BranchesOutcomes, catalog.Single(entry => entry.Type == "Stomme.FlowFork").OutcomesFrom);
-            // BL-229: Classify text's categories are its ports through the Fork's own input, so the editor draws one per category.
+            // Classify text's categories are its ports through the Fork's own input, so the editor draws one per category.
             Assert.Equal(StepCatalogEntry.BranchesOutcomes, catalog.Single(entry => entry.Type == "Stomme.ClassifyText").OutcomesFrom);
             Assert.Equal(new[] { "Stomme.ClassifyText", "Stomme.FlowFork", "Stomme.FlowSwitch" }, catalog.Where(entry => entry.OutcomesFrom is not null).Select(entry => entry.Type).OrderBy(type => type, StringComparer.Ordinal));
 

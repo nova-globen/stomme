@@ -32,7 +32,7 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D61 — THE PER-TENANT OPENIDDICT AUTHORITY SPIKE, DRIVEN.
+    /// THE PER-TENANT OPENIDDICT AUTHORITY SPIKE, DRIVEN.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -217,7 +217,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// D70 item 1 — client_id lookup is CASE-SENSITIVE on EVERY provider, DRIVEN. Both an END-TO-END token
+        /// Client_id lookup is CASE-SENSITIVE on EVERY provider, DRIVEN. Both an END-TO-END token
         /// endpoint assertion (all providers) AND a fix-sensitive STORE-LEVEL assertion (RavenDB).
         /// </summary>
         /// <remarks>
@@ -355,7 +355,7 @@ namespace Stomme.Tests
             await tenantManager.SetAliasAsync(alias);
 
             // Relational: create the per-tenant OpenIddict schema (EnsureCreated). RavenDB: the context is not
-            // registered on a document install (D62) — the per-tenant OpenIddict database is created lazily by the
+            // registered on a document install — the per-tenant OpenIddict database is created lazily by the
             // session provider on the first store write below, so nothing to do here.
             var context = sp.GetService<TenantOpenIddictDbContext>();
             if (context != null)
@@ -465,7 +465,7 @@ namespace Stomme.Tests
 
             /// <summary>
             /// The provider type to pre-seed into <c>Database:DefaultDBType</c> BEFORE the host is built, or null
-            /// to leave it at the fresh-boot default (D62). OpenIddict picks its store provider at COMPOSITION
+            /// to leave it at the fresh-boot default. OpenIddict picks its store provider at COMPOSITION
             /// time (see <c>StommeOpenIddictExtensions</c>), so a RavenDB run must declare the Raven provider
             /// before <c>BuildAppAsync</c> or the EF store branch would be baked in; the relational providers rely
             /// on the default and return null.
@@ -502,7 +502,7 @@ namespace Stomme.Tests
             {
                 // Microsoft.Data.Sqlite pools by connection string; release the four files so the scratch tree
                 // can be deleted — BY THOSE FOUR STRINGS. The process-wide ClearAllPools that used to stand here
-                // also released every other suite's pool, mid-request (BL-104).
+                // also released every other suite's pool, mid-request.
                 ScratchSqlite.Release(_tenantA);
                 ScratchSqlite.Release(_tenantB);
                 ScratchSqlite.Release(_oidcA);
@@ -550,7 +550,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// The RavenDB provider (D62). Tenant A/B each get their own RavenDB database, and each tenant's
+        /// The RavenDB provider. Tenant A/B each get their own RavenDB database, and each tenant's
         /// dedicated OpenIddict database is a SEPARATE RavenDB database again — the document-store analogue of
         /// B1's per-tenant relational databases, so tenant A's clients/tokens are physically invisible at tenant
         /// B. Connection strings are RavenDB descriptors (<c>Url=…;Database=…</c>) against the local server on
@@ -574,7 +574,7 @@ namespace Stomme.Tests
             public string OpenIddictAConnectionString => Build($"stomme_oidc_oa_{_suffix}");
             public string OpenIddictBConnectionString => Build($"stomme_oidc_ob_{_suffix}");
             // Raven: OpenIddict chooses its store provider at composition time, so the provider must be declared
-            // before the host is built (D62).
+            // before the host is built.
             public string DatabaseTypePreseed => DatabaseType;
 
             public void BindToScratch(string scratch) { /* RavenDB keys off a guid + server URL, not the scratch dir */ }
@@ -643,7 +643,7 @@ namespace Stomme.Tests
                     }
                 };
 
-                // D62: OpenIddict picks EF vs Raven stores at COMPOSITION time from Database:DefaultDBType, so a
+                // OpenIddict picks EF vs Raven stores at COMPOSITION time from Database:DefaultDBType, so a
                 // RavenDB run must declare the provider before the host is built. Relational runs leave it unset
                 // (null) and inherit the EF branch as the default.
                 if (provider.DatabaseTypePreseed != null)
@@ -664,7 +664,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

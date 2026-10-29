@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - SendGrid: the API key as the bearer; contacts an SGQL query finds, or the latest, at most 50 and SendGrid's count
+    /// SendGrid: the API key as the bearer; contacts an SGQL query finds, or the latest, at most 50 and SendGrid's count
     /// of them on each; one got by its id or its address; contacts added or changed (one with its details, several by address)
     /// and deleted (by ids, or all); the lists page by page by SendGrid's token up to the most asked for, one got with a sample,
     /// made, renamed and deleted; a mail sent - a body or a dynamic template, copies, a reply-to, categories, headers, a time, the

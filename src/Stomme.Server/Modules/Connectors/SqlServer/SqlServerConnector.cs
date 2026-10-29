@@ -13,7 +13,7 @@ using Microsoft.Data.SqlClient;
 namespace Stomme.Modules.Connectors.SqlServer
 {
     /// <summary>
-    /// The SQL Server connector (BL-96 increment 2, lifted from the predecessor platform's `sqlserver` - SQL mode only, ODBC dropped): the
+    /// The SQL Server connector (lifted from the predecessor platform's `sqlserver` - SQL mode only, ODBC dropped): the
     /// endpoint is a SqlClient connection string WITHOUT credentials; the Basic scheme's <c>username</c>/<c>password</c>
     /// are applied from the per-site secret store. A test opens and runs <c>SELECT 1</c>; the <c>query</c> operation
     /// streams rows, its <c>@name</c> values bound as parameters (<see cref="SqlValues"/>).
@@ -90,7 +90,7 @@ namespace Stomme.Modules.Connectors.SqlServer
             }
             catch (Exception ex) when (ex is SqlException or TimeoutException or InvalidOperationException or SocketException)
             {
-                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner (D110)
+                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner
             }
         }
 

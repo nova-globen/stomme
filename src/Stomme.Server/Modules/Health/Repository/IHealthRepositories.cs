@@ -11,7 +11,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Health.Persistence
 {
     /// <summary>
-    /// The module's closed read surface (D104).
+    /// The module's closed read surface.
     /// </summary>
     /// <remarks>
     /// <para>

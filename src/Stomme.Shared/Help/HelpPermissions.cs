@@ -4,7 +4,7 @@ using Stomme.Shared;
 namespace Stomme.Help
 {
     /// <summary>
-    /// Contextual help's permission KEYS (BL-84 / D103 item 8), decided by the authorization bridge (D99).
+    /// Contextual help's permission KEYS, decided by the authorization bridge.
     /// </summary>
     /// <remarks>
     /// <para>

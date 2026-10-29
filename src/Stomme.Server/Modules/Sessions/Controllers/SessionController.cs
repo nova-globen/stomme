@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Sessions.Controllers
 {
     /// <summary>
-    /// The sessions API (BL-119). <c>GET api/Session</c> and <c>DELETE api/Session/{id}</c> are the caller's OWN sessions
+    /// The sessions API. <c>GET api/Session</c> and <c>DELETE api/Session/{id}</c> are the caller's OWN sessions
     /// on this site; <c>GET api/Session/site</c> and <c>DELETE api/Session/site/{id}</c> are every session of the site,
     /// for Administrators. The site is always the request's own and the user always the caller - nothing here takes one.
     /// </summary>

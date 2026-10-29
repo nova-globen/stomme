@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// What the startup lock actually promises (BL-108) — and the class of defect that made it promise less
+    /// What the startup lock actually promises — and the class of defect that made it promise less
     /// than it looked like.
     /// </summary>
     public class DistributedLockManagerTests

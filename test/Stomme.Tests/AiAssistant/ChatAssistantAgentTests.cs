@@ -11,7 +11,7 @@ using static Stomme.Tests.AiAssistant.TurnScriptChatClient;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 10 - the predecessor platform's <c>ChatAssistantAgentTests</c>, by name, over a scripted model behind the REAL metered
+    /// The predecessor platform's <c>ChatAssistantAgentTests</c>, by name, over a scripted model behind the REAL metered
     /// client. <b>CHANGED:</b> metering is per MODEL CALL through <see cref="MeteredChatClient"/> - a tool round and the answer
     /// are two rows, each attributed to the agent (the predecessor platform recorded one aggregate row per turn with a latency); a disabled
     /// assistant surfaces <see cref="AssistantUnavailableException"/> with its reason (the predecessor platform: InvalidOperationException).

@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - HaloPSA (n8n's HaloPSA node: a service desk's clients, their sites and users, and its tickets): the API
+    /// HaloPSA (n8n's HaloPSA node: a service desk's clients, their sites and users, and its tickets): the API
     /// application's client credentials at Halo's token endpoint, Halo's resource server with the token as a bearer; records
     /// read page by page, no further than asked, a short page or Halo's count the end, by Halo's search, active or inactive
     /// ones alone and Halo's own query parameters; one got, created (never with an id), updated (got first, so never created)

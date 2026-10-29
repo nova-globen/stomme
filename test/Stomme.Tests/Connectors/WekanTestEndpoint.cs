@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Wekan connector's live tests' server (BL-229): WEKAN_TEST_URL / WEKAN_TEST_USERNAME / WEKAN_TEST_PASSWORD where set,
+    /// The Wekan connector's live tests' server: WEKAN_TEST_URL / WEKAN_TEST_USERNAME / WEKAN_TEST_PASSWORD where set,
     /// otherwise this machine's throwaway Wekan 12 that <c>scripts/wekan-test-server.ps1</c> makes on 127.0.0.1:18090 - its user
     /// kafe, registered by that script, and the password in the file it writes under the user's temp folder. Neither is a
-    /// FAILURE that says how to get one, never a skip (D46).
+    /// FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class WekanTestEndpoint
     {

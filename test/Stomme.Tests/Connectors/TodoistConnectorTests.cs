@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Todoist: the token as the bearer; todoist.com's address taken to the API, a stand-in's to its own /api/v1; a
+    /// Todoist: the token as the bearer; todoist.com's address taken to the API, a stand-in's to its own /api/v1; a
     /// project's tasks page by page by Todoist's cursor up to the most asked for, a page no bigger than what is left, by a section,
     /// a parent, a label and ids too, or by a filter on its own; each task a plain record; a task got, created (the Inbox when no
     /// project; a priority by its number or word; a due date by words, a day or a time in UTC; labels, a duration, a deadline),

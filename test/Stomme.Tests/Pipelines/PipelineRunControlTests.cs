@@ -23,7 +23,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - a run stopped where it is, by the ENGINE through the module's run-control step middleware: a run a person asks to
+    /// A run stopped where it is, by the ENGINE through the module's run-control step middleware: a run a person asks to
     /// stop while it works, and one busy longer than its pipeline's time limit (n8n's "Timeout Workflow"), is cancelled before its
     /// next step - that step, and every one after it, does not start, and the run's log says why. The time a run waits is not
     /// counted: each burst of work has the whole limit.

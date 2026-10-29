@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - PagerDuty (n8n's PagerDuty node: incidents created, got, read and updated, their notes, the log entries, a user):
+    /// PagerDuty (n8n's PagerDuty node: incidents created, got, read and updated, their notes, the log entries, a user):
     /// every call PagerDuty's REST API v2 - or the address given - with the token in PagerDuty's own header and its version
     /// asked for, a write sent from the step's or the connection's e-mail; a list page by page by offset, the limit fixed and no
     /// bigger than asked, PagerDuty's more the end, with its filters as lists, its times in UTC, a sort, what to include and a

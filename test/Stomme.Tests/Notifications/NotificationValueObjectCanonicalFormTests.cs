@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 (D100 point 7) - NOT a ported case: the eight notification value objects are
+    /// NOT a ported case: the eight notification value objects are
     /// <see cref="IStringValueObject"/>s, so every store persists them as their canonical <c>Value</c> and rebuilds
     /// them through <c>Create(string)</c>. These facts pin the documented canonical strings and that
     /// <c>Create(x.Value)</c> equals <c>x</c> for each, plus the invariants the string form adds (minute-precision
@@ -92,7 +92,7 @@ namespace Stomme.Tests.Notifications
             Assert.Equal("7", new Recipient(RecipientKind.User, " 7 ").Address);
         }
 
-        // EXTENDED (D100 point 7 / D101): the transport stores a secret REFERENCE KEY, never the secret - so a value
+        // EXTENDED: the transport stores a secret REFERENCE KEY, never the secret - so a value
         // in the reference slot that is not a well-formed ISiteSecretStore key (a pasted token, a URI) is rejected.
         [Theory]
         [InlineData("sk-live-123")]

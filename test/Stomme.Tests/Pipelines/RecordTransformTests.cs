@@ -23,7 +23,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - the record transformations n8n users reach for (Filter, Sort, Limit, Remove Duplicates, Summarize, Split Out,
+    /// The record transformations n8n users reach for (Filter, Sort, Limit, Remove Duplicates, Summarize, Split Out,
     /// Merge), each run by the engine as the host composes it: the result each gives, the values compared by what they hold
     /// (numbers as numbers, dates as dates, otherwise text), Filter's rules read by the one condition evaluator with the
     /// record's fields, what each refuses saying why, and a chain of them through the records convention.

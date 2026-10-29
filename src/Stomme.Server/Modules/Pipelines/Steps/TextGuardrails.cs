@@ -56,7 +56,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// BL-229 - the pattern half of n8n's Guardrails node, written here (n8n's code is not under a licence this product can take):
+    /// The pattern half of n8n's Guardrails node, written here (n8n's code is not under a licence this product can take):
     /// keywords, personal data, secret keys, URLs and custom patterns found in a text, each finding its check, its kind and where
     /// it is - never what it matched, so a run's data does not repeat the secret it caught - and the text with each finding
     /// replaced by its kind in brackets (Sanitize). Personal data is held to its checksum where it has one - a card number's

@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.CloudUsage
 {
     /// <summary>
-    /// BL-97 increment 4 - CloudUsage DRIVEN over HTTP on installed hosts on SQLite and PostgreSQL: the page served from the
+    /// CloudUsage DRIVEN over HTTP on installed hosts on SQLite and PostgreSQL: the page served from the
     /// module's template; an <c>azurecost</c> connection created through the Connections API with its token in the site's
     /// secret store; a sync through <c>api/CloudUsage</c> recording the site's rows and refreshing a dataset the Datasets API
     /// then lists; the rollups and a budget read back over HTTP; a <c>rest</c> connection refused for the Azure source by

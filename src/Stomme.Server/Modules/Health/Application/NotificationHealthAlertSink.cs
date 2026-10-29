@@ -27,10 +27,10 @@ namespace Stomme.Modules.Health.Application
     /// and the message stays on the row, behind <c>health:view</c>.
     /// </para>
     /// <para>
-    /// <b>Who is told depends on the SCOPE, which is a refinement of D104 item 7.</b> The design said Host users
+    /// <b>Who is told depends on the SCOPE, which is a refinement.</b> The design said Host users
     /// for everything. A Site-scope subject is that site's own business — its configured mail server — and its
     /// operators are the people who can fix it, so they are told: its administrators and the Host Users
-    /// (<see cref="SiteOperators"/>; a fresh install's site has no administrator at all, BL-177). A Tenant- or Installation-scope subject
+    /// (<see cref="SiteOperators"/>; a fresh install's site has no administrator at all). A Tenant- or Installation-scope subject
     /// describes a dependency SHARED across sites, which is the operator's business and nobody else's, so those
     /// go to Host users only. Telling every site's administrators that the shared database is down would be one
     /// alert per site for one fault, which is the mail-bomb this row exists to avoid.

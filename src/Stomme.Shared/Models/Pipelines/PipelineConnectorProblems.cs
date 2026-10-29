@@ -6,7 +6,7 @@ using Stomme.Connectivity;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n marks a node's required field until it is filled. A step that calls one of its connection's operations
+    /// n8n marks a node's required field until it is filled. A step that calls one of its connection's operations
     /// gives that operation's parameters as 'name = value' lines; each parameter the operation needs and has no default for,
     /// missing from them - or given no value - is a warning on the step, naming the line to add. A Query box gives
     /// <c>query</c>. Run by the editor, which knows each connection's connector; an operation chosen by an expression or a

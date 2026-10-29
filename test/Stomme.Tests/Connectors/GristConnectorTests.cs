@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Grist (n8n's Grist node: a table's rows created, read, updated, created or updated, and deleted): every call
+    /// Grist (n8n's Grist node: a table's rows created, read, updated, created or updated, and deleted): every call
     /// Grist's REST API with the API key as a bearer token; a table's records filtered by a JSON object (one value a list of one),
     /// sorted, no more than asked; a record got by its row id; created (one, or a list) with the ids Grist gave, updated,
     /// upserted by a match (on many as asked), deleted by their ids; a SELECT with its arguments; the documents, a document's

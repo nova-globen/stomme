@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.HomeAssistant
 {
     /// <summary>
-    /// Home Assistant (BL-229, n8n's Home Assistant node: a home's configuration, services, states, events, logs, templates and
+    /// Home Assistant (n8n's Home Assistant node: a home's configuration, services, states, events, logs, templates and
     /// cameras) over Home Assistant's REST API with a long-lived access token as its Bearer, over the host's egress. A test names
     /// the home and its version.
     /// </summary>

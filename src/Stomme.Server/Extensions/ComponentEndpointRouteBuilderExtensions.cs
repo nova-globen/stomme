@@ -21,13 +21,13 @@ namespace StommeSSR.Extensions
 
             endpoints.MapFallback((ctx) =>
             {
-                // BL-223: a page is a GET, a HEAD or a form's POST. Anything else that reaches the fallback - a hub's negotiate
+                // A page is a GET, a HEAD or a form's POST. Anything else that reaches the fallback - a hub's negotiate
                 // with the transport off, a JSON or body-less POST to a path nothing serves - is a 404, never the page renderer,
                 // which answered such a request 500 (measured on UAT and in SwitchedOffApiNotFoundTests; a form POST it refuses
                 // itself, 400).
                 if (!HttpMethods.IsGet(ctx.Request.Method) && !HttpMethods.IsHead(ctx.Request.Method) && !IsFormPost(ctx.Request.ContentType))
                 {
-                    // BL-227: a bare 404, NOT re-executed as the site's 404 page. Status-code pages re-run the pipeline for
+                    // A bare 404, NOT re-executed as the site's 404 page. Status-code pages re-run the pipeline for
                     // /404 with the same method and the same antiforgery state, and that page endpoint failed on a token-less
                     // POST exactly as this one did - 500 again (measured: the header check alone still answered 500).
                     var statusCodePages = ctx.Features.Get<IStatusCodePagesFeature>();
@@ -51,7 +51,7 @@ namespace StommeSSR.Extensions
             });
         }
 
-        // BL-227: the HEADER, never Request.HasFormContentType. This endpoint requires an antiforgery token, so for a POST
+        // The HEADER, never Request.HasFormContentType. This endpoint requires an antiforgery token, so for a POST
         // without one the antiforgery middleware has already set an invalid IAntiforgeryValidationFeature, and
         // HasFormContentType THROWS on it - every token-less POST answered 500 and logged an error (measured on UAT on 10.7.0).
         internal static bool IsFormPost(string? contentType) =>

@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Mcp.Services
 {
     /// <summary>
-    /// The client/server contract of the MCP module's UI (BL-80 / D101 item 7). The controls depend on this interface,
+    /// The client/server contract of the MCP module's UI. The controls depend on this interface,
     /// never on a repository.
     /// </summary>
     /// <remarks>

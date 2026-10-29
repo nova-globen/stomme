@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - OpenWeatherMap (n8n's OpenWeatherMap node) without a server: one place - a city, a city id, coordinates within
+    /// OpenWeatherMap (n8n's OpenWeatherMap node) without a server: one place - a city, a city id, coordinates within
     /// their range or a postal code - its units and language held to their shape before anything is sent; the weather now as
     /// one record, what is read most beside OpenWeatherMap's own fields; the forecast each three hours a record with its city,
     /// up to the most and OpenWeatherMap's 40; the key in the address alone and in no message; OpenWeatherMap's message on a

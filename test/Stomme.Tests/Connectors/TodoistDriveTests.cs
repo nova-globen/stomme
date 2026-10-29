@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Todoist DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Todoist DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Todoist's API: a Todoist connection made over the API, its token vaulted, tested (the user
     /// named); a published pipeline creates a task in a project with labels, reads the project's tasks over two pages by cursor,
     /// completes one, moves it to a section and comments on it - every call the token as the bearer; the token is in neither the

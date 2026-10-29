@@ -25,7 +25,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// THE SITE IS THE UNIT AT <c>/mcp/v1</c> TOO (D101 item 4, BL-80 increment 5): two sites in ONE tenant, and the
+    /// THE SITE IS THE UNIT AT <c>/mcp/v1</c> TOO: two sites in ONE tenant, and the
     /// endpoint answers for the site the REQUEST resolved - not for whichever site composed something first.
     /// </summary>
     /// <remarks>
@@ -43,7 +43,7 @@ namespace Stomme.Tests.Mcp
     /// the permission row changes between those two calls.
     /// </para>
     /// <para>
-    /// PostgreSQL and RavenDB - one relational, one document, both FAIL-NOT-SKIP when unreachable (D46). SQLite is
+    /// PostgreSQL and RavenDB - one relational, one document, both FAIL-NOT-SKIP when unreachable. SQLite is
     /// deliberately absent: the claim is about the query the provider runs for the ledger and the registrations, and
     /// the relational leg is worth more against the real thing.
     /// </para>
@@ -185,7 +185,7 @@ namespace Stomme.Tests.Mcp
                 Assert.Equal(aliasB.SiteId, siteOnB?["SiteId"]?.GetValue<int>());
                 Assert.NotEqual(siteOnA?["Name"]?.GetValue<string>(), siteOnB?["Name"]?.GetValue<string>());
 
-                // ---- 9. A VIRTUAL-FOLDER ALIAS HAS NO MCP ENDPOINT (D101 item 10) -----------------------------------
+                // ---- 9. A VIRTUAL-FOLDER ALIAS HAS NO MCP ENDPOINT -----------------------------------
                 // MapMcp maps at the ROOT, so a tenant reachable only at a virtual folder is not an MCP server - the
                 // same limitation D61 measured for the OpenIddict authority. Driven here so the documentation is a
                 // statement about this host rather than about the SDK.
@@ -224,7 +224,7 @@ namespace Stomme.Tests.Mcp
                 var aliasB = await GateDrive.AliasAsync(app, HostB);
                 Assert.Equal(aliasA.TenantId, aliasB.TenantId);     // ONE tenant - the shape that made the predecessor platform reachable
 
-                // ---- REGISTERING DOES NOT DIAL (D101 item 5), through the REAL service ----------------------------
+                // ---- REGISTERING DOES NOT DIAL, through the REAL service ----------------------------
                 // Asserted on the LISTENER, not on the return value: the predecessor platform dialled on registration and rendered the
                 // answer, which is an SSRF oracle whatever the row says afterwards.
                 //

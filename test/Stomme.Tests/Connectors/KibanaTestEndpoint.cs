@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Elastic Security connector's live tests' server (BL-229): KIBANA_TEST_URL / USER / PASSWORD where set, otherwise this
+    /// The Elastic Security connector's live tests' server: KIBANA_TEST_URL / USER / PASSWORD where set, otherwise this
     /// machine's throwaway Kibana 9.5 over its own Elasticsearch that <c>scripts/kibana-test-server.ps1</c> makes on
     /// 127.0.0.1:15601 - its elastic user's throwaway password in the file that script writes under the user's temp folder.
-    /// Neither is a FAILURE that says how to get one, never a skip (D46).
+    /// Neither is a FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class KibanaTestEndpoint
     {

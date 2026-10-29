@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// A pipeline's TAGS (BL-229, n8n's workflow tags): short labels a team sorts many pipelines by - "billing", "nightly",
+    /// A pipeline's TAGS (n8n's workflow tags): short labels a team sorts many pipelines by - "billing", "nightly",
     /// "customer A" - shown on the pipelines list and filtered by. The one rule for both sides: trimmed, inner spaces folded to
     /// one, at most <see cref="MaxLength"/> characters of letters, digits, spaces, '-', '_' and '.', the same tag once whatever
     /// its case (the first spelling kept), at most <see cref="MaxTags"/>, in the order given.

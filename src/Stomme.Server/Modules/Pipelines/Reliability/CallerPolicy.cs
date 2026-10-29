@@ -17,7 +17,7 @@ using Stomme.Modules.Pipelines.Application;
 namespace Stomme.Modules.Pipelines.Reliability
 {
     /// <summary>
-    /// BL-229 - n8n's "This workflow can be called by", held where a pipeline calls another (<see cref="PipelineCallers"/>): the
+    /// n8n's "This workflow can be called by", held where a pipeline calls another (<see cref="PipelineCallers"/>): the
     /// CALLED pipeline's published version says which pipelines may call it, and a call it does not allow fails at the caller's
     /// step - before the called pipeline runs, stores or sends anything - saying why.
     /// </summary>

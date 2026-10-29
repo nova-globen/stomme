@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Stomme.Landing
 {
     // ============================================================================================================
-    // The Landing module's Shared contracts (BL-98, the predecessor platform's feature 44 - planned there, never started): a site's landing
+    // The Landing module's Shared contracts (the predecessor platform's feature 44 - planned there, never started): a site's landing
     // page on its home page, made one of three ways. BCL-only like every Shared contract.
     // ============================================================================================================
 
@@ -18,11 +18,11 @@ namespace Stomme.Landing
         /// <summary>From the predefined template: a headline, an introduction and up to six sections.</summary>
         Predefined = 1,
 
-        /// <summary>One of the site's dashboards, shown in place (BL-98 increment 2).</summary>
+        /// <summary>One of the site's dashboards, shown in place.</summary>
         Dashboard = 2,
 
         /// <summary>
-        /// Static HTML the AI assistant's Landing Page Designer generated from a brief (BL-98 increment 3), sanitised on the
+        /// Static HTML the AI assistant's Landing Page Designer generated from a brief, sanitised on the
         /// server and shown in a sandboxed frame.
         /// </summary>
         GeneratedHtml = 3,
@@ -74,13 +74,13 @@ namespace Stomme.Landing
         string? GeneratedHtml = null,
         IReadOnlyList<string>? Sections = null);
 
-    /// <summary>What an administrator sends to have a page generated from a brief (BL-98 increment 3).</summary>
+    /// <summary>What an administrator sends to have a page generated from a brief.</summary>
     public sealed class GenerateLandingRequest
     {
         public string Brief { get; set; } = string.Empty;
     }
 
-    /// <summary>What an administrator sends to have ONE section of the generated page revised (BL-98 increment 4).</summary>
+    /// <summary>What an administrator sends to have ONE section of the generated page revised.</summary>
     public sealed class ProposeLandingSectionRequest
     {
         public string Section { get; set; } = string.Empty;
@@ -95,13 +95,13 @@ namespace Stomme.Landing
     }
 
     /// <summary>
-    /// A generated page PROPOSED, nothing stored (D113): the sanitised HTML and its sections, or why the designer could not -
+    /// A generated page PROPOSED, nothing stored: the sanitised HTML and its sections, or why the designer could not -
     /// what the sanitizer still had to take out after its last attempt.
     /// </summary>
     public sealed record LandingDraftView(bool Succeeded, string Html, IReadOnlyList<string> Sections, IReadOnlyList<string> Problems);
 
     /// <summary>
-    /// The frame document a generated page is shown in (BL-98 increment 3), on the home page and in the editor's preview: its own
+    /// The frame document a generated page is shown in, on the home page and in the editor's preview: its own
     /// content policy - no script, no connection, styles only inline, images and fonts over http(s) - so even a page the
     /// sanitizer let through cannot run or call home. The frame itself carries no allow-scripts and no allow-same-origin.
     /// </summary>

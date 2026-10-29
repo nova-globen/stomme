@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Stomme.CloudUsage;
 using Stomme.Modules.CloudUsage.Domain;
 
-// Lifted from the predecessor platform (BL-97 increment 3): the payload mapping is unchanged; only the namespaces moved.
+// Lifted from the predecessor platform: the payload mapping is unchanged; only the namespaces moved.
 namespace Stomme.Modules.CloudUsage.Providers
 {
     /// <summary>

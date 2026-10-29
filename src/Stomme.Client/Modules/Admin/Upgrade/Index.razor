@@ -110,7 +110,7 @@
             AddModuleMessage(Localizer["Info.Upgrade.Wait"], MessageType.Info);
             ShowProgressIndicator();
 
-            // BL-174: the server answers when the Updater has been handed the upgrade - or why it was not (no package, a
+            // The server answers when the Updater has been handed the upgrade - or why it was not (no package, a
             // refused pre-upgrade snapshot). Only a started upgrade reloads the page; a refusal stays on it, visible.
             var result = await InstallationService.Upgrade(bool.Parse(_backup));
             if (result is { Success: false })

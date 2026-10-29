@@ -22,7 +22,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Log cluster on the persistence seam (D3/D7/D44). Log-table access goes through
+    /// The Log cluster on the persistence seam. Log-table access goes through
     /// <see cref="ILogStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class holds no
     /// <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -33,7 +33,7 @@ namespace Stomme.Repository
     /// here. <see cref="LogAggregate"/> carries no audit columns; see the remarks there.
     /// </para>
     /// <para>
-    /// <b>Writes arrive on a background thread, not the request thread (D34).</b> <c>LogManager</c> enriches
+    /// <b>Writes arrive on a background thread, not the request thread.</b> <c>LogManager</c> enriches
     /// the entry on the caller's thread and queues it; <c>LogDrainService</c> then creates a fresh DI scope per
     /// entry, points its <c>ITenantManager</c> at the entry's captured alias and only THEN resolves this
     /// repository. That ordering is what makes a per-instance context tenant-correct here, and it is why this
@@ -51,8 +51,8 @@ namespace Stomme.Repository
             _sessions = sessions;
         }
 
-        // The read path on the seam (D19). The IQueryable is materialized inside this method, so it never
-        // leaves the repository (D7); the LINQ operators are plain LINQ rather than EF Core's async ones,
+        // The read path on the seam. The IQueryable is materialized inside this method, so it never
+        // leaves the repository; the LINQ operators are plain LINQ rather than EF Core's async ones,
         // which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -108,7 +108,7 @@ namespace Stomme.Repository
 
         public async Task<IReadOnlyList<Log>> GetLogsPageAsync(int siteId, DateTime fromUtc, DateTime toUtc, string exactLevel, int afterId, int take)
         {
-            // The EXPORT's read (BL-85, D108 refutation 5). GetLogsAsync above is "the newest N" and cannot walk a
+            // The EXPORT's read (D108 refutation 5). GetLogsAsync above is "the newest N" and cannot walk a
             // range; this one can, a page at a time, without ever materialising the table.
             //
             // KEYSET ON Id, NOT LogDate. LogDate is not unique - a burst of entries shares an instant - so a cursor
@@ -120,7 +120,7 @@ namespace Stomme.Repository
             // what it must not do is lose or duplicate a row.
             //
             // The level arrives ALREADY CANONICAL - the exact stored spelling, from a closed set - because a bare
-            // string == is case-sensitive on EF and case-insensitive on RavenDB (D49). This method does not try to
+            // string == is case-sensitive on EF and case-insensitive on RavenDB. This method does not try to
             // repair a free-text level; the caller is not allowed to have one.
             //
             // Every arm stays in the DATABASE, as above, and the predicates are composed in C# for the same reason.
@@ -176,7 +176,7 @@ namespace Stomme.Repository
         {
             // delete logs in batches of 100 records
             //
-            // COST REGRESSION, accepted (D24). The harvested code did RemoveRange + ONE SaveChanges per batch
+            // COST REGRESSION, accepted. The harvested code did RemoveRange + ONE SaveChanges per batch
             // of 100; the seam has no bulk delete, so this is now a filtered session read plus one round trip
             // PER ROW — 100 deletes where there was 1. Parity in effect, not in cost. It matters more here
             // than in any other cluster because Log is the biggest table in the tenant and a neglected

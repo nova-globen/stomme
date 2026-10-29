@@ -11,10 +11,10 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The Pipeline Designer (BL-229, n8n's AI workflow builder): the pipeline on the editor's canvas changed as its author asks.
+    /// The Pipeline Designer (n8n's AI workflow builder): the pipeline on the editor's canvas changed as its author asks.
     /// The guardrail first - the per-person rate and the instruction screen the assistant's every request passes - so a refused
     /// request reaches no model; then the SITE's model (quota-gated and metered like every agent) over the workbench's tools, until
-    /// it finishes, its rounds run out, or its time does. It PROPOSES (D113): the workbench holds a copy, and nothing is stored.
+    /// it finishes, its rounds run out, or its time does. It PROPOSES: the workbench holds a copy, and nothing is stored.
     /// </summary>
     public sealed class PipelineGraphDesignerAgent(IAssistantModelAccess models, IAssistantGuardrail guardrail, IAssistantCaller caller) : IPipelineGraphDesigner
     {

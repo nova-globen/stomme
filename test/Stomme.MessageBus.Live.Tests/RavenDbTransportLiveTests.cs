@@ -19,7 +19,7 @@ namespace Stomme.MessageBus.Live.Tests;
 /// </summary>
 public sealed class RavenDbTransportLiveTests : IAsyncLifetime
 {
-    // BL-15: gated in Stomme.slnx; defaults to the infra UAT tier (the PostgresTestEndpoint convention —
+    // Gated in Stomme.slnx; defaults to the infra UAT tier (the PostgresTestEndpoint convention —
     // env-overridable via RAVENDB_TEST_URL, defaulting to the shared instance). The old defaults are all
     // RETIRED: local :7000 (uninstalled 2026-07-23), Docker-era :8091/:8090.
     private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") ?? "http://localhost:8080";

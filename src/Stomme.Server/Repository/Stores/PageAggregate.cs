@@ -38,7 +38,7 @@ namespace Stomme.Repository.Stores
         /// The page's path within its site, e.g. <c>about/contact</c>. The STORED CASE — what the admin sees
         /// and edits. Setting it maintains <see cref="PathNormalized"/>; see the remarks there for why the
         /// derivation lives HERE and not in <see cref="PageMapper"/> — the same placement as
-        /// <see cref="FolderAggregate.Path"/> / <see cref="UrlMappingAggregate.Url"/> (D49/D57).
+        /// <see cref="FolderAggregate.Path"/> / <see cref="UrlMappingAggregate.Url"/>.
         /// </summary>
         public string Path
         {
@@ -53,7 +53,7 @@ namespace Stomme.Repository.Stores
         private string _path;
 
         /// <summary>
-        /// The lowercase lookup key for <see cref="Path"/> (D58) — Identity's <c>NormalizedUserName</c> to
+        /// The lowercase lookup key for <see cref="Path"/> — Identity's <c>NormalizedUserName</c> to
         /// <see cref="Path"/>'s <c>UserName</c>. Column <c>path_normalized</c>, nullable varchar(256), added
         /// and backfilled by <c>10020005_AddPageNormalizedColumn</c>.
         /// </summary>
@@ -67,7 +67,7 @@ namespace Stomme.Repository.Stores
         /// misses) and the API page lookup (<c>PageController.Get</c>). The repository now normalizes its
         /// argument and filters THIS column with plain <c>==</c>, which says the same thing on both providers.
         /// Case-INSENSITIVE was chosen to MATCH <c>SiteRouter</c>'s own primary
-        /// <c>StringComparison.OrdinalIgnoreCase</c> match and the Folder/File/UrlMapping precedent (D49/D57).
+        /// <c>StringComparison.OrdinalIgnoreCase</c> match and the Folder/File/UrlMapping precedent.
         /// </para>
         /// <para>
         /// <b>Derived in <see cref="Path"/>'s setter, not in the mapper</b>: the mapper is not the only way in

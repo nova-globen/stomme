@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon SQS (n8n's AWS SQS node: a message sent): every call SQS's JSON protocol - its target and content type -
+    /// Amazon SQS (n8n's AWS SQS node: a message sent): every call SQS's JSON protocol - its target and content type -
     /// signed with AWS Signature Version 4 for SQS in the connection's region; a message sent with a delay and attributes, a
     /// FIFO one with its group and deduplication ids, to a queue by its URL or its name (resolved first); messages received ten
     /// a call up to the most asked for, an empty answer the end; a message deleted, a queue purged, its attributes read, the

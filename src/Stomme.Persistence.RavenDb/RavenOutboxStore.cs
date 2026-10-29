@@ -82,7 +82,7 @@ internal sealed class RavenOutboxStore(
             ? store.OpenAsyncSession()
             : store.OpenAsyncSession(new SessionOptions { Database = database });
 
-    // The default database, and (BL-176) every tenant database the resolver routes to - an aggregate's outbox message is
+    // The default database, and every tenant database the resolver routes to - an aggregate's outbox message is
     // written in the aggregate's own session, so under per-tenant routing it is in the tenant's database. A resolver that
     // cannot name its databases (the convention one) drains the default database only, as before.
     private Task<IReadOnlyList<string?>> DatabasesToDrainAsync(CancellationToken cancellationToken)

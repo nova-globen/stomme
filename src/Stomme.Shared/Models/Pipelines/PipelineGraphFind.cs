@@ -24,7 +24,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// Find on the canvas (BL-229): the steps of a pipeline - in every body, however deep - whose name, type, comment, inputs,
+    /// Find on the canvas: the steps of a pipeline - in every body, however deep - whose name, type, comment, inputs,
     /// expressions, scripts, conditions or case labels hold the text, case-insensitively, in the order they were drawn; one
     /// match per step (its first field), at most <c>max</c>. A large pipeline's step is a search away, wherever it sits.
     /// </summary>

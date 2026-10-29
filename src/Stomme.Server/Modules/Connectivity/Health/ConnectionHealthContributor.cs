@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Stomme.Modules.Connectivity.Health
 {
-    /// <summary>The switch: <c>Connectivity:HealthProbes:Enabled</c>, DEFAULT OFF (D110 Q3, D104) - a probe dials out on the site's behalf every minute, which an operator turns on.</summary>
+    /// <summary>The switch: <c>Connectivity:HealthProbes:Enabled</c>, DEFAULT OFF (D110 Q3) - a probe dials out on the site's behalf every minute, which an operator turns on.</summary>
     public static class ConnectivityHealthProbes
     {
         public const string Key = "Connectivity:HealthProbes:Enabled";
@@ -25,7 +25,7 @@ namespace Stomme.Modules.Connectivity.Health
     }
 
     /// <summary>
-    /// The Connectivity module's health contribution (BL-94 increment 11, D110): ONE Site-scope probe, <c>connections</c>,
+    /// The Connectivity module's health contribution: ONE Site-scope probe, <c>connections</c>,
     /// that tests every connection of the site it is asked about through the shared <see cref="ConnectionTestRunner"/>
     /// (the host's egress, the site's secrets, a category back), writes each verdict on its row, and answers the worst
     /// of them with each connection's outcome in its data. It replaces the predecessor platform's system-scoped heartbeat job, which

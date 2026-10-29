@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon SES DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Amazon SES DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for the SES API v2 that checks every request's signature as AWS would - re-signed with
     /// the key's secret at the request's own time and refused when it differs: an Amazon SES connection made over the API, its
     /// key pair vaulted, tested; a published pipeline sends an HTML e-mail with an accent in its sender's name, makes a

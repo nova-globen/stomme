@@ -11,12 +11,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - n8n's QuestDB and CrateDB nodes come over as the PostgreSQL connector's SQL, so the PostgreSQL connector is
+    /// n8n's QuestDB and CrateDB nodes come over as the PostgreSQL connector's SQL, so the PostgreSQL connector is
     /// proved against QuestDB 9.1 and CrateDB 6.0 themselves (this machine's throwaway servers, <see cref="PgWireTestEndpoint"/>)
     /// with the connection the import tells the author to make and the statements it writes: a password that is checked, a
     /// write's values bound, and a read of what was written. QuestDB's connection needs Npgsql's type loading off - without it
     /// every bound value is refused, which is why the import says so, and a test here says so too, so the day it is no longer
-    /// true is seen. Fails, never skips, when a server is absent (D46).
+    /// true is seen. Fails, never skips, when a server is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class PgWireDatabaseLiveTests(ITestOutputHelper output)

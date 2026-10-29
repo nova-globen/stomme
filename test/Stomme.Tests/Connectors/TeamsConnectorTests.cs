@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Teams (n8n's Microsoft Teams node, its channel and chat message create) as a chat connector: the
+    /// Microsoft Teams (n8n's Microsoft Teams node, its channel and chat message create) as a chat connector: the
     /// refresh token exchanged at the tenant's token endpoint with Graph's scope, the access token a bearer; a message to a channel
     /// (team/channel), a reply in a channel message's thread, a message to a chat - each one record, its id; a channel, a team, a
     /// chat or a message id that could reach the path refused before a token is asked for, a reply in a chat refused; Teams'

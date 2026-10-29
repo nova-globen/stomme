@@ -13,7 +13,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record PipelineFailedStimulus(string Pipeline);
 
     /// <summary>
-    /// n8n's error workflow, as an engine TRIGGER (BL-229): a published pipeline that starts with it is indexed under the
+    /// n8n's error workflow, as an engine TRIGGER: a published pipeline that starts with it is indexed under the
     /// pipeline it watches - one, or every pipeline on the site - and when a run of a watched pipeline FAILS,
     /// <c>Triggers/PipelineFailures.cs</c> fires it on that run's site through the engine's stimulus dispatcher. The result is
     /// the failed run as JSON text (<see cref="PipelineFailure"/>): the pipeline, the run, the step that failed and its error.

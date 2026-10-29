@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - HaloPSA DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// HaloPSA DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Halo's token endpoint and resource server: a token for the API application's client
     /// credentials alone, the resource server answering that token alone. A HaloPSA connection made over the API, its secret
     /// vaulted, tested; a published pipeline finds a client by Halo's search, creates a ticket for it, assigns it - the ticket

@@ -36,7 +36,7 @@ namespace Stomme.Shared
         /// <summary>
         /// The release number of a package's version, for a framework-version comparison: <c>10.5.0-preview.1</c> and
         /// <c>10.5.0+5f2a</c> are <c>10.5.0</c>. <see cref="System.Version"/> refuses a label, and a package built against a
-        /// preview names the preview as its framework (BL-192); a preview of a release requires that release.
+        /// preview names the preview as its framework; a preview of a release requires that release.
         /// </summary>
         public static Version ParseReleaseNumber(string version)
         {
@@ -63,7 +63,7 @@ namespace Stomme.Shared
         }
 
         /// <summary>
-        /// Resolves the effective theme type for a page (D87). An explicit <paramref name="pageThemeType"/>
+        /// Resolves the effective theme type for a page. An explicit <paramref name="pageThemeType"/>
         /// always wins. Otherwise an admin page (<see cref="IsAdminPath"/>) uses <paramref name="adminThemeType"/>
         /// when it is set, and everything else — including an admin page with no admin theme configured — uses
         /// <paramref name="defaultThemeType"/>. Falling back to the default keeps a site with no admin theme
@@ -224,7 +224,7 @@ namespace Stomme.Shared
         /// A return address this site may send someone back to: a path on this host - starting with one '/', not "//" or
         /// "/\", which a browser reads as another host, and with no control character - or <paramref name="fallback"/>. The
         /// rules of ASP.NET Core's <c>Url.IsLocalUrl</c>, usable from both sides; every place that takes a <c>returnurl</c>
-        /// passes it through this, because "starts with /" alone let <c>//attacker.example</c> through (BL-244).
+        /// passes it through this, because "starts with /" alone let <c>//attacker.example</c> through.
         /// </summary>
         public static string LocalReturnUrl(string url, string fallback = "/")
         {

@@ -14,7 +14,7 @@ namespace Stomme.Metering.Persistence
 {
     /// <summary>
     /// The shared delegation to the closed <see cref="IRepository{TAggregate, TId}"/>: no provider code, no
-    /// <c>DbContext</c>, no RavenDB twin. Whatever store the install chose answers these calls (D79/D80).
+    /// <c>DbContext</c>, no RavenDB twin. Whatever store the install chose answers these calls.
     /// </summary>
     public abstract class MeteringRepositoryBase<TAggregate>(IRepository<TAggregate, Guid> inner)
         : IRepository<TAggregate, Guid>
@@ -77,7 +77,7 @@ namespace Stomme.Metering.Persistence
         public Task<IReadOnlyList<UsageRecordAggregate>> ListForWindowAsync(int siteId, string metric, DateTime fromUtc, DateTime toUtc, CancellationToken ct = default)
         {
             // The metric key is canonical lowercase by construction, so it is its own normalized column; it is
-            // normalized HERE too, with the same function, so both sides of the comparison agree (D49).
+            // normalized HERE too, with the same function, so both sides of the comparison agree.
             var key = MetricKeys.Normalize(metric);
             var from = UtcOnly(fromUtc);
             var to = UtcOnly(toUtc);

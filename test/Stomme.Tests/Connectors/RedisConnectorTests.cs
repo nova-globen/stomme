@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the Redis connector without a server: an address that names no server, or a password, refused as invalid; a
+    /// The Redis connector without a server: an address that names no server, or a password, refused as invalid; a
     /// list of servers, a sentinel's service and a tunnel refused as the egress's denial - each before any pin; the host pinned
     /// on its port and Redis's own 6379, a refused host the guard's own denial; the pinned tunnel letting the pinned address
     /// alone through; the scheme's credentials applied and admin commands off; a set's value shaped by its type; every
@@ -163,13 +163,13 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the Redis connector against a real server (this machine's throwaway Valkey on loopback, or a CI job's service
+    /// The Redis connector against a real server (this machine's throwaway Valkey on loopback, or a CI job's service
     /// container - <see cref="RedisTestEndpoint"/>) through the HOST's egress: loopback refused until allowlisted, a test naming
     /// the server, a wrong password failing; the client dialling the pinned address and never the name; a string with its time
     /// to live, a hash merged, a list and a set replaced, each read back by its type; a counter incremented; a queue pushed
     /// and popped at both ends; keys found by a pattern through SCAN with their values, no further than asked; a key deleted; a
     /// message published to a subscriber; INFO's fields with its keyspace as JSON; a read of the wrong type Redis's own error.
-    /// Fails, never skips, without a server (D46).
+    /// Fails, never skips, without a server.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class RedisConnectorLiveTests(ITestOutputHelper output)

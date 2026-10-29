@@ -3,7 +3,7 @@
 @inject IDatasetsService DatasetsService
 
 @*
-    The Datasets page (BL-94 increments 10 and 13, D110): this site's datasets with their origin, classification, row estimate
+    The Datasets page (BL-94 increments 10 and 13): this site's datasets with their origin, classification, row estimate
     and columns; a schema-and-summary panel per dataset (masked when the data is sensitive); a bounded preview for a
     holder of datasets:preview (refused, not thrown, for a sensitive dataset); for a datasets:manage holder a register
     form (name, origin, reference, sample rows as JSON, the classification asserted - the server escalates it), a refresh
@@ -239,7 +239,7 @@ else
     {
         _selected = dataset;
         _preview = null;
-        BringIntoView("datasets-schema"); // below the list (BL-22)
+        BringIntoView("datasets-schema"); // below the list
     }
 
     private async Task PreviewAsync(DatasetDescriptor dataset)
@@ -268,7 +268,7 @@ else
         _refreshing = dataset;
         _sampleJson = string.Empty;
         _message = string.Empty;
-        BringIntoView("datasets-editor"); // the form is at the foot of the page (BL-22)
+        BringIntoView("datasets-editor"); // the form is at the foot of the page
     }
 
     private void CancelRefresh()
@@ -366,6 +366,6 @@ else
         }
 
         await LoadAsync();
-        StateHasChanged(); // called back from the confirmation dialog, not from an event of this page (BL-22)
+        StateHasChanged(); // called back from the confirmation dialog, not from an event of this page
     }
 }

@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "Convert to sub-workflow": steps of a pipeline moved into a pipeline of their own, which the pipeline then
+    /// n8n's "Convert to sub-workflow": steps of a pipeline moved into a pipeline of their own, which the pipeline then
     /// calls where they stood (Execute pipeline, waiting for it, failing when it fails). The steps go on doing what they did: the
     /// variables they read are sent with the call and set from its input first thing, and the variables they set that the rest
     /// of the pipeline reads are given back as the called pipeline's output and set again after the call. Steps that cannot

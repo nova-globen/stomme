@@ -5,7 +5,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-62 — the two <c>Cache-Control</c> classes for Blazor's <c>/_framework/</c> assets.
+    /// The two <c>Cache-Control</c> classes for Blazor's <c>/_framework/</c> assets.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -107,7 +107,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// A package's static web asset keeps its name across the package's versions, so it is revalidated (BL-192): measured,
+        /// A package's static web asset keeps its name across the package's versions, so it is revalidated: measured,
         /// a browser kept FluentUI 4.14.3's module after the host moved to 5.0.0 under the same URL, and no FluentUI 5 control
         /// started. A fingerprinted one is still immutable.
         /// </summary>
@@ -120,7 +120,7 @@ namespace Stomme.Tests
             FrameworkAssetCaching.Resolve(path).Should().Be(FrameworkAssetCaching.NoCache);
         }
 
-        /// <summary>A Blazor JS initializer keeps its name wherever it is served from; Stomme's own starts FluentUI 5 (BL-192).</summary>
+        /// <summary>A Blazor JS initializer keeps its name wherever it is served from; Stomme's own starts FluentUI 5.</summary>
         [Theory]
         [InlineData("/Stomme.Server.lib.module.js")]
         [InlineData("/tenant-a/Stomme.Server.lib.module.js")]

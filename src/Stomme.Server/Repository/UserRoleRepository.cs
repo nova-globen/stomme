@@ -27,7 +27,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The UserRole cluster on the persistence seam (D3/D7/D22). UserRole-table access goes through
+    /// The UserRole cluster on the persistence seam. UserRole-table access goes through
     /// <see cref="IUserRoleAssignmentStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this
     /// class holds no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -73,7 +73,7 @@ namespace Stomme.Repository
         }
 
         // The read path on the seam: the IQueryable is materialized inside this method, so it never leaves the
-        // repository (D7). ToList/Where/FirstOrDefault are plain LINQ rather than EF Core's async operators,
+        // repository. ToList/Where/FirstOrDefault are plain LINQ rather than EF Core's async operators,
         // which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {

@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Ghost DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Ghost DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a Ghost site's Admin API that refuses a call whose token its key's secret did not sign:
     /// a Ghost connection made over the API, its key vaulted, tested; a published pipeline creates a post with an accent as HTML,
     /// reads the published posts over two pages - no more than asked - publishes the post with Ghost's last change read first,

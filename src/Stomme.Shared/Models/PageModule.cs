@@ -76,8 +76,8 @@ namespace Stomme.Models
         /// aggregate; <see cref="ModuleId"/> is the persisted reference.
         /// </summary>
         /// <remarks>
-        /// <c>[NotMapped]</c> since the Module cluster moved onto the persistence seam (D21), for the same
-        /// reason as <see cref="Page"/> below (D19). This was an EF navigation eager-loaded via
+        /// <c>[NotMapped]</c> since the Module cluster moved onto the persistence seam, for the same
+        /// reason as <see cref="Page"/> below. This was an EF navigation eager-loaded via
         /// <c>.Include(item => item.Module)</c> in every PageModuleRepository query. It cannot stay one: the
         /// Module table is now owned by <c>ModuleAggregate</c>, and an EF navigation to <see cref="Module"/>
         /// makes EF discover <see cref="Module"/> as a second entity type on the same table — a hard model
@@ -102,7 +102,7 @@ namespace Stomme.Models
         /// <see cref="PageId"/> is the persisted reference.
         /// </summary>
         /// <remarks>
-        /// <c>[NotMapped]</c> since the Page cluster moved onto the persistence seam (D19). This was an EF
+        /// <c>[NotMapped]</c> since the Page cluster moved onto the persistence seam. This was an EF
         /// navigation, eager-loaded via <c>.Include(item => item.Page)</c>. It cannot stay one: the Page
         /// table is now owned by <c>PageAggregate</c>, and an EF navigation to <see cref="Page"/> makes EF
         /// discover <see cref="Page"/> as a second entity type on the same table — a hard model error

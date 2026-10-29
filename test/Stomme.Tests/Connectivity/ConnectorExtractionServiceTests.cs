@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 6 (D110) - the predecessor platform's ConnectorExtractionServiceTests (7) by name on the port's
+    /// The predecessor platform's ConnectorExtractionServiceTests (7) by name on the port's
     /// <see cref="IConnectorExtractionService"/>: the connection, the extractor, the operation, the credentials and the
     /// records; a failure is a category, never an exception. CHANGED: the two managed-file-sink cases
     /// (<c>Extract_WithARegisteredFileSink_SetsItOnTheContext</c>, <c>Extract_WithoutARegisteredFileSink_LeavesTheContextSinkNull</c>)

@@ -92,7 +92,7 @@ else
         <NavLink class="db-btn db-btn-neutral" href="@NavigateUrl()">@SharedLocalizer["Cancel"]</NavLink>
     </form>
 
-    @* BL-224: a client-credentials application's service account - shown only while OpenIddict:ServiceAccounts:Enabled is on. *@
+    @* A client-credentials application's service account - shown only while OpenIddict:ServiceAccounts:Enabled is on. *@
     @if (_serviceAccount != null && _application.ClientType == "confidential" && _application.GrantTypes.Contains("client_credentials"))
     {
         <div id="openiddict-service-account" style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.5rem;">

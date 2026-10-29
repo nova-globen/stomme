@@ -20,7 +20,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// The data-export page says why a request or a schedule was refused (found driving BL-95's schedule form, 2026-10-05).
+    /// The data-export page says why a request or a schedule was refused (found driving BL-95's schedule form).
     /// </summary>
     /// <remarks>
     /// Every action reloads the page's lists afterwards, and the reload cleared the error first - so the server's reason,

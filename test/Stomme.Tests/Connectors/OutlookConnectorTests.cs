@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Outlook (n8n's Get Many, Send and Reply): an app-only token from the tenant's token endpoint, sent as a
+    /// Microsoft Outlook (n8n's Get Many, Send and Reply): an app-only token from the tenant's token endpoint, sent as a
     /// bearer, acting as the one mailbox the connection names; a folder's messages read newest first through Graph's next links -
     /// never one that leaves the mailbox's address - up to the most asked for, a search or a filter passed on, each a record with
     /// its people and its body by its kind; a message made a draft and sent, so it has an id; a reply Outlook makes in the

@@ -23,7 +23,7 @@ using File = Stomme.Models.File;
 
 namespace Stomme.Modules.Portability.Execution
 {
-    /// <summary>The <c>Portability</c> configuration section (D107 item 10), with its defaults.</summary>
+    /// <summary>The <c>Portability</c> configuration section, with its defaults.</summary>
     public sealed class PortabilityOptions
     {
         public const string SectionName = "Portability";
@@ -46,7 +46,7 @@ namespace Stomme.Modules.Portability.Execution
     }
 
     /// <summary>
-    /// The site's private <c>Portability/</c> folder - the <c>Exports/</c> folder's twin (D108): <see cref="FolderTypes.Private"/>
+    /// The site's private <c>Portability/</c> folder - the <c>Exports/</c> folder's twin: <see cref="FolderTypes.Private"/>
     /// so it is never served as a static file, Browse/View/Edit for Administrators alone, created on first use and left
     /// as found afterwards.
     /// </summary>
@@ -180,7 +180,7 @@ namespace Stomme.Modules.Portability.Execution
     }
 
     /// <summary>
-    /// Builds a site's queued packages (D107 item 3): each Building row becomes Ready with an artifact, or Failed with an
+    /// Builds a site's queued packages: each Building row becomes Ready with an artifact, or Failed with an
     /// exception TYPE - never a message, which can carry a connection string. A row Building for longer than the timeout
     /// is Failed as abandoned.
     /// </summary>
@@ -296,7 +296,7 @@ namespace Stomme.Modules.Portability.Execution
     }
 
     /// <summary>
-    /// Portability's retention, drained per site by <c>PurgeJob</c> (D104): a Ready or Failed package whose stated expiry
+    /// Portability's retention, drained per site by <c>PurgeJob</c>: a Ready or Failed package whose stated expiry
     /// has passed, or that is older than the site's <c>PortabilityRetention</c>, loses its artifact (file AND row) and
     /// becomes Expired; a subject package is never kept past seven days whatever the setting says (D107 Q3). Audit rows
     /// go after <see cref="PortabilityOptions.AuditRetentionDays"/>. Does nothing while <c>Portability:Enabled</c> is off.

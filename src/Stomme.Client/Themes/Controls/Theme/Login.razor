@@ -32,7 +32,7 @@ else
     [Parameter]
     public bool ShowLogin { get; set; } = true;
     [Parameter]
-    // --db-* by default (D11). This lived as a Bootstrap class in a C# parameter
+    // --db-* by default. This lived as a Bootstrap class in a C# parameter
     // default, so no class="..." scan ever saw it -- only the rendered DOM did.
     public string CssClass { get; set; } = "db-btn";
 }

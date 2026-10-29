@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-177 - a site's operators are its Administrators AND the Host Users, once each, in ascending order: a fresh install's
+    /// A site's operators are its Administrators AND the Host Users, once each, in ascending order: a fresh install's
     /// site has no administrator, so an alert to administrators alone reached nobody. The installed-host case is the metering
     /// drive's (<see cref="MeteringQuotaNotificationTests"/>).
     /// </summary>

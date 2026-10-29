@@ -18,7 +18,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-234 - the host's calls to its own API go to its own listener: the first plain-HTTP address it listens on, a wildcard
+    /// The host's calls to its own API go to its own listener: the first plain-HTTP address it listens on, a wildcard
     /// one as the IPv4 loopback, none for TLS alone or a socket; <c>Installation:InternalUrl</c> naming another, or <c>public</c>
     /// keeping the public address; asked again until the server has its addresses. A call is sent there with the address it
     /// was made to kept as its host and scheme and the caller's address forwarded; a call already local, or with nowhere local

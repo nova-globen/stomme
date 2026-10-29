@@ -18,13 +18,13 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-204 - the Admin Dashboard has a search: a box above the tiles, and each tile carrying what the search matches.
+    /// The Admin Dashboard has a search: a box above the tiles, and each tile carrying what the search matches.
     /// </summary>
     /// <remarks>
     /// The owner asked for it (2026-10-02): around forty tiles on a site with the modules on, nothing to filter them by. The
     /// dashboard control is STATIC, so the filter is a page script (<c>dashboard.js</c>) over the tiles' <c>data-search</c>,
     /// which BL-202 runs on static and interactive pages alike. Its keyboard behaviour - typing filters, Enter opens the only
-    /// match, Escape clears - was driven in a browser on a Server and a WebAssembly site (Client README, BL-204).
+    /// match, Escape clears - was driven in a browser on a Server and a WebAssembly site (Client README).
     /// </remarks>
     public sealed class AdminDashboardSearchTests : BunitContext
     {

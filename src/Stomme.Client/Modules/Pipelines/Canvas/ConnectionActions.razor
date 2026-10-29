@@ -1,6 +1,6 @@
 @namespace Stomme.Modules.Pipelines.Canvas
 
-@* BL-229 - n8n's + and bin on a connection: shown while the pointer is over it (or it is selected); a press here is the
+@* n8n's + and bin on a connection: shown while the pointer is over it (or it is selected); a press here is the
    button's, never the canvas's, so it neither selects the connection nor starts a drag. *@
 <div class="db-connection-actions @(Label.Parent.Selected ? "is-shown" : "")" role="group" aria-label="This connection"
      @onpointerdown:stopPropagation="true" @onmousedown:stopPropagation="true">

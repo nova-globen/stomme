@@ -42,7 +42,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// BL-229 - the map of the site's pipelines (beyond n8n, where a workflow calling another is seen only inside it): which
+    /// The map of the site's pipelines (beyond n8n, where a workflow calling another is seen only inside it): which
     /// pipeline runs which - Execute pipeline CALLS (and waits), Dispatch and Bulk dispatch START, a failure STARTS a "Pipeline
     /// failed" watching it, and an AI agent may run a tool pipeline. Read from what each graph says as written - a pipeline
     /// named by an expression is the run's to know, and a step switched off starts nothing. A link to a pipeline the map does
@@ -149,7 +149,7 @@ namespace Stomme.Models.Pipelines
         }
 
         /// <summary>
-        /// BL-229 - what stops working when these pipelines stop running (archived or retracted - the engine runs a published
+        /// What stops working when these pipelines stop running (archived or retracted - the engine runs a published
         /// version only): every link INTO one of them from a pipeline that stays - a call or a start that will fail, a tool an
         /// agent is no longer offered, a pipeline's failures no longer handled - and a handler of every failure leaving. Links
         /// among the ones leaving break nothing that stays. Each said in a sentence, in the map's order; none when nothing does.

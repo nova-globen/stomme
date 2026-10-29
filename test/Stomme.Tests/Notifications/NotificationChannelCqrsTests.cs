@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationChannelCqrsTests.cs</c> (BL-78 step 5; 7 Fact + 1 Theory x5 =
+    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationChannelCqrsTests.cs</c> (7 Fact + 1 Theory x5 =
     /// 12 cases): the channel CQRS surface end to end through the mediator. Harness swapped (<see cref="NotificationCqrsHarness"/>:
     /// the module's startup on the File store, fake transports, a dictionary site secret store).
     /// </summary>

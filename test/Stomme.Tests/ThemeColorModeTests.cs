@@ -13,7 +13,7 @@ using File = System.IO.File;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// A theme's colour modes (BL-198, reported by the Didin session on 10.5.0-preview.2): a theme declares the mode it is
+    /// A theme's colour modes (reported by the Didin session on 10.5.0-preview.2): a theme declares the mode it is
     /// designed for, the host fixes every page it renders to that mode before the first paint, and a theme's own <c>:root</c>
     /// decides its surfaces in both modes.
     /// </summary>

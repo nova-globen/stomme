@@ -22,7 +22,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's AI workflow builder, on the canvas: the tools a model changes the pipeline with are held to the editor's own
+    /// n8n's AI workflow builder, on the canvas: the tools a model changes the pipeline with are held to the editor's own
     /// rules over this installation's real step catalog - a step type it offers, an input that step takes and a value that input
     /// holds, an outcome the step has, one flowchart at a time - and the model never reads or writes what the author alone enters.
     /// The request around them needs the assistant's key as well as the module's, and what comes back is what the save would take.

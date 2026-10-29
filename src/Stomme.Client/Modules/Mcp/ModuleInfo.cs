@@ -7,7 +7,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Mcp
 {
     /// <summary>
-    /// The MCP module's <see cref="ModuleDefinition"/> (BL-80 / D101 item 7) - how the framework discovers it, what it
+    /// The MCP module's <see cref="ModuleDefinition"/> - how the framework discovers it, what it
     /// declares to the authorization bridge, and where it lands on a fresh site.
     /// </summary>
     /// <remarks>

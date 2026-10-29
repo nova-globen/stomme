@@ -22,7 +22,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Job cluster on the persistence seam (D52) — the MASTER half of the master-bookkeeping wave. Job-table
+    /// The Job cluster on the persistence seam — the MASTER half of the master-bookkeeping wave. Job-table
     /// access goes through <see cref="IJobStore"/> (writes) and the MASTER read path
     /// <see cref="IMasterStoreSessionFactory"/> (reads); this class holds no <c>DbContext</c> and no
     /// <c>IQueryable</c> escapes it.
@@ -36,14 +36,14 @@ namespace Stomme.Repository
     /// master session factory serves because it never reads <c>SiteState.Alias</c>.
     /// </para>
     /// <para>
-    /// Reads NEVER go through the store (D19): the store TRACKS what it loads, and a later Update attaching a
+    /// Reads NEVER go through the store: the store TRACKS what it loads, and a later Update attaching a
     /// DIFFERENT instance with the same key is rejected by EF. A query session opens its own context, so reads
     /// leave the store's change tracker clean. The one read through the store is <see cref="DeleteJobAsync"/>,
     /// which deletes the very instance it loaded — tracking is what we want there.
     /// </para>
     /// <para>
     /// WRITES resolve a FRESH store per write (<see cref="NewStore"/>), NOT a constructor-injected one — the
-    /// UrlMapping per-write-store pattern (D47, BL-11). The scheduler (<c>HostedServiceBase</c>) writes the SAME
+    /// UrlMapping per-write-store pattern. The scheduler (<c>HostedServiceBase</c>) writes the SAME
     /// job row twice inside ONE scope every tick (auto-register then flip <c>IsExecuting</c>; or flip executing
     /// then advance <c>NextExecution</c>). A store owns ONE <c>MasterDBContext</c> and <c>EfRepository</c> leaves
     /// each write TRACKED, so a second write through the same store attaches a second instance with the same key
@@ -53,7 +53,7 @@ namespace Stomme.Repository
     /// per write, so no identity map outlives a write there.
     /// </para>
     /// <para>
-    /// PROVIDER-EQUALITY NOTE (D49). <see cref="GetJobAsync(string)"/> filters <c>JobType == jobType</c> with a
+    /// PROVIDER-EQUALITY NOTE. <see cref="GetJobAsync(string)"/> filters <c>JobType == jobType</c> with a
     /// bare <c>==</c>, which is case-SENSITIVE on the relational providers and case-INSENSITIVE on RavenDB. It is
     /// deliberately NOT normalized: <see cref="Job.JobType"/> is a fully-qualified .NET type name that is fed
     /// straight to <c>Type.GetType</c>, whose CASE is load-bearing, and two job types never differ by case
@@ -79,10 +79,10 @@ namespace Stomme.Repository
         // scope without hitting the identity map. See the class remarks.
         private IJobStore NewStore() => _services.GetRequiredService<IJobStore>();
 
-        // The read path on the seam (D19): reads go through a MASTER query session, never the store, so the
+        // The read path on the seam: reads go through a MASTER query session, never the store, so the
         // store's tracker stays clean for the Get-then-Update flows the scheduler runs (GetJobAsync(jobType)
         // then UpdateJobAsync). The IQueryable is materialized inside this method, so it never leaves the
-        // repository (D7). Plain LINQ rather than EF's async operators, which would bind these reads to the
+        // repository. Plain LINQ rather than EF's async operators, which would bind these reads to the
         // relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -153,7 +153,7 @@ namespace Stomme.Repository
 
         public async Task<Job> GetJobAsync(int jobId, bool tracking)
         {
-            // The `tracking` flag is moot on the seam: a query-session read is ALWAYS detached (D19), so both
+            // The `tracking` flag is moot on the seam: a query-session read is ALWAYS detached, so both
             // branches return a detached Job. The harvested tracking read exists only for JobController.Put's
             // existence check, which discards the entity. Kept in the signature for source compatibility.
             return await GetJobAsync(jobId);
@@ -161,7 +161,7 @@ namespace Stomme.Repository
 
         public async Task DeleteJobAsync(int jobId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it
+            // The one read that legitimately goes through the store: it deletes the very instance it
             // loaded, so tracking is what we want and no second instance is ever attached. Read and delete share
             // ONE store instance so the delete targets the tracked entity it loaded.
             var store = NewStore();

@@ -23,8 +23,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// The MCP catalog (BL-80 increment 3, D101 item 2) DRIVEN on an installed site, over HTTP, with real principals, the
-    /// real access guard and the real stores - on SQLite, PostgreSQL and RavenDB. FAIL-NOT-SKIP (D46).
+    /// The MCP catalog DRIVEN on an installed site, over HTTP, with real principals, the
+    /// real access guard and the real stores - on SQLite, PostgreSQL and RavenDB. FAIL-NOT-SKIP.
     /// </summary>
     /// <remarks>
     /// This is also <c>McpAuditLedgerTests</c>: the host is configured with <c>Logging:LogLevel:Default = Warning</c>,
@@ -44,11 +44,11 @@ namespace Stomme.Tests.Mcp
 
         /// <summary>
         /// BOTH MCP switches on, for every driven MCP suite. <b>One settings object means ONE installed template per
-        /// provider</b> (BL-164) shared by the catalog, endpoint and site-isolation drives; a second object, however
+        /// provider</b> shared by the catalog, endpoint and site-isolation drives; a second object, however
         /// small the difference, is a second real install per provider per process.
         /// </summary>
         /// <remarks>
-        /// The two halves are SEPARATE switches and stay separate in the product (D101): <c>Mcp:Enabled</c> is the
+        /// The two halves are SEPARATE switches and stay separate in the product: <c>Mcp:Enabled</c> is the
         /// client half - registering external servers - and <c>Mcp:Server:Enabled</c> is the endpoint this install
         /// publishes. They are turned on together HERE only because these suites drive both.
         /// <c>McpSwitchIndependenceTests</c> is what asserts neither implies the other. The <c>Warning</c> log level is

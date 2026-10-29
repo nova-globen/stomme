@@ -14,10 +14,10 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.CiscoDnaCenter
 {
     /// <summary>
-    /// Cisco DNA Center (BL-96 increment 4, lifted from the predecessor platform's <c>ciscodnac</c>): the Basic credentials exchanged for an
+    /// Cisco DNA Center (lifted from the predecessor platform's <c>ciscodnac</c>): the Basic credentials exchanged for an
     /// <c>X-Auth-Token</c> at the system API, then the Intent API paged by a 1-based offset (or read once for a
     /// single-object endpoint), the prefix not doubled when the custom path already carries it. Every request through the
-    /// host's egress (D110).
+    /// host's egress.
     /// </summary>
     public sealed class CiscoDnaCenterConnector : IConnector, IConnectorExtractor
     {

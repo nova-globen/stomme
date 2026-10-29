@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Rocket.Chat DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Rocket.Chat DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for a server's API that refuses a call without the user's id and token: a Rocket.Chat
     /// connection made over the API, its token vaulted, tested; a published pipeline posts a message with an accent and an
     /// attachment, reads the channel's messages over two pages - no more than asked - updates and deletes the message, reads

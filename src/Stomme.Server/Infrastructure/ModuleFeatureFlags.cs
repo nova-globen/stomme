@@ -7,7 +7,7 @@ using Stomme.FeatureManagement.Application;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// The bundled-module enablement knob (Wave 18 / W2, D85). A Stomme app can ship an external module by
+    /// The bundled-module enablement knob (Wave 18 / W2). A Stomme app can ship an external module by
     /// build-time <c>PackageReference</c> — the module's <c>.Stomme</c>-named assembly bakes into the publish
     /// output and is discovered at startup by the existing convention scan (<c>InstallationManager</c> /
     /// <c>IsStommeAssembly</c>), exactly as an <c>InstallationManager</c>-installed <c>.nupkg</c> is. Discovery

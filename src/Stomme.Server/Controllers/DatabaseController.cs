@@ -39,7 +39,7 @@ namespace Stomme.Controllers
         }
 
         /// <summary>
-        /// BL-20: the catalog is resolved on READ — booting never writes it (D32). A missing/empty
+        /// The catalog is resolved on READ — booting never writes it. A missing/empty
         /// AvailableDatabases section yields the stock defaults, and a pre-6.1.5 ", Stomme.Database."
         /// entry is served with its migrated ", Stomme.Server" assembly, exactly as
         /// IConfigManager.GetDatabaseType migrates DefaultDBType on read. Always returns fresh copies —
@@ -62,7 +62,7 @@ namespace Stomme.Controllers
             }).ToList();
         }
 
-        // Keep in lockstep with appsettings.json's AvailableDatabases (D56: RavenDB included — dropping it
+        // Keep in lockstep with appsettings.json's AvailableDatabases (RavenDB included — dropping it
         // here would silently hide the document-store option from any install without the section).
         private static List<Models.Database> DefaultDatabases() => new List<Models.Database>
         {

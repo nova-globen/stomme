@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.IdentityAudit.Controllers
 {
     /// <summary>
-    /// <c>GET api/IdentityAudit?days=30&amp;take=500</c> - this site's identity audit ledger, newest first (BL-120).
+    /// <c>GET api/IdentityAudit?days=30&amp;take=500</c> - this site's identity audit ledger, newest first.
     /// </summary>
     /// <remarks>
     /// Gated by a FRAMEWORK policy - the Administrators role - and deliberately by no permission key: <c>identity.*</c> is

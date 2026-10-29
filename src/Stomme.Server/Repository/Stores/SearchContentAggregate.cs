@@ -6,7 +6,7 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// The SearchContent aggregate root — the persistence-side model of the framework store's
-    /// <c>SearchContent</c> table (D50). Reachable only through <see cref="ISearchContentStore"/> (writes),
+    /// <c>SearchContent</c> table. Reachable only through <see cref="ISearchContentStore"/> (writes),
     /// <see cref="ISearchQueryStore"/> (the search read) and <c>IQuerySession.Query</c> (other reads).
     /// See <c>src/Stomme.Server/README.md (persistence seam)</c>.
     /// </summary>
@@ -15,7 +15,7 @@ namespace Stomme.Repository.Stores
     /// One indexed document: a page, a file, or anything else implementing <c>ISearchable</c>. It is the head
     /// of a four-table cluster — <c>SearchContentProperty</c> hangs off it, and <c>SearchContentWord</c> /
     /// <c>SearchWord</c> form the hand-rolled inverted index that ranks it. Tenant-side only, like the D44
-    /// leaves and unlike Setting (D23), so one store and no <c>IsMaster</c> routing.
+    /// leaves and unlike Setting, so one store and no <c>IsMaster</c> routing.
     /// </para>
     /// <para>
     /// <b>NEITHER <see cref="IAuditable"/> NOR <see cref="IDeletable"/>, and that is MEASURED, not inherited.</b>
@@ -23,7 +23,7 @@ namespace Stomme.Repository.Stores
     /// <c>DeletableAuditableBaseEntityBuilder</c> — and the live PostgreSQL <c>search_content</c> has exactly
     /// THIRTEEN columns with zero dropped stubs in <c>pg_attribute</c>. This is the first cluster on the seam
     /// whose EntityBuilder tells the truth (contrast D44's Language, D48's Folder, D49's File). It follows
-    /// <c>LogAggregate</c>'s shape (D44), not <c>FileAggregate</c>'s.
+    /// <c>LogAggregate</c>'s shape, not <c>FileAggregate</c>'s.
     /// </para>
     /// <para>
     /// <b>Do not "restore consistency" by adding the audit quartet.</b> <c>created_on</c> exists below and is a
@@ -41,7 +41,7 @@ namespace Stomme.Repository.Stores
     /// why the read needs <see cref="ISearchQueryStore"/> rather than a session query. It is not on this
     /// aggregate. <c>SearchContentProperties</c> is likewise absent: it is a separate aggregate reached through
     /// <see cref="ISearchContentPropertyStore"/>, because a mapped navigation into it would resurrect the
-    /// contract and break the model (D45/D48).
+    /// contract and break the model.
     /// </para>
     /// <para>
     /// The model is anemic and raises no domain events — a faithful port, not a re-modelling.
@@ -49,7 +49,7 @@ namespace Stomme.Repository.Stores
     /// </remarks>
     public class SearchContentAggregate : AggregateRoot<int>
     {
-        /// <summary>The <see cref="Site"/> this indexed content belongs to. A reference BY ID (D7/D19).</summary>
+        /// <summary>The <see cref="Site"/> this indexed content belongs to. A reference BY ID.</summary>
         public int SiteId { get; set; }
 
         /// <summary>The entity type indexed ("Page", "File", ...). Half of the natural key.</summary>

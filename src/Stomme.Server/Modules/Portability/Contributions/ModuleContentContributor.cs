@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Http;
 namespace Stomme.Modules.Portability.Contributions
 {
     /// <summary>
-    /// A placed module's content, through the module's own <c>IPortable</c> (BL-82, D107 item 2) - the adapter that
+    /// A placed module's content, through the module's own <c>IPortable</c> - the adapter that
     /// lets every module that already supports Export/Import Module travel in a package without a line of new code.
     /// </summary>
     /// <remarks>

@@ -1,4 +1,4 @@
-/* The Dashboards module's presentation (BL-96 increment 9, lifted from the predecessor platform's dashboard.css): the theme's --db-* tokens, so widgets follow light and dark. */
+/* The Dashboards module's presentation: the theme's --db-* tokens, so widgets follow light and dark. */
 
 .db-dash-grid {
     display: grid;

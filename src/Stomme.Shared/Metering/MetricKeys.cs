@@ -3,7 +3,7 @@ using System;
 namespace Stomme.Metering
 {
     /// <summary>
-    /// What a metric key and a usage source may look like (D102).
+    /// What a metric key and a usage source may look like.
     /// </summary>
     /// <remarks>
     /// <para>

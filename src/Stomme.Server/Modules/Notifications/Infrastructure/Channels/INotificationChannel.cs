@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Notifications.Infrastructure.Channels
 {
     /// <summary>
-    /// One delivery medium's transport (BL-78 / D100 point 2), lifted from the predecessor platform <c>INotificationChannelProvider</c>.
+    /// One delivery medium's transport, lifted from the predecessor platform <c>INotificationChannelProvider</c>.
     /// Each implementation owns the kind-specific RUNTIME validation of a channel's <see cref="TransportSettings"/>
     /// (beyond the structural checks the value object enforces) and the actual send. Registered as
     /// <c>IEnumerable&lt;INotificationChannel&gt;</c> by the module startup and selected by

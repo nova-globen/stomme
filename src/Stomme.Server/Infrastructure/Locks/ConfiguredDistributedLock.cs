@@ -15,7 +15,7 @@ using Raven.Client.Documents;
 namespace Stomme.Infrastructure.Locks
 {
     /// <summary>
-    /// The host's ONE <see cref="IDistributedLock"/> (BL-154), choosing its primitive from the INSTALL's store at
+    /// The host's ONE <see cref="IDistributedLock"/>, choosing its primitive from the INSTALL's store at
     /// resolve time - the same resolve-time rule the framework store follows, because the store type and connection
     /// are written mid-install, after the container is built.
     /// </summary>

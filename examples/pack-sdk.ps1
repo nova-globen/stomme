@@ -1,5 +1,5 @@
 #!/usr/bin/env pwsh
-# D81 — reliable-modularity Phase 4: INDEPENDENCE packaging.
+# Reliable-modularity Phase 4: INDEPENDENCE packaging.
 #
 # Packs the Stomme module-facing SDK to a LOCAL NuGet feed (examples/local-feed), then restores +
 # builds the storage-blind smoke module (examples/_sdk-smoke) against PACKAGES ONLY — proving a module
@@ -13,7 +13,7 @@ $root = Split-Path -Parent $PSScriptRoot
 $feed = Join-Path $PSScriptRoot 'local-feed'
 New-Item -ItemType Directory -Force -Path $feed | Out-Null
 
-# Stomme.Server and its WHOLE project closure, computed from the project references (BL-186): the hand-kept list that
+# Stomme.Server and its WHOLE project closure, computed from the project references: the hand-kept list that
 # stood here held 17 of 28 projects and missed the engine and the cryptography library, so the packed Stomme.Server
 # could not be restored from this feed (measured 2026-09-30).
 & pwsh -NoProfile -File (Join-Path $root 'scripts/pack-framework.ps1') -Output $feed

@@ -12,7 +12,7 @@ namespace Stomme.Repository.Stores
     /// <remarks>
     /// <para>
     /// A Visitor is one browser's history with one <see cref="Site"/>, correlated by cookie and optionally by
-    /// IP address. <see cref="SiteId"/> and <see cref="UserId"/> are references BY ID (D7/D19) — the
+    /// IP address. <see cref="SiteId"/> and <see cref="UserId"/> are references BY ID — the
     /// <c>Visitor.User</c> navigation was severed by D22 when the User table moved onto the seam, so nothing
     /// about this cluster needed a navigation severed for it.
     /// </para>
@@ -48,7 +48,7 @@ namespace Stomme.Repository.Stores
     /// </remarks>
     public class VisitorAggregate : AggregateRoot<int>
     {
-        /// <summary>The <see cref="Site"/> this visitor visited, by id (D7/D19). NOT NULL.</summary>
+        /// <summary>The <see cref="Site"/> this visitor visited, by id. NOT NULL.</summary>
         public int SiteId { get; set; }
 
         /// <summary>

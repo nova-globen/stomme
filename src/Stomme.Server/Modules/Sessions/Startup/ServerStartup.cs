@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Sessions.Startup
 {
     /// <summary>
-    /// Wires server-side sessions (BL-119): one storage-blind, tenant-owned aggregate, its registry, its retention pass
+    /// Wires server-side sessions: one storage-blind, tenant-owned aggregate, its registry, its retention pass
     /// and the server side of its pages. The cookie's own events (<c>SessionCookieEvents</c>) and the per-request check
     /// (<c>PrincipalValidator</c>) are the framework's, and resolve <see cref="ISessionRegistry"/> from the request.
     /// </summary>
@@ -33,7 +33,7 @@ namespace Stomme.Modules.Sessions.Startup
             services.AddScoped<ISessionRegistry, SessionRegistry>();
             services.AddScoped<IRetentionPurger, Infrastructure.SessionRetentionPurger>();
             services.AddScoped<Stomme.Portability.ISubjectDataContributor, SessionSubjectContributor>();
-            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, SessionErasureParticipant>(); // D112: the subject's sessions go // BL-82: a person's sessions in their data package
+            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, SessionErasureParticipant>(); // The subject's sessions go // BL-82: a person's sessions in their data package
 
             // The controller calls the server service directly; and it wins over the client HTTP implementation on the
             // server (the Health / Guestbook pattern).

@@ -22,14 +22,14 @@ namespace Stomme.Modules.HtmlText.Startup
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IHtmlTextService, ServerHtmlTextService>();
-            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Manager.HtmlTextErasureParticipant>(); // D112: the author's username on content rows
+            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Manager.HtmlTextErasureParticipant>(); // The author's username on content rows
 
             // The module's own EF context, still the relational migration target and the EF store/session factory's
             // backing context. Transient factory for the tenant-correctness reason documented on the framework's
             // EfSiteStore.
             services.AddDbContextFactory<HtmlTextContext>(opt => { }, ServiceLifetime.Transient);
 
-            // The module's store on the persistence seam (D55): both provider twins, collapsed to a resolve-time
+            // The module's store on the persistence seam: both provider twins, collapsed to a resolve-time
             // selection keyed on the configured database type. Runs AFTER the composition root's
             // AddRavenFrameworkStore, so the RavenDB twin's host singletons are already registered. The framework's
             // own SelectFrameworkStoreProviderByConfig cannot serve a module — it only scans Stomme.Repository.Stores

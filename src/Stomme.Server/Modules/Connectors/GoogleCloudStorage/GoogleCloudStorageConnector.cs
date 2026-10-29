@@ -22,7 +22,7 @@ using Microsoft.AspNetCore.StaticFiles;
 namespace Stomme.Modules.Connectors.GoogleCloudStorage
 {
     /// <summary>
-    /// Google Cloud Storage (BL-229, n8n's Google Cloud Storage node: buckets and objects) over its JSON API -
+    /// Google Cloud Storage (n8n's Google Cloud Storage node: buckets and objects) over its JSON API -
     /// <c>https://storage.googleapis.com/storage/v1</c>, uploads at <c>/upload/storage/v1</c> - and the OAuth2 REFRESH-TOKEN
     /// scheme (n8n's default, its OAuth2 credential), exchanged at Google's token endpoint through the shared
     /// <see cref="OAuth2TokenProvider"/>, as Google Drive's is. A download is written into the pipeline run's folder and an

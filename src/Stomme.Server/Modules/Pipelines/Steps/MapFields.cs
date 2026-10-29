@@ -29,7 +29,7 @@ namespace Stomme.Modules.Pipelines.Steps
         Date,
         Json,
 
-        /// <summary>The value as it is, whatever it holds - a number stays a number, a list a list (BL-229: n8n's Rename Keys and
+        /// <summary>The value as it is, whatever it holds - a number stays a number, a list a list (n8n's Rename Keys and
         /// the fields its Edit Fields keeps move a value without converting it).</summary>
         Any,
     }
@@ -38,7 +38,7 @@ namespace Stomme.Modules.Pipelines.Steps
     /// the predecessor platform's Transformations as one engine step: field mappings with typed conversion and defaults, computed
     /// fields as Liquid templates over the record (Fluid, bounded by the Notifications renderer's options - no host
     /// access by construction), pass-through of unmapped fields, and an error threshold the step fails above (the
-    /// partial output stays in the result for diagnosis). The template aggregate is not ported (D111): the mappings
+    /// partial output stays in the result for diagnosis). The template aggregate is not ported: the mappings
     /// ARE the step's inputs; the predecessor platform's Format references (a separate module) and its JavaScript computed fields are
     /// not carried in this increment.
     /// <para>

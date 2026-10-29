@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Okta
 {
     /// <summary>
-    /// Okta (BL-229, n8n's Okta node: its users, and their groups): an Okta org's management API with an API token in Okta's own
+    /// Okta (n8n's Okta node: its users, and their groups): an Okta org's management API with an API token in Okta's own
     /// <c>Authorization: SSWS</c> header, over the host's egress. A test names whose the token is.
     /// </summary>
     /// <remarks>

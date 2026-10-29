@@ -375,7 +375,7 @@ namespace Stomme.Tests
         private readonly Task _loop;
         private int _accepted;
 
-        // BL-231: who connected, in order - the remote port and the request line (or why there was none) - so a count that
+        // Who connected, in order - the remote port and the request line (or why there was none) - so a count that
         // is not the one expected names its connections instead of leaving a bare number.
         private readonly System.Collections.Concurrent.ConcurrentQueue<string> _connections = new();
 

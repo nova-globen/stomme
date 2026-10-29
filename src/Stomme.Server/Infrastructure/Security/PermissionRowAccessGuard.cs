@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Http;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// The <see cref="IAccessGuard"/> of the authorization bridge (D99, BL-99): a <c>resource:operation</c> key
+    /// The <see cref="IAccessGuard"/> of the authorization bridge: a <c>resource:operation</c> key
     /// is decided by Stomme's EXISTING permission model — the Permission rows
     /// <c>(SiteId, EntityName = resource, EntityId = -1, PermissionName = operation)</c> of the site the
     /// current request resolved to, evaluated per request through <see cref="IUserPermissions"/> exactly as a
@@ -26,11 +26,11 @@ namespace Stomme.Infrastructure.Security
     /// <list type="bullet">
     /// <item>null/empty feature AND permission impose nothing — allowed, even outside a request.</item>
     /// <item>No <c>HttpContext</c> (a hosted job, a headless caller) and any requirement — DENIED. There is no
-    /// principal to decide for; a system principal is a separate, security-relevant decision (D99).</item>
+    /// principal to decide for; a system principal is a separate, security-relevant decision.</item>
     /// <item>The key is EXACTLY two segments (a resource may itself be dotted, e.g. <c>platform.modules</c>,
     /// but never carry a second ':'); anything else is malformed and DENIED, never silently reinterpreted
     /// into some other resource and never mapped to a role check.</item>
-    /// <item>Both halves are lower-cased: the rows are declared lower-case (D49, normalise the data — bare
+    /// <item>Both halves are lower-cased: the rows are declared lower-case (normalise the data — bare
     /// equality is case-sensitive on PostgreSQL and the in-memory <c>PermissionName</c> match is ordinal).</item>
     /// <item>The site is the request's resolved alias (<c>HttpContext.GetAlias()?.SiteId</c>), -1 when none.</item>
     /// <item>The lookup is the 5-argument <see cref="IUserPermissions.IsAuthorizedAsync(System.Security.Claims.ClaimsPrincipal, int, string, int, string)"/>

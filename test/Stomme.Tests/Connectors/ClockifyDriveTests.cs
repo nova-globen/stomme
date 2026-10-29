@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Clockify DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Clockify DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Clockify's API v1 that refuses a call without the key: a Clockify connection made over the
     /// API, its key vaulted, tested; a published pipeline creates a client with an accent, reads the projects over two pages - no
     /// more than asked - logs time in UTC, reads the key's own user's time entries, moves the entry's end keeping its start and

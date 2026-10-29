@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// The MCP endpoint's rate limit (BL-80, D101 item 3), driven to a real 429 over HTTP.
+    /// The MCP endpoint's rate limit, driven to a real 429 over HTTP.
     /// </summary>
     /// <remarks>
     /// <para>

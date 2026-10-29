@@ -31,7 +31,7 @@ namespace Stomme.Modules.Pipelines.Steps
     /// the predecessor platform's Validations as one engine step: field rules (required, type, range, regex) at error or warning
     /// severity, structure checks (row bounds, unique fields), a failure mode and a threshold, a quality score. The
     /// records pass through as the result so the next step still receives them; the violations are an output. The
-    /// template aggregate is not ported (D111): the rules ARE the step's inputs; the predecessor platform's Format rules (a separate
+    /// template aggregate is not ported: the rules ARE the step's inputs; the predecessor platform's Format rules (a separate
     /// module) are not carried.
     /// <para>
     /// <b>Rules</b>, one per line, optionally prefixed <c>warn:</c> for a warning: <c>field required</c>,

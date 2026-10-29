@@ -23,7 +23,7 @@ namespace Stomme.Modules.Erasure.Domain
     public sealed record ErasureOutcomeRecord(string Participant, string Store, ErasureHandling Handling, int Affected, RetentionReason? Reason, DateTime? RetainedUntilUtc, DateTime? PurgedOnUtc);
 
     /// <summary>
-    /// A subject's erasure: the request while it runs, the RECEIPT once it is done (D112). While pending or retaining it
+    /// A subject's erasure: the request while it runs, the RECEIPT once it is done. While pending or retaining it
     /// carries the ids the participants act on (Stomme's user id, the identity provider's subject); when every store
     /// is erased and every retention purged, those are cleared and what remains holds no personal data: the opaque
     /// erasure id (random, unlinkable), the site, the timestamps, each participant's outcome with its counts, and for a

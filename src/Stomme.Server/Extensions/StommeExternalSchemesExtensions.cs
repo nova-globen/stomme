@@ -12,7 +12,7 @@ using Sustainsys.Saml2.Metadata;
 namespace Stomme.Extensions
 {
     /// <summary>
-    /// D65 — installation-wide, config-gated external-login CONSUMER schemes: SAML2 (Sustainsys) and
+    /// Installation-wide, config-gated external-login CONSUMER schemes: SAML2 (Sustainsys) and
     /// Windows/Negotiate. Both are OFF by default, so a stock install registers neither and is byte-for-byte
     /// unaffected. Neither is ever a default or global challenge: <c>DefaultScheme</c> stays the Identity
     /// cookie (set in <see cref="StommeServiceCollectionExtensions"/>), and both are challenged ONLY

@@ -56,7 +56,7 @@ public class ExecutePipeline : Step<ExecutePipelineResult>
     public Input<bool> WaitForCompletion { get; set; } = null!;
 
     /// <summary>
-    /// Stomme hand fix (BL-229, 2026-10-08): go on when the called pipeline fails or is stopped - its result says how it
+    /// Stomme hand fix: go on when the called pipeline fails or is stopped - its result says how it
     /// finished. Unticked, this step fails with the called pipeline's reason, as n8n's Execute Workflow does.
     /// </summary>
     [Input(DisplayName = "Go on when it fails", Description = "Go on when the called pipeline fails or is stopped - its result says how it finished. Unticked, this step fails with the called pipeline's reason.")]
@@ -137,14 +137,14 @@ public class ExecutePipeline : Step<ExecutePipelineResult>
 
     private async ValueTask OnChildPipelineCompletedAsync(StepExecutionContext context)
     {
-        // Stomme hand fix (BL-229, 2026-10-08): the result an immediate finish gives, read from the child's (ChildPipelineCompletion).
+        // Stomme hand fix: the result an immediate finish gives, read from the child's (ChildPipelineCompletion).
         var result = ChildPipelineCompletion.ResultOf(context.PipelineInput);
         FailWhenItFailed(context, result, ChildPipelineCompletion.ReasonOf(context.PipelineInput));
         context.Set(Result, result);
         await context.CompleteStepAsync().ConfigureAwait(false);
     }
 
-    // Stomme hand fix (BL-229, 2026-10-08): a called pipeline that failed, or was stopped, fails this step with its reason - the
+    // Stomme hand fix: a called pipeline that failed, or was stopped, fails this step with its reason - the
     // run then fails here, or takes this step's Failed path - unless the step goes on when it fails. Upstream went on regardless,
     // with no output to go on with.
     private void FailWhenItFailed(StepExecutionContext context, ExecutePipelineResult result, string? reason)

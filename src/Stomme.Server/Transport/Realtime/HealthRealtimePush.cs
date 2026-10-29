@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace Stomme.Transport.Realtime
 {
     /// <summary>
-    /// What a health check pushes (BL-83 / D104): the site's worst state as ONE word, and when it was decided - nothing
+    /// What a health check pushes: the site's worst state as ONE word, and when it was decided - nothing
     /// else. No subject, no latency, no description: a connection that is open is not a request that was authorized for
     /// detail, so the push is a NUDGE and the page re-reads <c>api/Health</c>, which decides <c>health:view</c> again.
     /// </summary>

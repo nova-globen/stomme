@@ -9,7 +9,7 @@ namespace Stomme.Migrations
         // typeof(IDatabase) and every concrete migration declares that signature). The narrowing to the
         // relational surface happens here — migrations run only on a relational install — and ActiveDatabase is
         // exposed as IRelationalDatabase so migrations reach both metadata (Name/TypeName) and SQL helpers
-        // (RewriteName/DelimitName/ConcatenateSql) unchanged (D53).
+        // (RewriteName/DelimitName/ConcatenateSql) unchanged.
         protected MultiDatabaseMigration(IDatabase database)
         {
             ActiveDatabase = (IRelationalDatabase)database;

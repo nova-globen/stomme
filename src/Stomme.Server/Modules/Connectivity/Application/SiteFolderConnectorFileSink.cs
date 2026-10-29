@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Connectivity.Application
 {
     /// <summary>
-    /// The managed file sink over the framework's file manager (BL-96 increment 2): the folder is the request's site's,
+    /// The managed file sink over the framework's file manager: the folder is the request's site's,
     /// by path; the bytes go through <see cref="IFileIngestionGuard.AcceptChunkAsync"/> as a one-part upload - the
     /// extension allowlist, the size cap, the scanner and the folder capacity all apply, on a staging copy, exactly as
     /// the Files admin's own upload - and the accepted file is registered as a File row (updated when the name exists).
@@ -21,7 +21,7 @@ namespace Stomme.Modules.Connectivity.Application
     /// </summary>
     /// <remarks>
     /// <b>One row write per fresh scope.</b> A connector stores several files in ONE request scope (an FTP download of a
-    /// folder), and the framework's file repository tracks what it writes (D19): a second store of the same name in the
+    /// folder), and the framework's file repository tracks what it writes: a second store of the same name in the
     /// same scope attached a second instance of the row and EF refused it - measured by the sink's drive. Each row write
     /// therefore runs in a scope of its own, routed to the same alias, which is the per-write-store pattern in scope form.
     /// </remarks>

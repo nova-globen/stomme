@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 8 - sticky notes and step comments: kept in the flowchart's and the step's designer metadata, so they
+    /// Sticky notes and step comments: kept in the flowchart's and the step's designer metadata, so they
     /// come back as they were written, the engine reads (and runs) the pipeline unchanged around them, two editors merge them
     /// as text, and a comparison names them.
     /// </summary>
@@ -103,7 +103,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("step 'Say', its comment: 'Greets whoever reads the log' → 'Greets'", PipelineGraphDiff.Lines(graph, edited));
         }
 
-        // BL-229 - n8n's note colours: kept in the flowchart's designer metadata (none written for the accent, a name the editor
+        // n8n's note colours: kept in the flowchart's designer metadata (none written for the accent, a name the editor
         // does not offer read as the accent), merged as a field of their own - one editor's colour and another's text both stay -
         // and brought along in a pipeline file, where a colour the editor does not offer is the accent too.
         [Fact]

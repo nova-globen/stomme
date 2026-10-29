@@ -115,7 +115,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task GrpcWeb_round_trips_a_typed_unary_call()
         {
-            // The exact transport a WASM/MAUI client uses (D10): gRPC frames tunneled over HTTP/1.1.
+            // The exact transport a WASM/MAUI client uses: gRPC frames tunneled over HTTP/1.1.
             using var channel = CreateGrpcWebChannel();
             var client = new TransportDemo.TransportDemoClient(channel);
 

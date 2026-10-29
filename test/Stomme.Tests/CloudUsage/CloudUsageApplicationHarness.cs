@@ -37,7 +37,7 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace Stomme.Tests.CloudUsage
 {
     /// <summary>
-    /// The CloudUsage application layer over the File store through the module's OWN startup (BL-97 increment 4): the
+    /// The CloudUsage application layer over the File store through the module's OWN startup: the
     /// mediator with the authorization and validation behaviours, a resolved site and tenant, and the edges the predecessor platform's tests
     /// stubbed - the payload source (a captured sample), the connection resolver, the dataset registrar, the notification
     /// dispatcher, the site's administrators, the host egress.

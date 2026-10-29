@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.MicrosoftGraphSecurity
 {
     /// <summary>
-    /// Microsoft Graph Security (BL-229, n8n's Microsoft Graph Security node: a tenant's secure scores and their control
+    /// Microsoft Graph Security (n8n's Microsoft Graph Security node: a tenant's secure scores and their control
     /// profiles): Microsoft Graph's security API with an app's client credentials - the tenant's token endpoint - through the
     /// family's token provider, over the host's egress. A test names the tenant's latest secure score.
     /// </summary>

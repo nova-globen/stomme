@@ -20,7 +20,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsSns
 {
     /// <summary>
-    /// Amazon SNS (BL-229, n8n's AWS SNS node: a topic made and deleted, a message published): an account's topics over SNS's
+    /// Amazon SNS (n8n's AWS SNS node: a topic made and deleted, a message published): an account's topics over SNS's
     /// query API (<c>https://sns.{region}.amazonaws.com</c>, a form posted, XML answered - read with no DTD), every call signed
     /// with AWS Signature Version 4 by an IAM user's access key and secret, over the host's egress. A test names how many
     /// topics the key sees.

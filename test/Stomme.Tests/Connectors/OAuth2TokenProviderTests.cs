@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 3 - the predecessor platform's OAuth2TokenProviderTests (13) by name over the port, plus what the port adds: the token
+    /// The predecessor platform's OAuth2TokenProviderTests (13) by name over the port, plus what the port adds: the token
     /// call rides the EGRESS's client (the provider has no client of its own), the field names are the scheme's, and a cached
     /// token is served only to an egress that admits the token host.
     /// </summary>
@@ -63,7 +63,7 @@ namespace Stomme.Tests.Connectors
         [Fact]
         public async Task GetAccessToken_PostsTheGrantsExtraFields_EachSubjectItsOwnToken()
         {
-            // BL-229 - Box's Client Credentials Grant names whom the app acts as in two fields of its own; they ride the form after
+            // Box's Client Credentials Grant names whom the app acts as in two fields of its own; they ride the form after
             // the grant's, and they are part of the grant: another subject never gets the first one's token.
             var issued = 0;
             var stub = Stub(_ => RecordingHandler.Json($$"""{"token_type":"bearer","expires_in":3600,"access_token":"box-{{++issued}}"}"""));
@@ -256,7 +256,7 @@ namespace Stomme.Tests.Connectors
             Assert.Equal(2, stub.Calls.Count);
         }
 
-        // BL-229 - Zoom's server-to-server grant: the account in the form, the client as HTTP Basic and never in the form; the
+        // Zoom's server-to-server grant: the account in the form, the client as HTTP Basic and never in the form; the
         // account id required before any call; the cache keyed by the client too, so another secret fetches its own token.
         [Fact]
         public async Task The_account_credentials_grant_sends_the_client_as_basic_and_caches_per_client()
@@ -280,7 +280,7 @@ namespace Stomme.Tests.Connectors
             Assert.Equal(2, stub.Calls.Count);
         }
 
-        // BL-229 - Reddit's refresh: the client as HTTP Basic and never in the form, the caller named by its user agent; a client
+        // Reddit's refresh: the client as HTTP Basic and never in the form, the caller named by its user agent; a client
         // asked for as Basic and not given refused before anything is sent; the form and no agent otherwise, as before.
         [Fact]
         public async Task A_refresh_can_send_the_client_as_basic_and_name_its_caller()

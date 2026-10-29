@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stomme.Export
 {
     /// <summary>
-    /// The data-export module's permission KEYS (D108 item 9), decided by the authorization bridge (D99): each key is
+    /// The data-export module's permission KEYS, decided by the authorization bridge: each key is
     /// a site Permission row <c>(EntityName = "export", EntityId = -1, PermissionName = operation)</c>.
     /// </summary>
     /// <remarks>

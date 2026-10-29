@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Kit
 {
     /// <summary>
-    /// Kit (BL-229, n8n's ConvertKit node: subscribers through forms, sequences and tags, and the custom fields): Kit's API v4
+    /// Kit (n8n's ConvertKit node: subscribers through forms, sequences and tags, and the custom fields): Kit's API v4
     /// with an API key (<c>X-Kit-Api-Key</c>), over the host's egress. A test names the key's account.
     /// </summary>
     /// <remarks>

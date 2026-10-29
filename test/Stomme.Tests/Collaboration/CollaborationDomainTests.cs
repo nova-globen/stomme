@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// BL-97 increment 11 - the predecessor platform's <c>ResourceRefTests</c>, <c>ResourceLockTests</c> and <c>EditSessionTests</c>, by name.
+    /// The predecessor platform's <c>ResourceRefTests</c>, <c>ResourceLockTests</c> and <c>EditSessionTests</c>, by name.
     /// <b>CHANGED:</b> a resource id is a string (a pipeline's is the engine's definition id), a user an int, a lock and a
     /// session belong to a site, and a refusal is a <see cref="CollaborationConflictException"/> (the predecessor platform: a bare
     /// InvalidOperationException) or an <see cref="InvalidResourceRefException"/> for a malformed reference. <b>ADDED:</b> the

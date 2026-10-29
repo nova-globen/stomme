@@ -138,7 +138,7 @@ namespace Stomme.Modules.DataExport.Application
     }
 
     /// <summary>
-    /// What an export request must be - for a one-off export and for a schedule alike (BL-95), so a schedule can never hold
+    /// What an export request must be - for a one-off export and for a schedule alike, so a schedule can never hold
     /// a request the request path would refuse.
     /// </summary>
     internal static class ExportRequestValidator

@@ -22,7 +22,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// Read RSS feed (BL-229, n8n's RSS Read node): a feed's items as records - RSS 2.0, RSS 1.0 (RDF) and Atom alike - each with
+    /// Read RSS feed (n8n's RSS Read node): a feed's items as records - RSS 2.0, RSS 1.0 (RDF) and Atom alike - each with
     /// its <c>title</c>, <c>link</c>, <c>id</c> (the guid, or the link), <c>published</c> (ISO 8601, in UTC, when the feed's date
     /// reads as one; as written otherwise), <c>author</c>, <c>summary</c> and <c>categories</c>. Fetched from its URL by the
     /// guarded outbound path the HTTP request step takes (<c>Pipelines:Http:AllowedHosts</c> and the private-address refusal,

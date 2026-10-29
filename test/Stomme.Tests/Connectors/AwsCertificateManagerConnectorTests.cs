@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - n8n's AWS Certificate Manager node over ACM's JSON protocol, each call signed with SigV4 for acm in the connection's
+    /// n8n's AWS Certificate Manager node over ACM's JSON protocol, each call signed with SigV4 for acm in the connection's
     /// region: every ARN, domain, status, key type, usage, algorithm and token held to ACM's shape before anything is signed;
     /// certificates listed by status and what they include, page by page up to the most; a certificate's details and its PEM; one
     /// requested for a domain and its other names by DNS or email with a key algorithm; one renewed and one deleted; AWS's refusals
@@ -149,11 +149,11 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the AWS Certificate Manager connector against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback),
+    /// The AWS Certificate Manager connector against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback),
     /// which checks every SigV4 signature against the IAM key it issued, through the HOST's egress: loopback refused until
     /// allowlisted; a test; a certificate requested for a domain and another name, listed by its status, described with both
     /// names, its PEM read (moto issues a requested certificate at once, where AWS waits for its validation), deleted and gone. Fails, never skips, when moto is
-    /// absent (D46).
+    /// absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class AwsCertificateManagerConnectorLiveTests(ITestOutputHelper output)

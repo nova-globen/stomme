@@ -11,7 +11,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Metering.Services
 {
     /// <summary>
-    /// The SERVER side of <see cref="IMeteringService"/> (D102 item 11): every call is a mediator dispatch, so each
+    /// The SERVER side of <see cref="IMeteringService"/>: every call is a mediator dispatch, so each
     /// is decided by its request's <c>[Requires]</c>. Registered <c>AddTransient</c> in the module's
     /// <c>ServerStartup</c> so it wins over the client HTTP implementation on the server.
     /// </summary>

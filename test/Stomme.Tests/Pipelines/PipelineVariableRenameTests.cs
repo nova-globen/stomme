@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - a variable renamed, and every expression, condition and case that reads it - n8n renames a node and the
+    /// A variable renamed, and every expression, condition and case that reads it - n8n renames a node and the
     /// expressions reading it follow. A binding needs nothing (it names the id); a value is sent as typed and never changed; a
     /// script and a record's rules holding the old name are said, to be checked.
     /// </summary>

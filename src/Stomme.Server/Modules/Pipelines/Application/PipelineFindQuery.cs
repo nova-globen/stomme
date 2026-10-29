@@ -18,7 +18,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - find in every pipeline (<see cref="PipelineContentSearch"/>): where a text is used in the latest version of each of
+    /// Find in every pipeline (<see cref="PipelineContentSearch"/>): where a text is used in the latest version of each of
     /// the site's pipelines - archived ones left out, as the list leaves them out - pipeline by pipeline in name order, at most
     /// <see cref="PipelineContentSearch.MaxResults"/> places. A sensitive input is never read. Takes what viewing pipelines takes.
     /// </summary>

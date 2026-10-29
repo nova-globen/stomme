@@ -3,7 +3,7 @@
 @inject ISettingService SettingService
 
 @* The Stomme theme defines no colour of its own, so its buttons - Stomme's and FluentUI's - take app.css's default,
-   the signature amber (BL-192). FluentUI's providers are rendered once for every theme by ThemeBuilder. *@
+   the signature amber. FluentUI's providers are rendered once for every theme by ThemeBuilder. *@
 
 <div class="db-shell">
     <header class="db-header">
@@ -20,7 +20,7 @@
         </div>
     </header>
 
-    @* The pane grid is CSS Grid on --db-* rather than Bootstrap's .row/.col-md-* scaffold (D11).
+    @* The pane grid is CSS Grid on --db-* rather than Bootstrap's .row/.col-md-* scaffold.
        `.db-panes` is a 12-column grid that collapses to a single column below the md breakpoint,
        which is what col-md-* did; `.db-pane-N` spans N columns. Empty panes collapse away, so a
        row with nothing in it takes no space. *@

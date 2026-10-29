@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - GitLab (n8n's GitLab node: issues, a comment, a release, files - and merge requests and pipelines) over its REST API:
+    /// GitLab (n8n's GitLab node: issues, a comment, a release, files - and merge requests and pipelines) over its REST API:
     /// the token in GitLab's PRIVATE-TOKEN header; any page's address cut back to the instance; a project by its path (subgroups
     /// too), its id or its address; issues by state, labels, assignee, search and change, newest change first, page by page by
     /// X-Next-Page up to the most asked for; an issue got, created and updated with its assignees by username (looked up) or id,

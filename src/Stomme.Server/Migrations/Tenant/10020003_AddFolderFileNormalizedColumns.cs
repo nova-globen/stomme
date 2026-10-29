@@ -7,7 +7,7 @@ using Stomme.Repository;
 namespace Stomme.Migrations.Tenant
 {
     /// <summary>
-    /// Adds the normalized lookup columns the File cluster needed to cross the persistence seam (D49):
+    /// Adds the normalized lookup columns the File cluster needed to cross the persistence seam:
     /// <c>Folder.PathNormalized</c> and <c>File.NameNormalized</c>, each a lowercase copy of the column beside
     /// it, and BACKFILLS them for existing installs.
     /// </summary>

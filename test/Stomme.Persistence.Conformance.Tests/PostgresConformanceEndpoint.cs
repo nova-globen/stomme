@@ -162,7 +162,7 @@ internal static class PostgresConformanceEndpoint
 }
 
 /// <summary>
-/// The honesty guard for the PostgreSQL half (BL-16) — the same role <see cref="RavenParityCoverageTests"/>
+/// The honesty guard for the PostgreSQL half — the same role <see cref="RavenParityCoverageTests"/>
 /// plays for the RavenDB half: with PostgreSQL unreachable the two PG fixtures already FAIL loudly out of
 /// <c>InitializeAsync</c> (they do not skip), but each failure is a bare socket/Npgsql stack that does not
 /// say what to start. This converts the pile into one named diagnosis.

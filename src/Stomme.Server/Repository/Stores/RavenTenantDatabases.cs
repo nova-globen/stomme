@@ -10,7 +10,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// The RavenDB database each tenant's rows live in (BL-176): the database its connection string names, as on a relational
+    /// The RavenDB database each tenant's rows live in: the database its connection string names, as on a relational
     /// install. Null is the store's default database - the installation's own, where the master tenant lives and where every
     /// tenant lived before BL-176. Filled by the boot and install path (<see cref="RavenTenantDatabasePlanner"/>) for every
     /// tenant before a request is served; the master tenant is known from the start.
@@ -46,7 +46,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The host's <see cref="IRavenTenantDatabaseResolver"/> (BL-176): a tenant's sessions open on the database its connection
+    /// The host's <see cref="IRavenTenantDatabaseResolver"/>: a tenant's sessions open on the database its connection
     /// string names. FAIL-CLOSED: a tenant this host has not resolved is refused, never routed to the installation's database,
     /// which would put its rows beside another tenant's; system scope (no tenant) is the installation's database.
     /// </summary>

@@ -21,7 +21,7 @@ namespace Stomme.Modules.Pipelines.Application
 {
     // Every command runs inside the request's engine tenant (EngineTenantMiddleware): what it creates belongs to the
     // request's site, and what it looks up is the site's. The permission is decided by the host's authorization
-    // behaviour before any handler runs (D99); a handler never checks a role.
+    // behaviour before any handler runs; a handler never checks a role.
 
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.Manage)]
     public sealed record CreatePipelineCommand(string Name, string? Description) : ICommand<PipelineView>;
@@ -31,7 +31,7 @@ namespace Stomme.Modules.Pipelines.Application
         public async Task<PipelineView> Handle(CreatePipelineCommand request, CancellationToken ct)
         {
             var name = Names.Require(request.Name);
-            // A new pipeline is an empty sequence until the editor (BL-95 (c)) gives it a body; it runs to Finished as is.
+            // A new pipeline is an empty sequence until the editor gives it a body; it runs to Finished as is.
             var definition = await publisher.NewAsync(new Sequence(), ct);
             definition.Name = name;
             definition.Description = request.Description?.Trim();
@@ -88,7 +88,7 @@ namespace Stomme.Modules.Pipelines.Application
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.Manage)]
     public sealed record PublishPipelineCommand(string DefinitionId, string? Note = null) : ICommand<PublishResult?>;
 
-    // BL-229 increment 4: a pipeline whose graph has a problem that would fail its run - an input its step cannot do without
+    // A pipeline whose graph has a problem that would fail its run - an input its step cannot do without
     // left empty, a value its type cannot hold, a variable that is gone - is not published; the editor shows the same problems
     // on the canvas as they arise (PipelineGraphProblems, one rule). Warnings refuse nothing, and a body the editor did not
     // draw (no flowchart) has no graph to judge. The engine's own validation still follows.
@@ -104,7 +104,7 @@ namespace Stomme.Modules.Pipelines.Application
                 return null;
             }
 
-            // BL-229 - n8n's archive: an archived pipeline is not put live again until it is restored.
+            // n8n's archive: an archived pipeline is not put live again until it is restored.
             if (await PipelineArchiveStore.FindAsync(keyValues, tenants.TenantId, request.DefinitionId, ct) is not null)
             {
                 return new PublishResult { Succeeded = false, Errors = new List<string> { "The pipeline is archived - restore it to publish it." } };
@@ -123,7 +123,7 @@ namespace Stomme.Modules.Pipelines.Application
                 return new PublishResult { Succeeded = false, Errors = problems.Select(problem => $"{problem.Step}: {problem.Message}").ToList() };
             }
 
-            // BL-229: what changed, in the author's words - the version published carries it, or none (never the last one's).
+            // What changed, in the author's words - the version published carries it, or none (never the last one's).
             PipelineWire.StampNote(latest, request.Note);
             var result = await publisher.PublishAsync(latest, ct);
             return new PublishResult
@@ -157,7 +157,7 @@ namespace Stomme.Modules.Pipelines.Application
                 return false;
             }
 
-            // BL-229: its tags go with it, its place in the archive and its folder - and the discussion of its steps.
+            // Its tags go with it, its place in the archive and its folder - and the discussion of its steps.
             await PipelineTagStore.SaveAsync(keyValues, tenants.TenantId, request.DefinitionId, [], ct);
             await PipelineArchiveStore.DeleteAsync(keyValues, tenants.TenantId, request.DefinitionId, ct);
             await PipelineFolderStore.SaveAsync(keyValues, tenants.TenantId, request.DefinitionId, "", ct);
@@ -196,7 +196,7 @@ namespace Stomme.Modules.Pipelines.Application
                 return null;
             }
 
-            // BL-229: how many runs may go at once - the dispatch is not judged by the engine, so it is asked here.
+            // How many runs may go at once - the dispatch is not judged by the engine, so it is asked here.
             var correlationId = string.IsNullOrWhiteSpace(request.CorrelationId) ? null : request.CorrelationId.Trim();
             var input = request.Input?.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
             if (Reliability.PipelineTurns.IsInTurn(published))
@@ -223,14 +223,14 @@ namespace Stomme.Modules.Pipelines.Application
                 throw new InvalidOperationException("The run could not be dispatched: " + response.Fault.Message);
             }
 
-            // BL-229: known here before the engine stores it - all through its first burst of work - so its Stop reaches it.
+            // Known here before the engine stores it - all through its first burst of work - so its Stop reaches it.
             stops.Seen(runId, tenants.TenantId, clock.UtcNow);
             return new PipelineRunStarted { RunId = runId };
         }
     }
 
     /// <summary>
-    /// BL-229 - n8n's "retry": a run started again, with the input and correlation the earlier one had (a webhook's body, a
+    /// n8n's "retry": a run started again, with the input and correlation the earlier one had (a webhook's body, a
     /// schedule's time, a failure a handler was told of), on the pipeline's PUBLISHED version - what a run of it is now; the
     /// version the earlier one ran may have been fixed since, which is the point of running it again. Dispatched like Run; null
     /// when the run is not on the site, refused when its pipeline has no published version. <paramref name="OnItsVersion"/>:
@@ -295,7 +295,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 - n8n's retry "from the node with the error": a failed run goes on as a new run from the step that failed, on the
+    /// n8n's retry "from the node with the error": a failed run goes on as a new run from the step that failed, on the
     /// pipeline's published version, what had finished not run again (<see cref="PipelineRetryFromFailure"/>). Null when the run
     /// is not on the site; refused, saying why, when it cannot go on - and as Retry is, while the pipeline runs one at a time.
     /// </summary>
@@ -350,7 +350,7 @@ namespace Stomme.Modules.Pipelines.Application
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.Run)]
     public sealed record CancelRunCommand(string Id) : ICommand<bool>;
 
-    // BL-229: a run is stopped where it is - waiting, its stored state cancelled and what it waited on cleared; busy, asked to stop
+    // A run is stopped where it is - waiting, its stored state cancelled and what it waited on cleared; busy, asked to stop
     // before its next step (PipelineRunStops) - and so is every run it started that is still going, at any depth. Stopped alone,
     // a caller left its sub-pipeline going: one waiting for an approval would have done its work once someone decided (n8n's Stop
     // ends the whole execution, its sub-workflows with it).
@@ -406,7 +406,7 @@ namespace Stomme.Modules.Pipelines.Application
                 return false;
             }
 
-            // BL-229: what it saved about itself goes with it.
+            // What it saved about itself goes with it.
             await PipelineRunDataStore.DeleteAsync(keyValues, tenants.TenantId, [request.Id], ct);
             return true;
         }

@@ -19,7 +19,7 @@ namespace Stomme.Modules.ContextualHelp.Infrastructure
     public sealed record HelpContributionConflict(string Kind, string Name, IReadOnlyList<string> Contributors, string Reason);
 
     /// <summary>
-    /// Every topic this install's contributors ship, each bound to the contributor that owns it (BL-84, D103 item 2).
+    /// Every topic this install's contributors ship, each bound to the contributor that owns it.
     /// </summary>
     /// <remarks>
     /// <para>

@@ -25,8 +25,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Dashboards.Startup
 {
     /// <summary>
-    /// The Dashboards module's composition (BL-96 increments 8 to 10, D110): the storage-blind, tenant-owned aggregate on
-    /// whichever store the install chose (D79/D80), its closed repository, the commands and queries, the Datasets delete
+    /// The Dashboards module's composition (BL-96 increments 8 to 10): the storage-blind, tenant-owned aggregate on
+    /// whichever store the install chose, its closed repository, the commands and queries, the Datasets delete
     /// guard the boards answer, the page's service, and the real-time signal over the bus and the opt-in hub.
     /// </summary>
     public class ServerStartup : IServerStartup
@@ -76,7 +76,7 @@ namespace Stomme.Modules.Dashboards.Startup
             // Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).
             services.AddTransient<IDashboardsService, ServerDashboardsService>();
 
-            // The export half (BL-97 increment 1, D108): one grid widget, and a whole board as one table per grid widget.
+            // The export half: one grid widget, and a whole board as one table per grid widget.
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Export.IExportSource, DashboardGridExportSource>());
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Export.IExportSource, DashboardReportExportSource>());
 

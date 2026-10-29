@@ -44,7 +44,7 @@
       real class.
     -->
     <InternalsVisibleTo Include="Stomme.Persistence.Conformance.Tests" />
-    <!-- D70: the OpenIddict case-parity gate resolves the internal RavenDB OpenIddict application store directly
+    <!-- The OpenIddict case-parity gate resolves the internal RavenDB OpenIddict application store directly
          (below OpenIddict's manager, which masks store case-sensitivity with its own ordinal second pass), so the
          defensive store fix is exercised by a test that actually goes red without it. -->
     <InternalsVisibleTo Include="Stomme.Tests" />
@@ -54,7 +54,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
-    <!-- BL-80 / D101: the MCP server SDK (Apache-2.0). Referenced DIRECTLY as well as pinned:
+    <!-- The MCP server SDK (Apache-2.0). Referenced DIRECTLY as well as pinned:
          central transitive pinning is OFF, so a PackageVersion alone would not move it. -->
     <PackageReference Include="ModelContextProtocol" />
     <PackageReference Include="ModelContextProtocol.AspNetCore" />
@@ -70,14 +70,14 @@
          fixed in 2.7.5); AspNetCore.OpenApi 10.0.9 otherwise resolves the vulnerable 2.0.0. -->
     <PackageReference Include="Microsoft.OpenApi" />
     <PackageReference Include="MailKit" />
-    <!-- BL-78 (D100 point 5): notification template rendering (Liquid). MIT. -->
+    <!-- Notification template rendering (Liquid). MIT. -->
     <PackageReference Include="Fluid.Core" />
     <PackageReference Include="Jint" />
-    <!-- BL-169: the backup archive's S3-compatible object store. Apache-2.0. -->
+    <!-- The backup archive's S3-compatible object store. Apache-2.0. -->
     <PackageReference Include="AWSSDK.S3" />
-    <!-- BL-97 increment 9 (D113): the assistant's OpenAI-compatible provider. MIT. -->
+    <!-- The assistant's OpenAI-compatible provider. MIT. -->
     <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
-    <!-- BL-97 increment 10 (D113): the agents' tool-calling loop. MIT. -->
+    <!-- The agents' tool-calling loop. MIT. -->
     <PackageReference Include="Microsoft.Extensions.AI" />
     <PackageReference Include="Cronos" />
     <PackageReference Include="ZiggyCreatures.FusionCache" />
@@ -95,20 +95,20 @@
     <PackageReference Include="EFCore.NamingConventions" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="FluentFTP" />
-    <!-- BL-229: the MySQL connector's driver (MIT). -->
+    <!-- The MySQL connector's driver (MIT). -->
     <PackageReference Include="MySqlConnector" />
-    <!-- BL-229: the Redis connector's client (MIT). -->
+    <!-- The Redis connector's client (MIT). -->
     <PackageReference Include="StackExchange.Redis" />
-    <!-- BL-229: the MongoDB connector's driver (Apache-2.0). -->
+    <!-- The MongoDB connector's driver (Apache-2.0). -->
     <PackageReference Include="MongoDB.Driver" />
-    <!-- BL-229: the SFTP connector's client (MIT). -->
+    <!-- The SFTP connector's client (MIT). -->
     <PackageReference Include="SSH.NET" />
-    <!-- BL-229: the RabbitMQ connector's client (Apache-2.0 / MPL-2.0). -->
+    <!-- The RabbitMQ connector's client (Apache-2.0 / MPL-2.0). -->
     <PackageReference Include="RabbitMQ.Client" />
-    <!-- BL-229: the MQTT connector's client (MIT). -->
+    <!-- The MQTT connector's client (MIT). -->
     <PackageReference Include="MQTTnet" />
     <PackageReference Include="AMQPNetLite.Core" />
-    <!-- BL-96 increment 9: the ECharts runtime for the Dashboards module, referenced for its static asset only (Apache-2.0; the licence gate proves it). -->
+    <!-- The ECharts runtime for the Dashboards module, referenced for its static asset only (Apache-2.0; the licence gate proves it). -->
     <PackageReference Include="Vizor.ECharts" />
     <PackageReference Include="System.DirectoryServices.Protocols" />
     <!-- Security pin (CVE-2026-84008, GHSA-846f-f764-76mx): the patched Pkcs over the 10.0.0 that flows in transitively. -->
@@ -127,14 +127,14 @@
        install registers neither and is byte-for-byte unaffected. -->
   <ItemGroup>
     <PackageReference Include="Sustainsys.Saml2.AspNetCore2" />
-    <!-- Security pin (D83, now in the PACKAGE): Sustainsys.Saml2 -> System.Security.Cryptography.Xml 4.7.1 ->
+    <!-- Security pin (now in the PACKAGE): Sustainsys.Saml2 -> System.Security.Cryptography.Xml 4.7.1 ->
          System.Security.Permissions -> System.Windows.Extensions -> System.Drawing.Common 4.7.0 (GHSA-rxg9-xrhp-64gj,
          critical) reached every plain-SDK consumer of this package. See Directory.Packages.props. -->
     <PackageReference Include="System.Drawing.Common" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" />
   </ItemGroup>
 
-  <!-- D92: the stock external themes, bundled the D85 way — a build-time PackageReference bakes the
+  <!-- The stock external themes, bundled the D85 way — a build-time PackageReference bakes the
        .Stomme theme assembly into /bin where the SAME convention scan that loads an
        InstallationManager-unpacked theme discovers it; the packs' build*/ props serve each theme's
        wwwroot as _content/{id}/ through the app's static-web-assets pipeline. Restored from the
@@ -144,7 +144,7 @@
     <ProjectReference Include="..\..\examples\Themes\Stomme.Theme.Slate\Stomme.Theme.Slate\Stomme.Theme.Slate.csproj" />
   </ItemGroup>
 
-  <!-- OpenIddict per-tenant authority (brief 02 / D61 spike). Apache-2.0 (D2). Wired behind the
+  <!-- OpenIddict per-tenant authority (brief 02 / D61 spike). Apache-2.0. Wired behind the
        OpenIddict:Enabled config gate so a stock relational/Raven install is unaffected. -->
   <ItemGroup>
     <PackageReference Include="OpenIddict.Abstractions" />
@@ -166,19 +166,19 @@
   <ItemGroup>
     <ProjectReference Include="..\Stomme.Client\Stomme.Client.csproj" />
     <ProjectReference Include="..\Stomme.Shared\Stomme.Shared.csproj" />
-    <!-- Persistence seam (D3/D7): the abstractions + relational provider are pulled transitively
+    <!-- Persistence seam: the abstractions + relational provider are pulled transitively
          (Persistence.Abstractions, SharedKernel, Tenancy.Domain/Abstractions) so their assemblies
          land in /bin for the reflection-based discovery. Wired into the framework store in phased
          increments; the harvested IDatabase path still runs alongside. -->
     <ProjectReference Include="..\Stomme.Persistence.EfCore\Stomme.Persistence.EfCore.csproj" />
-    <!-- The framework store's SECOND provider (D3/D7): the RavenDB stores implement the same closed
+    <!-- The framework store's SECOND provider: the RavenDB stores implement the same closed
          I{Aggregate}Store interfaces, which are declared here, so the implementations must live here too —
          Stomme.Persistence.RavenDb cannot reference the Server without inverting the layering. This puts
          Stomme.Persistence.RavenDb.dll in the host's /bin, where the module convention scan matches it by
          file name; that assembly carries the [StommeFrameworkLibrary] opt-out for exactly that reason
          (D13). -->
     <ProjectReference Include="..\Stomme.Persistence.RavenDb\Stomme.Persistence.RavenDb.csproj" />
-    <!-- The module persistence seam's THIRD provider (D80): a simple, reliable JSON-file IRepository. Selected
+    <!-- The module persistence seam's THIRD provider: a simple, reliable JSON-file IRepository. Selected
          via the N-way module persistence registry when Database:DefaultDBType is the FileDatabase type. Lands
          Stomme.Persistence.File.dll in /bin (matched by the module convention scan by file name — it carries
          no framework opt-out, but it exposes no IModule/IServerStartup/IService, so discovery is a no-op). -->
@@ -186,30 +186,30 @@
     <ProjectReference Include="..\Stomme.Persistence\Stomme.Persistence.csproj" />
     <ProjectReference Include="..\Stomme.EventBus\Stomme.EventBus.csproj" />
     <ProjectReference Include="..\Stomme.Infrastructure.EventBus\Stomme.Infrastructure.EventBus.csproj" />
-    <!-- Feature-flag system (D12): the module plugs in by convention (its ServerStartup wires it and its
+    <!-- Feature-flag system: the module plugs in by convention (its ServerStartup wires it and its
          contributor is discovered by reflection), so this reference exists only to land the assembly in
          /bin for that discovery. -->
     <ProjectReference Include="..\Stomme.FeatureManagement\Stomme.FeatureManagement.csproj" />
-    <!-- The pipeline engine (D98, D111 - BL-95 increment (a)): the vendored Stomme.Engine meta project, composed by
+    <!-- The pipeline engine (D111 - BL-95 increment (a)): the vendored Stomme.Engine meta project, composed by
          Modules/Pipelines/Startup/ServerStartup.cs behind Pipelines:Enabled with the engine's stores on Stomme
          persistence (Modules/Pipelines/Persistence). Its assemblies land in /bin; each carries the
          [StommeFrameworkLibrary] opt-out (generated by scripts/vendor-engine.ps1 step 4b) so the convention scan
          never registers its hosted services into a host that did not enable pipelines. -->
     <ProjectReference Include="..\Engine\Stomme.Engine\Stomme.Engine.csproj" />
-    <!-- CQRS mediator (D14/D74): built-but-parked until the Guestbook sample module wires it live. Referenced
+    <!-- CQRS mediator: built-but-parked until the Guestbook sample module wires it live. Referenced
          here so Stomme.Mediator.dll lands in /bin; the assembly carries [StommeFrameworkLibrary] so the
-         module convention scan skips it (D13) — it is opted into explicitly via AddMediator in the module's
+         module convention scan skips it — it is opted into explicitly via AddMediator in the module's
          ServerStartup, not discovered. -->
     <ProjectReference Include="..\Stomme.Mediator\Stomme.Mediator.csproj" />
-    <!-- The authorization bridge (D99, BL-99): [Requires] / IAccessGuard / ICurrentUser / IFeatureEvaluator are the
+    <!-- The authorization bridge: [Requires] / IAccessGuard / ICurrentUser / IFeatureEvaluator are the
          ports (Stomme.Security.Abstractions); Stomme.Authorization carries the outermost mediator
          AuthorizationBehavior and the registration helper. Both carry [StommeFrameworkLibrary] (the
-         [StommeFrameworkLibrary] opt-out, D13) and are wired explicitly in AddStomme — unconditionally,
+         [StommeFrameworkLibrary] opt-out) and are wired explicitly in AddStomme — unconditionally,
          BEFORE the assembly scan, so the behavior is outermost on every install. The implementations live in
          Infrastructure/Security here (they need HttpContext, IUserPermissions and the FeatureManagement evaluator). -->
     <ProjectReference Include="..\Stomme.Security.Abstractions\Stomme.Security.Abstractions.csproj" />
     <ProjectReference Include="..\Stomme.Authorization\Stomme.Authorization.csproj" />
-    <!-- BL-78 (D101): ISecretProtector over ASP.NET Data Protection, for the shared per-site secret store
+    <!-- ISecretProtector over ASP.NET Data Protection, for the shared per-site secret store
          (Infrastructure/Security/SiteSecretStore.cs). Composed explicitly (AddSecretProtection in AddStomme) and
          opted out of the module scan with [StommeFrameworkLibrary]. -->
     <ProjectReference Include="..\Stomme.Infrastructure.Security.Cryptography\Stomme.Infrastructure.Security.Cryptography.csproj" />

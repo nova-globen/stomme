@@ -11,8 +11,8 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Portability.Persistence
 {
     /// <summary>
-    /// The package rows' reads (BL-82, D107 item 5). Filters are on <c>SiteId</c>, <c>Status</c>, <c>Kind</c>,
-    /// <c>SubjectUserId</c> and the UTC instants only - ints, enums and ranges, the provider-safe set (D78).
+    /// The package rows' reads. Filters are on <c>SiteId</c>, <c>Status</c>, <c>Kind</c>,
+    /// <c>SubjectUserId</c> and the UTC instants only - ints, enums and ranges, the provider-safe set.
     /// </summary>
     public interface IPortabilityPackageRepository : IRepository<PortabilityPackageAggregate, Guid>
     {
@@ -77,7 +77,7 @@ namespace Stomme.Portability.Persistence
             value.Kind == DateTimeKind.Utc ? value : throw new ArgumentException($"The instant must be UTC (Kind was {value.Kind}).", nameof(value));
     }
 
-    /// <summary>The portability audit's reads (D107 item 5). Append-only.</summary>
+    /// <summary>The portability audit's reads. Append-only.</summary>
     public interface IPortabilityAuditRepository : IRepository<PortabilityAuditEntryAggregate, Guid>
     {
         Task<IReadOnlyList<PortabilityAuditEntryAggregate>> ListRecentAsync(int siteId, DateTime sinceUtc, int take, CancellationToken ct = default);

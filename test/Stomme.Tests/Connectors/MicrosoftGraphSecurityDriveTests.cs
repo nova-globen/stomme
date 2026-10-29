@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Graph Security DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// Microsoft Graph Security DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against a loopback stand-in for the tenant's token endpoint and Microsoft Graph: the token endpoint
     /// issues a token for the app's client credentials alone, Graph answers that token alone. A Microsoft Graph Security
     /// connection made over the API, its secret vaulted, tested; a published pipeline reads the secure scores over two pages by

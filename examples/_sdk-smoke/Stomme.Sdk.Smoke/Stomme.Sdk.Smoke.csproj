@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <!-- The SDK of THIS tree (examples/Directory.Build.props): the hand pin said 10.2.1 at 10.3.0 and the proof built
-         against a stale meta (BL-186). -->
+         against a stale meta. -->
     <PackageReference Include="Stomme.Sdk" Version="$(Version)" />
   </ItemGroup>
 

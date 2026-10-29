@@ -9,7 +9,7 @@ using AngleSharp.Html.Parser;
 namespace Stomme.Modules.ContextualHelp.Infrastructure
 {
     /// <summary>
-    /// The allowlist every piece of help HTML passes through before it leaves the server (BL-84, D103 item 5).
+    /// The allowlist every piece of help HTML passes through before it leaves the server.
     /// </summary>
     /// <remarks>
     /// <para>

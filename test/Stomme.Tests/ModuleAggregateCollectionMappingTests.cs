@@ -21,7 +21,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-78 (D100 design point 7) — how the shared relational <see cref="ModuleAggregatesDbContext"/> maps a
+    /// How the shared relational <see cref="ModuleAggregatesDbContext"/> maps a
     /// COLLECTION property of a storage-blind aggregate, one element shape at a time (each on its own aggregate so a
     /// model-build throw from one shape cannot hide another). The census claimed collection properties "fall
     /// through SILENTLY"; the measurement this suite was written from (recorded in the Persistence.EfCore README)
@@ -116,7 +116,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task An_element_shape_the_convention_cannot_serialize_switches_its_aggregate_off_by_name()
         {
-            // BL-263: no longer a model-build failure every module shares - the aggregate is quarantined, the reason names
+            // No longer a model-build failure every module shares - the aggregate is quarantined, the reason names
             // the property, and its repository refuses every call by name.
             var path = NewDatabasePath();
             await using var provider = Compose<UnserializableElementProbeAggregate>(path);

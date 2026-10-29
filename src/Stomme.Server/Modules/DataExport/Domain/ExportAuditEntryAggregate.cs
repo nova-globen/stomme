@@ -7,7 +7,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.DataExport.Domain
 {
     /// <summary>
-    /// One line of the export audit trail: who did what to which export, and when (BL-85, D108).
+    /// One line of the export audit trail: who did what to which export, and when.
     /// </summary>
     /// <remarks>
     /// <para>

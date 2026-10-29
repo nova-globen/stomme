@@ -20,7 +20,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     public sealed record PipelineFormUpload(string Key, string FileName, string HeldAt, long Size, string ContentType);
 
     /// <summary>
-    /// A form's submission as it was read (BL-229, n8n's Form trigger with a File field): its answers' text, and the files of its
+    /// A form's submission as it was read (n8n's Form trigger with a File field): its answers' text, and the files of its
     /// file fields - each written aside, outside every site's folder, while it is read, bounded by <c>Pipelines:Forms:MaxFileBytes</c>.
     /// Only an accepted submission's files are kept (<see cref="KeepAsync"/>), in the site's pipeline folder; whatever was not kept
     /// is deleted when the submission is disposed - a refused form, a robot's, a failure part way - so nothing is left behind.

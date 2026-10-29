@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Coda DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Coda DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Coda's API v1 that refuses a call without the token: a Coda connection made over the API,
     /// its token vaulted, tested; a published pipeline creates two rows, one with an accent, waiting until Coda has applied
     /// them, reads a table's rows by name over two pages - no more than asked - updates a row, pushes its button and deletes the

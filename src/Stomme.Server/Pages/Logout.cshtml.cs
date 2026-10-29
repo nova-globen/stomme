@@ -12,7 +12,7 @@ using Stomme.Shared;
 
 namespace Stomme.Pages
 {
-    // Anonymous on purpose (BL-190): signing out is idempotent. A browser whose session is already gone - its account just
+    // Anonymous on purpose: signing out is idempotent. A browser whose session is already gone - its account just
     // deleted itself, an administrator revoked the session, "Logout Everywhere" ran on another device - posts here from
     // the page it still shows; [Authorize] answered that with the cookie challenge's bare 403 and a blank page. Such a
     // caller is simply sent where it was going.

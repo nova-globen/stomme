@@ -7,7 +7,7 @@ namespace Stomme.Help
 {
     /// <summary>
     /// The DETERMINISTIC id of a help topic: one <see cref="Guid"/> per (tenant, site, anchor, locale), the same on every
-    /// provider, in every process, for ever (BL-84 / D103 item 3).
+    /// provider, in every process, for ever.
     /// </summary>
     /// <remarks>
     /// <para>

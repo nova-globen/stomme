@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-78 (D100 point 3): the published producer port - <see cref="INotificationDispatcher"/> and its DTO + mirror
+    /// The published producer port - <see cref="INotificationDispatcher"/> and its DTO + mirror
     /// enums - lives in <c>Stomme.Shared</c>, dependency-free, lifted from the predecessor platform's
     /// <c>the predecessor platform.Notifications.Abstractions</c>. Pinned here: placement, the enum WIRE values (a producer compiled
     /// against one release must mean the same channel against the next), and the optional members' defaults. The

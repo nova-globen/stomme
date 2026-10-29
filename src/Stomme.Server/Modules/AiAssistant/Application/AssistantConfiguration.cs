@@ -13,8 +13,8 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// <c>AiAssistant</c> - the INSTALLATION switch (D113: off by default) and the installation-wide limits. Read from this
-    /// host's own configuration, the override file included (BL-162). With it off nothing reaches a model, whatever a site
+    /// <c>AiAssistant</c> - the INSTALLATION switch (off by default) and the installation-wide limits. Read from this
+    /// host's own configuration, the override file included. With it off nothing reaches a model, whatever a site
     /// says.
     /// </summary>
     public sealed class AssistantOptions
@@ -31,7 +31,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// A site's assistant configuration (D113: configured PER SITE): whether the site uses it, which provider, the endpoint,
+    /// A site's assistant configuration (configured PER SITE): whether the site uses it, which provider, the endpoint,
     /// the model and the sampling temperature, as Site settings; the API key in the per-site secret store under
     /// <see cref="ApiKeyReference"/>, never a row or a page.
     /// </summary>

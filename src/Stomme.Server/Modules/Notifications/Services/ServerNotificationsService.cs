@@ -10,7 +10,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Notifications.Services
 {
     /// <summary>
-    /// The SERVER side of <see cref="INotificationsService"/> (BL-78 step 5): every call is a mediator dispatch, so each is
+    /// The SERVER side of <see cref="INotificationsService"/>: every call is a mediator dispatch, so each is
     /// decided by its request's <c>[Requires]</c> (the <c>AuthorizationBehavior</c>, over the request's <c>HttpContext</c>).
     /// Registered <c>AddTransient</c> in the module's <c>ServerStartup</c> so it wins over the client HTTP implementation on
     /// the server (the Guestbook / HtmlText pattern).

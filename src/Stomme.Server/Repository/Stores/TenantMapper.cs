@@ -4,7 +4,7 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// Translates between <see cref="TenantAggregate"/> (the persisted aggregate) and <see cref="Tenant"/> (the
-    /// client/server contract) at the <see cref="Repository.TenantRepository"/> boundary (D52).
+    /// client/server contract) at the <see cref="Repository.TenantRepository"/> boundary.
     /// </summary>
     /// <remarks>
     /// This mapping is TOTAL — <see cref="Tenant"/> has no <c>[NotMapped]</c> tail; every one of its properties is a

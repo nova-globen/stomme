@@ -1,14 +1,14 @@
-/* Graphite — the Stomme default theme (D60).
+/* Graphite — the Stomme default theme.
 
    A near-monochrome, enterprise-grade skin. This file does three things, in cascade order after
    css/app.css (which ships the --db-* tokens, base typography and the whole component layer):
 
      1. Its OWN accent-token block. app.css's :root defaults the accent to the framework amber; this
-        :root overrides it with Graphite's own dark grey (the owner, 2026-10-02 - D60's correction: the
-        restrained indigo it had before read as purple next to the amber logo). Because a theme's Theme.css
-        is only linked while that theme is active AND loads after app.css (D31), owning this block makes the
+        :root overrides it with Graphite's own dark grey (an indigo read as purple next to the amber
+        logo). Because a theme's Theme.css
+        is only linked while that theme is active AND loads after app.css, owning this block makes the
         "amber bleed" structurally impossible for this theme -- the shared db-btn / focus rings / active
-        icons, and FluentUI's controls through app.css's bridge (BL-192), can only ever read Graphite's grey.
+        icons, and FluentUI's controls through app.css's bridge, can only ever read Graphite's grey.
      2. A near-monochrome surface ramp (cool graphite), dark by default with an html[data-theme="light"]
         override that mirrors app.css's light block.
      3. The theme's own shell (header, pane grid, footer, module chrome) -- the only things a theme

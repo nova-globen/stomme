@@ -17,7 +17,7 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// Every case uses an alias of its own, and the alias is part of a template's key: each case therefore owns its
-    /// template and can count the installs it caused. FAIL-NOT-SKIP on PostgreSQL and RavenDB (D46).
+    /// template and can count the installs it caused. FAIL-NOT-SKIP on PostgreSQL and RavenDB.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

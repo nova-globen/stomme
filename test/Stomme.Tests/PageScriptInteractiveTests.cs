@@ -14,7 +14,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-202 - on an interactive page a page script is IMPORTED as an ES module, never added as a classic script.
+    /// On an interactive page a page script is IMPORTED as an ES module, never added as a classic script.
     /// </summary>
     /// <remarks>
     /// A page script (<see cref="ResourceLoadBehavior.BlazorPageScript"/>) exports onLoad/onUpdate/onDispose; the static path's

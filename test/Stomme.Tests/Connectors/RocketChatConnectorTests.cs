@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Rocket.Chat (n8n's Rocket.Chat node: a message posted, the subscriptions, a direct conversation's messages):
+    /// Rocket.Chat (n8n's Rocket.Chat node: a message posted, the subscriptions, a direct conversation's messages):
     /// every call a server's API v1 with the user's id and token; a message posted to a channel, a user or a room with its
     /// alias, emoji, avatar and attachments, updated and deleted; a channel's, a private group's or a direct conversation's
     /// messages newest first page by page by Rocket.Chat's total; the public channels or those joined, the users, the

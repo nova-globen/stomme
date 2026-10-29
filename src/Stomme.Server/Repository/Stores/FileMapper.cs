@@ -14,7 +14,7 @@ namespace Stomme.Repository.Stores
     /// </para>
     /// <para>
     /// <see cref="FileAggregate.NameNormalized"/> is absent for a different reason: it is a lookup key, not
-    /// wire state, and it has no setter to map to — <see cref="FileAggregate.Name"/> derives it (D49). The
+    /// wire state, and it has no setter to map to — <see cref="FileAggregate.Name"/> derives it. The
     /// <see cref="Models.File"/> contract must never carry it, exactly as Identity never hands you a
     /// NormalizedUserName.
     /// </para>

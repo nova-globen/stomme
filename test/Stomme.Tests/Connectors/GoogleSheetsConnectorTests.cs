@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Sheets (n8n's Get Rows and Append Row): the refresh token exchanged at the token endpoint with the client's id
+    /// Google Sheets (n8n's Get Rows and Append Row): the refresh token exchanged at the token endpoint with the client's id
     /// and secret, the access token sent as a bearer; a sheet's rows read as records named by the header row, each its sheet row
     /// number - a range's own first row and column honoured, a blank header its column's letter, a repeated one numbered - or by
     /// column letters; records appended under the headers by name, a field no header names left out and said; an empty sheet given

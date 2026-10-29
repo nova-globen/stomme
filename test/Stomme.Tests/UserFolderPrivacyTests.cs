@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-115: a user's "My Folder" is PRIVATE. It used to be seeded with a View row for
+    /// A user's "My Folder" is PRIVATE. It used to be seeded with a View row for
     /// <see cref="RoleNames.Everyone"/>, which an ANONYMOUS caller matches
     /// (<c>UserSecurity.IsAuthorized</c> treats Everyone as granted to everybody), so every file under
     /// <c>Users/{id}/</c> was readable by anyone who guessed the sequential file id.

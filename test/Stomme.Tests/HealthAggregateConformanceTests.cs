@@ -25,7 +25,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-83 (D104) - the two health aggregates round-trip member for member on EVERY module-aggregate provider - EF
+    /// The two health aggregates round-trip member for member on EVERY module-aggregate provider - EF
     /// (SQLite), EF (PostgreSQL), RavenDB and File - through the module's own <c>ServerStartup</c> and closed repositories,
     /// and every query those repositories expose answers identically on each.
     /// </summary>
@@ -34,14 +34,14 @@ namespace Stomme.Tests
     /// <b>Why it exists.</b> The installed-site drives (<c>InstalledSiteHealthDriveTests</c>, <c>HealthSiteIsolationTests</c>)
     /// cover SQLite, PostgreSQL and RavenDB - the three stores an install can choose. The File provider is a module-aggregate
     /// provider rather than an installable database, so no install reaches it, and until this suite it had never met these
-    /// aggregates: the booked "File store is undriven" line of BL-83. This is the coverage the metering, notification,
+    /// aggregates: the booked "File store is undriven" line. This is the coverage the metering, notification,
     /// help and MCP modules carry for the same provider (the BL-79 precedent); an INSTALLED File host needs a
     /// <c>FileGateStore</c> in the harness, which BL-79 recorded as a shared harness gap.
     /// </para>
     /// <para>
     /// The alert row is the interesting one: four nullable instants, a nullable ENUM, a nullable string and a value object.
     /// Instants are compared THROUGH <see cref="HealthTime.AsUtc"/>, as the module reads them - a relational provider hands
-    /// a scalar back with no kind, RavenDB and File hand back UTC. PostgreSQL and RavenDB FAIL rather than skip (D46).
+    /// a scalar back with no kind, RavenDB and File hand back UTC. PostgreSQL and RavenDB FAIL rather than skip.
     /// </para>
     /// </remarks>
     public abstract class HealthAggregateConformanceTests : IAsyncLifetime
@@ -245,7 +245,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task Every_instant_reads_back_with_KIND_Utc_not_merely_the_right_ticks()
         {
-            // BL-117: DateTime equality IGNORES Kind, so every assertion above - which compares through HealthTime.AsUtc, the
+            // DateTime equality IGNORES Kind, so every assertion above - which compares through HealthTime.AsUtc, the
             // way the module reads - passes on a provider that hands back Unspecified. A later ToUniversalTime() or ISO
             // rendering then shifts by the host's offset on a non-UTC host. Asked RAW here, member by member.
             var rollup = Rollup(HealthProbeScope.Site, Site, Store, HealthRollupWindow.Hour, Now);
@@ -421,7 +421,7 @@ namespace Stomme.Tests
 
     /// <summary>
     /// EF Core on a LIVE SQL Server scratch database (infra UAT, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
-    /// suite on SQL Server, added by BL-117 to MEASURE it. Fails, never skips, when SQL Server is down (D46).
+    /// suite on SQL Server, added by BL-117 to MEASURE it. Fails, never skips, when SQL Server is down.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class SqlServerHealthAggregateConformanceTests : HealthAggregateConformanceTests

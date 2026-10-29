@@ -17,7 +17,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon S3 (n8n's AWS S3 and S3 nodes): every call signed with SigV4 for s3 with its payload's hash; objects listed
+    /// Amazon S3 (n8n's AWS S3 and S3 nodes): every call signed with SigV4 for s3 with its payload's hash; objects listed
     /// by continuation token no further than asked, folders as records with a delimiter; a download written into the run's
     /// folder - refused over its cap, by S3's length or by what arrives - and an upload of a file of the folder signed with its
     /// bytes' hash, sent whole again after a throttle, or of text; copy, delete, folders and buckets; buckets by host or by path;

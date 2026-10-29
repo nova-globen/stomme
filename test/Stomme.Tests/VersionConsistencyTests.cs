@@ -13,7 +13,7 @@ namespace Stomme.Tests
     // REAL shipped version silently refuses to install), and admin/update offers the current version as
     // an "upgrade". These pins make the drift impossible to ship again.
     //
-    // BL-192 (2026-10-02): a PREVIEW's packages carry a label (10.5.0-preview.1) that System.Version refuses, and the
+    // BL-192: a PREVIEW's packages carry a label (10.5.0-preview.1) that System.Version refuses, and the
     // release number is parsed at boot (every admin module's version), by the upgrade ledger and by Create Module. So
     // Constants.Version is the release number, and Constants.PackageVersion is the build's version with its label.
     public class VersionConsistencyTests

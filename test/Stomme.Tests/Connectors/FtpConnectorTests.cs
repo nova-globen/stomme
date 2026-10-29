@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 2 - the predecessor platform's FtpConnectorTests (13 + 8 wildcard rows) by name over the port, plus the pin and the
+    /// The predecessor platform's FtpConnectorTests (13 + 8 wildcard rows) by name over the port, plus the pin and the
     /// data channel: the control connection is built on the address the host pinned, the data connection is EPSV only.
     /// CHANGED: <c>ResolveOptions_FallsBackToTheLegacySingleCredential_AsThePassword</c> - there is no single credential;
     /// the scheme's password is the password and its absence is an empty one.

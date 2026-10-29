@@ -21,7 +21,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Send chat message (n8n's Slack, Telegram and Discord nodes, their message sent), run by the real engine with the
+    /// Send chat message (n8n's Slack, Telegram and Discord nodes, their message sent), run by the real engine with the
     /// extraction port scripted: the connection, the connectors' <c>message</c> operation and the message's to, text and reply
     /// reach the port - the text the previous step's result when none is given - and the message's id is the result and an
     /// output; the service's refusal is the step's failure in its words; a connection that sends no chat messages is said so;

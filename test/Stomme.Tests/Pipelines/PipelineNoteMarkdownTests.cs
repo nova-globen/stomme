@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's sticky notes are Markdown: a note's headings, paragraphs (their line breaks kept), lists, bold, italics, code
+    /// n8n's sticky notes are Markdown: a note's headings, paragraphs (their line breaks kept), lists, bold, italics, code
     /// and links drawn as elements and text - so what an author types is never markup, and a link goes to http, https or mailto
     /// only, in a new tab.
     /// </summary>

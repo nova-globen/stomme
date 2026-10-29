@@ -158,10 +158,10 @@ namespace Stomme.Services
                 // themes
                 site.Themes = _themes.FilterThemes((await _themes.GetThemesAsync(site.SiteId)).ToList());
 
-                // the ?v= on the site's own static assets (BL-228): the content of those files
+                // the ?v= on the site's own static assets: the content of those files
                 site.Fingerprint = SiteAssetFingerprint.Of(_environment.WebRootFileProvider);
 
-                // D70: surface the installation-wide external-scheme gates (SAML2 / Windows-Negotiate) into the
+                // Surface the installation-wide external-scheme gates (SAML2 / Windows-Negotiate) into the
                 // site settings that travel to the Blazor client, so the login UI can show a scheme's button ONLY
                 // when it is enabled. These are appsettings (installation-wide, config-gated) which the client
                 // cannot read directly; the per-site OIDC/OAuth consumer already reaches the login UI this way via
@@ -174,7 +174,7 @@ namespace Stomme.Services
                 site.Settings["WindowsAuth:Enabled"] = _configManager.GetSetting("WindowsAuth", "Enabled", false).ToString().ToLowerInvariant();
                 site.Settings["WindowsAuth:ProviderName"] = _configManager.GetSetting("WindowsAuth", "ProviderName", "Windows");
 
-                // BL-212: the switches client components read before they call the API they guard, by the same channel (see
+                // The switches client components read before they call the API they guard, by the same channel (see
                 // HostSwitches). With one off - the default - the API answers 404 and a WebAssembly site's browser logged it.
                 foreach (var section in HostSwitches.Published)
                 {

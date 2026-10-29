@@ -19,10 +19,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Google Cloud Firestore connector's live tests' database (BL-229): FIRESTORE_TEST_HOST / PORT where set, otherwise this
+    /// The Google Cloud Firestore connector's live tests' database: FIRESTORE_TEST_HOST / PORT where set, otherwise this
     /// machine's Firestore emulator that <c>scripts/firestore-test-server.ps1</c> makes on 127.0.0.1:18080. It serves any project
     /// and checks no real token - its admin calls only the emulator's own, "owner", which the tests' token stand-in hands out. An
-    /// absent emulator is a FAILURE that says how to get one, never a skip (D46).
+    /// absent emulator is a FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class FirestoreTestEndpoint
     {
@@ -36,7 +36,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Google Cloud Firestore (n8n's Google Cloud Firestore node) without a server: every parameter held to its shape
+    /// Google Cloud Firestore (n8n's Google Cloud Firestore node) without a server: every parameter held to its shape
     /// before a token is asked for; every call the database's documents under /v1 with the refresh token's access token as its
     /// Bearer; JSON as Firestore's typed values - a string never guessed to be a number, a boolean or a date as n8n guesses, a typed
     /// object passed as it is - and back; documents listed page by page by Google's page token, read by id with a missing one no
@@ -228,13 +228,13 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the Google Cloud Firestore connector against Google's own Firestore emulator (<c>scripts/firestore-test-server.ps1</c>'s
+    /// The Google Cloud Firestore connector against Google's own Firestore emulator (<c>scripts/firestore-test-server.ps1</c>'s
     /// on loopback) through the HOST's egress, Google's token endpoint a loopback stand-in: loopback refused until allowlisted; a
     /// test naming the database; a document made with each of Firestore's types and read back as plain JSON, a second refused;
     /// documents paged and held to the most; one set by its update mask with its other fields kept and a quoted field path, then
     /// replaced whole; a subcollection made and listed under its document; a structured query from the Query box; a document
     /// deleted and read as no record. The emulator checks no real token, so this proves the protocol. Fails, never skips, when
-    /// the emulator is absent (D46).
+    /// the emulator is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class GoogleFirestoreConnectorLiveTests(ITestOutputHelper output) : IDisposable

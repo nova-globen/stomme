@@ -32,7 +32,7 @@
 @code {
     // A RavenDB single-node endpoint. The server-side store parser (StommeServiceCollectionExtensions,
     // ParseRavenConnectionString) reads free-form `Url=`/`Urls=` + `Database=`/`Name=` pairs, so the descriptor
-    // this emits mirrors the automated-install shape driven since D54. Multi-node URL lists and client
+    // this emits mirrors the automated-install shape driven. Multi-node URL lists and client
     // certificates are out of scope here (a later enhancement) — the common dev/single-node case is Url + Database.
     private string _server = "127.0.0.1";
     private string _port = "8080";

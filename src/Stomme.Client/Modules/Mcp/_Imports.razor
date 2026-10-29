@@ -1,4 +1,4 @@
-@* The MCP module's own imports (BL-80 / D101 item 7). Microsoft.AspNetCore.Components.Web is REQUIRED (BL-54): without it
+@* The MCP module's own imports. Microsoft.AspNetCore.Components.Web is REQUIRED: without it
    @onclick / @bind:event compile as plain HTML attributes, the module builds GREEN and renders, and every click is silently
    dead with no console error and nothing an SSR or HTTP drive can see. For an IN-TREE Client module this line is redundant -
    the project-root src/Stomme.Client/_Imports.razor already carries it and Razor imports cascade - and it is kept for the

@@ -56,7 +56,7 @@ namespace Stomme.Identity.OpenIddict
         /// The configured database provider type, read from config the same way
         /// <c>ConfigManager.GetDatabaseType()</c> reads it (empty resolves to the SqlServer default; the pre-6.1.5
         /// <c>, Stomme.Database.*</c> namespace is rewritten to <c>, Stomme.Server</c>). Read at composition
-        /// time so the OpenIddict store provider can match the database provider (D62).
+        /// time so the OpenIddict store provider can match the database provider.
         /// </summary>
         private static string ResolveConfiguredDatabaseType(IConfiguration configuration)
         {
@@ -81,7 +81,7 @@ namespace Stomme.Identity.OpenIddict
                 return services;
             }
 
-            // D62: pick the OpenIddict store provider to MATCH the configured database provider — the EF
+            // Pick the OpenIddict store provider to MATCH the configured database provider — the EF
             // TenantOpenIddictDbContext on a relational install, the RavenDB stores on a document install. This
             // is a COMPOSITION-time decision (read once here) rather than the seam's resolve-time selection,
             // because OpenIddict binds its manager to ONE default entity type per store (EF's
@@ -98,7 +98,7 @@ namespace Stomme.Identity.OpenIddict
                 // scope where TenantMiddleware has already established SiteState.Alias -> the resolved tenant.
                 services.AddDbContext<TenantOpenIddictDbContext>();
 
-                // BL-55: the schema was previously created ONLY by the test suite's own EnsureCreated, so a
+                // The schema was previously created ONLY by the test suite's own EnsureCreated, so a
                 // deployed install could not issue a token. The provisioner mirrors the Raven side's
                 // ensure-on-first-use, once per tenant per process, invoked by the provisioning middleware.
                 services.AddSingleton<OpenIddictProvisionedStoreCache>();
@@ -111,12 +111,12 @@ namespace Stomme.Identity.OpenIddict
                 services.AddSingleton<RavenOpenIddictDocumentStoreCache>();
                 services.AddScoped<IRavenOpenIddictSessionProvider, TenantRavenOpenIddictSessionProvider>();
 
-                // BL-55: storage-blind seam — Raven callers get a no-op because the session provider above
+                // Storage-blind seam — Raven callers get a no-op because the session provider above
                 // already creates the per-tenant OpenIddict database idempotently at session open.
                 services.AddScoped<IOpenIddictStoreProvisioner, RavenOpenIddictStoreProvisioner>();
             }
 
-            // BL-81 (D106 item 3): the authority's clients and scopes in the installation snapshot; a restore revokes every token.
+            // The authority's clients and scopes in the installation snapshot; a restore revokes every token.
             Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddEnumerable(services,
                 ServiceDescriptor.Scoped<Stomme.Backup.IBackupParticipant, Stomme.Infrastructure.Backup.Participants.OpenIddictBackupParticipant>());
 
@@ -140,15 +140,15 @@ namespace Stomme.Identity.OpenIddict
                     }
                     else
                     {
-                        // The four IOpenIddict*Store twins over RavenDB, per-tenant (D62). Registered OUTSIDE the
-                        // reflective seam gates (D42/D55), which is exactly why the mandatory driven parity test
+                        // The four IOpenIddict*Store twins over RavenDB, per-tenant. Registered OUTSIDE the
+                        // reflective seam gates, which is exactly why the mandatory driven parity test
                         // exists: a missing/broken Raven token store would silently down the token endpoint.
                         options.UseStommeRavenOpenIddictStores();
                     }
                 })
                 .AddServer(options =>
                 {
-                    // D64: the INTERACTIVE browser flow is added alongside B1's client-credentials endpoint.
+                    // The INTERACTIVE browser flow is added alongside B1's client-credentials endpoint.
                     // /connect/authorize (interactive), /connect/userinfo (OIDC claims), plus the discovery
                     // (/.well-known/openid-configuration) and JWKS (/.well-known/jwks) endpoints, which
                     // OpenIddict serves itself by default (no passthrough needed) so the consumer can fetch
@@ -164,7 +164,7 @@ namespace Stomme.Identity.OpenIddict
 
                     options.AllowClientCredentialsFlow();
 
-                    // D64: authorization_code + PKCE — the interactive browser login grant.
+                    // Authorization_code + PKCE — the interactive browser login grant.
                     options.AllowAuthorizationCodeFlow()
                         .RequireProofKeyForCodeExchange();
 
@@ -179,9 +179,9 @@ namespace Stomme.Identity.OpenIddict
                     // Signing/encryption keys. Signed-only JWT access tokens so a resource server / the test can
                     // inspect and validate them; the signing key is exposed via the JWKS endpoint above so the
                     // OIDC consumer can validate the id_token, and the encryption key protects the authorization
-                    // code (D64).
+                    // code.
                     //
-                    // D66: PERSIST the keys across restarts when a certificate is configured, so the JWKS `kid`
+                    // PERSIST the keys across restarts when a certificate is configured, so the JWKS `kid`
                     // and the tokens stay STABLE (an ephemeral key regenerates per process and breaks a real
                     // deployment — every restart invalidates outstanding tokens and rotates the JWKS). When
                     // NOTHING is configured, fall back to B1's shared ephemeral keys — so a stock install and
@@ -213,7 +213,7 @@ namespace Stomme.Identity.OpenIddict
                     // NOTE: SetIssuer is deliberately NOT called — OpenIddict infers the issuer from the
                     // request host, which is the whole per-tenant-issuer hypothesis under test (D61 Q2). The
                     // discovery document's issuer and the id_token's iss are therefore the tenant host, and
-                    // match the consumer's Authority (D64).
+                    // match the consumer's Authority.
 
                     var aspnet = options.UseAspNetCore()
                         .EnableTokenEndpointPassthrough()
@@ -235,7 +235,7 @@ namespace Stomme.Identity.OpenIddict
                     options.UseLocalServer();
                     options.UseAspNetCore();
 
-                    // BL-196: a token is also checked against its stored entry, so a revoked token (or one whose
+                    // A token is also checked against its stored entry, so a revoked token (or one whose
                     // authorization was revoked) stops working at once instead of at its expiry - api/* trusts these.
                     options.EnableTokenEntryValidation();
                     options.EnableAuthorizationEntryValidation();
@@ -245,7 +245,7 @@ namespace Stomme.Identity.OpenIddict
         }
 
         /// <summary>
-        /// Provisions the CURRENT tenant's dedicated OpenIddict store on the request path (BL-55). Placed
+        /// Provisions the CURRENT tenant's dedicated OpenIddict store on the request path. Placed
         /// after tenant resolution and BEFORE authentication, because OpenIddict validates a token request
         /// against its store inside the authentication stage. No-op unless OpenIddict is enabled; the
         /// provider split is behind <see cref="IOpenIddictStoreProvisioner"/> (relational EnsureCreated once
@@ -262,7 +262,7 @@ namespace Stomme.Identity.OpenIddict
         }
 
         /// <summary>
-        /// BL-196: <c>api/*</c> accepts this host's access tokens (<see cref="OpenIddictApiBearerMiddleware"/>). Placed after
+        /// <c>api/*</c> accepts this host's access tokens (<see cref="OpenIddictApiBearerMiddleware"/>). Placed after
         /// <c>UseAuthentication</c> - OpenIddict's validation context is created there - and before <c>UseAuthorization</c>.
         /// No-op unless OpenIddict is enabled.
         /// </summary>
@@ -286,7 +286,7 @@ namespace Stomme.Identity.OpenIddict
                 return endpoints;
             }
 
-            // Authorization endpoint (D64) — the INTERACTIVE hop. OpenIddict has already validated the
+            // Authorization endpoint — the INTERACTIVE hop. OpenIddict has already validated the
             // client_id/redirect_uri against the CURRENT tenant's store (a foreign/unknown client is rejected
             // before this handler). If the end user is authenticated at the authority (the existing Stomme
             // Identity cookie), an authorization code is issued for them; otherwise the Identity cookie scheme
@@ -352,7 +352,7 @@ namespace Stomme.Identity.OpenIddict
                     OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             });
 
-            // Token endpoint — client-credentials (B1) AND authorization_code (D64). The client_id is looked
+            // Token endpoint — client-credentials (B1) AND authorization_code. The client_id is looked
             // up in the CURRENT tenant's OpenIddict store by OpenIddict before this handler runs; an unknown/
             // foreign client is rejected with invalid_client and never reaches here.
             endpoints.MapPost("/connect/token", async (HttpContext context) =>
@@ -379,7 +379,7 @@ namespace Stomme.Identity.OpenIddict
                         OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
                 }
 
-                // authorization_code (D64) AND refresh_token (client/scope work b) share one path: OpenIddict has
+                // authorization_code AND refresh_token (client/scope work b) share one path: OpenIddict has
                 // already validated the grant (the code + PKCE verifier, or the refresh token) and restored the
                 // principal it originally stored. Re-issue by signing that principal back in — destinations are
                 // preserved, so the id_token keeps sub/name/email and a new refresh token is rotated in when the
@@ -399,7 +399,7 @@ namespace Stomme.Identity.OpenIddict
                 return UnsupportedGrant();
             });
 
-            // UserInfo endpoint (D64) — returns the standard OIDC claims for the access token's subject. The
+            // UserInfo endpoint — returns the standard OIDC claims for the access token's subject. The
             // consumer calls this because ExternalLogin sets GetClaimsFromUserInfoEndpoint = true, so a broken
             // userinfo FAILS the login (it is genuinely exercised, not stubbed).
             endpoints.MapMethods("/connect/userinfo", new[] { "GET", "POST" }, async (HttpContext context) =>

@@ -8,7 +8,7 @@ namespace Stomme.Modules.Notifications.Domain
     /// One attempt to deliver a <see cref="NotificationRequestAggregate"/> over a single <see cref="ChannelKind"/>. A
     /// CHILD ENTITY (identity, never persisted on its own) - lifted from the predecessor platform with <c>DateTimeOffset AttemptedAt</c>
     /// replaced by a UTC <see cref="AttemptedOn"/>. Persisted inside the request through the shared module store's
-    /// JSON collection convention (BL-78 step 1), identity included.
+    /// JSON collection convention, identity included.
     /// </summary>
     public sealed class DeliveryAttempt : Entity<Guid>
     {

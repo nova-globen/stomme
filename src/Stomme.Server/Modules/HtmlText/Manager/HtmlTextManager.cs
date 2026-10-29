@@ -38,7 +38,7 @@ namespace Stomme.Modules.HtmlText.Manager
         // IInstallable implementation
         public async Task<bool> InstallAsync(Tenant tenant, string version)
         {
-            // Provider-aware (D55). EF migrations ARE the relational schema (D3); a document store is schemaless and
+            // Provider-aware. EF migrations ARE the relational schema; a document store is schemaless and
             // reuses the framework tenant database D54 already ensured, so its bootstrap is a NO-OP — the aggregate's
             // dynamic Where+OrderBy auto-indexes on first read. This guard is load-bearing: MigrateModulesAsync calls
             // InstallAsync UNCONDITIONALLY and SWALLOWS the throw (the confirmed D51 mechanism), so an unguarded EF
@@ -59,7 +59,7 @@ namespace Stomme.Modules.HtmlText.Manager
 
         public async Task<bool> UninstallAsync(Tenant tenant)
         {
-            // Symmetric with InstallAsync: nothing relational to tear down on a document store (D55).
+            // Symmetric with InstallAsync: nothing relational to tear down on a document store.
             if (!FrameworkStoreProviderSelection.IsRelationalProvider(tenant.DBType))
             {
                 return true;

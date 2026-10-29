@@ -18,7 +18,7 @@ using System;
 namespace Stomme.Modules.Metering.Startup
 {
     /// <summary>
-    /// Wires the metering module (D102): four storage-blind aggregates, the recording port and the quota engine.
+    /// Wires the metering module: four storage-blind aggregates, the recording port and the quota engine.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -58,7 +58,7 @@ namespace Stomme.Modules.Metering.Startup
             services.AddScoped<IAiUsageRecordRepository, AiUsageRecordRepository>();
             services.AddScoped<IAiUsageRollupRepository, AiUsageRollupRepository>();
 
-            // CostOptimization's AI-usage read port (BL-97 increment 7, D102's marked correction): the module that holds the
+            // CostOptimization's AI-usage read port (D102's marked correction): the module that holds the
             // AI ledger implements it, so the advisor never reads Metering's repositories.
             services.AddScoped<Stomme.CostOptimization.IAssistantUsageSignalSource, MeteringAssistantUsageSignalSource>();
 
@@ -86,7 +86,7 @@ namespace Stomme.Modules.Metering.Startup
             services.TryAddEnumerable(ServiceDescriptor.Singleton<Modules.Notifications.Application.Templates.INotificationTemplateSource, MeteringTemplateSource>());
             services.TryAddScoped<QuotaCrossingNotifier>();
 
-            // Erasure: when a user is removed from a site the ledger is pseudonymised, not deleted (D102 item 9).
+            // Erasure: when a user is removed from a site the ledger is pseudonymised, not deleted.
             services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, MeteringUserErasure>();
 
             // The ports, and only the ports - except UsageRecorder, whose concrete type the fold recovery job
@@ -96,7 +96,7 @@ namespace Stomme.Modules.Metering.Startup
             services.TryAddScoped<IQuotaInspector, QuotaInspector>();
             services.TryAddScoped<IAiUsageRecorder, AiUsageRecorder>();
 
-            // The USER-FACING CQRS surface (D102 item 8): every request carries [Requires] with one of the three
+            // The USER-FACING CQRS surface: every request carries [Requires] with one of the three
             // keys, and none of them names a site, a tenant or a user. Handlers are registered EXPLICITLY - never
             // AddMediator()/AddMediatorBehavior() here: Guestbook's startup already composed the mediator, and a
             // second AddMediator would double every pipeline behavior (BL-78 F13). Nothing on the JOB path carries

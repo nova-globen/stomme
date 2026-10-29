@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Pipelines.Expressions
 {
     /// <summary>
-    /// The engine's <c>Condition</c> expression kind (BL-229 increment 10): a <see cref="PipelineCondition"/> - rules comparing
+    /// The engine's <c>Condition</c> expression kind: a <see cref="PipelineCondition"/> - rules comparing
     /// two templated sides, all or any of which must hold - evaluated when the step runs from the pipeline's variables in scope by
     /// <see cref="PipelineConditions"/>, the same code the editor previews with. What a Decision, an If and a While test and a
     /// Switch (flow) case matches on. No code runs; a name no variable has faults the step, saying which.

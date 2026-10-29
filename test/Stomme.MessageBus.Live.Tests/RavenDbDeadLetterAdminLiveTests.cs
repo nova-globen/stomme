@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.MessageBus.Live.Tests;
 
 /// <summary>
-/// BL-36(b) — drives the FULL dead-letter admin lifecycle against a REAL RavenDB server: a poisoned
+/// Drives the FULL dead-letter admin lifecycle against a REAL RavenDB server: a poisoned
 /// consumer exhausts delivery attempts → the message lands in the DLQ (List/Count see it) → RetryAsync
 /// returns it to the input queue and, once the poison is released, the consumer RECEIVES it →
 /// DiscardAsync permanently removes a second poisoned message. This is the port the admin UI's

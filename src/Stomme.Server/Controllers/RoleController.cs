@@ -82,7 +82,7 @@ namespace Stomme.Controllers
         public async Task<Role> Post([FromBody] Role role)
         {
             var alias = await _tenantManager.GetAliasAsync();
-            // BL-87: a blank or whitespace name is not a role. The client marks the input required, but the
+            // A blank or whitespace name is not a role. The client marks the input required, but the
             // server accepted one, so an empty row could be created through the API and rendered as a nameless role.
             if (string.IsNullOrWhiteSpace(role?.Name))
             {
@@ -112,7 +112,7 @@ namespace Stomme.Controllers
         public async Task<Role> Put(int id, [FromBody] Role role)
         {
             var alias = await _tenantManager.GetAliasAsync();
-            // BL-87: a blank or whitespace name is not a role. The client marks the input required, but the
+            // A blank or whitespace name is not a role. The client marks the input required, but the
             // server accepted one, so an empty row could be created through the API and rendered as a nameless role.
             if (string.IsNullOrWhiteSpace(role?.Name))
             {

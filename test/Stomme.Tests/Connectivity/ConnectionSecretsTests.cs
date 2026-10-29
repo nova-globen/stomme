@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 5 (D110) - a connection's secrets through the per-site secret store on an INSTALLED host, on SQLite,
+    /// A connection's secrets through the per-site secret store on an INSTALLED host, on SQLite,
     /// PostgreSQL and RavenDB: the declared fields are stored under the closed key grammar and resolved by name; a blank
     /// value leaves a field as it was; an undeclared field is refused BEFORE anything is written; a row whose protected value
     /// no longer unprotects reads as Unreadable, typed, never a throw; a delete removes every key; and the settings API - the
@@ -86,7 +86,7 @@ namespace Stomme.Tests.Connectivity
                 Assert.Equal("app", damaged.Values["client-id"]);
                 Assert.DoesNotContain("client-secret", damaged.Values.Keys);
 
-                // ---- the settings API (the Host, every door) does not reach the rows (BL-147) ----
+                // ---- the settings API (the Host, every door) does not reach the rows ----
                 var hostId = await GateDrive.UserIdAsync(app, Host, GateDrive.HostUsername);
                 using var client = GateDrive.NewClient(app, Host);
                 var cookies = await GateDrive.LoginAsync(app, client, Host, GateDrive.HostUsername, GateDrive.HostPassword, output);

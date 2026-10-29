@@ -7,13 +7,13 @@ using Stomme.Shared;
 namespace Stomme.Modules.Landing
 {
     /// <summary>
-    /// The Landing module (BL-98; the predecessor platform's feature 44, planned there and never built): a site's landing page, on its HOME page.
+    /// The Landing module (the predecessor platform's feature 44, planned there and never built): a site's landing page, on its HOME page.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>Its page template names the home page's path</b>, and a template whose page already exists ADDS the module to that page
     /// (<c>SiteRepository.CreatePagesAsync</c>): every site gets the module on its <c>/</c> - a new one at install, an existing one
-    /// on the module-template reconciliation - and <c>module.landingpage.enabled = false</c> keeps it off an installation (D85).
+    /// on the module-template reconciliation - and <c>module.landingpage.enabled = false</c> keeps it off an installation.
     /// The template's page settings apply only to a site that has no home page; an existing home keeps its own.
     /// </para>
     /// <para>

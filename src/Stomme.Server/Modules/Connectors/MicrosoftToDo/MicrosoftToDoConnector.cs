@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.MicrosoftToDo
 {
     /// <summary>
-    /// Microsoft To Do (BL-229, n8n's Microsoft To Do node: its lists and tasks created, got, read, updated and deleted): a user's
+    /// Microsoft To Do (n8n's Microsoft To Do node: its lists and tasks created, got, read, updated and deleted): a user's
     /// To Do in a Microsoft 365 tenant over Microsoft Graph (<c>https://graph.microsoft.com/v1.0</c>), app-only - an Entra ID app
     /// registration's client id and secret and the tenant's token endpoint (OAuth2 client credentials, the <c>.default</c> scope;
     /// the app granted Tasks.ReadWrite.All) through the shared <see cref="OAuth2TokenProvider"/>, as Outlook's is. The app acts as

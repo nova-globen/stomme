@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Stomme.Identity.OpenIddict.Raven
 {
-    // RavenDB document entities backing the custom OpenIddict stores (D62, lifted verbatim from the predecessor platform's
+    // RavenDB document entities backing the custom OpenIddict stores (lifted verbatim from the predecessor platform's
     // the predecessor platform.Stores.OpenIddict.RavenDb.Entities — same OpenIddict 7.5.0 surface, zero version gap). They are
     // deliberately serializer-friendly POCOs: scalars, string lists, and string->string dictionaries round-trip
     // through RavenDB's Newtonsoft serializer directly, while the "complex" members OpenIddict models as

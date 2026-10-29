@@ -106,7 +106,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("Text", back.Steps[3].Inputs.Keys);
         }
 
-        // The editor's starting value (BL-95, 2026-10-03): a variable no step has saved to holds what the author gave it, and
+        // The editor's starting value: a variable no step has saved to holds what the author gave it, and
         // the engine hands that to an input that reads it - driven in a browser the same night ("hello from the start" in the
         // run log). A value that does not fit the variable's kind is refused at the save.
         [Fact]

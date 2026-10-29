@@ -42,10 +42,10 @@ public static class EfCorePersistenceExtensions
     /// applies the relational provider to a connection string (e.g. <c>(b, cs) =&gt; b.UseNpgsql(cs)</c>).
     /// Use instead of <c>AddDbContext&lt;TContext&gt;</c>; compose with <see cref="AddEfCorePersistence{TContext}"/>.
     /// <para>
-    /// <b>Registers the FACTORY only — there is deliberately no <c>AddScoped&lt;TContext&gt;</c> here (D32).</b>
+    /// <b>Registers the FACTORY only — there is deliberately no <c>AddScoped&lt;TContext&gt;</c> here.</b>
     /// A tenant's store binding lives in the tenant store, so resolving it is an async read
     /// (<see cref="ITenantConnectionResolver.ResolveAsync"/>). A DI factory lambda is synchronous and cannot
-    /// await, and blocking on it is what deadlocks under Blazor's renderer context (D29) — so a per-scope
+    /// await, and blocking on it is what deadlocks under Blazor's renderer context — so a per-scope
     /// <typeparamref name="TContext"/> resolved straight from the container is not something this registration
     /// can honestly offer. Inject <see cref="IDbContextFactory{TContext}"/> and
     /// <c>await CreateDbContextAsync()</c>, owning the context's lifetime at the call site.

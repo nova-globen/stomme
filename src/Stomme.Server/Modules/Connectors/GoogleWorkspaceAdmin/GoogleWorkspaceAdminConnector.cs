@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleWorkspaceAdmin
 {
     /// <summary>
-    /// Google Workspace Admin (BL-229, n8n's G Suite Admin node: a Workspace's users, groups and ChromeOS devices): the Admin
+    /// Google Workspace Admin (n8n's G Suite Admin node: a Workspace's users, groups and ChromeOS devices): the Admin
     /// SDK's Directory API over the OAuth2 REFRESH-TOKEN scheme - a Google Cloud OAuth client's id and secret and an
     /// administrator's refresh token granted the directory scopes - exchanged at Google's token endpoint (the <c>token_url</c>
     /// setting) through the shared <see cref="OAuth2TokenProvider"/>. A test names the Workspace's domain.

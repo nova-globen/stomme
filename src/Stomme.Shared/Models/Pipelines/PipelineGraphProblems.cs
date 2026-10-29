@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Stomme.Models.Pipelines
 {
-    /// <summary>One thing wrong with, or worth knowing about, a step of a pipeline's graph (BL-229 increment 4).</summary>
+    /// <summary>One thing wrong with, or worth knowing about, a step of a pipeline's graph.</summary>
     public class PipelineGraphProblem
     {
         /// <summary>The step it is about.</summary>
@@ -30,7 +30,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// What is wrong with a pipeline's graph before it runs (BL-229 increment 4) - ONE rule, run by the editor as the author
+    /// What is wrong with a pipeline's graph before it runs - ONE rule, run by the editor as the author
     /// changes the graph and by the server before it publishes. Errors are what would fail the run or that the save refuses
     /// (an input the step cannot do without left empty, a value its type cannot hold, a variable that is gone); warnings are
     /// what runs but does nothing the author can have meant (a step nothing leads to, a variable read that never holds a value,
@@ -73,29 +73,29 @@ namespace Stomme.Models.Pipelines
 
         private const string MakeHtmlTemplateInput = "Html";
 
-        /// <summary>A "Wait for a call" in a pipeline with no "Call address" to make the address it waits on (BL-229) - or a "Wait for a form" with neither one nor Next page.</summary>
+        /// <summary>A "Wait for a call" in a pipeline with no "Call address" to make the address it waits on - or a "Wait for a form" with neither one nor Next page.</summary>
         public const string NoCallAddress = "NoCallAddress";
 
-        /// <summary>A "Wait for a form" with Next page in a pipeline with no form before it - no Form trigger, no other Wait for a form - so nobody is taken on to it (BL-229).</summary>
+        /// <summary>A "Wait for a form" with Next page in a pipeline with no form before it - no Form trigger, no other Wait for a form - so nobody is taken on to it.</summary>
         public const string NoFormBefore = "NoFormBefore";
 
-        /// <summary>A Make HTML template that puts a value in without the html filter - put in as it is, markup and all (BL-229).</summary>
+        /// <summary>A Make HTML template that puts a value in without the html filter - put in as it is, markup and all.</summary>
         public const string UnencodedInHtml = "UnencodedInHtml";
 
-        /// <summary>A Respond to webhook step no call waits for: no Webhook here answers from the pipeline (BL-229).</summary>
+        /// <summary>A Respond to webhook step no call waits for: no Webhook here answers from the pipeline.</summary>
         public const string NoWebhookWaits = "NoWebhookWaits";
 
-        /// <summary>A Webhook that answers from the pipeline with no Respond to webhook step to give the answer (BL-229).</summary>
+        /// <summary>A Webhook that answers from the pipeline with no Respond to webhook step to give the answer.</summary>
         public const string NoWebhookAnswer = "NoWebhookAnswer";
 
         /// <summary>The engine's own start marker: a flowchart holding one starts there.</summary>
         public const string StartStepType = "Stomme.Start";
 
-        /// <summary>A call to a sub-pipeline sending what the sub-pipeline would refuse (<see cref="PipelineCallContracts"/>, BL-229).</summary>
+        /// <summary>A call to a sub-pipeline sending what the sub-pipeline would refuse (<see cref="PipelineCallContracts"/>).</summary>
         public const string BadCall = "BadCall";
 
         /// <summary>
-        /// A SQL statement (<see cref="PipelineInputHints.SqlQuery"/>) an expression writes a value into (BL-229): spliced into the
+        /// A SQL statement (<see cref="PipelineInputHints.SqlQuery"/>) an expression writes a value into: spliced into the
         /// SQL, a value from a run - a form's field, a webhook's body - can end the string and say something else. A warning: the
         /// author may mean it (a table's name cannot be bound), but a value belongs in a bound <c>@name</c>.
         /// </summary>
@@ -103,7 +103,7 @@ namespace Stomme.Models.Pipelines
 
         /// <summary>
         /// A script - a Run script step's, or an input given as JavaScript - that does not parse as the step runs it, or (a Run script
-        /// step's) reads a name it can see nowhere (BL-229, n8n's Code node linting). Found by the server as the author writes
+        /// step's) reads a name it can see nowhere (n8n's Code node linting). Found by the server as the author writes
         /// (<c>POST api/Pipelines/scripts/check</c>), so the editor adds it beside this rule's; a warning - the save does not parse
         /// scripts - though the step fails when it runs.
         /// </summary>
@@ -362,13 +362,13 @@ namespace Stomme.Models.Pipelines
                     problems.Add(Problem(step, entry, null, Warning, FailedPathLeadsNowhere, "Its Failed path leads nowhere: a failure ends the flow there, quietly."));
                 }
 
-                // BL-229: a Wait says how long or until when, read as the step will read it (PipelineWaits).
+                // A Wait says how long or until when, read as the step will read it (PipelineWaits).
                 if (step.Type == PipelineWaits.StepType)
                 {
                     problems.AddRange(WaitProblems(step, entry));
                 }
 
-                // BL-229: an approval's time to decide is a duration, read as the step will read it.
+                // An approval's time to decide is a duration, read as the step will read it.
                 if (step.Type == PipelineApprovals.StepType && step.Inputs is not null
                     && step.Inputs.TryGetValue(PipelineApprovals.DecideWithinInput, out var within) && !string.IsNullOrWhiteSpace(within)
                     && !PipelineWaits.TryParseDuration(within, out _, out var withinError))
@@ -388,7 +388,7 @@ namespace Stomme.Models.Pipelines
                     problems.Add(Problem(step, entry, PipelineWebhookAnswering.AnswerInput, Warning, NoWebhookAnswer, "It answers from the pipeline, but no Respond to webhook step gives the answer: the caller waits, then gets 202."));
                 }
 
-                // BL-229: a wait for a call waits on the address a Call address made, for a time read as the step reads it.
+                // A wait for a call waits on the address a Call address made, for a time read as the step reads it.
                 if (step.Type == PipelineCalls.WaitStepType)
                 {
                     if (!steps.Any(other => other.Type == PipelineCalls.AddressStepType && !other.Disabled))
@@ -412,7 +412,7 @@ namespace Stomme.Models.Pipelines
                     problems.Add(Problem(step, entry, MakeHtmlTemplateInput, Warning, UnencodedInHtml, $"{{{{ {unencoded} }}}} is put in the HTML as it is - add | html to encode it, or | raw if it is HTML you made."));
                 }
 
-                // BL-229: a wait for a form is filled in at the run's form address, which a Call address makes - unless it is the next page
+                // A wait for a form is filled in at the run's form address, which a Call address makes - unless it is the next page
                 // of the form before it, whose sender is taken on to it (n8n's multi-page forms), which needs a form before it.
                 if (step.Type == PipelineForms.WaitStepType && step.Inputs is not null)
                 {
@@ -530,7 +530,7 @@ namespace Stomme.Models.Pipelines
         {
             var ids = new HashSet<string>(scope.Select(step => step.Id), StringComparer.Ordinal);
             var inner = connections.Where(connection => connection is not null && ids.Contains(connection.SourceId ?? "") && ids.Contains(connection.TargetId ?? "")).ToList();
-            // BL-229: a "When evaluating" step starts an evaluation's runs and no other (the engine never picks it as the start),
+            // A "When evaluating" step starts an evaluation's runs and no other (the engine never picks it as the start),
             // so it is a start of its own beside the one below, never that one.
             var evaluationStarts = top
                 ? scope.Where(step => !step.Disabled && step.Type == PipelineEvaluations.TriggerType && !inner.Any(connection => connection.TargetId == step.Id)).ToList()

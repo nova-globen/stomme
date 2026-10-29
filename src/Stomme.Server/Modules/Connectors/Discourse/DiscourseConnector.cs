@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Discourse
 {
     /// <summary>
-    /// Discourse (BL-229, n8n's Discourse node: its posts, categories, groups, group members and users): a forum's API with an
+    /// Discourse (n8n's Discourse node: its posts, categories, groups, group members and users): a forum's API with an
     /// API key and the user it acts as in Api-Key and Api-Username, over the host's egress. A test names who the key acts as.
     /// </summary>
     /// <remarks>

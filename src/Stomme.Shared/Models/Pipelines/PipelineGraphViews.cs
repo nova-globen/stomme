@@ -21,63 +21,63 @@ namespace Stomme.Models.Pipelines
         /// </summary>
         public List<PipelineGraphVariable> Variables { get; set; } = new List<PipelineGraphVariable>();
 
-        /// <summary>Sticky notes on the canvas (BL-229 increment 8): text for the reader, never run.</summary>
+        /// <summary>Sticky notes on the canvas: text for the reader, never run.</summary>
         public List<PipelineGraphNote> Notes { get; set; } = new List<PipelineGraphNote>();
 
         /// <summary>
-        /// How many runs of the pipeline may go at once (BL-229, <see cref="PipelineRunsAtOnce"/>): empty for any number, or one
+        /// How many runs of the pipeline may go at once (<see cref="PipelineRunsAtOnce"/>): empty for any number, or one
         /// at a time - in all, or per correlation id. A run waiting for a time or a decision is still going.
         /// </summary>
         public string RunsAtOnce { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n's "save successful executions": false deletes each run that finishes well a couple of minutes after it
+        /// n8n's "save successful executions": false deletes each run that finishes well a couple of minutes after it
         /// ends, with its log and run data - a pipeline that runs every minute leaves no trail of good runs; a run that fails or is
         /// cancelled is kept. Null: every run is kept (the site's retention still applies).
         /// </summary>
         public bool? KeepSuccessfulRuns { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n's "save execution progress": true stores a run after each step it runs, not only when its burst of work ends -
+        /// n8n's "save execution progress": true stores a run after each step it runs, not only when its burst of work ends -
         /// a long run's steps show as they finish, and a run a host stops mid-way keeps what it had done. More writes per run, so it
         /// is off unless asked. Null: off.
         /// </summary>
         public bool? SaveProgress { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n Enterprise's execution data redaction: what the runs keep of each step's inputs and outputs -
+        /// n8n Enterprise's execution data redaction: what the runs keep of each step's inputs and outputs -
         /// <see cref="PipelineStepDataKeeping.WhenFailed"/> (only a run that fails keeps them), <see cref="PipelineStepDataKeeping.Never"/>;
         /// null: always. The run, its log and its saved values are kept either way.
         /// </summary>
         public string KeepStepData { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n's "time saved per execution": the minutes of a person's work one run that finishes well saves, which
+        /// n8n's "time saved per execution": the minutes of a person's work one run that finishes well saves, which
         /// Insights adds up over the runs of a day, a week or a month (<see cref="PipelineInsights.MinutesSaved"/>). Null: not said.
         /// </summary>
         public int? MinutesSavedPerRun { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n's "Timeout Workflow": a run busy longer than these minutes in one go is stopped - the time it waits does
+        /// n8n's "Timeout Workflow": a run busy longer than these minutes in one go is stopped - the time it waits does
         /// not count (<see cref="PipelineRunTimeout"/>). Null: no limit.
         /// </summary>
         public int? TimeoutMinutes { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n's "This workflow can be called by": which pipelines may call this one (<see cref="PipelineCallers"/>) - null
+        /// n8n's "This workflow can be called by": which pipelines may call this one (<see cref="PipelineCallers"/>) - null
         /// for any pipeline on the site, <see cref="PipelineCallers.Nobody"/>, or the definition ids it admits.
         /// </summary>
         public string CalledBy { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n's workflow "Timezone": the zone the pipeline reads time in - <c>$now</c>, <c>$today</c>, a Schedule with no
+        /// n8n's workflow "Timezone": the zone the pipeline reads time in - <c>$now</c>, <c>$today</c>, a Schedule with no
         /// zone of its own (<see cref="PipelineTimeZone"/>). Null for UTC.
         /// </summary>
         public string TimeZone { get; set; }
     }
 
     /// <summary>
-    /// A sticky note (BL-229 increment 8): text an author leaves on the canvas - in the pipeline's own flowchart or a body - for
+    /// A sticky note: text an author leaves on the canvas - in the pipeline's own flowchart or a body - for
     /// whoever reads the pipeline next. The engine never runs it; the codec keeps it in the flowchart's designer metadata.
     /// </summary>
     public class PipelineGraphNote
@@ -98,7 +98,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// BL-229 - the colours a sticky note may take, as n8n's notes do - each one of the theme's own: green its "ok", amber its
+    /// The colours a sticky note may take, as n8n's notes do - each one of the theme's own: green its "ok", amber its
     /// "warn", red its "bad", grey its quiet text. Null, or a name not among them, is the accent every note had before.
     /// </summary>
     public static class PipelineNoteColors
@@ -205,27 +205,27 @@ namespace Stomme.Models.Pipelines
         public Dictionary<string, string> InputVariables { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
-        /// Inputs that are an EXPRESSION (BL-229 increment 5): input name to its template, text with <c>{{ variable.path }}</c>
+        /// Inputs that are an EXPRESSION: input name to its template, text with <c>{{ variable.path }}</c>
         /// placeholders the step's run fills in (<see cref="PipelineTemplate"/>). An input named here is neither a literal nor a
         /// variable binding.
         /// </summary>
         public Dictionary<string, string> InputExpressions { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
-        /// Inputs computed by a JavaScript expression (BL-229 increment 5b): input name to the expression, run in the module's bounded
+        /// Inputs computed by a JavaScript expression: input name to the expression, run in the module's bounded
         /// sandbox with the pipeline's variables in scope - only where the site allows scripts. An input named here is none of the
         /// others.
         /// </summary>
         public Dictionary<string, string> InputScripts { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
-        /// Inputs that are a CONDITION built from rules (BL-229 increment 10): input name to the condition - a Decision's, an If's,
+        /// Inputs that are a CONDITION built from rules: input name to the condition - a Decision's, an If's,
         /// a While's. An input named here is neither a literal, a variable binding nor an expression.
         /// </summary>
         public Dictionary<string, PipelineCondition> InputConditions { get; set; } = new Dictionary<string, PipelineCondition>();
 
         /// <summary>
-        /// A Switch (flow)'s cases, in order (BL-229 increment 10): each a label - one of the step's outcomes - and the condition
+        /// A Switch (flow)'s cases, in order: each a label - one of the step's outcomes - and the condition
         /// that sends the step out through it. Empty for every other step.
         /// </summary>
         public List<PipelineGraphCase> Cases { get; set; } = new List<PipelineGraphCase>();
@@ -244,7 +244,7 @@ namespace Stomme.Models.Pipelines
         public string ParentPort { get; set; }
     }
 
-    /// <summary>A case of a Switch (flow) (BL-229 increment 10): the outcome it names, and the condition that chooses it.</summary>
+    /// <summary>A case of a Switch (flow): the outcome it names, and the condition that chooses it.</summary>
     public class PipelineGraphCase
     {
         public string Label { get; set; }
@@ -295,7 +295,7 @@ namespace Stomme.Models.Pipelines
         public List<string> Bodies { get; set; } = new List<string>();
 
         /// <summary>
-        /// BL-229 increment 10: where the step's OWN outcomes come from - <see cref="BranchesOutcomes"/> (a Fork's branches, an input
+        /// Where the step's OWN outcomes come from - <see cref="BranchesOutcomes"/> (a Fork's branches, an input
         /// holding a list of names) or <see cref="CaseOutcomes"/> (a Switch's cases, beside its <see cref="Ports"/>); null for a step
         /// whose outcomes are its ports alone.
         /// </summary>
@@ -336,13 +336,13 @@ namespace Stomme.Models.Pipelines
         public List<string> Options { get; set; }
 
         /// <summary>
-        /// BL-229 - for a connection picker, the connector types the step can use (<c>slack</c>, <c>telegram</c>...): the picker offers
+        /// For a connection picker, the connector types the step can use (<c>slack</c>, <c>telegram</c>...): the picker offers
         /// only connections of those, and a connection made from the step is one of them. Null: any connection.
         /// </summary>
         public List<string> ConnectorTypes { get; set; }
 
         /// <summary>
-        /// The step cannot do without it (BL-229 increment 4): the step gives it no starting value and its type holds no null.
+        /// The step cannot do without it: the step gives it no starting value and its type holds no null.
         /// Left empty, it is a problem that keeps the pipeline from being published (<see cref="PipelineGraphProblems"/>).
         /// </summary>
         public bool IsRequired { get; set; }

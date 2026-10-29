@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Stomme.Tests.Fixtures.PaidFeatureTestModule
 {
-    /// <summary>The paid-feature fixture's vocabulary (D105): one feature key, gated by one canonical entitlement.</summary>
+    /// <summary>The paid-feature fixture's vocabulary: one feature key, gated by one canonical entitlement.</summary>
     public static class PaidFeatureTestFeatures
     {
         public const string Key = "paidtest.pro";

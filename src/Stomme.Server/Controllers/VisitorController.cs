@@ -56,7 +56,7 @@ namespace Stomme.Controllers
             bool authorized = User.IsInRole(RoleNames.Admin);
             if (!authorized)
             {
-                // Only a visitor cookie this host issued proves the id (BL-185): a plain one of the caller's own making
+                // Only a visitor cookie this host issued proves the id: a plain one of the caller's own making
                 // read every visitor's IP address, user agent and pages by id.
                 authorized = (id == _visitorCookie.VisitorIdOf(Request, alias.SiteId));
             }

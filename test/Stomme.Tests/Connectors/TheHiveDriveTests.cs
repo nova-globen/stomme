@@ -15,8 +15,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - TheHive DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
-    /// this machine's throwaway TheHive 5.5 (scripts/thehive-test-server.ps1) - fail-not-skip without it (D46): a TheHive connection
+    /// TheHive DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
+    /// this machine's throwaway TheHive 5.5 (scripts/thehive-test-server.ps1) - fail-not-skip without it: a TheHive connection
     /// made over the API, its key vaulted, tested; a published pipeline raising an alert, putting an observable on it - the alert
     /// named by an expression over the first step's result - finding the alert by its source, and deleting it; the key in neither
     /// the graph nor the run.

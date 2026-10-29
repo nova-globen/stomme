@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// BL-97 increment 11 - collaboration DRIVEN on installed hosts on SQLite and PostgreSQL, over HTTP, with TWO signed-in
+    /// Collaboration DRIVEN on installed hosts on SQLite and PostgreSQL, over HTTP, with TWO signed-in
     /// editors (D114's honest limit, met at the API): the host takes a board's lock and the second administrator is told who
     /// holds it; both join ONE session; the holder's change is seen by the other, whose own change is refused for want of a
     /// lock; presence moves; the overview shows the lock and the session; an administrator takes the lock over and the other

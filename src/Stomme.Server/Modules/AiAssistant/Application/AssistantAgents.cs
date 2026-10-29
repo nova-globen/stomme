@@ -12,7 +12,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     // ============================================================================================================
-    // The agents (BL-97 increment 10, D113), lifted from the predecessor platform's AiAssistant at 183f5c52. What changed for all of them:
+    // The agents, lifted from the predecessor platform's AiAssistant at 183f5c52. What changed for all of them:
     // - The model is the CURRENT SITE's, opened through IAssistantModelAccess, whose client quota-gates every call before it
     //   is made and meters it after (MeteredChatClient) - so the per-agent RecordUsageAsync the predecessor platform carried is gone, and a
     //   tool-calling loop is metered per MODEL CALL (each round), where the predecessor platform recorded one aggregate row per turn.
@@ -28,7 +28,7 @@ namespace Stomme.Modules.AiAssistant.Application
 
         /// <summary>
         /// How many tool rounds one agent turn may take; the loop then makes one closing call without invoking a tool, so a turn
-        /// is at most <c>MaxToolRounds + 1</c> model calls (measured). <b>ADDED (BL-98 increment 3):</b> the library's default is
+        /// is at most <c>MaxToolRounds + 1</c> model calls (measured). <b>ADDED:</b> the library's default is
         /// 40, and every round is a METERED call against the site's AI quota - driven, a model that kept calling a tool ran all
         /// 40 for one request. A turn here needs a handful: reads, a proposal, an answer.
         /// </summary>
@@ -46,7 +46,7 @@ namespace Stomme.Modules.AiAssistant.Application
         }
 
         /// <summary>
-        /// The model for a turn: the tier router's when it maps one (CostOptimization, BL-97 increment 8), otherwise the site's own.
+        /// The model for a turn: the tier router's when it maps one (CostOptimization), otherwise the site's own.
         /// A tier names a model of the SITE's provider - an installation whose sites use different providers leaves tiers unset.
         /// </summary>
         public static async Task<string> SelectModelAsync(IModelTierRouter? router, string siteModel, IReadOnlyList<ChatMessage> messages, ChatOptions options, CancellationToken cancellationToken)

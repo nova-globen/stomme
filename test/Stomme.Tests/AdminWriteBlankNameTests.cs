@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-143: the admin write paths BL-87's role fix did not reach. <c>ProfileController</c> and <c>LanguageController</c>
+    /// The admin write paths BL-87's role fix did not reach. <c>ProfileController</c> and <c>LanguageController</c>
     /// checked only <c>ModelState</c>, and neither model carries an annotation, so a profile item with no name or title and a
     /// language with no culture code could be written through the API although both admin forms mark the field required.
     /// </summary>

@@ -8,7 +8,7 @@ using Stomme.SharedKernel.Domain;
 
 namespace Stomme.Modules.Sessions.Application
 {
-    /// <summary>The subject's sessions on the site (address, agent, timings): deleted (D112).</summary>
+    /// <summary>The subject's sessions on the site (address, agent, timings): deleted.</summary>
     public sealed class SessionErasureParticipant(IUserSessionRepository sessions, IUnitOfWork unitOfWork) : ISubjectErasureParticipant
     {
         public string Name => "Sessions";

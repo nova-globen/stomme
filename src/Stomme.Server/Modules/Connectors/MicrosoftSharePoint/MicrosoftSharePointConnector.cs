@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.MicrosoftSharePoint
 {
     /// <summary>
-    /// Microsoft SharePoint (BL-229, n8n's Microsoft SharePoint node: a site's lists, their items and its files): Microsoft
+    /// Microsoft SharePoint (n8n's Microsoft SharePoint node: a site's lists, their items and its files): Microsoft
     /// Graph's sites API with an app's client credentials - the tenant's token endpoint - through the family's token provider,
     /// over the host's egress. A test names the site the connection's address points at, or the tenant's root site.
     /// </summary>
@@ -225,7 +225,7 @@ namespace Stomme.Modules.Connectors.MicrosoftSharePoint
                 throw new InvalidOperationException($"Give the value of '{match}' to match on, a text or a number, among the values (values).");
             }
 
-            // A file of the site's documents (BL-229): its address, its content and where it lands, each held to its shape first.
+            // A file of the site's documents: its address, its content and where it lands, each held to its shape first.
             var documents = $"{api}/sites/{site}/drive";
             string? document = null, folder = null, name = null, target = null, text = null, contentType = null, conflict = null;
             if (files)

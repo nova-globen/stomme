@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Freshdesk (n8n's Freshdesk node: tickets and contacts, and a reply and a note) over a helpdesk's API: the key by
+    /// Freshdesk (n8n's Freshdesk node: tickets and contacts, and a reply and a note) over a helpdesk's API: the key by
     /// Freshdesk's Basic pair (the key and X); any page's address cut back to the helpdesk; tickets by requester, company and change,
     /// sorted, page by page up to the most asked for, each a plain record its status, priority and source as words and its address in
     /// the agent's view; a ticket got (its requester with it), created (open, low and portal by default; words or numbers taken),

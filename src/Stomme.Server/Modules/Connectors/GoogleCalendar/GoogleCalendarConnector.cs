@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleCalendar
 {
     /// <summary>
-    /// Google Calendar (BL-229, n8n's Google Calendar node: events got, listed, created, updated and deleted, a calendar's
+    /// Google Calendar (n8n's Google Calendar node: events got, listed, created, updated and deleted, a calendar's
     /// availability): the Calendar API (<c>https://www.googleapis.com/calendar/v3</c>) over the OAuth2 REFRESH-TOKEN scheme - a
     /// Google Cloud OAuth client's id and secret and a refresh token granted the calendar scope - exchanged at Google's token
     /// endpoint (the <c>token_url</c> setting) through the shared <see cref="OAuth2TokenProvider"/>, as Gmail's is. A test reads

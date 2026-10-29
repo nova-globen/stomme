@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - GitHub DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// GitHub DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for GitHub's API: a GitHub connection made over the API, its token vaulted, tested (the account
     /// named); a published pipeline opens an issue, comments on it, closes it, commits a status file, starts a deploy workflow and
     /// reads the open issues over two pages by GitHub's Link header - each call a bearer with GitHub's headers; the token is in

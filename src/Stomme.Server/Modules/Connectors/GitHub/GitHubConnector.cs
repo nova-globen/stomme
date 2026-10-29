@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GitHub
 {
     /// <summary>
-    /// GitHub (BL-229, n8n's GitHub node: a repository's issues got, an issue got, created, edited and commented on, a release
+    /// GitHub (n8n's GitHub node: a repository's issues got, an issue got, created, edited and commented on, a release
     /// created, a file got and committed, a workflow dispatched): GitHub's REST API (<c>https://api.github.com</c>, or a GitHub
     /// Enterprise Server's <c>https://github.example.com/api/v3</c>), a personal access token as the Bearer token. A test asks
     /// GitHub who the token is (<c>user</c>).

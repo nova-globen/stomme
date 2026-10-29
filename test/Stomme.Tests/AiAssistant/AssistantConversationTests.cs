@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 9 - the predecessor platform's <c>AssistantConversationTests</c>, by name, on the lifted conversation: it opens active
+    /// The predecessor platform's <c>AssistantConversationTests</c>, by name, on the lifted conversation: it opens active
     /// with its event; a proposed artifact is a Proposed draft and is never auto-applied; only a proposed artifact is applied,
     /// once; raw rows are refused as model context; an artifact may reference only datasets already attached. the predecessor platform's
     /// repository round trip is <see cref="AssistantConversationStoreConformanceTests"/>, on four stores. <b>CHANGED:</b> the

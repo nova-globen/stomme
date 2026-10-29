@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Salesforce DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Salesforce DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for an org's token endpoint and REST API: a Salesforce connection made over the API, its consumer
     /// secret vaulted, tested (the org named); a published pipeline adds a lead, upserts one by an external id, finds the leads by
     /// SOQL over two pages, reads one with the fields named and deletes the upserted one - each call the access token the client

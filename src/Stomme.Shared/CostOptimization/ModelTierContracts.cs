@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-// Lifted from the predecessor platform (BL-97 increment 8): the tier model and the router port are unchanged.
+// Lifted from the predecessor platform: the tier model and the router port are unchanged.
 namespace Stomme.CostOptimization
 {
     /// <summary>

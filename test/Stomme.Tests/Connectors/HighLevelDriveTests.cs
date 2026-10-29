@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - HighLevel DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// HighLevel DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for HighLevel's API v2 that refuses a call without the token as a bearer and its Version
     /// header: a HighLevel connection made over the API with its location, the token vaulted, tested; a published pipeline
     /// upserting a contact with a tag and a note, making an opportunity for the contact the first step answered (an expression

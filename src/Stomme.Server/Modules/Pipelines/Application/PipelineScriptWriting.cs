@@ -16,7 +16,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Application
 {
     // ============================================================================================================
-    // BL-229 - n8n's "Ask AI" in its Code node: the author says what a Run script step's script should do - or how to change the
+    // n8n's "Ask AI" in its Code node: the author says what a Run script step's script should do - or how to change the
     // one it has - and the site's model writes it. What the model is told is what the script can SEE: what it is written for,
     // the names of its extra variables and the schema of what it receives (field names and kinds, never a value), as n8n sends
     // its AI the node's input schema and not its data. It PROPOSES: nothing is stored and nothing runs - the editor puts the

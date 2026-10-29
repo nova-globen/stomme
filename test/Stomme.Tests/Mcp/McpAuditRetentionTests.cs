@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// The MCP audit ledger's retention pass (BL-80, D101 item 6, on D104's <see cref="IRetentionPurger"/> seam).
+    /// The MCP audit ledger's retention pass (on D104's <see cref="IRetentionPurger"/> seam).
     /// </summary>
     /// <remarks>
     /// <b>The floor is the assertion that matters.</b> This ledger is where a denied call, a call waiting on an

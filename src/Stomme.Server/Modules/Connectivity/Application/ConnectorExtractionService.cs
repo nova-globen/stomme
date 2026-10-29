@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Connectivity.Application
 {
     /// <summary>
-    /// The extraction port's implementation (BL-94 increment 6, D110): the connection (the request's site's, when a
+    /// The extraction port's implementation: the connection (the request's site's, when a
     /// site is resolved), its connector as an extractor, the operation (the first declared when none is named), the
     /// credentials from the per-site secret store, the HOST's egress, and the records up to the cap - one more read
     /// than the cap tells whether the cap cut the read short. A failure is a category, never an exception; a fault is
@@ -71,8 +71,8 @@ namespace Stomme.Modules.Connectivity.Application
             var context = new ConnectorExtractContext(connection.Endpoint.Value, connection.Settings.GetSettings(), TimeSpan.FromSeconds(connection.TimeoutSeconds), egress, operationName!, parameters)
             {
                 Credentials = resolved.Values,
-                FileSink = fileSink, // the site's managed storage (BL-96 increment 2), null where the host composes none - an operation that needs it says so
-                Files = files, // the run's pipeline folder (BL-229), null outside a run - an upload or a download refuses without it
+                FileSink = fileSink, // the site's managed storage, null where the host composes none - an operation that needs it says so
+                Files = files, // the run's pipeline folder, null outside a run - an upload or a download refuses without it
             };
 
             var cap = ConnectorExtractionLimits.Clamp(maxRecords);

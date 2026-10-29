@@ -9,7 +9,7 @@ using Stomme.Export;
 namespace Stomme.Modules.DataExport.Rendering
 {
     /// <summary>
-    /// JSON: an object per table, an object per row, written through a streaming writer (BL-85).
+    /// JSON: an object per table, an object per row, written through a streaming writer.
     /// </summary>
     /// <remarks>
     /// <para>

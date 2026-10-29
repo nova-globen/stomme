@@ -15,9 +15,9 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Tenable
 {
     /// <summary>
-    /// Tenable Vulnerability Management (BL-96 increment 5, lifted from the predecessor platform's <c>tenable</c>): the asset export started,
+    /// Tenable Vulnerability Management (lifted from the predecessor platform's <c>tenable</c>): the asset export started,
     /// polled until FINISHED within a bounded wait (the legacy loop was unbounded), every chunk streamed; the ApiKeyPair
-    /// on the <c>X-ApiKeys</c> header in the exact legacy wire format. Every request through the host's egress (D110).
+    /// on the <c>X-ApiKeys</c> header in the exact legacy wire format. Every request through the host's egress.
     /// </summary>
     public sealed class TenableConnector(Func<TimeSpan, CancellationToken, Task>? pollDelay = null) : IConnector, IConnectorExtractor
     {

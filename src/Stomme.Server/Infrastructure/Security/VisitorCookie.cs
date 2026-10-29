@@ -13,7 +13,7 @@ namespace Stomme.Infrastructure.Security
     /// </summary>
     /// <remarks>
     /// <para>
-    /// BL-185 (2026-10-01). The cookie used to be the id and a date in plain text, and three doors trusted it: the
+    /// BL-185. The cookie used to be the id and a date in plain text, and three doors trusted it: the
     /// Visitor branch of the settings API (read and write a visitor's settings), <c>GET api/Visitor/{id}</c> (a visitor's
     /// record - its IP address, user agent, pages and user id) and the visit tracking in <c>App.razor</c>. A caller with no
     /// account who wrote <c>APP_VISITOR_1=123</c> themselves passed as visitor 123, and the ids are sequential.

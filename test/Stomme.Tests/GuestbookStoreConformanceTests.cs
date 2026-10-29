@@ -14,7 +14,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D76 — the Guestbook clean-arch store's observable contract, expressed ONCE and DRIVEN against BOTH
+    /// The Guestbook clean-arch store's observable contract, expressed ONCE and DRIVEN against BOTH
     /// providers it must run on (the same shape as D73's <c>FeatureFlagStoreConformanceTests</c>). A subclass
     /// supplies the fixture — the relational (EF Core / SQLite) store or the live RavenDB document store — and
     /// the tests below know nothing about either. Both providers must produce the SAME observable results:
@@ -34,14 +34,14 @@ namespace Stomme.Tests
 
         private ServiceProvider _services = default!;
 
-        /// <summary>The ambient tenant every scope sees - switched by the two-tenant case (BL-111); the default otherwise.</summary>
+        /// <summary>The ambient tenant every scope sees - switched by the two-tenant case; the default otherwise.</summary>
         private readonly SwitchableTenantContext _tenant = new(TenantId.Default);
 
         /// <summary>Provider hook: register the store (EF/SQLite or RavenDB) onto <paramref name="services"/>.</summary>
         protected abstract void AddStore(IServiceCollection services);
 
         /// <summary>
-        /// Provider hook (BL-150): whether <c>FindAsync</c> over the <see cref="AuthorName"/> value object matches a
+        /// Provider hook: whether <c>FindAsync</c> over the <see cref="AuthorName"/> value object matches a
         /// DIFFERENT case. Measured: EF/SQLite no (it compares the converted string), RavenDB yes (case-insensitive), File
         /// yes (the value object's own <c>Equals</c>, which lower-cases). Encoded as a provider fact, like the string
         /// boundary in the D78 suite - so a store that starts to disagree with its recorded answer goes red.

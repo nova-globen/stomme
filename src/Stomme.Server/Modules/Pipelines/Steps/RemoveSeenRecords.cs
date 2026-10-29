@@ -47,7 +47,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Remove records seen before (BL-229, n8n's Remove Duplicates "remove items processed in previous executions"): keeps the
+    /// Remove records seen before (n8n's Remove Duplicates "remove items processed in previous executions"): keeps the
     /// records no earlier run of the pipeline had - by the values of the compared fields - or, by one field, those whose number
     /// or date is higher than any before; a schedule polling a feed or an API then passes on only what is new. What was seen
     /// is kept per site and pipeline (and step, unless shared), in the engine's key-value store, as HASHES of the compared

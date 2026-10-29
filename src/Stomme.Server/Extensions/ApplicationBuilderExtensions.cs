@@ -35,7 +35,7 @@ namespace Stomme.Extensions
         /// </remarks>
         public static async Task<IApplicationBuilder> UseStommeAsync(this IApplicationBuilder app, IConfigurationRoot configuration, IWebHostEnvironment environment, ICorsService corsService, ICorsPolicyProvider corsPolicyProvider, ISyncManager sync)
         {
-            // D105: validate the entitlement leg POST-BUILD and BEFORE anything starts — a stray or replaced
+            // Validate the entitlement leg POST-BUILD and BEFORE anything starts — a stray or replaced
             // IEntitlementProvider, conflicting feature descriptors or a non-canonical RequiredEntitlement fail the boot
             // here, instead of inside FeatureSeeder.StartAsync's catch-all (which would log and leave evaluations to 500).
             EntitlementStartupValidation.Validate(app.ApplicationServices, configuration);
@@ -74,12 +74,12 @@ namespace Stomme.Extensions
             var pipelineHooks = DiscoverPipelineStartups();
             app.UseServerPipelineStage(ServerPipelineStage.BeforeStaticFiles, pipelineHooks, environment);
 
-            // BL-246: a tenant's files (wwwroot/Content/Tenants) are never served as static files - they go through the
+            // A tenant's files (wwwroot/Content/Tenants) are never served as static files - they go through the
             // checked file route, where their folder's permissions apply (TenantContentRedirect, after tenant resolution).
             app.UseWhen(context => !Stomme.Infrastructure.Files.TenantContentRedirect.IsTenantContent(context.Request.Path), staticFiles => staticFiles.UseStaticFiles(new StaticFileOptions
             {
                 // OnPrepareResponseAsync, not OnPrepareResponse: the sync hook is an Action<> and the CORS
-                // policy lookup below is async, so the sync form could only be satisfied by blocking (D32).
+                // policy lookup below is async, so the sync form could only be satisfied by blocking.
                 // ASP.NET Core has offered the async hook since .NET 8, so this is a real await, not a
                 // boundary we have to keep.
                 OnPrepareResponseAsync = async (ctx) =>
@@ -87,7 +87,7 @@ namespace Stomme.Extensions
                     // Blazor framework assets get an explicit, per-file policy that OVERRIDES the site-wide knob
                     // below — immutable for the fingerprinted assemblies, no-cache for the stable-named loaders.
                     // Serving these with no Cache-Control at all let a CDN invent one and pin a stale loader
-                    // across a deploy, which stopped the WASM app booting for hours (BL-62; see
+                    // across a deploy, which stopped the WASM app booting for hours (see
                     // FrameworkAssetCaching for the measurement). Assigned, not appended: the two policies are
                     // mutually exclusive and a duplicated header is its own bug.
                     var frameworkCacheControl = FrameworkAssetCaching.Resolve(ctx.Context.Request.Path.Value);
@@ -115,7 +115,7 @@ namespace Stomme.Extensions
             // is known and before anything reads or writes a cookie.
             app.UseWhen(context => !isHealthEndpoint(context.Request.Path), tenants => tenants.UseTenantResolution().UseMiddleware<FolderSiteCookieMiddleware>());
             Stomme.Infrastructure.Files.TenantContentRedirect.UseTenantContentRedirect(app);
-            // BL-55: ensure the resolved tenant's dedicated OpenIddict store EXISTS before authentication —
+            // Ensure the resolved tenant's dedicated OpenIddict store EXISTS before authentication —
             // OpenIddict validates token requests against its store inside the auth stage. No-op unless
             // OpenIddict:Enabled.
             app.UseOpenIddictStoreProvisioning(configuration);
@@ -126,15 +126,15 @@ namespace Stomme.Extensions
             app.UseCors();
             app.UseOutputCache();
             app.UseAuthentication();
-            // BL-196: api/* accepts this host's access tokens. After authentication, which creates OpenIddict's validation
+            // Api/* accepts this host's access tokens. After authentication, which creates OpenIddict's validation
             // context (measured: before it, every token failed with "error occurred while retrieving the OpenIddict
             // validation context"), and before authorization. No-op unless OpenIddict:Enabled.
             app.UseOpenIddictApiBearer(configuration);
             app.UseAuthorization();
-            // BL-121: the ONE rate-limiter middleware (after authentication, so a policy may partition by caller; before
+            // The ONE rate-limiter middleware (after authentication, so a policy may partition by caller; before
             // antiforgery, so a refused attempt costs nothing more). Endpoints opt in by policy - see AccountRateLimiting.
             app.UseRateLimiter();
-            // gRPC-Web request translation (opt-in, D10) — after auth so services see the authenticated principal
+            // gRPC-Web request translation (opt-in) — after auth so services see the authenticated principal
             app.UseStommeTransport(configuration);
             app.UseNotFoundResponse();
             app.UseAntiforgery();
@@ -156,7 +156,7 @@ namespace Stomme.Extensions
                 // switched off (module.<id>.enabled=false, row 14).
                 MapModuleHttpEndpoints(endpoints, configuration);
 
-                // BL-210: an api/ request no endpoint takes - a route a switched-off feature's controller declines at selection
+                // An api/ request no endpoint takes - a route a switched-off feature's controller declines at selection
                 // (its ActionMethodSelectorAttribute), or one that does not exist - ends here as a bare 404. It fell through to
                 // the page fallback below, which answered a POST's JSON body 400 ("The request has an incorrect Content-type")
                 // and a GET with the site's page. Every api/ route this host maps has a literal segment after api/
@@ -166,19 +166,19 @@ namespace Stomme.Extensions
                 {
                     context.Response.StatusCode = StatusCodes.Status404NotFound;
                     return Task.CompletedTask;
-                }).WithDisplayName("api/ not found (BL-210)");
+                }).WithDisplayName("api/ not found");
 
                 // D61 spike: per-tenant OpenIddict authority endpoints (/connect/token, /connect/whoami).
                 // No-op unless OpenIddict:Enabled=true.
                 endpoints.MapStommeOpenIddict(configuration);
 
-                // D104: anonymous liveness and readiness. Neither executes a probe - readiness reports the last
+                // Anonymous liveness and readiness. Neither executes a probe - readiness reports the last
                 // completed job tick from memory - so an unauthenticated caller cannot drive database round-trips,
                 // cache writes or SMTP connects by refreshing.
                 endpoints.MapStommeHealthEndpoints(configuration);
             });
 
-            // opt-in transport endpoints (gRPC-Web module services + SignalR hubs) — no-op unless enabled (D10)
+            // opt-in transport endpoints (gRPC-Web module services + SignalR hubs) — no-op unless enabled
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapStommeTransport(configuration);
@@ -190,7 +190,7 @@ namespace Stomme.Extensions
                 // (Microsoft.AspNetCore.Components.WebAssembly.Server.WebAssemblyComponentsEndpointOptions[1])
                 // recommending MapStaticAssets over the classic app.UseStaticFiles above. That is EXPECTED and
                 // intentional here: the classic UseStaticFiles carries a load-bearing async OnPrepareResponseAsync
-                // hook for the .NET MAUI CORS policy + Cache-Control headers (D32), which MapStaticAssets' static
+                // hook for the .NET MAUI CORS policy + Cache-Control headers, which MapStaticAssets' static
                 // manifest cannot host. Migrating would re-home the MAUI CORS logic and needs a driven MAUI
                 // client to verify — deliberately NOT done. The warning is silenced at its logger category under
                 // Logging:LogLevel in appsettings.json instead of reordering the pipeline.
@@ -362,7 +362,7 @@ namespace Stomme.Extensions
             // skip requests for framework resources, reserved routes, and static files
             return path.StartsWith("/_framework/", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/_content/", StringComparison.OrdinalIgnoreCase) ||
-                // D104: the health endpoints must keep their status code and their one-word body.
+                // The health endpoints must keep their status code and their one-word body.
                 //
                 // MEASURED 2026-09-20, and it refutes D104 binding item 15: this entry is NOT currently what makes
                 // that true. Removing it leaves /readyz answering 503 "not-ready" exactly as before, because

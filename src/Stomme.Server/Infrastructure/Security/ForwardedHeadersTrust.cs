@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// BL-243 - whose <c>X-Forwarded-For</c>, <c>-Proto</c> and <c>-Host</c> the host believes. It used to clear the known
+    /// Whose <c>X-Forwarded-For</c>, <c>-Proto</c> and <c>-Host</c> the host believes. It used to clear the known
     /// proxies and networks, so it believed ANY caller: driven on a directly reached app, a request picked its own issuer
     /// for the OpenID Connect provider, its own scheme past the token endpoint's https-only check, its own client address
     /// past the sign-in rate limiter, and - on a one-site install - a new alias row per request. Now only the proxies a

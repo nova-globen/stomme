@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <!--
-    BL-13: the CLIENT layer of the split (WASM-download-safe) Blogs module — Index.razor : ModuleBase,
+    The CLIENT layer of the split (WASM-download-safe) Blogs module — Index.razor : ModuleBase,
     ModuleInfo (IModule) and the HTTP IBlogService implementation. On a WebAssembly site this assembly
     (plus the Shared assembly its ModuleDefinition.Dependencies names) is streamed to the BROWSER via
     api/Installation/list + load, so it must carry NO reference to any server-only assembly
@@ -14,7 +14,7 @@
     component as {namespace}.{action} in the same assembly — NovaGloben.Module.Blogs.Index — so the
     /blogs page keeps resolving after the split.
 
-    INDEPENDENT (D81/D82): references Stomme ONLY through a meta-package from the local feed — since
+    INDEPENDENT: references Stomme ONLY through a meta-package from the local feed — since
     BL-44 the SLIM one, Stomme.Sdk.Slim (examples/pack-sdk-slim.ps1). The slim closure still includes
     the Stomme.Server compile surface, but the compiler only emits assembly references for types
     actually used — this project uses none, and the reference test proves it (with the Server assembly
@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <!--
-    WASM-safety (measured, BL-13): Microsoft.AspNetCore.OpenApi (transitive via Stomme.Sdk ->
+    WASM-safety (measured): Microsoft.AspNetCore.OpenApi (transitive via Stomme.Sdk ->
     Stomme.Server) ships a SOURCE GENERATOR that injects interceptor types into every consuming
     assembly; those types force references to Microsoft.AspNetCore.OpenApi/Microsoft.OpenApi/Mvc.Core
     and make Assembly.GetTypes() THROW ReflectionTypeLoadException wherever those assemblies are

@@ -16,7 +16,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.FlexNetManager
 {
     /// <summary>
-    /// FlexNet Manager Suite (BL-96 increment 3, lifted from the predecessor platform's <c>fnms</c>): the single SOAP 1.2 <c>GetCustomView</c>
+    /// FlexNet Manager Suite (lifted from the predecessor platform's <c>fnms</c>): the single SOAP 1.2 <c>GetCustomView</c>
     /// operation hand-rolled over the egress's client (wrapper and members in the <c>http://tempuri.org/</c> namespace - one
     /// envelope does not justify a WCF dependency), authenticated by the Flexera refresh-token grant through the family's
     /// token provider (region-aware). The legacy NTLM/integrated mode behind a <c>"."</c> sentinel stays a host-gated

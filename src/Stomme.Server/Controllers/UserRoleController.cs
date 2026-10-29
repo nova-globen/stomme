@@ -242,7 +242,7 @@ namespace Stomme.Controllers
             }
         }
 
-        // BL-120: a grant or a revoke is an identity audit line - whose account, which role, by whom (the recorder derives the actor).
+        // A grant or a revoke is an identity audit line - whose account, which role, by whom (the recorder derives the actor).
         private Task AuditRoleAsync(Stomme.Models.IdentityAudit.IdentityAuditEvent evt, int userId, string roleName, int siteId) =>
             _identityAudit?.RecordAsync(evt, userId, null, roleName, siteId) ?? Task.CompletedTask;
 

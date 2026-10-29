@@ -33,7 +33,7 @@ namespace Stomme.Modules.Health.Contributions
     /// <b>The store probe is provider-NEUTRAL, and that is a deviation worth stating.</b> The design said
     /// "relational round-trip through the framework seam, Raven <c>GetStatisticsOperation</c>" — a per-provider
     /// branch. Doing that would put a RavenDB package reference inside a storage-blind module, which is the one
-    /// thing the clean-arch stack forbids (D79/D80): a module authors no persistence code and no provider branch.
+    /// thing the clean-arch stack forbids: a module authors no persistence code and no provider branch.
     /// Instead it loads a known-absent id through the module's own repository. That is a real round-trip on every
     /// provider — a keyed lookup on EF, a document load on Raven, a file probe on the File store — it returns
     /// nothing rather than reading anyone's data, and it exercises the store the health rows THEMSELVES live in,

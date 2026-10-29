@@ -14,7 +14,7 @@ using Stomme.Connectivity;
 namespace Stomme.Modules.Connectors.Shared
 {
     /// <summary>
-    /// One connection's calls to an AWS service over its JSON protocol (BL-229, the AWS AI connectors): the service's address in the
+    /// One connection's calls to an AWS service over its JSON protocol (the AWS AI connectors): the service's address in the
     /// region, its target prefix and content type, every request signed with SigV4; a failure thrown with its status, AWS's error
     /// type and its message.
     /// </summary>
@@ -135,7 +135,7 @@ namespace Stomme.Modules.Connectors.Shared
     }
 
     /// <summary>
-    /// A document or an image an AWS AI service reads (BL-229, Textract and Rekognition, as n8n's nodes give it): a file of the
+    /// A document or an image an AWS AI service reads (Textract and Rekognition, as n8n's nodes give it): a file of the
     /// pipeline run's folder, sent as its bytes, or an object in S3 - its bucket, its name and a version - which AWS reads itself.
     /// Held to the service's limit in bytes before anything is signed.
     /// </summary>

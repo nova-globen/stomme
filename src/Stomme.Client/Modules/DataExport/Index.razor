@@ -3,7 +3,7 @@
 @inject IDataExportService DataExportService
 
 @*
-    The data-export control (D108 item 11). A user with export:view sees their OWN exports; a user with export:manage
+    The data-export control. A user with export:view sees their OWN exports; a user with export:manage
     may switch to every export on the site. Nothing here can name a site, a tenant or a user - the server resolves all
     three from the request - and every button that appears is decided again by the server when it is pressed. The
     artifact is fetched by the browser from the module's own download route: the framework's file endpoints authorise
@@ -117,7 +117,7 @@ else
                     }
                     <button id="dataexport-request" type="button" class="db-btn" @onclick="RequestAsync" disabled="@_busy">Request</button>
 
-                    @* BL-95: the same request, repeated - each run is an ordinary export requested as you, checked again then. *@
+                    @* The same request, repeated - each run is an ordinary export requested as you, checked again then. *@
                     <div id="dataexport-schedule-form" style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--db-border);display:flex;flex-direction:column;gap:0.5rem;">
                         <h5 style="margin:0;">Or repeat it on a schedule</h5>
                         <div class="db-field">
@@ -333,7 +333,7 @@ else
         await LoadAsync();
     }
 
-    // BL-95: the request as it stands, repeated on the cron given.
+    // The request as it stands, repeated on the cron given.
     private async Task ScheduleAsync()
     {
         _busy = true;

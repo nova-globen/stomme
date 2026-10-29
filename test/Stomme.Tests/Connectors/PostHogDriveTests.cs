@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - PostHog DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// PostHog DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for PostHog's ingestion host that refuses a body without the project key it knows: a connection
     /// made over the API, tested; a published pipeline capturing an order for a person, identifying them and reading their feature
     /// flags; the key in neither the graph nor the run.

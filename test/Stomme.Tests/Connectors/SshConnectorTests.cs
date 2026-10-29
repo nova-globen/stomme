@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the SSH connectors without a server: SSH by a password and SSH by a private key, Development and Network &amp;
+    /// The SSH connectors without a server: SSH by a password and SSH by a private key, Development and Network &amp;
     /// Infrastructure, n8n's operations - a command, a file's download and its upload - and no other; a command given once, as
     /// <c>command</c> or in the step's Query box, its folder quoted for the shell, its time held from 1 to 3600 seconds; an
     /// operation, a parameter and the address checked before the egress is asked.
@@ -101,7 +101,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the SSH connectors against a real OpenSSH (this machine's throwaway container, <see cref="FileServerTestEndpoint"/>,
+    /// The SSH connectors against a real OpenSSH (this machine's throwaway container, <see cref="FileServerTestEndpoint"/>,
     /// its user with a shell) through the HOST's egress: loopback refused until allowlisted; a server whose key the connection
     /// does not name refused as the contract's own refusal; a password and a key signing in; a command's exit code, output and
     /// errors; a folder - a quote in its name - run in; several lines from the Query box; a command past its time stopped and

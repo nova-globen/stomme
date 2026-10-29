@@ -3,7 +3,7 @@
 @inject IPortabilityService PortabilityService
 
 @*
-    Data portability (BL-82): configuration packages out of and into this site, and a person's data package on request.
+    Data portability: configuration packages out of and into this site, and a person's data package on request.
     Placed for Administrators while Portability:Enabled is on; every action is decided again by the server, per key.
 *@
 
@@ -184,7 +184,7 @@
         }
         catch (PortabilityRequestRejectedException refused)
         {
-            // Written for the person asking (BL-82); logging it would only repeat what the page now shows.
+            // Written for the person asking; logging it would only repeat what the page now shows.
             _message = "The request was refused: " + refused.Message;
         }
         catch (Exception ex)

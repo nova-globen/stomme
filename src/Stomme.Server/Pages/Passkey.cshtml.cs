@@ -149,7 +149,7 @@ namespace Stomme.Pages
             {
                 returnurl = "/" + returnurl;
             }
-            returnurl = Utilities.LocalReturnUrl(returnurl); // BL-244: "//host" and "/\host" are another site
+            returnurl = Utilities.LocalReturnUrl(returnurl); // "//host" and "/\host" are another site
 
             return LocalRedirect(Url.Content("~" + returnurl));
         }

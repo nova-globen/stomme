@@ -18,7 +18,7 @@ namespace Stomme.Themes.Controls
 
         /// <summary>
         /// Raised when a menu link is activated, so an interactively-rendered menu can close itself
-        /// again (D18). This replaces the inert `data-bs-target=".navbar-collapse.show"` spans that
+        /// again. This replaces the inert `data-bs-target=".navbar-collapse.show"` spans that
         /// used to wrap every link and dismiss the menu through Bootstrap's JS.
         /// </summary>
         [Parameter()]

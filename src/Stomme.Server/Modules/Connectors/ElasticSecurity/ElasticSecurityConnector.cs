@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.ElasticSecurity
 {
     /// <summary>
-    /// Elastic Security (BL-229, n8n's Elastic Security node: cases, their comments and tags) over Kibana's Cases API by a Kibana
+    /// Elastic Security (n8n's Elastic Security node: cases, their comments and tags) over Kibana's Cases API by a Kibana
     /// user's name and password - Basic, as n8n's node signs in - with Kibana's <c>kbn-xsrf</c> header on every call, in the
     /// default space or the connection's own. A test reads the open cases' count.
     /// </summary>

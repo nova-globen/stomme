@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// An assistant agent (BL-97 increment 10, D113): a specialist, or the orchestrator that routes between them. It takes the
+    /// An assistant agent: a specialist, or the orchestrator that routes between them. It takes the
     /// conversation so far and returns a reply plus any artifacts it PROPOSES - it never applies one.
     /// </summary>
     public interface IAssistantAgent
@@ -20,7 +20,7 @@ namespace Stomme.Modules.AiAssistant.Application
 
     /// <summary>
     /// A specialist the orchestrator can route to. <b>CHANGED:</b> a specialist describes itself - the predecessor platform's orchestrator held a
-    /// switch of the four names it knew, so a new specialist (the landing page's, BL-98) would have edited the orchestrator.
+    /// switch of the four names it knew, so a new specialist (the landing page's) would have edited the orchestrator.
     /// </summary>
     public interface IAssistantSpecialist : IAssistantAgent
     {
@@ -62,7 +62,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// What the agents may READ of the user's workspace (D113). <b>CHANGED:</b> the predecessor platform's gateway was a no-op in every host -
+    /// What the agents may READ of the user's workspace. <b>CHANGED:</b> the predecessor platform's gateway was a no-op in every host -
     /// the agents saw nothing; here every read is the owning module's own <c>[Requires]</c>-gated query dispatched through
     /// the mediator AS THE USER, so an agent sees exactly what its user may see. A refused query answers as nothing visible.
     /// </summary>
@@ -99,7 +99,7 @@ namespace Stomme.Modules.AiAssistant.Application
     public sealed record AssistantHelpTopic(string Anchor, string Title, string Text);
 
     /// <summary>
-    /// How a proposal is judged and, on the user's explicit apply, written (D113): through the owning module's own
+    /// How a proposal is judged and, on the user's explicit apply, written: through the owning module's own
     /// <c>[Requires]</c>-gated commands, dispatched AS THE USER - so an applied artifact carries exactly the user's authority,
     /// the module's invariants, and nothing an agent could add.
     /// </summary>

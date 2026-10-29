@@ -25,7 +25,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-79 (D102) - the four metering aggregates round-trip member for member on EVERY module-aggregate provider - EF
+    /// The four metering aggregates round-trip member for member on EVERY module-aggregate provider - EF
     /// (SQLite), EF (PostgreSQL), RavenDB and File - through the module's own <c>ServerStartup</c> and closed
     /// repositories, and every query those repositories expose answers identically on each.
     /// </summary>
@@ -40,7 +40,7 @@ namespace Stomme.Tests
     /// Instants are compared THROUGH <see cref="MeteringTime.AsUtc"/>, as the module itself reads them: a relational
     /// provider hands a scalar <c>DateTime</c> back with no kind, RavenDB and File hand back UTC, and this module's
     /// convention is "kind-less means UTC" rather than a re-stamp in the getter. What must agree is the INSTANT.
-    /// PostgreSQL and RavenDB FAIL rather than skip (D46). Placed in <c>Stomme.Tests</c>: the conformance project has
+    /// PostgreSQL and RavenDB FAIL rather than skip. Placed in <c>Stomme.Tests</c>: the conformance project has
     /// no File-store module fixture (the BL-78 F11 precedent).
     /// </para>
     /// </remarks>
@@ -253,7 +253,7 @@ namespace Stomme.Tests
             Assert.Equal(new long[] { 1 }, Quantities(await InScopeAsync<IUsageRecordRepository, IReadOnlyList<UsageRecordAggregate>>(r =>
                 r.ListForWindowAsync(Site, "tests.a", Now.AddDays(-10), Now.AddDays(-5)))));
 
-            // The metric is normalised on BOTH sides (D49): a mixed-case argument finds the canonical rows.
+            // The metric is normalised on BOTH sides: a mixed-case argument finds the canonical rows.
             Assert.Equal(new long[] { 2, 4 }, Quantities(await InScopeAsync<IUsageRecordRepository, IReadOnlyList<UsageRecordAggregate>>(r =>
                 r.ListForWindowAsync(Site, "Tests.A", Now.AddDays(-5), Now))));
 

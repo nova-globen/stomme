@@ -20,7 +20,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-251 - a refused request is not a fault. The mediator's exception boundary logged a duplicate title, a stale write or
+    /// A refused request is not a fault. The mediator's exception boundary logged a duplicate title, a stale write or
     /// a denied key at Error with its stack (reported four times by the app-guidance writers); an
     /// <see cref="IExpectedRefusal"/>, and the framework's own refusals, are now logged at Information and re-thrown. A real
     /// fault still logs at Error. And a validation failure or a stale write escaping a controller is a 400 / 409, not a 500.

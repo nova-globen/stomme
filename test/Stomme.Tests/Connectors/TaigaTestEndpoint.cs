@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Taiga connector's live tests' server (BL-229): TAIGA_TEST_URL / TAIGA_TEST_USERNAME / TAIGA_TEST_PASSWORD where set,
+    /// The Taiga connector's live tests' server: TAIGA_TEST_URL / TAIGA_TEST_USERNAME / TAIGA_TEST_PASSWORD where set,
     /// otherwise this machine's throwaway Taiga 6.10 that <c>scripts/taiga-test-server.ps1</c> makes on 127.0.0.1:18092 - its user
     /// kafe, registered by that script, and the password in the file it writes under the user's temp folder. Neither is a
-    /// FAILURE that says how to get one, never a skip (D46). A test makes a project of its own here (the connector makes none, as
+    /// FAILURE that says how to get one, never a skip. A test makes a project of its own here (the connector makes none, as
     /// n8n's node makes none) and deletes it again.
     /// </summary>
     internal static class TaigaTestEndpoint

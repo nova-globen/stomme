@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - SendGrid DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// SendGrid DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for SendGrid's v3 API: a SendGrid connection made over the API, its key vaulted, tested (the
     /// key's scopes read); a published pipeline adds a contact to a list, finds contacts by a query, reads the lists over two pages
     /// by SendGrid's token and sends a mail - every call the key as the bearer; the key is in neither the graph nor the run.

@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsIam
 {
     /// <summary>
-    /// AWS IAM (BL-229, n8n's AWS IAM node: an account's users and groups) over IAM's Query protocol at its global address
+    /// AWS IAM (n8n's AWS IAM node: an account's users and groups) over IAM's Query protocol at its global address
     /// (<c>https://iam.amazonaws.com</c>, signed for <c>iam</c> in us-east-1) through the shared <see cref="AwsQuerySession"/>,
     /// every call signed with SigV4 by an IAM user's access key and secret, over the host's egress. A test names the account's
     /// alias, or that it has none.

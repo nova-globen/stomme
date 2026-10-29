@@ -10,7 +10,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.DataExport.Persistence
 {
     /// <summary>
-    /// The export jobs' closed read surface (D108 item 4).
+    /// The export jobs' closed read surface.
     /// </summary>
     /// <remarks>
     /// <b>The namespace is deliberate</b> (the Metering and Notifications convention): <c>ModuleStoreRegistrationTests</c>
@@ -20,7 +20,7 @@ namespace Stomme.DataExport.Persistence
     /// <para>
     /// Every filter stays inside the <c>FindAsync</c> SAFE SET - <c>int</c> ids, a <see cref="Guid"/>, an enum
     /// and UTC <see cref="DateTime"/> ranges. No string appears in a predicate: bare string equality is
-    /// case-sensitive on EF and case-insensitive on RavenDB (D49). On the File store every one of these is a full
+    /// case-sensitive on EF and case-insensitive on RavenDB. On the File store every one of these is a full
     /// scan filtered in memory (D108 refutation 15) - acceptable for a per-minute queue on a single-host store,
     /// and stated rather than hidden.
     /// </para>
@@ -46,7 +46,7 @@ namespace Stomme.DataExport.Persistence
         Task<IReadOnlyList<ExportJobAggregate>> ListDueForExpiryAsync(int siteId, DateTime nowUtc, CancellationToken ct = default);
     }
 
-    /// <summary>The export schedules' closed read surface (BL-95) - the same FindAsync safe set as the jobs'.</summary>
+    /// <summary>The export schedules' closed read surface - the same FindAsync safe set as the jobs'.</summary>
     public interface IExportScheduleRepository : IRepository<ExportScheduleAggregate, Guid>
     {
         Task<ExportScheduleAggregate?> GetForSiteAsync(Guid id, int siteId, CancellationToken ct = default);
@@ -59,7 +59,7 @@ namespace Stomme.DataExport.Persistence
         Task<IReadOnlyList<ExportScheduleAggregate>> ListDueAsync(int siteId, DateTime nowUtc, CancellationToken ct = default);
     }
 
-    /// <summary>The audit trail's closed read surface (D108 item 4).</summary>
+    /// <summary>The audit trail's closed read surface.</summary>
     public interface IExportAuditRepository : IRepository<ExportAuditEntryAggregate, Guid>
     {
         Task<IReadOnlyList<ExportAuditEntryAggregate>> ListByJobAsync(int siteId, Guid jobId, CancellationToken ct = default);
@@ -72,7 +72,7 @@ namespace Stomme.DataExport.Persistence
 
     /// <summary>
     /// The shared delegation to the closed <see cref="IRepository{TAggregate, TId}"/>: no provider code, no
-    /// <c>DbContext</c>, no RavenDB twin. Whatever store the install chose answers these calls (D79/D80).
+    /// <c>DbContext</c>, no RavenDB twin. Whatever store the install chose answers these calls.
     /// </summary>
     public abstract class ExportRepositoryBase<TAggregate>(IRepository<TAggregate, Guid> inner)
         : IRepository<TAggregate, Guid>

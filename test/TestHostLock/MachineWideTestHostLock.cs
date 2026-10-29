@@ -58,7 +58,7 @@ namespace Stomme.TestInfrastructure
                 // The log is diagnostic only.
             }
 
-            // BL-156: now that no other test host can be live, remove what earlier runs left behind.
+            // Now that no other test host can be live, remove what earlier runs left behind.
             var topology = TestScratchSweep.Topology(AppContext.BaseDirectory);
             var scratch = TestScratchSweep.Scratch(System.IO.Path.GetTempPath(), DateTime.UtcNow);
             if (topology + scratch > 0)

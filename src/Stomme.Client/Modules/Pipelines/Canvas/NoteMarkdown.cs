@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// BL-229 - n8n's sticky notes are Markdown: a note's text drawn as the little of it a note needs - headings (#, ##, ###),
+    /// n8n's sticky notes are Markdown: a note's text drawn as the little of it a note needs - headings (#, ##, ###),
     /// paragraphs with their line breaks, lists (- or *, and 1.), and in a line **bold**, *italic* or _italic_, `code` and
     /// [links](https://...). It is built as elements and text, never as HTML, so nothing an author types becomes markup (the
     /// project's Markdown documents are the server's, through Markdig and an allowlist; a note needs none of that). A link goes

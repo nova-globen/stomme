@@ -19,7 +19,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record AgentToolStimulus(string Tool, string Description);
 
     /// <summary>
-    /// BL-229 - n8n's "Call n8n Workflow Tool": a pipeline that starts with this step is a TOOL the site's <see cref="AiAgent"/> steps
+    /// n8n's "Call n8n Workflow Tool": a pipeline that starts with this step is a TOOL the site's <see cref="AiAgent"/> steps
     /// may call. The model sees its name and description; what the model gives it is this step's result, and the tool's answer is
     /// the result of the last step its run completes. Published like any trigger; a draft is no tool.
     /// </summary>

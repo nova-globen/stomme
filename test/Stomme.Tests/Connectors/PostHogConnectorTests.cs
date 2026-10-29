@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - PostHog (n8n's PostHog node) without a server: every event, id, time and JSON held to PostHog's shape before anything
+    /// PostHog (n8n's PostHog node) without a server: every event, id, time and JSON held to PostHog's shape before anything
     /// is sent; the project key in each body's api_key, never a header; an event with its properties and time, several in one call,
     /// a person identified with what is set and set once, an alias, a $pageview at an address with a title and a screen - each
     /// through /batch/, a record per event; a person's feature flags; PostHog's answer said on a failure; a test that only a known

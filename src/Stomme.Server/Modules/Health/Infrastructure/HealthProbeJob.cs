@@ -37,7 +37,7 @@ namespace Stomme.Modules.Health.Infrastructure
     /// </para>
     /// <para>
     /// <b>Scopes.</b> The job enters the tenant's ambient scope itself before creating any DI scope, so it is
-    /// correct whatever scope its caller hands it. <c>HostedServiceBase</c> does this too since BL-107
+    /// correct whatever scope its caller hands it. <c>HostedServiceBase</c> does this too
     /// (<c>ff19714</c>); this does not depend on that.
     /// </para>
     /// </remarks>
@@ -91,11 +91,11 @@ namespace Stomme.Modules.Health.Infrastructure
             var log = new StringBuilder();
             var worst = HealthState.Healthy;
 
-            // The live update (BL-83): absent unless the SignalR transport is on. Resolved from the job's provider - a
+            // The live update: absent unless the SignalR transport is on. Resolved from the job's provider - a
             // singleton port - and never allowed to cost the tick.
             var push = provider.GetService<IHealthRealtimePush>();
 
-            // ONE pass in flight per (tenant, site), shared with an operator's run-now (BL-86 increment 6, found by the exemplar
+            // ONE pass in flight per (tenant, site), shared with an operator's run-now (found by the exemplar
             // module's drive): a pass reads a subject's alert state and INSERTS it when there is none, so two passes over one
             // site at once - the tick and a "Run now" - both inserted a new subject's row and the second failed on its key,
             // answering the operator 500. The tick skips what a run-now holds; a run-now is refused (409) while the tick holds it.

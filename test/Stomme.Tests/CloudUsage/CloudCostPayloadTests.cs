@@ -30,7 +30,7 @@ namespace Stomme.Tests.CloudUsage
     }
 
     /// <summary>
-    /// BL-97 increment 3 - the predecessor platform's <c>ConnectorCostPayloadSourceTests</c> by name. CHANGED: the request leaves through the
+    /// The predecessor platform's <c>ConnectorCostPayloadSourceTests</c> by name. CHANGED: the request leaves through the
     /// query's HOST egress (a stub here, recording the client it handed out), never a handler the source built; a query with
     /// no egress is a configuration error - the port's own case.
     /// </summary>
@@ -131,7 +131,7 @@ namespace Stomme.Tests.CloudUsage
     }
 
     /// <summary>
-    /// BL-97 increment 3 - the predecessor platform's <c>CloudCostProviderRegistryTests</c> by name; its two <c>AddCloudUsage_*</c> cases
+    /// The predecessor platform's <c>CloudCostProviderRegistryTests</c> by name; its two <c>AddCloudUsage_*</c> cases
     /// compose the module's OWN startup, the way the host does.
     /// </summary>
     public sealed class CloudCostProviderRegistryTests

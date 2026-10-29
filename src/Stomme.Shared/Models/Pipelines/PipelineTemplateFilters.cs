@@ -13,7 +13,7 @@ namespace Stomme.Models.Pipelines
     public sealed record PipelineTemplateFilter(string Name, string Description, string Example);
 
     /// <summary>
-    /// FILTERS in an expression (BL-229, n8n's expression functions, written as Liquid writes them): after a placeholder's path,
+    /// FILTERS in an expression (n8n's expression functions, written as Liquid writes them): after a placeholder's path,
     /// each <c>| name</c> or <c>| name: argument, argument</c> turns the value into another - <c>{{ name | upper }}</c>,
     /// <c>{{ amount | round: 2 }}</c>, <c>{{ $now | date: "dd MMM yyyy" }}</c>, <c>{{ tags | join: ", " }}</c>. Arguments are
     /// literals - "quoted text" or a bare number or word. No code runs: each filter is one of the fixed list below, run by the

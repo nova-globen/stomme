@@ -10,7 +10,7 @@ using Stomme.Shared;
 namespace Stomme.Pages
 {
     /// <summary>
-    /// D65 — the explicit SAML2 login challenge (the installation-wide analogue of <c>External.cshtml</c> for
+    /// The explicit SAML2 login challenge (the installation-wide analogue of <c>External.cshtml</c> for
     /// the per-site OIDC consumer). Issues a <see cref="ChallengeResult"/> for the "Saml2" scheme ONLY when that
     /// scheme is registered (config-gated), so it is never a default/global challenge — the D30 render guard is
     /// unaffected. Sustainsys builds the AuthnRequest and redirects to the IdP; after the assertion it signs the
@@ -32,7 +32,7 @@ namespace Stomme.Pages
         {
             returnurl = (returnurl == null) ? "/" : returnurl;
             returnurl = (!returnurl.StartsWith("/")) ? "/" + returnurl : returnurl;
-            returnurl = Utilities.LocalReturnUrl(returnurl); // BL-244: "//host" and "/\host" are another site
+            returnurl = Utilities.LocalReturnUrl(returnurl); // "//host" and "/\host" are another site
 
             // Gate: challenge only when SAML2 is actually registered (Saml2:Enabled + configured IdP).
             if (await _schemes.GetSchemeAsync(StommeExternalSchemesExtensions.Saml2Scheme) == null)

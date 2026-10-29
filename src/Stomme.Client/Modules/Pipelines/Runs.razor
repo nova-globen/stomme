@@ -6,7 +6,7 @@
 @*
     The site's runs (BL-95 increment (b)), newest first, for one pipeline (?definition=) or all. A run is observed, never
     awaited: while any listed run is unfinished the list re-reads itself every two seconds through InvokeAsync, on the
-    circuit's own dispatcher (D111 item 3, the Step 0 rule).
+    circuit's own dispatcher (the Step 0 rule).
 *@
 
 <PageTitle>Runs</PageTitle>
@@ -26,7 +26,7 @@ else
         @{ var approvals = _approvals.Where(approval => _definitionId is null || approval.DefinitionId == _definitionId).ToList(); }
         @if (approvals.Count > 0)
         {
-            @* BL-229: the runs waiting for a person's decision ("Ask for approval"), oldest first - each decided on its run's page. *@
+            @* The runs waiting for a person's decision ("Ask for approval"), oldest first - each decided on its run's page. *@
             <section id="pipelines-runs-approvals" style="display:flex;flex-direction:column;gap:0.25rem;">
                 <h4 style="margin:0;">Waiting for approval</h4>
                 <div style="overflow-x:auto;">
@@ -58,7 +58,7 @@ else
                 </div>
             </section>
         }
-        @* BL-229: n8n's execution filters - one pipeline's runs or every one's, in one state or any. *@
+        @* n8n's execution filters - one pipeline's runs or every one's, in one state or any. *@
         <div id="pipelines-runs-filters" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
             @if (_pipelines is not null)
             {
@@ -79,10 +79,10 @@ else
                     <option value="@state.State">@state.Label</option>
                 }
             </select>
-            @* BL-229: n8n's execution search - a run by its id, or the runs of a correlation id (an order, a ticket). *@
+            @* n8n's execution search - a run by its id, or the runs of a correlation id (an order, a ticket). *@
             <label for="pipelines-runs-search">Find</label>
             <input id="pipelines-runs-search" type="search" class="db-input" style="width:16rem;" placeholder="run id, correlation id, saved data (order: 42) or a tag" value="@_search" @onchange="e => SearchAsync(e.Value?.ToString())" />
-            @* BL-229: n8n's start-date filter - runs started on or after the first day and on or before the second, days in UTC. *@
+            @* n8n's start-date filter - runs started on or after the first day and on or before the second, days in UTC. *@
             <label for="pipelines-runs-from">Started from</label>
             <input id="pipelines-runs-from" type="date" class="db-input" style="width:auto;" value="@Day(_from)" @onchange="e => DaysAsync(e.Value?.ToString(), Day(_to))" />
             <label for="pipelines-runs-to">to</label>
@@ -91,7 +91,7 @@ else
         </div>
         @if (_chosen.Count > 0)
         {
-            @* BL-229: n8n's bulk delete - finished runs chosen in the list, deleted together once confirmed. *@
+            @* n8n's bulk delete - finished runs chosen in the list, deleted together once confirmed. *@
             <div id="pipelines-runs-chosen" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
                 <span>@(_chosen.Count == 1 ? "1 run chosen" : _chosen.Count + " runs chosen")</span>
                 <ActionDialog Header="Delete Runs" Message="@(_chosen.Count == 1 ? "Delete the chosen run and its log? It cannot be undone." : $"Delete the {_chosen.Count} chosen runs and their logs? It cannot be undone.")" Action="Delete chosen" Security="SecurityAccessLevel.Anonymous" Class="db-btn pipelines-runs-delete-chosen" ConfirmClass="db-btn pipelines-runs-delete-confirm" OnClick="@(async () => { await DeleteChosenAsync(); StateHasChanged(); })" Disabled="@_busy" />
@@ -150,7 +150,7 @@ else
                                     @run.CorrelationId
                                     @if (run.Data is { Count: > 0 })
                                     {
-                                        @* BL-229: what the run saved about itself; a click finds the runs with the same. *@
+                                        @* What the run saved about itself; a click finds the runs with the same. *@
                                         <div class="db-pipeline-runs-data">
                                             @foreach (var pair in run.Data.Take(4))
                                             {
@@ -165,7 +165,7 @@ else
                                     }
                                     @if (run.Review is { } review)
                                     {
-                                        @* BL-229 - n8n's execution annotations: what a person said about the run; a click on a tag finds the runs with it. *@
+                                        @* n8n's execution annotations: what a person said about the run; a click on a tag finds the runs with it. *@
                                         <div class="db-pipeline-runs-review">
                                             @if (review.Rating is not null)
                                             {
@@ -302,7 +302,7 @@ else
         await LoadAsync();
     }
 
-    // BL-229: the days the runs started on, both kept (UTC, as the list shows times); empty for no bound.
+    // The days the runs started on, both kept (UTC, as the list shows times); empty for no bound.
     private DateOnly? _from;
     private DateOnly? _to;
 

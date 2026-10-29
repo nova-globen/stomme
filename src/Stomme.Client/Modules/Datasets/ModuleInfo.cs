@@ -7,7 +7,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Datasets
 {
     /// <summary>
-    /// The Datasets module's <see cref="ModuleDefinition"/> (BL-94, D110): one admin page, <c>admin/datasets</c>, placed
+    /// The Datasets module's <see cref="ModuleDefinition"/>: one admin page, <c>admin/datasets</c>, placed
     /// through <see cref="ModuleDefinition.PageTemplates"/> (reconciled additively per site on every boot) for
     /// Administrators, and the three keys <c>datasets:view</c> / <c>datasets:manage</c> / <c>datasets:preview</c> declared
     /// as site Permission rows through <see cref="PermissionKeys.Declare"/> - all default to Administrators.

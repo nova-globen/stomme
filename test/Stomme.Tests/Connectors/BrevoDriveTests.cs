@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Brevo DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
+    /// Brevo DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
     /// a loopback stand-in for Brevo's API: a Brevo connection made over the API, its key vaulted, tested (the account named); a
     /// published pipeline makes a contact, reads the contacts over two pages, sends an e-mail with HTML and an accent and deletes the
     /// contact - every call the key in Brevo's api-key header; the key in neither the graph nor the run.

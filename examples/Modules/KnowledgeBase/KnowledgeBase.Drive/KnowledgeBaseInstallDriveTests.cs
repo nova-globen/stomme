@@ -46,7 +46,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
     /// data duties, in a second test of its own: see <see cref="The_exemplar_takes_part_in_the_hosts_data_duties"/>; increment 6,
     /// the operations, in a third: see <see cref="The_exemplar_takes_part_in_the_hosts_operations"/>. Increment 7, the host's
     /// module template, in a fourth: see <see cref="The_host_creates_a_module_from_its_template_that_builds_installs_and_answers"/>.
-    /// PostgreSQL and RavenDB FAIL rather than skip when unreachable: a drive that quietly shrinks proves nothing (D46).
+    /// PostgreSQL and RavenDB FAIL rather than skip when unreachable: a drive that quietly shrinks proves nothing.
     /// </summary>
     [Collection("KnowledgeBaseDrive")] // the drives install into the shared harness bin and set a process-wide override path
     public sealed class KnowledgeBaseInstallDriveTests(ITestOutputHelper output)
@@ -143,7 +143,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                 await Send<JsonObject>(app, client, cookies, hostId, "/api/KnowledgeBase/articles",
                     new { title = "Reset Your Password!", body = "A second one with the same slug." }, HttpStatusCode.Conflict);
 
-                // ---- a fresh request re-reads it - through the category, and by any casing of its slug (D49) ---------------------
+                // ---- a fresh request re-reads it - through the category, and by any casing of its slug ---------------------
                 var inCategory = JsonSerializer.Deserialize<JsonArray>((await GetAsync(client, cookies, $"/api/KnowledgeBase/articles?categoryId={categoryId}")).Body)!;
                 Assert.Equal("Reset your password", (string?)Assert.Single(inCategory)!["title"]);
                 Assert.Equal(HttpStatusCode.OK, (await GetAsync(client, cookies, "/api/KnowledgeBase/articles/RESET-Your-Password")).Status);
@@ -179,7 +179,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                 const string draftSlug = "change-your-e-mail-address";
                 Assert.Equal(draftSlug, (string?)second["slug"]);
 
-                // Help (D103): the module's topics were reconciled into the site; a visitor resolves the page's topic and the edit
+                // Help: the module's topics were reconciled into the site; a visitor resolves the page's topic and the edit
                 // control's, whose anchor is the real control's type name.
                 var pageHelp = JsonNode.Parse(await AnonymousGetAsync(client, "/api/Help/topic?anchor=page:knowledge-base&locale=en", HttpStatusCode.OK))!;
                 Assert.Equal("The knowledge base", (string?)pageHelp["title"]);
@@ -249,11 +249,11 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
         }
 
         /// <summary>
-        /// BL-86 increment 5 - the host's data duties, each driven through the host's own surface: the module's content
+        /// The host's data duties, each driven through the host's own surface: the module's content
         /// exported and re-imported (IPortable; an import drafts, never publishes), the published articles through the export
-        /// queue (D108), a writer's articles in their personal data package (D107) and in their erasure (D112: the draft
+        /// queue, a writer's articles in their personal data package and in their erasure (the draft
         /// deleted, the published article kept and attributed to nobody), and both aggregates in a backup with no module code,
-        /// restored across a host restart (D106).
+        /// restored across a host restart.
         /// </summary>
         [Theory]
         [MemberData(nameof(Stores))]
@@ -455,7 +455,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
         }
 
         /// <summary>
-        /// BL-86 increment 6 - the module in the host's operations, on an install with the demo switch on: the demo articles
+        /// The module in the host's operations, on an install with the demo switch on: the demo articles
         /// a visitor meets on a new site, seeded once - an operator's edit survives a restart and nothing is seeded twice - and
         /// the stale-drafts probe on the host's health page, Degraded for a draft untouched past the threshold the override
         /// file sets.
@@ -581,7 +581,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
         }
 
         /// <summary>
-        /// BL-86 increment 7 - the host's "Create Module" end to end, on the External template regenerated in the exemplar's
+        /// The host's "Create Module" end to end, on the External template regenerated in the exemplar's
         /// shape: the host generates a module from its template (the page's POST api/ModuleDefinition), the generated module
         /// builds and packs with nothing but the .NET SDK against the slim SDK, the host installs the package on its next
         /// start, and the module's API answers - refusing a visitor, storing an entry for the host. SQLite only: the generated
@@ -607,7 +607,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                     var cookies = await LoginAsync(app, client);
                     var hostId = await UserIdAsync(app, HostUsername);
                     var created = await Send<JsonObject>(app, client, cookies, hostId, "/api/ModuleDefinition",
-                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.75.1", moduleDefinitionName = "[Owner].Module.[Module]" },
+                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.75.2", moduleDefinitionName = "[Owner].Module.[Module]" },
                         HttpStatusCode.OK);
                     Assert.Equal("Acme.Module.FieldNotes.Manager.FieldNotesManager, Acme.Module.FieldNotes.Server.Stomme", (string?)created["serverManagerType"]);
                 }
@@ -1253,7 +1253,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                 };
                 foreach (var (key, value) in extraSettings ?? new JsonObject())
                 {
-                    overrides[key] = value?.DeepClone(); // a test's own switches, in the override FILE a deployed install reads (BL-162)
+                    overrides[key] = value?.DeepClone(); // a test's own switches, in the override FILE a deployed install reads
                 }
 
                 File.WriteAllText(Path.Combine(ContentRoot, "appsettings.override.json"), overrides.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));

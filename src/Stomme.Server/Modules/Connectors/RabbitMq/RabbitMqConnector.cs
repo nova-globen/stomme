@@ -20,7 +20,7 @@ using RabbitMQ.Client.Exceptions;
 namespace Stomme.Modules.Connectors.RabbitMq
 {
     /// <summary>
-    /// RabbitMQ (BL-229, n8n's RabbitMQ node) over RabbitMQ.Client, AMQP 0-9-1: the endpoint is ONE broker,
+    /// RabbitMQ (n8n's RabbitMQ node) over RabbitMQ.Client, AMQP 0-9-1: the endpoint is ONE broker,
     /// <c>amqp://rabbit.example.com:5672/kassa</c> (<c>amqps://</c> for TLS, the virtual host its path), and never a user or a
     /// password - the Basic scheme's <c>username</c> and <c>password</c> come from the per-site secret store. A test opens a
     /// connection and names the broker's version.
@@ -143,7 +143,7 @@ namespace Stomme.Modules.Connectors.RabbitMq
             }
             catch (Exception ex) when (ex is BrokerUnreachableException or OperationInterruptedException or AuthenticationFailureException or SocketException or TimeoutException)
             {
-                return ConnectionTestResult.Fail(ex.Message); // the broker's or the network's failure; the message stays inside the runner (D110)
+                return ConnectionTestResult.Fail(ex.Message); // the broker's or the network's failure; the message stays inside the runner
             }
         }
 

@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Contentful DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Contentful DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for Contentful's Delivery API that refuses a call without the token: a Contentful
     /// connection made over the API with its space and environment, its token vaulted, tested; a published pipeline reads a
     /// content type's entries searched with an accent over two pages - no more than asked - gets an entry, an asset and the

@@ -20,7 +20,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Strapi
 {
     /// <summary>
-    /// Strapi (BL-229, n8n's Strapi node: a content type's entries created, got, read, updated and deleted): a Strapi's REST API
+    /// Strapi (n8n's Strapi node: a content type's entries created, got, read, updated and deleted): a Strapi's REST API
     /// (<c>/api</c>), version 5 or 4, an API token as a bearer token, over the host's egress. A test names how many entries of a
     /// content type the token sees, or that it answers.
     /// </summary>

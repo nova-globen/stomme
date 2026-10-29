@@ -8,7 +8,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// The editor LISTENING for one call to a webhook (BL-229 increment 10, n8n's "listen for test event"): an author waits, the
+    /// The editor LISTENING for one call to a webhook (n8n's "listen for test event"): an author waits, the
     /// next AUTHENTIC call the receiver accepts for that site and name - signed, admitted, not a repeat - is handed to every
     /// listener of it as well as dispatched as always, and the author sees what it sent. In-process, like the collaboration gate:
     /// on several nodes a call reaches the listeners of the node that received it. A few listeners per name at most, for at most

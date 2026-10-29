@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Mailjet (n8n's Mailjet node: an e-mail sent with a body or a template, an SMS sent): the Send API v3.1 with the API
+    /// Mailjet (n8n's Mailjet node: an e-mail sent with a body or a template, an SMS sent): the Send API v3.1 with the API
     /// key and secret key as HTTP Basic - each message's own word read, one refused a failure whatever the status - the
     /// templates page by page, a message's state; the SMS API v4 with its own token as a bearer, an SMS sent and the sent ones
     /// read; what could go wrong refused before anything is sent; Mailjet's errors on a failure; a test naming the senders.

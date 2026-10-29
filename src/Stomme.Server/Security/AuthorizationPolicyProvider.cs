@@ -23,7 +23,7 @@ namespace Stomme.Security
 
             if (policy == null)
             {
-                // D99 point 9 (BL-99): a LIFTED PERMISSION KEY, "key:resource:operation". Checked FIRST and
+                // A LIFTED PERMISSION KEY, "key:resource:operation". Checked FIRST and
                 // returned here, because the 3-segment branch below would otherwise SWALLOW it — measured:
                 // "key:gatetest:manage" splits into three segments and becomes
                 // PermissionRequirement(EntityName = "key", PermissionName = "gatetest", Roles = "manage"),

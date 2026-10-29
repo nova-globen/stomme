@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-261: archives are <c>.stbak</c> since 10.75.0 (<c>.dcbak</c> carried the old product name), and an archive taken
+    /// Archives are <c>.stbak</c> since 10.75.0 (<c>.dcbak</c> carried the old product name), and an archive taken
     /// before keeps working - each snapshot row keeps the name it was stored under. Pinned on an installed host: a real
     /// snapshot is renamed on disk and in its row to the old extension, as a 10.74.x install left it, and is then listed,
     /// opened for download, staged for a restore (its pre-flight reads the whole archive) and deleted with its sidecar.

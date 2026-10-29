@@ -15,11 +15,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - AWS IAM DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// AWS IAM DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback), which checks every signature against the IAM key
     /// it issued: a connection made over the API and tested; a published pipeline, under a path of its own, making a group and a
     /// user, putting the user in it, reading the group with its users, and deleting the group - its user taken out first - and the
-    /// user; the secret in neither the graph nor the run. Fails, never skips, without moto (D46).
+    /// user; the secret in neither the graph nor the run. Fails, never skips, without moto.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

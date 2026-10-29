@@ -10,7 +10,7 @@ using static Stomme.Tests.AiAssistant.TurnScriptChatClient;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 10 - the predecessor platform's two <c>AiAssistantCompositionTests</c> cases for the contextual-help agent, by name: an
+    /// The predecessor platform's two <c>AiAssistantCompositionTests</c> cases for the contextual-help agent, by name: an
     /// answer phrased from the PUBLISHED topics and metered to the agent; no model call at all when no topic matches. Plus the
     /// gateway's term search (the Help module matches one phrase, so a question is searched word by word) and the topic's
     /// sanitised HTML as the bounded text a prompt carries.

@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Send chat message DRIVEN on an installed SQLite host with the REAL Slack, Telegram, Discord, Mattermost, Twilio and
+    /// Send chat message DRIVEN on an installed SQLite host with the REAL Slack, Telegram, Discord, Mattermost, Twilio and
     /// Microsoft Teams connectors against a loopback stand-in for all six: loopback allowed by the Host, one connection per service
     /// made over the API with its token vaulted (Twilio's SID and auth token, its From a setting; Teams' client secret and refresh
     /// token, exchanged at its token endpoint) and tested through the host's own egress; a published pipeline sends one message

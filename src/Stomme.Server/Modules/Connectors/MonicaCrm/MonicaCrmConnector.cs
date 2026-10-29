@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.MonicaCrm
 {
     /// <summary>
-    /// Monica (BL-229, n8n's Monica CRM node) over Monica 4's API (<c>{address}/api</c>) by an API token - a personal access
+    /// Monica (n8n's Monica CRM node) over Monica 4's API (<c>{address}/api</c>) by an API token - a personal access
     /// token from Monica's settings - as a bearer token, never in the address. A test names the user the token is.
     /// </summary>
     /// <remarks>

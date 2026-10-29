@@ -3,7 +3,7 @@
 @inject IPipelinesService PipelinesService
 
 @*
-    BL-229 - n8n's Data tables: the tables the site keeps for its pipelines. A pipeline reads and writes them with the Data table
+    n8n's Data tables: the tables the site keeps for its pipelines. A pipeline reads and writes them with the Data table
     step; here the site's authors make them, give them columns, and see and change their rows. Every change is decided again
     by the server, on its key, for the request's site.
 *@
@@ -88,7 +88,7 @@ else
                     </div>
                     @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
                     {
-                        @* BL-229: n8n's import into a data table - a CSV's rows added, its header naming the columns; all or nothing. *@
+                        @* n8n's import into a data table - a CSV's rows added, its header naming the columns; all or nothing. *@
                         <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
                             <label for="pipelines-table-import">Add rows from a CSV file</label>
                             <InputFile id="pipelines-table-import" accept=".csv,text/csv" OnChange="ImportCsvAsync" disabled="@_busy" />
@@ -113,7 +113,7 @@ else
                         </div>
                     }
 
-                    @* BL-229: n8n's data table view - find rows by any value, sort by a column (click its heading). *@
+                    @* n8n's data table view - find rows by any value, sort by a column (click its heading). *@
                     <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
                         <label for="pipelines-table-search">Find rows</label>
                         <input id="pipelines-table-search" type="search" class="db-input" style="width:16rem;" placeholder="any value" value="@_search" @onchange="e => SearchAsync(e.Value?.ToString())" />

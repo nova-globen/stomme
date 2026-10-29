@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// BL-97 increment 8 - the predecessor platform's <c>ModelTierRoutingTests</c> by name (17 cases): the boundaries, the mapping and the
+    /// The predecessor platform's <c>ModelTierRoutingTests</c> by name (17 cases): the boundaries, the mapping and the
     /// override unchanged; the two binding cases CHANGED to the host-read section through the module's startup.
     /// </summary>
     public sealed class ModelTierRoutingTests
@@ -131,7 +131,7 @@ namespace Stomme.Tests.CostOptimization
         }
 
         // --- Config-map resolution through the module's startup ---
-        // CHANGED: the section is CostOptimization:ModelTiers in the HOST's configuration (BL-162), composed through the module's
+        // CHANGED: the section is CostOptimization:ModelTiers in the HOST's configuration, composed through the module's
         // own startup; the predecessor platform's the predecessor platform:AI: prefix is dropped.
 
         [Fact]

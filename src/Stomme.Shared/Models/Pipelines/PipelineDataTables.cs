@@ -20,7 +20,7 @@ namespace Stomme.Models.Pipelines
     public sealed record PipelineDataField(string Name, string Kind, string Example);
 
     /// <summary>
-    /// The lists of records in what a step received or produced (BL-229, n8n's Table view): each input or output whose value is a
+    /// The lists of records in what a step received or produced (n8n's Table view): each input or output whose value is a
     /// list - as JSON, or as JSON text, which is how the data steps pass records - becomes a table, one column per field in the
     /// order the fields first appear, a list of plain values one column. Nothing else is a table; the JSON is always there too.
     /// </summary>

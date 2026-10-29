@@ -43,7 +43,7 @@ namespace Stomme.Controllers
     /// </para>
     /// <para>
     /// Logs carry the <c>lid</c> and the reason only, never a key. Every action is synchronous (the verifier and the
-    /// configuration writes are synchronous), so there is nothing to block on (D33).
+    /// configuration writes are synchronous), so there is nothing to block on.
     /// </para>
     /// </remarks>
     [Route(ControllerRoutes.ApiRoute)]

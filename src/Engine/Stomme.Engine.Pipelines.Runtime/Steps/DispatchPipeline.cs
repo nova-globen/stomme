@@ -151,7 +151,7 @@ public class DispatchPipeline : Step<object>
 
     private async ValueTask OnChildPipelineCompletedAsync(StepExecutionContext context)
     {
-        // Stomme hand fix (BL-229, 2026-10-08): the child's output, not the parent's input it was mixed into (ChildPipelineCompletion).
+        // Stomme hand fix: the child's output, not the parent's input it was mixed into (ChildPipelineCompletion).
         context.Set(Result, ChildPipelineCompletion.OutputOf(context.PipelineInput));
         await context.CompleteStepAsync().ConfigureAwait(false);
     }

@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Audit
 {
     /// <summary>
-    /// BL-229 - records a Pipelines command in the site's activity ledger once it has SUCCEEDED (a refusal or a failure changed
+    /// Records a Pipelines command in the site's activity ledger once it has SUCCEEDED (a refusal or a failure changed
     /// nothing; the authorization behaviour, composed by the host before any module, never lets a refused one this far). Closed
     /// per command (<see cref="PipelineAuditRegistration"/>) - another module's requests never pass through it.
     /// </summary>

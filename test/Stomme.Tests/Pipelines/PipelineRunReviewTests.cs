@@ -25,7 +25,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's execution annotations: an author says how a run went - well or badly, tags, a note - recorded with who and
+    /// n8n's execution annotations: an author says how a run went - well or badly, tags, a note - recorded with who and
     /// when; the review is listed and read with the run, found by the runs search, refused past its rules saying why, removed when
     /// it says nothing, and deleted with the run.
     /// </summary>

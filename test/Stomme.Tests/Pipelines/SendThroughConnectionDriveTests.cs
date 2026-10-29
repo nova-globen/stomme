@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// Send through connection on an installed SQLite host (BL-95, 2026-10-03), with the REAL REST connector: a connection to a
+    /// Send through connection on an installed SQLite host, with the REAL REST connector: a connection to a
     /// loopback server holding a bearer token in the site's secret store, loopback allowed by the Host on the connections page
     /// (BL-180), and a pipeline authored, published and run over the API that posts an event through it. The server received
     /// the POST at the connection's endpoint plus the step's path, with the vaulted token as the bearer and the step's body; the

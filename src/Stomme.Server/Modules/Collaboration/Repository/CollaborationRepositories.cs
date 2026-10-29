@@ -12,7 +12,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Collaboration.Persistence
 {
     /// <summary>
-    /// The locks, read by site. Every query filters on the SITE (an int - provider-neutral, D78) and matches the resource in
+    /// The locks, read by site. Every query filters on the SITE (an int - provider-neutral) and matches the resource in
     /// memory with an ordinal comparison: a string equality in a query splits the providers (case-sensitive on EF and the
     /// File store, insensitive on RavenDB), and a site holds a handful of locks.
     /// </summary>

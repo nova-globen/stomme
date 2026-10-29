@@ -4,7 +4,7 @@ using System;
 namespace Stomme.Modules.Metering.Domain
 {
     /// <summary>
-    /// The one way this module turns a <see cref="DateTime"/> into a UTC one (D102).
+    /// The one way this module turns a <see cref="DateTime"/> into a UTC one.
     /// </summary>
     /// <remarks>
     /// <para>

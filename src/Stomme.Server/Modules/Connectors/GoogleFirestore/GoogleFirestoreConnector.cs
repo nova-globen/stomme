@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleFirestore
 {
     /// <summary>
-    /// Google Cloud Firestore (BL-229, n8n's Google Cloud Firestore node: a database's collections and documents, and its
+    /// Google Cloud Firestore (n8n's Google Cloud Firestore node: a database's collections and documents, and its
     /// structured queries) over Firestore's REST API with an OAuth client's refresh token (the token through the shared
     /// <see cref="OAuth2TokenProvider"/>, as Google Cloud Storage's is), over the host's egress. A test names the project's
     /// database and its collections.

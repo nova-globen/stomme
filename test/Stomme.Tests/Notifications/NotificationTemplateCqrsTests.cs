@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationTemplateCqrsTests.cs</c> (BL-78 step 5; 7 Fact + 1 Theory x5 =
+    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationTemplateCqrsTests.cs</c> (7 Fact + 1 Theory x5 =
     /// 12 cases): save (create/update), key uniqueness, placeholder validation, preview rendering and delete-if-unreferenced,
     /// through the mediator. Harness swapped (<see cref="NotificationCqrsHarness"/>).
     /// </summary>
@@ -21,7 +21,7 @@ namespace Stomme.Tests.Notifications
     /// Per-case map: the seven facts keep their names and intent; <c>Delete_ReferencedTemplate_IsRejected</c> seeds the
     /// referencing request through the File-store repository (the predecessor platform: the InMemory repository + unit of work); the Theory's
     /// three query rows expect <c>ManageTemplates</c> - the split drops <c>notifications:view</c>, and PREVIEW in particular is
-    /// template authoring (D100 point 6). Added below the port (not the predecessor platform cases): the preview's HTML encoding, site isolation.
+    /// template authoring. Added below the port (not the predecessor platform cases): the preview's HTML encoding, site isolation.
     /// </remarks>
     public sealed class NotificationTemplateCqrsTests
     {
@@ -163,7 +163,7 @@ namespace Stomme.Tests.Notifications
             Assert.Contains("&lt;script&gt;", preview.Body);
 
             // A runaway made of LEGAL ranges (two nested 10,000-item loops): the range guard lets it be saved, and it is the
-            // step budget that stops it at preview. A single huge literal range is refused at save instead (BL-155).
+            // step budget that stops it at preview. A single huge literal range is refused at save instead.
             await Assert.ThrowsAsync<InvalidOperationException>(() => harness.SendAsync(new SaveNotificationTemplateCommand(null, "huge", new[] { NotificationChannelKind.Email },
                 new[] { new NotificationTemplateContentInput("en", "s", "{% for i in (1..1000000) %}x{% endfor %}") }, Array.Empty<string>())));
 

@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.MicrosoftExcel
 {
     /// <summary>
-    /// Microsoft Excel 365 (BL-229, n8n's Microsoft Excel 365 node: its workbooks, sheets and tables): workbooks in a OneDrive or a
+    /// Microsoft Excel 365 (n8n's Microsoft Excel 365 node: its workbooks, sheets and tables): workbooks in a OneDrive or a
     /// SharePoint document library over Microsoft Graph (<c>https://graph.microsoft.com/v1.0</c>), app-only - an Entra ID app
     /// registration's client id and secret and the tenant's token endpoint (OAuth2 client credentials, the <c>.default</c> scope; the
     /// app granted Files.ReadWrite.All) through the shared <see cref="OAuth2TokenProvider"/>, as Outlook's is. The connection names

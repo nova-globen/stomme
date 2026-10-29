@@ -11,7 +11,7 @@ using static Stomme.Tests.AiAssistant.TurnScriptChatClient;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 10 - the predecessor platform's <c>OrchestratorAgentTests</c>, by name: one routing turn, the named specialists
+    /// The predecessor platform's <c>OrchestratorAgentTests</c>, by name: one routing turn, the named specialists
     /// invoked, their proposals merged; general chat when nothing is named; the guardrail BEFORE any model is opened.
     /// <b>CHANGED:</b> the rate window is the caller's site and user from the request (the predecessor platform passed a user id in the request),
     /// and the routing model is the site's metered one.

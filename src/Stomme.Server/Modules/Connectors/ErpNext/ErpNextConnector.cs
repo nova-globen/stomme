@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.ErpNext
 {
     /// <summary>
-    /// ERPNext (BL-229, n8n's ERPNext node) over Frappe's REST API (<c>{address}/api/resource/{doctype}</c>) by an API key and
+    /// ERPNext (n8n's ERPNext node) over Frappe's REST API (<c>{address}/api/resource/{doctype}</c>) by an API key and
     /// secret - a user's, from its settings - as Frappe's <c>token key:secret</c> header, never in the address. A test names the
     /// key's user.
     /// </summary>

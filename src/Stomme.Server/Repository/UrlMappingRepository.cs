@@ -23,8 +23,8 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The UrlMapping cluster on the persistence seam (D47): writes through <see cref="IUrlMappingStore"/>,
-    /// reads through <see cref="IFrameworkStoreSessionFactory"/> (D19). The <c>DbSet&lt;UrlMapping&gt;</c> is
+    /// The UrlMapping cluster on the persistence seam: writes through <see cref="IUrlMappingStore"/>,
+    /// reads through <see cref="IFrameworkStoreSessionFactory"/>. The <c>DbSet&lt;UrlMapping&gt;</c> is
     /// gone from <see cref="TenantDBContext"/> — that deletion is the compiler's proof this cluster moved.
     /// </summary>
     /// <remarks>
@@ -98,7 +98,7 @@ namespace Stomme.Repository
 
         /// <summary>
         /// Opens a read session, runs <paramref name="read"/> against it and disposes it. Reads NEVER go
-        /// through the store (D19).
+        /// through the store.
         /// </summary>
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -164,7 +164,7 @@ namespace Stomme.Repository
 
         /// <summary>
         /// NOTE the <paramref name="tracking"/> parameter is now INERT, and deliberately kept on the
-        /// interface. A session read tracks nothing (D19), so both arms return the same detached model; the
+        /// interface. A session read tracks nothing, so both arms return the same detached model; the
         /// harvested tracking arm never mattered anyway, because the only mutating caller
         /// (<c>PageController.UpdatePage</c>) hands the result back to <see cref="UpdateUrlMappingAsync"/>,
         /// which re-attaches it on a different context. Removing the overload would churn
@@ -206,12 +206,12 @@ namespace Stomme.Repository
             url = (url.StartsWith("/")) ? url.Substring(1) : url;
             url = (url.Length > 750) ? url.Substring(0, 750) : url;
 
-            // D57: normalize the ARGUMENT in C# and filter the normalized COLUMN, never the raw Url. A bare
+            // Normalize the ARGUMENT in C# and filter the normalized COLUMN, never the raw Url. A bare
             // `item.Url == url` means two different things behind the seam — case-SENSITIVE on PostgreSQL,
             // case-INSENSITIVE on RavenDB (DRIVEN on both real hosts) — so a mixed-case row silently resolved
             // on one provider and not the other on the render 404 path. Both sides lowercased, the providers
             // agree (case-INSENSITIVE, matching the Folder/File precedent). NEVER `.ToLower()` inside the
-            // query — it THROWS on RavenDB (D48). The STORED Url keeps its case; UrlNormalized is the lookup key.
+            // query — it THROWS on RavenDB. The STORED Url keeps its case; UrlNormalized is the lookup key.
             var urlNormalized = NormalizedText.Normalize(url);
 
             var urlMapping = await QueryAsync(session => UrlMappingMapper.ToModel(session.Query<UrlMappingAggregate>()

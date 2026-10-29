@@ -5,7 +5,7 @@ using System.Linq;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// BL-229 - n8n's command bar: the editor's own actions found by name in the same search a step is found with (Ctrl+K) -
+    /// n8n's command bar: the editor's own actions found by name in the same search a step is found with (Ctrl+K) -
     /// "save", "tidy", "versions", "export" - each with its keys, so the search teaches them. Which of them the person may run
     /// here the editor decides; this only says which a query names.
     /// </summary>

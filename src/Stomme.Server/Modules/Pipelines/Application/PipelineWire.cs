@@ -46,7 +46,7 @@ namespace Stomme.Modules.Pipelines.Application
         }
 
         /// <summary>
-        /// BL-229 increment 7: the definition's custom property naming who last saved the version - the engine keeps no author of
+        /// The definition's custom property naming who last saved the version - the engine keeps no author of
         /// its own, so the module's saves stamp it (a version saved before has none).
         /// </summary>
         public const string SavedByProperty = "stomme.savedBy";
@@ -64,7 +64,7 @@ namespace Stomme.Modules.Pipelines.Application
         }
 
         /// <summary>
-        /// BL-229: the definition's custom property holding what the author said changed when publishing the version - stamped by
+        /// The definition's custom property holding what the author said changed when publishing the version - stamped by
         /// the publish (and taken away by a publish that says nothing), so it is the publish's own.
         /// </summary>
         public const string NoteProperty = "stomme.publishNote";

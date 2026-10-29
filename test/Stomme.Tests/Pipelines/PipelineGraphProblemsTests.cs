@@ -6,7 +6,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 4 - problems before publish: the one rule the editor runs as the author changes the graph and the server
+    /// Problems before publish: the one rule the editor runs as the author changes the graph and the server
     /// runs before it publishes.
     /// </summary>
     public sealed class PipelineGraphProblemsTests
@@ -90,7 +90,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains(("c", "Text", PipelineGraphProblems.Warning, PipelineGraphProblems.VariableNeverSet), Found(graph));
         }
 
-        // BL-229: a Wait needs For or Until, each read as the step will read it; a time from a variable or an expression is the
+        // A Wait needs For or Until, each read as the step will read it; a time from a variable or an expression is the
         // run's to judge.
         [Fact]
         public void A_Wait_needs_a_time_it_can_read()
@@ -121,7 +121,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(Found());
         }
 
-        // BL-229: an approval's time to decide is read as the step reads it; left empty, it waits for a decision.
+        // An approval's time to decide is read as the step reads it; left empty, it waits for a decision.
         [Fact]
         public void An_approvals_time_to_decide_is_a_duration_it_can_read()
         {
@@ -152,7 +152,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(Found());
         }
 
-        // BL-229: a wait for a call needs a Call address in the pipeline (a switched-off one does not count), and its time out
+        // A wait for a call needs a Call address in the pipeline (a switched-off one does not count), and its time out
         // is read as the step reads it.
         [Fact]
         public void A_wait_for_a_call_needs_a_call_address_and_a_time_out_it_can_read()
@@ -181,7 +181,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(Found());
         }
 
-        // BL-229: a wait for a form is filled in at the address a Call address makes - unless it is the next page of a form before it
+        // A wait for a form is filled in at the address a Call address makes - unless it is the next page of a form before it
         // (n8n's multi-page forms), which needs a form before it: a Form trigger, or another Wait for a form (a switched-off one does not count).
         [Fact]
         public void A_wait_for_a_form_needs_a_call_address_or_to_be_the_next_page_of_a_form_before_it()
@@ -340,7 +340,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(Found(graph));
         }
 
-        // BL-229: an expression writing a value into a SQL statement splices it into the SQL, where a value from a run can end the
+        // An expression writing a value into a SQL statement splices it into the SQL, where a value from a run can end the
         // string and say something else. A warning (a table's name cannot be bound), naming the bound way; the same statement as
         // typed, or with its value bound, is no problem.
         [Fact]
@@ -467,7 +467,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Nothing leads here from 'First', where the pipeline starts, so this step never runs.", problems[0].Message);
         }
 
-        // BL-229 - n8n's Evaluations: a "When evaluating" step starts an evaluation's runs - a start of its own, what follows it
+        // n8n's Evaluations: a "When evaluating" step starts an evaluation's runs - a start of its own, what follows it
         // reached - and is never the start the other runs take, even placed first (the engine skips it too).
         [Fact]
         public void A_when_evaluating_step_is_a_start_of_its_own_and_never_the_pipelines_start()
@@ -536,7 +536,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(Found(graph));
         }
 
-        // BL-229 increment 5: an expression fills its input; each name it reads must be a variable - by its exact name, as the
+        // An expression fills its input; each name it reads must be a variable - by its exact name, as the
         // engine finds one - and one that never holds a value is a warning, as for a variable binding.
         [Fact]
         public void An_expression_fills_its_input_and_every_name_it_reads_must_be_a_variable()

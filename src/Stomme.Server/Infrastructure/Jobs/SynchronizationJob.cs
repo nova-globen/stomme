@@ -357,7 +357,7 @@ namespace Stomme.Infrastructure
                         secondaryFolder.Capacity = primaryFolder.Capacity;
                         secondaryFolder.ImageSizes = primaryFolder.ImageSizes;
                         secondaryFolder.IsSystem = primaryFolder.IsSystem;
-                        // OwnRows: only the folder's own rows travel (BL-102); see the module copy below.
+                        // OwnRows: only the folder's own rows travel; see the module copy below.
                         secondaryFolder.PermissionList = SynchronizePermissions(PermissionRowScope.OwnRows(primaryFolder.PermissionList, EntityNames.Folder), secondarySiteId);
 
                         if (folder == null)
@@ -569,7 +569,7 @@ namespace Stomme.Infrastructure
                         secondaryPage.DeletedBy = primaryPage.DeletedBy;
                         secondaryPage.DeletedOn = primaryPage.DeletedOn;
                         secondaryPage.IsDeleted = primaryPage.IsDeleted;
-                        // OwnRows: only the page's own rows travel (BL-102); see the module copy below.
+                        // OwnRows: only the page's own rows travel; see the module copy below.
                         secondaryPage.PermissionList = SynchronizePermissions(PermissionRowScope.OwnRows(primaryPage.PermissionList, EntityNames.Page), secondarySiteId);
 
                         if (page == null)
@@ -668,7 +668,7 @@ namespace Stomme.Infrastructure
                         secondaryPageModule.Header = primaryPageModule.Header;
                         secondaryPageModule.Footer = primaryPageModule.Footer;
                         secondaryPageModule.IsDeleted = primaryPageModule.IsDeleted;
-                        // OwnRows (BL-102): the primary's Module.PermissionList is the MERGED list -
+                        // OwnRows: the primary's Module.PermissionList is the MERGED list -
                         // PageModuleRepository adds the site-wide (EntityId -1) rows of every 3-segment entry the
                         // definition declares. SynchronizePermissions drops EntityName, so without this filter those
                         // key rows were re-labelled as Module rows on the secondary (a key operation such as

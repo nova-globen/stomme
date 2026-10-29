@@ -13,7 +13,7 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <!-- Messaging/: the custom Rebus RavenDB transport + centralized subscription storage + DLQ.
-         There is no first-party Rebus RavenDB transport, so Stomme ships its own (see D9). -->
+         There is no first-party Rebus RavenDB transport, so Stomme ships its own. -->
     <PackageReference Include="Rebus" />
   </ItemGroup>
 

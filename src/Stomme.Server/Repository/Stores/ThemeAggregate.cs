@@ -5,9 +5,9 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// The Theme aggregate root — the persistence-side model of the framework store's <c>Theme</c> table (D52),
+    /// The Theme aggregate root — the persistence-side model of the framework store's <c>Theme</c> table,
     /// reachable only through <see cref="IThemeStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads).
-    /// A MASTER-database aggregate, like <see cref="JobAggregate"/> and the master half of Setting (D23).
+    /// A MASTER-database aggregate, like <see cref="JobAggregate"/> and the master half of Setting.
     /// </summary>
     /// <remarks>
     /// <para>

@@ -28,7 +28,7 @@ using Stomme.Persistence.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D74 — drives the Guestbook sample module on the REAL composed host (the production DI container and
+    /// Drives the Guestbook sample module on the REAL composed host (the production DI container and
     /// middleware pipeline, transport swapped for TestServer), proving the mediator is LIVE end to end:
     /// <list type="number">
     ///   <item>the module is UNSEEDED from the default template (W5/#66) — absent from the home page,
@@ -94,7 +94,7 @@ namespace Stomme.Tests
                 Assert.DoesNotContain("Sign the guestbook", html, StringComparison.OrdinalIgnoreCase);
 
                 // ---- 2. A command through the LIVE mediator persists, and both dispatch paths fire ------
-                // BL-111: a signature carries the tenant it is signed under; a request resolves it from the alias, and
+                // A signature carries the tenant it is signed under; a request resolves it from the alias, and
                 // this direct send names the host's first tenant the way a job's scope would.
                 using var ambient = app.Services.GetRequiredService<ITenantScopeFactory>().BeginScope(FrameworkTenantId.ToTenantId(1).Value);
                 using (var scope = app.Services.CreateScope())
@@ -177,7 +177,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { }
             }
         }

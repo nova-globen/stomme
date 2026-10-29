@@ -6,7 +6,7 @@
 @inject IHelpService HelpService
 
 @*
-    The contextual-help launcher (BL-84, D103 item 6). ControlPanel renders it in every theme's header under its OWN
+    The contextual-help launcher. ControlPanel renders it in every theme's header under its OWN
     ShowHelp parameter - outside the ShowLanguageSwitcher @if and outside the admin/editor gate, because help is for the
     reader of the page (D103 refutation 3a).
 
@@ -86,7 +86,7 @@
         _resolvedFor = key;
         _open = false;
 
-        // BL-212: the server says whether Help is on, in the site's settings as it says SAML's (D70). Asking a switched-off Help
+        // The server says whether Help is on, in the site's settings as it says SAML's. Asking a switched-off Help
         // logged a 404 per page on a WebAssembly site. A server that does not say is asked, as before.
         if (HostSwitches.IsOff(PageState?.Site, HostSwitches.Help))
         {

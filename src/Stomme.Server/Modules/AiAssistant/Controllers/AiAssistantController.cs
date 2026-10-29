@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.AiAssistant.Controllers
 {
     /// <summary>
-    /// <c>api/AiAssistant</c> (BL-97 increment 10b; the predecessor platform's <c>AssistantApi</c>): the current user's conversations on this
+    /// <c>api/AiAssistant</c> (the predecessor platform's <c>AssistantApi</c>): the current user's conversations on this
     /// site under <c>assistant:use</c>. A refusal answers with its code and a message safe to show - the guardrail's 400 (an
     /// injection), 403 (a reference the user may not use) or 429 (the rate window); the model's 409 (off for the site, not
     /// configured, key unreadable, unknown provider), 429 (the site's AI quota spent) or 503 (the meter unreachable); 409 for a

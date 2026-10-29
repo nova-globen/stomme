@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Freshservice DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Freshservice DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for a desk's API v2 that answers its API key alone. A Freshservice connection made over
     /// the API, its key vaulted, tested; a published pipeline creates a ticket, updates it, reads the urgent tickets by
     /// Freshservice's query over two pages no further than asked, gets a change and deletes the ticket; the key in neither the

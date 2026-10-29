@@ -11,10 +11,10 @@
   </PropertyGroup>
 
   <!--
-    The persistence seam's PROVIDER CONFORMANCE suite (D3/D7): one set of contract tests, run against
+    The persistence seam's PROVIDER CONFORMANCE suite: one set of contract tests, run against
     every provider. A test that only one provider passes is a seam that is not a seam.
 
-    GATED (D46): this project IS in Stomme.slnx, so `dotnet test Stomme.slnx` runs it. It needs a live
+    GATED: this project IS in Stomme.slnx, so `dotnet test Stomme.slnx` runs it. It needs a live
     RavenDB server via RAVENDB_TEST_URL — the infra UAT tier, http://192.168.10.20:8081 (the old local :7000
     default named here until 2026-08-02 is RETIRED; in CI the ci-db-gated.yml parity-suite job points it at a
     job-local service container instead). When that server is absent the suite FAILS. That is the point: an
@@ -42,7 +42,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
-    <!-- BL-16: the PostgreSQL fixtures (PostgresConformanceTests / PostgresFrameworkStoreConformanceTests).
+    <!-- The PostgreSQL fixtures (PostgresConformanceTests / PostgresFrameworkStoreConformanceTests).
          Both EF fixtures above are SQLite, which structurally cannot represent PostgreSQL's answers (its
          LIKE is case-SENSITIVE where SQLite's is not — the D46 ADR's own stated limit), so the suite now
          also runs against a live PG scratch database on the infra tier (POSTGRES_TEST_* / DEFAULT_PASSWORD). -->

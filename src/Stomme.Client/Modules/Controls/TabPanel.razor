@@ -1,7 +1,7 @@
 @namespace Stomme.Modules.Controls
 @inherits LocalizableComponent
 
-@* Migrated to the --db-* design system (D11, Phase 4). The Bootstrap .tab-pane/.fade/.show classes
+@* Migrated to the --db-* design system (Phase 4). The Bootstrap .tab-pane/.fade/.show classes
    were never covered by bootstrap-compat.css, so once the CDN was dropped every panel rendered at
    once. .db-tab-pane hides inactive panels; .active reveals one. See D18. *@
 <div id="@(Parent.Id + Name)" class="db-tab-pane @(Name == Parent.ActiveTab ? "active" : "")" role="tabpanel">

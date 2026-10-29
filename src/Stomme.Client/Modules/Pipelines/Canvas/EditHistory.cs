@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// The editor's undo and redo (BL-229 increment 3): whole-graph snapshots, one per change. A change carrying the same key
+    /// The editor's undo and redo: whole-graph snapshots, one per change. A change carrying the same key
     /// as the one before it, within <see cref="CoalesceWindow"/>, REPLACES it - typing in one field is one step to undo, not one
     /// per key. A new change after an undo drops what could have been redone. At most <see cref="Capacity"/> steps are kept.
     /// </summary>

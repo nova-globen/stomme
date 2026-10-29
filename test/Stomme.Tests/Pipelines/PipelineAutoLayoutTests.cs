@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 8 - "Tidy up": each flowchart left to right by its flow - a step one column right of the furthest step
+    /// "Tidy up": each flowchart left to right by its flow - a step one column right of the furthest step
     /// leading to it, rows following the steps that lead to them - each body on its own, a cycle cut where it is met.
     /// </summary>
     public sealed class PipelineAutoLayoutTests

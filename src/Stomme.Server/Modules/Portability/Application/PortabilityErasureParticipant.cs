@@ -11,7 +11,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.Portability.Application
 {
     /// <summary>
-    /// The portability ledgers (D107) under D112. A package built ABOUT the subject is their data and goes at once
+    /// The portability ledgers. A package built ABOUT the subject is their data and goes at once
     /// (Delete); a package the subject REQUESTED about someone else, and the audit lines of who asked for whose data,
     /// are the accountability record of the export itself - kept one year to establish or defend a claim about it
     /// (Article 17(3)(e), the LegalClaims reason), then deleted by the same job. The package's artifact file follows the

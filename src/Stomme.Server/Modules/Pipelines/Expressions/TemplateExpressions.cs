@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Pipelines.Expressions
 {
     /// <summary>
-    /// The engine's <c>Template</c> expression kind (BL-229 increment 5): an input written as text with <c>{{ name.path }}</c>
+    /// The engine's <c>Template</c> expression kind: an input written as text with <c>{{ name.path }}</c>
     /// placeholders, rendered when the step runs from the built-ins (<see cref="PipelineBuiltIns"/>) and the pipeline's
     /// variables in scope - by <see cref="PipelineTemplate"/>, the
     /// same code the editor previews with. No code runs; a name no variable in scope has faults the step, saying which.

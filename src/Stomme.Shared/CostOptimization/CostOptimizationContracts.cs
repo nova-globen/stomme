@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Stomme.CostOptimization
 {
     // ============================================================================================================
-    // CostOptimization's Shared contracts (BL-97 increment 6, the predecessor platform's CostOptimizationContracts and its views): the
+    // CostOptimization's Shared contracts: the
     // category and lifecycle enums, the keys, and what the API and the page read. BCL-only like every Shared contract.
     // ============================================================================================================
 

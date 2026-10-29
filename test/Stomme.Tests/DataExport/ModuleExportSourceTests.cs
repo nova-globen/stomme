@@ -22,7 +22,7 @@ using Xunit;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-97 increment 1 (re-booked from BL-85 by D108) - the predecessor platform's <c>ExportSourceResolverTests</c> by name on D108's
+    /// BL-97 increment 1 (re-booked from BL-85) - the predecessor platform's <c>ExportSourceResolverTests</c> by name on D108's
     /// contract: the dataset rows projected onto the schema or a projection, a sensitive dataset exported schema-only, a grid
     /// widget and a whole board read exactly as the widget's data query reads them. What the predecessor platform checked inside the resolver
     /// (the caller's permission) is the engine's now: each source DECLARES the key and the engine asks it for the requester

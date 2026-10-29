@@ -11,7 +11,7 @@ using Stomme.Export;
 namespace Stomme.Modules.DataExport.Rendering
 {
     /// <summary>
-    /// PDF 1.4, written by hand, one page at a time (BL-85, D108 item 3).
+    /// PDF 1.4, written by hand, one page at a time.
     /// </summary>
     /// <remarks>
     /// <para>

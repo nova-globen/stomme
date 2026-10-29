@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Stomme.Erasure
 {
-    /// <summary>What a store does with a subject's rows when the subject is erased (D112).</summary>
+    /// <summary>What a store does with a subject's rows when the subject is erased.</summary>
     public enum ErasureHandling
     {
         /// <summary>The rows go.</summary>
@@ -19,7 +19,7 @@ namespace Stomme.Erasure
         Retain = 2,
     }
 
-    /// <summary>The closed set of reasons a store may retain a subject's rows (D112).</summary>
+    /// <summary>The closed set of reasons a store may retain a subject's rows.</summary>
     public enum RetentionReason
     {
         LegalObligation = 0,
@@ -57,7 +57,7 @@ namespace Stomme.Erasure
     public sealed record ErasureOutcome(string Store, ErasureHandling Handling, int Affected, RetentionReason? Reason = null, DateTime? RetainedUntilUtc = null);
 
     /// <summary>
-    /// The right-to-erasure seam (BL-116, D112), beside the portability export seam: a participant names the stores it
+    /// The right-to-erasure seam, beside the portability export seam: a participant names the stores it
     /// owns with ONE handling each, erases a subject's rows accordingly (idempotently - a second run finds nothing to
     /// do), and for a retention purges the rows once the period has passed. A participant that throws fails the run for
     /// that subject; nothing is reported as erased that was not.

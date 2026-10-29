@@ -17,12 +17,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - FTP, SFTP and SSH DRIVEN on an installed SQLite host, with the REAL connectors, the host's egress and the extraction
+    /// FTP, SFTP and SSH DRIVEN on an installed SQLite host, with the REAL connectors, the host's egress and the extraction
     /// port, against real servers (<see cref="FileServerTestEndpoint"/>): the connection made over the API, its password vaulted,
     /// refused while loopback is not allowlisted, then tested; a published pipeline uploads text where its folders do not exist
     /// yet, lists them, downloads the file into the run's folder for Read text file to read, uploads that file back under
     /// another name, moves the first where its folders are made and deletes everything it made - the same pipeline over FTP and
-    /// over SFTP; over SSH, commands run around a file's download and upload; the password in neither the graph nor the run. Fails, never skips, without a server (D46).
+    /// over SFTP; over SSH, commands run around a file's download and upload; the password in neither the graph nor the run. Fails, never skips, without a server.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]
@@ -49,7 +49,7 @@ namespace Stomme.Tests.Connectors
             Credentials = new() { ["username"] = FileServerTestEndpoint.User, ["password"] = FileServerTestEndpoint.SftpPassword },
         }, FileServerTestEndpoint.SftpPassword);
 
-        // BL-229 - n8n's SSH node: a command makes a file, the file is downloaded into the run's folder for Read text file to read
+        // n8n's SSH node: a command makes a file, the file is downloaded into the run's folder for Read text file to read
         // and uploaded back under another name, a command of several lines from the step's Query box reads both in its folder,
         // and a last one removes what the run made.
         [Fact]

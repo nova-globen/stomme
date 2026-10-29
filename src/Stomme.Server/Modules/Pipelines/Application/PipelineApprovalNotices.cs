@@ -42,7 +42,7 @@ namespace Stomme.Modules.Pipelines.Application
                         addresses.Add(value);
                         break;
                     case PipelineApprovals.RoleRecipient when userRoles is not null:
-                        // Administrators are the site's operators, the Host Users with them (SiteOperators, BL-177): a fresh
+                        // Administrators are the site's operators, the Host Users with them (SiteOperators): a fresh
                         // site's only administrator is the host, who holds Host Users alone - found driving the starter.
                         var operators = string.Equals(value, RoleNames.Admin, StringComparison.OrdinalIgnoreCase);
                         var members = (await userRoles.GetUserRolesAsync(operators ? RoleNames.Admin : value, siteId)).ToList();

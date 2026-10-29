@@ -11,7 +11,7 @@ namespace Stomme.Modules.Notifications.Domain
     /// <summary>
     /// A reusable, parameterized message keyed uniquely per SITE: the channel kinds it supports, a localized
     /// <see cref="Content"/> per <see cref="Locale"/>, and the <see cref="PlaceholderSchema"/> its content may
-    /// reference. Lifted from the predecessor platform <c>NotificationTemplate</c> (BL-78), tenant-owned + <see cref="SiteId"/>, with
+    /// reference. Lifted from the predecessor platform <c>NotificationTemplate</c>, tenant-owned + <see cref="SiteId"/>, with
     /// <see cref="KeyNormalized"/> maintained here for the D49 lookup (key uniqueness is enforced by the application
     /// layer through that column, both sides normalized).
     /// </summary>

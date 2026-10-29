@@ -17,7 +17,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Expressions
 {
     /// <summary>
-    /// The engine's <c>JavaScript</c> expression kind (BL-229 increment 5b): an input computed by a JavaScript expression in the
+    /// The engine's <c>JavaScript</c> expression kind: an input computed by a JavaScript expression in the
     /// module's ONE bounded sandbox (<see cref="JavaScriptSandbox"/> - strict, no host access, bounded by statements, time and
     /// memory), with the pipeline's variables in scope by name - a record or a list as the JavaScript value it is. Only where
     /// <c>Pipelines:Scripts:Enabled</c>: elsewhere the step faults saying so, as the Run script step does.

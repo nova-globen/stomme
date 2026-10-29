@@ -9,7 +9,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Mcp.Domain
 {
     /// <summary>
-    /// One line of the MCP audit ledger: who asked this install's MCP endpoint for what, and how it ended (BL-80, D101
+    /// One line of the MCP audit ledger: who asked this install's MCP endpoint for what, and how it ended (D101
     /// item 6).
     /// </summary>
     /// <remarks>
@@ -26,7 +26,7 @@ namespace Stomme.Modules.Mcp.Domain
     /// reported.
     /// </para>
     /// <para>
-    /// Immutable: there is no mutator. Written by application code, never by a domain-event handler (D40). Removed only
+    /// Immutable: there is no mutator. Written by application code, never by a domain-event handler. Removed only
     /// by the per-site retention purge.
     /// </para>
     /// </remarks>

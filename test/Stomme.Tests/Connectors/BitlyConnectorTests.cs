@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Bitly (n8n's Bitly node: a link shortened, got and updated): every call Bitly's API v4 - or the address given -
+    /// Bitly (n8n's Bitly node: a link shortened, got and updated): every call Bitly's API v4 - or the address given -
     /// with the token as a bearer token; an address shortened on a domain, in a group, with a title, tags and deep links; a link
     /// got and updated, given with or without its scheme; a group's links - the user's default group when none is given - page
     /// by page by Bitly's cursor, the size fixed and no bigger than asked, a short page or no next the end, searched, tagged,

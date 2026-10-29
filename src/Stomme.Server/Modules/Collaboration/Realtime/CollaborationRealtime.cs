@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Collaboration.Realtime
 {
     // ============================================================================================================
-    // Presence and the change feed (BL-97 increment 12, D114) - the Dashboards hub's shape (BL-96 increment 10). A lock taken
+    // Presence and the change feed - the Dashboards hub's shape. A lock taken
     // or released, a presence change, an announced change - the collaboration aggregates' DOMAIN events, dispatched once
     // their unit of work is saved - and a resource stored by the module that owns it (a pipeline's graph, a board's layout)
     // become ONE integration event on the bus (delivered in-process when no bus is composed), whose handler tells the editors
@@ -92,7 +92,7 @@ namespace Stomme.Modules.Collaboration.Realtime
 
     /// <summary>
     /// Tells a resource's editors that something happened to it - the port the owning modules' saves call and the domain
-    /// signal below uses. Silent while <c>Collaboration:Enabled</c> is off (D114: editing is then exactly the single-editor
+    /// signal below uses. Silent while <c>Collaboration:Enabled</c> is off (editing is then exactly the single-editor
     /// behaviour) and outside a site's scope. A failure to tell is logged, never the caller's failure: a missed notice is
     /// staleness, and the editor's poll or the next notice catches it up.
     /// </summary>

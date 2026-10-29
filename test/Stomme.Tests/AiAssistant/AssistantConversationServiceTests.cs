@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 10 - the conversation lifecycle (the predecessor platform's <c>AssistantConversationService</c>; its API cases
+    /// The conversation lifecycle (the predecessor platform's <c>AssistantConversationService</c>; its API cases
     /// <c>SendMessage_StoresAssistantReplyAndProposedArtifact</c> and <c>ApplyAndDiscard_RoundTripArtifactStateThroughApi</c> by
     /// name at the service - the API itself is increment 10b). <b>CHANGED/ADDED:</b> a refused turn stores nothing; a proposal
     /// binding a dataset its user cannot see is withheld and the reply says so, one it can is attached as the conversation's

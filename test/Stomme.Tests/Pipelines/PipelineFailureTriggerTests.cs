@@ -35,7 +35,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - the "Pipeline failed" trigger (n8n's error workflow) through the engine as the host composes it: a published
+    /// The "Pipeline failed" trigger (n8n's error workflow) through the engine as the host composes it: a published
     /// pipeline starting with it is indexed under the pipeline it watches, or every pipeline; a FAILED run of a stored pipeline
     /// starts the ones watching it, with the failure as the trigger's result; a run that succeeds, a run of no stored pipeline,
     /// and a failed run of a pipeline that itself starts this way start nothing - so a failure handler that fails cannot loop.
@@ -61,7 +61,7 @@ namespace Stomme.Tests.Pipelines
                 module.AddStep<Collect>();
                 // The host dispatches the stimulus to a background worker; here it is sent at once, so a test sees its runs.
                 module.Configure<PipelineRuntimeFeature>(runtime => runtime.StimulusDispatcher = provider => new InlineDispatcher(provider.GetRequiredService<IServiceScopeFactory>()));
-                // A run's page reads the data the run saved (BL-229) from the key-value store the host always composes.
+                // A run's page reads the data the run saved from the key-value store the host always composes.
                 module.Configure<Stomme.Engine.KeyValues.Features.KeyValueFeature>(_ => { });
             });
             services.AddSingleton(typeof(Stomme.Engine.Common.Services.MemoryStore<>));

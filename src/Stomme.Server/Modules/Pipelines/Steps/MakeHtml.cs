@@ -25,7 +25,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Make HTML (BL-229, n8n's HTML node - its Convert to HTML Table and Generate HTML Template; its Extract HTML Content is
+    /// Make HTML (n8n's HTML node - its Convert to HTML Table and Generate HTML Template; its Extract HTML Content is
     /// <c>ExtractHtml</c>): records as an HTML table - a header row of their fields, a row each, EVERY value encoded, so a record
     /// cannot write markup into the page it lands in - or a template the author writes, its expressions read, as n8n's is. A value
     /// a template puts in is put in as it is: the <c>| html</c> filter encodes it, <c>| raw</c> says it is HTML the author made, and the

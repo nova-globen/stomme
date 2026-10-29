@@ -25,7 +25,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - JWT and TOTP (n8n's JWT and TOTP nodes), run by the engine as the host composes it. JWT: tokens it signs with HS,
+    /// JWT and TOTP (n8n's JWT and TOTP nodes), run by the engine as the host composes it. JWT: tokens it signs with HS,
     /// RS and ES keys validate with Microsoft's own token handler and tokens that handler signs verify here; a token under another
     /// algorithm than the step names - "none" among them - a changed one, an expired one, one from another issuer or for another
     /// audience is refused saying why; a short secret and a public key to sign with refused. TOTP: RFC 6238's own test vectors,

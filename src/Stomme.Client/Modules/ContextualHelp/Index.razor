@@ -3,8 +3,8 @@
 @inject IHelpService HelpService
 
 @*
-    The contextual-help admin control (BL-84, D103 item 9) on admin/help: every topic of this site, drafts included, and
-    an in-place editor. The editor is a <textarea> with a SERVER preview - not Quill, which is an HTML editor (D11), while
+    The contextual-help admin control on admin/help: every topic of this site, drafts included, and
+    an in-place editor. The editor is a <textarea> with a SERVER preview - not Quill, which is an HTML editor, while
     a topic is Markdown and its HTML is produced only by the server, through the allowlist a reader gets. What a control
     offers is pre-checked per key so nobody is offered an action the server would refuse; the server decides again on
     every call.
@@ -34,7 +34,7 @@ else
 
         @if (_conflicts.Count > 0)
         {
-            @* Nothing was served for these - a key shipped twice costs EVERY side (BL-105). This is how an operator finds the package. *@
+            @* Nothing was served for these - a key shipped twice costs EVERY side. This is how an operator finds the package. *@
             <section id="help-conflicts" class="db-card" style="padding:0.75rem 1rem;">
                 <strong>Rejected contributions</strong>
                 <ul style="margin:0.5rem 0 0;">
@@ -162,7 +162,7 @@ else
         _previewHtml = null;
         _message = "";
         _editing = true;
-        BringIntoView("help-editor"); // below the topics (BL-22)
+        BringIntoView("help-editor"); // below the topics
     }
 
     private void Close()

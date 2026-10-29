@@ -23,7 +23,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// The measurement D108 refutation 12 demands before XLSX may be called streaming (BL-85).
+    /// The measurement D108 refutation 12 demands before XLSX may be called streaming.
     /// </summary>
     /// <remarks>
     /// <para>

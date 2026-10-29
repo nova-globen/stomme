@@ -63,7 +63,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Setting cluster on the persistence seam (D3/D7/D23). Setting-table access goes through
+    /// The Setting cluster on the persistence seam. Setting-table access goes through
     /// <see cref="ISettingStore"/>/<see cref="IMasterSettingStore"/> (writes) and
     /// <see cref="IQuerySession.Query{T}"/> (reads); this class holds no <c>DbContext</c> and no
     /// <c>IQueryable</c> escapes it.
@@ -108,7 +108,7 @@ namespace Stomme.Repository
         private IRepository<SettingAggregate, int> Store(string entityName)
             => IsMaster(entityName) ? _masterStore : _tenantStore;
 
-        // The read path on the seam (D19): reads NEVER go through the store, because the store TRACKS what it
+        // The read path on the seam: reads NEVER go through the store, because the store TRACKS what it
         // loads and UpdateSetting then attaches a DIFFERENT instance with the same key, which EF rejects:
         //   "The instance of entity type 'SettingAggregate' cannot be tracked because another instance with
         //    the same key value for {'Id'} is already being tracked."
@@ -117,7 +117,7 @@ namespace Stomme.Repository
         // instance, hence one store and one context. A query session opens its own context, so reads leave
         // the store's change tracker clean.
         //
-        // The IQueryable is materialized inside this method, so it never leaves the repository (D7). The LINQ
+        // The IQueryable is materialized inside this method, so it never leaves the repository. The LINQ
         // operators are plain LINQ rather than EF Core's async ones, which would bind these reads to the
         // relational provider.
         private async Task<T> QueryAsync<T>(string entityName, Func<IQuerySession, T> read)
@@ -214,7 +214,7 @@ namespace Stomme.Repository
         {
             var store = Store(entityName);
 
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it
+            // The one read that legitimately goes through the store: it deletes the very instance it
             // loaded, so tracking is what we want and no second instance is ever attached.
             var aggregate = await store.GetByIdAsync(settingId);
             if (aggregate == null)

@@ -1,16 +1,16 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 /* ==========================================================================
-   THE `--db-*` DESIGN SYSTEM (D11 / D18 / D27 / D31)
+   THE `--db-*` DESIGN SYSTEM
    --------------------------------------------------------------------------
    Tokens + base + the shared COMPONENT layer. Global on purpose: this is a FRAMEWORK design
    system, not a theme's.
 
-   D27 established the rule and hoisted the shared-control chrome (nav, drawer, dropdown — further
-   down this file). It left the component layer (`db-btn`, `db-input`, `db-table`, `db-dialog`,
-   `db-tabs`, …) behind in `StommeTheme/Theme.css` and recorded the consequence: the migrated
-   admin modules rendered UNSTYLED under BlazorTheme, because a theme stylesheet is only loaded
-   while that theme is active. D31 finishes the job — this block is that component layer.
+   The shared-control chrome (nav, drawer, dropdown) is further
+   down this file. The component layer (`db-btn`, `db-input`, `db-table`, `db-dialog`,
+   `db-tabs`, …) lives here too, not in `StommeTheme/Theme.css`: otherwise the
+   admin modules would render UNSTYLED under BlazorTheme, because a theme stylesheet is only loaded
+   while that theme is active. This block is that component layer.
 
    Two things it unblocks:
      - Admin chrome no longer depends on which theme a site happens to run.
@@ -23,7 +23,7 @@
    ========================================================================== */
 
 /* ============================== Tokens ============================== */
-/* BL-198: the framework's tokens - the dark defaults here and the light block below - weigh NOTHING (:where), so a theme's
+/* The framework's tokens - the dark defaults here and the light block below - weigh NOTHING (:where), so a theme's
    own :root decides its surfaces in BOTH modes; before, the light block outranked a theme's :root and the theme lost its
    surfaces in light mode. A theme keying its light values on html[data-theme="light"] (Graphite) still wins there. */
 :where(:root) {
@@ -77,11 +77,11 @@
     --db-muted:     #6B7280;
     --db-shadow:    0 1px 2px rgba(15, 23, 42, .04), 0 12px 28px rgba(15, 23, 42, .06);
 }
-/* The browser's own widgets follow the page's mode (BL-198): scrollbars, form controls, select popups, media controls,
+/* The browser's own widgets follow the page's mode: scrollbars, form controls, select popups, media controls,
    autofill. App.razor's script sets it too; this covers a page whose theme fixes its mode before any script runs. */
 :where(html[data-theme="dark"]) { color-scheme: dark; }
 :where(html[data-theme="light"]) { color-scheme: light; }
-/* A theme's fixed colour mode leaves the visitor nothing to toggle (BL-198). */
+/* A theme's fixed colour mode leaves the visitor nothing to toggle. */
 html[data-theme-fixed] .db-theme-toggle { display: none; }
 /* ============================== Base ============================== */
 * { box-sizing: border-box; }
@@ -94,9 +94,9 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-/* The document scrolls (BL-207). FluentUI 5 adopts a stylesheet of its own whose `body` rule is the reset of an app laid out
+/* The document scrolls. FluentUI 5 adopts a stylesheet of its own whose `body` rule is the reset of an app laid out
    with FluentLayout, which scrolls INSIDE: `height: 100dvh; overflow: hidden`, and FluentUI's font. Adopted sheets come after
-   this file, so it locked every Stomme page at the window's height - found on UAT and production on 10.5.x, 2026-10-02.
+   this file, so it would lock every Stomme page at the window's height.
    `html body` outranks FluentUI's bare `body`; FluentUI's scroll lock while one of its dialogs is open,
    `body:has(.prevent-scroll)`, still outranks this. */
 html body {
@@ -244,7 +244,7 @@ a:hover { color: var(--db-accent); }
 .db-banner-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--db-accent); flex: 0 0 10px; }
 .db-section { margin: 1.75rem 0 0.5rem; }
 
-/* Collapsible Section (D18: Stomme owns the chrome Bootstrap's JS used to provide).
+/* Collapsible Section (Stomme owns the chrome Bootstrap's JS used to provide).
    The header is a real <button> when interactive and a <summary> when statically rendered. */
 .db-section-head {
     display: flex; align-items: center; gap: 0.5rem; width: 100%;
@@ -262,12 +262,12 @@ a:hover { color: var(--db-accent); }
 .db-section-body { display: none; }
 .db-section-body.open { display: block; }
 
-/* ============================== Breadcrumbs (BL-49) ==============================
+/* ============================== Breadcrumbs ==============================
    The Breadcrumbs theme control emits THREE spellings and every one of them was
-   undefined in every stylesheet in the repo (verified both directions 2026-08-03):
+   undefined in every stylesheet until this block:
    `app-breadcrumbs` + Bootstrap's `breadcrumb`/`breadcrumb-item` from
    Themes/Controls/Theme/Breadcrumbs.razor, and a bare `breadcrumbs` from
-   BlazorTheme's Default.razor. Bootstrap's own CSS left with the CDN (D31), so the
+   BlazorTheme's Default.razor. Bootstrap's own CSS left with the CDN, so the
    trail rendered as an unstyled bullet list. All three are styled here, in the
    global token layer, so every theme inherits them. */
 .app-breadcrumbs, .breadcrumbs { display: block; margin: 0 0 0.75rem; font-size: 13px; }
@@ -471,7 +471,7 @@ a:hover { color: var(--db-accent); }
 
 /* ============================== ActionDialog ============================== */
 /* Supersedes the Bootstrap .modal chrome. Stomme drives visibility in Blazor (the dialog is only
-   rendered when open), so there is no .show/JS toggling here -- see D18. */
+   rendered when open), so there is no .show/JS toggling here. */
 .db-dialog {
     position: fixed; inset: 0; z-index: var(--db-z-modal, 9999);
     display: block; width: 100%; height: 100%; overflow: auto;
@@ -536,7 +536,7 @@ a:hover { color: var(--db-accent); }
 .db-dash-tile:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }
 .db-dash-tile-icon { font-size: 1.9rem; color: var(--db-accent); line-height: 1; }
 .db-dash-tile-label { font-weight: 700; font-size: 0.95rem; color: inherit; }
-/* BL-204: the dashboard's search, filtered by its page script (Modules/Stomme.Modules.Admin.Dashboard/dashboard.js). A tile
+/* The dashboard's search, filtered by its page script (Modules/Stomme.Modules.Admin.Dashboard/dashboard.js). A tile
    sets its own display, so a hidden one has to be said. */
 .db-dash { display: block; }
 .db-dash-search { max-width: 28rem; margin: 0.5rem 0 1rem; }
@@ -556,14 +556,14 @@ a:hover { color: var(--db-accent); }
 /* ============================== Installer ==============================
    First run: there is no site and no theme yet, so the installer never receives a Theme.css and
    the globally-loaded sheet is ALL it has. That is why it can only emit db-* now that the
-   component layer above is global (D31) -- before the hoist, renaming its Bootstrap class names
+   component layer above is global -- before the hoist, renaming its Bootstrap class names
    would have left it with no stylesheet at all. Its page frame is the one thing it cannot borrow
    from a theme (.db-page belongs to the theme's shell), so it owns this rule. */
 .db-installer { width: 100%; max-width: 1320px; margin: 0 auto; padding: 1.75rem 1rem 3rem; }
 
 
-/* ============================== FluentUI follows the theme (BL-192) ============================== */
-/* The owner's rule (2026-10-02): a button takes the colours its theme defines and nothing overrides them; a theme that defines
+/* ============================== FluentUI follows the theme ============================== */
+/* The rule: a button takes the colours its theme defines and nothing overrides them; a theme that defines
    none gets the defaults above. FluentUI 5 puts its own palette on <html>; these point its brand tokens at the theme's --db-*
    tokens on <body>, which every control inherits from first - so a FluentUI button and a .db-btn are one colour, the theme's. */
 body {
@@ -592,7 +592,7 @@ body {
 }
 
 /* ==========================================================================
-   Shared control chrome on the --db-* tokens (D11 / D18 / D27)
+   Shared control chrome on the --db-* tokens
    --------------------------------------------------------------------------
    Menu and ControlPanel are SHARED controls: every theme renders them, not just the default one.
    So their chrome has to be global. It cannot live in StommeTheme/Theme.css, which is only
@@ -606,7 +606,7 @@ body {
    Bootstrap one that brings its own CDN Bootstrap, gets working shared chrome.
 
    The --db-* tokens themselves are global at the top of this file.
-   See D27 for the wider point: the --db-* system is a framework concern, not a theme's.
+   The wider point: the --db-* system is a framework concern, not a theme's.
    ========================================================================== */
 
 /* -------------------- Site menu (Menu/MenuHorizontal/MenuVertical) -------------------- */
@@ -708,7 +708,7 @@ body {
 }
 
 /* -------------------- Dropdown (LanguageSwitcher, ModuleActions) --------------------
-   Bootstrap's dropdown JS went away with the CDN (D18), and three separate `data-bs-toggle="dropdown"`
+   Bootstrap's dropdown JS went away with the CDN, and three separate `data-bs-toggle="dropdown"`
    triggers were left inert: the site menu's submenu, the LanguageSwitcher, and the module-actions
    menu. These open on :hover AND on :focus-within — clicking the trigger focuses it, which opens the
    menu; moving focus away closes it. No script, so it behaves identically statically and
@@ -800,7 +800,7 @@ app {
    .db-admin-modal on the --db-* tokens now, and nothing emits .app-admin-modal any more.) */
 
 /* Action Dialog */
-/* The dialog chrome itself now lives on the --db-* tokens (.db-dialog* in the theme, D11). These
+/* The dialog chrome itself now lives on the --db-* tokens (.db-dialog* in the theme). These
    rules used to force Bootstrap's display:none .modal back to visible; the dialog is rendered only
    when open, so nothing needs forcing. */
 .app-actiondialog{
@@ -853,7 +853,7 @@ app {
     .app-progress-indicator::after, .db-boot::before { animation-duration: 2.4s; }
 }
 
-/* BL-206: a WebAssembly site that is not prerendered sends a body holding one root component and nothing else, so it showed
+/* A WebAssembly site that is not prerendered sends a body holding one root component and nothing else, so it showed
    a blank page until the client had started. App.razor puts this status before the root component; the same ring as the busy
    overlay, with the download's percentage blazor.web.js sets on <html>. It is hidden once Routes has rendered its wrapper -
    not when the runtime starts, which Blazor reports before Stomme's Main has streamed the module assemblies. */
@@ -1018,7 +1018,7 @@ body:has(.db-app) #db-boot { display: none; }
     display: inline;
 }
 
-/* Search (shared control) — on the --db-* tokens (D11/D27). */
+/* Search (shared control) — on the --db-* tokens. */
 .app-search, .app-search-noinput { display: inline-block; position: relative; }
 .db-search-input { padding-right: 2.25rem; }
 .db-search-btn {
@@ -1057,7 +1057,7 @@ body:has(.db-app) #db-boot { display: none; }
     padding: 5px 20px 5px 20px;
 }
 
-/* -------------------- Cookie consent (shared control, D11/D27) -------------------- */
+/* -------------------- Cookie consent (shared control) -------------------- */
 .db-consent {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--db-z-sticky, 1020);
     background: var(--db-bg-elev); color: var(--db-text);

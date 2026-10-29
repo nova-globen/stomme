@@ -8,7 +8,7 @@ using System.Text.Json.Nodes;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// The shape an AI answer is held to (BL-229, n8n's Structured Output Parser): an EXAMPLE of the answer - every field it names is
+    /// The shape an AI answer is held to (n8n's Structured Output Parser): an EXAMPLE of the answer - every field it names is
     /// required, of the kind its value is (text, a number, true or false, an object, a list; null takes anything), a list's items
     /// held to its first item - or a JSON SCHEMA, as n8n's parser takes one: <c>type</c> (one, or several), <c>properties</c>,
     /// <c>required</c>, <c>items</c>, <c>enum</c>; an integer a whole number. A shape is a schema when it says <c>$schema</c>, or its

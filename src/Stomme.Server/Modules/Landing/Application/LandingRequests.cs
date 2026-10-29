@@ -16,7 +16,7 @@ using Stomme.Tenancy.Abstractions;
 
 namespace Stomme.Modules.Landing.Application
 {
-    // The Landing module's requests (BL-98). Each carries [Requires] with one of the module's keys (D99), and works through the
+    // The Landing module's requests. Each carries [Requires] with one of the module's keys, and works through the
     // REQUEST's site: another site's landing page does not exist for it.
 
     /// <summary>The site's landing page as the caller may see it: published to every viewer, a draft to an administrator only.</summary>

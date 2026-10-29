@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // AddRavenFrameworkStore's registration surface (D17). No live server: nothing here connects — the
+    // AddRavenFrameworkStore's registration surface. No live server: nothing here connects — the
     // document store is only captured, and the id generator is built behind a factory lambda — so these run
     // in the normal suite rather than needing the RavenDB container the conformance suite uses.
     //
@@ -84,7 +84,7 @@ namespace Stomme.Tests
             Assert.Equal(typeof(EfRepository<,>), repository);
         }
 
-        // --- the seam's contract surface, discovered rather than listed (D42) ---
+        // --- the seam's contract surface, discovered rather than listed ---
         //
         // WHY REFLECTIVE. The list this replaced was eight hand-written [InlineData] lines and a comment
         // asserting they were "all present". It was true when written and it could never notice becoming
@@ -228,7 +228,7 @@ namespace Stomme.Tests
         }
 
         // Both halves of the Setting cluster resolve, and they are DIFFERENT implementations bound to
-        // different databases (D23). One store serving both would compile, register and silently read the
+        // different databases. One store serving both would compile, register and silently read the
         // master's Host settings out of the current tenant's database.
         [Fact]
         public void The_two_setting_stores_are_distinct_implementations()

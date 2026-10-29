@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Grist DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Grist DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Grist's REST API that refuses a call without the key: a Grist connection made over the
     /// API, its key vaulted, tested; a published pipeline creates a record with an accent, reads a table's paid records - no
     /// more than asked - updates the record, upserts it by a match, counts with SQL and deletes the record; the key in neither

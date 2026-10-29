@@ -36,7 +36,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Ask for approval, n8n's "send and wait for approval", through the engine as the host composes it: a run that
+    /// Ask for approval, n8n's "send and wait for approval", through the engine as the host composes it: a run that
     /// reaches the step is STORED, waiting, its bookmark carrying the question; it is listed for the site (the details for those
     /// who may decide only); a person's decision resumes it down Approved or Rejected, with who decided and their comment as the
     /// step's result and a line of the run's log - once, a second decision finding it decided. Given a time to decide, a run
@@ -395,7 +395,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(PipelineSubStatus.Cancelled, (await RunOf(services, definitionId)).SubStatus);
         }
 
-        // BL-229: Stop ends the whole run, as n8n's does - a sub-pipeline it started, waiting for an approval, is cancelled with it;
+        // Stop ends the whole run, as n8n's does - a sub-pipeline it started, waiting for an approval, is cancelled with it;
         // stopped alone, the caller left the child waiting, and a decision on it would have run the child's work.
         [Fact]
         public async Task A_run_stopped_stops_the_runs_it_started()

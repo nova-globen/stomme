@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Stomme.Mcp
 {
     /// <summary>
-    /// One condition a caller must satisfy to see or use a contributed MCP resource or tool (D101, BL-80).
+    /// One condition a caller must satisfy to see or use a contributed MCP resource or tool.
     /// </summary>
     /// <remarks>
     /// The two axes of <c>IAccessGuard.IsAllowedAsync(feature, permission)</c>, named here so that a contributor needs

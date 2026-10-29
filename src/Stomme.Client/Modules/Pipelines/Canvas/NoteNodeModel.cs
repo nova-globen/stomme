@@ -5,7 +5,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// A sticky note on the canvas (BL-229 increment 8): text for whoever reads the pipeline, with no ports - nothing connects
+    /// A sticky note on the canvas: text for whoever reads the pipeline, with no ports - nothing connects
     /// to it and the engine never runs it. Moved, edited and removed like a step; saved in the flowchart's designer metadata.
     /// </summary>
     public sealed class NoteNodeModel : NodeModel

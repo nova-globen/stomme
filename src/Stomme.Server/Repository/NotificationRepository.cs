@@ -22,7 +22,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Notification cluster on the persistence seam (D3/D7/D44). Notification-table access goes through
+    /// The Notification cluster on the persistence seam. Notification-table access goes through
     /// <see cref="INotificationStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class
     /// holds no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -50,13 +50,13 @@ namespace Stomme.Repository
             _sessions = sessions;
         }
 
-        // The read path on the seam (D19): reads NEVER go through the store, because the store TRACKS what it
+        // The read path on the seam: reads NEVER go through the store, because the store TRACKS what it
         // loads and UpdateNotification would then attach a DIFFERENT instance with the same key, which EF
         // rejects. NotificationController.Put and NotificationJob both walk straight into it — read, then write
         // the same row back, on ONE repository instance. A query session opens its own context, so reads leave
         // the store's tracker clean.
         //
-        // The IQueryable is materialized inside this method, so it never leaves the repository (D7). The LINQ
+        // The IQueryable is materialized inside this method, so it never leaves the repository. The LINQ
         // operators are plain LINQ rather than EF Core's async ones, which would bind these reads to the
         // relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
@@ -197,7 +197,7 @@ namespace Stomme.Repository
 
         public async Task DeleteNotificationAsync(int notificationId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it
+            // The one read that legitimately goes through the store: it deletes the very instance it
             // loaded, so tracking is what we want and no second instance is ever attached.
             //
             // A HARD delete, despite the aggregate being IDeletable. Harvested and unchanged: the soft delete
@@ -219,7 +219,7 @@ namespace Stomme.Repository
         {
             // delete notifications in batches of 100 records
             //
-            // COST REGRESSION, accepted (D24): the harvested code did RemoveRange + ONE SaveChanges per batch
+            // COST REGRESSION, accepted: the harvested code did RemoveRange + ONE SaveChanges per batch
             // of 100; the seam has no bulk delete, so this is a filtered session read plus one round trip PER
             // ROW. Parity in effect, not in cost. Nightly, off the render path, and PurgeJob wraps the call in
             // its own try/catch. See src/Stomme.Server/README.md (persistence seam).

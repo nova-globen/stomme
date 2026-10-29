@@ -15,12 +15,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - AWS Elastic Load Balancing DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// AWS Elastic Load Balancing DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback), which checks every signature
     /// against the IAM key it issued: a connection made over the API and tested; a published pipeline creating an application load
     /// balancer in two of moto's default subnets with a tag, reading it by the ARN the first step answered (an expression over its
     /// result), finding it by name, listing its listeners - none - and deleting it; the secret in neither the graph nor the run.
-    /// Fails, never skips, without moto (D46).
+    /// Fails, never skips, without moto.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

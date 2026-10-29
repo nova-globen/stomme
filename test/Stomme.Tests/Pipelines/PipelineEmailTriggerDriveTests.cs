@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Email Trigger (IMAP) as "Email received", DRIVEN on an installed SQLite host against a scripted IMAP server
+    /// n8n's Email Trigger (IMAP) as "Email received", DRIVEN on an installed SQLite host against a scripted IMAP server
     /// on loopback: the Host allows loopback, an IMAP connection is made over the API with its password vaulted and tested
     /// through the host's own egress; a pipeline watching its INBOX - marking read, keeping attachments - is published while a
     /// message is already there; a message with a PDF arriving after starts ONE run, by the real task through the real port and
@@ -63,7 +63,7 @@ namespace Stomme.Tests.Pipelines
                 Assert.True(made.Status == HttpStatusCode.OK, made.Body);
                 var connectionId = JsonSerializer.Deserialize<ConnectionView>(made.Body, Json)!.Id;
                 var tested = await Send(HttpMethod.Post, $"/api/Connections/{connectionId}/test", new { }, "test the connection");
-                Assert.True(JsonNode.Parse(tested.Body)!["success"]!.GetValue<bool>(), tested.Body); // the host says it in its own words (D110)
+                Assert.True(JsonNode.Parse(tested.Body)!["success"]!.GetValue<bool>(), tested.Body); // the host says it in its own words
 
                 var before = server.Add(Message("There first"));
                 var definitionId = await PublishAsync(Send, connectionId);

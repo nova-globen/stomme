@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-97 increment 12 - the pipeline graph as the conflict resolver's fields (<see cref="PipelineGraphFields"/>): a graph
+    /// The pipeline graph as the conflict resolver's fields (<see cref="PipelineGraphFields"/>): a graph
     /// round-trips through its fields in the order it was drawn, an id or a name with a slash cannot fake a path, equal graphs
     /// carry equal version tokens, an editor's changes are exactly the fields it changed and each merges by its kind, a merge
     /// that leaves something pointing at a removed step is a conflict, and a path reads as a person would say it.
@@ -53,9 +53,9 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(PipelineGraphFields.Version(fields), PipelineGraphFields.Version(PipelineGraphFields.ToFields(back)));
         }
 
-        // BL-229 increment 5: an input's expression is a field of its own, so a collaborating save carries it; it is free text, so
+        // An input's expression is a field of its own, so a collaborating save carries it; it is free text, so
         // two editors changing it is last-writer-wins with a warning, like a script.
-        // BL-229: a variable's kept test value is a text field of its own - a collaborating save carries it, and two authors
+        // A variable's kept test value is a text field of its own - a collaborating save carries it, and two authors
         // keeping different values is last-writer-wins with a warning.
         [Fact]
         public void A_kept_test_value_round_trips_as_a_text_field()
@@ -81,7 +81,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("variable 'who', its kept test value", PipelineGraphFields.Describe(change.Path, graph));
         }
 
-        // BL-229: how many runs may go at once is a structured field of its own - a collaborating save carries it, and two
+        // How many runs may go at once is a structured field of its own - a collaborating save carries it, and two
         // authors changing it is a conflict; absent, the graph has exactly the fields it always had.
         [Fact]
         public void How_many_runs_go_at_once_round_trips_as_a_structured_field()
@@ -119,7 +119,7 @@ namespace Stomme.Tests.Pipelines
             Assert.True(PipelineExchange.Read(PipelineExchange.Write("Watched", null, graph)).Graph.SaveProgress); // a file carries it
         }
 
-        // BL-229: not keeping the runs that finish well is a structured field - absent while they are kept.
+        // Not keeping the runs that finish well is a structured field - absent while they are kept.
         [Fact]
         public void Not_keeping_the_runs_that_finish_well_round_trips_as_a_structured_field()
         {
@@ -137,7 +137,7 @@ namespace Stomme.Tests.Pipelines
             Assert.False(PipelineExchange.Read(PipelineExchange.Write("Lean", null, graph)).Graph.KeepSuccessfulRuns); // a file carries it
         }
 
-        // BL-229: what the runs keep of their steps' data is a structured field - absent while they keep it always; a value it
+        // What the runs keep of their steps' data is a structured field - absent while they keep it always; a value it
         // does not know is always.
         [Fact]
         public void What_the_runs_keep_of_their_steps_data_round_trips_as_a_structured_field()
@@ -157,7 +157,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal((null, "failed", null), (PipelineStepDataKeeping.Stored(""), PipelineStepDataKeeping.Stored("Failed"), PipelineStepDataKeeping.Stored("sometimes")));
         }
 
-        // BL-229: n8n's time saved per run is a structured field - absent while not said - and a file carries it.
+        // n8n's time saved per run is a structured field - absent while not said - and a file carries it.
         [Fact]
         public void The_minutes_a_run_saves_round_trip_as_a_structured_field()
         {
@@ -355,7 +355,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("something/else", PipelineGraphFields.Describe("something/else", graph));
         }
 
-        // BL-95 (2026-10-05): a step in a body - a loop's Body, an If's branch - carries the step it sits in as ONE more field,
+        // BL-95: a step in a body - a loop's Body, an If's branch - carries the step it sits in as ONE more field,
         // so the merge treats a body's steps exactly as the pipeline's own: field by field.
         private static PipelineGraph Looping() => new()
         {

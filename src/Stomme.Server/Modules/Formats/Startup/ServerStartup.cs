@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Formats.Startup
 {
     /// <summary>
-    /// The Formats module's server composition (BL-94, D110): the tenant-owned <see cref="FormatDefinitionAggregate"/>
+    /// The Formats module's server composition: the tenant-owned <see cref="FormatDefinitionAggregate"/>
     /// on the storage-blind seam (no DbContext, no RavenDB twin - the host binds the install's provider), the module's
     /// repository, the Shared port's server implementation, the CQRS handlers (registered EXPLICITLY - never
     /// AddMediator() here, the host composed the mediator once) and the client contract's server twin.
@@ -37,7 +37,7 @@ namespace Stomme.Modules.Formats.Startup
             services.AddModuleAggregatePersistence<FormatDefinitionAggregate, Guid>();
             services.AddScoped<IFormatDefinitionRepository, FormatDefinitionRepository>();
             services.AddScoped<IFormatService, SiteFormatService>();
-            // The D108 cell formatter (BL-94 increment 8): a later registration wins a single resolve, and DataExport's own is a TryAdd.
+            // The D108 cell formatter: a later registration wins a single resolve, and DataExport's own is a TryAdd.
             services.AddScoped<Stomme.Export.IExportCellFormatter, FormatsExportCellFormatter>();
 
             services.AddScoped<IRequestHandler<SaveFormatDefinitionCommand, Guid>, SaveFormatDefinitionCommandHandler>();

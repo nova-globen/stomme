@@ -24,7 +24,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Amqp
 {
     /// <summary>
-    /// AMQP 1.0 (BL-229, n8n's AMQP Sender and AMQP Trigger nodes) over AMQPNetLite: the endpoint is ONE broker,
+    /// AMQP 1.0 (n8n's AMQP Sender and AMQP Trigger nodes) over AMQPNetLite: the endpoint is ONE broker,
     /// <c>amqp://broker.kafe.example:5672</c> (<c>amqps://</c> for TLS), never a user or a password - the Basic scheme's
     /// <c>username</c> and <c>password</c> come from the per-site secret store, as SASL PLAIN (none: SASL ANONYMOUS). A test
     /// opens a connection and names the broker as it names itself.

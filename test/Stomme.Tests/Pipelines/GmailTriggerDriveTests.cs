@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Gmail Trigger as "Email received" on a Gmail connection, DRIVEN on an installed SQLite host against a
+    /// n8n's Gmail Trigger as "Email received" on a Gmail connection, DRIVEN on an installed SQLite host against a
     /// loopback stand-in for Google's token endpoint and the Gmail API: a Gmail connection made over the API, its secrets vaulted;
     /// a pipeline watching INBOX - marking read - published while a message is already there; a message added to INBOX after
     /// starts ONE run, by the real task through the real port and connector, whose next step writes what it was handed; the

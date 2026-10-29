@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Jira
 {
     /// <summary>
-    /// Jira (BL-229, n8n's Jira Software node: issues got, searched, created, updated, commented on and moved through their
+    /// Jira (n8n's Jira Software node: issues got, searched, created, updated, commented on and moved through their
     /// workflow): a Jira Cloud site's REST API (<c>https://your-site.atlassian.net</c>), an account's email and API token by the
     /// Basic scheme. A test asks Jira who the account is (<c>rest/api/3/myself</c>).
     /// </summary>

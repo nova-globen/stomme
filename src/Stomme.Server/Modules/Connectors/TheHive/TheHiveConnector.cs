@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.TheHive
 {
     /// <summary>
-    /// TheHive 5 (BL-229, n8n's TheHive 5 node: alerts, cases, comments, tasks and their logs, observables) over TheHive's API v1
+    /// TheHive 5 (n8n's TheHive 5 node: alerts, cases, comments, tasks and their logs, observables) over TheHive's API v1
     /// (<c>{address}/api/v1</c>) by an API key as a bearer token in the Authorization header - never in the address. A test asks
     /// TheHive who the key is.
     /// </summary>

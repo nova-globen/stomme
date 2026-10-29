@@ -22,7 +22,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The Users/Roles cluster on the persistence seam (D3/D7/D22). Same hazards as Sites, Pages and Modules —
+    // The Users/Roles cluster on the persistence seam. Same hazards as Sites, Pages and Modules —
     // the aggregates are mapped onto a schema this context does not migrate, and HasColumnName outranks the
     // snake_case rewriter — plus two that are new to this cluster:
     //
@@ -342,7 +342,7 @@ namespace Stomme.Tests
         }
     }
 
-    // The rule Pages paid for (D19) and Modules restated (rule 6), applied to the Users/Roles cluster.
+    // The rule Pages paid for and Modules restated (rule 6), applied to the Users/Roles cluster.
     //
     // Visitor.User WAS an EF navigation, eager-loaded with .Include(item => item.User) in
     // VisitorRepository.GetVisitors. A navigation to User makes EF discover User as an entity type mapped to
@@ -380,7 +380,7 @@ namespace Stomme.Tests
             // DbSet was never what the probe rested on: measured both ways, removing it leaves the assertions
             // green, and re-adding a migrated contract still fails them with EF's "the table '...' cannot be
             // used for entity type" — so the proof comes from ConfigureFrameworkStore plus the assertion,
-            // exactly as PermissionMustNotBeResurrectedTests has shown since D48. MigrationHistory is NOT a
+            // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
             // protection now, and it needed no edit across D47, D48, D49 or D50.
@@ -433,7 +433,7 @@ namespace Stomme.Tests
             Assert.Null(model.FindEntityType(typeof(UserRole)));
         }
 
-        // Visitors moved to the seam in D47. This test used to read
+        // Visitors moved to the seam. This test used to read
         // "Visitor_is_still_a_plain_entity_referencing_the_user_by_id" and assert over the Visitor CONTRACT;
         // the contract is not an entity type any more, so the assertion is made over the AGGREGATE that
         // replaced it. What is being pinned is unchanged and is D22's, not D47's: whatever entity holds the
@@ -773,7 +773,7 @@ namespace Stomme.Tests
         }
 
         // WHY UserRepository.GetUser reads through the query session instead of IUserAccountStore.GetByIdAsync
-        // (D19, inherited from Pages, where the identical shape made a PUT return 200 and persist nothing).
+        // (inherited from Pages, where the identical shape made a PUT return 200 and persist nothing).
         [Fact]
         public async Task The_store_rejects_a_detached_update_after_a_tracked_read()
         {

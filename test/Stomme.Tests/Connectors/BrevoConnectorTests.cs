@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Brevo (n8n's Brevo node: its contacts, contact attributes, transactional e-mail and senders): the key in Brevo's own
+    /// Brevo (n8n's Brevo node: its contacts, contact attributes, transactional e-mail and senders): the key in Brevo's own
     /// api-key header; contacts page by page by offset up to the most asked for, in an order, changed since a time in UTC, each
     /// attribute a field; a contact got by its id or its address, made, made or changed, changed and deleted; an e-mail sent with a
     /// body or a template and its parameters, its addresses named; attributes made, changed and deleted by category; senders and

@@ -13,7 +13,7 @@ using Stomme.Shared;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    // Lifted from the predecessor platform NotificationRequestQueries.cs (BL-78 step 5). SPLIT (D100 point 6): the site's send log is
+    // Lifted from the predecessor platform NotificationRequestQueries.cs. SPLIT: the site's send log is
     // ViewLog; the caller's OWN list is ViewOwn and filters by ICurrentUser.UserId (int) AND the resolved site, so a
     // registered user sees only requests that address them on this site. The rendered subject/body are not persisted on a
     // request (they are rendered at delivery time), so the views carry the dispatch metadata and attempts.

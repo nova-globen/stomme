@@ -78,7 +78,7 @@ namespace Stomme.Modules.Health.Application
     /// <remarks>
     /// <b>The switch is read from the MERGED configuration</b> (<see cref="Microsoft.Extensions.Configuration.IConfigurationRoot"/>),
     /// the one the probe job reads through <c>HostConfiguration</c>: the container's plain <c>IConfiguration</c> lacks
-    /// <c>appsettings.override.json</c>, where an install keeps <c>Health:Enabled</c> (BL-162). Optional, so a caller that
+    /// <c>appsettings.override.json</c>, where an install keeps <c>Health:Enabled</c>. Optional, so a caller that
     /// composes the handler by hand still can; absent, it answers the switch's own default.
     /// </remarks>
     public sealed class GetHealthDashboardQueryHandler(

@@ -16,8 +16,8 @@ namespace [Owner].Module.[Module].Persistence
     }
 
     /// <summary>
-    /// Filters through <c>FindAsync</c>, which every store translates (D78) - safe for equality and ranges on non-string
-    /// values such as the site id. Filtering on TEXT differs between stores (case), so normalise a text column instead (D49).
+    /// Filters through <c>FindAsync</c>, which every store translates - safe for equality and ranges on non-string
+    /// values such as the site id. Filtering on TEXT differs between stores (case), so normalise a text column instead.
     /// </summary>
     public sealed class [Module]EntryRepository(IRepository<[Module]Entry, Guid> inner) : I[Module]EntryRepository
     {

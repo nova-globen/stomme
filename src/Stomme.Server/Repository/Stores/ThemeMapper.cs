@@ -4,7 +4,7 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// Translates between <see cref="ThemeAggregate"/> (the persisted aggregate) and <see cref="Theme"/> (the
-    /// client/server contract) at the <see cref="Repository.ThemeRepository"/> boundary (D52).
+    /// client/server contract) at the <see cref="Repository.ThemeRepository"/> boundary.
     /// </summary>
     /// <remarks>
     /// <b>Unlike <see cref="JobMapper"/>, this mapping is PARTIAL by design.</b> <see cref="Theme"/> carries a

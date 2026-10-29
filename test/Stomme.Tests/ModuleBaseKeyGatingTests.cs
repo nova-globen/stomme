@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The CLIENT half of the authorization bridge (D99 point 8, BL-99): a lifted page asks
+    /// The CLIENT half of the authorization bridge: a lifted page asks
     /// <see cref="ModuleBase.IsAuthorizedPermission(string)"/> the SAME question the server's
     /// <c>[Requires]</c> asks - and gets its answer from the module instance's own
     /// <c>PermissionList</c>, which already carries the foreign <c>EntityId = -1</c> key rows
@@ -77,7 +77,7 @@ namespace Stomme.Tests
             // (PermissionKeys.IsValidSegment REJECTS an upper-case segment) while the framework's permission
             // names are title-cased, and the filter is ordinal. MEASURED: seed the same list with a
             // capitalised 'Edit' key row instead and this assertion flips - which is why declaration, not the
-            // reader, is where the casing contract is enforced (D49: normalise the data).
+            // reader, is where the casing contract is enforced (normalise the data).
             var module = Module(
                 new Permission(1, EntityNames.Module, 5, PermissionNames.Edit, RoleNames.Admin, null, true),
                 new Permission(1, "gatetest", -1, "edit", RoleNames.Everyone, null, true));

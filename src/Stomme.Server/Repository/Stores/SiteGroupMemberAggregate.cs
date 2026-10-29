@@ -43,13 +43,13 @@ namespace Stomme.Repository.Stores
     public class SiteGroupMemberAggregate : AggregateRoot<int>, IAuditable
     {
         /// <summary>
-        /// The <see cref="SiteGroup"/> this membership belongs to, by id (D7/D19) — the reference that
+        /// The <see cref="SiteGroup"/> this membership belongs to, by id — the reference that
         /// replaces the severed navigation. The <c>site_group_id</c> column still carries a cascading foreign
         /// key to <c>site_group</c> in the database; what is gone is the EF NAVIGATION, not the constraint.
         /// </summary>
         public int SiteGroupId { get; set; }
 
-        /// <summary>The <see cref="Site"/> that is a member of the group, by id (D7/D19).</summary>
+        /// <summary>The <see cref="Site"/> that is a member of the group, by id.</summary>
         public int SiteId { get; set; }
 
         /// <summary>

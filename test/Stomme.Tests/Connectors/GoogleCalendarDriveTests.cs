@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Calendar DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Google Calendar DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for Google's token endpoint and the Calendar API: a Google Calendar connection made over
     /// the API, its client secret and refresh token vaulted, tested (the calendar named); a published pipeline asks whether the
     /// afternoon is free, books a meeting in a time zone with its attendees told, reads the day's events over two pages, moves

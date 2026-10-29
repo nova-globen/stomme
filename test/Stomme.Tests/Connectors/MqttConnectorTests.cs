@@ -15,10 +15,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The MQTT connector's live tests' broker (BL-229): MQTT_TEST_HOST / PORT / PASSWORD where set, otherwise this machine's
+    /// The MQTT connector's live tests' broker: MQTT_TEST_HOST / PORT / PASSWORD where set, otherwise this machine's
     /// throwaway Mosquitto that <c>scripts/mqtt-test-server.ps1</c> makes on 127.0.0.1:11883, its user <c>kafe</c> and its
     /// password read from the file that script writes under the user's temp folder. No password is a FAILURE that says how to
-    /// get one, never a skip (D46).
+    /// get one, never a skip.
     /// </summary>
     internal static class MqttTestEndpoint
     {
@@ -46,7 +46,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the MQTT connector without a broker: an address that is not MQTT's, or names a path, invalid; a user or password
+    /// The MQTT connector without a broker: an address that is not MQTT's, or names a path, invalid; a user or password
     /// in it, a WebSocket address and a list of brokers refused as the egress's denial - each before any pin; the host pinned on
     /// its port and MQTT's own 1883 and 8883, a refused host the guard's own denial; every parameter held to its shape - a
     /// wildcard topic to publish to among them - before anything is dialled.
@@ -115,12 +115,12 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the MQTT connector against a real Mosquitto 2.1 (<c>scripts/mqtt-test-server.ps1</c>'s throwaway broker on
+    /// The MQTT connector against a real Mosquitto 2.1 (<c>scripts/mqtt-test-server.ps1</c>'s throwaway broker on
     /// loopback) through the HOST's egress: loopback refused until allowlisted; a test that connects, a wrong password and no
     /// user refused; the client dialling the pinned address and never the name; messages published at QoS 0, 1 and 2 - one over
     /// several lines from the step's Query box - received on a topic filter with their topics, payloads and QoS; a retained
     /// message received at once by a later subscriber, and cleared; no more than asked, and no longer than the wait. Fails, never
-    /// skips, when the broker is absent (D46).
+    /// skips, when the broker is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class MqttConnectorLiveTests(ITestOutputHelper output)

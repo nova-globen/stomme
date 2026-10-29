@@ -10,7 +10,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.ContextualHelp.Services
 {
     /// <summary>
-    /// The client/server contract of contextual help's UI (BL-84, D103 item 1). Controls depend on this interface, never
+    /// The client/server contract of contextual help's UI. Controls depend on this interface, never
     /// on a repository: the browser binds it to <see cref="HelpService"/> (HTTP to <c>api/Help</c>, decided by the
     /// action's <c>[RequiresPermissionKey]</c> AND the request's <c>[Requires]</c>), the server to a mediator dispatch.
     /// </summary>

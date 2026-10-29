@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-243 - the host believes <c>X-Forwarded-*</c> only from a proxy. Found by BL-239's validation, driven on a directly
+    /// The host believes <c>X-Forwarded-*</c> only from a proxy. Found by BL-239's validation, driven on a directly
     /// reached app: the known proxies were cleared, so any caller chose the OpenID Connect issuer (X-Forwarded-Host), the
     /// scheme past the token endpoint's https-only check (X-Forwarded-Proto), its client address past the sign-in rate
     /// limiter (X-Forwarded-For) and, on a one-site install, a new alias row per request. Each case runs ASP.NET Core's own

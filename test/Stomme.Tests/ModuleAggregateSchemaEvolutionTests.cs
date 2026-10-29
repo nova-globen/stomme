@@ -17,7 +17,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-52 — the marketplace-arrival schema gap, reproduced exactly as the BL-1 drive found it (2026-07-22).
+    /// The marketplace-arrival schema gap, reproduced exactly as the BL-1 drive found it.
     /// The shared module-aggregates store brings its schema up with <c>EnsureCreated</c>, which creates the FULL
     /// schema only when the DATABASE does not exist. The sidecar database is created at FIRST boot with whatever
     /// aggregates are then registered — so a clean-arch module arriving LATER (marketplace nupkg → restart →
@@ -36,14 +36,14 @@ namespace Stomme.Tests
         private readonly string _databasePath =
             Path.Combine(Path.GetTempPath(), $"stomme-schema-evolution-{Guid.NewGuid():N}.db");
 
-        /// <summary>The one string both boots and the teardown use — the pool is keyed by it (BL-104).</summary>
+        /// <summary>The one string both boots and the teardown use — the pool is keyed by it.</summary>
         private string ConnectionString => $"Data Source={_databasePath}";
 
         public Task InitializeAsync() => Task.CompletedTask;
 
         public Task DisposeAsync()
         {
-            // This database's pool only - ClearAllPools is process-wide (BL-104).
+            // This database's pool only - ClearAllPools is process-wide.
             ScratchSqlite.Release(ConnectionString);
             try
             {
@@ -75,7 +75,7 @@ namespace Stomme.Tests
             }
 
             // Let go of boot 1's pooled connections so boot 2 genuinely reopens the file - this database's pool
-            // only, never the process-wide form (BL-104).
+            // only, never the process-wide form.
             ScratchSqlite.Release(ConnectionString);
 
             // ---- BOOT 2: the marketplace restart — a SECOND aggregate is enrolled, the database already exists ----
@@ -90,7 +90,7 @@ namespace Stomme.Tests
                     var notes = writeScope.ServiceProvider
                         .GetRequiredService<IRepository<LaterInstalledNoteAggregate, Guid>>();
                     var note = LaterInstalledNoteAggregate.Create("Installed after first boot.");
-                    await notes.AddAsync(note); // BL-52: throws 'no such table' before the fix
+                    await notes.AddAsync(note); // Throws 'no such table' before the fix
                     noteId = note.Id;
                 }
 
@@ -118,7 +118,7 @@ namespace Stomme.Tests
         // Composes the storage-blind stack exactly as module ServerStartups do on a relational install (the
         // EfGuestbookStoreConformanceTests shape), pointing the shared store at this fixture's throwaway file.
         /// <summary>
-        /// BL-111: an aggregate that GAINED a column after its table existed - the Guestbook's tenant, on every install
+        /// An aggregate that GAINED a column after its table existed - the Guestbook's tenant, on every install
         /// that predates it. The table is present, the column absent, and before the fix every read threw. The catch-up
         /// ADDS the column, nullable: the legacy row is untouched (still counted in the table) and, holding no tenant, is
         /// hidden by every tenant's filter - fail-closed - while a new row signed under the tenant reads back.
@@ -153,7 +153,7 @@ namespace Stomme.Tests
             // ---- BOOT 2: the upgrade - the model has the column, the table has not ----
             await using (var boot2 = Compose(includeLaterAggregate: false))
             {
-                await StartHostedServicesAsync(boot2); // BL-111: adds the column, nullable
+                await StartHostedServicesAsync(boot2); // Adds the column, nullable
 
                 Guid freshId;
                 await using (var scope = boot2.CreateAsyncScope())

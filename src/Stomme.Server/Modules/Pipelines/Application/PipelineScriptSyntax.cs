@@ -13,7 +13,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - whether a script parses as its step runs it: this site's JavaScript as a script (no top-level return), n8n's Code
+    /// Whether a script parses as its step runs it: this site's JavaScript as a script (no top-level return), n8n's Code
     /// node as a function's body (its return) - both in STRICT mode, as <see cref="JavaScriptSandbox"/> runs every script - said
     /// where an author counts, from 1. Parsing runs nothing. The script writer checks what the model wrote with it, and the editor
     /// checks what the author writes (<see cref="CheckScriptsQuery"/>, n8n's Code node linting).

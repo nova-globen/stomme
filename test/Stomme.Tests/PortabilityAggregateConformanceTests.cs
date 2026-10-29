@@ -24,11 +24,11 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-82 (D107 item 5) - the portability package and audit aggregates round-trip member for member on EVERY
+    /// The portability package and audit aggregates round-trip member for member on EVERY
     /// module-aggregate store (EF SQLite, EF PostgreSQL, EF SQL Server, RavenDB, File) through the module's own startup:
     /// <c>TenantId</c> STAMPED, the nullable ints and instants, UTC <c>Kind</c>; each status transition read in one scope
     /// and written in the next persists; and the five filters (site, status, kind by way of subject, subject, expiry)
-    /// answer identically. PostgreSQL, SQL Server and RavenDB FAIL rather than skip (D46).
+    /// answer identically. PostgreSQL, SQL Server and RavenDB FAIL rather than skip.
     /// </summary>
     public abstract class PortabilityAggregateConformanceTests : IAsyncLifetime
     {
@@ -289,7 +289,7 @@ namespace Stomme.Tests
 
     /// <summary>
     /// EF Core on a LIVE SQL Server scratch database (infra UAT, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
-    /// suite on SQL Server, as every module-aggregate suite since BL-117. Fails, never skips, when SQL Server is down (D46).
+    /// suite on SQL Server, as every module-aggregate suite. Fails, never skips, when SQL Server is down.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class SqlServerPortabilityAggregateConformanceTests : PortabilityAggregateConformanceTests

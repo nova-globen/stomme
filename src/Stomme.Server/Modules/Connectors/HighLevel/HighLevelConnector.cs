@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.HighLevel
 {
     /// <summary>
-    /// HighLevel (BL-229, n8n's HighLevel node, its second version: contacts, opportunities, tasks and a calendar's
+    /// HighLevel (n8n's HighLevel node, its second version: contacts, opportunities, tasks and a calendar's
     /// appointments) over HighLevel's API v2 (<c>https://services.leadconnectorhq.com</c>, its <c>Version: 2021-07-28</c>) by a
     /// sub-account's Private Integration token, its location the connection's. A test lists a contact of the location.
     /// </summary>

@@ -15,12 +15,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Nextcloud DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Nextcloud DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a real Nextcloud 34 (<see cref="NextcloudTestEndpoint"/>): a Nextcloud connection made over the API - the server's
     /// address, the app password vaulted - refused while loopback is not allowlisted, then tested; a published pipeline makes a
     /// folder, uploads a note over several lines from the step's Query box, lists the folder, downloads the note into the site's
     /// pipeline folder and deletes the folder; the password in neither the graph nor the run. Fails, never skips, without a
-    /// server (D46).
+    /// server.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

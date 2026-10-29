@@ -12,14 +12,14 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Backup.Infrastructure
 {
     /// <summary>
-    /// Archives in an S3-compatible object store (BL-169, D106 item 9): the key of an archive is <c>&lt;prefix&gt;/&lt;name&gt;</c>
+    /// Archives in an S3-compatible object store: the key of an archive is <c>&lt;prefix&gt;/&lt;name&gt;</c>
     /// and its checksum sidecar <c>&lt;prefix&gt;/&lt;name&gt;.sha256</c>, the prefix being the installation's id unless the
     /// operator names one. Nothing a row holds becomes a key but a <see cref="StorageLocation"/>, which admits no separator.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>It STAGES through a local file.</b> The archive writer and reader are synchronous over their stream (a GCM chunk at a
-    /// time) and sync-over-async is banned (D33), so an upload cannot be a stream the writer pushes into, nor a download one
+    /// time) and sync-over-async is banned, so an upload cannot be a stream the writer pushes into, nor a download one
     /// the reader pulls from. <see cref="Create"/> writes a staging file under the host's data folder; <see cref="PublishAsync"/>
     /// uploads it in multipart parts of <see cref="S3ArchiveOptions.PartSizeBytes"/> (one part's buffer is the heap it
     /// holds), puts the sidecar, completes the upload - the object appears whole or not at all - and deletes the staging

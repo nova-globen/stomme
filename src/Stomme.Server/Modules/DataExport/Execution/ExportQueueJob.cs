@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.DataExport.Execution
 {
     /// <summary>
-    /// The per-minute job that drains every site's export queue (D108 item 6).
+    /// The per-minute job that drains every site's export queue.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -103,7 +103,7 @@ namespace Stomme.Modules.DataExport.Execution
                         tenantManager.SetTenant(tenant);
                     }
 
-                    // BL-95: due schedules queue their runs first, so a run is rendered in this same tick.
+                    // Due schedules queue their runs first, so a run is rendered in this same tick.
                     var scheduled = await siteScope.ServiceProvider.GetRequiredService<ExportSchedulePass>().RunSiteAsync(site.SiteId);
                     if (scheduled != new ExportScheduleResult(0, 0, 0))
                     {

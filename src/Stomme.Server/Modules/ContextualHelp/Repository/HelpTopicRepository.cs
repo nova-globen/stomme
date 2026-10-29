@@ -15,7 +15,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Help.Persistence
 {
     /// <summary>
-    /// The help topics' closed read surface (BL-84, D103 refutation 13).
+    /// The help topics' closed read surface (D103 refutation 13).
     /// </summary>
     /// <remarks>
     /// <para>
@@ -70,13 +70,13 @@ namespace Stomme.Help.Persistence
             _tenantContext = tenantContext;
         }
 
-        /// <summary>The site THIS REQUEST resolved, read fresh every time and never captured (BL-160, D37).</summary>
+        /// <summary>The site THIS REQUEST resolved, read fresh every time and never captured.</summary>
         private int SiteId => _siteState.Alias?.SiteId ?? -1;
 
         /// <summary>
         /// The tenant the id is derived under - the SAME answer the provider's tenant filter uses
         /// (<c>TenantAwareDbContextFactory</c> falls back to the single logical tenant in exactly this way), so an id this
-        /// computes names a row that filter can see. Part of the key because site ids repeat across tenants (BL-151).
+        /// computes names a row that filter can see. Part of the key because site ids repeat across tenants.
         /// </summary>
         private Guid TenantKey => (_tenantContext.CurrentTenantId ?? TenantId.Default).Value;
 

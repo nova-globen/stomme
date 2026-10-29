@@ -22,7 +22,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The Pages cluster on the persistence seam (D3/D7/D19). Same two hazards as Sites — the aggregate is
+    // The Pages cluster on the persistence seam. Same two hazards as Sites — the aggregate is
     // mapped onto a schema this context does not migrate, and HasColumnName outranks the snake_case rewriter
     // — plus one Pages has and Sites did not: PageModule used to hold an EF navigation INTO Page, which makes
     // EF discover Page as a second entity type on the Page table. See PageModuleMustNotResurrectPageTests.
@@ -61,7 +61,7 @@ namespace Stomme.Tests
             Assert.Equal("parent_id", columns[nameof(PageAggregate.ParentId)]);
             // D58. The lowercase lookup key added and backfilled by 10020005_AddPageNormalizedColumn — derived
             // in PageAggregate.Path's setter so it cannot drift from `path`, and mapped by convention exactly
-            // as UrlMapping.UrlNormalized (D57) and Folder.PathNormalized (D49).
+            // as UrlMapping.UrlNormalized and Folder.PathNormalized.
             Assert.Equal("path_normalized", columns[nameof(PageAggregate.PathNormalized)]);
         }
 
@@ -108,9 +108,9 @@ namespace Stomme.Tests
 
             var entityType = BuildPageEntityType(new PostgreSQLDatabase(), "Host=localhost;Database=probe");
             var persistedOnTheAggregate = entityType.GetProperties().Select(p => p.Name)
-                // PathNormalized (D58) is a storage-only lowercase lookup key with NO wire-contract
-                // counterpart — exactly as Folder.PathNormalized / File.NameNormalized (D49),
-                // UrlMapping.UrlNormalized (D57) and Identity's NormalizedUserName. It is derived in
+                // PathNormalized is a storage-only lowercase lookup key with NO wire-contract
+                // counterpart — exactly as Folder.PathNormalized / File.NameNormalized,
+                // UrlMapping.UrlNormalized and Identity's NormalizedUserName. It is derived in
                 // PageAggregate.Path's setter and is never mapped back onto the Page contract, so it is
                 // legitimately on the aggregate and legitimately absent from the contract. Its column mapping
                 // is pinned by The_aggregate_maps_to_the_snake_case_columns_the_migrations_created_on_postgresql.
@@ -203,7 +203,7 @@ namespace Stomme.Tests
             // DbSet was never what the probe rested on: measured both ways, removing it leaves the assertions
             // green, and re-adding a migrated contract still fails them with EF's "the table '...' cannot be
             // used for entity type" — so the proof comes from ConfigureFrameworkStore plus the assertion,
-            // exactly as PermissionMustNotBeResurrectedTests has shown since D48. MigrationHistory is NOT a
+            // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
             // protection now, and it needed no edit across D47, D48, D49 or D50.
@@ -243,7 +243,7 @@ namespace Stomme.Tests
             Assert.Null(BuildModel().FindEntityType(typeof(Page)));
         }
 
-        // PageModule moved to the seam in D47. This test used to read
+        // PageModule moved to the seam. This test used to read
         // "Page_module_is_still_a_plain_entity_referencing_the_page_by_id" and assert over the PageModule
         // CONTRACT; the contract is not an entity type any more, so the assertion is made over the AGGREGATE
         // that replaced it. What is being pinned is unchanged and is D19's, not D47's: whatever entity holds
@@ -375,7 +375,7 @@ namespace Stomme.Tests
             Assert.Equal("", loaded.Path);
         }
 
-        // Reads go through IQuerySession.Query<T> (D7: the aggregate repository has no IQueryable). This is
+        // Reads go through IQuerySession.Query<T> (the aggregate repository has no IQueryable). This is
         // the exact call PageRepository.GetPages makes — including the UserId == null filter that excludes
         // personalized pages, which is easy to lose in translation and would leak other users' pages.
         [Fact]

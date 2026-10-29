@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Help Scout DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Help Scout DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for Help Scout's token endpoint and Mailbox API: a token for the app's client
     /// credentials alone, the API answering that token alone. A Help Scout connection made over the API, its secret vaulted,
     /// tested; a published pipeline reads every conversation over two pages, creates one - got by the id it is answered with,

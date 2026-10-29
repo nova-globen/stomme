@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace NovaGloben.Module.Blogs.Drive
 {
     /// <summary>
-    /// BL-13 — the WASM STREAMING drive. Installs a REAL site with <c>Runtime=WebAssembly</c> and
+    /// The WASM STREAMING drive. Installs a REAL site with <c>Runtime=WebAssembly</c> and
     /// <c>TestMode=true</c> (the sanctioned test seam: <c>api/Installation/list</c> then returns un-hashed
     /// <c>{assembly}.{timestamp}.dll</c> names) with the SPLIT Blogs module nupkg AND the external Aurora
     /// theme nupkg staged for the real InstallationManager, and drives the assembly-streaming API the

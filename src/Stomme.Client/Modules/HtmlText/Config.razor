@@ -4,7 +4,7 @@
 @inject ISettingService SettingService
 
 @*
-    Module-WIDE (installation-scoped) configuration control for HtmlText (D86). Distinct from Settings.razor,
+    Module-WIDE (installation-scoped) configuration control for HtmlText. Distinct from Settings.razor,
     which is PER-PLACEMENT. Rendered two ways over the SAME ISettingsControl contract:
       * Admin → Module Definitions → HtmlText → "Configure" tab: ModuleDefinitionId is passed in as a Parameter
         (a definition-scoped control has no ModuleState placement context) and the control self-persists through

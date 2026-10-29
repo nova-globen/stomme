@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // BL-74: ModuleDefinitionRepository's control scan let an Index control's Title OVERWRITE the Name a
+    // ModuleDefinitionRepository's control scan let an Index control's Title OVERWRITE the Name a
     // module declared through IModule — and ModuleFeatureFlags derives the module.<id>.enabled config knob
     // from the resulting name, so the flag an author would reasonably write (keyed on the declared name) did
     // nothing while a key derived from a UI title worked. Measured live on 4 fresh installs during the

@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 9 - the predecessor platform's <c>AssistantGuardrailTests</c>, by name: a benign request passes; the known injection
+    /// The predecessor platform's <c>AssistantGuardrailTests</c>, by name: a benign request passes; the known injection
     /// phrases are refused, collapsed whitespace included; only USER messages are scanned; the per-user rate window refuses
     /// the request past the limit and keeps users apart; an unauthorized resource is refused and an authorized one passes.
     /// <b>CHANGED:</b> the window is keyed by site and user (a user id repeats across sites), so the same user on another site

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Stomme.AiAssistant
 {
     // ============================================================================================================
-    // The AI assistant's Shared views (BL-97 increment 10, D113): what the chat panel and the API read. BCL-ONLY like the
+    // The AI assistant's Shared views: what the chat panel and the API read. BCL-ONLY like the
     // other Shared contracts - the model exchange (Microsoft.Extensions.AI) stays on the server.
     // ============================================================================================================
 

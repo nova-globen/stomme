@@ -7,7 +7,7 @@ using LogLevel = Stomme.Shared.LogLevel;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// How a refused request is logged (owner's decision, 2026-10-10, D99a): refused to an ANONYMOUS caller it is a Warning -
+    /// How a refused request is logged (owner's decision): refused to an ANONYMOUS caller it is a Warning -
     /// in the site's log, never mailed to its hosts, so a crawler probing the APIs no longer spends the mail relay's day; refused
     /// to a SIGNED-IN user it stays an Error and is mailed (once an hour per kind, <see cref="LogNotificationThrottle"/>) -
     /// a wrong role or an account probing what it cannot reach is worth knowing about. Every other security entry keeps its

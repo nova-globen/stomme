@@ -36,7 +36,7 @@ namespace Stomme.Modules.Metering.Application
             var metric = MetricKeys.RequireMetric(request.Metric);
             var period = MeteringWire.ParsePeriod(request.Period);
 
-            // The tenant is resolved BEFORE the id, because the id now includes it (BL-151): two tenants sharing
+            // The tenant is resolved BEFORE the id, because the id now includes it: two tenants sharing
             // one database and one site would otherwise name the same row.
             var tenantId = tenantContext.CurrentTenantId
                 ?? throw new InvalidOperationException("No tenant is resolved in this scope.");

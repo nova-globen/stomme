@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Taiga (n8n's Taiga node) without a server: every id, subject, colour, order and flag held to Taiga's shape before
+    /// Taiga (n8n's Taiga node) without a server: every id, subject, colour, order and flag held to Taiga's shape before
     /// anything is sent - not even the sign-in; signed in with the user's name and password for a token, the token a bearer and
     /// the password in no address; a list's project read first, its filters under Taiga's own names (n8n's statusIsClosed and
     /// userStory are names Taiga ignores), page by page as Taiga's next-page header says; a status, priority or assignee by name;
@@ -240,7 +240,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Taiga LIVE, against this machine's throwaway Taiga 6.10 (scripts/taiga-test-server.ps1) - fail-not-skip without it
+    /// Taiga LIVE, against this machine's throwaway Taiga 6.10 (scripts/taiga-test-server.ps1) - fail-not-skip without it
     /// (D46): a test signing in and an unknown user refused in Taiga's words; a project of the test's own, an epic, a user story
     /// and its task, and an issue made - its priority and assignee by name - changed by status name with the version read
     /// first, listed by tag and by Taiga's own closed filter, page by page; a task listed by its user story, where n8n's filter

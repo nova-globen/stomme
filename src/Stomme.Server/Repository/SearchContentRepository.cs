@@ -26,17 +26,17 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The SearchContent cluster on the persistence seam (D50) — Phase 3's last.
+    /// The SearchContent cluster on the persistence seam — Phase 3's last.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Four stores for the writes, <see cref="IFrameworkStoreSessionFactory"/> for the ordinary reads (D19),
+    /// Four stores for the writes, <see cref="IFrameworkStoreSessionFactory"/> for the ordinary reads,
     /// and <see cref="ISearchQueryStore"/> for the ONE read the seam's LINQ surface cannot express — the
     /// keyword search. See <see cref="ISearchQueryStore"/> for why that contract exists and why its two
     /// implementations are deliberately unalike.
     /// </para>
     /// <para>
-    /// <b>Stores are constructor-injected, not resolved per write (D49, not D47).</b> Nothing here reads a key
+    /// <b>Stores are constructor-injected, not resolved per write (not D47).</b> Nothing here reads a key
     /// and then writes it twice through one instance: <c>DatabaseSearchProvider.SaveSearchContent</c> deletes
     /// by (entityName, entityId) and then ADDs a fresh row, and <c>AnalyzeSearchContentAsync</c>'s per-word
     /// loop either adds or updates a given key exactly once. UrlMapping remains the sole cluster needing the
@@ -155,7 +155,7 @@ namespace Stomme.Repository
         /// The harvested code deleted in batches of 100 with <c>RemoveRange</c>. The seam has no batch delete
         /// (Phase 5 owns it), so this is one round trip per row — the cost D24/D44 already accepted for
         /// <c>DeletePermissions</c> and the three leaf purge loops. The batching loop goes with it: it existed
-        /// to bound EF's change tracker, and a session read tracks nothing (D19).
+        /// to bound EF's change tracker, and a session read tracks nothing.
         /// </remarks>
         public async Task DeleteAllSearchContentAsync(int siteId)
         {

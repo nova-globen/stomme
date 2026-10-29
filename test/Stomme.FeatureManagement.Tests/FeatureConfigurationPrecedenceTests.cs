@@ -69,7 +69,7 @@ public sealed class FeatureConfigurationPrecedenceTests
     private static void DropDb(string path)
     {
         // THIS database's pool, by the exact string Compose handed to UseSqlite. ClearAllPools is process-wide
-        // and drops the pooled connections of whatever else is running, mid-request (BL-104). The one case that
+        // and drops the pooled connections of whatever else is running, mid-request. The one case that
         // composes with a DIFFERENT string (";Pooling=True") releases its own pool where it builds it — the pool
         // is keyed by the raw string, so this spelling would not reach it.
         using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={path}"))
@@ -264,7 +264,7 @@ public sealed class FeatureConfigurationPrecedenceTests
                 finally
                 {
                     await provided.DisposeAsync();
-                    // BL-104: clear only this database's pool.
+                    // Clear only this database's pool.
                     using (var connection = new Microsoft.Data.Sqlite.SqliteConnection(connectionString))
                     {
                         Microsoft.Data.Sqlite.SqliteConnection.ClearPool(connection);

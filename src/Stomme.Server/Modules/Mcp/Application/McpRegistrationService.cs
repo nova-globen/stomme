@@ -43,7 +43,7 @@ namespace Stomme.Modules.Mcp.Application
     /// exists on the site next door.
     /// </para>
     /// <para>
-    /// <b>Registering does not dial</b> (D101 item 5): a new row is <c>Unverified</c> with no tools, and the only thing
+    /// <b>Registering does not dial</b>: a new row is <c>Unverified</c> with no tools, and the only thing
     /// that talks to the server is the explicit refresh.
     /// </para>
     /// <para>
@@ -85,7 +85,7 @@ namespace Stomme.Modules.Mcp.Application
             _logger = logger;
         }
 
-        /// <summary>The site this REQUEST resolved, or -1. Read fresh every time - never captured (BL-160, D37).</summary>
+        /// <summary>The site this REQUEST resolved, or -1. Read fresh every time - never captured.</summary>
         private int SiteId => _siteState.Alias?.SiteId ?? -1;
 
         public async Task<IReadOnlyList<McpServerRegistrationAggregate>> ListAsync(CancellationToken ct = default) =>

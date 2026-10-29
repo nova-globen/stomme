@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Workspace Admin (n8n's G Suite Admin node: a Workspace's users, groups and ChromeOS devices): a refresh
+    /// Google Workspace Admin (n8n's G Suite Admin node: a Workspace's users, groups and ChromeOS devices): a refresh
     /// token exchanged at Google's token endpoint, the Directory API with the token as a bearer; users, groups, a group's members
     /// and devices read page by page by Google's token, a page no bigger than what is left; a user got, updated by a PATCH - the
     /// rest kept - deleted, added to a group and removed; groups created, updated by a PATCH and deleted; a device got, updated

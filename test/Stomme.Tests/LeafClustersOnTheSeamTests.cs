@@ -23,7 +23,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The five LEAF clusters on the persistence seam (D3/D7/D44): Language, Log, Profile, SiteTask,
+    // The five LEAF clusters on the persistence seam: Language, Log, Profile, SiteTask,
     // Notification. Lowest-risk of the remaining set — one table each, tenant-side only, no repository edges
     // out and no navigations in either direction — which is exactly why the interesting failures here are the
     // ones that are NOT about topology:
@@ -168,7 +168,7 @@ namespace Stomme.Tests
             Assert.Null(entityType.FindProperty(nameof(IAuditable.ModifiedBy)));
             Assert.Null(entityType.FindProperty(nameof(IAuditable.ModifiedOn)));
 
-            // ...and the seam's duck-typed rule agrees, so the RavenDB audit listener (D26) declines it too —
+            // ...and the seam's duck-typed rule agrees, so the RavenDB audit listener declines it too —
             // the two providers stamp identically by both stamping nothing.
             Assert.False(AuditStamp.IsAuditable(typeof(LogAggregate)));
         }
@@ -459,7 +459,7 @@ namespace Stomme.Tests
     //
     // The sweep of production code found nothing to sever for any of these five. Site.Languages is the only
     // member of a leaf contract anywhere in the models and it is [NotMapped] — and Site is not an entity type
-    // any more anyway (D17). That is the finding; these tests pin it so it stays true.
+    // any more anyway. That is the finding; these tests pin it so it stays true.
     public class LeafClustersMustNotBeResurrectedTests
     {
         // The unmigrated neighbours, as TenantDBContext still holds them.
@@ -477,7 +477,7 @@ namespace Stomme.Tests
             // DbSet was never what the probe rested on: measured both ways, removing it leaves the assertions
             // green, and re-adding a migrated contract still fails them with EF's "the table '...' cannot be
             // used for entity type" — so the proof comes from ConfigureFrameworkStore plus the assertion,
-            // exactly as PermissionMustNotBeResurrectedTests has shown since D48. MigrationHistory is NOT a
+            // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
             // protection now, and it needed no edit across D47, D48, D49 or D50.
@@ -596,7 +596,7 @@ namespace Stomme.Tests
             Assert.DoesNotContain(typeof(Notification), declared);
         }
 
-        // Tenant-side only, like Permission (D24) and unlike Setting (D23). Mapping any of them on the master
+        // Tenant-side only, like Permission and unlike Setting. Mapping any of them on the master
         // context would invent an entity type over a table the master migration set does not create.
         private sealed class MasterLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {

@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Stripe (n8n's Stripe node: customers listed, got, created, updated and deleted, charges listed, the balance got): a
+    /// Stripe (n8n's Stripe node: customers listed, got, created, updated and deleted, charges listed, the balance got): a
     /// secret key as the bearer, a form as the body; the customers - those with an address - and the charges - a customer's - read
     /// page by page by starting_after up to the most asked for, each a plain record, its time in UTC; a customer made with its
     /// metadata as metadata[key], read, changed and deleted; the balance one record per currency; a customer id, an address, a

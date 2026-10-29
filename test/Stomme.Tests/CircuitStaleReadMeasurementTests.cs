@@ -31,7 +31,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-160 - what a page in ONE Interactive Server circuit shows after something else writes.
+    /// What a page in ONE Interactive Server circuit shows after something else writes.
     /// </summary>
     /// <remarks>
     /// A circuit is one DI scope for as long as the page is open, so it is reproduced here as exactly that: the
@@ -296,7 +296,7 @@ namespace Stomme.Tests
         }
 
         // Settings go through appsettings.override.json, as a deployed install's do - never builder.Configuration, which
-        // the host's merged configuration does not include (HostConfiguration, BL-162).
+        // the host's merged configuration does not include (HostConfiguration).
         private async Task<(ScratchGateInstall Scratch, WebApplication App)> InstallAsync(string storeName, JsonObject? settings)
         {
             var store = LiftedRequiresGateTests.ResolveStore(storeName);

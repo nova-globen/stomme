@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Messaging
 {
     /// <summary>
-    /// Google Chat (BL-229, n8n's Google Chat node: messages sent, read, edited and deleted, and a workspace's spaces and their
+    /// Google Chat (n8n's Google Chat node: messages sent, read, edited and deleted, and a workspace's spaces and their
     /// members) over the Chat API (<c>https://chat.googleapis.com/v1</c>) as a person signed in - an OAuth client's refresh token
     /// granted the chat.messages, chat.spaces.readonly and chat.memberships.readonly scopes, exchanged at Google's token endpoint
     /// through the shared <see cref="OAuth2TokenProvider"/>, as Gmail's is. A test lists the spaces the person is in.

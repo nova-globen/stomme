@@ -18,7 +18,7 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Box (n8n's Box node) as a server app: Box's Client Credentials Grant with the enterprise or user the app acts as
+    /// Box (n8n's Box node) as a server app: Box's Client Credentials Grant with the enterprise or user the app acts as
     /// (box_subject_type and box_subject_id in the form, asked for only once everything is held to its shape); a folder's items
     /// page by page through Box's marker; a search page by page through its offset with n8n's filters; a download that Box sends
     /// to its download host, followed without the token; an upload in one multipart call to the upload host - its attributes,

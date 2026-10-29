@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Mailgun
 {
     /// <summary>
-    /// Mailgun (BL-229, n8n's Mailgun node: an e-mail sent): a sending domain over Mailgun's API (<c>https://api.mailgun.net/v3</c>,
+    /// Mailgun (n8n's Mailgun node: an e-mail sent): a sending domain over Mailgun's API (<c>https://api.mailgun.net/v3</c>,
     /// or the EU's <c>https://api.eu.mailgun.net/v3</c>), its API key as HTTP Basic (<c>api</c> and the key), the domain the
     /// <c>domain</c> setting. A test names the domain and its state.
     /// </summary>

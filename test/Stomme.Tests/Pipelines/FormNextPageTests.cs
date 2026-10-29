@@ -39,7 +39,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's multi-page forms (its Form node's next page): a Wait for a form with Next page takes the person who sent the
+    /// n8n's multi-page forms (its Form node's next page): a Wait for a form with Next page takes the person who sent the
     /// form before it straight on to it - the Form trigger's submission, then each page's - through the module's own receivers, the
     /// run's form address made with no Call address; the last page's submission is thanked as soon as the run ends, not after the
     /// wait; a form with no next page is not waited on; and a next page whose run could not be stored is never shown.

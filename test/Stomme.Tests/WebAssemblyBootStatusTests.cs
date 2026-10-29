@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-206 - a WebAssembly site that is not prerendered shows a loading status until its page renders, never a blank page.
+    /// A WebAssembly site that is not prerendered shows a loading status until its page renders, never a blank page.
     /// </summary>
     /// <remarks>
     /// Measured on UAT (2026-10-02): the home page's body is one WebAssembly root component and nothing else - prerendering

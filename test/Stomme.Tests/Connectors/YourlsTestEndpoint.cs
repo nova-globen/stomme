@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The YOURLS connector's live tests' server (BL-229): YOURLS_TEST_URL / YOURLS_TEST_SIGNATURE where set, otherwise this
+    /// The YOURLS connector's live tests' server: YOURLS_TEST_URL / YOURLS_TEST_SIGNATURE where set, otherwise this
     /// machine's throwaway YOURLS 1.10 that <c>scripts/yourls-test-server.ps1</c> makes on 127.0.0.1:18089 - its signature token,
     /// read from YOURLS's own Tools page, in the file that script writes under the user's temp folder. Neither is a FAILURE that
-    /// says how to get one, never a skip (D46).
+    /// says how to get one, never a skip.
     /// </summary>
     internal static class YourlsTestEndpoint
     {

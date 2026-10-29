@@ -8,7 +8,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.IdentityAudit.Services
 {
     /// <summary>
-    /// The identity audit page's contract (BL-120). Administrators only - decided by the server on every call - and no
+    /// The identity audit page's contract. Administrators only - decided by the server on every call - and no
     /// method takes a site: the site is the request's own.
     /// </summary>
     public interface IIdentityAuditService

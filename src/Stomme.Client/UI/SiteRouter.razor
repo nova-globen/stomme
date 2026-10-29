@@ -115,7 +115,7 @@
         if (querystring.ContainsKey("returnurl"))
         {
             returnurl = WebUtility.UrlDecode(querystring["returnurl"]);
-            if (Utilities.LocalReturnUrl(returnurl, string.Empty).Length == 0) // BL-244: "//host" passed the old StartsWith("/")
+            if (Utilities.LocalReturnUrl(returnurl, string.Empty).Length == 0) // "//host" passed the old StartsWith("/")
             {
                 // urls which are not relative are vulnerable to open redirects or XSS
                 returnurl = "";
@@ -396,7 +396,7 @@
 
             // validate theme — admin pages render the site's AdminThemeType (when set), public pages the
             // DefaultThemeType; an explicit page.ThemeType still wins. Empty AdminThemeType falls back to the
-            // default so a site with no admin theme is unchanged (D87). Mirrors the AdminContainerType split.
+            // default so a site with no admin theme is unchanged. Mirrors the AdminContainerType split.
             page.ThemeType = Utilities.ResolveThemeType(page.ThemeType, page.Path, site.DefaultThemeType, site.AdminThemeType);
             var theme = site.Themes.FirstOrDefault(item => item.Themes.Any(item => item.TypeName == page.ThemeType));
             if (theme == null)

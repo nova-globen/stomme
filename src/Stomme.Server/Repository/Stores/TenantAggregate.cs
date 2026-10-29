@@ -5,10 +5,10 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// The Tenant aggregate root — the persistence-side model of the framework store's <c>Tenant</c> table (D52),
+    /// The Tenant aggregate root — the persistence-side model of the framework store's <c>Tenant</c> table,
     /// reachable only through <see cref="ITenantStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads).
     /// A MASTER-database aggregate, like <see cref="AliasAggregate"/>, <see cref="ThemeAggregate"/> and the master
-    /// half of Setting (D23).
+    /// half of Setting.
     /// </summary>
     /// <remarks>
     /// <para>

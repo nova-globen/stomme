@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The CSV and JSON renderers, and the cell rules that make an artifact safe to open (BL-85, D108).
+    /// The CSV and JSON renderers, and the cell rules that make an artifact safe to open.
     /// </summary>
     /// <remarks>
     /// The renderers are reached through the engine's own contract, so these cases also pin the contract's

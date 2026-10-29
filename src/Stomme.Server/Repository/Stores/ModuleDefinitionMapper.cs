@@ -5,7 +5,7 @@ namespace Stomme.Repository.Stores
     /// <summary>
     /// Translates between <see cref="ModuleDefinitionAggregate"/> (the persisted aggregate) and
     /// <see cref="ModuleDefinition"/> (the client/server contract) at the
-    /// <see cref="Repository.ModuleDefinitionRepository"/> boundary (D52).
+    /// <see cref="Repository.ModuleDefinitionRepository"/> boundary.
     /// </summary>
     /// <remarks>
     /// <b>Like <see cref="ThemeMapper"/>, this mapping is PARTIAL by design.</b> <see cref="ModuleDefinition"/>

@@ -19,7 +19,7 @@ using MQTTnet.Protocol;
 namespace Stomme.Modules.Connectors.Mqtt
 {
     /// <summary>
-    /// MQTT (BL-229, n8n's MQTT node) over MQTTnet, MQTT 3.1.1: the endpoint is ONE broker, <c>mqtt://broker.example.com:1883</c>
+    /// MQTT (n8n's MQTT node) over MQTTnet, MQTT 3.1.1: the endpoint is ONE broker, <c>mqtt://broker.example.com:1883</c>
     /// (<c>mqtts://</c> for TLS, 8883), and never a user or password - the Basic scheme's <c>username</c> and <c>password</c>,
     /// both optional as a broker may let anyone in, come from the per-site secret store. A test connects and disconnects.
     /// </summary>
@@ -129,7 +129,7 @@ namespace Stomme.Modules.Connectors.Mqtt
             }
             catch (Exception ex) when (ex is MqttCommunicationException or SocketException or TimeoutException or OperationCanceledException or InvalidOperationException)
             {
-                return ConnectionTestResult.Fail(ex.Message); // the broker's or the network's failure; the message stays inside the runner (D110)
+                return ConnectionTestResult.Fail(ex.Message); // the broker's or the network's failure; the message stays inside the runner
             }
         }
 

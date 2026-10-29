@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleTasks
 {
     /// <summary>
-    /// Google Tasks (BL-229, n8n's Google Tasks node: a task created, got, listed, updated and deleted - and moved, its lists read
+    /// Google Tasks (n8n's Google Tasks node: a task created, got, listed, updated and deleted - and moved, its lists read
     /// and a list's finished ones cleared): the Tasks API (<c>https://tasks.googleapis.com/tasks/v1</c>) over the OAuth2
     /// REFRESH-TOKEN scheme - a Google Cloud OAuth client's id and secret and a refresh token granted the tasks scope - exchanged
     /// at Google's token endpoint (the <c>token_url</c> setting) through the shared <see cref="OAuth2TokenProvider"/>, as Google

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Backup.Controllers
 {
     /// <summary>
-    /// The backup HTTP surface (BL-81, D106 item 9). HOST ONLY - an attribute on the class, not a permission key (refutation
+    /// The backup HTTP surface. HOST ONLY - an attribute on the class, not a permission key (refutation
     /// 8), and every action's service call re-asserts it. While <c>Backup:Enabled</c> is off every route answers 404, decided
     /// at route selection (<see cref="BackupEnabledAttribute"/>). Only <see cref="BackupRequestRejectedException"/> becomes a
     /// 400 with its message; no other exception's text reaches the caller.

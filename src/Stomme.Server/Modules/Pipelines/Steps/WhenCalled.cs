@@ -15,7 +15,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// BL-229 - n8n's "When executed by another workflow", with its input defined by fields: where a run another pipeline starts
+    /// n8n's "When executed by another workflow", with its input defined by fields: where a run another pipeline starts
     /// (Execute or Dispatch pipeline) - or the Run API or MCP - enters with its input. The fields it expects are written as Extract
     /// information's are (<see cref="PipelineFields"/>); what arrives is held to them - each value as its field holds it, a value
     /// that cannot be one failing the run with its name, a required field not sent failing it too - and the record is the result.

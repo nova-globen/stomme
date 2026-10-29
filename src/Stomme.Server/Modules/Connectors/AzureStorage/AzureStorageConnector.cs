@@ -24,7 +24,7 @@ using Microsoft.AspNetCore.StaticFiles;
 namespace Stomme.Modules.Connectors.AzureStorage
 {
     /// <summary>
-    /// Azure Storage (BL-229, n8n's Azure Storage node: containers and blobs) over the Blob service's REST API, signed with the
+    /// Azure Storage (n8n's Azure Storage node: containers and blobs) over the Blob service's REST API, signed with the
     /// storage account's key (Shared Key, as n8n's default credential) - the account's own address,
     /// <c>https://{account}.blob.core.windows.net</c>, or another cloud's or an emulator's. A download is written into the
     /// pipeline run's folder and an upload read from it (<see cref="IConnectorFiles"/>). A test lists one container.

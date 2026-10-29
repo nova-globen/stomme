@@ -5,11 +5,11 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The FTP and SFTP connectors' live tests' servers (BL-229): this machine's throwaway vsftpd and OpenSSH that
+    /// The FTP and SFTP connectors' live tests' servers: this machine's throwaway vsftpd and OpenSSH that
     /// <c>scripts/ftp-test-server.ps1</c> and <c>scripts/sftp-test-server.ps1</c> make on 127.0.0.1:12121 and :12222 (or
     /// FILESERVER_TEST_HOST, FTP_TEST_PORT and SFTP_TEST_PORT where set), their user <c>kafe</c>; the passwords, the client keys
     /// and the server's host key read from the files those scripts write under the user's temp folder. No file is a FAILURE that
-    /// says how to get one, never a skip (D46).
+    /// says how to get one, never a skip.
     /// </summary>
     internal static class FileServerTestEndpoint
     {

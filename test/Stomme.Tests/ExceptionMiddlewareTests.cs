@@ -14,14 +14,14 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-56 — AN UNHANDLED EXCEPTION MUST NOT MASQUERADE AS AN EMPTY HTTP 200.
+    /// AN UNHANDLED EXCEPTION MUST NOT MASQUERADE AS AN EMPTY HTTP 200.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <c>ExceptionMiddleware</c> used to catch every unhandled exception, log it, and return with the
     /// response status untouched — so Kestrel emitted <c>200</c> with zero bytes. That made a server failure
     /// look like success to every caller: an OAuth client received an empty 200 instead of
-    /// <c>invalid_client</c> (BL-55 RED drive), a failed prerender returned a blank 200 (BL-57), and monitoring
+    /// <c>invalid_client</c> (BL-55 RED drive), a failed prerender returned a blank 200, and monitoring
     /// never saw a 5xx. This suite pins the corrected contract: on an unhandled exception the middleware sets a
     /// real <c>500</c> when the response has not begun, leaves an already-started response's status alone (it
     /// cannot be changed), passes a successful request straight through, and NEVER rethrows — including when the

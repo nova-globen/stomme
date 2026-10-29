@@ -256,7 +256,7 @@ namespace Stomme.Controllers
         }
 
         // DELETE api/<controller>/me
-        // D112 (BL-116 increment 4): a person deletes their OWN account on this site - the same path as the
+        // A person deletes their OWN account on this site - the same path as the
         // administrator's delete, so UserManager.DeleteUser queues the erasure for both and the two are one mechanism.
         // A Host account is not deleted this way: another Host removes it, so an install cannot lose its last Host by
         // a click. The API sign-out clears the cookie for a browser that called directly (WebAssembly); the profile

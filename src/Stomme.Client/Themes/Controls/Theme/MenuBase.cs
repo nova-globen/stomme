@@ -12,7 +12,7 @@ namespace Stomme.Themes.Controls
 
         // Narrow-viewport menu state. The toggler used to be a pure data-bs-toggle="collapse"
         // button; the Bootstrap JS that drove it went away with the CDN in Phase 1, so below the
-        // breakpoint the menu could never be opened at all. Stomme owns this chrome now (D18).
+        // breakpoint the menu could never be opened at all. Stomme owns this chrome now.
         //
         // Dual-mode, like Section/TabStrip: when the theme renders interactively the toggler is a
         // real <button> driven from Blazor state (and menu links close the menu again, which is

@@ -28,7 +28,7 @@ namespace Stomme.Tests.Pipelines
     /// The run page a Run button opens waits for a run the engine has not stored yet (found walking the editor in a browser).
     /// </summary>
     /// <remarks>
-    /// A run is DISPATCHED (D111 item 3): Run returns the run's id and the page opens at once, before the engine's worker has
+    /// A run is DISPATCHED: Run returns the run's id and the page opens at once, before the engine's worker has
     /// stored the run. The page polled only a run it had found, so on a Server site and a WebAssembly site alike every new
     /// run read "There is no such run on this site" until Refresh was pressed (2026-10-02). It now reads a just-started run
     /// again, shown as starting, for <see cref="RunPage.StartingPolls"/> reads before it calls it missing; a link opened any
@@ -116,7 +116,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(clock.Timers);
         }
 
-        // BL-229: n8n's execution view - whose run it is, the way to it on the canvas, what it was started with, the run whose
+        // n8n's execution view - whose run it is, the way to it on the canvas, what it was started with, the run whose
         // failure started it; and Retry, which starts the published version again and opens the new run's page.
         [Fact]
         public void A_failed_run_says_whose_it_is_what_started_it_and_is_retried()
@@ -164,7 +164,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Run", cut.Find("#pipelines-run-title").TextContent.Trim());
         }
 
-        // BL-229 - n8n's "retry with original workflow": a run of a version the pipeline has moved past is also offered again on
+        // n8n's "retry with original workflow": a run of a version the pipeline has moved past is also offered again on
         // that version; a run of the published version, only once.
         [Fact]
         public void A_run_of_an_older_version_is_run_again_on_it_or_on_the_published_one()
@@ -189,7 +189,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Run again", cut.Find("#pipelines-run-retry").TextContent.Trim());
         }
 
-        // BL-229 - n8n Enterprise's execution data redaction: a run whose pipeline did not keep what it was started with says so
+        // n8n Enterprise's execution data redaction: a run whose pipeline did not keep what it was started with says so
         // where that would be, and offers neither retry - the server refuses both, from here or over MCP.
         [Fact]
         public void A_run_whose_input_was_not_kept_says_so_and_offers_no_retry()
@@ -213,7 +213,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-run-input-not-kept"));
         }
 
-        // BL-229 - one at a time, the rest in turn: a run waiting its turn is Queued - on its page, which says why and how to take it
+        // One at a time, the rest in turn: a run waiting its turn is Queued - on its page, which says why and how to take it
         // out of the line, and on the runs list, whose state filter offers it; one that has started is not.
         [Fact]
         public void A_run_waiting_its_turn_is_queued_on_its_page_and_on_the_runs_list()
@@ -240,7 +240,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains(list.FindAll("#pipelines-runs-state option"), option => option.GetAttribute("value") == PipelineRunStates.Queued && option.TextContent.Trim() == "Queued");
         }
 
-        // BL-229: n8n's execution filters on the runs list - every pipeline's runs named, narrowed to one pipeline and to a state,
+        // n8n's execution filters on the runs list - every pipeline's runs named, narrowed to one pipeline and to a state,
         // a state in the address honoured, and an empty answer said as such.
         [Fact]
         public void The_runs_list_is_filtered_by_pipeline_and_state()
@@ -286,7 +286,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(3, Shown(unknown).Length);
         }
 
-        // BL-229: a run beside another of the same pipeline, step by step - the other runs offered (not itself), the steps that went
+        // A run beside another of the same pipeline, step by step - the other runs offered (not itself), the steps that went
         // another way said and marked, a step that ran in one only, and a link to the other run.
         [Fact]
         public void A_run_is_compared_with_another_of_its_pipeline_step_by_step()
@@ -342,7 +342,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(PipelineRunComparison.Compare(new[] { faulted }, Array.Empty<PipelineStepRunView>()).Single().This!.Took);
         }
 
-        // BL-229: a sub-pipeline's run links the run that started it, and a run lists the runs it started.
+        // A sub-pipeline's run links the run that started it, and a run lists the runs it started.
         [Fact]
         public void A_run_links_the_run_that_started_it_and_the_runs_it_started()
         {
@@ -363,7 +363,7 @@ namespace Stomme.Tests.Pipelines
             Assert.EndsWith("/Run?id=run-2", child.QuerySelector("a")!.GetAttribute("href"));
         }
 
-        // BL-229 - n8n's execution data: what a run saved about itself is on its page, and with it in the runs list - where a click
+        // n8n's execution data: what a run saved about itself is on its page, and with it in the runs list - where a click
         // on one finds the runs that saved the same.
         [Fact]
         public void A_runs_saved_data_is_shown_and_finds_the_runs_that_saved_the_same()
@@ -386,7 +386,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("order: 42", runs.Find("#pipelines-runs-search").GetAttribute("value"));
         }
 
-        // BL-229 - n8n's execution annotations: an author says on the run's page how it went - a rating taken back when pressed
+        // n8n's execution annotations: an author says on the run's page how it went - a rating taken back when pressed
         // again, tags, a note - and the review shows there and in the runs list, where a click on a tag finds the runs with it.
         [Fact]
         public void A_run_is_reviewed_on_its_page_and_its_review_shown_in_the_runs_list()
@@ -430,7 +430,7 @@ namespace Stomme.Tests.Pipelines
             runs.WaitForAssertion(() => Assert.Equal("late", _service.Searches[^1]));
         }
 
-        // BL-229 - n8n's Evaluations: an author starts one over a data table's rows (asked how many), sees it running with its test
+        // n8n's Evaluations: an author starts one over a data table's rows (asked how many), sees it running with its test
         // cases, a second start refused while it runs; the page follows it to the end - the averages, each row's metrics, outputs and
         // run - stops polling, and the evaluation is deleted, asked first.
         [Fact]
@@ -485,7 +485,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-evaluation"));
         }
 
-        // BL-229: a run's timeline - each step's pass a bar placed where in the run it began, as wide as it took, coloured by how it
+        // A run's timeline - each step's pass a bar placed where in the run it began, as wide as it took, coloured by how it
         // went, with its time beside it.
         [Fact]
         public void A_runs_timeline_shows_where_each_step_began_and_how_long_it_took()
@@ -570,7 +570,7 @@ namespace Stomme.Tests.Pipelines
                 PipelineStepStates.StatusOf(waiting, cancelled), PipelineStepStates.StatusOf(waiting, going), PipelineStepStates.StatusOf(new PipelineStepRunView { Status = "Completed" }, cancelled)));
         }
 
-        // BL-229 - n8n's comparison of evaluation runs: an evaluation opens beside the one before it - each average and each row's
+        // n8n's comparison of evaluation runs: an evaluation opens beside the one before it - each average and each row's
         // metric with the earlier value and the change, a gain marked - and is compared with nothing on request; the oldest has
         // nothing before it.
         [Fact]
@@ -609,7 +609,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal("Averages: correct 0.5", Text(cut.Find("#pipelines-evaluation-averages"))));
         }
 
-        // BL-229 - n8n's Data tables: an author makes a table with typed columns, adds a row, changes a cell (a value its column cannot
+        // n8n's Data tables: an author makes a table with typed columns, adds a row, changes a cell (a value its column cannot
         // hold refused saying why, the kept value shown again), deletes the row, renames the table (a kept column's type fixed) and
         // deletes it, asked first.
         [Fact]
@@ -695,7 +695,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("No data tables yet.", cut.Find("#pipelines-tables-none").TextContent.Trim());
         }
 
-        // BL-229 - the site's pipeline folder: an author makes a folder and goes into it, uploads files (one too large refused before
+        // The site's pipeline folder: an author makes a folder and goes into it, uploads files (one too large refused before
         // it is sent, a name already there refused by the server saying why), copies a path as a file step reads it, follows the
         // trail back, downloads a file by its link, and deletes a folder with what is in it - asked first.
         [Fact]
@@ -764,7 +764,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("orders.csv", cut.Markup);
         }
 
-        // BL-229 - n8n's Variables: the site's variables are listed on the pipelines page; an author adds one (a name that cannot be
+        // n8n's Variables: the site's variables are listed on the pipelines page; an author adds one (a name that cannot be
         // read refused here, before anything is sent), changes a value, removes one, and saves them all.
         [Fact]
         public void Site_variables_are_listed_and_saved_by_an_author()
@@ -788,7 +788,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "apiBase", "limit" }, cut.FindAll("[id^=pipelines-variable-name-]").Select(cell => cell.TextContent.Trim()));
         }
 
-        // BL-229: n8n's workflow list - found by any words of its name or description, each with how its last run went (a link
+        // n8n's workflow list - found by any words of its name or description, each with how its last run went (a link
         // to it), "never" for one that has not run.
         [Fact]
         public void The_pipelines_list_is_searched_and_says_how_each_last_run_went()
@@ -808,7 +808,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("is-failed", last.ClassName);
             Assert.EndsWith("/Run?id=r1", last.GetAttribute("href"));
             Assert.Contains("never", cut.FindAll(".db-pipelines-last-run")[1].TextContent);
-            // BL-229: its runs waiting their turn, a link to them - none said for a pipeline without.
+            // Its runs waiting their turn, a link to them - none said for a pipeline without.
             var queued = Assert.Single(cut.FindAll(".db-pipelines-queued"));
             Assert.Equal("2 queued", queued.TextContent.Trim());
             Assert.EndsWith("/Runs?definition=def-1&state=" + PipelineRunStates.Queued, queued.GetAttribute("href"));
@@ -822,7 +822,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("No pipeline matches 'nothing like it'.", cut.Find("#pipelines-none-match").TextContent.Trim());
         }
 
-        // BL-229: n8n's human in the loop - a run waiting for approval says what is asked, the details and by when; a person with
+        // n8n's human in the loop - a run waiting for approval says what is asked, the details and by when; a person with
         // the approve key decides it with a comment, and the page reads the run again; a decision someone made first is said so.
         [Fact]
         public void A_run_waiting_for_approval_is_decided_on_its_page()
@@ -912,7 +912,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(noRuns.FindAll("#pipelines-runs-approvals"));
         }
 
-        // BL-229: n8n's Insights on the pipelines list - the window's runs, failures (to the failed runs), failure rate and median
+        // n8n's Insights on the pipelines list - the window's runs, failures (to the failed runs), failure rate and median
         // run, a window chosen; each pipeline's own figures in its row, its failures linked to its failed runs.
         [Fact]
         public void The_pipelines_list_says_how_the_pipelines_have_been_running()
@@ -952,7 +952,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("Last 30 days", cut.Find(".db-pipelines-table thead").TextContent);
         }
 
-        // BL-229 - what runs next: the published pipelines' schedules, the soonest first - when, which pipeline (to its editor), its
+        // What runs next: the published pipelines' schedules, the soonest first - when, which pipeline (to its editor), its
         // cron and zone, how many runs in the window; the next week chosen; the site's schedules being off said.
         [Fact]
         public void The_pipelines_list_says_what_runs_next()
@@ -981,7 +981,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("runs no schedules", cut.Find("#pipelines-upcoming-off").TextContent); // the site's schedules are off
         }
 
-        // BL-229 - n8n's archive: More's Archive sets a pipeline aside - out of the list, said - and "Archived (1)" shows it alone,
+        // n8n's archive: More's Archive sets a pipeline aside - out of the list, said - and "Archived (1)" shows it alone,
         // opened read-only, with Restore (back as a draft) and Delete for good, asked first; the archive emptied, the list is back.
         [Fact]
         public void A_pipeline_archived_leaves_the_list_and_is_restored_or_deleted_from_the_archive()
@@ -1026,7 +1026,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(new[] { "Nightly report" }, Names())); // the archive emptied: back to the list
         }
 
-        // BL-229: n8n's execution search and bulk delete - a run found by its id or correlation id (and from the address); finished
+        // n8n's execution search and bulk delete - a run found by its id or correlation id (and from the address); finished
         // runs chosen, deleted together once confirmed; a run still going cannot be chosen.
         [Fact]
         public void Runs_are_found_by_id_or_correlation_and_finished_ones_deleted_together()
@@ -1075,7 +1075,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("order-7", _service.Searches[^1]);
         }
 
-        // BL-229: n8n's start-date filter - the runs started from one day to another (UTC days, both kept), either bound alone;
+        // n8n's start-date filter - the runs started from one day to another (UTC days, both kept), either bound alone;
         // two days the wrong way round said, nothing asked; and the days read from the address.
         [Fact]
         public void Runs_are_found_by_the_days_they_started()
@@ -1117,7 +1117,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(1, Rows(fromLink));
         }
 
-        // BL-229: n8n's Duplicate - the pipeline's graph imported under a new name and opened in the editor.
+        // n8n's Duplicate - the pipeline's graph imported under a new name and opened in the editor.
         [Fact]
         public void A_pipeline_is_duplicated_as_a_new_draft_and_opened()
         {
@@ -1136,7 +1136,7 @@ namespace Stomme.Tests.Pipelines
             Assert.EndsWith(" (copy)", PipelinesPage.CopyName(new string('x', 200)));
         }
 
-        // BL-229: n8n's workflow tags - chips on each pipeline, a filter of every tag in use (once whatever its case; a pipeline
+        // n8n's workflow tags - chips on each pipeline, a filter of every tag in use (once whatever its case; a pipeline
         // shown carries EVERY tag chosen), the search reading tags too; an author changes a pipeline's tags in its row, a tag
         // that cannot be one refused before anything is sent; a duplicate keeps them.
         [Fact]
@@ -1203,7 +1203,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "billing", "nightly" }, _service.Tagged[^1].Tags);
         }
 
-        // BL-229 - n8n's folders: the list shows one folder at a time - the folders inside it, counted, then its pipelines - with the
+        // n8n's folders: the list shows one folder at a time - the folders inside it, counted, then its pipelines - with the
         // way back above; a search finds in every folder, each pipeline saying where it is; an author moves a pipeline from its
         // row's More (a folder on the list keeps its spelling, one that cannot be a folder refused before anything is sent); a new
         // folder is opened before anything is in it, and a pipeline created there goes in it; a duplicate goes where its original is.
@@ -1275,7 +1275,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Created 'Page the team' as a draft, in On call.", cut.Find("#pipelines-message").TextContent.Trim());
         }
 
-        // BL-229 - a folder as one file and back: the pipelines in it and in the folders inside it exported with their ids and their
+        // A folder as one file and back: the pipelines in it and in the folders inside it exported with their ids and their
         // folders below it; imported into a folder, each goes below it, and once all are made, what they name of each other names
         // the new pipelines - a pipeline the file does not hold left as named.
         [Fact]
@@ -1321,7 +1321,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("def-copy", _service.SavedGraphs.Single(saved => saved.DefinitionId == "def-copy-2").Graph.CalledBy);
         }
 
-        // BL-229 - the map: the pipelines that run or are run by another drawn, each a link to its editor, each line its kind; the
+        // The map: the pipelines that run or are run by another drawn, each a link to its editor, each line its kind; the
         // ones linked to none counted, not drawn; nothing linked, said so; closed.
         [Fact]
         public void The_map_draws_which_pipeline_runs_which()
@@ -1362,7 +1362,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.NotNull(cut.Find("#pipelines-map-empty")));
         }
 
-        // BL-229 - find in every pipeline: offered once the search has two letters, the places listed with their pipeline, folder,
+        // Find in every pipeline: offered once the search has two letters, the places listed with their pipeline, folder,
         // where and what, each a link to the editor at its step (a note or a variable: the pipeline alone); closed.
         [Fact]
         public void A_text_is_found_inside_the_pipelines_and_each_place_links_to_its_step()
@@ -1390,7 +1390,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal("'orders' is not used in any pipeline's steps, notes or variables.", cut.Find("#pipelines-found-count").TextContent.Trim()));
         }
 
-        // BL-229 - pipelines chosen on the list and done to at once: moved to a folder, tagged (one already full refused, the rest
+        // Pipelines chosen on the list and done to at once: moved to a folder, tagged (one already full refused, the rest
         // done), exported as one file, archived after being asked - each one's own call, the list read again after.
         [Fact]
         public void Pipelines_chosen_on_the_list_are_moved_tagged_exported_and_archived_at_once()
@@ -1448,7 +1448,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "Notify" }, cut.FindAll(".db-pipelines-table tbody strong").Select(name => name.TextContent.Trim()).ToArray());
         }
 
-        // BL-229 - the site's pipeline activity on the list: who did what to which pipeline, and when - each pipeline and run a link,
+        // The site's pipeline activity on the list: who did what to which pipeline, and when - each pipeline and run a link,
         // the site's own lines (its variables) with no pipeline; nothing recorded, said so; closed.
         [Fact]
         public void The_activity_says_who_did_what_to_which_pipeline_and_when()
@@ -1476,7 +1476,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.NotNull(cut.Find("#pipelines-activity-none")));
         }
 
-        // BL-229 - before a pipeline others run stops running: retracted or archived, what stops working is said first and done only
+        // Before a pipeline others run stops running: retracted or archived, what stops working is said first and done only
         // when confirmed; one nothing runs is done at once; chosen ones are told as the choice changes - those leaving together
         // breaking nothing among themselves.
         [Fact]
@@ -1533,7 +1533,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-leaving"));
         }
 
-        // BL-229 - n8n's folder rename, move and delete, on the folder shown: renamed or moved as a path, what is in it going along;
+        // n8n's folder rename, move and delete, on the folder shown: renamed or moved as a path, what is in it going along;
         // one that cannot be refused before anything is sent; removed, what was in it moves up - the list showing where it went.
         [Fact]
         public void A_folder_is_renamed_moved_and_removed_from_the_list()

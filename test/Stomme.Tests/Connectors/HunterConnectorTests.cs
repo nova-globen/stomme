@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Hunter (n8n's Hunter node) without a server: every domain, company, name, address, choice and number held to
+    /// Hunter (n8n's Hunter node) without a server: every domain, company, name, address, choice and number held to
     /// Hunter's shape before anything is sent; the key in the X-API-KEY header, never in the address; a domain's addresses - a
     /// site's address taken for its domain - each a record, or the domain's one record with them all, filtered by type,
     /// seniority and department, page by page by offset up to the most; a person's address by their names or full name; an

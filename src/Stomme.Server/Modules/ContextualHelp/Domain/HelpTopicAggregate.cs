@@ -8,7 +8,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.ContextualHelp.Domain
 {
     /// <summary>
-    /// One contextual-help topic, for one SITE, one anchor and one locale (BL-84, D103 item 3).
+    /// One contextual-help topic, for one SITE, one anchor and one locale.
     /// </summary>
     /// <remarks>
     /// <para>

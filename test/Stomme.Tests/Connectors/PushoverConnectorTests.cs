@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Pushover (n8n's Pushover node: a message pushed to a user's devices): every call Pushover's API with the
+    /// Pushover (n8n's Pushover node: a message pushed to a user's devices): every call Pushover's API with the
     /// application's token in a POST's form or a GET's query; a message pushed with every field, an emergency one retried and
     /// expiring, a time sent as Pushover's seconds; a user validated; a receipt read and cancelled; the sounds listed; what
     /// could go wrong refused before anything is sent; Pushover's status 0 a failure with its errors, a 200 among them; a test

@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-167 - two folds of one quota on one host never overlap, whichever of them holds the cross-node lock. Found by a
+    /// Two folds of one quota on one host never overlap, whichever of them holds the cross-node lock. Found by a
     /// RavenDB gate run that failed with a quota concurrency conflict: a recorder that found the distributed lock held
     /// took the in-process gate INSTEAD and folded beside the recorder holding the lock.
     /// </summary>

@@ -33,7 +33,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// BL-229 - a sub-pipeline's contract and its callers held to it. What a pipeline expects is what its "When called by another
+    /// A sub-pipeline's contract and its callers held to it. What a pipeline expects is what its "When called by another
     /// pipeline" says (<see cref="PipelineFields"/>); an Execute or Dispatch pipeline whose Input - a value of its own, a JSON
     /// object - leaves out a required field, or sends a value a field cannot hold, is warned about where the author writes it,
     /// before a run fails in the called pipeline (n8n checks a sub-workflow's inputs only when it runs). An Input from an

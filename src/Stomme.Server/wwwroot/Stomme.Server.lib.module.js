@@ -65,7 +65,7 @@ function onEnhancedLoad() {
 }
 
 export function afterWebStarted(blazor) {
-    // BL-192: FluentUI 5 has started by now (its initializer follows this one); hand it the mode App.razor's bootstrap
+    // FluentUI 5 has started by now (its initializer follows this one); hand it the mode App.razor's bootstrap
     // applied before Blazor existed. Its colours are the theme's, bound in app.css.
     setTimeout(() => window.stommeTheme?.sync?.(), 0);
 

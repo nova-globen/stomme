@@ -4,7 +4,7 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// Translates between the four Search aggregates and their wire contracts at the
-    /// <see cref="SearchContentRepository"/> boundary (D50). Only the columns the harvested schema actually
+    /// <see cref="SearchContentRepository"/> boundary. Only the columns the harvested schema actually
     /// has are mapped — verified against live PostgreSQL at 13/4/6/3 columns.
     /// </summary>
     /// <remarks>
@@ -85,7 +85,7 @@ namespace Stomme.Repository.Stores
         }
     }
 
-    /// <summary>Translates between <see cref="SearchWordAggregate"/> and <see cref="SearchWord"/> (D50).</summary>
+    /// <summary>Translates between <see cref="SearchWordAggregate"/> and <see cref="SearchWord"/>.</summary>
     public static class SearchWordMapper
     {
         public static SearchWord ToModel(SearchWordAggregate aggregate)
@@ -130,7 +130,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// Translates between <see cref="SearchContentWordAggregate"/> and <see cref="SearchContentWord"/> (D50).
+    /// Translates between <see cref="SearchContentWordAggregate"/> and <see cref="SearchContentWord"/>.
     /// </summary>
     /// <remarks>
     /// The contract's <c>SearchWord</c> and <c>SearchContent</c> navigations are <c>[NotMapped]</c> view state

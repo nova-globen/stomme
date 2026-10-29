@@ -269,7 +269,7 @@ namespace Stomme.Tests.Erasure
             return result;
         }
 
-        // BL-97 increment 11: a user id can sit ONE level down, in a child collection riding the module store's JSON column
+        // A user id can sit ONE level down, in a child collection riding the module store's JSON column
         // (an editing session's participants). Top-level properties alone could not see it; the element type of a
         // collection property declared in this assembly is read by the same rule, named "Collection.Member".
         private static IEnumerable<string> MembersOf(Type type, Func<PropertyInfo, bool> identifying)

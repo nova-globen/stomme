@@ -15,7 +15,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Messaging
 {
     /// <summary>
-    /// WhatsApp Business (BL-229, n8n's WhatsApp Business Cloud node, its text message sent): Meta's WhatsApp Cloud API under
+    /// WhatsApp Business (n8n's WhatsApp Business Cloud node, its text message sent): Meta's WhatsApp Cloud API under
     /// Graph (<c>https://graph.facebook.com/v23.0</c>, the version the endpoint names), a system user's access token as the
     /// bearer, the connection's <c>phone_number_id</c> the sender - the number's ID in WhatsApp Manager, not the number. A test
     /// reads the number and names it; <c>message</c> sends a text to a phone number - <c>reply_to</c> a message's id

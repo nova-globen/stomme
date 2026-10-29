@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - a Telegram bot that answers, DRIVEN on an installed SQLite host through the real task, port and connector against a
+    /// A Telegram bot that answers, DRIVEN on an installed SQLite host through the real task, port and connector against a
     /// loopback stand-in for the Bot API that keeps getUpdates' rules: a Telegram connection made over the API, its token vaulted
     /// and tested through the host's egress; a pipeline "Telegram message received" -> Send chat message, answering in the same
     /// chat in reply to the message with its text, published while a message is already waiting. A message sent after starts ONE

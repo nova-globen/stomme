@@ -21,7 +21,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Mautic
 {
     /// <summary>
-    /// Mautic (BL-229, n8n's Mautic node: contacts, companies, segments, campaigns and emails): a Mautic instance's REST API
+    /// Mautic (n8n's Mautic node: contacts, companies, segments, campaigns and emails): a Mautic instance's REST API
     /// with a user's name and password (Basic), over the host's egress. A test names whose the credentials are.
     /// </summary>
     /// <remarks>

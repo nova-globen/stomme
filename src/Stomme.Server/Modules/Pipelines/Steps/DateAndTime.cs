@@ -46,7 +46,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Date &amp; time (BL-229, n8n's Date &amp; Time node): add a duration to a date or take one from it, write it as text, count
+    /// Date &amp; time (n8n's Date &amp; Time node): add a duration to a date or take one from it, write it as text, count
     /// the time between two, or take the start of its day, week, month or year. A date is ISO 8601 (one without an offset is
     /// UTC), or a Unix time in seconds or milliseconds; empty, it is now - the engine's clock, as <c>{{ $now }}</c> is. Days,
     /// months and years are calendar ones: in a time zone, adding a day across a clock change keeps the time of day. The result

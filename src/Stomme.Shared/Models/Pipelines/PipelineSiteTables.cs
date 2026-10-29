@@ -91,7 +91,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// BL-229 - n8n's Data tables: tables a site keeps for its pipelines - rows a run inserts, finds, updates, upserts or deletes
+    /// n8n's Data tables: tables a site keeps for its pipelines - rows a run inserts, finds, updates, upserts or deletes
     /// with the Data table step, and that its authors see and change on the Data tables page - so a run remembers what an earlier
     /// one did (the orders already sent, a counter, a list of subscribers). Each column holds text, a number, true or false, or a
     /// date; every row also has its <c>id</c>, <c>createdAt</c> and <c>updatedAt</c>. Not for secrets: whoever may view the site's

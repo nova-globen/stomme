@@ -30,7 +30,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Local File Trigger as "File added": a published pipeline watching a folder of the site's pipeline folder is
+    /// n8n's Local File Trigger as "File added": a published pipeline watching a folder of the site's pipeline folder is
     /// started once for each file put there - the file its trigger's result - and never for one already there when it was
     /// published, one its names do not match, one in a subfolder it does not look into, one still being written, or one it has
     /// started for already; "changed files too" takes a file written again; a look starts at most so many, oldest written first;

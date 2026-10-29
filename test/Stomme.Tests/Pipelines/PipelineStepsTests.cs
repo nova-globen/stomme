@@ -174,7 +174,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains(bad.PipelineState.Incidents, incident => incident.Message.Contains("unknown type 'Money'"));
         }
 
-        // BL-229 - Any moves a value as it is (a number stays a number, a list a list, a text a text however it reads), and Leave
+        // Any moves a value as it is (a number stays a number, a list a list, a text a text however it reads), and Leave
         // out keeps fields from passing through: with a mapping from the old name, n8n's Rename Keys.
         [Fact]
         public async Task Map_fields_moves_a_value_as_it_is_and_leaves_fields_out()
@@ -202,7 +202,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains(rule.PipelineState.Incidents, incident => incident.Message.Contains("unknown type 'Any'"));
         }
 
-        // BL-229 - a computed field names a type as a mapping does (n8n's Edit Fields types every field it sets): its result
+        // A computed field names a type as a mapping does (n8n's Edit Fields types every field it sets): its result
         // converted, an empty result no value, one that does not convert an error the threshold counts; no type is text, as before.
         [Fact]
         public async Task Map_fields_types_a_computed_field_that_names_one()
@@ -354,7 +354,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains(off.PipelineState.Incidents, incident => incident.Message.Contains("needs Pipelines:Scripts:Enabled"));
         }
 
-        // BL-229 - n8n's Code node run as it was written: the input's records as n8n's items, once for all of them or once for each,
+        // n8n's Code node run as it was written: the input's records as n8n's items, once for all of them or once for each,
         // what it returns the records; console.log in the step's log; an n8n helper this sandbox does not have fails, named.
         [Fact]
         public async Task A_script_written_for_n8ns_code_node_runs_as_n8n_ran_it()
@@ -505,7 +505,7 @@ namespace Stomme.Tests.Pipelines
             </rss>
             """;
 
-        // BL-229 - n8n's RSS Read: a feed's items as records, RSS 2.0, Atom and RSS 1.0 alike, dates in UTC; fetched through the
+        // n8n's RSS Read: a feed's items as records, RSS 2.0, Atom and RSS 1.0 alike, dates in UTC; fetched through the
         // HTTP request step's guard - refused on the private network until allowed, a redirect judged again.
         [Fact]
         public async Task Read_rss_feed_reads_rss_atom_and_rdf_items_and_fetches_through_the_guard()
@@ -718,7 +718,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229 - n8n's HTTP Request pagination: a GET that follows the next page - by the Link header, a URL in the body, or a page
+        // n8n's HTTP Request pagination: a GET that follows the next page - by the Link header, a URL in the body, or a page
         // number until a page has no records - and gathers every page's records into one list; at most so many pages (said when
         // there were more); a page answering an error fails the step with its number; a next page on an address the guard denies is
         // refused; a page that repeats ends it; a body without the list, and a POST, are refused.

@@ -104,7 +104,7 @@ public static class ObjectConverter
         if (value is JsonElement { ValueKind: JsonValueKind.Number } jsonNumber && underlyingTargetType == typeof(string))
             return jsonNumber.ToString().ConvertTo(underlyingTargetType);
 
-        // Stomme hand fix (BL-95, 2026-10-05): a JSON object or array read into a text input is its JSON text, as a
+        // Stomme hand fix: a JSON object or array read into a text input is its JSON text, as a
         // JsonNode already is below. Deserializing one to a string threw, so a ForEach over records (each a JsonElement)
         // faulted the first text input in its body.
         if (value is JsonElement { ValueKind: JsonValueKind.Object or JsonValueKind.Array } jsonStructure && underlyingTargetType == typeof(string))

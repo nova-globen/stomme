@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (D106 item 2) - the participant seam is SERVER-FREE: it lives in <c>Stomme.Shared</c>, and every type its
+    /// The participant seam is SERVER-FREE: it lives in <c>Stomme.Shared</c>, and every type its
     /// public surface names is the BCL's or the seam's own, so a module ships a participant referencing only
     /// <c>Stomme.Shared</c>. The scanner is validated both ways: 0 on the seam, and a finding on a planted type that names
     /// a server type.

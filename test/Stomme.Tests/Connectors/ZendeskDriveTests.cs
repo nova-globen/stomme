@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zendesk DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Zendesk DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for an account's Support API: a Zendesk connection made over the API, its API token vaulted,
     /// tested (the agent named); a published pipeline opens a ticket, reads the open tickets over two pages, answers one with a
     /// public reply and finds a requester - every call the agent's address with /token and the token; the token is in neither

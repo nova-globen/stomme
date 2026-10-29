@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.FacebookGraph
 {
     /// <summary>
-    /// The Facebook Graph API (BL-229, n8n's Facebook Graph API node: a node or its edge read, posted to and deleted): Meta's
+    /// The Facebook Graph API (n8n's Facebook Graph API node: a node or its edge read, posted to and deleted): Meta's
     /// Graph API - a Page's, an Instagram account's, an ad account's - with an access token as a bearer token, never in an
     /// address, over the host's egress. A test names whose the token is.
     /// </summary>

@@ -14,12 +14,12 @@ using Stomme.Shared;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// The framework's log surface. Synchronous — and, since D34, synchronous LEGITIMATELY: it enriches on
+    /// The framework's log surface. Synchronous — and,, synchronous LEGITIMATELY: it enriches on
     /// the calling thread and hands off to <see cref="LogQueue"/>, touching no store.
     /// </summary>
     /// <remarks>
     /// Do not "fix" this to be async. It is called from ~443 sites; the reason it may stay sync is that its
-    /// body no longer reaches a database, NOT that it is exempt from D33. If you add a store call here you
+    /// body no longer reaches a database, NOT that it is exempt. If you add a store call here you
     /// have reintroduced the sync-over-async that D29 shipped a dead master with — put it in
     /// <see cref="LogDrainService"/> instead.
     /// </remarks>
@@ -107,7 +107,7 @@ namespace Stomme.Infrastructure
             // to populate User.Roles — and this method never reads Roles, only UserId. UserId is
             // ClaimsPrincipal.UserId(), a pure claims lookup that returns -1 when the claim is absent, which
             // is precisely the value GetUserAsync yielded for an anonymous or null principal. So this is the
-            // same number, without the query. (D34)
+            // same number, without the query.
             var principal = _accessor.HttpContext?.User;
             log.UserId = (principal != null && principal.Identity.IsAuthenticated) ? principal.UserId() : -1;
             log.Url = "";
@@ -126,7 +126,7 @@ namespace Stomme.Infrastructure
                 {
                     // An action that KNOWS its own URL carries a secret can say so, and that wins. See
                     // RedactedUrlKey - the query-string denylist below cannot help when the secret is a PATH
-                    // segment, because nothing about a path says which segment is a value (BL-148).
+                    // segment, because nothing about a path says which segment is a value.
                     log.Url = _accessor.HttpContext.Items.TryGetValue(RedactedUrlKey, out var declared)
                         && declared is string redacted && !string.IsNullOrEmpty(redacted)
                         ? redacted
@@ -146,7 +146,7 @@ namespace Stomme.Infrastructure
                 log.Feature = log.Category;
             }
             log.Function = Enum.GetName(typeof(LogFunction), function);
-            // Owner, 2026-10-10 (D99a): an inherited refusal of an ANONYMOUS caller is a Warning - logged, never mailed.
+            // Owner, 2026-10-10: an inherited refusal of an ANONYMOUS caller is a Warning - logged, never mailed.
             level = Stomme.Infrastructure.Security.SecurityRefusals.LevelFor(level, function, message, principal);
             log.Level = Enum.GetName(typeof(Shared.LogLevel), level);
             if (exception != null)
@@ -167,7 +167,7 @@ namespace Stomme.Infrastructure
         }
 
         /// <summary>
-        /// A framework entity argument, logged as WHAT it is rather than everything it carries (BL-157).
+        /// A framework entity argument, logged as WHAT it is rather than everything it carries.
         /// </summary>
         /// <remarks>
         /// "Page Added {Page}" used to serialise the whole <see cref="Page"/> - its permission list with role names, user
@@ -235,7 +235,7 @@ namespace Stomme.Infrastructure
                         // Hand off to LogDrainService. The store write and the notification used to happen
                         // right here, synchronously; since D33 made the repositories async they cannot, and
                         // blocking on them is the banned shape. Enrichment above already captured everything
-                        // that needed the request, so the drain only needs the entry and its tenant. (D34)
+                        // that needed the request, so the drain only needs the entry and its tenant.
                         var entry = new LogEntry(log, _siteState?.Alias, CurrentAlias());
                         if (!_queue.TryWrite(entry))
                         {
@@ -351,7 +351,7 @@ namespace Stomme.Infrastructure
         /// <see cref="RedactQueryString"/> can redact by key; a path does not — nothing about
         /// <c>/api/Setting/Site/1/Smtp:Password/hunter2/true</c> says which segment is the value, and a regex per
         /// route is a rule that rots the moment a route changes. So the ACTION, which knows, says so: it puts a
-        /// safe URL here and <c>LogManager</c> prefers it for every entry raised during that request (BL-148).
+        /// safe URL here and <c>LogManager</c> prefers it for every entry raised during that request.
         /// One writer today, <c>SettingController</c>'s legacy value-in-path route.
         /// </remarks>
         public const string RedactedUrlKey = "Stomme:RedactedLogUrl";
@@ -371,7 +371,7 @@ namespace Stomme.Infrastructure
         /// <para>
         /// <b>Every log entry raised during a request carries that request's URL</b>, so a secret in the query
         /// string reaches the site Log table through a door that has nothing to do with what was being logged.
-        /// MEASURED (BL-149): a failed password reset wrote
+        /// MEASURED: a failed password reset wrote
         /// <c>url=…/api/User/reset?token=…</c> into the table, where every administrator can read it — and it
         /// did so from a log line that does not mention the token at all. Fixing only the message would have
         /// left the token in the log and looked like a fix.

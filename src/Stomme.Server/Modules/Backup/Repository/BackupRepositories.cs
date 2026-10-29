@@ -11,8 +11,8 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Backup.Persistence
 {
     /// <summary>
-    /// The snapshot catalogue's reads (BL-81, D106 item 6). Filters are on <c>Status</c> only - an enum, the provider-safe
-    /// set (D78); ordering happens in memory, the catalogue being small by construction (retention keeps it so).
+    /// The snapshot catalogue's reads. Filters are on <c>Status</c> only - an enum, the provider-safe
+    /// set; ordering happens in memory, the catalogue being small by construction (retention keeps it so).
     /// </summary>
     public interface IBackupSnapshotRepository : IRepository<BackupSnapshotAggregate, Guid>
     {
@@ -45,7 +45,7 @@ namespace Stomme.Backup.Persistence
             (await inner.FindAsync(snapshot => snapshot.Status == status, ct)).OrderBy(snapshot => snapshot.CreatedOnUtc).ThenBy(snapshot => snapshot.Id).ToList();
     }
 
-    /// <summary>The backup schedules (D106 item 8).</summary>
+    /// <summary>The backup schedules.</summary>
     public interface IBackupScheduleRepository : IRepository<BackupScheduleAggregate, Guid>
     {
         /// <summary>Every schedule, oldest first.</summary>

@@ -30,7 +30,7 @@ using File = System.IO.File;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// DRIVES the feature-flag seeder across a REAL install lifecycle on PostgreSQL (D68), because that is the
+    /// DRIVES the feature-flag seeder across a REAL install lifecycle on PostgreSQL, because that is the
     /// only place the survey's open question can be answered: on a fresh WIZARD install — where the host boots
     /// uninstalled, the seeder runs and fails at StartAsync (no master DB yet), the install then completes at
     /// runtime, and only a subsequent host start re-runs the seeder — do the flags actually end up seeded and
@@ -285,7 +285,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { }
             }
         }

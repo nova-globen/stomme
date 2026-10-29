@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Bitly
 {
     /// <summary>
-    /// Bitly (BL-229, n8n's Bitly node: a link shortened, got and updated): Bitly's API v4 with an access token as a bearer
+    /// Bitly (n8n's Bitly node: a link shortened, got and updated): Bitly's API v4 with an access token as a bearer
     /// token, over the host's egress. A test names the token's user and its default group.
     /// </summary>
     /// <remarks>

@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-113: one unreadable retention setting must not stop the purge for every LATER site.
+    /// One unreadable retention setting must not stop the purge for every LATER site.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -26,7 +26,7 @@ namespace Stomme.Tests
     /// The admin pages use a number input, so a bad value arrives through the Host settings import, the Setting
     /// API or the database. Driven here on a real installed site by writing the setting the way those paths do.
     /// Both directions: with a good value the purge still reports its work, and the note names the SETTING but
-    /// never its value (BL-112, these rows are private).
+    /// never its value (these rows are private).
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -77,7 +77,7 @@ namespace Stomme.Tests
                 Assert.Contains("Notifications Purged", notes);
                 Assert.Contains("Broken Urls Purged", notes);
 
-                // It said which setting it could not read, and did NOT echo the value (BL-112).
+                // It said which setting it could not read, and did NOT echo the value.
                 Assert.Contains("LogRetention", notes);
                 if (!string.IsNullOrEmpty(badValue))
                 {

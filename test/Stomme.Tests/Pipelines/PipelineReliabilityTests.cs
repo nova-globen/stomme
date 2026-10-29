@@ -20,7 +20,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 9 - a step's own reliability, run by the ENGINE through the module's step middleware: a failed step is
+    /// A step's own reliability, run by the ENGINE through the module's step middleware: a failed step is
     /// tried again as often as it says, and - when it says so - the pipeline goes on past it when it still fails, the failure
     /// in the run's log; without either, a failure faults the run as before. Kept on the step through the codec.
     /// </summary>

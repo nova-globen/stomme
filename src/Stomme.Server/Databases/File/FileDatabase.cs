@@ -4,7 +4,7 @@ using Stomme.Databases.Interfaces;
 namespace Stomme.Database.File
 {
     /// <summary>
-    /// The file-store database provider (D80). Implements the storage-agnostic <see cref="IDatabase"/> core ONLY —
+    /// The file-store database provider. Implements the storage-agnostic <see cref="IDatabase"/> core ONLY —
     /// deliberately NOT <c>DatabaseBase</c>/<see cref="IRelationalDatabase"/>, because a JSON-file store has no EF
     /// Core provider, no <c>UseDatabase</c> and no SQL to rewrite (the same shape <c>RavenDatabase</c> takes). Its
     /// purpose is to be selectable and identifiable: a deployment sets <c>Database:DefaultDBType</c> to this type's

@@ -20,7 +20,7 @@ namespace Stomme.Tests
     /// <remarks>
     /// Run on SQLite, PostgreSQL and RavenDB, because the pass it triggers probes the install's own store. With the job
     /// switched off (<c>Health:Enabled = false</c>) the run is the ONLY thing that writes a row, so the dashboard's subjects
-    /// after it are its own work - and run-now works with probing off, which is when an operator most wants it. PostgreSQL and RavenDB FAIL rather than skip (D46).
+    /// after it are its own work - and run-now works with probing off, which is when an operator most wants it. PostgreSQL and RavenDB FAIL rather than skip.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

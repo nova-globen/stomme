@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Portability.Execution
 {
     /// <summary>
-    /// Builds the queued portability packages, every minute, per tenant and site (BL-82, D107 item 7).
+    /// Builds the queued portability packages, every minute, per tenant and site.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -31,7 +31,7 @@ namespace Stomme.Modules.Portability.Execution
     /// resolved TENANT and user-scoped caches from the alias.
     /// </para>
     /// <para>
-    /// <b>One builder per site at a time, across nodes:</b> the install's <see cref="IDistributedLock"/> (BL-154) is taken
+    /// <b>One builder per site at a time, across nodes:</b> the install's <see cref="IDistributedLock"/> is taken
     /// per site; a node that cannot take it leaves that site to the one that did.
     /// </para>
     /// </remarks>

@@ -16,7 +16,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Vonage
 {
     /// <summary>
-    /// Vonage (BL-229, n8n's Vonage node: an SMS sent) over Vonage's SMS API (<c>https://rest.nexmo.com/sms/json</c>) by an
+    /// Vonage (n8n's Vonage node: an SMS sent) over Vonage's SMS API (<c>https://rest.nexmo.com/sms/json</c>) by an
     /// account's API key and secret - Basic, as Vonage takes them, never in the body or the address. A test reads the account's
     /// balance, so it sends nothing.
     /// </summary>

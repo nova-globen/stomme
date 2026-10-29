@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Trello
 {
     /// <summary>
-    /// Trello (BL-229, n8n's Trello node: a card created, got, updated and deleted, a comment added, a list's cards got): Trello's
+    /// Trello (n8n's Trello node: a card created, got, updated and deleted, a comment added, a list's cards got): Trello's
     /// REST API (<c>https://api.trello.com/1</c>), the account's API key and token as the key pair - sent in Trello's
     /// <c>Authorization: OAuth oauth_consumer_key, oauth_token</c> header, never in an address, so the token is in no log line. A
     /// test asks Trello who the token is (<c>members/me</c>).

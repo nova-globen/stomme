@@ -30,13 +30,13 @@ namespace Stomme.Repository.Stores
     public class UserRoleAggregate : AggregateRoot<int>, IAuditable
     {
         /// <summary>
-        /// A reference to the User aggregate BY ID (D7/D19) — the severed <see cref="UserRole.User"/>
+        /// A reference to the User aggregate BY ID — the severed <see cref="UserRole.User"/>
         /// navigation's persisted half.
         /// </summary>
         public int UserId { get; set; }
 
         /// <summary>
-        /// A reference to the Role aggregate BY ID (D7/D19) — the severed <see cref="UserRole.Role"/>
+        /// A reference to the Role aggregate BY ID — the severed <see cref="UserRole.Role"/>
         /// navigation's persisted half. This is the column the site filter is rebuilt on: see
         /// src/Stomme.Server/README.md (persistence seam).
         /// </summary>

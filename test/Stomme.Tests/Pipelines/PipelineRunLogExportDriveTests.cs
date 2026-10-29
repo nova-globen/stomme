@@ -26,7 +26,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95's re-booked export source (D108, from BL-85): a pipeline run's execution log exported through the REAL export
+    /// BL-95's re-booked export source (from BL-85): a pipeline run's execution log exported through the REAL export
     /// queue on SQLite, PostgreSQL and RavenDB - a pipeline created, published and run over HTTP, its log requested as CSV,
     /// rendered by the queue job (which has no request, so the source enters the site's engine tenant itself), downloaded and
     /// compared line for line with the run's log over the API. A run that is not the site's fails its job; a requester

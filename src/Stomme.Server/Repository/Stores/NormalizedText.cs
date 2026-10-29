@@ -1,7 +1,7 @@
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// The one spelling of "normalized" the framework store uses for case-insensitive lookup columns (D49) —
+    /// The one spelling of "normalized" the framework store uses for case-insensitive lookup columns —
     /// <see cref="FolderAggregate.PathNormalized"/> and <see cref="FileAggregate.NameNormalized"/>.
     /// </summary>
     /// <remarks>

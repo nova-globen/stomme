@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-110 (b): feature flags on the FILE store. The module chose its flag store by "relational or not", and the "not"
+    /// Feature flags on the FILE store. The module chose its flag store by "relational or not", and the "not"
     /// branch composed <c>RavenRepository&lt;,&gt;</c> - so with <c>DefaultDBType</c> naming the File store, the first flag
     /// evaluation threw (measured: "Unable to resolve service for type IDocumentStore"). The two aggregates now take the
     /// storage-blind File path every other module takes.

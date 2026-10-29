@@ -7,7 +7,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Connectivity
 {
     /// <summary>
-    /// The Connectivity module's <see cref="ModuleDefinition"/> (BL-94, D110): one admin page, <c>admin/connections</c>,
+    /// The Connectivity module's <see cref="ModuleDefinition"/>: one admin page, <c>admin/connections</c>,
     /// placed through <see cref="ModuleDefinition.PageTemplates"/> (reconciled additively per site on every boot) for
     /// Administrators, and the two keys <c>connections:view</c> / <c>connections:manage</c> declared as site Permission
     /// rows through <see cref="PermissionKeys.Declare"/> - both default to Administrators.

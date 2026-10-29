@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// The host's own data directory, for code that runs while the container is still being COMPOSED and so
-    /// cannot inject <c>IConfigManager</c> (BL-153).
+    /// cannot inject <c>IConfigManager</c>.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return Path.Combine(contentRoot.ContentRootPath, "Data");
             }
 
-            // BL-230: a bare composition reads the process-wide slot, which holds whatever host set it LAST - in a test run,
+            // A bare composition reads the process-wide slot, which holds whatever host set it LAST - in a test run,
             // a fixture whose Dispose may already have deleted that folder (two gates in a row died on it, 2026-10-05). A slot
             // whose owning folder is gone is stale: such a composition gets a folder of its own process instead. A fixture
             // that set the slot on purpose, and still has its folder, keeps it.
@@ -71,7 +71,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>Expands the <c>|DataDirectory|</c> token against THIS host's data directory.</summary>
         public static string Expand(IServiceCollection services, string connectionString)
         {
-            // Nothing to expand, nothing to create (BL-166). This used to resolve - and CREATE - the data directory for
+            // Nothing to expand, nothing to create. This used to resolve - and CREATE - the data directory for
             // every connection string, token or not; a fixture handing in an explicit path then raced whichever suite owned
             // the directory the process-wide fallback pointed at, and died on a DirectoryNotFoundException for a folder it
             // never needed (measured in a full gate: a Notifications SQLite conformance case, another suite's deleted root).
@@ -92,7 +92,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             catch (DirectoryNotFoundException) when (!HasHost(services))
             {
-                // BL-230: the slot's owner deleted its folder between the check above and this line.
+                // The slot's owner deleted its folder between the check above and this line.
                 dataDirectory = BareFallback;
                 Directory.CreateDirectory(dataDirectory);
             }

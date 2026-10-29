@@ -20,7 +20,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Datasets.Startup
 {
     /// <summary>
-    /// The Datasets module's server composition (BL-94 increments 9, 10 and 13, D110): the tenant-owned
+    /// The Datasets module's server composition (BL-94 increments 9, 10 and 13): the tenant-owned
     /// <see cref="DatasetAggregate"/> on the storage-blind seam, the module's repository, the Shared read and write ports'
     /// implementations, the PII scanner and the classifier over it, the CQRS handlers (registered EXPLICITLY - never
     /// AddMediator() here), the validators, the managed-file reader and the upload source (13), and the client contract's server twin.
@@ -67,7 +67,7 @@ namespace Stomme.Modules.Datasets.Startup
             // Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).
             services.AddTransient<IDatasetsService, ServerDatasetsService>();
 
-            // The export half (BL-97 increment 1, D108): a dataset's rows as an export source; the engine checks datasets:preview.
+            // The export half: a dataset's rows as an export source; the engine checks datasets:preview.
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Export.IExportSource, DatasetRowsExportSource>());
 
             // Demo content (increment 14): three datasets per site on the boot path, ONLY while DemoContent:Enabled is

@@ -2,7 +2,7 @@
 
    The `--db-*` design system itself is NOT here. It is a FRAMEWORK concern and ships globally in
    `wwwroot/css/app.css`: the tokens, the base typography, and the whole component layer (buttons,
-   inputs, tables, cards, dialogs, tabs, pager, messages, …). See D27, and D31 for the hoist.
+   inputs, tables, cards, dialogs, tabs, pager, messages, …).
 
    What stays in a theme is only what that theme genuinely owns: the shell it wraps the page in
    (`.db-shell`, `.db-header*`, `.db-body`, `.db-page`, the pane grid, `.db-footer`) and its own
@@ -26,7 +26,7 @@
 .db-body { background: var(--db-bg); flex: 1 1 auto; }
 .db-page { max-width: 1320px; margin: 0 auto; padding: 1.75rem 2rem 4rem; }
 
-/* Pane grid — CSS Grid instead of Bootstrap's .row/.col-md-* scaffold (D11).
+/* Pane grid — CSS Grid instead of Bootstrap's .row/.col-md-* scaffold.
    A 12-column grid that collapses to one column below the md breakpoint, which is exactly what
    col-md-* did. `:empty` panes collapse so an unused pane row costs no space. */
 .db-panes { display: grid; grid-template-columns: repeat(12, 1fr); gap: 0 1.5rem; }

@@ -10,7 +10,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Cost
 {
     /// <summary>
-    /// AWS Cost Explorer (BL-96 increment 5, lifted from the predecessor platform's <c>awscost</c>): a configuration check, no call - a live
+    /// AWS Cost Explorer (lifted from the predecessor platform's <c>awscost</c>): a configuration check, no call - a live
     /// probe needs AWS Signature V4 request signing, which is not written, so the test says so and the first cost sync is
     /// the verification. <b>CHANGED:</b> the predecessor platform kept the access key id as a setting and the secret as its legacy single
     /// credential; the port declares ApiKeyPair, so both halves are the scheme's fields in the per-site secret store and
@@ -59,7 +59,7 @@ namespace Stomme.Modules.Connectors.Cost
     }
 
     /// <summary>
-    /// Google Cloud Billing (BL-96 increment 5, lifted from the predecessor platform's <c>gcpcost</c>): a configuration check, no call - the
+    /// Google Cloud Billing (lifted from the predecessor platform's <c>gcpcost</c>): a configuration check, no call - the
     /// service-account key must parse as a JSON object; the live verification needs the GCP OAuth token flow and runs on
     /// the first cost sync. <b>CHANGED:</b> the key JSON is the ApiKey scheme's <c>api-key</c> field in the per-site secret
     /// store rather than the predecessor platform's legacy single credential.

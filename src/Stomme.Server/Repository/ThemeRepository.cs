@@ -24,7 +24,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Theme cluster on the persistence seam (D52) — the MASTER half of the master-bookkeeping wave.
+    /// The Theme cluster on the persistence seam — the MASTER half of the master-bookkeeping wave.
     /// Theme-table access goes through <see cref="IThemeStore"/> (writes) and the MASTER read path
     /// <see cref="IMasterStoreSessionFactory"/> (reads); this class holds no <c>DbContext</c> and no
     /// <c>IQueryable</c> escapes it.
@@ -38,7 +38,7 @@ namespace Stomme.Repository
     /// contract is rebuilt here from the loaded theme assemblies and from Settings/Permissions.
     /// </para>
     /// <para>
-    /// Reads NEVER go through the store (D19): a query session opens its own context, so the store's change
+    /// Reads NEVER go through the store: a query session opens its own context, so the store's change
     /// tracker stays clean for the read-then-write theme-sync pass (read the DB themes through a session, then
     /// Add/Update/Delete through the store). The one read through the store is <see cref="DeleteThemeAsync"/>,
     /// which deletes the very instance it loaded — tracking is what we want there.
@@ -64,9 +64,9 @@ namespace Stomme.Repository
             _settings = settings;
         }
 
-        // The read path on the seam (D19): reads go through a MASTER query session, never the store, so the
+        // The read path on the seam: reads go through a MASTER query session, never the store, so the
         // store's tracker stays clean for the read-then-write theme-sync pass. The IQueryable is materialized
-        // inside this method, so it never leaves the repository (D7). Plain LINQ rather than EF's async
+        // inside this method, so it never leaves the repository. Plain LINQ rather than EF's async
         // operators, which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -117,7 +117,7 @@ namespace Stomme.Repository
 
         public async Task DeleteThemeAsync(int themeId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it loaded,
+            // The one read that legitimately goes through the store: it deletes the very instance it loaded,
             // so tracking is what we want and no second instance is ever attached. The harvested code threw a
             // NullReferenceException for an unknown id; returning silently matches DeleteJob/DeleteSetting's shape.
             var aggregate = await _store.GetByIdAsync(themeId);
@@ -172,7 +172,7 @@ namespace Stomme.Repository
             // get themes
             List<Theme> Themes = LoadThemesFromAssemblies();
 
-            // get themes in database — read through a MASTER query session (untracked, D19), mapped to the
+            // get themes in database — read through a MASTER query session (untracked), mapped to the
             // Theme contract so the sync algorithm below is unchanged from the harvested code.
             List<Theme> themes = (await QueryAsync(session => session.Query<ThemeAggregate>().ToList())).ConvertAll(ThemeMapper.ToModel);
 
@@ -193,7 +193,7 @@ namespace Stomme.Repository
                 {
                     if (theme.Version != Theme.Version)
                     {
-                        // update theme version through the store (D19: the row was read via the session, so a
+                        // update theme version through the store (the row was read via the session, so a
                         // fresh aggregate is attached rather than a tracked instance mutated).
                         theme.Version = Theme.Version;
                         await _store.UpdateAsync(ThemeMapper.ToAggregate(theme, assignId: true));
@@ -224,7 +224,7 @@ namespace Stomme.Repository
             // any remaining themes are orphans
             foreach (Theme theme in themes)
             {
-                // delete through the store (D19: attach a fresh aggregate, since the row was read via session).
+                // delete through the store (attach a fresh aggregate, since the row was read via session).
                 await _store.DeleteAsync(ThemeMapper.ToAggregate(theme, assignId: true));
             }
 

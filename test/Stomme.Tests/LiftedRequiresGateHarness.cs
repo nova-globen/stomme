@@ -156,7 +156,7 @@ namespace Stomme.Tests
                 await app.StartAsync();
             }
 
-            // BL-164: where a driven test's seconds go. Kept on every run, because the gate's duration was argued
+            // Where a driven test's seconds go. Kept on every run, because the gate's duration was argued
             // from guesses for a long time and the answer differs per provider.
             output.WriteLine($"[{scratch.Store.Name}][timing] compose {buildMs} ms, install {installMs} ms, start {phase.ElapsedMilliseconds} ms");
 
@@ -286,7 +286,7 @@ namespace Stomme.Tests
         // ---- HTTP ------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// A client with its OWN remote address (BL-121). The host rate-limits the account endpoints per (site, client
+        /// A client with its OWN remote address. The host rate-limits the account endpoints per (site, client
         /// address), and a TestServer request has no address at all - so without this every login a test performed on one
         /// host shared one partition, and a suite that signs several users in would be refused by a limiter guarding
         /// against exactly nothing. Distinct clients are distinct browsers; one client is still one browser.
@@ -644,7 +644,7 @@ namespace Stomme.Tests
         /// </remarks>
         public string CreateConnectionString(string scratchDirectory)
         {
-            // BL-104: the lock above is real product behaviour on a file-backed SQLite install - one writer at a
+            // The lock above is real product behaviour on a file-backed SQLite install - one writer at a
             // time, and the D34 log drain writes from a background thread while a request writes. The HARNESS
             // stops paying for it twice: "Default Timeout" makes a writer WAIT for the lock instead of failing
             // immediately, and WAL (set on the file below, since it is a database-level property) lets readers
@@ -769,7 +769,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// BL-173: a full install on the shared infra SQL Server (UAT <c>:1434</c>, <see cref="SqlServerTestEndpoint"/>). It has
+    /// A full install on the shared infra SQL Server (UAT <c>:1434</c>, <see cref="SqlServerTestEndpoint"/>). It has
     /// no template clone - copying a SQL Server database needs a BACKUP file on the server's own disk - so
     /// <see cref="GateInstallTemplates.CloneAsync(IGateStore, string, Xunit.Abstractions.ITestOutputHelper)"/> installs it
     /// afresh; only the few suites that must see SQL Server use it.
@@ -923,7 +923,7 @@ namespace Stomme.Tests
 
     /// <summary>
     /// A throwaway content root + the <c>appsettings.override.json</c> the installer's self-writes land in, so
-    /// the repository's own appsettings.json is never touched (D32).
+    /// the repository's own appsettings.json is never touched.
     /// </summary>
     internal sealed class ScratchGateInstall : IDisposable
     {
@@ -1006,7 +1006,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// BL-164: a pristine COPY of an installed template - its content root copied and re-pointed, its database
+        /// A pristine COPY of an installed template - its content root copied and re-pointed, its database
         /// cloned. See <see cref="GateInstallTemplates"/>; cases call <see cref="GateInstallTemplates.CloneAsync(IGateStore, string, ITestOutputHelper)"/>.
         /// </summary>
         internal static async Task<ScratchGateInstall> CloneOfAsync(IGateStore store, GateInstallTemplate template)
@@ -1080,7 +1080,7 @@ namespace Stomme.Tests
             // opens more SQLite files than any hand-written list remembers, and the one missing here was
             // FeatureManagement's Stomme.Features.db. Measured: a full gate run left 69 stomme-authz-gate-*
             // trees behind, every one of them holding exactly that file. ReleaseInstall enumerates instead of
-            // knowing names, so a sidecar added by a future module is covered with no edit (BL-104).
+            // knowing names, so a sidecar added by a future module is covered with no edit.
             ScratchSqlite.ReleaseInstall(ContentRoot);
 
             try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }

@@ -28,10 +28,10 @@ namespace Stomme.Infrastructure
 
         // job is executed for each tenant in installation
         // (async because resolving a feature flag reads the flag store)
-        /// <summary>The fallback when a retention setting cannot be read as whole days (BL-113).</summary>
+        /// <summary>The fallback when a retention setting cannot be read as whole days.</summary>
         private const int DefaultRetentionDays = 30;
 
-        /// <summary>The retention days for <paramref name="key"/>, in whole days, never throwing (BL-113).</summary>
+        /// <summary>The retention days for <paramref name="key"/>, in whole days, never throwing.</summary>
         /// <remarks>
         /// These four settings were read with <c>int.Parse</c> OUTSIDE the try blocks meant to contain a failing
         /// purge, and the per-site loop has no catch of its own - so one unparseable value (the admin pages use a
@@ -40,7 +40,7 @@ namespace Stomme.Infrastructure
         /// exception message alone. A value that is not a whole number, or is negative (which would purge rows
         /// dated in the FUTURE - everything), falls back to the 30-day default and says so. Zero is kept: the admin
         /// pages allow it, and it means "purge everything older than now". The note names the SETTING, never its
-        /// value: these rows are private (BL-112).
+        /// value: these rows are private.
         /// </remarks>
         private static int Retention(ISettingRepository settingRepository, IEnumerable<Setting> settings, string key, ref string log, int fallback = DefaultRetentionDays)
         {
@@ -69,12 +69,12 @@ namespace Stomme.Infrastructure
             var environment = provider.GetRequiredService<IWebHostEnvironment>();
             var tenantManager = provider.GetRequiredService<ITenantManager>();
 
-            // Contributed retention passes (D104). Resolved ONCE per tenant rather than per site: the set cannot
+            // Contributed retention passes. Resolved ONCE per tenant rather than per site: the set cannot
             // change inside a run, and resolving per site would build a module's purger - and whatever it injects -
             // once for every site on the install.
             var purgers = provider.GetServices<IRetentionPurger>().ToList();
 
-            // Visitor retention follows the visitor-tracking capability (D12): read once per run, because a
+            // Visitor retention follows the visitor-tracking capability: read once per run, because a
             // flag is installation-wide and the evaluator reads the flag store on every call.
             var visitorTracking = await features.IsEnabledAsync(FeatureCatalog.VisitorTracking);
 
@@ -167,7 +167,7 @@ namespace Stomme.Infrastructure
                     log += $"Error Purging Orphaned Upload Parts - {ex.Message}<br />";
                 }
 
-                // purge whatever the modules contributed (D104): same site, same notes shape, same containment as
+                // purge whatever the modules contributed: same site, same notes shape, same containment as
                 // the five framework passes above. A module with rows to age out gets this instead of a second Job
                 // row an operator can disable without knowing what they switched off. GetServices, not
                 // GetRequiredService: an install with no contributing module resolves an EMPTY sequence and this
@@ -175,7 +175,7 @@ namespace Stomme.Infrastructure
                 foreach (var purger in purgers)
                 {
                     // Read, parse and default the setting HERE, so that one module cannot answer "what does an
-                    // unparseable retention value mean" differently from the framework (BL-113). Any floor or
+                    // unparseable retention value mean" differently from the framework. Any floor or
                     // ceiling belongs to the purger and is applied inside PurgeAsync.
                     var purgerRetention = Retention(settingRepository, settings, purger.SettingKey, ref log, purger.DefaultDays);
                     try

@@ -7,7 +7,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Metering
 {
     /// <summary>
-    /// The Metering module's <see cref="ModuleDefinition"/> (D102 item 11) - how the framework discovers it, what it
+    /// The Metering module's <see cref="ModuleDefinition"/> - how the framework discovers it, what it
     /// declares to the authorization bridge, and where it lands on a fresh site.
     /// </summary>
     /// <remarks>

@@ -18,7 +18,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Gmail (n8n's Get Many, Send, Reply and Mark as Read): the refresh token exchanged at the token endpoint, the access
+    /// Gmail (n8n's Get Many, Send, Reply and Mark as Read): the refresh token exchanged at the token endpoint, the access
     /// token sent as a bearer; the messages Gmail's search keeps read page by page up to the most asked for, each parsed - its
     /// headers, text, HTML and attachments' names; a message built by MimeKit and sent, or sent as a reply in a message's thread to
     /// its sender; messages marked read by their ids; a subject with a line break, an address that is not one, a message id that
@@ -187,7 +187,7 @@ namespace Stomme.Tests.Connectors
             var google = new Google();
             async Task<string> Thrown(string operation, Dictionary<string, string> parameters) =>
                 (await Assert.ThrowsAsync<InvalidOperationException>(() => Contexts.DrainAsync(Connector(), Context(google, operation, parameters)))).Message;
-            async Task<string?> Refused(Dictionary<string, string> parameters) => // a send says why as its record (D110)
+            async Task<string?> Refused(Dictionary<string, string> parameters) => // a send says why as its record
                 (string?)Assert.Single(await Contexts.DrainAsync(Connector(), Context(google, GmailConnector.SendOperation, parameters))).Fields["refused"];
 
             Assert.Equal("Gmail: The subject has a line break - one line only.", await Refused(new() { ["to"] = "ada@example.com", ["subject"] = "Hi\r\nBcc: everyone@example.com", ["text"] = "x" }));

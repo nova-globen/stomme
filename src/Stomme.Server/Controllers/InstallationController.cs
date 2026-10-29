@@ -55,7 +55,7 @@ namespace Stomme.Controllers
         }
 
         // GET api/<controller>/modules
-        // Install-time discovery (D86): the bundled, enabled modules that declare a module-wide config control,
+        // Install-time discovery: the bundled, enabled modules that declare a module-wide config control,
         // so the installer's onboarding step can render them while the app is still uninstalled. Reflects loaded
         // assemblies only — touches no DB — so it is safe before the master store exists. Open (module metadata is
         // not sensitive, mirroring the open DatabaseController.Get the installer already consumes).
@@ -114,7 +114,7 @@ namespace Stomme.Controllers
             return installation;
         }
 
-        // BL-174: a POST (antiforgery-checked like every other state-changing call; it was a GET, which a cross-site link could
+        // A POST (antiforgery-checked like every other state-changing call; it was a GET, which a cross-site link could
         // trigger for a signed-in Host) that AWAITS the upgrade's hand-off, so a refusal - BL-172's pre-upgrade snapshot
         // included - reaches the page instead of only the log.
         [HttpPost("upgrade")]

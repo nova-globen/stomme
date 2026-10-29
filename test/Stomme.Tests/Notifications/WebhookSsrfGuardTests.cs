@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 step 3 (D100 point 2) - the webhook SSRF guard. Every denied range is refused at CONFIGURE time
+    /// The webhook SSRF guard. Every denied range is refused at CONFIGURE time
     /// (<c>ValidateSettingsAsync</c>) and at SEND time; the send-time check runs inside
     /// <c>SocketsHttpHandler.ConnectCallback</c> on the addresses actually connected to (a DNS name that resolves to
     /// loopback is refused AT CONNECT, which is what defeats rebinding); redirects are never followed; a site's

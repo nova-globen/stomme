@@ -20,7 +20,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Tenant cluster on the persistence seam (D52) — the MASTER half of the master-bookkeeping wave, and half of
+    /// The Tenant cluster on the persistence seam — the MASTER half of the master-bookkeeping wave, and half of
     /// the routing core. Tenant-table access goes through <see cref="ITenantStore"/> (writes) and the MASTER read path
     /// <see cref="IMasterStoreSessionFactory"/> (reads); this class holds no <c>DbContext</c> and no
     /// <c>IQueryable</c> escapes it.
@@ -33,7 +33,7 @@ namespace Stomme.Repository
     /// and writes through a store bound to <see cref="MasterDBContext"/>.
     /// </para>
     /// <para>
-    /// Reads NEVER go through the store (D19). The harvested <c>UpdateTenantAsync</c> read <c>oldTenant</c> via
+    /// Reads NEVER go through the store. The harvested <c>UpdateTenantAsync</c> read <c>oldTenant</c> via
     /// <c>AsNoTracking()</c> and then set <c>_db.Entry(tenant).State = Modified</c> — a tracked write that a
     /// compiler-clean port silently breaks. On the seam the old-name read is a MASTER session query and the write is
     /// an <c>Update</c> through the store attaching a fresh aggregate. The master-tenant-rename GUARD is preserved
@@ -59,8 +59,8 @@ namespace Stomme.Repository
             _cache = cache;
         }
 
-        // The read path on the seam (D19): reads go through a MASTER query session, never the store. The IQueryable
-        // is materialized inside this method, so it never leaves the repository (D7).
+        // The read path on the seam: reads go through a MASTER query session, never the store. The IQueryable
+        // is materialized inside this method, so it never leaves the repository.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
             var session = _sessions.OpenQuerySession();
@@ -93,7 +93,7 @@ namespace Stomme.Repository
 
         public async Task<Tenant> UpdateTenantAsync(Tenant tenant)
         {
-            // Read the OLD name through a MASTER session (untracked, D19), not the passed-in tenant, whose Name is the
+            // Read the OLD name through a MASTER session (untracked), not the passed-in tenant, whose Name is the
             // proposed new value. The guard below is an IN-MEMORY comparison — preserve it exactly; it is application
             // behaviour, not a query translation.
             var oldTenant = await QueryAsync(session =>
@@ -123,7 +123,7 @@ namespace Stomme.Repository
             if (tenant != null && !tenant.Name.Equals(TenantNames.Master, StringComparison.OrdinalIgnoreCase))
             {
                 // The row was read via the cached list (a session read), so a fresh aggregate is attached for the
-                // delete rather than a tracked instance removed (D19).
+                // delete rather than a tracked instance removed.
                 await _store.DeleteAsync(TenantMapper.ToAggregate(tenant, assignId: true));
             }
 

@@ -24,7 +24,7 @@ using Module = Stomme.Models.Module;
 
 namespace Stomme.Tests
 {
-    // The Modules cluster on the persistence seam (D3/D7/D21). Same hazards as Sites and Pages — the
+    // The Modules cluster on the persistence seam. Same hazards as Sites and Pages — the
     // aggregate is mapped onto a schema this context does not migrate, and HasColumnName outranks the
     // snake_case rewriter — plus the one with the biggest blast radius so far: PageModule held an EF
     // navigation INTO Module that was ALSO load-bearing as a database-side site filter. See
@@ -148,7 +148,7 @@ namespace Stomme.Tests
         }
     }
 
-    // The rule Pages paid for (D19) applied to Module, whose navigation had a far larger blast radius.
+    // The rule Pages paid for applied to Module, whose navigation had a far larger blast radius.
     //
     // PageModule.Module WAS an EF navigation, eager-loaded with .Include(item => item.Module) in EVERY
     // PageModuleRepository query. A navigation to Module makes EF discover Module as an entity type mapped
@@ -176,7 +176,7 @@ namespace Stomme.Tests
             // DbSet was never what the probe rested on: measured both ways, removing it leaves the assertions
             // green, and re-adding a migrated contract still fails them with EF's "the table '...' cannot be
             // used for entity type" — so the proof comes from ConfigureFrameworkStore plus the assertion,
-            // exactly as PermissionMustNotBeResurrectedTests has shown since D48. MigrationHistory is NOT a
+            // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
             // protection now, and it needed no edit across D47, D48, D49 or D50.
@@ -216,7 +216,7 @@ namespace Stomme.Tests
             Assert.Null(BuildModel().FindEntityType(typeof(Module)));
         }
 
-        // PageModule moved to the seam in D47. This test used to read
+        // PageModule moved to the seam. This test used to read
         // "Page_module_is_still_a_plain_entity_referencing_both_aggregates_by_id" and assert over the
         // PageModule CONTRACT; the contract is not an entity type any more, so the assertion is made over the
         // AGGREGATE that replaced it. What is being pinned is unchanged and is D19's and D21's, not D47's:
@@ -404,7 +404,7 @@ namespace Stomme.Tests
         }
 
         // WHY ModuleRepository.GetModule reads through the query session instead of IModuleStore.GetByIdAsync
-        // (D19, inherited from Pages, and Module walks into it even more directly than Page did).
+        // (inherited from Pages, and Module walks into it even more directly than Page did).
         //
         // The seam's IRepository.GetByIdAsync TRACKS the aggregate. ModuleRepository then updates a DETACHED
         // aggregate rebuilt from the wire contract, and EF refuses to attach a second instance with the same

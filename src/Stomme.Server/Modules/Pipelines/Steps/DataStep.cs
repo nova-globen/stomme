@@ -20,7 +20,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// The base of the step families absorbed from the predecessor platform (BL-95 increment (d), D111): a step whose RESULT is text -
+    /// The base of the step families absorbed from the predecessor platform (BL-95 increment (d)): a step whose RESULT is text -
     /// records as a JSON array, a document, a response body - and whose failure is either a fault or an outcome.
     /// <para>
     /// <b>The records convention.</b> the predecessor platform passed "the upstream step's payload" implicitly; the engine's own

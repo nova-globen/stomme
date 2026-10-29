@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Ghost (n8n's Ghost node: a site's posts read, created, updated and deleted): every call the site's Admin API with
+    /// Ghost (n8n's Ghost node: a site's posts read, created, updated and deleted): every call the site's Admin API with
     /// a fresh token - the key's id, five minutes long, for the Admin API, signed with the key's secret - and the API version;
     /// posts and pages page by page, the page size fixed, with a filter, an order, what to include, the formats and the fields;
     /// a post got by its id or its slug; created as HTML or Lexical with a status and other fields; updated with Ghost's last

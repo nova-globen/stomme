@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Local File Trigger as "File added", DRIVEN on an installed SQLite host: a pipeline watching 'inbox' for
+    /// n8n's Local File Trigger as "File added", DRIVEN on an installed SQLite host: a pipeline watching 'inbox' for
     /// '*.csv' is published while a file is already there; a CSV put there through the Files page's own upload a moment later
     /// starts ONE run - by the real task, on its own interval - whose next step writes what it was handed into another folder,
     /// read back through the Files API; the file already there, and a file the pattern does not take, start nothing.

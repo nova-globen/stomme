@@ -110,7 +110,7 @@ namespace Stomme.Tests
 
         public void Dispose()
         {
-            // This database's pool only - ClearAllPools is process-wide (BL-104). The string matches the one
+            // This database's pool only - ClearAllPools is process-wide. The string matches the one
             // handed to UseSqlite above to the byte, because the pool is keyed by the raw string.
             ScratchSqlite.Release($"Data Source={_databasePath}");
             try { File.Delete(_databasePath); } catch (IOException) { }

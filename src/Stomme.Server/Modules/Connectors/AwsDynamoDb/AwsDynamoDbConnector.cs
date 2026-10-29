@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsDynamoDb
 {
     /// <summary>
-    /// Amazon DynamoDB (BL-229, n8n's AWS DynamoDB node: an item written, got, deleted and read many): an account's tables over
+    /// Amazon DynamoDB (n8n's AWS DynamoDB node: an item written, got, deleted and read many): an account's tables over
     /// DynamoDB's JSON protocol (<c>https://dynamodb.{region}.amazonaws.com</c>, <c>X-Amz-Target: DynamoDB_20120810.*</c>), every
     /// call signed with AWS Signature Version 4 by an IAM user's access key and secret, over the host's egress. Items are plain
     /// JSON both ways - a string a string, a number a number, an object a map - typed as DynamoDB keeps them only on the wire. A

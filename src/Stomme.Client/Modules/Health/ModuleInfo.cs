@@ -7,7 +7,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Health
 {
     /// <summary>
-    /// The Health module's <see cref="ModuleDefinition"/> (D104 item 12) — how the framework discovers it, what it
+    /// The Health module's <see cref="ModuleDefinition"/> — how the framework discovers it, what it
     /// declares to the authorization bridge, and where it lands on a fresh site.
     /// </summary>
     /// <remarks>

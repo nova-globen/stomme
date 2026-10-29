@@ -11,7 +11,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - n8n's AI workflow builder, on the editor's canvas: a copy of the pipeline as it stands and the tools a model changes
+    /// n8n's AI workflow builder, on the editor's canvas: a copy of the pipeline as it stands and the tools a model changes
     /// it with - find and describe a step type, read the pipeline, add, set, connect, remove, check - each held to the rule the
     /// editor holds the same change to, so what a model cannot do in the editor it cannot do here. The model sees no secret: an
     /// input the author alone fills (a sensitive one, a connection) is shown as set and refused when set. Nothing is stored here;

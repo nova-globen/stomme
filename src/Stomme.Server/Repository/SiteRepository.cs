@@ -31,7 +31,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Site cluster on the persistence seam (D3/D7/D17). Site-table access goes through
+    /// The Site cluster on the persistence seam. Site-table access goes through
     /// <see cref="ISiteStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class holds
     /// no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -42,8 +42,8 @@ namespace Stomme.Repository
     /// own repositories, which are still on the <c>IDatabase</c>/<c>TenantDBContext</c> path. Coexistence is
     /// the D3-safe plan; those calls move when their own clusters do.
     /// <para>
-    /// WRITES resolve a FRESH store per write (<see cref="NewStore"/>), the per-write-store pattern of UrlMapping (D47), Job
-    /// and JobLog (BL-11) - BL-193, found 2026-10-02 clicking an admin page: an Interactive Server circuit is ONE DI scope
+    /// WRITES resolve a FRESH store per write (<see cref="NewStore"/>), the per-write-store pattern of UrlMapping, Job
+    /// and JobLog - BL-193, found 2026-10-02 clicking an admin page: an Interactive Server circuit is ONE DI scope
     /// for as long as the page is open, and the site's server twin (<c>SiteService</c>) writes through this repository
     /// from it. With the store constructor-injected, its one context kept the first save's aggregate and the second save
     /// attached another instance with the same key: "SiteAggregate cannot be tracked because another instance with the
@@ -93,7 +93,7 @@ namespace Stomme.Repository
             _featureConfig = featureConfig;
         }
 
-        // A store over a fresh context for each write (BL-193; see the class remarks).
+        // A store over a fresh context for each write (see the class remarks).
         private ISiteStore NewStore() => _serviceProvider.GetRequiredService<ISiteStore>();
 
         public async Task<IEnumerable<Site>> GetSitesAsync()
@@ -102,7 +102,7 @@ namespace Stomme.Repository
         }
 
         // The read path on the seam: IQuerySession.Query<T> is ordered and materialized here, so the
-        // IQueryable never leaves this method (D7). ToList/OrderBy are plain LINQ rather than EF Core's
+        // IQueryable never leaves this method. ToList/OrderBy are plain LINQ rather than EF Core's
         // ToListAsync, which would bind this read to the relational provider.
         private async Task<List<Site>> LoadSitesAsync()
         {
@@ -218,7 +218,7 @@ namespace Stomme.Repository
 
             foreach (var moduleDefinition in await _moduleDefinitionRepository.GetModuleDefinitionsAsync(site.SiteId))
             {
-                // W2 (D85): a bundled module whose config knob module.<id>.enabled is explicitly false is
+                // W2: a bundled module whose config knob module.<id>.enabled is explicitly false is
                 // discovered (its assembly is present) but NOT seeded — its self-declared page templates are
                 // skipped, so nothing it owns lands on a page and it does not render. Config silent or true seeds
                 // as before, so a stock install is byte-for-byte unchanged.
@@ -543,7 +543,7 @@ namespace Stomme.Repository
                         foreach (PageTemplateModule pageTemplateModule in pageTemplate.PageTemplateModules)
                         {
                             var moduleDefinition = moduleDefinitions.Where(item => item.ModuleDefinitionName == pageTemplateModule.ModuleDefinitionName).FirstOrDefault();
-                            // W2 (D85): the single sink where every module — site-template-placed OR
+                            // W2: the single sink where every module — site-template-placed OR
                             // self-placed — is attached to a page, so it is where the module.<id>.enabled knob is
                             // enforced. A config-disabled module is placed on NO page (the page itself, if
                             // otherwise defined, still renders — only the disabled module is withheld).
@@ -552,7 +552,7 @@ namespace Stomme.Repository
                                 var pageModule = pageModules.FirstOrDefault(item => item.PageId == page.PageId && item.Module.ModuleDefinitionName == pageTemplateModule.ModuleDefinitionName && item.Title.ToLower() == pageTemplateModule.Title.ToLower());
                                 if (pageModule == null)
                                 {
-                                    // BL-75: Title is part of the match key because one module can legitimately
+                                    // Title is part of the match key because one module can legitimately
                                     // be placed several times on a page under distinct titles — but Title is
                                     // also DEFAULTED from ModuleDefinition.Name, so a module rename between
                                     // releases changes the key and the additive path would place the module a

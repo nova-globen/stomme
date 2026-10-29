@@ -14,8 +14,8 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// A SiteGroup is a named set of <see cref="Site"/>s that are synchronized or compared with one another —
     /// <see cref="Type"/> is one of <c>SiteGroupTypes</c> (Synchronization, Localization, ChangeDetection) and
-    /// <see cref="PrimarySiteId"/> names the group's source of truth. Tenant-side only, like Permission (D24)
-    /// and unlike Setting (D23), so one store and no <c>IsMaster</c> routing.
+    /// <see cref="PrimarySiteId"/> names the group's source of truth. Tenant-side only, like Permission
+    /// and unlike Setting, so one store and no <c>IsMaster</c> routing.
     /// </para>
     /// <para>
     /// <b>THIS AGGREGATE CANNOT LAND ALONE.</b> <c>SiteGroupMember.SiteGroup</c> was a MAPPED navigation into
@@ -56,7 +56,7 @@ namespace Stomme.Repository.Stores
         public string Type { get; set; }
 
         /// <summary>
-        /// The <see cref="Site"/> that is the group's source of truth, by id (D7/D19). A reference to another
+        /// The <see cref="Site"/> that is the group's source of truth, by id. A reference to another
         /// aggregate BY ID — there is no navigation and no foreign key to <c>site</c> on this table.
         /// </summary>
         public int PrimarySiteId { get; set; }

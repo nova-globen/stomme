@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft To Do DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2
+    /// Microsoft To Do DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2
     /// token provider and the extraction port, against a loopback stand-in for the tenant's token endpoint and Graph: a Microsoft To
     /// Do connection made over the API, its secret vaulted, tested (the user's lists named); a published pipeline makes a task with
     /// an HTML body, a due time and an importance, reads the list's open tasks over two pages through Graph's next link, finishes

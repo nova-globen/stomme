@@ -8,7 +8,7 @@ using Stomme.SharedKernel.Domain;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    /// <summary>The subject's notification preferences on the site (channels, quiet hours, topic mutes): deleted (D112).</summary>
+    /// <summary>The subject's notification preferences on the site (channels, quiet hours, topic mutes): deleted.</summary>
     public sealed class NotificationPreferenceErasureParticipant(IRepository<NotificationPreferenceAggregate, System.Guid> preferences, IUnitOfWork unitOfWork) : ISubjectErasureParticipant
     {
         public string Name => "Notification preferences";

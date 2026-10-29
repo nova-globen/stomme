@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon SES (n8n's AWS SES node: e-mail sent plain or from a template, templates, custom verification e-mails): every
+    /// Amazon SES (n8n's AWS SES node: e-mail sent plain or from a template, templates, custom verification e-mails): every
     /// call signed with AWS Signature Version 4 for SES in the connection's region at the clock's time; an e-mail sent - its
     /// sender, recipients, reply-to, configuration set, tags, subject and parts as written - or sent from a template with its
     /// data; templates and verification templates listed page by page, got, made, changed with what is not given kept and

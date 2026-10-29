@@ -1,8 +1,8 @@
-/* Aurora — external general/public theme for Stomme (D87). A light, teal-accented surface. The distinctive
+/* Aurora — external general/public theme for Stomme. A light, teal-accented surface. The distinctive
    banner + shell are what a driven render asserts on. */
 
-/* The theme's colour as Stomme's accent (BL-192): every button - Stomme's own and FluentUI's - takes the colour its
-   theme defines, and nothing overrides it (the owner, 2026-10-02). Declared at :root, where the shared controls read it. */
+/* The theme's colour as Stomme's accent: every button - Stomme's own and FluentUI's - takes the colour its
+   theme defines, and nothing overrides it. Declared at :root, where the shared controls read it. */
 :root {
     --db-accent:    #0FB6A2;
     --db-on-accent: #FFFFFF;

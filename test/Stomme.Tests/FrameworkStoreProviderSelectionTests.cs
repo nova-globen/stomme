@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D54 — resolve-time framework-store provider selection. Both providers are registered in the host; the
+    /// Resolve-time framework-store provider selection. Both providers are registered in the host; the
     /// one actually resolved for each closed store contract is chosen from <c>IConfigManager.GetDatabaseType()</c>
     /// at first resolve. These cases prove the RELATIONAL direction and the lazy-store property without a live
     /// RavenDB server; the Raven direction (and that Tenant/Alias documents actually land) is proven live by

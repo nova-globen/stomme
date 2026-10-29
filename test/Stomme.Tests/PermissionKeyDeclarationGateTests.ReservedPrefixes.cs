@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The RESERVED-PREFIX half of the declaration gate (D109 refutation 17, BL-100): the seven the predecessor platform modules
+    /// The RESERVED-PREFIX half of the declaration gate (D109 refutation 17): the seven the predecessor platform modules
     /// that DISSOLVED into framework surfaces took their permission keys with them. Their vocabulary maps to
     /// framework gates (<c>files:*</c> to File/Folder permission rows, <c>tenants:*</c>/<c>ops:*</c> to Host,
     /// <c>modules:*</c>/<c>platform.modules:*</c> to Host/Admin on ModuleDefinitionController, <c>identity.*</c> to

@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-180 - the site's egress allowlist as a request: each entry held to what the guard can match (it compares a
+    /// The site's egress allowlist as a request: each entry held to what the guard can match (it compares a
     /// connection's host with an entry EXACTLY, so a range, a wildcard, a scheme, a port or a short-form address would
     /// match nothing and is refused rather than stored); read by a holder of connections:view, changed by the Host role
     /// alone. Through the module's real startup on the file store; the storage is a fake, the drive uses the real row.

@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.LinkedIn
 {
     /// <summary>
-    /// LinkedIn (BL-229, n8n's LinkedIn node: a post made as a member or an organization): a member's access token over LinkedIn's
+    /// LinkedIn (n8n's LinkedIn node: a post made as a member or an organization): a member's access token over LinkedIn's
     /// versioned API (<c>https://api.linkedin.com</c>, the <c>LinkedIn-Version</c> the <c>version</c> setting names), sent as a
     /// bearer. A test names the member.
     /// </summary>

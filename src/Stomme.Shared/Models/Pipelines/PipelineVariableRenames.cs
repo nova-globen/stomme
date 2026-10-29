@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - a variable renamed, and with it every expression, condition and case that reads it (n8n renames a node and the
+    /// A variable renamed, and with it every expression, condition and case that reads it (n8n renames a node and the
     /// expressions that read it follow; data moves through variables here). A binding names the variable by its id and needs
     /// nothing. A value is sent as typed - text for another system may hold <c>{{ }}</c> of its own - so it is never changed;
     /// a script reads the variables by name, and a record's rules name the record's fields first, so the editor cannot tell what

@@ -11,7 +11,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.CostOptimization.Persistence
 {
     /// <summary>
-    /// The recommendations' closed repository over the storage-blind store (D79/D80). Every read is a SITE's: another
+    /// The recommendations' closed repository over the storage-blind store. Every read is a SITE's: another
     /// site's recommendation does not exist for a request, so an id from another site reads as not found.
     /// </summary>
     public interface IOptimizationRecommendationRepository : IRepository<OptimizationRecommendationAggregate, Guid>

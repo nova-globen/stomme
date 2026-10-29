@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Stomme.Modules.Connectors.Shared
 {
     /// <summary>
-    /// A file's stream lent to one attempt's request content (BL-229, the file connectors' uploads): the retry policy builds a
+    /// A file's stream lent to one attempt's request content (the file connectors' uploads): the retry policy builds a
     /// request per attempt and disposes it - its content with it - so the content holds this, which leaves the stream open,
     /// and the upload rewinds the stream and lends it again for the next attempt. Read-only.
     /// </summary>

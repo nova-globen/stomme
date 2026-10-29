@@ -12,7 +12,7 @@ using Stomme.Modules.Backup.Infrastructure;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// An in-memory S3 bucket that keeps S3's rules where the archive store could break them (BL-169): a multipart object
+    /// An in-memory S3 bucket that keeps S3's rules where the archive store could break them: a multipart object
     /// appears only when the upload COMPLETES, every part but the last is at least 5 MiB or the completion is refused (infra's
     /// store refuses it too), part numbers run 1..n, an aborted upload leaves nothing. A failure can
     /// be planted at a named operation.

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Webflow DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Webflow DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Webflow's Data API: a Webflow connection made over the API, its token vaulted, tested (the
     /// token's reach asked for); a published pipeline makes a live item with HTML and an accent, reads the collection's
     /// items over two pages by offset - no more than asked - changes the item, publishes it, deletes it and publishes the site -

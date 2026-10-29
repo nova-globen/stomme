@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.InvoiceNinja
 {
     /// <summary>
-    /// Invoice Ninja (BL-229, n8n's Invoice Ninja node) over Invoice Ninja 5's API (<c>{address}/api/v1</c>) by an API token -
+    /// Invoice Ninja (n8n's Invoice Ninja node) over Invoice Ninja 5's API (<c>{address}/api/v1</c>) by an API token -
     /// from Invoice Ninja's settings, as its <c>X-API-TOKEN</c> header, never in the address. A test names the token's company.
     /// </summary>
     /// <remarks>

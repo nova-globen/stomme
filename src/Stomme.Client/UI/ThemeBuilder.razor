@@ -60,7 +60,7 @@
         {
             builder.OpenComponent(0, Type.GetType(PageState.Page.ThemeType));
             builder.CloseComponent();
-            // FluentUI's providers, once for every theme (BL-192): a theme no longer renders them itself, so a theme
+            // FluentUI's providers, once for every theme: a theme no longer renders them itself, so a theme
             // depends on Stomme alone and one build of it runs under any FluentUI version Stomme moves to.
             builder.OpenComponent<FluentToastProvider>(1);
             builder.CloseComponent();
@@ -93,7 +93,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // BL-198: an interactive page can move to another theme without a page load, so the theme's declared colour mode - or
+        // An interactive page can move to another theme without a page load, so the theme's declared colour mode - or
         // none - replaces the one App.razor rendered on <html>.
         var colorMode = Stomme.Shared.ThemeColorModes.Of(PageState.Site.Themes, PageState.Page.ThemeType);
         if (colorMode != _colorMode)

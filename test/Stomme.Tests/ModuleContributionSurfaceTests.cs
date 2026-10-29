@@ -15,9 +15,9 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-86 increment 4 - two contribution contracts an EXTERNAL module could not use, both found by the exemplar
+    /// Two contribution contracts an EXTERNAL module could not use, both found by the exemplar
     /// (<c>examples/Modules/KnowledgeBase</c>) and fixed at the framework: the feature-flag contributor, which lived in a
-    /// package that carries EF Core (the slim SDK leaves it out), and the sitemap contract, which was synchronous (D33).
+    /// package that carries EF Core (the slim SDK leaves it out), and the sitemap contract, which was synchronous.
     /// The exemplar's own drive proves both from a packed module; these keep the framework's half from sliding back.
     /// </summary>
     public sealed class ModuleContributionSurfaceTests
@@ -50,8 +50,8 @@ namespace Stomme.Tests
         [Fact]
         public void A_module_startup_reads_the_hosts_layered_configuration_off_the_collection()
         {
-            // BL-86 increment 6: a module decides at COMPOSITION whether to register its demo content or its MCP contribution,
-            // and must read the layered root (the override file's switches), not the builder's default configuration (BL-162).
+            // A module decides at COMPOSITION whether to register its demo content or its MCP contribution,
+            // and must read the layered root (the override file's switches), not the builder's default configuration.
             var services = new ServiceCollection();
             var builderDefault = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["DemoContent:Enabled"] = "false" }).Build();
             var layered = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["DemoContent:Enabled"] = "true" }).Build();
@@ -71,7 +71,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// BL-86 increment 4 - the sitemap page, driven: nothing in the tree covered <c>/sitemap.xml</c>, and the page's module
+    /// The sitemap page, driven: nothing in the tree covered <c>/sitemap.xml</c>, and the page's module
     /// loop changed with the contract. A fresh SQLite install serves the pages a visitor may view and none an administrator
     /// alone may. A module's own entries are driven by the exemplar, whose manager is the first implementation.
     /// </summary>

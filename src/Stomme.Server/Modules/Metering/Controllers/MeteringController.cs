@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Metering.Controllers
 {
     /// <summary>
-    /// The Metering module's Web API (<c>api/Metering</c>, D102 item 8): the caller's own consumption, the site's
+    /// The Metering module's Web API (<c>api/Metering</c>): the caller's own consumption, the site's
     /// usage log and AI dashboard, and the quota surface. Every action dispatches through <see cref="IMediator"/>.
     /// </summary>
     /// <remarks>

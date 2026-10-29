@@ -17,7 +17,7 @@ using Raven.Client.Documents.Session;
 namespace Stomme.Modules.Pipelines.Persistence.Raven
 {
     /// <summary>
-    /// What every RavenDB engine store shares (BL-95 increment (a), D111). A session per operation against the
+    /// What every RavenDB engine store shares (BL-95 increment (a)). A session per operation against the
     /// tenant's database (routed as <c>RavenRepository</c> routes it), every query waiting for a non-stale index
     /// so a read after a write is deterministic, and the engine's filters translated BY HAND onto the document
     /// fields through <c>IAsyncDocumentQuery</c> - RavenDB's LINQ provider refuses the <c>ToLower().Contains()</c>

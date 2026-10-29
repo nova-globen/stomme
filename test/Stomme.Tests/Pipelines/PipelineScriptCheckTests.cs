@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Code node linting: the editor's scripts checked to parse as their step runs them - this site's JavaScript as
+    /// n8n's Code node linting: the editor's scripts checked to parse as their step runs them - this site's JavaScript as
     /// a script, n8n's as a function's body, both STRICT as the sandbox runs them - nothing run, answered in the order asked.
     /// </summary>
     public sealed class PipelineScriptCheckTests

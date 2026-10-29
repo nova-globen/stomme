@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.RocketChat
 {
     /// <summary>
-    /// Rocket.Chat (BL-229, n8n's Rocket.Chat node: a message posted, the subscriptions, a direct conversation's messages): a
+    /// Rocket.Chat (n8n's Rocket.Chat node: a message posted, the subscriptions, a direct conversation's messages): a
     /// server's REST API with a user's id and personal access token, over the host's egress. A test names whose the token is.
     /// </summary>
     /// <remarks>

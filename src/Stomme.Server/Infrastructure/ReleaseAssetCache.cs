@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// Once per browser per framework release, a page response tells the browser to drop its HTTP cache (BL-192).
+    /// Once per browser per framework release, a page response tells the browser to drop its HTTP cache.
     /// </summary>
     /// <remarks>
     /// <para>

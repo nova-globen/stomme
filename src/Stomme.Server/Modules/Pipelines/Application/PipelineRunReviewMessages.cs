@@ -19,7 +19,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - a run's review (<see cref="PipelineRunReview"/>), kept in the engine's key-value store under the SITE and the run,
+    /// A run's review (<see cref="PipelineRunReview"/>), kept in the engine's key-value store under the SITE and the run,
     /// as the run's own data is (<see cref="PipelineRunDataStore"/>, whose delete takes it too, so every path that deletes a run -
     /// by hand, the site's retention, a pipeline that keeps only failed runs - deletes its review).
     /// </summary>

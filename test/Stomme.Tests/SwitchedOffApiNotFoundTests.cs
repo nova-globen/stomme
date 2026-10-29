@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-210 - a request to a switched-off feature's API, or to no API at all, answers 404 whatever its method.
+    /// A request to a switched-off feature's API, or to no API at all, answers 404 whatever its method.
     /// </summary>
     /// <remarks>
     /// A config-gated controller declines its routes at route selection (an <c>ActionMethodSelectorAttribute</c>), so the
@@ -90,7 +90,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// BL-223 (found on UAT, 2026-10-04): a POST carrying a valid antiforgery token to a path nothing serves - the dashboards
+        /// BL-223 (found on UAT): a POST carrying a valid antiforgery token to a path nothing serves - the dashboards
         /// hub with the real-time transport off, a made-up path - answered 500 from the page endpoint. It is a 404.
         /// </summary>
         [Fact]

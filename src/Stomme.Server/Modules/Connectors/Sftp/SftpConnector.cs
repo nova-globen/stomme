@@ -19,7 +19,7 @@ using Renci.SshNet.Sftp;
 namespace Stomme.Modules.Connectors.Sftp
 {
     /// <summary>
-    /// SFTP signed in by a password (BL-229, n8n's FTP node over SFTP): the Basic scheme's <c>username</c>/<c>password</c>, as
+    /// SFTP signed in by a password (n8n's FTP node over SFTP): the Basic scheme's <c>username</c>/<c>password</c>, as
     /// SSH's password method - n8n's way. Everything else is <see cref="SftpConnectorBase"/>'s.
     /// </summary>
     public sealed class SftpConnector : SftpConnectorBase
@@ -35,7 +35,7 @@ namespace Stomme.Modules.Connectors.Sftp
     }
 
     /// <summary>
-    /// SFTP signed in by a private key (BL-229, n8n's SFTP credential's Private Key): the Certificate scheme's <c>certificate</c>
+    /// SFTP signed in by a private key (n8n's SFTP credential's Private Key): the Certificate scheme's <c>certificate</c>
     /// holds the key - OpenSSH's or PEM, ed25519, ECDSA or RSA - and its <c>passphrase</c> the key's own, where it has one; the
     /// user is the connection's <c>username</c> setting. A key pasted into a one-line field loses its line breaks (a browser
     /// drops them, or makes them spaces), so its lines are made again from its BEGIN and END lines before it is read.
@@ -57,7 +57,7 @@ namespace Stomme.Modules.Connectors.Sftp
     }
 
     /// <summary>
-    /// The SFTP connectors' part (BL-229): the SSH server's (<see cref="SshConnectorBase"/>) and the file servers' operations
+    /// The SFTP connectors' part: the SSH server's (<see cref="SshConnectorBase"/>) and the file servers' operations
     /// (<see cref="RemoteFiles"/>) - a folder listed, files stored through the host's managed file sink into a site folder, one
     /// file downloaded into the pipeline run's folder or uploaded from it, a file or a folder deleted, an entry renamed.
     /// </summary>
@@ -94,7 +94,7 @@ namespace Stomme.Modules.Connectors.Sftp
     }
 
     /// <summary>
-    /// A password's or a key's sign-in, the SSH connectors' and the SFTP connectors' alike (BL-229): every credential checked, a
+    /// A password's or a key's sign-in, the SSH connectors' and the SFTP connectors' alike: every credential checked, a
     /// key read, before the server is dialled.
     /// </summary>
     internal static class SshSignIn
@@ -146,7 +146,7 @@ namespace Stomme.Modules.Connectors.Sftp
     }
 
     /// <summary>
-    /// The SSH connectors' common part, SFTP's and SSH's commands' (BL-229): the server is the connection's address
+    /// The SSH connectors' common part, SFTP's and SSH's commands': the server is the connection's address
     /// (<c>sftp://files.kafe.example:22</c>, <c>ssh://</c>), dialled only at the address the host's egress pinned, and it must prove
     /// itself by a host key the connection names - <c>host_key</c>, its SHA-256 fingerprint as <c>ssh-keygen -lf</c> prints it
     /// or its public key's line, as <c>ssh-keyscan</c> prints it. A connection that names none, or a server whose key is
@@ -178,7 +178,7 @@ namespace Stomme.Modules.Connectors.Sftp
 
         public virtual IReadOnlyList<ConnectorCategory> Categories { get; } = new[] { ConnectorCategory.DataAndFiles };
 
-        /// <summary>Its address is not a web address: the server, <c>sftp://files.kafe.example:22</c> - no user in it (D110).</summary>
+        /// <summary>Its address is not a web address: the server, <c>sftp://files.kafe.example:22</c> - no user in it.</summary>
         public ConnectorEndpointKind EndpointKind => ConnectorEndpointKind.ConnectionString;
 
         public string EndpointExample => Example;
@@ -231,7 +231,7 @@ namespace Stomme.Modules.Connectors.Sftp
 
         /// <summary>
         /// The server the address names - <c>sftp://</c>, <c>ssh://</c> or no scheme at all, port 22 where none is given - and
-        /// nothing else: a user in it is refused (the connection's username signs in, D110), and so is a folder, a query or a
+        /// nothing else: a user in it is refused (the connection's username signs in), and so is a folder, a query or a
         /// fragment (a step's path names its folder).
         /// </summary>
         internal static (string Host, int Port) Server(string? endpoint, string protocol, string example)

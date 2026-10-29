@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 2 - the predecessor platform's ActiveDirectoryConnectorTests (14) by name over the port through the client seam,
+    /// The predecessor platform's ActiveDirectoryConnectorTests (14) by name over the port through the client seam,
     /// plus the pin: the connection carries the host as NAMED (the certificate's name, every row's ADTarget) and the
     /// ADDRESS the host pinned (what the socket dials); a refused host is the contract's denial.
     /// </summary>

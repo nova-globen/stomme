@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Grafana
 {
     /// <summary>
-    /// Grafana (BL-229, n8n's Grafana node: its dashboards, teams, team members and the organization's users): a Grafana
+    /// Grafana (n8n's Grafana node: its dashboards, teams, team members and the organization's users): a Grafana
     /// server's HTTP API with a service account's token as a bearer token, over the host's egress. A test names the token's
     /// organization.
     /// </summary>

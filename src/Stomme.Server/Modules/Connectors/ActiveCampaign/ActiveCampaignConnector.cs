@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.ActiveCampaign
 {
     /// <summary>
-    /// ActiveCampaign (BL-229, n8n's ActiveCampaign node: its contacts, lists, tags, deals, accounts and e-commerce records): an
+    /// ActiveCampaign (n8n's ActiveCampaign node: its contacts, lists, tags, deals, accounts and e-commerce records): an
     /// account over its API v3 (<c>{the account's API URL}/api/3</c>), its API key sent in ActiveCampaign's <c>Api-Token</c> header.
     /// A test names the user the key belongs to.
     /// </summary>

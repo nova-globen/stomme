@@ -8,7 +8,7 @@ using EngineGraph = Stomme.Engine.Pipelines.Models.PipelineGraph;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - n8n's retry "from the node with the error": a failed run goes on as a new run from the step that failed, on the
+    /// n8n's retry "from the node with the error": a failed run goes on as a new run from the step that failed, on the
     /// pipeline's published version - the steps that had finished are not run again (an e-mail is not sent twice, a card not
     /// charged twice), what they saved is kept, and the failed step runs anew with its inputs read again. The engine resumes a
     /// stored state at the work it holds scheduled, so the earlier run's state is copied under the new run's id, each failed

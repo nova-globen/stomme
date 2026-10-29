@@ -24,7 +24,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// BL-229 - find in every pipeline (beyond n8n, whose search reads names): where a text is used in a pipeline's graph - a
+    /// Find in every pipeline (beyond n8n, whose search reads names): where a text is used in a pipeline's graph - a
     /// step's name and comment, its inputs as written (values, expressions, scripts, conditions, cases), a note, a variable's
     /// name and starting value - so a connection, a site table or a <c>$vars</c> name is found before it is renamed or removed.
     /// An input its step marks SENSITIVE is never read, and nor is a kept test value: a search must not tell, letter by letter,

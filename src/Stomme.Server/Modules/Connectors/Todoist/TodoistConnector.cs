@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Todoist
 {
     /// <summary>
-    /// Todoist (BL-229, n8n's Todoist node, its tasks: found, got, created, quick-added, updated, closed, reopened, moved and
+    /// Todoist (n8n's Todoist node, its tasks: found, got, created, quick-added, updated, closed, reopened, moved and
     /// deleted, a comment added, the projects read): Todoist's API (<c>https://api.todoist.com/api/v1</c>), an API token as the
     /// bearer. A test names the token's user.
     /// </summary>

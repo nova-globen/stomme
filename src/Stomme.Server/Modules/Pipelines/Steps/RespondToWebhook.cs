@@ -19,7 +19,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// Respond to webhook (BL-229, n8n's Respond to Webhook node): the answer the call that started this run gets - its
+    /// Respond to webhook (n8n's Respond to Webhook node): the answer the call that started this run gets - its
     /// status, content type and body - when the run's Webhook is set to answer from the pipeline. The run goes on after it, and
     /// the next step still reads the step before this one (it sets no result). Past the first cut, as n8n's has them: headers
     /// (CORS, a <c>Location</c> with a 3xx status, caching) - one per line, each line's value rendered on its own so a run's

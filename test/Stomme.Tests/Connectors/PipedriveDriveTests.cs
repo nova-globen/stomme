@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Pipedrive DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Pipedrive DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Pipedrive's API: a Pipedrive connection made over the API, its token vaulted, tested (the
     /// user named); a published pipeline adds a deal, reads the open deals over two pages by the cursor, finds a person and notes
     /// the deal - every call the token in Pipedrive's header, never in an address; the token is in neither the graph nor the run.

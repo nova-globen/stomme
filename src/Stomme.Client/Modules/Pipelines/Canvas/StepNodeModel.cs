@@ -61,7 +61,7 @@ namespace Stomme.Modules.Pipelines.Canvas
         public Dictionary<string, string> OutputVariables { get; } = new Dictionary<string, string>();
 
         /// <summary>
-        /// BL-229 increment 10: the outcomes the step names itself - a Fork's branches, a Switch's cases beside its Default - and
+        /// The outcomes the step names itself - a Fork's branches, a Switch's cases beside its Default - and
         /// its Failed path when it takes one, as its output ports, in their order (<see cref="PipelineOutcomes.Ports"/>). A port
         /// whose outcome is still named stays (with its connections), one no longer named goes and is returned so the editor
         /// removes its connections, a new one is added. A step whose ports are already those is left as it is.
@@ -105,13 +105,13 @@ namespace Stomme.Modules.Pipelines.Canvas
         public string DisplayName => string.IsNullOrWhiteSpace(Name) ? (Entry?.DisplayName ?? Type) : Name;
 
         /// <summary>
-        /// BL-229 increment 8: one of five shades of the theme's accent for the step's category, the same for every step of it
+        /// One of five shades of the theme's accent for the step's category, the same for every step of it
         /// (the theme's colours govern - a shade is the accent mixed toward the surface, never a colour of its own).
         /// </summary>
         public int CategoryShade => (Entry?.Category ?? "").Aggregate(0, (sum, letter) => (sum * 31 + letter) % 9973) % 5;
 
         /// <summary>
-        /// BL-229 increment 2: what the run shown on the canvas did with this step - <c>completed</c>, <c>faulted</c>, <c>running</c>,
+        /// What the run shown on the canvas did with this step - <c>completed</c>, <c>faulted</c>, <c>running</c>,
         /// <c>canceled</c> or <c>none</c> (not reached) - and a short note (its time, how many passes); null when no run is shown.
         /// </summary>
         public string RunStatus { get; private set; }
@@ -131,7 +131,7 @@ namespace Stomme.Modules.Pipelines.Canvas
         }
 
         /// <summary>
-        /// BL-229 increment 4: the worst of this step's problems and of those in its bodies - <c>error</c> (keeps the pipeline
+        /// The worst of this step's problems and of those in its bodies - <c>error</c> (keeps the pipeline
         /// from being published) or <c>warning</c> - or null for none; the badge's text and what it says on hover.
         /// </summary>
         public string ProblemSeverity { get; private set; }
@@ -163,7 +163,7 @@ namespace Stomme.Modules.Pipelines.Canvas
         }
 
         /// <summary>
-        /// BL-229: while a version is compared with the canvas, what changed on the step since - <c>added</c> (it is new) or
+        /// While a version is compared with the canvas, what changed on the step since - <c>added</c> (it is new) or
         /// <c>changed</c> (its own settings, or the steps its bodies hold) - its badge, and on hover what changed; null when no
         /// version is compared or nothing on it changed.
         /// </summary>
@@ -226,7 +226,7 @@ namespace Stomme.Modules.Pipelines.Canvas
         public Action<StepNodeModel, StepPortModel> AddAfter { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n's buttons over a step (<see cref="StepNode"/>): test it on its own (null where the author may not run it),
+        /// n8n's buttons over a step (<see cref="StepNode"/>): test it on its own (null where the author may not run it),
         /// switch it off or back on, delete it. Null on a viewer's canvas, which then shows none of them.
         /// </summary>
         public Action<StepNodeModel> Test { get; set; }

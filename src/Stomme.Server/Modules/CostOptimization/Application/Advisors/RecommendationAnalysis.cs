@@ -32,7 +32,7 @@ namespace Stomme.Modules.CostOptimization.Application.Advisors
 
     /// <summary>
     /// The advisor's thresholds and the dismissal default (the predecessor platform's <c>AdvisorOptions</c>), read from the HOST's
-    /// configuration section <c>CostOptimization:Advisor</c> (BL-162: never the container's <c>IConfiguration</c>). Every
+    /// configuration section <c>CostOptimization:Advisor</c> (never the container's <c>IConfiguration</c>). Every
     /// value has the predecessor platform's default; the savings RATES are declared assumptions the analyzers cite in their evidence, not
     /// measurements. CHANGED: the section drops the predecessor platform's <c>the predecessor platform:</c> prefix, as every lifted module's does.
     /// </summary>

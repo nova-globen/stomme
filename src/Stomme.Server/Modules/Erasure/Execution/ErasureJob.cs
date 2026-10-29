@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Erasure.Execution
 {
     /// <summary>
-    /// The erasure job (D112): every minute, per tenant (the base runs each tenant in its own scope, BL-107) and per
+    /// The erasure job: every minute, per tenant (the base runs each tenant in its own scope) and per
     /// site (its own DI scope with the site's alias set - for the cache as much as the path), under a lease per site
     /// so two nodes never run the same subject at once, it runs every open request through the participants. Immediate
     /// in the sense the owner decided: a deletion is queued at once and erased on the next tick; no grace period (v2).

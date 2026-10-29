@@ -20,7 +20,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.WordPress
 {
     /// <summary>
-    /// WordPress (BL-229, n8n's WordPress node, its posts, pages and users: found, got, created, updated - and posts and pages
+    /// WordPress (n8n's WordPress node, its posts, pages and users: found, got, created, updated - and posts and pages
     /// deleted): a site's REST API (<c>{site}/wp-json/wp/v2</c>), a user's name and an application password by Basic. A test
     /// names the user.
     /// </summary>

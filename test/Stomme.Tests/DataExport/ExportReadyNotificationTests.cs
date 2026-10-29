@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-85 (D108 item 8) - the "your export is ready" notice over BL-78's producer port.
+    /// The "your export is ready" notice over BL-78's producer port.
     /// </summary>
     /// <remarks>
     /// What is pinned is WHO is told and WHAT they are handed: the requester alone, by user id, with a route that
@@ -100,7 +100,7 @@ namespace Stomme.Tests.DataExport
                 template.Placeholders.Placeholders.OrderBy(name => name, StringComparer.Ordinal));
             Assert.Equal(7, template.SiteId);
 
-            // BL-95: the schedule-paused notice, the same agreement.
+            // The schedule-paused notice, the same agreement.
             var paused = Assert.Single(templates, t => t.Key == ExportTemplateCatalogue.SchedulePausedKey);
             Assert.Equal(new[] { "reason", "schedule" }, paused.Placeholders.Placeholders.OrderBy(name => name, StringComparer.Ordinal));
             Assert.Equal(2, templates.Count);

@@ -29,7 +29,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Module cluster on the persistence seam (D3/D7/D21). Module-table access goes through
+    /// The Module cluster on the persistence seam. Module-table access goes through
     /// <see cref="IModuleStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class holds
     /// no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -63,7 +63,7 @@ namespace Stomme.Repository
         }
 
         // The read path on the seam: the IQueryable is materialized inside this method, so it never leaves
-        // the repository (D7). ToList/Where/FirstOrDefault are plain LINQ rather than EF Core's async
+        // the repository. ToList/Where/FirstOrDefault are plain LINQ rather than EF Core's async
         // operators, which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -118,7 +118,7 @@ namespace Stomme.Repository
             // aggregate and ModuleMapper projects it onto a fresh wire contract either way.
             //
             // Read through the query session, NOT _moduleStore.GetByIdAsync — that is load-bearing, not a
-            // style choice (D19). The store's IRepository.GetByIdAsync TRACKS the aggregate in the store's
+            // style choice. The store's IRepository.GetByIdAsync TRACKS the aggregate in the store's
             // DbContext, and UpdateAsync then attaches a DIFFERENT instance rebuilt from the wire contract
             // with the same key, which EF rejects:
             //   "The instance of entity type 'ModuleAggregate' cannot be tracked because another instance

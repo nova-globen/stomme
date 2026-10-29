@@ -19,7 +19,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The SiteGroup cluster on the persistence seam (D3/D7/D45). SiteGroup-table access goes through
+    /// The SiteGroup cluster on the persistence seam. SiteGroup-table access goes through
     /// <see cref="ISiteGroupStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class holds
     /// no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -33,7 +33,7 @@ namespace Stomme.Repository
     /// <b>The <c>tracking</c> parameter is now inert, and that is a real semantic change worth stating.</b>
     /// The harvested <c>GetSiteGroupAsync(id, tracking)</c> returned an entity attached to a context that was
     /// disposed on the way out of the method, so "tracking: true" bought the caller nothing it could use — the
-    /// context was already gone. On the seam a session read is never tracked (D19), so both arms collapse to
+    /// context was already gone. On the seam a session read is never tracked, so both arms collapse to
     /// the same read. The parameter is retained because <c>SiteGroupController.Put</c> passes it, and is
     /// documented as inert rather than removed, which would be a contract change this increment did not
     /// measure. Pinned by <c>The_tracking_parameter_returns_the_same_detached_group_either_way</c>.
@@ -50,13 +50,13 @@ namespace Stomme.Repository
             _sessions = sessions;
         }
 
-        // The read path on the seam (D19): reads NEVER go through the store, because the store TRACKS what it
+        // The read path on the seam: reads NEVER go through the store, because the store TRACKS what it
         // loads and a later Update would then attach a DIFFERENT instance with the same key, which EF rejects.
         // SynchronizationJob walks straight into it — it reads every group, then writes each one back
         // (Synchronize = false) on ONE repository instance, hence one store and one context. A query session
         // opens its own context, so reads leave the store's change tracker clean.
         //
-        // The IQueryable is materialized inside this method, so it never leaves the repository (D7). The LINQ
+        // The IQueryable is materialized inside this method, so it never leaves the repository. The LINQ
         // operators are plain LINQ rather than EF Core's async ones, which would bind these reads to the
         // relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
@@ -112,7 +112,7 @@ namespace Stomme.Repository
 
         public async Task DeleteSiteGroupAsync(int siteGroupId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it
+            // The one read that legitimately goes through the store: it deletes the very instance it
             // loaded, so tracking is what we want and no second instance is ever attached.
             var aggregate = await _store.GetByIdAsync(siteGroupId);
             if (aggregate == null)

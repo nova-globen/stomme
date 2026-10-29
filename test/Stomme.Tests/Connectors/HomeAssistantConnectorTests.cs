@@ -20,10 +20,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Home Assistant connector's live tests' server (BL-229): HOMEASSISTANT_TEST_HOST / PORT / TOKEN where set, otherwise this
+    /// The Home Assistant connector's live tests' server: HOMEASSISTANT_TEST_HOST / PORT / TOKEN where set, otherwise this
     /// machine's throwaway Home Assistant that <c>scripts/homeassistant-test-server.ps1</c> makes on 127.0.0.1:18123, its owner's
     /// long-lived token read from the file that script writes under the user's temp folder. No token is a FAILURE that says how to
-    /// get one, never a skip (D46).
+    /// get one, never a skip.
     /// </summary>
     internal static class HomeAssistantTestEndpoint
     {
@@ -51,7 +51,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Home Assistant (n8n's Home Assistant node) without a server: every call the API under /api with the token as its
+    /// Home Assistant (n8n's Home Assistant node) without a server: every call the API under /api with the token as its
     /// Bearer, whatever the address given ends in; every parameter held to its shape before anything is sent - an entity id, a
     /// domain and service, a JSON object, a flag, a state, an event type, a time; the configuration and its check; services,
     /// states and events held to their most; a service called with its data, each state it changed a record, its own response
@@ -312,12 +312,12 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the Home Assistant connector against a real Home Assistant 2026.9 (<c>scripts/homeassistant-test-server.ps1</c>'s
+    /// The Home Assistant connector against a real Home Assistant 2026.9 (<c>scripts/homeassistant-test-server.ps1</c>'s
     /// throwaway server on loopback) through the HOST's egress: loopback refused until allowlisted; a test naming the home, a wrong
     /// token refused; the configuration and its check; a sensor's state set with attributes, set again with them kept, read, listed
     /// and its history read; an input_boolean switched by a service, each changed state a record, and the logbook saying so; a
     /// service asked for a response it does not give refused in Home Assistant's words; an event fired; a template rendered; the
-    /// error log read; a camera that does not exist refused. Fails, never skips, when the server is absent (D46).
+    /// error log read; a camera that does not exist refused. Fails, never skips, when the server is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class HomeAssistantConnectorLiveTests(ITestOutputHelper output)

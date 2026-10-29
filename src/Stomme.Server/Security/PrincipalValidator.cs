@@ -36,7 +36,7 @@ namespace Stomme.Security
                         // check if user is valid, not deleted, has roles, and security stamp has not changed for this tenant
                         if (user != null && !user.IsDeleted && !string.IsNullOrEmpty(user.Roles) && (context.Principal.SecurityStamp() == user.SecurityStamp || context.Principal.SiteKey() != alias.SiteKey))
                         {
-                            // BL-119: the cookie's server-side session. Checked for a cookie of THIS site; one with no
+                            // The cookie's server-side session. Checked for a cookie of THIS site; one with no
                             // session (issued before sessions existed) or crossing from another site gets one below.
                             var sessions = context.HttpContext.RequestServices.GetService(typeof(ISessionRegistry)) as ISessionRegistry;
                             var sessionId = context.Principal.SessionId();
@@ -125,7 +125,7 @@ namespace Stomme.Security
             }
         }
 
-        // BL-119: a cookie refused because its account changed (stamp, deletion, roles) ends its session row too, so the
+        // A cookie refused because its account changed (stamp, deletion, roles) ends its session row too, so the
         // owner's list does not keep showing a session no cookie can use. Best effort - the refusal stands either way.
         private static async Task EndSessionAsync(CookieValidatePrincipalContext context, Alias alias, string reason)
         {

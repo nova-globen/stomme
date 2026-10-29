@@ -23,13 +23,13 @@ using Xunit.Abstractions;
 namespace NovaGloben.Module.Blogs.Drive
 {
     /// <summary>
-    /// THE FINALE (D82) — drives the INDEPENDENT, STORAGE-BLIND Blogs module through the REAL Stomme
+    /// THE FINALE — drives the INDEPENDENT, STORAGE-BLIND Blogs module through the REAL Stomme
     /// InstallationManager on the production host (Program.BuildAppAsync composing the real DI container +
     /// middleware pipeline + MapRazorComponents&lt;App&gt; endpoint, transport swapped for TestServer), and
     /// proves the never-before-driven external-install path end to end, ON EACH REACHABLE PROVIDER CLASS:
     /// <list type="number">
     ///   <item>the packaged NovaGloben.Module.Blogs.2.0.0.nupkg (packages-only build, SPLIT
-    ///     Client/Server/Shared per BL-13) is UNPACKED by InstallationManager — all three DLLs into /bin,
+    ///     Client/Server/Shared) is UNPACKED by InstallationManager — all three DLLs into /bin,
     ///     .log manifest written, nupkg deleted;</item>
     ///   <item>the module is DISCOVERED by convention (every assembly name contains "Stomme") and
     ///     self-places a public "blogs" page via its ModuleDefinition.PageTemplates (ModuleInfo lives in the
@@ -50,7 +50,7 @@ namespace NovaGloben.Module.Blogs.Drive
                                // parallel with each other
     public sealed class BlogsExternalInstallDriveTests
     {
-        // BL-13: the split module ships THREE assemblies in one nupkg; all three are extracted into /bin and
+        // The split module ships THREE assemblies in one nupkg; all three are extracted into /bin and
         // loaded by convention. (WASM streaming serves only Client + Shared — see WasmStreamingDriveTests.)
         private static readonly string[] ModuleAssemblyDlls =
         {

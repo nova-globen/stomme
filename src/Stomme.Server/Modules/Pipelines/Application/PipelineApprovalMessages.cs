@@ -22,7 +22,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// The runs waiting for a decision (BL-229, "Ask for approval"), oldest first - the site's, or one run's. Anyone who may view
+    /// The runs waiting for a decision ("Ask for approval"), oldest first - the site's, or one run's. Anyone who may view
     /// runs sees what is asked (the run's log names it already); the details only those who may decide or author.
     /// </summary>
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.View)]

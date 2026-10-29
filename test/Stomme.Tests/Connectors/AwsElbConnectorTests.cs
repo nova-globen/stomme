@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - n8n's AWS ELB node over Elastic Load Balancing's Query protocol (version 2015-12-01), each call a form signed with
+    /// n8n's AWS ELB node over Elastic Load Balancing's Query protocol (version 2015-12-01), each call a form signed with
     /// SigV4 for elasticloadbalancing in the connection's region: every ARN, name, id, choice and tag held to ELB's shape before
     /// anything is signed; load balancers by name, page by page by ELB's NextMarker up to the most; one by its ARN, created with its
     /// subnets, security groups and tags, deleted; a load balancer's listeners; a listener's certificates listed, added and removed;
@@ -176,7 +176,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the AWS Elastic Load Balancing connector against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback),
+    /// The AWS Elastic Load Balancing connector against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback),
     /// which checks every SigV4 signature against the IAM key it issued, through the HOST's egress: loopback refused until
     /// allowlisted; a test; an application load balancer created in two of moto's default subnets with a tag, found by name and by
     /// ARN; an HTTPS listener on it (made by the test, with a target group and an ACM certificate of moto's) listed, a second

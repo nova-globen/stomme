@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Stomme.Models.Pipelines
 {
-    /// <summary>A shipped pipeline to start from (BL-229 increment 10): what it does, and a fresh copy of its graph each time.</summary>
+    /// <summary>A shipped pipeline to start from: what it does, and a fresh copy of its graph each time.</summary>
     public sealed class PipelineStarter
     {
         public PipelineStarter(string id, string name, string description, Func<PipelineGraph> graph)
@@ -28,7 +28,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// The pipelines a site can start from (BL-229 increment 10, n8n's templates): each one built from the steps every installation
+    /// The pipelines a site can start from (n8n's templates): each one built from the steps every installation
     /// has, saved as it stands and published as it stands - a note on the canvas says what to change first (a file to put in the
     /// pipeline folder, a webhook to switch on). The test suite holds every one to the engine's save and the problem check, so a
     /// starter that drifts from the steps fails the build, never a person.
@@ -90,7 +90,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("Put input.csv in the site's pipeline folder first. Each step reads what the one before it produced.", 80, 260) },
         };
 
-        // BL-229: File added (n8n's Local File Trigger) - the file's path read by the next step, its name naming what is written.
+        // File added (n8n's Local File Trigger) - the file's path read by the next step, its name naming what is written.
         private static PipelineGraph CsvPutInAFolder() => new()
         {
             Variables = { new PipelineGraphVariable { Id = "v-file", Name = "file" } },
@@ -197,7 +197,7 @@ namespace Stomme.Models.Pipelines
         };
 
         /// <summary>
-        /// BL-229 - n8n's "Error workflow" setting, made from the pipeline that fails: the alert starter watching that one pipeline
+        /// n8n's "Error workflow" setting, made from the pipeline that fails: the alert starter watching that one pipeline
         /// (by its definition id, as its trigger is indexed), its step named for it.
         /// </summary>
         public static PipelineGraph FailureHandler(string definitionId, string? name)
@@ -213,7 +213,7 @@ namespace Stomme.Models.Pipelines
 
         // Ask AI reads what the webhook was sent (an empty prompt asks about the previous result) and says what it is; a Switch
         // sends a complaint one way and everything else the other.
-        // BL-229: n8n's Text Classifier and Information Extractor - the categories are the step's ports.
+        // n8n's Text Classifier and Information Extractor - the categories are the step's ports.
         private static PipelineGraph AiSort() => new()
         {
             Variables =
@@ -255,7 +255,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("The webhook needs Pipelines:Webhooks:Enabled, and the AI steps the site's assistant switched on with a model (Admin › Assistant › Settings). Each category of What is it? is a port - add one in its Categories. Swap the logs for Send notification to be told.", 80, 420) },
         };
 
-        // BL-229 - n8n's Evaluations: the webhook's runs and an evaluation's runs both reach "What is it?" - When evaluating gives it
+        // n8n's Evaluations: the webhook's runs and an evaluation's runs both reach "What is it?" - When evaluating gives it
         // a row's message as the webhook gives the body, and the row to {{ row }} - then the evaluation's runs score the category
         // against the row's expected one and keep it, while the webhook's go on as usual.
         private static PipelineGraph EvaluateSorting() => new()
@@ -303,7 +303,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("Test it before it goes live: make a data table (Pipelines › Data tables) with the columns message and expected - a message and the category it should get - publish, and open Evaluations from the bar. The webhook needs Pipelines:Webhooks:Enabled, the AI the site's assistant switched on with a model.", 80, 440) },
         };
 
-        // BL-229 - "answer from your documents", its first half: a document's text kept as passages.
+        // "answer from your documents", its first half: a document's text kept as passages.
         private static PipelineGraph KeepDocumentPassages() => new()
         {
             Steps =
@@ -315,7 +315,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("Put a PDF (or a .docx) at documents/handbook.pdf in the pipeline folder, and name it as Source. Run it again after the document changes: its passages are replaced. \"Answer from your documents\" searches the Passages table.", 80, 240) },
         };
 
-        // BL-229 - and its second half: a question, the passages that answer it, an answer from them alone.
+        // And its second half: a question, the passages that answer it, an answer from them alone.
         private static PipelineGraph AnswerFromDocuments() => new()
         {
             Variables =
@@ -346,7 +346,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("Fill the Passages table first with \"Keep a document's passages\". The webhook needs Pipelines:Webhooks:Enabled, the AI step the site's assistant switched on with a model. To answer the caller, start from \"Answer a webhook call\" instead of the webhook.", 80, 240) },
         };
 
-        // BL-229 - n8n's Extract from File and Information Extractor: a PDF's text, its fields pulled out as a record, the record kept.
+        // n8n's Extract from File and Information Extractor: a PDF's text, its fields pulled out as a record, the record kept.
         private static PipelineGraph InvoiceFromPdf() => new()
         {
             Variables = { new PipelineGraphVariable { Id = "v-invoice", Name = "invoice" } },
@@ -371,7 +371,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("Put an invoice at invoices/invoice.pdf in the pipeline folder - or fetch one with HTTP request (save the response to a file) in front of Read the PDF. A scanned PDF holds pictures, not text: Read the PDF says so. The AI step needs the site's assistant switched on with a model.", 80, 260) },
         };
 
-        // BL-229: n8n's Wait node "on form submitted" - the run's form address handed out, then a durable wait for the answers.
+        // n8n's Wait node "on form submitted" - the run's form address handed out, then a durable wait for the answers.
         private static PipelineGraph AskForDetails() => new()
         {
             Variables =
@@ -415,7 +415,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("The form page needs Pipelines:Forms:Enabled and the webhook Pipelines:Webhooks:Enabled. Swap Send the form for Send notification (or an e-mail) to reach the customer; the run waits, stored, holding no worker.", 80, 360) },
         };
 
-        // BL-229: n8n's RSS Read and Data tables - an Upsert on the link keeps every item once; its Inserted output is only the new.
+        // n8n's RSS Read and Data tables - an Upsert on the link keeps every item once; its Inserted output is only the new.
         private static PipelineGraph NewFeedItems() => new()
         {
             Variables =
@@ -545,7 +545,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("Put orders.csv (customer, amount, status columns) in the site's pipeline folder first. Each step reads what the one before it produced; select a step and Run to see its records as a table.", 80, 420) },
         };
 
-        // BL-229: n8n's multi-page forms and its hidden field - a form's next page, and where a person came from carried from the address.
+        // n8n's multi-page forms and its hidden field - a form's next page, and where a person came from carried from the address.
         private static PipelineGraph SignupTwoPages() => new()
         {
             Variables = { new PipelineGraphVariable { Id = "v-first", Name = "first" }, new PipelineGraphVariable { Id = "v-second", Name = "second" } },
@@ -598,7 +598,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("The form needs Pipelines:Forms:Enabled. Its address can say where a person came from: .../forms/signup?source=newsletter - the hidden field carries it, 'web' when the address says nothing.", 80, 260) },
         };
 
-        // BL-229: n8n's Guardrails - a message cleaned and checked before the site's language model sees it.
+        // n8n's Guardrails - a message cleaned and checked before the site's language model sees it.
         private static PipelineGraph ScreenBeforeAi() => new()
         {
             Variables = { new PipelineGraphVariable { Id = "v-clean", Name = "clean" }, new PipelineGraphVariable { Id = "v-answer", Name = "answer" } },
@@ -637,7 +637,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("The webhook needs Pipelines:Webhooks:Enabled, and the checks and the answer the site's assistant switched on with a model (Admin › Assistant › Settings). What the guardrails find is listed by kind and place in their Findings output - never the value they found.", 80, 380) },
         };
 
-        // BL-229: n8n's most common template - a Telegram bot answered by a model: the message in, the model's answer back to its
+        // n8n's most common template - a Telegram bot answered by a model: the message in, the model's answer back to its
         // chat in reply. Both steps name the bot's connection, which a starter cannot: the author chooses it, the editor saying so.
         private static PipelineGraph TelegramAiBot() => new()
         {
@@ -666,7 +666,7 @@ namespace Stomme.Models.Pipelines
             Notes = { Note("Choose the bot's Telegram connection in 'A message to the bot' and in 'Send the answer' (Admin › Connections: the token @BotFather gave you), and switch on the site's assistant with a model (Admin › Assistant › Settings). The bot is asked for its messages every few seconds - it needs no webhook, and one set elsewhere stops it.", 80, 300) },
         };
 
-        // BL-229: n8n's HTML node - records as a table, every value encoded, in a page.
+        // n8n's HTML node - records as a table, every value encoded, in a page.
         private static PipelineGraph OrdersReport() => new()
         {
             Variables = { new PipelineGraphVariable { Id = "v-table", Name = "table" } },

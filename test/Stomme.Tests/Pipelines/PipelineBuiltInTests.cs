@@ -23,7 +23,7 @@ using RunPipelineResult = Stomme.Engine.Pipelines.Models.RunPipelineResult;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - the built-in values every expression and condition can read beside the pipeline's variables (n8n's $now,
+    /// The built-in values every expression and condition can read beside the pipeline's variables (n8n's $now,
     /// $today, $execution and $workflow): <c>{{ $now }}</c>, <c>{{ $today }}</c>, <c>{{ $run.id }}</c>,
     /// <c>{{ $pipeline.name }}</c>. ONE list (<see cref="PipelineBuiltIns"/>), filled by the engine from the run and its clock
     /// when a step runs, and by the editor for its previews; the problems panel knows them, so naming one is no "unknown
@@ -97,7 +97,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("{{ $run.correlationId }}", suggested);
         }
 
-        // BL-229 - n8n's workflow timezone: $now with the zone's offset, $today the zone's date - a day later in Stockholm at
+        // n8n's workflow timezone: $now with the zone's offset, $today the zone's date - a day later in Stockholm at
         // 23:30 UTC - and $run.startedAt there too; a condition still compares them as moments. Empty, "UTC" and a zone this
         // machine does not know read UTC, the last one refused where a pipeline is saved.
         [Fact]
@@ -151,7 +151,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Asia/Tehran", PipelineExchange.Read(PipelineExchange.Write("Zoned", null, graph)).Graph!.TimeZone);
         }
 
-        // BL-229 - n8n's $vars: the site's variables, read by every expression; a name is a letter or '_' then letters, digits or '_'.
+        // n8n's $vars: the site's variables, read by every expression; a name is a letter or '_' then letters, digits or '_'.
         [Fact]
         public void The_sites_variables_are_read_as_vars_and_only_names_that_can_be_read_are_kept()
         {
@@ -207,7 +207,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains($"run {result.PipelineState.Id} on 2026-10-06 at 2026-10-06T07:30:15Z", _console.ToString());
         }
 
-        // BL-229 - n8n's "When executed by another workflow": what the run was started with is $input - a value that is JSON read
+        // n8n's "When executed by another workflow": what the run was started with is $input - a value that is JSON read
         // by its path - and the engine's own __ keys are not part of it.
         [Fact]
         public async Task A_step_reads_what_its_run_was_started_with_as_input()

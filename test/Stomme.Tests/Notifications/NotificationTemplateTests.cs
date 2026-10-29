@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationTemplateTests.cs</c> (7 facts, BL-78): the
+    /// Ported from the predecessor platform <c>tests/Notifications.Tests/NotificationTemplateTests.cs</c> (7 facts): the
     /// <see cref="NotificationTemplateAggregate"/> - at least one channel + locale, distinct locales, the
     /// <see cref="PlaceholderSchema"/> declaration set, the saved event, and round-trip persistence of the localized
     /// content graph (harness swap: the module's File store).

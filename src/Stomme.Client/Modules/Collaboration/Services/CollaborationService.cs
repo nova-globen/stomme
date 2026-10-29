@@ -55,7 +55,7 @@ namespace Stomme.Modules.Collaboration.Services
     }
 
     /// <summary>
-    /// The overview's client over <c>api/Collaboration</c> (BL-97 increment 11). A refusal carries its code and a message
+    /// The overview's client over <c>api/Collaboration</c>. A refusal carries its code and a message
     /// written to be shown, so the page reads the body rather than treating the status as an exception.
     /// </summary>
     public class CollaborationService : ServiceBase, ICollaborationService, IClientService

@@ -8,7 +8,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.IdentityAudit.Domain
 {
     /// <summary>
-    /// One line of the identity audit ledger (BL-120): a sign-in, a lockout, a password reset, a role change - who, to
+    /// One line of the identity audit ledger: a sign-in, a lockout, a password reset, a role change - who, to
     /// whom, on which site, when, from where.
     /// </summary>
     /// <remarks>

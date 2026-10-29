@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - the pattern half of n8n's Guardrails node: personal data held to its checksums where it has one, secret keys at
+    /// The pattern half of n8n's Guardrails node: personal data held to its checksums where it has one, secret keys at
     /// each strictness, URLs against the allowed hosts and schemes, keywords as whole words, custom patterns, and the text sanitized
     /// with each finding replaced by its kind - a finding saying where it is, never what it matched.
     /// </summary>

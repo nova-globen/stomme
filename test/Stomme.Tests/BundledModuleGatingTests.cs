@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// DRIVES the bundled-module config gate (Wave 18 / W2, D85) on a REAL install + REAL render.
+    /// DRIVES the bundled-module config gate (Wave 18 / W2) on a REAL install + REAL render.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -26,7 +26,7 @@ namespace Stomme.Tests
     /// <c>.Stomme</c> assembly bakes into the publish output and is discovered UNCONDITIONALLY by the existing
     /// <c>InstallationManager</c>/<c>IsStommeAssembly</c> <c>/bin</c> scan. What a config flag gates is whether
     /// that discovered module is SEEDED onto a page — and therefore whether it renders. The knob is W1's
-    /// <c>module.&lt;id&gt;.enabled</c> (D84), read from the <c>FeatureManagement</c> config section.
+    /// <c>module.&lt;id&gt;.enabled</c>, read from the <c>FeatureManagement</c> config section.
     /// </para>
     /// <para>
     /// This proves the gate WITHOUT needing an external module binary, by driving it against a REAL bundled
@@ -204,7 +204,7 @@ namespace Stomme.Tests
 
                 // Only the pools this install opened. ClearAllPools is process-wide, so it reached into whatever
                 // sibling class happened to be mid-request; this reads the post-install connection strings back
-                // out of the content root instead (BL-104).
+                // out of the content root instead.
                 ScratchSqlite.ReleaseInstall(ContentRoot);
 
                 try

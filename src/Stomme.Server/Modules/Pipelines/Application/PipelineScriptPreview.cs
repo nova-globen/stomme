@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// What this site lets the editor offer (BL-229 increment 5b): JavaScript expressions where <c>Pipelines:Scripts:Enabled</c>,
+    /// What this site lets the editor offer: JavaScript expressions where <c>Pipelines:Scripts:Enabled</c>,
     /// whether it receives webhooks, and whether its model can build in the editor - read once when the editor opens, so it offers
     /// nothing the run (or the model) would refuse.
     /// </summary>
@@ -34,7 +34,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// A JavaScript expression's value for the editor's preview (BL-229 increment 5b): run in the same bounded sandbox the engine
+    /// A JavaScript expression's value for the editor's preview: run in the same bounded sandbox the engine
     /// uses, with the variables' values the editor previews with, and nothing else - no step, no store. Authoring rights, and only
     /// where scripts are on.
     /// </summary>

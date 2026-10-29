@@ -17,7 +17,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record FileAddedStimulus(string Folder, string Pattern, bool Subfolders, bool Changed);
 
     /// <summary>
-    /// n8n's Local File Trigger, as an engine TRIGGER (BL-229): a published pipeline that starts with it is indexed under the folder
+    /// n8n's Local File Trigger, as an engine TRIGGER: a published pipeline that starts with it is indexed under the folder
     /// of the site's pipeline folder it watches, and <c>Triggers/WatchedFoldersTask.cs</c> (a recurring task the engine runs per
     /// site tenant) looks at that folder and starts a run for each file put there since it last looked - one run a file, the file
     /// as the trigger's result (<see cref="PipelineFileEvent"/>). Files already there when the pipeline is published start

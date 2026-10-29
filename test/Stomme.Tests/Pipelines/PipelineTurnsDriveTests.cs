@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - one at a time, the rest in turn, DRIVEN over HTTP on an installed SQLite host: three webhook calls to a pipeline whose
+    /// One at a time, the rest in turn, DRIVEN over HTTP on an installed SQLite host: three webhook calls to a pipeline whose
     /// run waits a few seconds are three runs - one going, two Queued - that run one after the other, those waiting in the order they were sent, each
     /// with the body it was called with; Run while one is going is Queued too; never are two going at once. Before, "one at a time"
     /// answered the second call 202 and ran nothing.

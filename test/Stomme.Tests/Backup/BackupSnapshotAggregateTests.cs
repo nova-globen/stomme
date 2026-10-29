@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (D106 item 6) - the catalogue's rules: the snapshot's life (the predecessor platform's <c>BackupSnapshotTests</c>, ported by name
+    /// The catalogue's rules: the snapshot's life (the predecessor platform's <c>BackupSnapshotTests</c>, ported by name
     /// in the module README, with <c>FailRestore</c> INVERTED - a failed restore is <c>RestoreFailed</c>, not Available), the
     /// staged restore D106 adds, the schedule's due rule, and the value objects (the predecessor platform's <c>BackupValueObjectTests</c>).
     /// </summary>

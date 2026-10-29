@@ -2,7 +2,7 @@
 @inject IPortabilityService PortabilityService
 
 @*
-    A person's own data package (BL-82, portability:export-own), on their profile: ask for a copy of what this site holds
+    A person's own data package (portability:export-own), on their profile: ask for a copy of what this site holds
     about them, and download it when it is ready. Renders nothing while portability is switched off - the site says so
     (BL-212) and nothing is asked; a server that does not say answers 404 and the list comes back empty.
 *@
@@ -53,7 +53,7 @@
 
     private async Task LoadAsync()
     {
-        // BL-212: the site says whether portability is on; asking a switched-off API logged a 404 on every profile view.
+        // The site says whether portability is on; asking a switched-off API logged a 404 on every profile view.
         if (HostSwitches.IsOff(PageState?.Site, HostSwitches.Portability))
         {
             _enabled = false;

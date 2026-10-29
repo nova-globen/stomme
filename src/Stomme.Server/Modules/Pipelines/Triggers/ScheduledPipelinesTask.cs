@@ -74,7 +74,7 @@ namespace Stomme.Modules.Pipelines.Triggers
                     continue;
                 }
 
-                // BL-229: the zone the cron is read in (UTC when none); the occurrence is found there, daylight saving followed.
+                // The zone the cron is read in (UTC when none); the occurrence is found there, daylight saving followed.
                 var zoneName = ReadTimeZone(group.First());
                 var zone = Schedule.FindZone(zoneName, out var zoneError);
                 if (zone is null)

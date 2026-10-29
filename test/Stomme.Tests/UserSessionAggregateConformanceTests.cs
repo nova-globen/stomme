@@ -25,11 +25,11 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-119 - a server-side session round-trips member for member on EVERY module-aggregate store (EF SQLite, EF
+    /// A server-side session round-trips member for member on EVERY module-aggregate store (EF SQLite, EF
     /// PostgreSQL, EF SQL Server, RavenDB, File) through the module's own startup, a revoke read in one scope and written
     /// in the next persists, and the reads answer identically: a user's active sessions, a site's, and retention's ended
     /// ones - never another site's, never an ended one where an active one is asked for. PostgreSQL, SQL Server and
-    /// RavenDB FAIL rather than skip (D46).
+    /// RavenDB FAIL rather than skip.
     /// </summary>
     public abstract class UserSessionAggregateConformanceTests : IAsyncLifetime
     {
@@ -261,7 +261,7 @@ namespace Stomme.Tests
 
     /// <summary>
     /// EF Core on a LIVE SQL Server scratch database (infra UAT, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
-    /// suite on SQL Server, as every module-aggregate suite since BL-117. Fails, never skips, when SQL Server is down (D46).
+    /// suite on SQL Server, as every module-aggregate suite. Fails, never skips, when SQL Server is down.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class SqlServerUserSessionAggregateConformanceTests : UserSessionAggregateConformanceTests

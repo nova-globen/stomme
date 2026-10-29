@@ -17,7 +17,7 @@ using Renci.SshNet.Common;
 namespace Stomme.Modules.Connectors.Ssh
 {
     /// <summary>
-    /// SSH signed in by a password (BL-229, n8n's SSH node): the Basic scheme's <c>username</c>/<c>password</c>, as SSH's
+    /// SSH signed in by a password (n8n's SSH node): the Basic scheme's <c>username</c>/<c>password</c>, as SSH's
     /// password method - n8n's way. Everything else is <see cref="SshCommandConnectorBase"/>'s.
     /// </summary>
     public sealed class SshConnector : SshCommandConnectorBase
@@ -33,7 +33,7 @@ namespace Stomme.Modules.Connectors.Ssh
     }
 
     /// <summary>
-    /// SSH signed in by a private key (BL-229, n8n's SSH node's Private Key): the key and its passphrase as SFTP (private key)'s
+    /// SSH signed in by a private key (n8n's SSH node's Private Key): the key and its passphrase as SFTP (private key)'s
     /// (<see cref="SftpKeyConnector"/>), the user the connection's <c>username</c> setting.
     /// </summary>
     public sealed class SshKeyConnector : SshCommandConnectorBase
@@ -53,7 +53,7 @@ namespace Stomme.Modules.Connectors.Ssh
     }
 
     /// <summary>
-    /// The SSH connectors' part (BL-229, n8n's SSH node): the SSH server's (<see cref="SshConnectorBase"/> - its address, its
+    /// The SSH connectors' part (n8n's SSH node): the SSH server's (<see cref="SshConnectorBase"/> - its address, its
     /// host key proved before anything is sent, the pin), and n8n's operations - a command run on the server, in a folder when
     /// given, its exit code, its signal, what it wrote and what it wrote as errors (each held to 1 MiB, the command stopped
     /// past it; a command that outlasts its time stopped and said so); a file downloaded into the pipeline run's folder and one

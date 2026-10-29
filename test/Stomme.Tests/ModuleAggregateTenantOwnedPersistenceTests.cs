@@ -34,14 +34,14 @@ namespace Stomme.Tests
         private readonly string _databasePath =
             Path.Combine(Path.GetTempPath(), $"stomme-tenant-owned-{Guid.NewGuid():N}.db");
 
-        /// <summary>The one string both the store and the teardown use — the pool is keyed by it (BL-104).</summary>
+        /// <summary>The one string both the store and the teardown use — the pool is keyed by it.</summary>
         private string ConnectionString => $"Data Source={_databasePath}";
 
         public Task InitializeAsync() => Task.CompletedTask;
 
         public Task DisposeAsync()
         {
-            // This database's pool only - ClearAllPools is process-wide (BL-104).
+            // This database's pool only - ClearAllPools is process-wide.
             ScratchSqlite.Release(ConnectionString);
             try
             {

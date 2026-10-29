@@ -21,7 +21,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - "answer from your documents", the retrieval half: Store passages splits a text into passages - paragraphs whole
+    /// "answer from your documents", the retrieval half: Store passages splits a text into passages - paragraphs whole
     /// where they fit, a long one cut between sentences, each passage after the first carrying the end of the one before - and
     /// keeps them in a data table, made when missing, a source stored again replacing its passages; Find passages ranks them for
     /// a question by BM25, best first, leaves out those sharing no word with it, and numbers them as one context for Ask AI.

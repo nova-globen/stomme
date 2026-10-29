@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// How the Wait step (BL-229, n8n's Wait node) reads its time - ONE reading, for the step when it runs and for the editor's
+    /// How the Wait step (n8n's Wait node) reads its time - ONE reading, for the step when it runs and for the editor's
     /// problems before publish: "For" as a person writes a duration (<c>30 minutes</c>, <c>1.5 hours</c>, <c>45s</c>, <c>1 week</c>)
     /// or as d.hh:mm:ss (<c>1.12:00:00</c>); "Until" as a moment (<c>2026-12-24T09:00:00Z</c>; no offset is UTC). Until wins.
     /// </summary>

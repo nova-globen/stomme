@@ -6,7 +6,7 @@ namespace Stomme.Modules.HtmlText.Repository
 {
     /// <summary>
     /// The per-aggregate store for <see cref="HtmlTextAggregate"/> — the HtmlText module's cluster on the
-    /// persistence seam (D55), and the REFERENCE every downstream module copies. Provider-selected at resolve time
+    /// persistence seam, and the REFERENCE every downstream module copies. Provider-selected at resolve time
     /// (<c>EfHtmlTextStore</c> or <c>RavenHtmlTextStore</c>) keyed on the configured database type, exactly as the
     /// framework store's <c>ISiteStore</c> is.
     /// </summary>

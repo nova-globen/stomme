@@ -16,7 +16,7 @@ namespace Stomme.Themes.StommeTheme
             ContainerSettingsType = "Stomme.Themes.StommeTheme.ContainerSettings, Stomme.Client",
             Resources = new List<Resource>()
             {
-                // Stomme ships the --db-* design system as the default theme's CSS (D11).
+                // Stomme ships the --db-* design system as the default theme's CSS.
                 // FluentUI Blazor supplies the component chrome; no Bootstrap/Bootswatch CDN.
                 new Stylesheet("~/Theme.css")
             }

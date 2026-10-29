@@ -9,7 +9,7 @@ using Microsoft.Data.SqlClient;
 namespace Stomme.Infrastructure.Locks
 {
     /// <summary>
-    /// Cross-node <see cref="IDistributedLock"/> on SQL Server (BL-154): an exclusive <c>sp_getapplock</c> owned by a
+    /// Cross-node <see cref="IDistributedLock"/> on SQL Server: an exclusive <c>sp_getapplock</c> owned by a
     /// dedicated SESSION for the handle's lifetime. Disposing the handle releases it, and so does losing the connection
     /// (a crashed holder), which is the auto-expiry the abstraction asks for; like the PostgreSQL advisory lock, there is
     /// no timer, so the TTL is not a hard deadline.

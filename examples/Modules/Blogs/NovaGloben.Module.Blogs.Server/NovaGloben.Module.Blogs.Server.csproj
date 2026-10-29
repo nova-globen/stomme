@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    BL-13: the SERVER layer of the split (WASM-download-safe) Blogs module — BlogController,
+    The SERVER layer of the split (WASM-download-safe) Blogs module — BlogController,
     the CQRS handlers (Application/), the DDD aggregate (Domain/), the storage-blind persistence
     wiring (Persistence/ + ServerStartup's AddModuleAggregatePersistence<BlogPost, Guid>) and the
     server IBlogService. It is discovered from /bin by the same convention scan as the other two
@@ -9,7 +9,7 @@
     ModuleDefinition's AssemblyName (the Client assembly) + its Dependencies (the Shared assembly),
     and the WASM streaming drive asserts this Server assembly is EXCLUDED.
 
-    INDEPENDENT (D81/D82): references Stomme ONLY through a meta-package from the local feed — since
+    INDEPENDENT: references Stomme ONLY through a meta-package from the local feed — since
     BL-44 the SLIM one, Stomme.Sdk.Slim (examples/pack-sdk-slim.ps1): the module-facing compile
     surface without the fat Stomme.Server closure (measured: 180 packages / ~1.2 GB restored down to
     the curated slim set). The ASP.NET Core surface arrives via the Stomme.Server.Sdk shim's

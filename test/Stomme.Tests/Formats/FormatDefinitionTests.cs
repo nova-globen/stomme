@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.Formats
 {
     /// <summary>
-    /// BL-94 increment 1 (D110) - the predecessor platform's FormatDefinitionTests (feature 16) ported onto the reshaped aggregate: the
+    /// The predecessor platform's FormatDefinitionTests (feature 16) ported onto the reshaped aggregate: the
     /// invariants (a valid pattern for the kind under the culture, a known culture, a non-empty name, a known time zone),
     /// the saved event, the descriptor projection - plus the house rules the port added (a site, a normalised name, a
     /// bounded pattern and name, UTC instants).

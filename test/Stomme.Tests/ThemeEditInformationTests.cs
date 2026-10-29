@@ -16,7 +16,7 @@ using ThemeEdit = Stomme.Modules.Admin.Themes.Edit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-22's depth-2 pass (2026-10-03) - the theme page shows the theme's internal name. It never read it from the loaded
+    /// BL-22's depth-2 pass - the theme page shows the theme's internal name. It never read it from the loaded
     /// theme, so "Internal Name" was blank for every theme and a licence given as a "~" path linked to "/Themes/" with no
     /// theme in it. Driven: Graphite's page empty while <c>api/Theme/1</c> returned its type name.
     /// </summary>

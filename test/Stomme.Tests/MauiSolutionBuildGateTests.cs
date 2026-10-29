@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-19 — the MAUI hybrid shell is in its own solution, so <c>dotnet test Stomme.slnx</c> never
+    /// The MAUI hybrid shell is in its own solution, so <c>dotnet test Stomme.slnx</c> never
     /// compiled it and it rotted silently: measured 2026-08-03, <c>dotnet build Stomme.Maui.slnx</c> had
     /// been failing on NETSDK1147 (the root <c>Directory.Build.props</c>' singular
     /// <c>TargetFramework=net10.0</c> leaked into the csproj, and UseMaui + a plain net10.0 TFM demands

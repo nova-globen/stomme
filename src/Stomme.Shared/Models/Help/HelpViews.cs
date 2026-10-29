@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Stomme.Models.Help
 {
     /// <summary>
-    /// A topic as its AUTHOR sees it (BL-84): the Markdown itself, and whether a contributor still owns it. Only the
+    /// A topic as its AUTHOR sees it: the Markdown itself, and whether a contributor still owns it. Only the
     /// <c>help:author</c>-gated read returns this - a reader never receives Markdown, only the server-rendered
     /// <c>SafeHtml</c> of a published topic.
     /// </summary>

@@ -48,7 +48,7 @@ internal static class FileStoreSerializer
     public static T? Deserialize<T>(string json) => JsonConvert.DeserializeObject<T>(json, Settings);
 
     /// <summary>
-    /// A fingerprint of what this serializer WRITES for <paramref name="types"/> (BL-170): every serialized property's name
+    /// A fingerprint of what this serializer WRITES for <paramref name="types"/>: every serialized property's name
     /// and type, and those of every object it holds, recursively; a value a converter writes as a scalar counts as its type
     /// alone. A property added, removed, renamed or retyped changes it; a method, an ignored member, or the order the types
     /// are given in does not. <paramref name="also"/> adds what else the data depends on (the framework part's migration

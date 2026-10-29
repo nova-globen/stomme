@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.WooCommerce
 {
     /// <summary>
-    /// WooCommerce (BL-229, n8n's WooCommerce node: orders, products and customers found, got, created, updated and deleted): a
+    /// WooCommerce (n8n's WooCommerce node: orders, products and customers found, got, created, updated and deleted): a
     /// store's REST API (<c>https://shop.example.com/wp-json/wc/v3</c>), a REST API key's consumer key and secret by the Basic
     /// scheme (WooCommerce takes it over HTTPS). A test counts the store's orders.
     /// </summary>

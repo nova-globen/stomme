@@ -10,7 +10,7 @@ using Stomme.SharedKernel.Domain;
 
 namespace Stomme.Dashboards.Persistence
 {
-    /// <summary>The Dashboards module's closed repository over the storage-blind store (D79/D80): a site's boards by normalized name, and all of a site's boards in name order.</summary>
+    /// <summary>The Dashboards module's closed repository over the storage-blind store: a site's boards by normalized name, and all of a site's boards in name order.</summary>
     public interface IDashboardRepository : IRepository<DashboardAggregate, Guid>
     {
         Task<IReadOnlyList<DashboardAggregate>> ListForSiteAsync(int siteId, CancellationToken ct = default);

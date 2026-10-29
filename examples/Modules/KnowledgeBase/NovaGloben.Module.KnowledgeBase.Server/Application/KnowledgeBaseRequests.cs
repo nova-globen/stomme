@@ -21,7 +21,7 @@ using NovaGloben.Module.KnowledgeBase.Persistence;
 namespace NovaGloben.Module.KnowledgeBase.Application
 {
     // ================================================================================================================
-    // The module's commands and queries. Each carries [Requires] with one of the module's keys (D99): the host's
+    // The module's commands and queries. Each carries [Requires] with one of the module's keys: the host's
     // authorization behaviour refuses a caller without it before the handler runs, whether the request came from the
     // API, a page or a job's scope. Every one works through the REQUEST's site - another site's rows do not exist for it.
     // ================================================================================================================
@@ -138,7 +138,7 @@ namespace NovaGloben.Module.KnowledgeBase.Application
                 throw new InvalidOperationException($"Category '{categoryId}' is not this site's.");
             }
 
-            // A read, then an update of THAT instance: the module store hands out non-tracking repositories (D79).
+            // A read, then an update of THAT instance: the module store hands out non-tracking repositories.
             article.Edit(request.Title, request.Body, request.CategoryId, clock.GetUtcNow().UtcDateTime);
             await articles.UpdateAsync(article, ct);
             await unitOfWork.SaveChangesAsync(ct);
@@ -149,13 +149,13 @@ namespace NovaGloben.Module.KnowledgeBase.Application
     /// <summary>
     /// Publishes a draft - the exemplar's showcase of what a write can take part in, in this order:
     /// <list type="number">
-    ///   <item>the site's QUOTA is asked first (D102, <see cref="IQuotaInspector"/>): a publish past the limit is refused
+    ///   <item>the site's QUOTA is asked first (<see cref="IQuotaInspector"/>): a publish past the limit is refused
     ///     before anything changes; no quota defined is permissive;</item>
-    ///   <item>the aggregate publishes and the unit of work saves - which dispatches its DOMAIN EVENT in this scope (D40);</item>
+    ///   <item>the aggregate publishes and the unit of work saves - which dispatches its DOMAIN EVENT in this scope;</item>
     ///   <item>the publish is METERED (<see cref="IUsageRecorder"/>), idempotent per article (the article's id is the
     ///     operation id);</item>
     ///   <item>the site's operators - its Administrators and the Host Users - are NOTIFIED through the host's dispatcher and
-    ///     the module's contributed template (D100), by user id;</item>
+    ///     the module's contributed template, by user id;</item>
     ///   <item>an INTEGRATION EVENT goes out on the host's bus when messaging is on.</item>
     /// </list>
     /// The publish is committed at step 2, so a meter, a notification or a bus that fails afterwards is logged and does not
@@ -222,7 +222,7 @@ namespace NovaGloben.Module.KnowledgeBase.Application
         private async Task NotifyAsync(int siteId, Article article, CancellationToken ct)
         {
             // The site's OPERATORS: its Administrators and the Host Users, who administer every site. A fresh install's site has
-            // no Administrators member - its one user is the host - so the Administrators alone would be nobody (measured, BL-177).
+            // no Administrators member - its one user is the host - so the Administrators alone would be nobody (measured).
             var administrators = (await userRoles.GetUserRolesAsync(RoleNames.Admin, siteId))
                 .Concat(await userRoles.GetUserRolesAsync(RoleNames.Host, siteId))
                 .Select(role => role.UserId).Distinct().OrderBy(id => id).ToList();

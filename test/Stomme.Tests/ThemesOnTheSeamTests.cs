@@ -22,7 +22,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The DRIVEN half of the Theme cluster (D52): the ThemeRepository exercised end-to-end against a real SQLite
+    // The DRIVEN half of the Theme cluster: the ThemeRepository exercised end-to-end against a real SQLite
     // database whose schema is written by hand to match the MASTER migration set — not EnsureCreated, which would
     // build the schema from the very model under test.
     //
@@ -300,7 +300,7 @@ namespace Stomme.Tests
 
             var store = NewStore(); // ONE store instance for BOTH writes, as ProcessThemesAsync uses.
 
-            // Read the existing theme through a SESSION (untracked, D19), then mutate the detached model.
+            // Read the existing theme through a SESSION (untracked), then mutate the detached model.
             Theme detached;
             await using (var session = new TestMasterSessions(NewContext).OpenQuerySession())
             {

@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Harvest
 {
     /// <summary>
-    /// Harvest (BL-229, n8n's Harvest node: an account's clients, contacts, projects, tasks, users, invoices, estimates,
+    /// Harvest (n8n's Harvest node: an account's clients, contacts, projects, tasks, users, invoices, estimates,
     /// expenses and time entries created, got, read, updated and deleted, a timer restarted and stopped, the company read):
     /// Harvest's API v2, a personal access token as a bearer token and the account it acts in (<c>Harvest-Account-Id</c>), over
     /// the host's egress. A test names the account's company.

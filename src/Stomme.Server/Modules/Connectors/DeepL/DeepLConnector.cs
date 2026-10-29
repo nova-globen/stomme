@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.DeepL
 {
     /// <summary>
-    /// DeepL (BL-229, n8n's DeepL node: a text translated): DeepL's API v2 with an authentication key - its Free API for a key
+    /// DeepL (n8n's DeepL node: a text translated): DeepL's API v2 with an authentication key - its Free API for a key
     /// ending in :fx, its Pro API otherwise - over the host's egress. A test names the plan and how much of its characters are
     /// used.
     /// </summary>

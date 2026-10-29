@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-97 increment 12 - an in-process site signal calls each subscriber in the execution context IT subscribed in, never
+    /// An in-process site signal calls each subscriber in the execution context IT subscribed in, never
     /// the raiser's (<see cref="Stomme.Transport.Realtime.SiteSignal{TMessage}"/>). A circuit's page reads its user through
     /// the ambient HttpContext, which rides that context: invoked on the raiser's thread, the page's work ran as the user whose
     /// request raised the message - driven with two signed-in editors (one editor's panel re-read the lock as the other and

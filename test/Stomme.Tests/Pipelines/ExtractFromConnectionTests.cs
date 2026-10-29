@@ -22,7 +22,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95's residue "a Connection with a vaulted secret": the Extract from connection step over the extraction port (D110),
+    /// BL-95's residue "a Connection with a vaulted secret": the Extract from connection step over the extraction port,
     /// run by the real engine with the port scripted - the connection id, operation, parameters and the clamped cap reach the
     /// port; the records become the step's result for the next step; a refused extraction is the port's category; a
     /// truncated extract says so. The installed drive is <see cref="ExtractFromConnectionDriveTests"/>.
@@ -97,7 +97,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal((2, false), ((int)outputs["RecordCount"], (bool)outputs["Truncated"]));
         }
 
-        // BL-229: a SQL statement is seldom one line, and a parameter line holds one - the Query box is the operation's query, as
+        // A SQL statement is seldom one line, and a parameter line holds one - the Query box is the operation's query, as
         // many lines as it takes; given there and as a 'query' line too, the step will not guess which.
         [Fact]
         public async Task The_query_in_its_own_box_is_the_query_parameter_and_given_twice_is_refused()

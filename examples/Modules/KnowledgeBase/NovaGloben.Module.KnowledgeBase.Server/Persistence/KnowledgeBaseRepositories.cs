@@ -10,9 +10,9 @@ using NovaGloben.Module.KnowledgeBase.Domain;
 namespace NovaGloben.Module.KnowledgeBase.Persistence
 {
     /// <summary>
-    /// The articles' closed repository over the host's storage-blind store (D79/D80): the module never names a provider.
+    /// The articles' closed repository over the host's storage-blind store: the module never names a provider.
     /// Every read is a SITE's. A filter is <c>FindAsync</c> on non-string scalars (the site id, the category id) - the
-    /// safe set every store answers alike (D78) - and a slug lookup compares a value normalised on both sides (D49).
+    /// safe set every store answers alike - and a slug lookup compares a value normalised on both sides.
     /// </summary>
     public interface IArticleRepository : IRepository<Article, Guid>
     {

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Hunter DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Hunter DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Hunter's API v2 that refuses a call without the key in its X-API-KEY header: a Hunter
     /// connection made over the API, its key vaulted, tested; a published pipeline searching a domain's executives, finding a
     /// person's address and verifying it - Hunter still verifying at the first ask - and the address found read by the verifier

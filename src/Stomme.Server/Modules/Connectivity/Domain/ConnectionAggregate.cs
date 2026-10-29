@@ -18,11 +18,11 @@ namespace Stomme.Modules.Connectivity.Domain
     }
 
     /// <summary>
-    /// A configured instance of a connector type (BL-94 increment 5, D110): the endpoint, the settings the connector's
+    /// A configured instance of a connector type: the endpoint, the settings the connector's
     /// schema accepts, the NAMES of the credential fields stored for it (the values live only in the per-site secret
     /// store under <see cref="ConnectionCredentialKeys"/>), a bounded timeout, the last test's verdict. Tenant-owned
-    /// and site-scoped, named with a normalised twin (D49); the connector type is lower-cased so a key compares the
-    /// same way everywhere. the predecessor platform's free-form <c>CredentialRef</c> and <c>MaxRetries</c> are gone (D110).
+    /// and site-scoped, named with a normalised twin; the connector type is lower-cased so a key compares the
+    /// same way everywhere. the predecessor platform's free-form <c>CredentialRef</c> and <c>MaxRetries</c> are gone.
     /// </summary>
     public sealed class ConnectionAggregate : AggregateRoot<Guid>, ITenantOwned
     {
@@ -103,7 +103,7 @@ namespace Stomme.Modules.Connectivity.Domain
 
         public void MarkDeleted() => RaiseDomainEvent(new ConnectionDeletedEvent(Id, Name));
 
-        /// <summary>The verdict of a test: Healthy or Failing, with a SANITISED message (a connector's own error text never reaches an event, D110).</summary>
+        /// <summary>The verdict of a test: Healthy or Failing, with a SANITISED message (a connector's own error text never reaches an event).</summary>
         public void RecordTestResult(bool success, string message, DateTime nowUtc)
         {
             Status = success ? ConnectionStatus.Healthy : ConnectionStatus.Failing;
@@ -283,7 +283,7 @@ namespace Stomme.Modules.Connectivity.Domain
     }
 
     /// <summary>
-    /// The closed key grammar for a connection's secrets (D110): <c>connectivity.connection-&lt;id:N&gt;.&lt;field&gt;</c>, where
+    /// The closed key grammar for a connection's secrets: <c>connectivity.connection-&lt;id:N&gt;.&lt;field&gt;</c>, where
     /// <c>field</c> is a name the connector's authentication scheme declares AND already fits the secret store's segment
     /// grammar - anything else is REJECTED, never rewritten, which closes the predecessor platform's free-form name and <c>../</c> class.
     /// </summary>

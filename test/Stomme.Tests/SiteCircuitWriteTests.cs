@@ -12,10 +12,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-193 - a second save of the site from ONE Interactive Server circuit.
+    /// A second save of the site from ONE Interactive Server circuit.
     /// </summary>
     /// <remarks>
-    /// Found clicking BL-192's pages (2026-10-02): User Management's Settings tab saved once ("Settings Saved Successfully")
+    /// Found clicking BL-192's pages: User Management's Settings tab saved once ("Settings Saved Successfully")
     /// and failed the second time in the same circuit ("Error Saving Settings"; the event log: EF Core's "SiteAggregate
     /// cannot be tracked because another instance with the same key value is already being tracked"), reproduced twice, in
     /// 10.4.1 too. A circuit is one DI scope for as long as the page is open, and the site repository wrote through ONE

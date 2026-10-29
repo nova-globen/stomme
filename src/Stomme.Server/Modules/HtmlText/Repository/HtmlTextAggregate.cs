@@ -8,7 +8,7 @@ namespace Stomme.Modules.HtmlText.Repository
     /// <summary>
     /// The HtmlText aggregate root — the persistence-side model of the module's <c>html_text</c> table, reachable
     /// only through <see cref="IHtmlTextStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads). The
-    /// module's LEAF cluster on the persistence seam (D55), mapped onto the EXISTING table the EF migration creates
+    /// module's LEAF cluster on the persistence seam, mapped onto the EXISTING table the EF migration creates
     /// (D3 — no schema change), so a relational install and a document install serve the same content with no data
     /// migration between them.
     /// </summary>
@@ -32,7 +32,7 @@ namespace Stomme.Modules.HtmlText.Repository
     public class HtmlTextAggregate : AggregateRoot<int>, IAuditable
     {
         /// <summary>
-        /// The <c>Module</c> instance this content belongs to. A reference to another entity BY ID (D7/D19) — the
+        /// The <c>Module</c> instance this content belongs to. A reference to another entity BY ID — the
         /// harvested schema carries an <c>FK_HtmlText_Module</c> cascade, which is unchanged: this is a mapping
         /// change, not a schema change.
         /// </summary>

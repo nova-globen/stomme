@@ -29,7 +29,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// The site's watched Telegram bots (BL-229, n8n's Telegram Trigger): for each bot a "Telegram message received" trigger
+    /// The site's watched Telegram bots (n8n's Telegram Trigger): for each bot a "Telegram message received" trigger
     /// watches, the last update handed on - and the look that starts the pipelines for each message since. Every pipeline on a bot
     /// shares one record (one stimulus hash: the connection alone), kept in the engine's key-value store under the SITE's key and
     /// the hash. A look asks the bot, through the connection (<see cref="IConnectorExtractionService"/>: the connector, the token
@@ -250,7 +250,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// Asks the site's watched Telegram bots for their messages (BL-229): a recurring task the ENGINE runs per site tenant, on one
+    /// Asks the site's watched Telegram bots for their messages: a recurring task the ENGINE runs per site tenant, on one
     /// node at a time - every bot a stored "Telegram message received" trigger watches, once; then a bot no trigger watches any
     /// more is forgotten, so publishing it again starts afresh rather than with every message that came since.
     /// </summary>
@@ -285,7 +285,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// The first look at a bot as its pipeline is published (BL-229): when the engine indexes a "Telegram message received"
+    /// The first look at a bot as its pipeline is published: when the engine indexes a "Telegram message received"
     /// trigger, the newest update is recorded there and then - so a message waiting starts nothing, and one coming a moment after
     /// publishing starts a run though no look has come round yet. Whatever goes wrong is logged and never refuses the publish: the
     /// next look records the bot instead.

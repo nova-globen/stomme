@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "Ask AI" in its Code node: the request a Run script step's script is written from. The model is told what the
+    /// n8n's "Ask AI" in its Code node: the request a Run script step's script is written from. The model is told what the
     /// script can see - what it is written for, its variables' names, the fields of what it receives - bounded and said to be data,
     /// never a value; what comes back is the script alone, checked to parse as the step will run it. It needs the assistant's key
     /// as well as the module's, and scripts switched on.

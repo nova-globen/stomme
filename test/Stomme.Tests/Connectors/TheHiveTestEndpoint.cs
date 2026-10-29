@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The TheHive connector's live tests' server (BL-229): THEHIVE_TEST_URL / THEHIVE_TEST_API_KEY where set, otherwise this
+    /// The TheHive connector's live tests' server: THEHIVE_TEST_URL / THEHIVE_TEST_API_KEY where set, otherwise this
     /// machine's throwaway TheHive 5.5 that <c>scripts/thehive-test-server.ps1</c> makes on 127.0.0.1:19000 - its analyst's API
     /// key, of TheHive's own making, in the file that script writes under the user's temp folder. Neither is a FAILURE that says
-    /// how to get one, never a skip (D46).
+    /// how to get one, never a skip.
     /// </summary>
     internal static class TheHiveTestEndpoint
     {

@@ -5,7 +5,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.IdentityAudit
 {
     /// <summary>
-    /// The identity audit module's <see cref="ModuleDefinition"/> (BL-120): one admin page, <c>admin/identity-audit</c>,
+    /// The identity audit module's <see cref="ModuleDefinition"/>: one admin page, <c>admin/identity-audit</c>,
     /// placed through <see cref="ModuleDefinition.PageTemplates"/> and reconciled additively per site on every boot.
     /// </summary>
     /// <remarks>

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Sheets DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Google Sheets DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for Google's token endpoint and the Sheets API: a Google Sheets connection made over the
     /// API, its client secret and refresh token vaulted, tested (the spreadsheet's title read); a published pipeline reads the
     /// sheet's rows as records and appends one under the headers by name - the stand-in got the refresh grant with the client's id

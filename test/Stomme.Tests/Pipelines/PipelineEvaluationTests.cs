@@ -43,7 +43,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Evaluations: a published pipeline run over a data table's rows, each row a run started at its "When
+    /// n8n's Evaluations: a published pipeline run over a data table's rows, each row a run started at its "When
     /// evaluating" step with the row; its Evaluation steps record per row (a score from a match, an output), the evaluation
     /// averages; "If evaluating" keeps a webhook's run off the test path. Refused saying why when it cannot start; cancelled;
     /// a row's run past its time cancelled and counted as timed out; deleted with what its rows recorded. And the engine never
@@ -305,7 +305,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal((PipelineEvaluations.Finished, PipelineEvaluations.RowTimedOut, "The run took longer than 10 minute(s) - cancelled."), (ended.State, ended.Rows[0].State, ended.Rows[0].Error));
             var run = await services.GetRequiredService<IPipelineInstanceStore>().FindAsync(new PipelineInstanceFilter { Id = ended.Rows[0].RunId });
             Assert.Equal(PipelineSubStatus.Cancelled, run!.SubStatus);
-            // And asked to stop: a row's run busy in its first burst, not stored yet, stops before its next step (BL-229).
+            // And asked to stop: a row's run busy in its first burst, not stored yet, stops before its next step.
             Assert.True(services.GetRequiredService<Stomme.Modules.Pipelines.Reliability.PipelineRunStops>().Take(ended.Rows[0].RunId!));
         }
 

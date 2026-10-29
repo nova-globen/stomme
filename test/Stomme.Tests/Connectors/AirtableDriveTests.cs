@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Airtable DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Airtable DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Airtable's API: an Airtable connection made over the API, its token vaulted and its base a
     /// setting, tested (whom the token is); a published pipeline searches the table with a formula over two pages, creates a
     /// record and updates the one it found - each call with the token as the bearer; the token is not in the graph or the run.
@@ -57,7 +57,7 @@ namespace Stomme.Tests.Connectors
                 var connection = JsonSerializer.Deserialize<ConnectionView>(made.Body, Json)!.Id.ToString();
                 var tested = await Send(HttpMethod.Post, $"/api/Connections/{connection}/test", new { }, "test the connection");
                 Assert.True(JsonNode.Parse(tested.Body)!["success"]!.GetValue<bool>(), tested.Body);
-                Assert.Contains(airtable.Received, request => request.Path == "/v0/meta/whoami"); // the host words the answer itself (D110)
+                Assert.Contains(airtable.Received, request => request.Path == "/v0/meta/whoami"); // the host words the answer itself
 
                 var created = await Send(HttpMethod.Post, "/api/Pipelines", new CreatePipelineRequest { Name = "Orders base" }, "create");
                 var definitionId = JsonNode.Parse(created.Body)!["definitionId"]!.GetValue<string>();

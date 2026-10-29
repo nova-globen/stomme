@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Health.Controllers
 {
     /// <summary>
-    /// The Health module's Web API (<c>api/Health</c>, D104 item 8): this site's current health, its rollup
+    /// The Health module's Web API (<c>api/Health</c>): this site's current health, its rollup
     /// history, and acknowledging an alert. Every action dispatches through <see cref="IMediator"/>.
     /// </summary>
     /// <remarks>

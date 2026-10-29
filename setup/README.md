@@ -49,7 +49,7 @@ framework-dependent build that needs the ASP.NET 10 runtime on the target.
 ### Build a release for a downloads host
 
 ```powershell
-pwsh setup/release/build-release.ps1 -Version 10.75.1
+pwsh setup/release/build-release.ps1 -Version 10.75.2
 ```
 
 It builds every variant x RID in `release/variants.json` into `setup/dist/release/<version>/`, beside

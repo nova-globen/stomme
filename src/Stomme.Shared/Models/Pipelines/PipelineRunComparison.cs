@@ -36,7 +36,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// BL-229 - two runs of a pipeline compared step by step (beyond n8n, which shows one execution at a time): for each step,
+    /// Two runs of a pipeline compared step by step (beyond n8n, which shows one execution at a time): for each step,
     /// whether it ran in both, its state, how many passes, and whether what it produced is the same - so "it worked yesterday"
     /// is answered by the step where the two runs part. Outputs are compared only where both are known (an author's view; a
     /// viewer is sent none); time is said, never counted as a difference.

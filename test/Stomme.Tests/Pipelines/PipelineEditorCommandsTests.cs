@@ -5,7 +5,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's command bar: the editor's actions found by name in the step search - every word of the query begins a word
+    /// n8n's command bar: the editor's actions found by name in the step search - every word of the query begins a word
     /// of the action's name or of the words it answers to, in any case; nothing for a query under two letters.
     /// </summary>
     public sealed class PipelineEditorCommandsTests

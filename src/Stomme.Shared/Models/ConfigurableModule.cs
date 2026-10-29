@@ -3,7 +3,7 @@ using Stomme.Documentation;
 namespace Stomme.Models
 {
     /// <summary>
-    /// A bundled, enabled module that declares a module-wide config control (D86). Returned by the install-time
+    /// A bundled, enabled module that declares a module-wide config control. Returned by the install-time
     /// discovery endpoint so the installer wizard's onboarding step can render each module's
     /// <see cref="ConfigSettingsType"/> control while the app is still uninstalled. Deliberately a thin projection
     /// (name + config-control type) — the master settings store does not exist yet, so no values travel here.

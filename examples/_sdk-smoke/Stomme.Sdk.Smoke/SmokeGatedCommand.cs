@@ -32,7 +32,7 @@ public sealed class RenameTrivialAggregateHandler : IRequestHandler<RenameTrivia
     public async Task<bool> Handle(RenameTrivialAggregate request, CancellationToken ct)
     {
         // The attribute already gated this command; a second, CONDITIONAL question goes through the guard -
-        // never through a synchronous HasPermission (D33: the decision is async end to end).
+        // never through a synchronous HasPermission (the decision is async end to end).
         if (string.IsNullOrEmpty(request.Name) && !await _accessGuard.IsAllowedAsync(null, "smoke:clear", ct))
         {
             return false;

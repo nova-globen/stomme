@@ -16,7 +16,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - the map of the site's pipelines (<see cref="PipelineLinks"/>): each pipeline's latest version, and its published one
+    /// The map of the site's pipelines (<see cref="PipelineLinks"/>): each pipeline's latest version, and its published one
     /// when that is another - the one that runs - so a link either holds is drawn; the archived left out, as the list leaves them
     /// out. Takes what viewing pipelines takes.
     /// </summary>

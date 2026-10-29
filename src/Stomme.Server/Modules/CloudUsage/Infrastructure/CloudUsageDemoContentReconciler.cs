@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.CloudUsage.Infrastructure
 {
     /// <summary>
-    /// The "Cloud Cost Analytics" board (BL-97 increment 5, the predecessor platform's <c>CloudUsageDashboardCatalogue</c> and its seeder):
+    /// The "Cloud Cost Analytics" board (the predecessor platform's <c>CloudUsageDashboardCatalogue</c> and its seeder):
     /// six widgets - total spend, month-over-month and cost-vs-budget KPIs, the cost trend by provider and the top services
     /// as charts, the underutilized resources as a grid - over three datasets, published, per site.
     /// </summary>

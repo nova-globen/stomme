@@ -15,9 +15,9 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Qualys
 {
     /// <summary>
-    /// Qualys asset management (BL-96 increment 4, lifted from the predecessor platform's <c>qualys</c>): the QPS host-asset search - an XML
+    /// Qualys asset management (lifted from the predecessor platform's <c>qualys</c>): the QPS host-asset search - an XML
     /// ServiceRequest posted with JSON negotiated back - paged by offset while <c>hasMoreRecords</c> says so, one optional
-    /// criteria, the legacy hand-picked projection typed. Basic credentials; every request through the host's egress (D110).
+    /// criteria, the legacy hand-picked projection typed. Basic credentials; every request through the host's egress.
     /// </summary>
     public sealed class QualysConnector : IConnector, IConnectorExtractor
     {

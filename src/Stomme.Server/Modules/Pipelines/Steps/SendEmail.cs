@@ -15,7 +15,7 @@ using Stomme.Modules.Pipelines.Tenancy;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// An email sent from a mailbox through one of the site's connections (BL-229, n8n's Gmail and Microsoft Outlook nodes, their
+    /// An email sent from a mailbox through one of the site's connections (n8n's Gmail and Microsoft Outlook nodes, their
     /// Send and Reply): the
     /// mailbox's account kept in the site's secret store, the message going through the extraction port as the connector's
     /// <c>send</c> operation - the connection's endpoint, its account and the HOST's egress, exactly as an extraction is. Its body

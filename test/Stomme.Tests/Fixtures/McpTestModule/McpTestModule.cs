@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Tests.Fixtures.McpTestModule
 {
     /// <summary>
-    /// A contributor the MCP suites drive (BL-80). It has a public parameterless constructor and lives in an assembly
+    /// A contributor the MCP suites drive. It has a public parameterless constructor and lives in an assembly
     /// whose name contains <c>Stomme</c>, so it is found by the CONVENTION - nothing registers it.
     /// </summary>
     /// <remarks>

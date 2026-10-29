@@ -11,7 +11,7 @@ using Stomme.Repository;
 namespace Stomme.Modules.Notifications.Infrastructure.Channels
 {
     /// <summary>
-    /// The e-mail channel (D100 point 2): NO SMTP client. It writes a <see cref="Notification"/> row through the EXISTING
+    /// The e-mail channel: NO SMTP client. It writes a <see cref="Notification"/> row through the EXISTING
     /// <see cref="INotificationRepository.AddNotificationAsync"/> - the inherited queue the per-minute
     /// <c>NotificationJob</c> sends with MailKit under the site's SMTP settings and the <c>notifications.email</c> flag -
     /// so there is one e-mail path, not two. The row is undelivered, due now (<c>SendOn = null</c>), and a SYSTEM

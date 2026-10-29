@@ -22,7 +22,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-171 (D106's refutations 2 and 13, unblocked by BL-111) - a restore of ONE tenant of a two-tenant installation.
+    /// BL-171 (D106's refutations 2 and 13, unblocked) - a restore of ONE tenant of a two-tenant installation.
     /// The second tenant is provisioned the way the admin's Add-site page does it, through the real installation path,
     /// with a database of its own. Both tenants are written after the snapshot; tenant two is staged for restore alone;
     /// across the restart tenant two is back to the snapshot (its site setting, its guestbook, its files) while tenant

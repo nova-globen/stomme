@@ -4,7 +4,7 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// Translates between <see cref="JobAggregate"/> (the persisted aggregate) and <see cref="Job"/> (the
-    /// client/server wire contract) at the <see cref="JobRepository"/> boundary (D52). <see cref="Job"/> has no
+    /// client/server wire contract) at the <see cref="JobRepository"/> boundary. <see cref="Job"/> has no
     /// <c>[NotMapped]</c> view state — every public property is a column — so this mapping is total.
     /// </summary>
     public static class JobMapper

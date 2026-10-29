@@ -9,7 +9,7 @@ namespace Stomme.Infrastructure
     /// The framework's cache surface over FusionCache.
     /// </summary>
     /// <remarks>
-    /// ASYNC ONLY (D32). The synchronous <c>GetCache</c>/<c>RemoveCache</c> overloads were removed: their
+    /// ASYNC ONLY. The synchronous <c>GetCache</c>/<c>RemoveCache</c> overloads were removed: their
     /// factory was a SYNC <c>Func&lt;CancellationToken, T&gt;</c>, so a cache miss whose factory had to read
     /// a store — which is every factory the framework passes — could only satisfy it by blocking. That is
     /// the exact shape D29 describes: <c>UserManager.GetUser</c> reached the store through a sync cache

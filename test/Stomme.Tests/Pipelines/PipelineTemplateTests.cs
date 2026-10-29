@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 5 - an input's expression: <c>{{ name.path }}</c> placeholders over the pipeline's variables, the ONE
+    /// An input's expression: <c>{{ name.path }}</c> placeholders over the pipeline's variables, the ONE
     /// renderer the engine runs and the editor previews with.
     /// </summary>
     public sealed class PipelineTemplateTests

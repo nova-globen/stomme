@@ -20,7 +20,7 @@ namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
     /// Tells the site's operators - its administrators and the Host Users - when a quota crosses its warning threshold or its
-    /// limit (D102 item 10).
+    /// limit.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -43,7 +43,7 @@ namespace Stomme.Modules.Metering.Application
     /// <b>Recipients are the site's operators by user id, never an address.</b> The dispatcher rejects an external
     /// address unless the site opts in, and an endpoint recipient outright; a quota warning has no business being
     /// the first thing to test that. The operators are <see cref="SiteOperators"/>'s: the Host Users are among them because a
-    /// fresh install's site has no administrator at all (BL-177), so a warning to administrators alone reached nobody.
+    /// fresh install's site has no administrator at all, so a warning to administrators alone reached nobody.
     /// </para>
     /// </remarks>
     public sealed class QuotaCrossingNotifier

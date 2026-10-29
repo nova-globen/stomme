@@ -38,7 +38,7 @@ namespace Stomme.Tests
         protected override void AddStore(IServiceCollection services)
         {
             // Compose exactly as the module's ServerStartup does on a File install: the STORAGE-BLIND overload
-            // (D79). The registry (D80) reads Database:DefaultDBType, resolves the file provider, and binds the
+            // (D79). The registry reads Database:DefaultDBType, resolves the file provider, and binds the
             // generic FileRepository; ModuleStore:FilePath points the store at this fixture's throwaway directory.
             services.AddSingleton<IConfigurationRoot>(new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string?>

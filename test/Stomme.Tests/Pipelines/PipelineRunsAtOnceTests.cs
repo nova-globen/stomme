@@ -28,7 +28,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - how many runs of a pipeline may go at once: set on the definition's engine options at each save, a trigger's start
+    /// How many runs of a pipeline may go at once: set on the definition's engine options at each save, a trigger's start
     /// while a run is going (or waiting) is skipped by the engine - in all, or for the same correlation id - and the module's own
     /// starts, Run and Retry, are refused saying why.
     /// </summary>
@@ -90,7 +90,7 @@ namespace Stomme.Tests.Pipelines
                 Input = new System.Collections.Generic.Dictionary<string, object> { [Webhook.PayloadInputKey] = "body " + correlationId },
             });
 
-        // BL-229 - one at a time, the rest in turn: a start while a run is going is a run that waits - Queued, with what it was started
+        // One at a time, the rest in turn: a start while a run is going is a run that waits - Queued, with what it was started
         // with - and the task starts the oldest once none is going, through its trigger, as the trigger would have; none is lost,
         // none overtakes another; a waiting run stopped is out of the line; Run waits its turn too.
         [Fact]
@@ -198,7 +198,7 @@ namespace Stomme.Tests.Pipelines
             Assert.NotNull(await start.Handle(new StartPipelineCommand(each, "order-2", null), CancellationToken.None));
         }
 
-        // BL-229: the waiting runs take their turns in the order their calls ARRIVED - stamped as each is handed to the engine, which
+        // The waiting runs take their turns in the order their calls ARRIVED - stamped as each is handed to the engine, which
         // takes them on several workers and so stores them in no fixed order (on UAT three calls sent one after another were
         // stored in reverse). Here c is stored before b but arrived after it: b goes first.
         [Fact]

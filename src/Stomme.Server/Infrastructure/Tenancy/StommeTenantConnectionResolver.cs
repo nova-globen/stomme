@@ -17,7 +17,7 @@ namespace Stomme.Infrastructure.Tenancy
     /// isolation is the database itself, not a schema within one.
     /// </summary>
     /// <remarks>
-    /// <c>Tenant.DBConnectionString</c> stores a connection-string <b>NAME</b>, not a literal (BL-29):
+    /// <c>Tenant.DBConnectionString</c> stores a connection-string <b>NAME</b>, not a literal:
     /// <c>DatabaseManager</c> writes <c>"DefaultConnection"</c> (or the tenant's name) at install, and
     /// <c>MigrateConnectionStringAsync</c> actively rewrites legacy inline strings into names. It is resolved
     /// through configuration here exactly as <c>DBContextBase.OnConfiguring</c> resolves it — one convention,
@@ -83,7 +83,7 @@ namespace Stomme.Infrastructure.Tenancy
                 return connectionString;
             }
 
-            // THIS host's data directory when there is a host to ask (BL-153); the process-wide slot otherwise.
+            // THIS host's data directory when there is a host to ask; the process-wide slot otherwise.
             var dataDirectory = configManager?.GetDataDirectory()
                 ?? AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
 

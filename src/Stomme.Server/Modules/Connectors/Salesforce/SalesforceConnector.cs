@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Salesforce
 {
     /// <summary>
-    /// Salesforce (BL-229, n8n's Salesforce node: records of any object searched by SOQL, got, created, updated, upserted and
+    /// Salesforce (n8n's Salesforce node: records of any object searched by SOQL, got, created, updated, upserted and
     /// deleted): an org's REST API at its own address (<c>https://your-domain.my.salesforce.com</c>), a connected app's client id
     /// and secret by the OAuth2 CLIENT-CREDENTIALS scheme (Salesforce's client credentials flow, its token endpoint the org's own),
     /// through the shared <see cref="OAuth2TokenProvider"/>. A test reads the org's limits.

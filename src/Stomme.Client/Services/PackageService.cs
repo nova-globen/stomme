@@ -105,7 +105,7 @@ namespace Stomme.Services
 
         public async Task DownloadPackageAsync(string packageId, string version)
         {
-            // BL-109: a refused or failed download THROWS, so every admin screen that calls this lands in its catch and shows
+            // A refused or failed download THROWS, so every admin screen that calls this lands in its catch and shows
             // its error message; it used to log the status and return, and each screen then showed "downloaded".
             var response = await GetHttpClient().PostAsync($"{Apiurl}?packageid={WebUtility.UrlEncode(packageId)}&version={WebUtility.UrlEncode(version)}&download=true&install=true", null);
             if (!response.IsSuccessStatusCode)

@@ -24,7 +24,7 @@ using Microsoft.AspNetCore.StaticFiles;
 namespace Stomme.Modules.Connectors.AwsS3
 {
     /// <summary>
-    /// Amazon S3 and the stores that speak its API - MinIO, Ceph, Cloudflare R2, Wasabi (BL-229, n8n's AWS S3 and S3 nodes): a
+    /// Amazon S3 and the stores that speak its API - MinIO, Ceph, Cloudflare R2, Wasabi (n8n's AWS S3 and S3 nodes): a
     /// bucket's objects listed, downloaded, uploaded, copied and deleted, its folders made, listed and deleted, buckets listed,
     /// made and deleted, every call signed with AWS Signature Version 4 by an access key and its secret over the host's egress.
     /// A download is written into the pipeline run's folder and an upload read from it (<see cref="IConnectorFiles"/>), so a file

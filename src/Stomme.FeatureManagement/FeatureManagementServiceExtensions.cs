@@ -41,12 +41,12 @@ public static class FeatureManagementServiceExtensions
         services.AddEfCorePersistence<FeatureManagementDbContext>();
         services.AddEfDocumentSessions<FeatureManagementDbContext>();
 
-        // BL-161: the module's two aggregates are read through NON-tracking repositories. The open generic above tracks,
+        // The module's two aggregates are read through NON-tracking repositories. The open generic above tracks,
         // and MEASURED (2026-09-21) that made the admin list go stale in a long-lived DI scope: list, toggle from
         // another scope, list again -> the OLD value. Its one consumer today is an HTTP controller, a scope per request,
         // so nothing showed - but a server-side IFeatureService, or a module calling the admin surface from a component,
         // would have inherited it silently. A CLOSED registration wins over the open generic in MS.DI whatever the load
-        // order (D17), and an open generic cannot carry an initializer, which is why these two are spelled out. Both
+        // order, and an open generic cannot carry an initializer, which is why these two are spelled out. Both
         // aggregates persist as scalar columns (the overrides are ONE converted column), so a detached update writes
         // the whole row and cannot orphan a child.
         services.AddScoped<IRepository<FeatureFlag, Guid>>(sp => NonTracking<FeatureFlag>(sp));
@@ -77,7 +77,7 @@ public static class FeatureManagementServiceExtensions
     /// the registry and the startup seeder. It deliberately wires NO store — the caller registers the store
     /// provider (the open-generic <see cref="IRepository{TAggregate, TId}"/> plus its read seam).
     /// <see cref="AddFeatureManagement"/> is the relational (EF Core) composition; a RavenDB install composes
-    /// this together with the RavenDB store instead (D73), so a document-store site keeps its flags in its
+    /// this together with the RavenDB store instead, so a document-store site keeps its flags in its
     /// document store rather than a side-car SQLite file. The store is the only variable between the two
     /// providers — which is exactly what the driven EF==RavenDB conformance suite pins.
     /// </summary>
@@ -106,7 +106,7 @@ public static class FeatureManagementServiceExtensions
         services.TryAddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IDomainEventHandler<FeatureToggledEvent>, FeatureFlagAuditHandler>();
 
-        // The config-backed feature source (D84): the config layer of the precedence rule config -> DB ->
+        // The config-backed feature source: the config layer of the precedence rule config -> DB ->
         // catalog default. A factory so a host that HAS an IConfiguration (every real host does) gets flags
         // read from its FeatureManagement section — no extra host wiring — while a minimal host or a test that
         // composes without a config root falls back to the no-op source and the historical DB behaviour.
@@ -125,7 +125,7 @@ public static class FeatureManagementServiceExtensions
                 : new ConfigurationFeatureConfigSource(config);
         });
 
-        // The evaluator's singleton per-tenant flag cache (BL-39): one snapshot load per tenant instead of
+        // The evaluator's singleton per-tenant flag cache: one snapshot load per tenant instead of
         // one store round trip per evaluation, shared across request scopes AND background-job scopes (the
         // scoped evaluator reads through it). Plain BCL primitives — no caching package. TryAdd so a test
         // or host can substitute its own.

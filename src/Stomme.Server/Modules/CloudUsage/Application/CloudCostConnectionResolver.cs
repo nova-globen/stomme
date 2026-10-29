@@ -20,7 +20,7 @@ namespace Stomme.Modules.CloudUsage.Application
     }
 
     /// <summary>
-    /// the predecessor platform's Web adapter (<c>ConnectivityCloudCostConnectionResolver</c>) on Stomme's Connectivity (BL-97 increment 3):
+    /// the predecessor platform's Web adapter (<c>ConnectivityCloudCostConnectionResolver</c>) on Stomme's Connectivity:
     /// the connection through the REQUEST's site - another site's connection is not found - and its credential through the
     /// per-site secret store, never a log or a view.
     /// </summary>

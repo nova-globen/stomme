@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Messaging
 {
     /// <summary>
-    /// The rest of n8n's Mattermost node (BL-229) beside its message posted - channels made, archived, restored, searched, counted
+    /// The rest of n8n's Mattermost node beside its message posted - channels made, archived, restored, searched, counted
     /// and joined, their members; a message to one user only and a post deleted; reactions added, removed and listed; users made,
     /// deactivated, listed, found by e-mail or id, invited - over Mattermost's API v4 with the connection's token.
     /// </summary>

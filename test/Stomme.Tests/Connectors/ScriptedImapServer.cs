@@ -14,7 +14,7 @@ using MimeKit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// An IMAP4rev1 server of the few commands a client reading a mailbox sends (BL-229, for the IMAP connector and the "Email
+    /// An IMAP4rev1 server of the few commands a client reading a mailbox sends (for the IMAP connector and the "Email
     /// received" trigger): on loopback, plain (no TLS), one mailbox - INBOX - with messages added by a test, each with its UID.
     /// LOGIN against one username and password; LIST of INBOX alone (any other name is not found); EXAMINE and SELECT saying
     /// UIDVALIDITY and UIDNEXT; UID SEARCH by a UID range - "n:*" holding the highest UID even when it is not above n, as RFC

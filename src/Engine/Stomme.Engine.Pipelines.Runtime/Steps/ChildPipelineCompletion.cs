@@ -4,7 +4,7 @@ using Stomme.Engine.Pipelines.State;
 namespace Stomme.Engine.Pipelines.Runtime.Steps;
 
 /// <summary>
-/// Stomme hand fix (BL-229, 2026-10-08): what a step waiting for a child pipeline (Execute or Dispatch pipeline) is resumed
+/// Stomme hand fix: what a step waiting for a child pipeline (Execute or Dispatch pipeline) is resumed
 /// with when the child finishes after a pause - the child's result under keys of its own. The child's output used to be handed
 /// over AS the parent's input: the waiting step then read the whole input, mixed with the parent's own, as its result, and
 /// Execute pipeline's typed result took no field from it - a parent whose child had paused read nothing of what the child gave

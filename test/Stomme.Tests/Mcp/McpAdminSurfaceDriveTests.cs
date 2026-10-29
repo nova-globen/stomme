@@ -22,14 +22,14 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// The MCP admin surface (BL-80 increment 5, D101 item 7): <c>api/Mcp</c> over real HTTP, and the admin PAGE that
+    /// The MCP admin surface: <c>api/Mcp</c> over real HTTP, and the admin PAGE that
     /// only exists when a half is switched on.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>The two halves are gated at the ROUTER, and that is what this drives.</b> <c>[RequiresPermissionKey]</c> is
     /// an authorization POLICY and runs before any action body, so a config check inside an action would answer 403 to
-    /// a caller without the key and never reach its own <c>NotFound</c> - measured in BL-85, and the reason the two
+    /// a caller without the key and never reach its own <c>NotFound</c> - measured, and the reason the two
     /// action constraints exist. What the wire must show is 404 for a half that is off, and 403 for a caller without
     /// the key on a half that is on - two different facts that a body-level check would collapse into one.
     /// </para>
@@ -299,17 +299,17 @@ namespace Stomme.Tests.Mcp
                 Assert.NotNull(service);
                 Assert.IsType<Stomme.Modules.Mcp.Services.ServerMcpService>(service);
 
-                // 2. And the page RENDERS, which is the bar (D30): a 200 with the control's own markup in it.
+                // 2. And the page RENDERS, which is the bar: a 200 with the control's own markup in it.
                 using var client = GateDrive.NewClient(app, Host);
                 var cookies = await GateDrive.LoginAsync(app, client, Host, GateDrive.HostUsername, GateDrive.HostPassword, _output);
 
                 var page = await GateDrive.GetAsync(client, cookies, Host, "/admin/mcp", _output, "admin/mcp render");
                 Assert.Equal(HttpStatusCode.OK, page.Status);
                 // The bar an admin page is held to here (InstalledSiteHealthDriveTests): served, carrying the page's
-                // own <title> (BL-92), and NOT the installer. The module control's inner markup is deliberately NOT
+                // own <title>, and NOT the installer. The module control's inner markup is deliberately NOT
                 // asserted - MEASURED: an admin pane does not emit it in SSR, so a Contains on it would fail for a
                 // reason that has nothing to do with this module. The control itself is driven by CLICKING it
-                // (McpControlClickTests), which is the only thing that can see BL-54 anyway.
+                // (McpControlClickTests), which is the only thing that can anyway.
                 Assert.Contains("<title>MCP", page.Body);
                 Assert.DoesNotContain("Installation Wizard", page.Body);
                 Assert.DoesNotContain("Default Site Template", page.Body);

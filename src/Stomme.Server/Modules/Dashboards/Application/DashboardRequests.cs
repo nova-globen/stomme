@@ -18,7 +18,7 @@ using FluentValidation;
 namespace Stomme.Modules.Dashboards.Application
 {
     // ============================================================================================================
-    // The Dashboards application layer (BL-96 increment 9, lifted from the predecessor platform's DashboardCommands, WidgetCommands,
+    // The Dashboards application layer (lifted from the predecessor platform's DashboardCommands, WidgetCommands,
     // DashboardQueries and WidgetDataQuery): every request under its key; every handler resolves the board through the
     // REQUEST's site - another site's board is "does not exist"; every mutation is one read and one update of the board
     // the widgets hang off (the per-write rule holds by construction: the aggregate is the unit). The widget's data

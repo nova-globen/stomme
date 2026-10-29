@@ -23,7 +23,7 @@ namespace Stomme.Tests.Mcp
 {
     /// <summary>
     /// The catalog composed WITHOUT an <see cref="IAccessGuard"/> - and without a caller - lists nothing and runs nothing
-    /// (D101 item 2: "the guard is an OPTIONAL constructor dependency and the catalog DENIES everything when absent").
+    /// ("the guard is an OPTIONAL constructor dependency and the catalog DENIES everything when absent").
     /// </summary>
     /// <remarks>
     /// A driven host always composes a guard, so the drive cannot see this branch: the mutant that made a missing guard

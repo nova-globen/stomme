@@ -34,7 +34,7 @@ public static class ClaimsPrincipalExtensions
 
     /// <summary>The principal's Stomme user id, or -1 when it carries none or one that is not a Stomme user id.</summary>
     /// <remarks>
-    /// <b><c>TryParse</c>, not <c>Parse</c> (BL-80, D101 item 3).</b> A NameIdentifier that is not an integer is not a
+    /// <b><c>TryParse</c>, not <c>Parse</c>.</b> A NameIdentifier that is not an integer is not a
     /// malformed request - it is a principal from another issuer. Stomme's own per-tenant OpenIddict authority
     /// issues client-credentials tokens whose <c>sub</c> is the CLIENT ID, a string; a SAML or Negotiate principal
     /// carries whatever its provider put there. <c>Parse</c> made every one of those an unhandled
@@ -85,7 +85,7 @@ public static class ClaimsPrincipalExtensions
         return -1;
     }
 
-    /// <summary>The server-side session this principal was signed in under (BL-119), or null when it carries none.</summary>
+    /// <summary>The server-side session this principal was signed in under, or null when it carries none.</summary>
     public static System.Guid? SessionId(this ClaimsPrincipal claimsPrincipal)
     {
         var claim = claimsPrincipal?.Claims?.FirstOrDefault(item => item.Type == Constants.SessionClaimType);

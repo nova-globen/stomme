@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Collaboration.Controllers
 {
     /// <summary>
-    /// <c>api/Collaboration</c> (BL-97 increment 11; the predecessor platform's <c>CollaborationApi</c>): an editor's advisory lock and its
+    /// <c>api/Collaboration</c> (the predecessor platform's <c>CollaborationApi</c>): an editor's advisory lock and its
     /// session under <c>collaboration:view</c>, the take-over, the close and the overview under <c>collaboration:manage</c>.
     /// Taking a lock someone else holds is a 200 that NAMES them - advisory, never an error. A refusal carries its code and
     /// a message written to be shown: 404 for a resource the user may not edit or a session they are not part of (like
@@ -75,7 +75,7 @@ namespace Stomme.Modules.Collaboration.Controllers
                 return NoContent();
             });
 
-        // POST api/Collaboration/locks/take-over - an administrator releases whoever holds it (D114)
+        // POST api/Collaboration/locks/take-over - an administrator releases whoever holds it
         [HttpPost("locks/take-over")]
         [RequiresPermissionKey(CollaborationPermissions.Manage)]
         public Task<IActionResult> TakeOver([FromBody] LockRequest? request, CancellationToken ct) =>

@@ -4,7 +4,7 @@ using Stomme.Shared;
 namespace Stomme.Pipelines
 {
     /// <summary>
-    /// The Pipelines module's permission keys (BL-95 increment (b), D111 item 5): checked on the SERVER through the D99
+    /// The Pipelines module's permission keys (BL-95 increment (b)): checked on the SERVER through the D99
     /// bridge on every action - listing, authoring, publishing, starting and cancelling a run included. Every key
     /// defaults to Administrators (the framework adds that role to every declaration); an operator widens a key in the
     /// module definition's permission grid. No key is granted to Registered Users by default: a pipeline runs code.
@@ -23,7 +23,7 @@ namespace Stomme.Pipelines
         public const string Run = "pipelines:run";
 
         /// <summary>
-        /// Decide a run's "Ask for approval" - approve or reject it (BL-229). A key of its own, so the people who approve need
+        /// Decide a run's "Ask for approval" - approve or reject it. A key of its own, so the people who approve need
         /// not be the people who run or author pipelines.
         /// </summary>
         public const string Approve = "pipelines:approve";

@@ -11,7 +11,7 @@ namespace Stomme.SharedKernel.Domain;
 /// </para>
 /// <para>
 /// A handler runs in the <b>caller's DI scope</b>, inside the caller's unit of work — that is the whole
-/// point (D9: domain events are internal to one bounded context, and the audit trail is meant to be atomic
+/// point (domain events are internal to one bounded context, and the audit trail is meant to be atomic
 /// with the change it audits). The cost of sharing that unit of work is re-entrancy: anything a handler does
 /// to the ambient session is done to its caller's session, mid-operation. So:
 /// </para>
@@ -39,12 +39,12 @@ namespace Stomme.SharedKernel.Domain;
 /// </list>
 /// <para>
 /// Work that genuinely must land outside the aggregate's transaction is an <b>integration</b> event, not a
-/// domain event: publish it over <c>IEventBus</c> and let the outbox bridge it (D9).
+/// domain event: publish it over <c>IEventBus</c> and let the outbox bridge it.
 /// </para>
 /// <para>
 /// This is a gate, not a suggestion: <c>DomainEventHandlerContractTests</c> parses every handler in the
 /// framework and fails the build on a violation. A rule that is only written down is a rule that gets
-/// broken — see D29.
+/// broken.
 /// </para>
 /// </remarks>
 public interface IDomainEventHandler<in TEvent>

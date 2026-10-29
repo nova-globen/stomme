@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-100 O1 (D109, spec refutation 16): the SystemInfo Caching section's "Clear All" -
+    /// BL-100 O1 (spec refutation 16): the SystemInfo Caching section's "Clear All" -
     /// <c>POST /api/System/cache/clear</c>, Host only - empties the framework cache for real.
     /// </summary>
     /// <remarks>

@@ -15,7 +15,7 @@ using Stomme.Shared;
 namespace Stomme.Infrastructure.Connectivity
 {
     /// <summary>
-    /// The host's egress for connectors (BL-94 increment 4, D110): the ONE outbound policy the framework already has,
+    /// The host's egress for connectors: the ONE outbound policy the framework already has,
     /// <see cref="OutboundConnectGuard"/> (BL-132 converged the webhook and upload guards onto it - the "extraction" D110
     /// planned was done there), handed to a connector through <see cref="IConnectorEgress"/>. An HTTP connector gets a
     /// client whose every connection is decided by the guard's connect step (loopback, RFC1918, link-local, ULA, mapped
@@ -39,7 +39,7 @@ namespace Stomme.Infrastructure.Connectivity
         /// <summary>
         /// Resolves the host and returns the first address the policy permits (an allowlisted host is permitted as named);
         /// null when every address is refused or nothing resolves. The driver then dials THAT address; a driver that
-        /// re-resolves on its own reopens the window between this check and its connect - stated, not solved (D110).
+        /// re-resolves on its own reopens the window between this check and its connect - stated, not solved.
         /// </summary>
         public async Task<IPAddress?> ResolveAndPinAsync(string host, int port, CancellationToken cancellationToken = default)
         {
@@ -71,7 +71,7 @@ namespace Stomme.Infrastructure.Connectivity
         }
 
         /// <summary>
-        /// The contract's reach (BL-229): the address checked against the policy again where the bytes go - a denied address only
+        /// The contract's reach: the address checked against the policy again where the bytes go - a denied address only
         /// for an allowlisted host it is an address of - then a TCP connect to it bounded by the timeout, and closed. libldap, which
         /// System.DirectoryServices.Protocols uses on Linux, connects synchronously with the system's own timeout and no
         /// cancellation reaches it (measured on UAT 2026-10-17: a test to an address that drops packets hung past Cloudflare's
@@ -129,7 +129,7 @@ namespace Stomme.Infrastructure.Connectivity
         /// <summary>Whether an exception from a guarded client is the policy's refusal (as opposed to the remote's failure).</summary>
         public static bool IsDenial(Exception? exception) => OutboundConnectGuard.IsDenial(exception);
 
-        /// <summary>The contract's question, answered by the guard (BL-96): a connector never needs the host's types to tell a refusal from a failure.</summary>
+        /// <summary>The contract's question, answered by the guard: a connector never needs the host's types to tell a refusal from a failure.</summary>
         bool IConnectorEgress.IsDenial(Exception exception) => OutboundConnectGuard.IsDenial(exception);
 
         private sealed class AllowedHostsHandler(IReadOnlyCollection<string> allowedHosts) : DelegatingHandler

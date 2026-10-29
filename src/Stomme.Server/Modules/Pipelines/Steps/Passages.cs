@@ -23,7 +23,7 @@ using Stomme.Modules.Pipelines.Application;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// BL-229 - the retrieval half of "answer from your documents" (n8n's document loader, text splitter and vector store
+    /// The retrieval half of "answer from your documents" (n8n's document loader, text splitter and vector store
     /// retriever, by keyword relevance until the site's model offers embeddings): a text split into passages, kept as rows of a
     /// data table - one per passage, its source and number beside it - and the passages that best answer a question found again
     /// by BM25 over their words. One place for both steps' rules.
@@ -222,7 +222,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// BL-229 - Store passages: a text (a document Read document read, say) split into passages and kept as rows of a data table -
+    /// Store passages: a text (a document Read document read, say) split into passages and kept as rows of a data table -
     /// its source, the passage's number and its text - the table made when the site has none of that name. Storing a source again
     /// replaces its passages, so a document read anew is not kept twice. The passages written are the result.
     /// </summary>
@@ -326,7 +326,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// BL-229 - Find passages: the passages of a data table Store passages filled that best answer a question - by BM25 over their
+    /// Find passages: the passages of a data table Store passages filled that best answer a question - by BM25 over their
     /// words, best first, those holding none of the question's words left out - as records (source, passage, text, score), and as
     /// one Context text, numbered, to hand Ask AI with the question.
     /// </summary>

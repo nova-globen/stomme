@@ -11,7 +11,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Datasets.Application
 {
     /// <summary>
-    /// The Shared read port's implementation (BL-94 increment 9): the REQUEST's site's datasets with their schema and
+    /// The Shared read port's implementation: the REQUEST's site's datasets with their schema and
     /// classification-masked summary, and the bounded preview - refused for Confidential AND Restricted data (Q1). A
     /// dataset of another site is not found. The masking and the refusal are the aggregate's, so the rule lives once.
     /// </summary>

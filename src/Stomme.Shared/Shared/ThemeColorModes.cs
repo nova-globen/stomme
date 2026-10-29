@@ -4,7 +4,7 @@ using System.Linq;
 namespace Stomme.Shared
 {
     /// <summary>
-    /// The colour modes a theme can declare in <c>Theme.ColorMode</c> (BL-198). Empty, the default, follows the visitor: their
+    /// The colour modes a theme can declare in <c>Theme.ColorMode</c>. Empty, the default, follows the visitor: their
     /// choice from the toggle, else their system's. <see cref="Dark"/> or <see cref="Light"/> fixes every page the theme renders to
     /// that mode - the host applies it before the first paint, hands it to FluentUI, and the toggle neither shows nor changes it.
     /// </summary>

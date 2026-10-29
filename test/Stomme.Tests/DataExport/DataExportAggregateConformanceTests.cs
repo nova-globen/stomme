@@ -26,7 +26,7 @@ using Xunit;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-85 (D108) - both export aggregates round-trip member for member on EVERY module-aggregate provider - EF
+    /// Both export aggregates round-trip member for member on EVERY module-aggregate provider - EF
     /// (SQLite), EF (PostgreSQL), RavenDB and File - through the module's own <c>ServerStartup</c> and closed
     /// repositories, and the repositories' <c>FindAsync</c> set answers identically on each.
     /// </summary>
@@ -39,7 +39,7 @@ namespace Stomme.Tests.DataExport
     /// </para>
     /// <para>
     /// Placed in <c>Stomme.Tests</c> beside the other module-aggregate suites: the conformance project has no
-    /// File-store module fixture (the BL-78 F11 precedent). PostgreSQL and RavenDB FAIL rather than skip (D46).
+    /// File-store module fixture (the BL-78 F11 precedent). PostgreSQL and RavenDB FAIL rather than skip.
     /// </para>
     /// </remarks>
     public abstract class DataExportAggregateConformanceTests : IAsyncLifetime
@@ -134,7 +134,7 @@ namespace Stomme.Tests.DataExport
                 }
 
                 // METHOD accessors must be absent from the schema: as properties they would be stored fields on
-                // the document providers with no EF column (D108 item 4).
+                // the document providers with no EF column.
                 Assert.Null(job!.FindProperty("ContentType"));
                 Assert.Null(job.FindProperty("FileExtension"));
 

@@ -38,7 +38,7 @@ namespace Stomme.Security
     }
 
     /// <summary>
-    /// The vocabulary of the authorization bridge (D99, BL-99): a lifted module's
+    /// The vocabulary of the authorization bridge: a lifted module's
     /// <c>[Requires("resource:operation")]</c> key, declared ONCE in its module definition's
     /// <c>PermissionNames</c> and stored as an ordinary Stomme Permission row
     /// <c>(SiteId, EntityName = resource, EntityId = -1, PermissionName = operation, Role|User, IsAuthorized)</c>.
@@ -52,7 +52,7 @@ namespace Stomme.Security
     /// that shape cannot be written by hand and mis-typed.
     /// </para>
     /// <para>
-    /// <b>Lower-case is the contract, not a convenience</b> (D49, "normalise the data, don't translate the
+    /// <b>Lower-case is the contract, not a convenience</b> ("normalise the data, don't translate the
     /// query"): bare <c>==</c> is case-SENSITIVE on EF/PostgreSQL and case-INSENSITIVE on RavenDB, and the
     /// in-memory <c>PermissionName</c> match in <see cref="UserSecurity"/> is ordinal. A key whose row casing
     /// differs from the casing the guard looks up is a silent denial on one provider and a silent grant on
@@ -381,7 +381,7 @@ namespace Stomme.Security
         /// <remarks>
         /// Both halves are NORMALISED here (lower-cased, and the <see cref="Entry"/> rebuilt from them), so a
         /// hand-written uppercase declaration cannot produce a row the guard's lower-cased lookup misses on
-        /// PostgreSQL and finds on RavenDB - the same install answering two ways (D49). An entry whose half is
+        /// PostgreSQL and finds on RavenDB - the same install answering two ways. An entry whose half is
         /// over <see cref="MaxSegmentLength"/> or otherwise unusable is DROPPED, and named by
         /// <see cref="InvalidKeyEntries"/>.
         /// </remarks>

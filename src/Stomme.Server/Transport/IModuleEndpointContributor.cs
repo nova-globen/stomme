@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Routing;
 namespace Stomme.Transport
 {
     /// <summary>
-    /// Optional module capability (brief 04 / D10, generalized in BL-53): a module implements this to
+    /// Optional module capability (brief 04 / D10, generalized): a module implements this to
     /// contribute its own endpoints — its generated gRPC-Web services and/or SignalR hubs — during host
     /// startup, so the composition root maps nothing per-module. The transport pipeline discovers every
     /// implementor across the loaded Stomme assemblies (the same reflection seam that drives

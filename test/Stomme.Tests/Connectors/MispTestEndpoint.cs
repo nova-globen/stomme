@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The MISP connector's live tests' server (BL-229): MISP_TEST_URL / MISP_TEST_API_KEY where set, otherwise this machine's
+    /// The MISP connector's live tests' server: MISP_TEST_URL / MISP_TEST_API_KEY where set, otherwise this machine's
     /// throwaway MISP 2.5 that <c>scripts/misp-test-server.ps1</c> makes on 127.0.0.1:18085 - its administrator's API key, of
     /// MISP's own making, in the file that script writes under the user's temp folder. Neither is a FAILURE that says how to get
-    /// one, never a skip (D46).
+    /// one, never a skip.
     /// </summary>
     internal static class MispTestEndpoint
     {

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-205 - the boot path brings each tenant's sites up to date in THAT tenant's database.
+    /// The boot path brings each tenant's sites up to date in THAT tenant's database.
     /// </summary>
     /// <remarks>
     /// <para>

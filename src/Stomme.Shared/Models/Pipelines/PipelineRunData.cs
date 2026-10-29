@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Execution Data: key/value pairs a run saves about itself ("order: 42", "customer: Ada") with the "Save run
+    /// n8n's Execution Data: key/value pairs a run saves about itself ("order: 42", "customer: Ada") with the "Save run
     /// data" step, shown on its page and in the runs list and found by the runs search. The one rule for what they may be.
     /// </summary>
     public static class PipelineRunData

@@ -24,7 +24,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Remove Duplicates "remove items processed in previous executions": Remove records seen before, run by the
+    /// n8n's Remove Duplicates "remove items processed in previous executions": Remove records seen before, run by the
     /// engine as the host composes it, run after run of one pipeline - what an earlier run had is removed, twins in one run too;
     /// by one field, only what is higher than before; each step's own history or the pipeline's shared one; the oldest
     /// forgotten past the history's size; Forget starting afresh; a step test reading and remembering nothing; what is kept

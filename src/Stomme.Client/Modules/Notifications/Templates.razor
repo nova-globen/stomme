@@ -2,7 +2,7 @@
 @inherits ModuleBase
 @inject INotificationsService NotificationsService
 
-@* Template authoring and PREVIEW (BL-78 step 5) - manage-templates. A preview is HTML-encoded exactly as e-mail / in-app encode. *@
+@* Template authoring and PREVIEW - manage-templates. A preview is HTML-encoded exactly as e-mail / in-app encode. *@
 
 <PageTitle>Notification templates</PageTitle>
 
@@ -133,7 +133,7 @@ else
         _preview = null;
         _message = ""; // a message from the last save does not describe the form now open
         _editing = true;
-        BringIntoView("notifications-template-editor"); // below the templates (BL-22)
+        BringIntoView("notifications-template-editor"); // below the templates
     }
 
     private void Toggle(NotificationChannelKind kind, bool on)

@@ -25,7 +25,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// A permission KEY added by a NEWER release must reach an ALREADY-INSTALLED site - and must not disturb
-    /// what the operator has granted on the keys that were already there (D99 point 3, F7).
+    /// what the operator has granted on the keys that were already there (F7).
     /// </summary>
     /// <remarks>
     /// <para>
@@ -269,7 +269,7 @@ namespace Stomme.Tests
                 // connections of every OTHER suite in the run and, hammered while a host served requests,
                 // reproduced empty 500s (3 in 60, measured). This used to name the tenant store alone, which is
                 // the hard-coded-list shape that leaks: an installed host also opens the FeatureManagement and
-                // module-aggregate sidecars, so the tree survived anyway. ReleaseInstall enumerates (BL-104).
+                // module-aggregate sidecars, so the tree survived anyway. ReleaseInstall enumerates.
                 ScratchSqlite.ReleaseInstall(ContentRoot);
 
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }

@@ -19,7 +19,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "save execution progress", run by the real engine with the module's own registration: a pipeline whose
+    /// n8n's "save execution progress", run by the real engine with the module's own registration: a pipeline whose
     /// definition names the save-progress strategy is stored after each step - a later step finds the earlier one's record already
     /// stored - and one that does not is stored only when its burst ends; the setting reaches the definition's options at a save.
     /// </summary>

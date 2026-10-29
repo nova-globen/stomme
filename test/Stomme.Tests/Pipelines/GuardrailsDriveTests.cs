@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Guardrails node DRIVEN on an installed SQLite host through the site's own model seam: both steps in the
+    /// n8n's Guardrails node DRIVEN on an installed SQLite host through the site's own model seam: both steps in the
     /// catalog; a published pipeline sanitizes a message (its address and key replaced), then checks the cleaned text - the model,
     /// a stand-in configured over the assistant's API, judging it off topic - and goes on down Flagged, writing the cleaned text;
     /// the findings in the run's data say where and what kind, never the address or the key.

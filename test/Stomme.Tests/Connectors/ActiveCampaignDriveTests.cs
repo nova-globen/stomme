@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - ActiveCampaign DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// ActiveCampaign DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for its API: an ActiveCampaign connection made over the API, its key vaulted, tested (the
     /// key's user named); a published pipeline makes or changes a contact with HTML and an accent and a custom field by its
     /// personalization tag, tags the contact found by its address with a tag found by its name, reads a list's contacts (the list

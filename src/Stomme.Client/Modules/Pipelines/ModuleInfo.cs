@@ -5,7 +5,7 @@ using Stomme.Security;
 namespace Stomme.Modules.Pipelines
 {
     /// <summary>
-    /// The Pipelines module (BL-95, D111): pipelines authored and run on the vendored engine, per site. The module carries
+    /// The Pipelines module: pipelines authored and run on the vendored engine, per site. The module carries
     /// no page template of its own: its admin page (admin/pipelines) is placed by the admin site template only while
     /// Pipelines:Enabled is on, so a stock install shows nothing of it. Every permission key defaults to Administrators.
     /// </summary>

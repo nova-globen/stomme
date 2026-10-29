@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Help Scout (n8n's Help Scout node: a shared inbox's conversations and their threads, its customers and
+    /// Help Scout (n8n's Help Scout node: a shared inbox's conversations and their threads, its customers and
     /// inboxes): the app's client credentials at Help Scout's token endpoint, the Mailbox API 2.0 with the token as a bearer;
     /// records read page by page to Help Scout's last page, no further than asked, by Help Scout's own query parameters; one
     /// got, created - got by the id Help Scout answers with, never the address it names - a thread added by its type's path,

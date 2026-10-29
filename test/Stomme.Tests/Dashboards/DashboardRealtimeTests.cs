@@ -22,7 +22,7 @@ using Xunit;
 namespace Stomme.Tests.Dashboards
 {
     /// <summary>
-    /// The real-time signal (BL-96 increment 10, the predecessor platform's DashboardDataSignal cases by name): a dataset's domain event in a
+    /// The real-time signal (the predecessor platform's DashboardDataSignal cases by name): a dataset's domain event in a
     /// site's scope becomes one notice - on the bus when one is composed, delivered in-process otherwise - and the notice
     /// reaches the push port with the site and the dataset, nothing else. No host: the handler over a service collection.
     /// </summary>

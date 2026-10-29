@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Translate DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Google Translate DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for Google's token endpoint and Cloud Translation that refuses a call without the token it
     /// issued: a Google Translate connection made over the API, the client's secret and refresh token vaulted, tested; a published
     /// pipeline translating a note over two lines from the Query box, detecting two texts' languages and listing the languages

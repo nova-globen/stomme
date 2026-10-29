@@ -58,7 +58,7 @@ namespace Stomme.Tests.Erasure
         [MemberData(nameof(Stores))]
         public async Task Deleting_a_user_queues_an_erasure_the_job_runs_under_every_participant_and_the_receipt_names_no_one(string storeName)
         {
-            // BL-183: the self-delete answered 500 once and neither channel the drive prints on a failure named the cause. The
+            // The self-delete answered 500 once and neither channel the drive prints on a failure named the cause. The
             // framework's LogManager writes a site's errors to the site's Log table through a background drain and broadcasts
             // them to ILogger only at or above Logging:LogLevel:Broadcast, which ships "None" - so the host channel (the
             // ILogger capture) could not see a caught-and-logged error at all, and the table read raced the drain on a slow
@@ -91,7 +91,7 @@ namespace Stomme.Tests.Erasure
                     var job = ExportJobAggregate.Request(Guid.NewGuid(), tenantId, alias.SiteId, subject.UserId, "site.users", ExportFormat.Csv, null, "{}", now);
                     await sp.GetRequiredService<IExportJobRepository>().AddAsync(job);
                     await sp.GetRequiredService<IExportAuditRepository>().AddAsync(ExportAuditEntryAggregate.Record(Guid.NewGuid(), tenantId, alias.SiteId, job.Id, subject.UserId, ExportAuditAction.Requested, now));
-                    // BL-95: a schedule they own - it runs as its owner, so with the owner gone it goes too.
+                    // A schedule they own - it runs as its owner, so with the owner gone it goes too.
                     await sp.GetRequiredService<IExportScheduleRepository>().AddAsync(ExportScheduleAggregate.Create(
                         Guid.NewGuid(), tenantId, alias.SiteId, subject.UserId, "Nightly users", "site.users", ExportFormat.Csv, null, "{}", "0 6 * * *", now));
                     await sp.GetRequiredService<INotificationRequestRepository>().AddAsync(NotificationRequestAggregate.Create(Guid.NewGuid(), tenantId, alias.SiteId, "welcome",
@@ -212,7 +212,7 @@ namespace Stomme.Tests.Erasure
                 var posted = await GateDrive.SendJsonAsync(app, selfClient, selfCookies, Host, self.UserId, HttpMethod.Post, "/api/Page", authored, output, "the editor's page");
                 Assert.Equal(HttpStatusCode.OK, posted.Status);
                 // Every provider stamps the signed-in name: the RavenDB listener carried a fixed empty context until
-                // this drive found it (BL-175, fixed in the same increment) - a page POSTed by a signed-in
+                // this drive found it (fixed in the same increment) - a page POSTed by a signed-in
                 // administrator came back CreatedBy "" on RavenDB and "self-erased" on SQLite and PostgreSQL.
                 var stamped = await GateDrive.InTenantAsync(app, Host, async (sp, alias) => await sp.GetRequiredService<IPageRepository>().GetPageAsync("authored-by-erased", alias.SiteId));
                 Assert.Equal(("self-erased", "self-erased"), (stamped.CreatedBy, stamped.ModifiedBy));

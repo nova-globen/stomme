@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.IdentityAudit.Application
 {
     /// <summary>
-    /// Writes one line of the identity audit ledger (BL-120). The caller says WHAT happened and to WHOM; the recorder
+    /// Writes one line of the identity audit ledger. The caller says WHAT happened and to WHOM; the recorder
     /// derives everything else - tenant, site, the acting user, the client address, the time - so no caller can supply
     /// them (the "no caller-supplied subject" rule of the security posture).
     /// </summary>

@@ -11,10 +11,10 @@ using Stomme.SharedKernel.Domain;
 
 namespace Stomme.Datasets.Persistence
 {
-    /// <summary>The Datasets module's repository (BL-94 increment 9, D110) - storage-blind (D79) over the closed <c>IRepository&lt;DatasetAggregate, Guid&gt;</c>; in the <c>Persistence</c> namespace the store-registration gate expects.</summary>
+    /// <summary>The Datasets module's repository - storage-blind over the closed <c>IRepository&lt;DatasetAggregate, Guid&gt;</c>; in the <c>Persistence</c> namespace the store-registration gate expects.</summary>
     public interface IDatasetRepository : IRepository<DatasetAggregate, Guid>
     {
-        /// <summary>A site's dataset by normalised name (D49): the same answer on every provider.</summary>
+        /// <summary>A site's dataset by normalised name: the same answer on every provider.</summary>
         Task<DatasetAggregate?> FindByNameAsync(int siteId, string name, CancellationToken ct = default);
 
         /// <summary>A site's dataset for an origin (the kind and the normalised reference - or the name, when the origin has no reference).</summary>

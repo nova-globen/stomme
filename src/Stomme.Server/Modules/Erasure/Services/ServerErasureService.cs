@@ -13,7 +13,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.Erasure.Services
 {
     /// <summary>
-    /// The SERVER side of <see cref="IErasureService"/>, for the receipts page rendered on the server (BL-191). The framework
+    /// The SERVER side of <see cref="IErasureService"/>, for the receipts page rendered on the server. The framework
     /// registers <c>IClientService</c> only in the WebAssembly client's Program, so on a site whose Runtime is Server - the
     /// default - the page had nothing to resolve and showed "Missing service(s): IErasureService" instead of its receipts.
     /// It makes the controller's Host decision itself, because a page resolving it in-process never passes through

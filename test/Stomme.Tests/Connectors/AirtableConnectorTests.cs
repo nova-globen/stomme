@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Airtable (n8n's search, create and update): the token as a bearer; a table's records read page by page, their
+    /// Airtable (n8n's search, create and update): the token as a bearer; a table's records read page by page, their
     /// fields, id and created_time, a view and a formula passed on; records created ten at a time with typecast, and updated by
     /// their ids, a throttled call sent again; a base or a record id that could reach the path refused before anything is sent;
     /// Airtable's refusal its error type; a test asking whom the token is.

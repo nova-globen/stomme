@@ -21,7 +21,7 @@ namespace Stomme.Modules.Pipelines.Audit
         Task<IReadOnlyList<PipelineAuditEntryAggregate>> ListByUserAsync(int siteId, int userId, CancellationToken ct = default);
     }
 
-    // Filters on integers and an instant only - the provider-neutral part of FindAsync (D78); a pipeline's lines are picked out
+    // Filters on integers and an instant only - the provider-neutral part of FindAsync; a pipeline's lines are picked out
     // of the site's in memory, so no string comparison is left to a provider to decide.
     public sealed class PipelineAuditRepository(IRepository<PipelineAuditEntryAggregate, Guid> inner) : IPipelineAuditRepository
     {

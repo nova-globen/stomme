@@ -22,7 +22,7 @@ namespace Stomme.Tests.Help
     /// </summary>
     /// <remarks>
     /// SQLite cannot reproduce the renderer-deadlock class (its async surface completes synchronously - D29/D30), so the
-    /// render half of this is run where it can fail. Both providers FAIL rather than skip (D46).
+    /// render half of this is run where it can fail. Both providers FAIL rather than skip.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

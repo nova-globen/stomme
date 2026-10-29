@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Netlify (n8n's Netlify node: sites and deploys): every call Netlify's API with the token as a bearer token;
+    /// Netlify (n8n's Netlify node: sites and deploys): every call Netlify's API with the token as a bearer token;
     /// sites read page by page as long as Netlify links a next page, got and deleted; a site's deploys read by state, branch
     /// and production, a deploy got, created with its title, branch and draft, cancelled and published again; a site built,
     /// its cache cleared; a site's forms, a form's submissions - each field it was sent with its own too - and a submission

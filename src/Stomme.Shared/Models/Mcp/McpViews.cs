@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Stomme.Models.Mcp
 {
     /// <summary>
-    /// What the admin UI is told about one EXTERNAL MCP server this site has registered (BL-80 / D101 item 7).
+    /// What the admin UI is told about one EXTERNAL MCP server this site has registered.
     /// </summary>
     /// <remarks>
     /// <b>It carries no secret and no way to ask for one.</b> <see cref="HasApiKey"/> says only THAT a key is stored; the

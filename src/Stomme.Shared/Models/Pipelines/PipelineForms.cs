@@ -9,7 +9,7 @@ using System.Text.Json.Nodes;
 
 namespace Stomme.Models.Pipelines
 {
-    /// <summary>A field of a pipeline's form (BL-229, n8n's Form trigger): what the page asks, and the key the answer is kept under.</summary>
+    /// <summary>A field of a pipeline's form (n8n's Form trigger): what the page asks, and the key the answer is kept under.</summary>
     public sealed class PipelineFormField
     {
         public string Label { get; set; } = "";
@@ -59,7 +59,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// BL-229 - n8n's Form trigger: a page the site serves for a pipeline (<c>api/Pipelines/forms/{name}</c>, behind
+    /// n8n's Form trigger: a page the site serves for a pipeline (<c>api/Pipelines/forms/{name}</c>, behind
     /// <c>Pipelines:Forms:Enabled</c>) whose submission starts it, the answers as its result - one JSON object, a key per field.
     /// The rules here are the editor's, the publish's and the receiver's alike.
     /// </summary>

@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-169 - what the S3 archive store adds to the contract: the upload in parts S3 accepts, a failed publish that leaves
+    /// What the S3 archive store adds to the contract: the upload in parts S3 accepts, a failed publish that leaves
     /// nothing behind, the key layout and its prefix, the configuration infra's deployment uses (the key pair from FILES),
     /// and the choice of store per snapshot.
     /// </summary>

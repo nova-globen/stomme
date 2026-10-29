@@ -32,7 +32,7 @@ namespace Stomme.Repository.Stores
     {
         /// <summary>
         /// A reference to the Site aggregate BY ID, or NULL for a global role. Cross-aggregate references are
-        /// ids, never navigations (D7/D19).
+        /// ids, never navigations.
         /// </summary>
         public int? SiteId { get; set; }
 

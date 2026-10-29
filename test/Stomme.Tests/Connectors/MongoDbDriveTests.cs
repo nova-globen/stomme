@@ -19,11 +19,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - MongoDB DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// MongoDB DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a real server (<see cref="MongoDbTestEndpoint"/>): a MongoDB connection made over the API - an address without a
     /// password, the password vaulted - refused while loopback is not allowlisted, then tested (the server named); a published
     /// pipeline inserts two orders, marks one paid by its number, finds the paid ones, sums each customer's and deletes them;
-    /// the password in neither the graph nor the run. Fails, never skips, without a server (D46).
+    /// the password in neither the graph nor the run. Fails, never skips, without a server.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

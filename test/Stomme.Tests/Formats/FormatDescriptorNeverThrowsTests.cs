@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.Formats
 {
     /// <summary>
-    /// BL-94 increment 1 (D110): <see cref="FormatDescriptor.Format"/> and <see cref="FormatDescriptor.TryParse"/> never
+    /// <see cref="FormatDescriptor.Format"/> and <see cref="FormatDescriptor.TryParse"/> never
     /// throw. the predecessor platform's threw on two inputs a consumer cannot prevent - an unknown culture name on a descriptor built from
     /// stored data (the <c>CultureInfo</c> getter) and a Local <see cref="DateTime"/> (the (value, Zero) constructor) -
     /// both pinned here beside the time-zone cases the predecessor platform already had.

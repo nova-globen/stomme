@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Bitwarden (n8n's Bitwarden node: an organization's collections, events, groups and members): a token from the
+    /// Bitwarden (n8n's Bitwarden node: an organization's collections, events, groups and members): a token from the
     /// organization's client credentials at Bitwarden's identity endpoint - the US cloud's, the EU cloud's or a self-hosted
     /// server's - the public API with it as a bearer; lists read whole and no more than asked, the events page by page by
     /// Bitwarden's continuation token; an update read first and what is not given kept, an access list's settings with it;

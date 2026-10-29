@@ -34,7 +34,7 @@ namespace Stomme.Infrastructure
     /// happily mistake for a hash.
     /// </para>
     /// <para>
-    /// <b>The same class under <c>/_content/</c> (BL-192, measured 2026-10-02).</b> A package's static web assets keep their
+    /// <b>The same class under <c>/_content/</c> (measured 2026-10-02).</b> A package's static web assets keep their
     /// names across the package's versions: FluentUI's <c>Microsoft.FluentUI.AspNetCore.Components.lib.module.js</c> is one
     /// URL under 4.14.3 and 5.0.0. Served with no <c>Cache-Control</c>, a browser that had loaded the 4.x file kept running it
     /// after the host moved to 5.0.0 - the origin answered 457,618 bytes of 5.x, the browser used its 395,429 bytes of 4.x -
@@ -47,7 +47,7 @@ namespace Stomme.Infrastructure
         /// <summary>The path prefixes this policy governs. Everything else is left to the <c>Caching:Cache-Control</c> knob.</summary>
         public const string FrameworkPath = "/_framework/";
 
-        /// <summary>Packages' static web assets (BL-192): stable names whose content changes with the package version.</summary>
+        /// <summary>Packages' static web assets: stable names whose content changes with the package version.</summary>
         public const string ContentPath = "/_content/";
 
         /// <summary>A year, and never revalidated — safe only because the URL itself changes when the content does.</summary>

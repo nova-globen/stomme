@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Reddit DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Reddit DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Reddit's token endpoint and OAuth API: a Reddit connection made over the API, its client
     /// and refresh token vaulted, tested; a published pipeline submits a text post with an accent, reads a subreddit's new
     /// posts over two pages - no more than asked - comments on the post and deletes it - the token exchanged with the client as

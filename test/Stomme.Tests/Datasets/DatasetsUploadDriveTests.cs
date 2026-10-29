@@ -78,7 +78,7 @@ namespace Stomme.Tests.Datasets
     }
 
     /// <summary>
-    /// BL-94 increment 13 (D110) - CSV, XLSX and JSON uploads on installed hosts on PostgreSQL and RavenDB: each file
+    /// CSV, XLSX and JSON uploads on installed hosts on PostgreSQL and RavenDB: each file
     /// goes through the framework's own file API into a folder the Host may view, then <c>POST api/Datasets/upload</c>
     /// registers a dataset from it with the file's stem as the name, the origin <c>file:&lt;id&gt;</c>, the inferred
     /// schema and the FULL row count; the same file registered again refreshes the one row; an XLSX renamed .csv is
@@ -231,7 +231,7 @@ namespace Stomme.Tests.Datasets
     }
 
     /// <summary>
-    /// BL-94 increment 13 (D110) - the managed-file reader on an installed SQLite host, acting as a settable current user:
+    /// The managed-file reader on an installed SQLite host, acting as a settable current user:
     /// a file of another site is not found; a file in a folder the user may not view is refused; a file over the
     /// server's upload cap is refused; a file the user may view opens as a stream of its bytes.
     /// </summary>

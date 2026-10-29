@@ -23,7 +23,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 2 - a run's step executions as the editor shows them: in the order they started, without the engine's
+    /// A run's step executions as the editor shows them: in the order they started, without the engine's
     /// own wrappers; states and faults for anyone who may view, inputs and outputs for an AUTHOR only, an input the step marks
     /// as able to hold a secret hidden even then, and a long value cut and flagged.
     /// </summary>
@@ -108,7 +108,7 @@ namespace Stomme.Tests.Pipelines
             Assert.True(say.InputsJson!.Length <= ListRunStepsQueryHandler.MaxValueLength + 2);
         }
 
-        // BL-229: a connection step's parameter lines that name a secret - a password, a token, a key, an Authorization header -
+        // A connection step's parameter lines that name a secret - a password, a token, a key, an Authorization header -
         // are shown hidden to an author too, every other line as it was (found driving WordPress's user Create, whose password
         // a run's data listed).
         [Fact]
@@ -149,7 +149,7 @@ namespace Stomme.Tests.Pipelines
             Assert.All(steps, step => Assert.Null(step.OutputsJson));
         }
 
-        // BL-229: a step whose data its pipeline's setting emptied is said to be so - to a viewer as to an author - with nothing
+        // A step whose data its pipeline's setting emptied is said to be so - to a viewer as to an author - with nothing
         // left to show; one kept is not.
         [Fact]
         public async Task A_step_emptied_by_its_pipelines_setting_is_said_not_kept()

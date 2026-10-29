@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Zulip
 {
     /// <summary>
-    /// Zulip (BL-229, n8n's Zulip node: messages sent, got, updated and deleted, streams and users kept): an organization's REST
+    /// Zulip (n8n's Zulip node: messages sent, got, updated and deleted, streams and users kept): an organization's REST
     /// API with a bot's - or a user's - e-mail and API key, over the host's egress. A test names whose the key is.
     /// </summary>
     /// <remarks>

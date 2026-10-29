@@ -12,8 +12,8 @@ using FluentValidation;
 namespace Stomme.Modules.Collaboration.Application
 {
     // ============================================================================================================
-    // The collaboration requests (BL-97 increment 11; the predecessor platform's LockCommands, SessionCommands and SessionQueries), each
-    // decided by the host's authorization behaviour before its handler runs (D99). CHANGED from the predecessor platform: no request names
+    // The collaboration requests (the predecessor platform's LockCommands, SessionCommands and SessionQueries), each
+    // decided by the host's authorization behaviour before its handler runs. CHANGED from the predecessor platform: no request names
     // a user - the holder, the participant and the author are the request's principal - and a resource is addressed by
     // its type and id, each checked against the owning module (ICollaborativeResourceAccess).
     // ============================================================================================================

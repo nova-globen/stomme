@@ -16,7 +16,7 @@ using Stomme.Modules.Pipelines.Steps;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// BL-229 - n8n's Form trigger, the site's side: the form a published pipeline offers under a name (read from its Form step as
+    /// n8n's Form trigger, the site's side: the form a published pipeline offers under a name (read from its Form step as
     /// the engine indexed it - the version that is PUBLISHED, so a draft's changes show once published), and a submission sent on
     /// as the trigger's stimulus, which starts every published pipeline with a form of that name.
     /// </summary>

@@ -23,7 +23,7 @@ public sealed class TenantAwareDbContextFactory<TContext>(
 {
     /// <summary>
     /// NOT SUPPORTED. Building a context here means READING THE TENANT STORE for the tenant's binding, which
-    /// is an async read (<see cref="ITenantConnectionResolver.ResolveAsync"/>, D32).
+    /// is an async read (<see cref="ITenantConnectionResolver.ResolveAsync"/>).
     /// <see cref="IDbContextFactory{TContext}"/>'s synchronous member cannot await it and must not block on
     /// it, so this factory is async-only: use <see cref="CreateDbContextAsync"/>.
     /// </summary>

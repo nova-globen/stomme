@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// <see cref="ICurrentUser"/> over the current request's principal (D99, BL-99): the user id, name and
+    /// <see cref="ICurrentUser"/> over the current request's principal: the user id, name and
     /// role claims Stomme's own <c>ClaimsPrincipalExtensions</c> read, plus the site the request resolved
     /// to. ONE registration, always; anonymous — and site -1 — when there is no <c>HttpContext</c>.
     /// </summary>

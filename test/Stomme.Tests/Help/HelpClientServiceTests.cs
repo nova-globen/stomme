@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// The BROWSER side of <see cref="IHelpService"/> (BL-84 increment 8): what the launcher costs a WebAssembly site.
+    /// The BROWSER side of <see cref="IHelpService"/>: what the launcher costs a WebAssembly site.
     /// </summary>
     /// <remarks>
     /// The launcher asks for every anchor on every page view, and in a WebAssembly runtime each ask is an HTTP request. A

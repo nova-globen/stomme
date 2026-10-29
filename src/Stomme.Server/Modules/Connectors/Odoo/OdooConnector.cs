@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Odoo
 {
     /// <summary>
-    /// Odoo (BL-229, n8n's Odoo node: any model's records created, got, read, updated and deleted - its contacts, opportunities,
+    /// Odoo (n8n's Odoo node: any model's records created, got, read, updated and deleted - its contacts, opportunities,
     /// notes and activities among them): an Odoo instance's models over either of its APIs - JSON-RPC (<c>/jsonrpc</c>, Odoo 14 and
     /// later: a login and a password or an API key, the user's id asked for first) or JSON-2 (<c>/json/2/{model}/{method}</c>, Odoo
     /// 19 and later: an API key as a bearer) - the connection's <c>api</c> setting choosing; the database named by the

@@ -20,7 +20,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The SiteGroupMember cluster on the persistence seam (D3/D7/D45). SiteGroupMember-table access goes
+    /// The SiteGroupMember cluster on the persistence seam. SiteGroupMember-table access goes
     /// through <see cref="ISiteGroupMemberStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads);
     /// this class holds no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -71,13 +71,13 @@ namespace Stomme.Repository
             _sessions = sessions;
         }
 
-        // The read path on the seam (D19): reads NEVER go through the store, because the store TRACKS what it
+        // The read path on the seam: reads NEVER go through the store, because the store TRACKS what it
         // loads and a later Update would then attach a DIFFERENT instance with the same key, which EF rejects.
         // SynchronizationJob walks straight into it — it reads every member, then writes each one back
         // (SynchronizedOn) on ONE repository instance, hence one store and one context. A query session opens
         // its own context, so reads leave the store's change tracker clean.
         //
-        // The IQueryable is materialized inside this method, so it never leaves the repository (D7). The LINQ
+        // The IQueryable is materialized inside this method, so it never leaves the repository. The LINQ
         // operators are plain LINQ rather than EF Core's async ones, which would bind these reads to the
         // relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
@@ -167,7 +167,7 @@ namespace Stomme.Repository
         {
             // `tracking` is inert on the seam, for the reason documented on SiteGroupRepository: the harvested
             // context was disposed on the way out, so a tracked entity was of no use to the caller, and a
-            // session read is never tracked (D19). Both arms of the harvested if/else collapse to this read.
+            // session read is never tracked. Both arms of the harvested if/else collapse to this read.
             _ = tracking;
 
             return await QueryAsync(session =>
@@ -186,7 +186,7 @@ namespace Stomme.Repository
 
         public async Task DeleteSiteGroupMemberAsync(int siteGroupMemberId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it
+            // The one read that legitimately goes through the store: it deletes the very instance it
             // loaded, so tracking is what we want and no second instance is ever attached.
             var aggregate = await _store.GetByIdAsync(siteGroupMemberId);
             if (aggregate == null)
@@ -201,7 +201,7 @@ namespace Stomme.Repository
 
         /// <summary>
         /// Fills in each member's <see cref="SiteGroupMember.SiteGroup"/> — the view state that replaced the
-        /// severed navigation (D45). This is what <c>.Include(item =&gt; item.SiteGroup)</c> used to do, moved
+        /// severed navigation. This is what <c>.Include(item =&gt; item.SiteGroup)</c> used to do, moved
         /// out of the query and into the repository, and it is the reason twenty-two production reads of
         /// <c>member.SiteGroup.Type</c> still work.
         /// </summary>

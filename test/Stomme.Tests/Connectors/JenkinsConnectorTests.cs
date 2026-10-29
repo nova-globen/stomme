@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Jenkins (n8n's Jenkins node: a job built, copied and created, the builds, the instance quieted and restarted):
+    /// Jenkins (n8n's Jenkins node: a job built, copied and created, the builds, the instance quieted and restarted):
     /// every call a server's remote access API with the user's name and API token; jobs read at the top and in a folder, a
     /// job read by its path; a build queued with parameters or without, Jenkins's queue item its proof; a job's builds newest
     /// first no more than asked, a build got by number or as the last, its log - its end when long - and stopped; a job

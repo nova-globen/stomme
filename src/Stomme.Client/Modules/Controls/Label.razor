@@ -3,7 +3,7 @@
 
 @if (_topic != null)
 {
-    @* BL-84 (D103 item 6): a label with a resolved help TOPIC carries it inline, as a native disclosure - no handler, no
+    @* A label with a resolved help TOPIC carries it inline, as a native disclosure - no handler, no
        circuit, the server's allowlisted HTML. The span keeps the .db-field grid at one child, like the tooltip span. *@
     <span class="db-help-labelled db-field-label">
         <label for="@For" class="@_labelclass">@ChildContent</label>
@@ -43,7 +43,7 @@ else
     public string HelpText { get; set; } // optional - tooltip for this label
 
     /// <summary>
-    /// Optional - a contextual-help ANCHOR (BL-84). When a published topic resolves for it, the label carries that topic
+    /// Optional - a contextual-help ANCHOR. When a published topic resolves for it, the label carries that topic
     /// inline and the <see cref="HelpText"/> tooltip gives way to it; when nothing resolves (no topic, help switched
     /// off, a caller without <c>help:view</c>) the label renders exactly as it would without this parameter.
     /// </summary>

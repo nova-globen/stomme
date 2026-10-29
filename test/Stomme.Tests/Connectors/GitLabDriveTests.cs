@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - GitLab DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// GitLab DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for GitLab's REST API: a GitLab connection made over the API, its token vaulted, tested (the
     /// user named); a published pipeline opens an issue assigned by username (looked up), reads the project's open issues over two
     /// pages, comments on one, commits a file that is not there yet and runs a pipeline - every call the token in GitLab's

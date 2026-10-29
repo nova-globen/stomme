@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Asana
 {
     /// <summary>
-    /// Asana (BL-229, n8n's Asana node: a task created, got, listed, updated, moved and deleted, a comment added): Asana's REST API
+    /// Asana (n8n's Asana node: a task created, got, listed, updated, moved and deleted, a comment added): Asana's REST API
     /// (<c>https://app.asana.com/api/1.0</c>), a personal access token as the bearer. A test asks Asana who the token is
     /// (<c>users/me</c>).
     /// </summary>

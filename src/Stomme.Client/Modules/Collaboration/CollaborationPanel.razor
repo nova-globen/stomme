@@ -9,7 +9,7 @@
 @using Stomme.Transport.Realtime
 
 @*
-    The collaboration panel an editor hosts (BL-97 increment 12, D114; the predecessor platform's CollaborationPanel): it joins the resource's
+    The collaboration panel an editor hosts: it joins the resource's
     session, takes the advisory lock if nobody holds it (the first editor does) and renews it while the editor stays open,
     shows who else is here and where, who holds the lock, the last change announced, and a warning when someone else SAVED
     the resource - with Reload. It is told over the collaboration hub in a browser, over the host's in-process signal on an
@@ -145,7 +145,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // BL-212: with collaboration switched off for the installation - the default - the join answers 404, which a
+        // With collaboration switched off for the installation - the default - the join answers 404, which a
         // WebAssembly site's browser logged every time the editor or a board opened; the site says so, and nothing is asked.
         if (!firstRender || !Enabled || string.IsNullOrEmpty(ResourceType) || string.IsNullOrEmpty(ResourceId)
             || HostSwitches.IsOff(PageState?.Site, HostSwitches.Collaboration))

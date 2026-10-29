@@ -11,11 +11,11 @@ using static Stomme.Tests.Collaboration.CollaborationRig;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// BL-97 increment 11 - the predecessor platform's <c>ResourceLockServiceTests</c> and <c>EditSessionServiceTests</c>, by name, over the
+    /// The predecessor platform's <c>ResourceLockServiceTests</c> and <c>EditSessionServiceTests</c>, by name, over the
     /// real services on an in-memory store. <b>CHANGED:</b> no call names a user - the principal does (a switchable caller
     /// here); the resource must be one its module lets the caller edit; the "guard held" cases become the in-process gate's
     /// own proof - concurrent callers are serialised, so exactly one is granted the lock and exactly one session is opened
-    /// (the predecessor platform's distributed guard reported contention instead; Stomme's is not composed, BL-154).
+    /// (the predecessor platform's distributed guard reported contention instead; Stomme's is not composed).
     /// </summary>
     public sealed class CollaborationServiceTests
     {

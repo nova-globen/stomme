@@ -6,9 +6,9 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// The ModuleDefinition aggregate root — the persistence-side model of the framework store's
-    /// <c>ModuleDefinition</c> table (D52), reachable only through <see cref="IModuleDefinitionStore"/> (writes)
+    /// <c>ModuleDefinition</c> table, reachable only through <see cref="IModuleDefinitionStore"/> (writes)
     /// and <see cref="IQuerySession.Query{T}"/> (reads). A MASTER-database aggregate, like
-    /// <see cref="ThemeAggregate"/>, <see cref="JobAggregate"/> and the master half of Setting (D23).
+    /// <see cref="ThemeAggregate"/>, <see cref="JobAggregate"/> and the master half of Setting.
     /// </summary>
     /// <remarks>
     /// <para>

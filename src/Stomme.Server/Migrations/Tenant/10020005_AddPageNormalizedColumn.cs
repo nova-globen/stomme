@@ -7,9 +7,9 @@ using Stomme.Repository;
 namespace Stomme.Migrations.Tenant
 {
     /// <summary>
-    /// Adds the normalized lookup column the Page cluster needs to AGREE across the persistence seam (D58):
+    /// Adds the normalized lookup column the Page cluster needs to AGREE across the persistence seam:
     /// <c>Page.PathNormalized</c>, a lowercase copy of <c>Path</c>, and BACKFILLS it for existing rows. The
-    /// same shape as <c>10020004_AddUrlMappingNormalizedColumn</c> (D57) and <c>10020003</c> (D49), one
+    /// same shape as <c>10020004_AddUrlMappingNormalizedColumn</c> and <c>10020003</c>, one
     /// cluster on.
     /// </summary>
     /// <remarks>
@@ -24,7 +24,7 @@ namespace Stomme.Migrations.Tenant
     /// removes the disagreement from the DATA rather than the QUERY: store a lowercase copy, then filter it
     /// with plain <c>==</c>, which both providers agree on. The chosen semantics are case-INSENSITIVE, which
     /// also MATCHES <c>SiteRouter</c>'s own primary in-memory match
-    /// (<c>StringComparison.OrdinalIgnoreCase</c>) and the Folder/File/UrlMapping precedent (D49/D57).
+    /// (<c>StringComparison.OrdinalIgnoreCase</c>) and the Folder/File/UrlMapping precedent.
     /// </para>
     /// <para>
     /// The backfill is the half that matters for upgraders. A fresh install writes every row through

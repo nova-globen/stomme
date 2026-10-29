@@ -9,7 +9,7 @@ namespace Stomme.Persistence.RavenDb;
 /// Opens RavenDB sessions bound to a named store (<see cref="StoreNames"/>), mapping each store name to a
 /// RavenDB database.
 /// <para>
-/// <b>Two databases, two factories (D23).</b> The Setting cluster reads across the framework store AND the
+/// <b>Two databases, two factories.</b> The Setting cluster reads across the framework store AND the
 /// master store, so the host binds <c>IFrameworkStoreSessionFactory</c> and <c>IMasterStoreSessionFactory</c>
 /// to two instances of this factory over two RavenDB databases. Nothing here assumes a single store.
 /// </para>
@@ -52,7 +52,7 @@ public sealed class RavenDocumentSessionFactory(
 
     private RavenDocumentSession Open(string storeName)
     {
-        // Asked at every open (BL-176): the database of the tenant the session is opened for.
+        // Asked at every open: the database of the tenant the session is opened for.
         var database = databaseOf(storeName);
         var session = string.IsNullOrEmpty(database)
             ? store.OpenSession()

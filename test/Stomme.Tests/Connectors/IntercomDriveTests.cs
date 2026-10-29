@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Intercom DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Intercom DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Intercom's API: an Intercom connection made over the API, its token vaulted, tested (the
     /// admin and the workspace named); a published pipeline makes a user with HTML and an accent and a custom attribute, reads the
     /// users by a search over two pages by Intercom's cursor - no more than asked - tags the user found by its address with a tag

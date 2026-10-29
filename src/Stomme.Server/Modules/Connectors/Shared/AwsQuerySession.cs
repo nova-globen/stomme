@@ -13,7 +13,7 @@ using Stomme.Connectivity;
 namespace Stomme.Modules.Connectors.Shared
 {
     /// <summary>
-    /// One connection's calls to an AWS service over its Query protocol (BL-229, the AWS IAM connector): a form of
+    /// One connection's calls to an AWS service over its Query protocol (the AWS IAM connector): a form of
     /// <c>Action</c>, <c>Version</c> and the call's parameters POSTed to the service's address, every request signed with SigV4;
     /// the answer's <c>{Action}Result</c> element, or a failure thrown with its status, AWS's error code and its message.
     /// </summary>

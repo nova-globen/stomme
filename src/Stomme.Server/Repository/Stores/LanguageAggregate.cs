@@ -13,8 +13,8 @@ namespace Stomme.Repository.Stores
     /// <remarks>
     /// <para>
     /// A Language is a per-<see cref="Site"/> culture code, at most one of which is the site default. It is a
-    /// leaf: nothing navigates into it and it navigates nowhere. Tenant-side only — like Permission (D24) and
-    /// unlike Setting (D23), so one store and no <c>IsMaster</c> routing.
+    /// leaf: nothing navigates into it and it navigates nowhere. Tenant-side only — like Permission and
+    /// unlike Setting, so one store and no <c>IsMaster</c> routing.
     /// </para>
     /// <para>
     /// <b>NOTE WHAT IS ABSENT: <c>Name</c>.</b> The wire contract's <c>Language.Name</c> is <c>[NotMapped]</c>
@@ -41,7 +41,7 @@ namespace Stomme.Repository.Stores
     public class LanguageAggregate : AggregateRoot<int>, IAuditable
     {
         /// <summary>
-        /// The <see cref="Site"/> this language belongs to. A reference to another aggregate BY ID (D7/D19).
+        /// The <see cref="Site"/> this language belongs to. A reference to another aggregate BY ID.
         /// <para>
         /// NULLABLE on the contract while the <c>site_id</c> column is NOT NULL — harvested and reproduced
         /// rather than tidied. Making it non-nullable here would be a mapping change justified by nothing this

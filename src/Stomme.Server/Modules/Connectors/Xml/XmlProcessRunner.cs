@@ -21,7 +21,7 @@ namespace Stomme.Modules.Connectors.Xml
     /// <summary>
     /// Runs the external XML processor as a process on the HOST. This is the one place in the Connectors family that
     /// starts a process, and the connector that owns it is <c>HostOnly</c>: creating or editing a connection of its type
-    /// requires the Host role (D110), which is what lets this file be allowlisted in the family's egress source gate.
+    /// requires the Host role, which is what lets this file be allowlisted in the family's egress source gate.
     /// </summary>
     internal sealed class SystemXmlProcessRunner : IXmlProcessRunner
     {

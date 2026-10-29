@@ -21,7 +21,7 @@ namespace Stomme.Tests
         private readonly string _databasePath =
             Path.Combine(Path.GetTempPath(), $"stomme-findasync-conformance-{Guid.NewGuid():N}.db");
 
-        /// <summary>The one string both the store and the teardown use — the pool is keyed by it (BL-104).</summary>
+        /// <summary>The one string both the store and the teardown use — the pool is keyed by it.</summary>
         private string ConnectionString => $"Data Source={_databasePath}";
 
         protected override bool StringEqualityIsCaseInsensitive => false;
@@ -42,7 +42,7 @@ namespace Stomme.Tests
         protected override System.Threading.Tasks.Task DisposeStoreAsync()
         {
             // This database's pool only: ClearAllPools is process-wide and tears pooled connections out from
-            // under whatever else is running in parallel (BL-104).
+            // under whatever else is running in parallel.
             ScratchSqlite.Release(ConnectionString);
             try
             {

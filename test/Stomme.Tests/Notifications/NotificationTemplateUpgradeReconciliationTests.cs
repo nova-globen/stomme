@@ -25,7 +25,7 @@ namespace Stomme.Tests.Notifications
     /// <c>Program.Main</c> stands after <c>InstallAsync</c> and before <c>RunAsync</c>, and where F2 said the module store's
     /// tables may not exist yet. SQLite runs the production default (the module-store SQLite sidecar); PostgreSQL
     /// co-locates the module store in the install's own database so the leg is PostgreSQL end to end; RavenDB is
-    /// schemaless and runs too. PostgreSQL and RavenDB FAIL rather than skip (D46).
+    /// schemaless and runs too. PostgreSQL and RavenDB FAIL rather than skip.
     /// </para>
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]

@@ -15,9 +15,9 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - QuickChart DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// QuickChart DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against this machine's throwaway QuickChart 1.8 (scripts/quickchart-test-server.ps1), never quickchart.io - fail-not-skip
-    /// without it (D46): a QuickChart connection made over the API, with no credentials, and tested; a published pipeline drawing a
+    /// without it: a QuickChart connection made over the API, with no credentials, and tested; a published pipeline drawing a
     /// bar chart into the run's folder and a line chart whose numbers are an expression over the first chart's record.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]

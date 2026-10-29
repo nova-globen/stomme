@@ -26,7 +26,7 @@ using File = Stomme.Models.File;
 
 namespace Stomme.Tests
 {
-    // The Folder cluster on the persistence seam (D3/D7/D48) — and the cluster that was supposed to be a PAIR.
+    // The Folder cluster on the persistence seam — and the cluster that was supposed to be a PAIR.
     //
     // Folder and File were planned to land together, for a reason this file proves rather than quotes:
     // File.Folder was a MAPPED navigation into the Folder contract, and while it stayed mapped EF rediscovered
@@ -280,7 +280,7 @@ namespace Stomme.Tests
     // [NotMapped] is what fixed it, and these tests pin the state reflectively.
     public class FolderMustNotBeResurrectedTests
     {
-        // The neighbours that are STILL genuinely unmigrated — the shape of TenantDBContext after D49.
+        // The neighbours that are STILL genuinely unmigrated — the shape of TenantDBContext.
         //
         // File stood here until D49 put it on the seam, and it was the BEST probe this context ever had: it is
         // the entity whose navigation caused the blocker, so declaring it also proved the [NotMapped] severance
@@ -340,7 +340,7 @@ namespace Stomme.Tests
             Assert.Empty(navigationsIntoFolder);
         }
 
-        // Folder is TENANT-ONLY, like Permission (D24) and unlike Setting (D23): MasterDBContext never had a
+        // Folder is TENANT-ONLY, like Permission and unlike Setting: MasterDBContext never had a
         // DbSet<Folder> and FolderEntityBuilder appears only in the TENANT migration set.
         private sealed class MasterLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
@@ -594,7 +594,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// <b>THE MEASUREMENT THAT KEPT FILE OFF THE SEAM (D48).</b> Not an assertion about Stomme — an
+    /// <b>THE MEASUREMENT THAT KEPT FILE OFF THE SEAM.</b> Not an assertion about Stomme — an
     /// assertion about what each provider's LINQ implementation can and cannot do, pinned so the finding
     /// cannot decay into folklore and so the day RavenDB (or the seam) grows a translation, this test fails and
     /// tells the next reader the blocker is gone.

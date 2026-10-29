@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Erasure.Participants
 {
     /// <summary>
-    /// The authorship stamps (BL-116 increment 5, found by increment 3's gate): <c>CreatedBy</c> / <c>ModifiedBy</c> /
+    /// The authorship stamps (found by increment 3's gate): <c>CreatedBy</c> / <c>ModifiedBy</c> /
     /// <c>DeletedBy</c> hold the author's USERNAME on every auditable framework row - the site's pages, modules, files,
     /// settings, roles - and after every other participant has run they still name the person. Once the account is
     /// gone from the tenant, the username is replaced by an unlinkable placeholder on every row that carries it, in
@@ -29,7 +29,7 @@ namespace Stomme.Modules.Erasure.Participants
     /// <para>Discovery is reflective over the seam's closed store contracts - every <c>IXxxStore : IRepository&lt;TAgg,int&gt;</c>
     /// whose aggregate carries a string stamp - so a new framework store is covered with no edit here; the gate that
     /// would notice a missed one is <c>SubjectErasureCoverageGateTests</c>. The rows are read through the session
-    /// (D19: a store tracks what it loads) and written through the store one distinct row at a time - the per-write
+    /// (a store tracks what it loads) and written through the store one distinct row at a time - the per-write
     /// hazard is one KEY attached twice, which distinct rows cannot produce. The audit stamping is suppressed for the
     /// write so the placeholder is what lands on every provider (EF would otherwise re-stamp <c>ModifiedBy</c> with the
     /// job's empty name). Exact match on the username: the stamp is written from the signed-in name, which is the

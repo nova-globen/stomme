@@ -29,10 +29,10 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - the site's pipeline activity (n8n Enterprise's audit log): every command of the module is recorded once it
+    /// The site's pipeline activity (n8n Enterprise's audit log): every command of the module is recorded once it
     /// succeeds, or is said not to be and why; what each did is said in a sentence that never holds a value; the ledger is read
     /// newest first, all of it or one pipeline's, aged out no sooner than its floor, and erased with the subject after its
-    /// retention (D112).
+    /// retention.
     /// </summary>
     public sealed class PipelineAuditTests : IAsyncLifetime
     {

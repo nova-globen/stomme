@@ -7,7 +7,7 @@ using Raven.Client.ServerWide.Operations;
 namespace Stomme.FeatureManagement.Tests;
 
 /// <summary>
-/// The SAME conformance suite against the RavenDB document store (D73), live against a real server
+/// The SAME conformance suite against the RavenDB document store, live against a real server
 /// (RAVENDB_TEST_URL, default http://127.0.0.1:7000), each run in its own database. Composed the way a RavenDB
 /// install composes the flag store: the provider-neutral <c>AddFeatureManagementCore</c> plus
 /// <c>AddRavenPersistence</c>, which points the module's open-generic <c>IRepository&lt;,&gt;</c> at

@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Health.Services
 {
     /// <summary>
-    /// The client/server contract of the Health module's UI (D104 item 12). The controls depend on this interface,
+    /// The client/server contract of the Health module's UI. The controls depend on this interface,
     /// never on a repository: the browser binds it to <see cref="HealthService"/> (HTTP to <c>api/Health</c>,
     /// decided by the action's <c>[RequiresPermissionKey]</c> AND the request's <c>[Requires]</c>), and the server
     /// binds it to a mediator dispatch.

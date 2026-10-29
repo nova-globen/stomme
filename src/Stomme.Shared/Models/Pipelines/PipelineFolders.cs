@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// A pipeline's FOLDER (BL-229, n8n's folders): where it sits on the pipelines list - "Finance", "Finance/Invoices". The one
+    /// A pipeline's FOLDER (n8n's folders): where it sits on the pipelines list - "Finance", "Finance/Invoices". The one
     /// rule for both sides: names separated by '/', each tidy (trimmed, inner spaces folded to one) and at most
     /// <see cref="MaxLength"/> letters, digits, spaces, '-', '_' or '.', at most <see cref="MaxDepth"/> deep; empty is the top of
     /// the list. A folder is there while a pipeline is in it, or in a folder inside it - one move makes it, the last move out

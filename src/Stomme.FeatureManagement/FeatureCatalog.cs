@@ -14,7 +14,7 @@ public static class FeatureCatalog
     public const string EmailNotifications = "notifications.email";
 
     /// <summary>
-    /// Gates delivery of queued notification requests through the channel pipeline (BL-78 / D100). The dispatch
+    /// Gates delivery of queued notification requests through the channel pipeline. The dispatch
     /// job consults it; the e-mail rows a channel writes are still sent by <see cref="EmailNotifications"/>.
     /// </summary>
     public const string NotificationDispatch = "notifications.dispatch";
@@ -23,7 +23,7 @@ public static class FeatureCatalog
     public const string VisitorTracking = "visitors.tracking";
 
     /// <summary>
-    /// Gates what a SITE publishes over MCP (BL-80 / D101 item 9). It narrows the install-wide
+    /// Gates what a SITE publishes over MCP. It narrows the install-wide
     /// <c>Mcp:Server:Enabled</c> switch; it does not duplicate it.
     /// </summary>
     /// <remarks>

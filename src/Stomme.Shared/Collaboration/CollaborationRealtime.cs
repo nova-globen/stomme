@@ -4,7 +4,7 @@ using System;
 namespace Stomme.Collaboration
 {
     /// <summary>
-    /// What a site's editors are told over the collaboration hub (BL-97 increment 12, D114): which resource, what kind of
+    /// What a site's editors are told over the collaboration hub: which resource, what kind of
     /// thing happened to it, and who did it - never its content, never a presence position, never a change's words. An editor
     /// on that resource re-reads the session and the lock through the API, under its own keys and its module's access check.
     /// </summary>

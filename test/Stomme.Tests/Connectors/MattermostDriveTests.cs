@@ -18,9 +18,9 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the rest of n8n's Mattermost node DRIVEN on an installed SQLite host, with the REAL connector, the host's egress
+    /// The rest of n8n's Mattermost node DRIVEN on an installed SQLite host, with the REAL connector, the host's egress
     /// and the extraction port, against this machine's throwaway Mattermost Team Edition 10.11 (scripts/mattermost-test-server.ps1)
-    /// - fail-not-skip without it (D46): a Mattermost connection made over the API, its token vaulted, tested; a published
+    /// - fail-not-skip without it: a Mattermost connection made over the API, its token vaulted, tested; a published
     /// pipeline making a channel in the team by its name, posting in it, reacting to the post and reading its reactions - each an
     /// expression over the step before; the token in neither the graph nor the run. The channel is archived again afterwards.
     /// </summary>

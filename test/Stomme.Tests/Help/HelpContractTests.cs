@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// The contextual-help contribution SEAM (BL-84 increment 1, D103 item 2): what it refuses, and what it refuses
+    /// The contextual-help contribution SEAM: what it refuses, and what it refuses
     /// to depend on.
     /// </summary>
     /// <remarks>

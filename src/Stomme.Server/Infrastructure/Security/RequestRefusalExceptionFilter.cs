@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// BL-251 - the two refusals every module meets, answered for an action that does not catch them itself: a
+    /// The two refusals every module meets, answered for an action that does not catch them itself: a
     /// <see cref="ValidationException"/> (a command the mediator's validator rejected) becomes a <b>400</b>
     /// <see cref="ValidationProblemDetails"/> with each field's messages, and a <see cref="ConcurrencyConflictException"/>
     /// (a write over a newer version) a <b>409</b>. Before, both escaped as a 500 with nothing for the caller to show. An

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zoom DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, its token provider and the
+    /// Zoom DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, its token provider and the
     /// extraction port, against a loopback stand-in for Zoom's token endpoint and API: a Zoom connection made over the API, its
     /// account id a setting and its client vaulted, tested (the user named); a published pipeline makes a meeting with HTML and an
     /// accent, reads the upcoming meetings over two pages - no more than asked - registers someone, changes the meeting and

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// BL-251 - an API enum may be sent by NAME as well as by number. The API's JSON read enums as numbers only, so a body
+    /// An API enum may be sent by NAME as well as by number. The API's JSON read enums as numbers only, so a body
     /// naming the value - <c>"scope": "Resource"</c>, what a person or an agent writes - answered 400 with an unreadable
     /// body (found four times by the app-guidance writers). Reads accept a number or a name (case-insensitive); writes stay
     /// NUMBERS, so every existing client that reads them is unchanged.

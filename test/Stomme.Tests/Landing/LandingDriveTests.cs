@@ -22,10 +22,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Landing
 {
     /// <summary>
-    /// BL-98 increment 1 - the Landing module on an installed host, over HTTP, on SQLite, PostgreSQL and RavenDB: every site's
+    /// The Landing module on an installed host, over HTTP, on SQLite, PostgreSQL and RavenDB: every site's
     /// home page carries the module, untitled; a visitor reads nothing until the host makes AND publishes the page; a registered
     /// user cannot write; a link that is not a site path or an http(s) address is refused; a reset empties it again. And
-    /// <c>module.landingpage.enabled = false</c> keeps it off the home page (D85).
+    /// <c>module.landingpage.enabled = false</c> keeps it off the home page.
     /// </summary>
     /// <remarks>
     /// The home page is public, so its view by a visitor must open NO circuit - with the page unmade AND published. The first

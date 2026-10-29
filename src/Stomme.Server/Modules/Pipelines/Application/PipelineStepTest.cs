@@ -13,7 +13,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// Test ONE step (BL-229 increment 6, n8n's "execute step"): the step - with what its bodies hold - run on its own, in this
+    /// Test ONE step (n8n's "execute step"): the step - with what its bodies hold - run on its own, in this
     /// site, with the variables holding the values the author gives (the run shown's, the starting values, or values pinned by
     /// hand), and what it received and produced shown as a run's steps are. Nothing is stored: no run, no version. The step
     /// RUNS - an HTTP request is sent, a file written - so it takes <c>pipelines:run</c>, and what it received and produced is

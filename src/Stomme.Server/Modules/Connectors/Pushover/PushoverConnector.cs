@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Pushover
 {
     /// <summary>
-    /// Pushover (BL-229, n8n's Pushover node: a message pushed to a user's devices): Pushover's API with an application's token,
+    /// Pushover (n8n's Pushover node: a message pushed to a user's devices): Pushover's API with an application's token,
     /// over the host's egress. A test names how many messages the token has left this month.
     /// </summary>
     /// <remarks>

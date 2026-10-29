@@ -21,7 +21,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Box
 {
     /// <summary>
-    /// Box (BL-229, n8n's Box node: files and folders) over Box's API 2.0 - <c>https://api.box.com/2.0</c>, uploads at
+    /// Box (n8n's Box node: files and folders) over Box's API 2.0 - <c>https://api.box.com/2.0</c>, uploads at
     /// <c>https://upload.box.com/api/2.0</c> - as a SERVER app: Box's Client Credentials Grant, the app's client id and secret
     /// and the enterprise or the user it acts as (<c>box_subject_type</c> and <c>box_subject_id</c>), exchanged through the shared
     /// <see cref="OAuth2TokenProvider"/>. A refresh token a user granted is not taken: Box rotates it at every use, and a

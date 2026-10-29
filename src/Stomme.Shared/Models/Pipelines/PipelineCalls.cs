@@ -7,7 +7,7 @@ using System.Text;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// A run that waits for another system to call it (BL-229, n8n's Wait node resumed "on webhook call"): "Call address" gives
+    /// A run that waits for another system to call it (n8n's Wait node resumed "on webhook call"): "Call address" gives
     /// the run an address - a random 256-bit token after <see cref="Path"/> - to hand to that system, and "Wait for a call" parks
     /// the run until a POST reaches it; the call's body is the result. The token is kept on the run; the bookmark holds only its
     /// SHA-256 (<see cref="Hash"/>), and the endpoint hashes the token it is given into the same stimulus - so nothing has to be

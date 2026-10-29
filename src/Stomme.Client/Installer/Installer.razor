@@ -254,7 +254,7 @@
     private string _hostName = string.Empty;
     private List<SiteTemplate> _templates;
     private string _template = Constants.DefaultSiteTemplate;
-    // BL-197: opt-in - ticking it sends the host's email and name to the package registry.
+    // Opt-in - ticking it sends the host's email and name to the package registry.
     private string _message = string.Empty;
     private string _loadingDisplay = "display: none;";
 
@@ -276,7 +276,7 @@
     protected override async Task OnInitializedAsync()
     {
         // The Bootstrap CDN stylesheet used to be injected here, and the CDN script in OnAfterRenderAsync. Both are
-        // gone (D11: no CDN — a CSP/offline win, and on-prem installs may have no internet at all, which is
+        // gone (no CDN — a CSP/offline win, and on-prem installs may have no internet at all, which is
         // precisely when the installer runs). The installer renders BEFORE a site or theme exists, so css/app.css
         // is all it has.
 
@@ -306,7 +306,7 @@
 
         _templates = await SiteTemplateService.GetSiteTemplatesAsync();
 
-        // D86: the bundled+enabled modules that declare a module-wide config control. Reflects loaded assemblies
+        // The bundled+enabled modules that declare a module-wide config control. Reflects loaded assemblies
         // server-side, so it works while still uninstalled. Empty list -> the Configure step is a friendly no-op.
         _configurableModules = await InstallationService.GetConfigurableModulesAsync();
     }

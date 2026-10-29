@@ -22,7 +22,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 6 - test ONE step: it runs on its own in the engine (with what its bodies hold, cut from the steps around
+    /// Test ONE step: it runs on its own in the engine (with what its bodies hold, cut from the steps around
     /// it), with the variables holding the values given, and comes back as a run's steps are shown - data for an author only.
     /// Nothing is stored.
     /// </summary>

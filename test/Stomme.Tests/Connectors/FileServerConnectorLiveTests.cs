@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the file operations against a real server, the same scenario over FTP, FTP with explicit TLS and SFTP: text
+    /// The file operations against a real server, the same scenario over FTP, FTP with explicit TLS and SFTP: text
     /// uploaded where its folders do not exist yet (made on the way), a file of the run's folder uploaded, the folder listed -
     /// its folders too, its subfolders' entries too - one file downloaded into the run's folder byte for byte, files stored
     /// into a File Manager folder by a pattern, an entry moved where its folders are made, a file deleted, a folder that is not
@@ -113,7 +113,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the FTP connector against a real vsftpd (this machine's throwaway container, <see cref="FileServerTestEndpoint"/>)
+    /// The FTP connector against a real vsftpd (this machine's throwaway container, <see cref="FileServerTestEndpoint"/>)
     /// through the HOST's egress: loopback refused until allowlisted, a test signing in, a wrong password failing; its
     /// self-signed certificate refused under explicit TLS until the connection accepts any; every file operation over plain FTP
     /// and over TLS, its data connections EPSV to the pinned address. Fails, never skips, without a server.
@@ -174,7 +174,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the SFTP connectors against a real OpenSSH (this machine's throwaway container, <see cref="FileServerTestEndpoint"/>)
+    /// The SFTP connectors against a real OpenSSH (this machine's throwaway container, <see cref="FileServerTestEndpoint"/>)
     /// through the HOST's egress: loopback refused until allowlisted; a connection naming no host key refused with the key the
     /// server offered named, one naming another key refused, one naming the server's - by its fingerprint or its public key's
     /// line - signing in; a wrong password failing; the pinned address dialled and never the name; a key signing in - OpenSSH

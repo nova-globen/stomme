@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's execution annotations: what a person said about a run - that it went well or badly, some tags, a note - and who
+    /// n8n's execution annotations: what a person said about a run - that it went well or badly, some tags, a note - and who
     /// said it, when. Kept beside the run, shown on its page and in the runs list, found by the runs search, deleted with the run.
     /// </summary>
     public class PipelineRunReview

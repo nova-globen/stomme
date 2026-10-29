@@ -14,7 +14,7 @@ using Xunit;
 
 namespace Stomme.Tests.Connectivity
 {
-    /// <summary>A test-only connector (BL-94 increment 3): with or without an extractor, any type key, any categories.</summary>
+    /// <summary>A test-only connector: with or without an extractor, any type key, any categories.</summary>
     public sealed class FixtureConnector(string type, string name, params ConnectorCategory[] categories) : IConnector
     {
         public string ConnectorType => type;
@@ -62,7 +62,7 @@ namespace Stomme.Tests.Connectivity
     }
 
     /// <summary>
-    /// BL-94 increment 3 (D110) - the predecessor platform's connector-contract cases ported by name onto the BCL-only contract in
+    /// The predecessor platform's connector-contract cases ported by name onto the BCL-only contract in
     /// <c>Stomme.Shared/Connectivity</c>: the config schema (ConnectorConfigSchemaTests 4, ConnectorConfigSchemaRichFieldsTests 16),
     /// the authentication schemes (AuthenticationSchemeTests 10), the picker groups (ConnectorPickerGroupsTests 4), the
     /// catalog (ConnectorCatalogTests 4 - with the one deliberate change: a duplicate key THROWS instead of the first
@@ -229,7 +229,7 @@ namespace Stomme.Tests.Connectivity
             {
                 var names = AuthenticationScheme.FieldsFor(type).Select(f => f.Name).ToList();
                 Assert.Equal(names.Count, names.Distinct(StringComparer.Ordinal).Count());
-                // D110: each connection secret is keyed connectivity.connection-<id>.<field>, and <field> must ALREADY fit the
+                // Each connection secret is keyed connectivity.connection-<id>.<field>, and <field> must ALREADY fit the
                 // per-site secret store's segment grammar - so every scheme's field name is a valid key segment as declared
                 // (the predecessor platform's api_key, client_id, ... are hyphenated here for exactly that reason).
                 Assert.All(names, name => Assert.True(Stomme.Infrastructure.Security.SiteSecretStore.IsValidReferenceKey($"connectivity.connection-{Guid.NewGuid():N}.{name}"), name));

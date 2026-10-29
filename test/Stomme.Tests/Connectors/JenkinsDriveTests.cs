@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Jenkins DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Jenkins DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a Jenkins server that refuses a call without the user's name and token and answers
     /// its actions with a redirect, as Jenkins does: a Jenkins connection made over the API, its token vaulted, tested; a
     /// published pipeline reads the jobs, builds a job with a parameter with an accent, reads its builds and the last one's

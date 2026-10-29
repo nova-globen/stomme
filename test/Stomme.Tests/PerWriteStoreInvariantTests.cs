@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// THE GATE for the per-write-store invariant (BL-51, the BL-11 residual): a class holding a
+    /// THE GATE for the per-write-store invariant (the BL-11 residual): a class holding a
     /// constructor-injected framework store must not write the same row twice through that one store
     /// instance in one method. Until now the rule was tribal — three worked examples
     /// (<c>UrlMappingRepository</c>, <c>JobRepository</c>, <c>JobLogRepository</c>) and nothing stopping a
@@ -22,8 +22,8 @@ namespace Stomme.Tests
     /// THE MECHANISM BEING PINNED. A store owns ONE <c>DbContext</c>, and <c>EfRepository</c> leaves every
     /// write TRACKED. A second write of the same key through the same store attaches a SECOND instance with
     /// that key and EF throws <c>InvalidOperationException: ... already being tracked</c> — measured in the
-    /// database as JobLog rows opened and never finalized, every run cycle (BL-11). The sanctioned shapes are:
-    /// reads through a query session, never the store (D19); a FRESH store per write for any
+    /// database as JobLog rows opened and never finalized, every run cycle. The sanctioned shapes are:
+    /// reads through a query session, never the store; a FRESH store per write for any
     /// read-then-write / multi-write-per-scope cluster (<c>NewStore() =&gt;
     /// _services.GetRequiredService&lt;IXxxStore&gt;()</c>, the D47 UrlMapping pattern); read-then-DELETE of
     /// the very instance loaded is fine, because tracking is what a delete wants.
@@ -135,7 +135,7 @@ namespace Stomme.Tests
                     "rows read BEFORE the adds, filtered to ids absent from the live set - disjoint from every id " +
                     "written above, and each delete targets the instance that was read.",
 
-                // ---- Added 2026-09-20 by BL-83 (D104). Two methods, each read before it was justified. --------
+                // ---- Added 2026-09-20. Two methods, each read before it was justified. --------
                 ["src/Stomme.Server/Modules/Health/Application/HealthRollupPass.cs::HealthRollupPass.FoldAsync"] =
                     "The same deterministic-id upsert as RecordAsync below, one window at a time: the coarse row's " +
                     "id is computed, read, and then either added as a NEW instance (absent) or Set and updated " +
@@ -143,7 +143,7 @@ namespace Stomme.Tests
                     "per call because the groups are keyed by (subject, period) which maps 1:1 onto the id, and no " +
                     "mapper-fresh instance is ever constructed for an id that was also read. The SOURCE rows it " +
                     "reads are a different window from the rows it writes, so the two sets are disjoint.",
-                // ---- Added 2026-09-20 by BL-83 (D104). One method, read before it was justified. -----------
+                // ---- Added 2026-09-20. One method, read before it was justified. -----------
                 ["src/Stomme.Server/Modules/Health/Application/HealthProbePass.cs::HealthProbePass.RecordAsync"] =
                     "Read-then-update of THE VERY INSTANCE loaded, over a DETERMINISTIC id - the shape this " +
                     "gate's own remarks call safe, because tracking is what the update wants. The method computes " +
@@ -172,7 +172,7 @@ namespace Stomme.Tests
                     "with the same name falls to the add branch, a new identity); orphan deletes are exactly the " +
                     "rows never matched. At most one write per row per call.",
 
-                // ---- Added 2026-09-23 by BL-84 (D103 item 7). One method, read before it was justified. ------------
+                // ---- Added 2026-09-23. One method, read before it was justified. ------------
                 ["src/Stomme.Server/Modules/ContextualHelp/Infrastructure/HelpTopicReconciler.cs::HelpTopicReconciler.ReconcileAsync"] =
                     "The deterministic-id upsert, once per contributed topic: the loop walks the registry, whose keys " +
                     "are UNIQUE by construction (a duplicate (anchor, locale) is rejected on every side), and each key " +
@@ -318,7 +318,7 @@ namespace Stomme.Tests
         /// <summary>
         /// Guards the guard: the live scan must actually FIND ctor-injected store fields, or the rule test
         /// passes vacuously over an empty set. A floor, not an exact count — an exact count is the
-        /// hand-maintained list wearing a disguise (D42).
+        /// hand-maintained list wearing a disguise.
         /// </summary>
         [Fact]
         public void The_store_field_discovery_is_not_vacuous()

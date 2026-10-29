@@ -16,7 +16,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - what runs next (<see cref="PipelineUpcoming"/>): every published pipeline's schedules that start it, their next runs
+    /// What runs next (<see cref="PipelineUpcoming"/>): every published pipeline's schedules that start it, their next runs
     /// in the next day or week, read off the published bodies with the schedules task's own rules - its cron (Cronos), in its time
     /// zone. For anyone who may view the pipelines.
     /// </summary>
@@ -65,7 +65,7 @@ namespace Stomme.Modules.Pipelines.Application
                         Cron = string.Join("; ", Schedule.Lines(cronText)),
                         TimeZone = Schedule.NormalizeZone(zoneText),
                     };
-                    // BL-229: every cron line's runs in the window, merged in order (n8n's trigger rules).
+                    // Every cron line's runs in the window, merged in order (n8n's trigger rules).
                     foreach (var next in Schedule.Next(crons, now, zone, PipelineUpcoming.MaxCounted, until))
                     {
                         if (schedule.NextRunsUtc.Count < PipelineUpcoming.Shown)

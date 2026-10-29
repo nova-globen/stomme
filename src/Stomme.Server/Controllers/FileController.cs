@@ -377,7 +377,7 @@ namespace Stomme.Controllers
 
         // POST api/<controller>/upload/url?url=x&folderid=y&name=z
         /// <remarks>
-        /// BL-100 F1 (D109 item 14): was <c>GET api/File/upload?url=</c> - a state change on a GET, which the
+        /// BL-100 F1: was <c>GET api/File/upload?url=</c> - a state change on a GET, which the
         /// antiforgery filter never validates and which the Lax Identity cookie accompanies on a cross-site top-level
         /// navigation, so any page could make a signed-in editor's browser plant a download in their folder. Now a
         /// POST (antiforgery-validated), fetched through the outbound connect guard (no loopback/private/link-local
@@ -577,7 +577,7 @@ namespace Stomme.Controllers
         /// placeholder as its body when the app ships one.
         /// </summary>
         /// <remarks>
-        /// BL-159: this used to return <c>null</c> when <c>wwwroot/images/error.png</c> was absent, and MVC reports a null
+        /// This used to return <c>null</c> when <c>wwwroot/images/error.png</c> was absent, and MVC reports a null
         /// action result as HTTP 500 - so a missing static asset turned a correct 403 or 404 into a server error, and an
         /// authorisation refusal into noise in error monitoring. The refusal never depended on the picture; now neither
         /// does its status.

@@ -16,7 +16,7 @@ namespace Stomme.Tests.Backup
     }
 
     /// <summary>
-    /// BL-81 (D106 item 4) - a 256 MiB part is written and read back with the live managed heap BOUNDED: the archive holds
+    /// A 256 MiB part is written and read back with the live managed heap BOUNDED: the archive holds
     /// one chunk, never the part (the predecessor platform's protector held the whole archive in memory, a ~2 GB ceiling). The instrument is
     /// <c>XlsxStreamingMeasurementTests</c>' - a forced collection and <see cref="GC.GetTotalMemory(bool)"/>, sampled from
     /// INSIDE the data source and the data sink while the archive works - and it is validated in the other direction by a

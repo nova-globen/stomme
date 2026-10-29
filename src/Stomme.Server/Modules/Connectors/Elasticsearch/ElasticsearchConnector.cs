@@ -20,7 +20,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Elasticsearch
 {
     /// <summary>
-    /// Elasticsearch (BL-229, n8n's Elasticsearch node: an index's documents searched, got, created, updated and deleted, its
+    /// Elasticsearch (n8n's Elasticsearch node: an index's documents searched, got, created, updated and deleted, its
     /// indices kept): an Elasticsearch's - or an OpenSearch's - REST API with a user's name and password, or an API key in the
     /// password's place, over the host's egress. A test names the cluster and its version.
     /// </summary>

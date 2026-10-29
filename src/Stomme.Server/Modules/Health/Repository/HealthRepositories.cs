@@ -14,7 +14,7 @@ namespace Stomme.Health.Persistence
 {
     /// <summary>
     /// The shared delegation to the closed <see cref="IRepository{TAggregate, TId}"/>: no provider code, no
-    /// <c>DbContext</c>, no RavenDB twin. Whatever store the install chose answers these calls (D79/D80).
+    /// <c>DbContext</c>, no RavenDB twin. Whatever store the install chose answers these calls.
     /// </summary>
     public abstract class HealthRepositoryBase<TAggregate>(IRepository<TAggregate, Guid> inner)
         : IRepository<TAggregate, Guid>
@@ -37,7 +37,7 @@ namespace Stomme.Health.Persistence
 
         /// <summary>
         /// Refuses a non-UTC instant rather than filtering against a local time the store stored as UTC. The same
-        /// guard the metering repositories carry, for the same measured reason (D102).
+        /// guard the metering repositories carry, for the same measured reason.
         /// </summary>
         protected static DateTime UtcOnly(DateTime value) =>
             value.Kind == DateTimeKind.Utc

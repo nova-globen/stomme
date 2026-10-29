@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The SeaTable connector's live tests' server (BL-229): SEATABLE_TEST_URL / SEATABLE_TEST_TOKEN where set, otherwise this
+    /// The SeaTable connector's live tests' server: SEATABLE_TEST_URL / SEATABLE_TEST_TOKEN where set, otherwise this
     /// machine's throwaway SeaTable 6.2 that <c>scripts/seatable-test-server.ps1</c> makes on 127.0.0.1:18098 - the API token of its
     /// base Kafe in the file that script writes under the user's temp folder. Neither is a FAILURE that says how to get one, never a
-    /// skip (D46). A test makes the tables it needs over SeaTable's API - n8n's node makes none - and deletes them afterwards.
+    /// skip. A test makes the tables it needs over SeaTable's API - n8n's node makes none - and deletes them afterwards.
     /// </summary>
     internal static class SeaTableTestEndpoint
     {

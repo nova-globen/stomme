@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Monica (n8n's Monica CRM node) without a server: every id, date, choice and text held to Monica's shape before
+    /// Monica (n8n's Monica CRM node) without a server: every id, date, choice and text held to Monica's shape before
     /// anything is sent - 31 February too; the token a bearer and in no address; a contact made with its gender by name and its
     /// birthdate as Monica's parts, Monica's required flags given; a change read and sent back whole - a note's contact, a
     /// contact's birthdate kept; a contact's fields at Monica's own route, not n8n's; a list page by page as Monica's meta says,
@@ -232,7 +232,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Monica LIVE, against this machine's throwaway Monica 4.1 (scripts/monica-test-server.ps1) - fail-not-skip without it
+    /// Monica LIVE, against this machine's throwaway Monica 4.1 (scripts/monica-test-server.ps1) - fail-not-skip without it
     /// (D46): a test naming the token's user and a wrong token refused; a contact made with its gender by name and its birthdate,
     /// changed with the birthdate kept, its field read at Monica's own route, a note made and changed whole, tags added and
     /// removed by name, a tag Monica has refused, a task done, a reminder, an activity, a call, a conversation and its message, a

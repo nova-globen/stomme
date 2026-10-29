@@ -18,7 +18,7 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft OneDrive (n8n's Microsoft OneDrive node) and the Graph drive files it shares with SharePoint
+    /// Microsoft OneDrive (n8n's Microsoft OneDrive node) and the Graph drive files it shares with SharePoint
     /// (<see cref="GraphDrive"/>): the app's client credentials for a Graph token; a user's drive or a drive by its id; items by id or
     /// by path; a search and a folder's items page by page, files or folders, Graph's next link kept to the collection; a download
     /// into the run's folder through Graph's redirect - followed once, to Microsoft's host alone, without the token - a folder and

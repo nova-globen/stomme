@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using Stomme.CostOptimization;
 using Stomme.Modules.CostOptimization.Domain;
 
-// Lifted from the predecessor platform (BL-97 increment 7): the rules, thresholds, keys and evidence are unchanged. CHANGED: the
-// thresholds arrive as the host-read AdvisorOptions (BL-162) rather than IOptions, and a signal source reads the
+// Lifted from the predecessor platform: the rules, thresholds, keys and evidence are unchanged. CHANGED: the
+// thresholds arrive as the host-read AdvisorOptions rather than IOptions, and a signal source reads the
 // REQUEST's site - so a draft is a site's.
 namespace Stomme.Modules.CostOptimization.Application.Advisors
 {

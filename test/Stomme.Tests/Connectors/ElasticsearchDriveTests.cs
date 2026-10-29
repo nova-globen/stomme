@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Elasticsearch DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Elasticsearch DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for an Elasticsearch's REST API that refuses a call without the user's name and
     /// password: an Elasticsearch connection made over the API, its password vaulted, tested; a published pipeline creates an
     /// index, indexes a document with an accent, searches over two pages - no more than asked - gets, updates and counts, deletes

@@ -12,7 +12,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.CloudUsage.Persistence
 {
     /// <summary>
-    /// The cost rows' closed repository over the storage-blind store (D79/D80). Every read is a SITE's; a window is a
+    /// The cost rows' closed repository over the storage-blind store. Every read is a SITE's; a window is a
     /// range on the stored UTC-midnight date (<c>from</c> inclusive, <c>to</c> exclusive) - equality and range on non-string
     /// scalars are the FindAsync contract's safe set, so the three providers answer alike.
     /// </summary>

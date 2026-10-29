@@ -8,7 +8,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Metering.Domain
 {
     /// <summary>
-    /// One AI call: which provider and model, how many tokens, what it cost, how it ended (D102).
+    /// One AI call: which provider and model, how many tokens, what it cost, how it ended.
     /// </summary>
     /// <remarks>
     /// <para>

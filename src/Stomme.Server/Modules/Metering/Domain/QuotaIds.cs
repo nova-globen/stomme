@@ -7,7 +7,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Metering.Domain
 {
     /// <summary>
-    /// Deterministic identities for metering rows (D102).
+    /// Deterministic identities for metering rows.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -22,7 +22,7 @@ namespace Stomme.Modules.Metering.Domain
     /// first rather than relying on the id alone.
     /// </para>
     /// <para>
-    /// <b>The TENANT is part of every key, and it was missing until BL-151 (2026-09-20).</b> Two tenants can share
+    /// <b>The TENANT is part of every key, and it was missing until BL-151.</b> Two tenants can share
     /// one physical database and point at the SAME site — site-per-alias is a supported topology, and
     /// <c>MeteringJobTenantScopeTests</c> constructs exactly it. Without the tenant, both tenants' rows for that
     /// site hash to the SAME Guid, which in one shared table is a primary-key collision: on EF the second tenant's

@@ -26,10 +26,10 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-120 - the identity audit entry round-trips member for member on EVERY module-aggregate store (EF SQLite, EF
+    /// The identity audit entry round-trips member for member on EVERY module-aggregate store (EF SQLite, EF
     /// PostgreSQL, EF SQL Server, RavenDB, File) through the module's own startup, and its reads answer identically: the
     /// window, the newest-first order and the take; retention's older-than; another site is never included. The ledger is
-    /// append-only, and the retention pass has a floor. PostgreSQL, SQL Server and RavenDB FAIL rather than skip (D46).
+    /// append-only, and the retention pass has a floor. PostgreSQL, SQL Server and RavenDB FAIL rather than skip.
     /// </summary>
     public abstract class IdentityAuditAggregateConformanceTests : IAsyncLifetime
     {
@@ -226,7 +226,7 @@ namespace Stomme.Tests
 
     /// <summary>
     /// EF Core on a LIVE SQL Server scratch database (infra UAT, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
-    /// suite on SQL Server, added by BL-117 to MEASURE it. Fails, never skips, when SQL Server is down (D46).
+    /// suite on SQL Server, added by BL-117 to MEASURE it. Fails, never skips, when SQL Server is down.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class SqlServerIdentityAuditAggregateConformanceTests : IdentityAuditAggregateConformanceTests

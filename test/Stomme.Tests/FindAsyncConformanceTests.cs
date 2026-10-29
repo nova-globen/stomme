@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D78 — the observable contract of the provider-neutral <c>IRepository.FindAsync</c>, expressed ONCE and
+    /// The observable contract of the provider-neutral <c>IRepository.FindAsync</c>, expressed ONCE and
     /// DRIVEN against BOTH providers it must behave identically on (EF Core / SQLite and a LIVE RavenDB), the
     /// same fail-not-skip shape as the D46 parity suite and the D76 Guestbook conformance suite. A subclass
     /// supplies the store; the tests below know nothing about either provider.
@@ -120,7 +120,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// BL-106: the shape a caller writes for "any of these" - and the one RavenDB's LINQ provider does NOT
+        /// The shape a caller writes for "any of these" - and the one RavenDB's LINQ provider does NOT
         /// implement, so it threw "Could not understand expression" on the module seam while working on the
         /// framework seam, which passes through the rewriting query provider. The repository now rewrites the
         /// predicate itself, and this case holds every provider to the same answer.

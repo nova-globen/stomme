@@ -18,11 +18,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Azure Cosmos DB connector's live tests' account (BL-229): COSMOSDB_TEST_HOST / PORT where set, otherwise this machine's
+    /// The Azure Cosmos DB connector's live tests' account: COSMOSDB_TEST_HOST / PORT where set, otherwise this machine's
     /// throwaway Cosmos DB emulator that <c>scripts/cosmosdb-test-server.ps1</c> makes on 127.0.0.1:18081, with its database kafe.
     /// Its key is Microsoft's published well-known emulator key - the same in every install, no secret - and the emulator checks
     /// no signature (measured), so the signing is proven against Microsoft's worked example instead. An absent emulator is a
-    /// FAILURE that says how to get one, never a skip (D46).
+    /// FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class CosmosDbTestEndpoint
     {
@@ -38,7 +38,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Azure Cosmos DB (n8n's Azure Cosmos DB node) without an account: the master-key token as Microsoft's own worked
+    /// Azure Cosmos DB (n8n's Azure Cosmos DB node) without an account: the master-key token as Microsoft's own worked
     /// example computes it, and every request signed over its verb, resource type, link and date with x-ms-date and the API
     /// version; every parameter held to its shape before anything is signed; containers listed, read, made - a partition key
     /// path or a hierarchical one, a manual or autoscale throughput, an indexing policy - and deleted; items read page by page by
@@ -313,13 +313,13 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the Azure Cosmos DB connector against Microsoft's Linux emulator (<c>scripts/cosmosdb-test-server.ps1</c>'s throwaway
+    /// The Azure Cosmos DB connector against Microsoft's Linux emulator (<c>scripts/cosmosdb-test-server.ps1</c>'s throwaway
     /// on loopback) through the HOST's egress: loopback refused until allowlisted; a test naming the database; a container made
     /// partitioned by /till, items made in two partitions, a duplicate refused in Cosmos DB's words and upserted instead; read by
     /// their partition, read page by page and held to the most, queried with a parameter across partitions; one updated with its
     /// other fields kept, one replaced whole, one deleted; a container partitioned by /id read and deleted by the id alone; the
     /// containers dropped. The emulator checks no signature (measured), so this proves the protocol, not the key. Fails, never
-    /// skips, when the emulator is absent (D46).
+    /// skips, when the emulator is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class AzureCosmosDbConnectorLiveTests(ITestOutputHelper output)

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - YouTube DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// YouTube DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Google's token endpoint and the YouTube Data API: a YouTube connection made over the API,
     /// its client and refresh token vaulted, tested; a published pipeline makes a playlist with an accent, puts a video in it,
     /// reads the account's videos over two pages - no more than asked - changes a video's title with the rest kept, likes it and

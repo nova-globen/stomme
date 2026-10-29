@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Strapi (n8n's Strapi node: a content type's entries created, got, read, updated and deleted): every call a Strapi's
+    /// Strapi (n8n's Strapi node: a content type's entries created, got, read, updated and deleted): every call a Strapi's
     /// REST API under /api with the API token as a bearer token, its admin's address too; entries page by page, the page size
     /// fixed and no bigger than asked, Strapi's page count the end, with its filters as its query string reads them, a sort, a
     /// status (Strapi 4's publication state), a locale, what to populate and the fields; Strapi 4's attributes taken out of their

@@ -97,11 +97,11 @@ namespace Stomme.Models
         /// means no transport requirement. Unlike <see cref="Runtimes"/>/<see cref="Databases"/> — whose
         /// enforcement silently filters the module — a declared transport that the install has NOT enabled
         /// is reported LOUDLY: the transport pipeline logs an error naming the module and the missing
-        /// transport at startup (BL-53c). [NotMapped]: populated from the module's <c>IModule</c> on load,
+        /// transport at startup. [NotMapped]: populated from the module's <c>IModule</c> on load,
         /// exactly like <see cref="Runtimes"/>.
         /// </summary>
         [NotMapped]
-        public string Transports { get; set; } // added in BL-53
+        public string Transports { get; set; } // added
 
         [NotMapped]
         public string Dependencies { get; set; }
@@ -129,14 +129,14 @@ namespace Stomme.Models
         public string SettingsType { get; set; } // added in 2.0.2
 
         /// <summary>
-        /// Type name of a module-wide (installation-scoped) configuration control (D86). Mirrors
+        /// Type name of a module-wide (installation-scoped) configuration control. Mirrors
         /// <see cref="SettingsType"/> — which is PER-PLACEMENT — but persists through the master-DB-routed
         /// <c>EntityNames.ModuleDefinition</c> settings channel, so it is one config for the whole installation.
         /// Rendered by the "Configure" tab on the module-definition admin editor and by the installer's
         /// module-config onboarding step. [NotMapped]: populated from the module's <c>IModule</c> on load.
         /// </summary>
         [NotMapped]
-        public string ConfigSettingsType { get; set; } // added in D86
+        public string ConfigSettingsType { get; set; } // added
 
         [NotMapped]
         public string PackageName { get; set; } // added in 2.1.0

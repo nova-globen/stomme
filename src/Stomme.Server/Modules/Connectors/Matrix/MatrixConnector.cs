@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Matrix
 {
     /// <summary>
-    /// Matrix (BL-229, n8n's Matrix node: messages sent and read, rooms made, joined and left, people invited and kicked): a
+    /// Matrix (n8n's Matrix node: messages sent and read, rooms made, joined and left, people invited and kicked): a
     /// homeserver's client-server API with an access token as a bearer token, over the host's egress. A test names whose the
     /// token is.
     /// </summary>

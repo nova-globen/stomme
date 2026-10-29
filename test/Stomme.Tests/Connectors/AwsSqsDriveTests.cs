@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon SQS DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Amazon SQS DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for SQS's JSON protocol that checks every request's signature as AWS would - its
     /// target signed with it, re-signed with the key's secret at the request's own time and refused when it differs: an Amazon
     /// SQS connection made over the API, its key pair vaulted, tested; a published pipeline sends a message with attributes to a

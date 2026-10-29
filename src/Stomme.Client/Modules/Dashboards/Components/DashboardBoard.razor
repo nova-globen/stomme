@@ -3,7 +3,7 @@
 @using Stomme.Modules.Dashboards.Services
 
 @*
-    A READ-ONLY board (BL-98 increment 2): the grid and every widget's body, no builder, no refresh, no live connection, so
+    A READ-ONLY board: the grid and every widget's body, no builder, no refresh, no live connection, so
     it renders statically - the landing page shows a dashboard with it and opens no circuit. Its charts are drawn in the
     browser by stommeCharts.renderAll from what each chart element carries (the page that shows the board loads that
     runtime). The data is the viewer's: LoadAsync reads it through the Dashboards service, whose requests decide

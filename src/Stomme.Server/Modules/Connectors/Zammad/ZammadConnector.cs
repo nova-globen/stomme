@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Zammad
 {
     /// <summary>
-    /// Zammad (BL-229, n8n's Zammad node: its tickets, users, organizations and groups): a help desk's REST API v1 with an
+    /// Zammad (n8n's Zammad node: its tickets, users, organizations and groups): a help desk's REST API v1 with an
     /// access token in Zammad's own <c>Authorization: Token token=</c> header, over the host's egress. A test names whose the
     /// token is.
     /// </summary>

@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-103: the BOOT PASS alone re-seeds a declared key whose rows are missing — no page load required.
+    /// The BOOT PASS alone re-seeds a declared key whose rows are missing — no page load required.
     /// </summary>
     /// <remarks>
     /// <b>This sits alongside <see cref="PermissionKeyUpgradeReconciliationTests"/>, it does not replace it.</b>

@@ -13,12 +13,12 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 9 - the assistant's meter bridge (D113 over D102), with the predecessor platform's <c>AiUsageAssistantMeterTests</c> (15
-    /// cases, re-booked here by BL-79) reconciled by name:
+    /// The assistant's meter bridge (D113 over D102), with the predecessor platform's <c>AiUsageAssistantMeterTests</c> (15
+    /// cases, re-booked here) reconciled by name:
     /// <list type="bullet">
     /// <item><c>RecordAsync_MapsUsageToLedgerEntry</c> - <see cref="A_call_is_recorded_with_its_provider_model_agent_tokens_and_status"/>.</item>
     /// <item><c>RecordAsync_MapsCachedTurnToCachedStatus</c> - LEAVES: a cached turn is the response cache's to report
-    /// (CostOptimization's, BL-97 increment 8); the bridge records what the provider served.</item>
+    /// (CostOptimization's); the bridge records what the provider served.</item>
     /// <item><c>RecordAsync_ParsesProviderIdentityAndFallsBackToUnknown</c> (5) and <c>RecordAsync_ParsesAgentIdentityAndFallsBackToUnknown</c>
     /// (6) - CHANGED: D102's recorder takes provider and agent as strings and normalises them itself, so nothing is parsed
     /// here and nothing becomes "Unknown": <see cref="Provider_and_agent_pass_through_verbatim"/>.</item>
@@ -75,7 +75,7 @@ namespace Stomme.Tests.AiAssistant
         }
 
         /// <summary>
-        /// ADDED (BL-180, found driving the assistant with the site's private hosts cleared): the site's outbound guard refusing
+        /// ADDED (found driving the assistant with the site's private hosts cleared): the site's outbound guard refusing
         /// the endpoint is a refusal the caller is told, metered as an error - not a fault. The OpenAI client throws its retried
         /// attempts together, so both shapes are covered.
         /// </summary>
@@ -114,7 +114,7 @@ namespace Stomme.Tests.AiAssistant
         }
 
         /// <summary>
-        /// BL-251: a streamed call was recorded only after its stream ended, so one that failed - or that the egress guard
+        /// A streamed call was recorded only after its stream ended, so one that failed - or that the egress guard
         /// refused - was neither metered nor in the usage log, and its refusal was not mapped. Now as the non-streamed call.
         /// </summary>
         [Fact]

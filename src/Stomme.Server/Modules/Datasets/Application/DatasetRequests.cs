@@ -17,7 +17,7 @@ using FluentValidation;
 namespace Stomme.Modules.Datasets.Application
 {
     /// <summary>
-    /// The producer-facing registrar (BL-94 increment 10, D110): a registration for an origin the site already has
+    /// The producer-facing registrar: a registration for an origin the site already has
     /// REFRESHES that dataset (the schema, the summary, the sample; the classification escalated by the classifier, never
     /// lowered; the name moved when the registration names it differently and nothing else holds the new name); a
     /// registration for a NEW origin under a name another dataset holds is REJECTED, not overwritten; an over-cap sample

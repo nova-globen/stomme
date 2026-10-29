@@ -26,7 +26,7 @@ namespace Stomme.Modules.Dashboards.Mcp
     }
 
     /// <summary>
-    /// The dashboards' MCP surface (BL-96 increment 11, over BL-80's contributor seam), READ-ONLY: two resources - the
+    /// The dashboards' MCP surface (over BL-80's contributor seam), READ-ONLY: two resources - the
     /// site's dashboards and one dashboard with its widgets - and one tool, <c>get_widget_data</c>, which answers what
     /// the page's widget shows: the bound dataset's classification-masked summary and the bounded rows only when the
     /// classification allows them. Every gate names BOTH the feature flag (<c>dashboards.mcp</c>, off by default) and

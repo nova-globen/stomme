@@ -13,10 +13,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 2 - the predecessor platform's SqlServerConnectorTests (10) by name over the port, plus the pin: the data source is
+    /// The predecessor platform's SqlServerConnectorTests (10) by name over the port, plus the pin: the data source is
     /// parsed (a tcp: prefix, host,port), a named instance without a port is refused before any pin, the driver dials the
     /// pinned address with the certificate still checked against the original name. CHANGED: the legacy single-credential
-    /// fallback is gone (the scheme's fields are the only credentials, D110), so
+    /// fallback is gone (the scheme's fields are the only credentials), so
     /// <c>BuildConnectionString_FallsBackToTheLegacySingleCredential_AsThePassword</c> asserts the endpoint's own user id survives with no password.
     /// </summary>
     public sealed class SqlServerConnectorTests
@@ -130,8 +130,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-96 increment 2 - the SQL Server connector against the infra UAT server through the HOST's egress (fails, never
-    /// skips, D46): refused until the site allowlists the private address; then connected with the scheme's credentials
+    /// The SQL Server connector against the infra UAT server through the HOST's egress (fails, never
+    /// skips): refused until the site allowlists the private address; then connected with the scheme's credentials
     /// and the certificate accepted through the connection's own setting (the shared server's certificate is self-signed);
     /// the query operation streams real rows.
     /// </summary>
@@ -167,7 +167,7 @@ namespace Stomme.Tests.Connectors
         [Fact]
         public async Task Extract_binds_each_at_name_value_as_a_parameter_never_as_SQL()
         {
-            // BL-229: a value that, spliced in, would end the string and run a statement of its own comes back as the text it is;
+            // A value that, spliced in, would end the string and run a statement of its own comes back as the text it is;
             // the nvarchar it is sent as converts to the type its place needs (an int, added to).
             const string hostile = "x'); DROP TABLE nothing; --";
             var context = Contexts.Extract(new HostConnectorEgress(new[] { SqlServerTestEndpoint.Host }), Endpoint, "query",

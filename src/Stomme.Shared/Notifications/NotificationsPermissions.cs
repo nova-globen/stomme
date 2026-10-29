@@ -4,7 +4,7 @@ using Stomme.Shared;
 namespace Stomme.Notifications
 {
     /// <summary>
-    /// The Notifications module's permission KEYS (BL-78 / D100 point 6), decided by the authorization bridge (D99):
+    /// The Notifications module's permission KEYS, decided by the authorization bridge:
     /// each key is a site Permission row <c>(EntityName = "notifications", EntityId = -1, PermissionName = operation)</c>,
     /// seeded from the module definition's <c>PermissionNames</c> and consulted by the mediator's <c>[Requires]</c>, the
     /// controller's <c>[RequiresPermissionKey]</c> and the Client's <c>ModuleBase.IsAuthorizedPermission</c> alike.

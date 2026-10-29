@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Sessions.Services
 {
     /// <summary>
-    /// The sessions contract (BL-119). No method takes a user or a site: the caller is the user, the request is the site,
+    /// The sessions contract. No method takes a user or a site: the caller is the user, the request is the site,
     /// and the server decides every call again.
     /// </summary>
     public interface ISessionService

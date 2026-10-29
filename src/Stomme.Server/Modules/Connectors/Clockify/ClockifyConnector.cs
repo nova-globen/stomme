@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Clockify
 {
     /// <summary>
-    /// Clockify (BL-229, n8n's Clockify node: a workspace's clients, projects, tags, tasks and time entries created, got,
+    /// Clockify (n8n's Clockify node: a workspace's clients, projects, tags, tasks and time entries created, got,
     /// updated and deleted, its users and the workspaces read): Clockify's API v1, an API key in <c>X-Api-Key</c>, over the
     /// host's egress. A test names whom the key signs in as.
     /// </summary>

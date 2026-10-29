@@ -24,7 +24,7 @@ using Stomme.Persistence.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-36(c) — a SHIPPED module publishes a REAL integration event over the bus. Drives the whole
+    /// A SHIPPED module publishes a REAL integration event over the bus. Drives the whole
     /// bridge on an installed host: <c>SignGuestbookCommand</c> through the real mediator pipeline →
     /// aggregate persisted → unit of work committed → <see cref="GuestbookEntrySignedIntegrationEvent"/>
     /// published via <c>IEventBus</c> → delivered to a subscriber. Before this, the bus's producer side
@@ -34,7 +34,7 @@ namespace Stomme.Tests
     /// The consumer is PARAMETERLESS with a static probe-keyed sink — the composed host's handler scan
     /// discovers every <c>IIntegrationEventHandler</c> in loaded Stomme assemblies (this test assembly
     /// included), and a constructor dependency on a test-local type breaks
-    /// <c>HostCompositionTests</c>' <c>ValidateOnBuild</c> composition (measured by BL-36(a)).
+    /// <c>HostCompositionTests</c>' <c>ValidateOnBuild</c> composition (measured).
     /// In-memory transport (the <c>Messaging:Enabled</c> default): the transport leg is BL-36(a)'s
     /// proven ground; this test's subject is the PRODUCER.
     /// </remarks>
@@ -78,7 +78,7 @@ namespace Stomme.Tests
 
                 const int moduleId = 4242;
                 Guid entryId;
-                // BL-111: a signature carries the tenant it is signed under; a request resolves it from the alias, and
+                // A signature carries the tenant it is signed under; a request resolves it from the alias, and
                 // this direct send names the host's first tenant the way a job's scope would.
                 using var ambient = app.Services.GetRequiredService<ITenantScopeFactory>().BeginScope(FrameworkTenantId.ToTenantId(1).Value);
                 using (var scope = app.Services.CreateScope())
@@ -149,7 +149,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

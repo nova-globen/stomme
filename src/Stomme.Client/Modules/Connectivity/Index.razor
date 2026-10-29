@@ -3,7 +3,7 @@
 @inject IConnectionsService ConnectionsService
 
 @*
-    The Connections page (BL-94 increment 7, D110): this site's connections to external systems, with the installed
+    The Connections page: this site's connections to external systems, with the installed
     connectors as the editor's picker. A holder of connections:view reads; a holder of connections:manage adds, edits,
     tests and deletes. The form (ConnectionForm, which the pipeline editor uses too) renders the chosen connector's declared
     settings and its scheme's credential fields; a credential is typed in and never read back - on an edit a blank one
@@ -157,7 +157,7 @@ else
         }
     }
 
-    // The private hosts (BL-180): every viewer reads them; the server lets only the Host change them, and says so in CanEdit.
+    // The private hosts: every viewer reads them; the server lets only the Host change them, and says so in CanEdit.
     private async Task LoadEgressAsync()
     {
         try
@@ -195,7 +195,7 @@ else
     {
         _editing = connection; // the form loads it; its credentials are never read back
         _message = string.Empty;
-        BringIntoView("connections-editor"); // below the list (BL-22)
+        BringIntoView("connections-editor"); // below the list
     }
 
     private void CancelEdit() => _editing = null;
@@ -248,6 +248,6 @@ else
         }
 
         await LoadAsync();
-        StateHasChanged(); // called back from the confirmation dialog, not from an event of this page (BL-22)
+        StateHasChanged(); // called back from the confirmation dialog, not from an event of this page
     }
 }

@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleTranslate
 {
     /// <summary>
-    /// Google Translate (BL-229, n8n's Google Translate node) over Cloud Translation's Basic API
+    /// Google Translate (n8n's Google Translate node) over Cloud Translation's Basic API
     /// (<c>https://translation.googleapis.com/language/translate/v2</c>) as a person signed in - an OAuth client's refresh token
     /// granted the cloud-translation scope, exchanged at Google's token endpoint through the shared
     /// <see cref="OAuth2TokenProvider"/>, as Gmail's is. A test lists the languages Google translates.

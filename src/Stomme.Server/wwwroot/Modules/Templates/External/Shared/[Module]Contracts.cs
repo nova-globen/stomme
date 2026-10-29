@@ -6,7 +6,7 @@ using Stomme.Shared;
 namespace [Owner].Module.[Module]
 {
     /// <summary>
-    /// The module's permission KEYS (D99): <c>resource:operation</c>, lower-case, declared once here and used by the requests'
+    /// The module's permission KEYS: <c>resource:operation</c>, lower-case, declared once here and used by the requests'
     /// <c>[Requires]</c>, the controller's <c>[RequiresPermissionKey]</c> and the page's <c>IsAuthorizedPermission</c>. The
     /// client's <c>ModuleInfo</c> declares them, with the roles a new site grants them to; a key no module declares denies
     /// everyone. Every module definition of the package that uses a key must declare it - a placement carries the site's key

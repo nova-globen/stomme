@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Stomme.CloudUsage
 {
     // ============================================================================================================
-    // The CloudUsage views and requests (BL-97 increment 4): what the page and the API read and send. Totals are per
+    // The CloudUsage views and requests: what the page and the API read and send. Totals are per
     // ISO 4217 currency - costs in different currencies are never summed together (no FX, as the predecessor platform).
     // ============================================================================================================
 

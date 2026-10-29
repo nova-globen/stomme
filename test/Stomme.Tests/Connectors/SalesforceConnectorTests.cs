@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Salesforce (n8n's Salesforce node: records searched by SOQL, got, created, updated, upserted and deleted): the
+    /// Salesforce (n8n's Salesforce node: records searched by SOQL, got, created, updated, upserted and deleted): the
     /// connected app's client id and secret exchanged at the org's token endpoint, the access token a bearer; what a SOQL query
     /// finds read page by page by Salesforce's nextRecordsUrl - only its own query path - up to the most asked for, each record its
     /// attributes dropped and a related record flattened; a record got with the fields named, created, updated, upserted by an

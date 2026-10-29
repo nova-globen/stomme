@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Coda (n8n's Coda node: a table's or a view's rows read, got, created, upserted, updated and deleted, its buttons
+    /// Coda (n8n's Coda node: a table's or a view's rows read, got, created, upserted, updated and deleted, its buttons
     /// pushed, its columns, a doc's formulas and controls read): every call Coda's API v1 with the token as a bearer token; rows
     /// page by page by Coda's page token - a page no bigger than what is left - with a query, a sort, visible rows only and a
     /// value format, each value under its column's name or id; a row got; rows created (one or a list, with the ids Coda added)

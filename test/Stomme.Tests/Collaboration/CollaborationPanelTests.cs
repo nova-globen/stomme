@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// BL-97 increment 12 - the collaboration panel an editor hosts (the predecessor platform's <c>CollaborationPanelTests</c>, by what they
+    /// The collaboration panel an editor hosts (the predecessor platform's <c>CollaborationPanelTests</c>, by what they
     /// proved): it joins the resource's session and takes the free lock; another holder is named and nothing is taken from
     /// them; a notice from this site about this resource re-reads the session and the lock - someone else's SAVE becomes a
     /// warning with Reload, someone else's announced change the last change shown, a lock lost the user is told of - while a
@@ -136,7 +136,7 @@ namespace Stomme.Tests.Collaboration
         [Fact]
         public void A_switched_off_installation_is_never_joined()
         {
-            // BL-212: collaboration is off by default, the join then answers 404, and a WebAssembly site's browser logged it
+            // Collaboration is off by default, the join then answers 404, and a WebAssembly site's browser logged it
             // every time the editor or a board opened. The site says so, and the panel asks nothing.
             var off = new PageState { Site = new Site { Settings = new Dictionary<string, string> { ["Collaboration:Enabled"] = "false" } } };
 

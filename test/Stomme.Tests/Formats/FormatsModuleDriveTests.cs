@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Formats
 {
     /// <summary>
-    /// BL-94 increment 2 (D110) - the Formats module on an installed host, over real HTTP, on SQLite, PostgreSQL and
+    /// The Formats module on an installed host, over real HTTP, on SQLite, PostgreSQL and
     /// RavenDB: the admin page exists from the module's own template and renders for the Host; the API lists the presets
     /// and the site's own definitions, creates, updates and deletes a definition (the predecessor platform's FormatApplicationTests and
     /// FormatsApiTests cases travel by name below); a save over a preset's id, a duplicate name, a blank pattern for a
@@ -87,7 +87,7 @@ namespace Stomme.Tests.Formats
                 Assert.Equal(HttpStatusCode.OK, updated.Status);
                 Assert.Equal(("dd/MM/yyyy", "en-GB", "Europe/London"), (JsonSerializer.Deserialize<FormatDescriptor>(updated.Body, Json)!.Pattern, JsonSerializer.Deserialize<FormatDescriptor>(updated.Body, Json)!.Culture, JsonSerializer.Deserialize<FormatDescriptor>(updated.Body, Json)!.TimeZone));
 
-                // Save_DuplicateName_Throws (case-insensitively, D49) / Save_SystemPresetId_Refused / Save_BlankPatternForNumber_FailsValidation / Create_UnknownCulture_Throws
+                // Save_DuplicateName_Throws (case-insensitively) / Save_SystemPresetId_Refused / Save_BlankPatternForNumber_FailsValidation / Create_UnknownCulture_Throws
                 Assert.Equal(HttpStatusCode.BadRequest, (await SaveAsync(app, hostClient, hostCookies, hostId, new FormatDefinitionRequest { Name = "my DATE", Kind = FormatKind.Number, Pattern = "N0", Culture = "en-US" })).Status);
                 Assert.Equal(HttpStatusCode.BadRequest, (await SaveAsync(app, hostClient, hostCookies, hostId, new FormatDefinitionRequest { Id = preset.Id, Name = "Hack", Kind = FormatKind.Date, Pattern = "yyyy-MM-dd", Culture = "" })).Status);
                 Assert.Equal(HttpStatusCode.BadRequest, (await SaveAsync(app, hostClient, hostCookies, hostId, new FormatDefinitionRequest { Name = "NoPattern", Kind = FormatKind.Number, Pattern = "", Culture = "en-US" })).Status);

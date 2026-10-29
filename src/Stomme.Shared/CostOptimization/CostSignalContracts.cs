@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Stomme.CostOptimization
 {
     // ============================================================================================================
-    // CostOptimization's READ ports (BL-97 increment 5, the predecessor platform's CostSignalContracts): what the advisors read about the
+    // CostOptimization's READ ports: what the advisors read about the
     // site's spend, published here so the module that HOLDS the data implements them and CostOptimization never reaches
     // into another module's repository. BCL-only like every Shared contract. Every figure is per currency - never summed
     // across currencies, never converted.

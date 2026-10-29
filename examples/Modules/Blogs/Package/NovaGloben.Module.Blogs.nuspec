@@ -25,7 +25,7 @@
         </packageTypes>
     </metadata>
     <files>
-        <!-- D115: the LICENSE file (PolyForm Noncommercial OR Small Business) at the package root, as every Stomme.* package carries it (BL-187). No target attribute: dotnet pack over a nuspec gives an empty entry name for ANY explicit target, empty included (measured). -->
+        <!-- The LICENSE file (PolyForm Noncommercial OR Small Business) at the package root, as every Stomme.* package carries it. No target attribute: dotnet pack over a nuspec gives an empty entry name for ANY explicit target, empty included (measured). -->
         <file src="..\..\..\..\LICENSE" />
         <!--
             The three .Stomme-suffixed assemblies under lib/net10.0 (the External template layout).

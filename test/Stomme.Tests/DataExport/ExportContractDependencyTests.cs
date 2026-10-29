@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-85 (D108) - the export contract is BCL types and <c>Stomme.Shared</c>, and nothing else.
+    /// The export contract is BCL types and <c>Stomme.Shared</c>, and nothing else.
     /// </summary>
     /// <remarks>
     /// Asserted by COMPILING the fixture source against exactly those references, rather than by scanning it for

@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// the predecessor platform's per-endpoint webhook guards as the receiver's configuration (a BL-95 residue, 2026-09-28): the allowlist's
+    /// the predecessor platform's per-endpoint webhook guards as the receiver's configuration (a BL-95 residue): the allowlist's
     /// rule - empty admits anyone; a literal address or a CIDR range; parsed, so equivalent spellings match - and the per-name
     /// settings inheriting what a name leaves unset. The receiver itself is driven by <see cref="PipelineWebhookGuardsDriveTests"/>.
     /// </summary>

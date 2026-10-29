@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Sentry
 {
     /// <summary>
-    /// Sentry (BL-229, n8n's Sentry.io node: its events, issues, organizations, projects, releases and teams): Sentry's web API
+    /// Sentry (n8n's Sentry.io node: its events, issues, organizations, projects, releases and teams): Sentry's web API
     /// - sentry.io's, a region's or a self-hosted server's - with an auth token as a bearer token, over the host's egress. A
     /// test names the token's organizations.
     /// </summary>

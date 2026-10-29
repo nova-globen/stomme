@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // ONE convention for Tenant.DBConnectionString (BL-29). The column stores a connection-string NAME:
+    // ONE convention for Tenant.DBConnectionString. The column stores a connection-string NAME:
     // DatabaseManager writes "DefaultConnection" (or the tenant's name) at install, and
     // MigrateConnectionStringAsync actively rewrites legacy inline strings into names. DBContextBase reads it
     // that way (_config.GetConnectionString(tenant.DBConnectionString)); the seam's resolver read it as a

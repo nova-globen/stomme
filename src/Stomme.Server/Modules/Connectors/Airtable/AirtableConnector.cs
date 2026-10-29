@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Airtable
 {
     /// <summary>
-    /// Airtable (BL-229, n8n's Airtable node: its search, create and update): a table's records over Airtable's API
+    /// Airtable (n8n's Airtable node: its search, create and update): a table's records over Airtable's API
     /// (<c>https://api.airtable.com/v0</c>), a personal access token as the Bearer token. A test asks Airtable whom the token is
     /// (<c>meta/whoami</c>).
     /// </summary>
@@ -30,7 +30,7 @@ namespace Stomme.Modules.Connectors.Airtable
     /// records Airtable kept. The base's id is written into the path, so it is held to Airtable's shape (app and fourteen
     /// letters and digits); the table's name is escaped; a record id to update is held to its shape too. A throttled call waits
     /// as it is told (the family's Retry-After policy). A failure is thrown with its status and Airtable's own error type
-    /// (<c>HTTP 404 NOT_FOUND.</c>), the port answering it in its words (D110).
+    /// (<c>HTTP 404 NOT_FOUND.</c>), the port answering it in its words.
     /// </remarks>
     public sealed class AirtableConnector : IConnector, IConnectorExtractor
     {

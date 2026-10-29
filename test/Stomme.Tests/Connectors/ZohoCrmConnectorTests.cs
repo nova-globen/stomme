@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zoho CRM (n8n's Zoho CRM node: any module's records created, upserted, got, read, updated and deleted): the
+    /// Zoho CRM (n8n's Zoho CRM node: any module's records created, upserted, got, read, updated and deleted): the
     /// refresh token exchanged at the data centre's accounts server, the access token sent as Zoho-oauthtoken; a module's records
     /// page by page - the page's size the same from page to page - up to the most asked for, its fields, an order and Zoho's own
     /// parameters; a search by criteria, an address, a phone or a word, nothing found an empty answer; each record its fields by

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google BigQuery DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// Google BigQuery DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against a loopback stand-in for Google's token endpoint and the BigQuery API: an access token for the
     /// OAuth client's refresh token alone, BigQuery answering that token alone. A Google BigQuery connection made over the API,
     /// its secret and refresh token vaulted, tested; a published pipeline runs a query from the step's Query box with a named

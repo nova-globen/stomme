@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - CircleCI DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// CircleCI DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for CircleCI's API v2 that refuses a call without the token in its Circle-Token header: a
     /// CircleCI connection made over the API, its project a setting, tested; a published pipeline triggering a build on a branch
     /// with its parameters from the step's Query box, reading the workflows of the pipeline it started - an expression over the

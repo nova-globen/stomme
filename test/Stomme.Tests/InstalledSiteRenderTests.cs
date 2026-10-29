@@ -52,7 +52,7 @@ namespace Stomme.Tests
     /// <para>
     /// WHY IT INSTALLS FRESH EVERY RUN. <c>ProcessThemes</c> only writes when theme permissions are MISSING,
     /// so only a first render against a newly-installed database enters the branch that deadlocks. A guard
-    /// pointed at an already-installed database never re-enters it and cannot see this bug at all (D29).
+    /// pointed at an already-installed database never re-enters it and cannot see this bug at all.
     /// The throwaway database per case is load-bearing, not hygiene.
     /// </para>
     /// <para>
@@ -88,7 +88,7 @@ namespace Stomme.Tests
     /// runs across five conditions (isolated, SQLite-only, parallel load, background jobs forced to write at
     /// startup concurrent with the render, and full-suite contention) were all green — so this addresses the
     /// confirmed file-release defect, not a reproduced test failure. The renderer-deadlock class remains
-    /// PostgreSQL-only (D30); SQLite's async surface completes synchronously and cannot reproduce it.
+    /// PostgreSQL-only; SQLite's async surface completes synchronously and cannot reproduce it.
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -136,7 +136,7 @@ namespace Stomme.Tests
         /// <para>
         /// So the coverage itself is asserted, not assumed. SQLite cannot stand in — measured, not inferred:
         /// with the D29 fix reverted the SQLite case PASSES and only the PostgreSQL case FAILS, because
-        /// Microsoft.Data.Sqlite's async surface completes synchronously and never suspends (D30).
+        /// Microsoft.Data.Sqlite's async surface completes synchronously and never suspends.
         /// </para>
         /// </remarks>
         [Fact]
@@ -314,7 +314,7 @@ namespace Stomme.Tests
             /// <summary>
             /// Releases/drops what this run created. <paramref name="contentRoot"/> is passed because a
             /// file-backed install has more than one database under it and they are released by their exact
-            /// connection strings, never by a process-wide clear (BL-104).
+            /// connection strings, never by a process-wide clear.
             /// </summary>
             void Cleanup(string connectionString, string contentRoot);
         }
@@ -350,7 +350,7 @@ namespace Stomme.Tests
                 // drops every idle pooled connection, releasing both handles deterministically so the scratch
                 // directory can be removed and no stale pooled connection carries a file lock forward.
                 //
-                // CORRECTION (BL-104). What used to stand here was ClearAllPools, justified by "the suite's
+                // CORRECTION. What used to stand here was ClearAllPools, justified by "the suite's
                 // other SQLite users are all in-memory, so nothing else is in a pool". That was true when it was
                 // written and STOPPED being true once the install suites became file-backed — after which this
                 // teardown was reaching into whatever sibling class happened to be mid-request, in a suite whose
@@ -424,7 +424,7 @@ namespace Stomme.Tests
 
                 // NO wwwroot, deliberately. This line used to create an empty one, calling the ArgumentNullException
                 // DefaultSiteTemplate threw without it "an artifact of the scratch content root, not a product defect".
-                // CORRECTION (BL-186, 2026-09-30): it WAS one - an app built on the Stomme.Server package has no web
+                // CORRECTION: it WAS one - an app built on the Stomme.Server package has no web
                 // root under `dotnet run` and its first install failed exactly there. Program.EnsureWebRoot gives the
                 // host one, and this guard installs and renders without it so that it stays given.
 
@@ -486,7 +486,7 @@ namespace Stomme.Tests
                 // EVERY provider, not just SQLite. An install's FeatureManagement flag store and the shared
                 // module-aggregate store are SQLite files under the content root whatever the install's own
                 // database is - so on the PostgreSQL leg the provider drops its PG database and nothing released
-                // these, leaving the scratch tree behind. Releasing here covers both legs (BL-104).
+                // these, leaving the scratch tree behind. Releasing here covers both legs.
                 ScratchSqlite.ReleaseInstall(ContentRoot);
 
                 try

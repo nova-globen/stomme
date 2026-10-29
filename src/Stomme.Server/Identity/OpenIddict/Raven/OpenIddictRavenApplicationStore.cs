@@ -14,7 +14,7 @@ using Raven.Client.Documents.Linq;
 
 namespace Stomme.Identity.OpenIddict.Raven
 {
-    /// <summary>RavenDB-backed <see cref="IOpenIddictApplicationStore{TApplication}"/> (D62). A fresh async
+    /// <summary>RavenDB-backed <see cref="IOpenIddictApplicationStore{TApplication}"/>. A fresh async
     /// session is opened per operation, bound to the current tenant's dedicated OpenIddict database; the get/set
     /// members operate on the in-memory document, only CRUD/Find/List touch the database. Deleting an application
     /// cascades to its authorizations and tokens.</summary>
@@ -83,7 +83,7 @@ namespace Stomme.Identity.OpenIddict.Raven
         {
             using var session = await _sessions.OpenSessionAsync(cancellationToken);
 
-            // D70: client_id is CASE-SENSITIVE per RFC 6749/OIDC, and the EF OpenIddict store's `==` already is
+            // Client_id is CASE-SENSITIVE per RFC 6749/OIDC, and the EF OpenIddict store's `==` already is
             // (case-sensitive on SQLite/PostgreSQL). RavenDB's `==` is case-INSENSITIVE, so a bare Raven query
             // diverges from EF for a mixed-case client_id (Raven matches where EF misses). Query the selective
             // field on the server (Raven may return case-insensitive candidates), then post-filter in memory with

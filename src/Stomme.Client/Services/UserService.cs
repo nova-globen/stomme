@@ -64,7 +64,7 @@ namespace Stomme.Services
         Task DeleteUserAsync(int userId, int siteId);
 
         /// <summary>
-        /// Deletes the CALLER's own account on this site (D112, BL-116 increment 4) - the same mechanism as an
+        /// Deletes the CALLER's own account on this site - the same mechanism as an
         /// administrator's delete, so the erasure is queued; a Host account is refused.
         /// </summary>
         Task DeleteMyAccountAsync();

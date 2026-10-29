@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's multi-page forms DRIVEN on an installed SQLite host through the real receivers and the host's background
+    /// n8n's multi-page forms DRIVEN on an installed SQLite host through the real receivers and the host's background
     /// dispatcher: a published pipeline's form, then a Wait for a form with Next page and no Call address. A person's submission is
     /// redirected straight to the run's form address, which already shows page two; page two's submission is thanked at once (the
     /// run ends, nothing more to show), the run having both pages' answers; the address then says the form is closed.

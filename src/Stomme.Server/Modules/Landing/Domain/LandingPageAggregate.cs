@@ -19,7 +19,7 @@ namespace Stomme.Modules.Landing.Domain
 
     /// <summary>
     /// ONE landing page per site, made structural: the id is the site's, with its tenant - the module store is one per
-    /// installation and a site id repeats across tenants (the lesson of the Datasets demo ids, BL-94 increment 14).
+    /// installation and a site id repeats across tenants (the lesson of the Datasets demo ids).
     /// </summary>
     public static class LandingPageIds
     {
@@ -34,7 +34,7 @@ namespace Stomme.Modules.Landing.Domain
     }
 
     /// <summary>
-    /// A site's landing page (BL-98; the predecessor platform's <c>LandingPage</c>, planned there and never built): how it was made, its
+    /// A site's landing page (the predecessor platform's <c>LandingPage</c>, planned there and never built): how it was made, its
     /// content, and whether visitors see it. Tenant-owned and one per SITE of that tenant (the predecessor platform's "one per tenant" - a
     /// Stomme site is the unit with its own home page).
     /// </summary>
@@ -83,7 +83,7 @@ namespace Stomme.Modules.Landing.Domain
         public Guid? DashboardId { get; private set; }
 
         /// <summary>
-        /// A generated page's HTML (BL-98 increment 3) - stored only as the landing sanitizer left it; the request sanitises
+        /// A generated page's HTML - stored only as the landing sanitizer left it; the request sanitises
         /// before it reaches here, and the page is shown in a sandboxed frame.
         /// </summary>
         public string? GeneratedHtml { get; private set; }
@@ -143,7 +143,7 @@ namespace Stomme.Modules.Landing.Domain
         }
 
         /// <summary>
-        /// Makes (or remakes) the page from generated HTML the administrator accepted (BL-98 increment 3). The HTML must be the
+        /// Makes (or remakes) the page from generated HTML the administrator accepted. The HTML must be the
         /// landing sanitizer's output - the request's to ensure; the domain refuses only an empty or oversized page.
         /// </summary>
         public void ConfigureGenerated(string sanitizedHtml, DateTime nowUtc)

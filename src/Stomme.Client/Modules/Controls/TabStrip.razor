@@ -1,7 +1,7 @@
 @namespace Stomme.Modules.Controls
 @inherits ModuleControlBase
 
-@* Migrated to the --db-* design system (D11, Phase 4).
+@* Migrated to the --db-* design system (Phase 4).
    Tab switching used to be pure Bootstrap JS (data-bs-toggle="tab") -- there was never an @onclick
    handler here. That JS went away with the CDN in Phase 1, which left every TabStrip page unable to
    change tabs (and, with no .tab-pane CSS, showing all panels stacked at once). Switching is now
@@ -86,7 +86,7 @@
 
     /// <summary>
     /// Activates a tab when interactively rendered. Replaces the Bootstrap JS that used to drive
-    /// data-bs-toggle="tab", which was removed along with the CDN (D18).
+    /// data-bs-toggle="tab", which was removed along with the CDN.
     /// </summary>
     private void ActivateTab(string name)
     {

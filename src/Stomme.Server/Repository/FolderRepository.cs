@@ -25,8 +25,8 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Folder cluster on the persistence seam (D48): writes through <see cref="IFolderStore"/>, reads
-    /// through <see cref="IFrameworkStoreSessionFactory"/> (D19). The <c>DbSet&lt;Folder&gt;</c> is gone from
+    /// The Folder cluster on the persistence seam: writes through <see cref="IFolderStore"/>, reads
+    /// through <see cref="IFrameworkStoreSessionFactory"/>. The <c>DbSet&lt;Folder&gt;</c> is gone from
     /// <see cref="TenantDBContext"/> — that deletion is the compiler's proof this cluster moved.
     /// </summary>
     /// <remarks>
@@ -56,7 +56,7 @@ namespace Stomme.Repository
     /// write because its READ recorded a request, so one repository instance wrote the same row twice and hit
     /// the identity map. Every method below is either a pure read or a single write, and no caller does
     /// Get-then-Update through one instance of this repository — <c>FolderController.Put</c> reads through
-    /// <see cref="GetFolderAsync(int, bool)"/>, which is a SESSION read that tracks nothing (D19), and then
+    /// <see cref="GetFolderAsync(int, bool)"/>, which is a SESSION read that tracks nothing, and then
     /// writes a detached model. Constructor injection is correct here; see <c>TheFolderWriteLifetimeTests</c>,
     /// which pins it.
     /// </para>
@@ -80,7 +80,7 @@ namespace Stomme.Repository
 
         /// <summary>
         /// Opens a read session, runs <paramref name="read"/> against it and disposes it. Reads NEVER go
-        /// through the store (D19).
+        /// through the store.
         /// </summary>
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -187,7 +187,7 @@ namespace Stomme.Repository
 
         /// <summary>
         /// NOTE the <paramref name="tracking"/> parameter is now INERT, and deliberately kept on the
-        /// interface. A session read tracks nothing (D19), so both arms return the same detached model. The
+        /// interface. A session read tracks nothing, so both arms return the same detached model. The
         /// harvested tracking arm never mattered to any caller: every mutating caller
         /// (<c>FolderController.Put</c>, <c>UserManager</c>) hands the result back to
         /// <see cref="UpdateFolderAsync"/>, which re-attaches it on a different unit of work. Removing the

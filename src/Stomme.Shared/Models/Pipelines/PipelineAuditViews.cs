@@ -4,7 +4,7 @@ using System;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - one line of a site's pipeline activity (n8n Enterprise's audit log): who did what to which pipeline, when - a
+    /// One line of a site's pipeline activity (n8n Enterprise's audit log): who did what to which pipeline, when - a
     /// publish, an archive, a run started or stopped, a folder moved, the site's variables changed. Written when the change is
     /// made, never edited.
     /// </summary>

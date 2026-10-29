@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-157: an entity log row ("Page Added {Page}", "Page Module Added {PageModule}", ...) carried the WHOLE entity -
+    /// An entity log row ("Page Added {Page}", "Page Module Added {PageModule}", ...) carried the WHOLE entity -
     /// its permission list with role names, user ids and four timestamps per permission - serialised into
     /// <c>Log.Message</c> and again into <c>Log.Properties</c>. Measured on a stock install boot, then fixed centrally in
     /// <c>LogManager</c>: a framework entity argument is logged as its type, id and name.

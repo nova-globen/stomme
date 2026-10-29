@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Mailjet DRIVEN on an installed SQLite host, with the REAL connectors, the host's egress and the extraction port,
+    /// Mailjet DRIVEN on an installed SQLite host, with the REAL connectors, the host's egress and the extraction port,
     /// against a loopback stand-in for Mailjet's API that answers the e-mail calls for the API key and secret key alone and the
     /// SMS calls for the SMS token alone: two connections made over the API, their secrets vaulted, tested; a published pipeline
     /// sends an e-mail with an accent, sends a template, reads the templates over two pages - no more than asked - and sends an

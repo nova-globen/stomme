@@ -20,7 +20,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Jenkins
 {
     /// <summary>
-    /// Jenkins (BL-229, n8n's Jenkins node: a job built, copied and created, the builds, the instance quieted and restarted):
+    /// Jenkins (n8n's Jenkins node: a job built, copied and created, the builds, the instance quieted and restarted):
     /// a Jenkins server's remote access API with a user's name and API token (Basic), over the host's egress. A test names
     /// whose the token is.
     /// </summary>

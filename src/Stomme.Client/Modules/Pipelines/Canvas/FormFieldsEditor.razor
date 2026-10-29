@@ -1,7 +1,7 @@
 @namespace Stomme.Modules.Pipelines.Canvas
 
 @*
-    A form's fields (BL-229, n8n's Form trigger): each one's label, kind, whether it must be answered, the key its answer is
+    A form's fields (n8n's Form trigger): each one's label, kind, whether it must be answered, the key its answer is
     kept under and, for a dropdown, its choices (one per line); a hidden field, the value it carries when the address gives none. The editor owns the list; every change is made on it and then
     announced, so the editor records it as one step of undo.
 *@
@@ -31,7 +31,7 @@
             }
             @if (field.Type == PipelineFormFieldTypes.Hidden)
             {
-                @* BL-229: n8n's Hidden Field - nobody sees it; the form's address gives it (?key=value), else this value. *@
+                @* n8n's Hidden Field - nobody sees it; the form's address gives it (?key=value), else this value. *@
                 <label for="@($"{IdPrefix}-value-{at}")">Value when the address gives none</label>
                 <input id="@($"{IdPrefix}-value-{at}")" class="db-input" value="@field.Value" title="The form's address can give it instead: ?key=value - and whoever sends the form can change it" @onchange="e => ChangeAsync(_ => field.Value = Blank(e.Value?.ToString()))" disabled="@Disabled" />
             }
@@ -42,7 +42,7 @@
             }
             else if (field.Type == PipelineFormFieldTypes.File)
             {
-                @* BL-229: n8n's File field - what kinds of file it takes; the file is kept in the site's pipeline folder. *@
+                @* n8n's File field - what kinds of file it takes; the file is kept in the site's pipeline folder. *@
                 <label for="@($"{IdPrefix}-accept-{at}")">Kinds of file, e.g. .pdf, .png (empty: any)</label>
                 <input id="@($"{IdPrefix}-accept-{at}")" class="db-input" value="@string.Join(", ", field.Accept ?? new List<string>())" title="The file is kept in the site's pipeline folder, its path in the answer" @onchange="e => ChangeAsync(_ => field.Accept = Kinds(e.Value?.ToString()))" disabled="@Disabled" />
             }

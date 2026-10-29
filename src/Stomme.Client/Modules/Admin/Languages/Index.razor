@@ -1,4 +1,4 @@
-﻿@* Migrated to native FluentUI controls + the --db-* design system (D11, Phase 4). *@
+﻿@* Migrated to native FluentUI controls + the --db-* design system (Phase 4). *@
 @namespace Stomme.Modules.Admin.Languages
 @inherits ModuleBase
 @inject ILanguageService LanguageService
@@ -39,7 +39,7 @@ else
             <td>@context.Name</td>
             <td>@context.Code</td>
 			@* A read-only mark, not a disabled TriStateCheckBox: that draws its disabled icon whatever the value, so the column
-			   never said which language is the default (BL-22's depth-2 pass, 2026-10-03). *@
+			   never said which language is the default (BL-22's depth-2 pass). *@
 			<td>
 			@if (context.IsDefault)
 			{

@@ -27,8 +27,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D88 — the module-definition "Configure" tab SAVE (the master-DB-routed
-    /// <see cref="EntityNames.ModuleDefinition"/> settings channel, D86) must succeed for the HOST over HTTP and
+    /// The module-definition "Configure" tab SAVE (the master-DB-routed
+    /// <see cref="EntityNames.ModuleDefinition"/> settings channel) must succeed for the HOST over HTTP and
     /// STILL be denied for a non-host admin. Drives the REAL composed host (<see cref="Program.BuildAppAsync"/> +
     /// the production middleware pipeline, transport swapped for TestServer):
     /// <list type="number">
@@ -392,7 +392,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

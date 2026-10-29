@@ -6,7 +6,7 @@ using Stomme.Datasets;
 namespace Stomme.Dashboards
 {
     // ============================================================================================================
-    // The shapes a page or an API consumer reads and sends (BL-96 increment 9): a dashboard and its widgets as the
+    // The shapes a page or an API consumer reads and sends: a dashboard and its widgets as the
     // server projects them, a widget's data as the Datasets catalogue answers it, and the requests the API takes.
     // BCL-only, like the contracts beside them; the Datasets descriptors are the same Shared assembly's.
     // ============================================================================================================

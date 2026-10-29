@@ -6,7 +6,7 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// The SearchContentWord aggregate root — the persistence-side model of the framework store's
-    /// <c>SearchContentWord</c> table (D50). The TERM-FREQUENCY half of the hand-rolled inverted index:
+    /// <c>SearchContentWord</c> table. The TERM-FREQUENCY half of the hand-rolled inverted index:
     /// "word W occurs N times in content C". Reachable only through <see cref="ISearchContentWordStore"/>
     /// (writes) and <c>IQuerySession.Query</c> (reads).
     /// </summary>
@@ -21,7 +21,7 @@ namespace Stomme.Repository.Stores
     /// with. See <see cref="SearchContentAggregate"/>.
     /// </para>
     /// <para>
-    /// <b>THE TWO NAVIGATIONS ARE SEVERED AT THE CONTRACT (D45/D48/D49).</b> <c>SearchContentWord.SearchWord</c>
+    /// <b>THE TWO NAVIGATIONS ARE SEVERED AT THE CONTRACT.</b> <c>SearchContentWord.SearchWord</c>
     /// and <c>SearchContentWord.SearchContent</c> are mapped navigations on the wire contract; with
     /// <see cref="SearchWordAggregate"/> and <see cref="SearchContentAggregate"/> mapped onto the same tables,
     /// EF would rediscover those contracts THROUGH the navigations and break the model at startup — the
@@ -43,10 +43,10 @@ namespace Stomme.Repository.Stores
     /// </remarks>
     public class SearchContentWordAggregate : AggregateRoot<int>
     {
-        /// <summary>The indexed content. A reference to another aggregate BY ID (D7/D19) — see the remarks.</summary>
+        /// <summary>The indexed content. A reference to another aggregate BY ID — see the remarks.</summary>
         public int SearchContentId { get; set; }
 
-        /// <summary>The word. A reference to another aggregate BY ID (D7/D19) — see the remarks.</summary>
+        /// <summary>The word. A reference to another aggregate BY ID — see the remarks.</summary>
         public int SearchWordId { get; set; }
 
         /// <summary>

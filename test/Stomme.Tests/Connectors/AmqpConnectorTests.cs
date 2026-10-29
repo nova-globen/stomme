@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - AMQP 1.0 (n8n's AMQP Sender and AMQP Trigger) against an in-process AMQP 1.0 broker (AMQPNetLite's own listener
+    /// AMQP 1.0 (n8n's AMQP Sender and AMQP Trigger) against an in-process AMQP 1.0 broker (AMQPNetLite's own listener
     /// on loopback): every address, header, property and number held to its shape before anything is dialled; the endpoint ONE
     /// broker with no user or queue in it; the address the host pinned what is dialled, SASL PLAIN with the connection's user;
     /// a message sent as n8n's AMQP string or as bytes, its properties and application properties as given, and the broker's
@@ -205,8 +205,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - AMQP 1.0 LIVE, against this machine's throwaway RabbitMQ 4.1 (scripts/rabbitmq-test-server.ps1, its AMQP 1.0 on
-    /// the same port as its AMQP 0-9-1) - fail-not-skip without it (D46): a test naming RabbitMQ; a message to a queue by its
+    /// AMQP 1.0 LIVE, against this machine's throwaway RabbitMQ 4.1 (scripts/rabbitmq-test-server.ps1, its AMQP 1.0 on
+    /// the same port as its AMQP 0-9-1) - fail-not-skip without it: a test naming RabbitMQ; a message to a queue by its
     /// bare name - as n8n's sender writes one - made and taken back with its properties by its v2 address; a queue RabbitMQ has
     /// not got rejected, an exchange's routing key bound to nothing released, n8n's own topic:// refused - each the step's
     /// failure where n8n's sender said "sent"; a message released back and there again. Its queue deleted afterwards.

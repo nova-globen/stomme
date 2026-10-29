@@ -12,7 +12,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.CloudUsage.Application
 {
     /// <summary>
-    /// CloudUsage's side of CostOptimization's cloud-cost read port (BL-97 increment 5, the predecessor platform's host bridge
+    /// CloudUsage's side of CostOptimization's cloud-cost read port (the predecessor platform's host bridge
     /// <c>CloudUsageCloudCostSignalSource</c>, now owned by the module that holds the ledger): the request's SITE's rows for
     /// this calendar month and the one before - per provider and currency with last month as the baseline, and this month's
     /// per-service breakdown. Per currency, never summed across currencies, as every CloudUsage rollup.

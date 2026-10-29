@@ -64,7 +64,7 @@ namespace Stomme.Tests
         public async Task A_job_folds_the_second_tenants_row_even_while_the_first_tenants_scope_is_open()
         {
             // Through appsettings.override.json - where a deployed install keeps it - and NOT builder.Configuration: the host's
-            // IConfiguration does not include the override, and the jobs read the merged root (HostConfiguration, BL-162).
+            // IConfiguration does not include the override, and the jobs read the merged root (HostConfiguration).
             using var scratch = new ScratchGateInstall(new SqliteGateStore(), Host, new System.Text.Json.Nodes.JsonObject { ["Metering"] = new System.Text.Json.Nodes.JsonObject { ["Enabled"] = true } });
             var app = await GateDrive.InstallAsync(scratch, _output, configure: null, start: false);
 

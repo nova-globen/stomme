@@ -13,7 +13,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
 {
     /// <summary>
     /// A contributor of built-in notification templates. The module ships <see cref="BuiltInNotificationTemplateSource"/>
-    /// (<c>generic.message</c>); every later module that notifies brings its own source (D100 point 5).
+    /// (<c>generic.message</c>); every later module that notifies brings its own source.
     /// </summary>
     public interface INotificationTemplateSource
     {
@@ -35,7 +35,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
 
     /// <summary>
     /// Creates, per site, every declared template the site does not have yet - keyed by <c>KeyNormalized</c> - and never
-    /// touches one that exists, so an operator's edit survives every boot (D100 point 5: additive, create-if-absent).
+    /// touches one that exists, so an operator's edit survives every boot (additive, create-if-absent).
     /// the predecessor platform's seeder was already create-if-absent but ran once for the default tenant from a hosted service; here it
     /// runs per SITE on the boot/upgrade path through the framework's <see cref="SiteContentReconciliationRunner"/>.
     /// </summary>

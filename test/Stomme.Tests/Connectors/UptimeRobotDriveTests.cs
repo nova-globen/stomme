@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - UptimeRobot DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// UptimeRobot DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for UptimeRobot's API that refuses a call without the key in its form: an UptimeRobot
     /// connection made over the API, its key vaulted, tested; a published pipeline creates a monitor with an accent, reads the
     /// monitors over three pages by offset - no more than asked - pauses one, creates a weekly maintenance window and reads

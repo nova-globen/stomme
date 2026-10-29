@@ -26,7 +26,7 @@ public sealed class EfRepository<TAggregate, TId>(
 
     /// <summary>
     /// False for a repository whose DI scope may be LONG-LIVED - an Interactive Server circuit is one scope for as
-    /// long as the page is open (BL-160, D79's correction of 2026-09-21). Reads then do not track, and a write is
+    /// long as the page is open (D79's correction of 2026-09-21). Reads then do not track, and a write is
     /// detached once it is saved, so a re-read always answers from the database: what the RavenDB and File
     /// repositories already do.
     /// </summary>
@@ -43,7 +43,7 @@ public sealed class EfRepository<TAggregate, TId>(
     /// </para>
     /// <para>
     /// True is the DEFAULT, and the framework seam's stores depend on it: they are built on "the store tracks what
-    /// it loads, reads go through the session" (D19), and eighteen tests pin exactly that. Only the storage-blind
+    /// it loads, reads go through the session", and eighteen tests pin exactly that. Only the storage-blind
     /// module registration (<c>AddModuleAggregatePersistence</c>, 2-arg) turns it off.
     /// </para>
     /// </remarks>
@@ -115,7 +115,7 @@ public sealed class EfRepository<TAggregate, TId>(
             // fails again — and it fails while reporting the aggregate of whichever call is running, not the one
             // that actually conflicted.
             //
-            // MEASURED (BL-152, SaveOncePassContainmentTests). A pass updating three rows, where only the middle
+            // MEASURED (SaveOncePassContainmentTests). A pass updating three rows, where only the middle
             // one was stale, lost the third as well — and lost it INSIDE a per-row try/catch that existed to
             // contain exactly this. The third row's concurrency token was current; it failed only because it
             // followed a failed save on the same context. Running the same pass with a fresh scope per row let

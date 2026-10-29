@@ -37,7 +37,7 @@ namespace Stomme.Models.Pipelines
         public int Queued { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n's archive: when the pipeline was set aside - unpublished, out of the list until it is restored; null when it is
+        /// n8n's archive: when the pipeline was set aside - unpublished, out of the list until it is restored; null when it is
         /// not. An archived pipeline is not published again, nor so run, and the list deletes a pipeline from its archive.
         /// </summary>
         public DateTime? ArchivedOnUtc { get; set; }
@@ -46,7 +46,7 @@ namespace Stomme.Models.Pipelines
         public string ArchivedBy { get; set; }
     }
 
-    /// <summary>A pipeline with its body: the engine's serialised definition, which the editor (BL-95 (c)) reads and writes.</summary>
+    /// <summary>A pipeline with its body: the engine's serialised definition, which the editor reads and writes.</summary>
     public class PipelineDetail : PipelineView
     {
         public string Body { get; set; }
@@ -54,7 +54,7 @@ namespace Stomme.Models.Pipelines
 
     /// <summary>BL-229 - n8n's folders: where a pipeline is moved to (<see cref="PipelineFolders"/>); empty for the top.</summary>
     /// <summary>
-    /// BL-229 - n8n's folder rename and move, and delete: <see cref="Folder"/> becomes <see cref="NewFolder"/> (a path - another
+    /// n8n's folder rename and move, and delete: <see cref="Folder"/> becomes <see cref="NewFolder"/> (a path - another
     /// name, or another place), what is in it going along; or, with <see cref="Remove"/>, it is gone and what was in it is in the
     /// folder above. A pipeline is never deleted with a folder.
     /// </summary>
@@ -87,7 +87,7 @@ namespace Stomme.Models.Pipelines
         public string Description { get; set; }
     }
 
-    /// <summary>The module's own input hints, beside the engine's (BL-229): what the editor draws for an input that names one.</summary>
+    /// <summary>The module's own input hints, beside the engine's: what the editor draws for an input that names one.</summary>
     public static class PipelineInputHints
     {
         /// <summary>One of the site's connections (Admin > Connections), chosen by name, held by its id.</summary>
@@ -99,14 +99,14 @@ namespace Stomme.Models.Pipelines
         /// <summary>A form's fields (the Form trigger) held as the input's value: each one's label, kind, whether it is required and its choices.</summary>
         public const string FormFields = "form-fields";
 
-        /// <summary>An AI agent's tools (BL-229): names, one per line, with the site's published AI agent tools offered to add.</summary>
+        /// <summary>An AI agent's tools: names, one per line, with the site's published AI agent tools offered to add.</summary>
         public const string AgentTools = "agent-tools";
 
-        /// <summary>One of the site's data tables (BL-229, n8n's Data tables), chosen by name, held by its name.</summary>
+        /// <summary>One of the site's data tables (n8n's Data tables), chosen by name, held by its name.</summary>
         public const string SiteTablePicker = "site-table-picker";
 
         /// <summary>
-        /// A path in the site's pipeline folder (BL-229, the Files page's folder) - a file to read or write, or a folder - typed,
+        /// A path in the site's pipeline folder (the Files page's folder) - a file to read or write, or a folder - typed,
         /// or chosen from the folder; held as the path, relative to it.
         /// </summary>
         public const string PipelineFile = "pipeline-file";
@@ -118,13 +118,13 @@ namespace Stomme.Models.Pipelines
         public const string VariablePicker = "variable-picker";
 
         /// <summary>
-        /// A SQL statement (BL-229, Extract from connection's Query): drawn as code, line by line; an expression writing a value
+        /// A SQL statement (Extract from connection's Query): drawn as code, line by line; an expression writing a value
         /// into it is warned of (<see cref="PipelineGraphProblems.ValueInSql"/>) - a value goes in as a bound <c>@name</c>.
         /// </summary>
         public const string SqlQuery = "sql-query";
 
         /// <summary>
-        /// The operation of the connection the step names (BL-229, Extract from connection's Operation): chosen among that
+        /// The operation of the connection the step names (Extract from connection's Operation): chosen among that
         /// connection's connector's own, each saying what it does and what it takes; typed when the connector is not known.
         /// </summary>
         public const string ConnectorOperation = "connector-operation";
@@ -145,7 +145,7 @@ namespace Stomme.Models.Pipelines
         public string PipelineName { get; set; }
     }
 
-    /// <summary>What this site lets the editor offer (BL-229 increment 5b): JavaScript expressions, and receiving webhooks.</summary>
+    /// <summary>What this site lets the editor offer: JavaScript expressions, and receiving webhooks.</summary>
     public class PipelineCapabilitiesView
     {
         /// <summary><c>Pipelines:Scripts:Enabled</c> - the Run script step and JavaScript expressions run.</summary>
@@ -155,7 +155,7 @@ namespace Stomme.Models.Pipelines
         public bool Webhooks { get; set; }
 
         /// <summary>
-        /// BL-229: the site's model can build in the editor for the person asking - the AI assistant on for the installation and
+        /// The site's model can build in the editor for the person asking - the AI assistant on for the installation and
         /// this site, and the person holding the assistant's own key (<c>assistant:use</c>), which a module's page cannot read
         /// itself (it reads its own module's keys). The server asks the same again of every request.
         /// </summary>
@@ -194,7 +194,7 @@ namespace Stomme.Models.Pipelines
         public string Summary { get; set; }
     }
 
-    /// <summary>A JavaScript expression to preview, with the variables' values as text, by name (BL-229 increment 5b).</summary>
+    /// <summary>A JavaScript expression to preview, with the variables' values as text, by name.</summary>
     public class ScriptPreviewRequest
     {
         public string Script { get; set; }
@@ -211,7 +211,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// BL-229 - n8n's "Ask AI" in its Code node: what the author wants a Run script step's script to do, with what the script can
+    /// n8n's "Ask AI" in its Code node: what the author wants a Run script step's script to do, with what the script can
     /// see - what it is written for, the names of its extra variables and the shape of what it receives (field names and kinds,
     /// never a value). The script as it stands goes too, so a change can be asked of it.
     /// </summary>
@@ -279,7 +279,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// What the editor says about a trigger step (BL-229 increment 10): a webhook's address and how a call must be signed, whether
+    /// What the editor says about a trigger step: a webhook's address and how a call must be signed, whether
     /// the site receives webhooks at all; a schedule's next runs. Never the webhook secret - only whether one is configured.
     /// </summary>
     public class TriggerInfoView
@@ -302,7 +302,7 @@ namespace Stomme.Models.Pipelines
         /// <summary>Webhook: a secret is configured - its own or the installation's - so a signed call can be received; without one every call is refused.</summary>
         public bool Signed { get; set; }
 
-        /// <summary>Webhook: it has a secret of its own (D111a), and calls are verified under that, not the installation's.</summary>
+        /// <summary>Webhook: it has a secret of its own, and calls are verified under that, not the installation's.</summary>
         public bool OwnSecret { get; set; }
 
         /// <summary>Webhook: its own secret cannot be read (the host's key ring changed), so every call is refused until a new one is made.</summary>
@@ -330,7 +330,7 @@ namespace Stomme.Models.Pipelines
         public int CheckedEverySeconds { get; set; }
     }
 
-    /// <summary>A webhook's new secret of its own (D111a), given out this once - the site keeps it protected and never shows it again.</summary>
+    /// <summary>A webhook's new secret of its own, given out this once - the site keeps it protected and never shows it again.</summary>
     public class PipelineWebhookSecretView
     {
         public string Name { get; set; }
@@ -341,7 +341,7 @@ namespace Stomme.Models.Pipelines
         public override string ToString() => $"PipelineWebhookSecretView {{ Name = {Name} }}";
     }
 
-    /// <summary>One call a webhook received while the editor listened (BL-229 increment 10), or that none came.</summary>
+    /// <summary>One call a webhook received while the editor listened, or that none came.</summary>
     public class WebhookCallView
     {
         public bool Received { get; set; }
@@ -361,7 +361,7 @@ namespace Stomme.Models.Pipelines
         public const int MaxBodyChars = 64 * 1024;
     }
 
-    /// <summary>A new pipeline with a body (BL-229 increment 10): a file imported, or a starter.</summary>
+    /// <summary>A new pipeline with a body: a file imported, or a starter.</summary>
     public class ImportPipelineRequest
     {
         public string Name { get; set; }
@@ -394,7 +394,7 @@ namespace Stomme.Models.Pipelines
 
         public string Name { get; set; }
 
-        /// <summary>The run's input, by name. Values are strings here; a typed input is the editor's job (BL-95 (c)).</summary>
+        /// <summary>The run's input, by name. Values are strings here; a typed input is the editor's job.</summary>
         public Dictionary<string, string> Input { get; set; }
     }
 
@@ -450,13 +450,13 @@ namespace Stomme.Models.Pipelines
         public string InputJson { get; set; }
 
         /// <summary>
-        /// BL-229: what the run was started with was emptied by its pipeline's setting (<see cref="PipelineStepDataKeeping"/>) - its
+        /// What the run was started with was emptied by its pipeline's setting (<see cref="PipelineStepDataKeeping"/>) - its
         /// page says so, and it is not run again or gone on with without it.
         /// </summary>
         public bool InputNotKept { get; set; }
 
         /// <summary>
-        /// BL-229: the pipeline's published version now, on one run's read - when it is not the one the run ran, the run's page
+        /// The pipeline's published version now, on one run's read - when it is not the one the run ran, the run's page
         /// also offers to run it again on its own version (n8n's retry with the original workflow); null when none is published.
         /// </summary>
         public int? PublishedVersion { get; set; }
@@ -479,7 +479,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// One version of a pipeline (BL-229 increment 7): its number, whether it is published or the latest, when it was made and
+    /// One version of a pipeline: its number, whether it is published or the latest, when it was made and
     /// who last saved it - recorded from 10.11.0 on, so empty for a version saved before.
     /// </summary>
     public class PipelineVersionView
@@ -509,7 +509,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// Test one step (BL-229 increment 6): the editor's graph as it stands, the step to test, and the values the pipeline's
+    /// Test one step: the editor's graph as it stands, the step to test, and the values the pipeline's
     /// variables hold for the test, by variable NAME (a variable not named keeps its starting value).
     /// </summary>
     public class StepTestRequest
@@ -544,7 +544,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// One execution of one step in a run (BL-229 increment 2): what the editor shows ON the step - its state and timing - and,
+    /// One execution of one step in a run: what the editor shows ON the step - its state and timing - and,
     /// to an author, what it received and what it produced. A step in a loop's body has one per pass.
     /// </summary>
     public class PipelineStepRunView
@@ -598,7 +598,7 @@ namespace Stomme.Models.Pipelines
         public bool Truncated { get; set; }
 
         /// <summary>
-        /// How many records the step's result holds - its items, when it is a list - counted before anything is cut (BL-229, n8n's
+        /// How many records the step's result holds - its items, when it is a list - counted before anything is cut (n8n's
         /// "3 items" on the canvas); null when the result is no list, and under the same rule as <see cref="OutputsJson"/>.
         /// </summary>
         public int? ResultCount { get; set; }

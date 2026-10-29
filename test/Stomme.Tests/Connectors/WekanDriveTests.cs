@@ -18,8 +18,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Wekan DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
-    /// this machine's throwaway Wekan 12 (scripts/wekan-test-server.ps1) - fail-not-skip without it (D46): a Wekan connection made over
+    /// Wekan DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
+    /// this machine's throwaway Wekan 12 (scripts/wekan-test-server.ps1) - fail-not-skip without it: a Wekan connection made over
     /// the API, its password vaulted, tested; a published pipeline making a board, a list on it, a card in the list - each an
     /// expression over the step before - and a comment on the card; the password in neither the graph nor the run. The board is
     /// deleted again afterwards.

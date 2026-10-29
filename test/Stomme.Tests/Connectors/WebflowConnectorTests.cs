@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Webflow (n8n's Webflow node: a collection's items created, got, read, updated and deleted): the token as a
+    /// Webflow (n8n's Webflow node: a collection's items created, got, read, updated and deleted): the token as a
     /// bearer; a collection's items, staged or live, page by page by offset up to the most asked for - a page no bigger than
     /// what is left, the end at Webflow's total or a short page - by a name or a slug, in an order and a locale, each item its
     /// own values and then its fields by their slugs; an item got, made, changed, deleted, unpublished and published; the sites,

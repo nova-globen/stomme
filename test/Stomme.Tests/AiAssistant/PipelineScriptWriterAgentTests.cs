@@ -13,7 +13,7 @@ using static Stomme.Tests.AiAssistant.TurnScriptChatClient;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-229 - the Script Writer behind the editor's "Ask AI" on a Run script step: one call to the site's model, no tools, metered
+    /// The Script Writer behind the editor's "Ask AI" on a Run script step: one call to the site's model, no tools, metered
     /// as the writer's own, told the script's world and what the script can see. A request the guardrail refuses and a site whose
     /// model is off reach no model, and say why.
     /// </summary>

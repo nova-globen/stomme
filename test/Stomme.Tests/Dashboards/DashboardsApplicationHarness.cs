@@ -24,7 +24,7 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace Stomme.Tests.Dashboards
 {
     /// <summary>
-    /// The Dashboards application layer over the File store through the module's OWN startup (BL-96 increment 9): the
+    /// The Dashboards application layer over the File store through the module's OWN startup: the
     /// mediator with the authorization and validation behaviours, a resolved site, a stub Datasets catalogue whose
     /// descriptor and rows a test sets - the shape the predecessor platform's tests reached through in-memory persistence and a stub
     /// catalog, on the composition the host uses.

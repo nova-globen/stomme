@@ -17,9 +17,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.CostOptimization.Startup
 {
     /// <summary>
-    /// The CostOptimization module's composition (BL-97 increment 6): the storage-blind, tenant-owned recommendation on
-    /// whichever store the install chose (D79/D80), its closed repository, the advisor's options from the HOST's
-    /// configuration (BL-162), the four requests, the page's service, and the predecessor platform's five advisor rules (increment 7), each
+    /// The CostOptimization module's composition: the storage-blind, tenant-owned recommendation on
+    /// whichever store the install chose, its closed repository, the advisor's options from the HOST's
+    /// configuration, the four requests, the page's service, and the predecessor platform's five advisor rules (increment 7), each
     /// reading its Shared read port - which CloudUsage and Metering implement - and drafting nothing when the port is not
     /// composed; and (increment 8) the model-tier router and the per-site response cache the AI assistant will consume, and
     /// the temp-file sweep. The weekly advisor job and the daily temp-file job are HostedServiceBase types found by the

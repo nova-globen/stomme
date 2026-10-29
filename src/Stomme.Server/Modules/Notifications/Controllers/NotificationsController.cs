@@ -18,13 +18,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Notifications.Controllers
 {
     /// <summary>
-    /// The Notifications module's Web API (<c>api/Notifications</c>, BL-78 step 5): the self-service surface (the caller's own
+    /// The Notifications module's Web API (<c>api/Notifications</c>): the self-service surface (the caller's own
     /// notifications and preferences), the send log, sending, templates and channels. Every action dispatches through
     /// <see cref="IMediator"/>.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>TWO gates per action, deliberately the SAME key.</b> <c>[RequiresPermissionKey]</c> (D99 point 9) is decided by the
+    /// <b>TWO gates per action, deliberately the SAME key.</b> <c>[RequiresPermissionKey]</c> is decided by the
     /// authorization middleware before the action runs; the request's <c>[Requires]</c> is decided again by the mediator's
     /// <c>AuthorizationBehavior</c> - both over the site's <c>(notifications, -1, operation)</c> rows, so they cannot disagree.
     /// A denial is a 403: from the middleware, or as <c>ProblemDetails</c> from <c>AccessDeniedExceptionFilter</c>.
@@ -148,7 +148,7 @@ namespace Stomme.Modules.Notifications.Controllers
                 return NoContent();
             });
 
-        // POST api/Notifications/templates/preview - a PREVIEW is template authoring, never viewing (D100 point 6).
+        // POST api/Notifications/templates/preview - a PREVIEW is template authoring, never viewing.
         [HttpPost("templates/preview")]
         [RequiresPermissionKey(NotificationsPermissions.ManageTemplates)]
         public Task<IActionResult> Preview([FromBody] NotificationTemplatePreviewInput input, CancellationToken ct) =>

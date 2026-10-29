@@ -20,9 +20,9 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.EntraId
 {
     /// <summary>
-    /// Microsoft Entra ID (BL-96 increment 3, lifted from the predecessor platform's <c>entra</c>): a real directory connector - <c>users</c>
+    /// Microsoft Entra ID (lifted from the predecessor platform's <c>entra</c>): a real directory connector - <c>users</c>
     /// and <c>devices</c> over Microsoft Graph with meaningful default <c>$select</c> projections, OAuth2 client credentials
-    /// through the family's token provider, <c>@odata.nextLink</c> paging - every request through the host's egress (D110).
+    /// through the family's token provider, <c>@odata.nextLink</c> paging - every request through the host's egress.
     /// </summary>
     /// <remarks>
     /// BL-229 (n8n's Microsoft Entra ID node) adds a user got, updated and deleted, a user added to and removed from a group, and

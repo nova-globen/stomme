@@ -6,7 +6,7 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// The SearchWord aggregate root — the persistence-side model of the framework store's <c>SearchWord</c>
-    /// table (D50). The DISTINCT-WORD DICTIONARY half of the hand-rolled inverted index. Reachable only
+    /// table. The DISTINCT-WORD DICTIONARY half of the hand-rolled inverted index. Reachable only
     /// through <see cref="ISearchWordStore"/> (writes) and <c>IQuerySession.Query</c> (reads).
     /// </summary>
     /// <remarks>

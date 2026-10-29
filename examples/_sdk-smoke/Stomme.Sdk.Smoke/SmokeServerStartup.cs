@@ -8,7 +8,7 @@ namespace Stomme.Sdk.Smoke;
 
 /// <summary>
 /// A trivial <see cref="IServerStartup"/> (from the <c>Stomme.Server</c> package) that registers the
-/// aggregate's persistence through the STORAGE-BLIND helper (D79/D80) — one call, no <c>TContext</c>, no EF
+/// aggregate's persistence through the STORAGE-BLIND helper — one call, no <c>TContext</c>, no EF
 /// options lambda, no provider branch. This single line is the whole D78-D81 payoff: it compiles against
 /// packages only, and at runtime the host binds the correct <c>IRepository&lt;TrivialAggregate, Guid&gt;</c>
 /// for whichever provider the install selected.

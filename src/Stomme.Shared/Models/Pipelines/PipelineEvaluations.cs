@@ -7,7 +7,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Evaluations: a published pipeline run over a data table's rows as test cases, one run per row, each run
+    /// n8n's Evaluations: a published pipeline run over a data table's rows as test cases, one run per row, each run
     /// started at its "When evaluating" step with the row as its result; an Evaluation step in it records scores (metrics) and
     /// outputs for the row. What one evaluation is: its pipeline and table, who started it, its state, each row and the averages.
     /// </summary>

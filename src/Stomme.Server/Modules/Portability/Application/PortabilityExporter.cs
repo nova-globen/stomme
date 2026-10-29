@@ -9,7 +9,7 @@ using Stomme.Portability;
 namespace Stomme.Modules.Portability.Application
 {
     /// <summary>
-    /// Collects what a package carries (BL-82, D107 item 3): for a configuration package, the requested entities AND the
+    /// Collects what a package carries: for a configuration package, the requested entities AND the
     /// closure of what they depend on, breadth first; for a subject-data package, every subject contributor's rows,
     /// de-duplicated by (type, id).
     /// </summary>

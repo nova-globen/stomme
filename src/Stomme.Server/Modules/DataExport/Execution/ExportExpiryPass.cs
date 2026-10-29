@@ -15,13 +15,13 @@ namespace Stomme.Modules.DataExport.Execution
     public sealed record ExportExpiryResult(int Expired, int ArtifactsDeleted, int ArtifactsLeftAlone, int AuditPurged, int TempFilesSwept);
 
     /// <summary>
-    /// Retires what has outlived its retention: Ready artifacts, old audit entries, abandoned temp files (D108 item 6).
+    /// Retires what has outlived its retention: Ready artifacts, old audit entries, abandoned temp files.
     /// </summary>
     /// <remarks>
     /// <para>
     /// the predecessor platform never purged an export: <c>DeleteAsync</c> had no caller, so every artifact ever rendered stayed on
     /// disk. Here a Ready job past <c>ExpiresOnUtc</c> loses its bytes and its File row and becomes Expired - the job
-    /// row stays as history - with an audit entry written at the transition, by this code (D40).
+    /// row stays as history - with an audit entry written at the transition, by this code.
     /// </para>
     /// <para>
     /// <b>The purge deletes ONLY what is still in the Exports folder (refutation 14).</b> Folder Edit lets a file be

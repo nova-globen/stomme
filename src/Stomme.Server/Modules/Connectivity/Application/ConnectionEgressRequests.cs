@@ -17,8 +17,8 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Connectivity.Application
 {
     // ============================================================================================================
-    // The site's egress allowlist (BL-180): the private and loopback hosts the site's connections may reach - and the AI
-    // assistant's model endpoint, which rides the same egress (D113). The egress read it from a site setting that no page
+    // The site's egress allowlist: the private and loopback hosts the site's connections may reach - and the AI
+    // assistant's model endpoint, which rides the same egress. The egress read it from a site setting that no page
     // set; a browser drive of the assistant had to write it into the database. Read by a holder of connections:view;
     // CHANGED BY THE HOST ROLE ALONE: widening a site's egress to private addresses opens the installation's own network
     // to whoever administers the site (D110's correction). The settings API refuses the same row to anyone but the Host.

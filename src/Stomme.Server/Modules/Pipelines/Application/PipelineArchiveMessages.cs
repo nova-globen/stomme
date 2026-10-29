@@ -19,7 +19,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - n8n's archive: the pipelines set aside, kept beside their versions in the engine's key-value store as their tags are
+    /// n8n's archive: the pipelines set aside, kept beside their versions in the engine's key-value store as their tags are
     /// (archiving is not an edit of a version, and never conflicts with a collaborator's save). The key carries the SITE, as the
     /// tags' does (<see cref="PipelineTagStore"/>).
     /// </summary>
@@ -79,7 +79,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 - n8n's archive: a pipeline set aside - unpublished first, so no trigger starts it and nothing runs it, then marked, so
+    /// n8n's archive: a pipeline set aside - unpublished first, so no trigger starts it and nothing runs it, then marked, so
     /// the list keeps it out of the way until it is restored or deleted. Its versions, runs and tags stay. False when the site has
     /// no such pipeline.
     /// </summary>
@@ -108,7 +108,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 - a pipeline back from the archive, as a draft: it is published again by its author, as n8n's restored workflow is
+    /// A pipeline back from the archive, as a draft: it is published again by its author, as n8n's restored workflow is
     /// activated again. False when the site has no such pipeline.
     /// </summary>
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.Manage)]

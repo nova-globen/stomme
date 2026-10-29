@@ -75,7 +75,7 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // The Users/Roles cluster (D22). Note these three share this context with ASP.NET Identity's own
+            // The Users/Roles cluster. Note these three share this context with ASP.NET Identity's own
             // EF model (TenantDBContext derives from IdentityUserContext<IdentityUser>), which stays the live
             // authentication path. There is no conflict to resolve: Identity maps IdentityUser and friends to
             // the AspNetUser* tables, these map Stomme's own User/Role/UserRole tables, and no navigation
@@ -119,12 +119,12 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // The Setting cluster (D23) — the TENANT half. Site/Page/Module/User/... settings. The master
+            // The Setting cluster — the TENANT half. Site/Page/Module/User/... settings. The master
             // half is mapped by ConfigureMasterFrameworkStore onto MasterDBContext; SettingRepository routes
             // between them by EntityName. Same aggregate, same table shape, two databases.
             builder.ConfigureSettingAggregate(database);
 
-            // The Permission cluster (D24). Mapped HERE ONLY — unlike Setting, Permission is a tenant-side
+            // The Permission cluster. Mapped HERE ONLY — unlike Setting, Permission is a tenant-side
             // table with no master half: MasterDBContext never had a DbSet<Permission> and the master
             // migration set never created the table. Do not add it to ConfigureMasterFrameworkStore.
             builder.Entity<PermissionAggregate>(entity =>
@@ -141,7 +141,7 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // The five LEAF clusters (D44): Language, Log, Profile, SiteTask, Notification. Tenant-side only,
+            // The five LEAF clusters: Language, Log, Profile, SiteTask, Notification. Tenant-side only,
             // like Permission and unlike Setting — none of them is mapped by ConfigureMasterFrameworkStore and
             // none should be. Each is a single table with no navigation in or out, which is what made them the
             // lowest-risk of the remaining set.
@@ -217,8 +217,8 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // The SiteGroup PAIR (D45): SiteGroup and SiteGroupMember, which had to land together. Tenant-side
-            // only, like Permission (D24) and the leaf clusters (D44).
+            // The SiteGroup PAIR: SiteGroup and SiteGroupMember, which had to land together. Tenant-side
+            // only, like Permission and the leaf clusters.
             //
             // These two are NOT leaves and that is the whole point. SiteGroupMember.SiteGroup was a MAPPED
             // navigation into the SiteGroup CONTRACT, so mapping SiteGroupAggregate here while that navigation
@@ -256,14 +256,14 @@ namespace Stomme.Repository.Stores
 
                 // NOTE what is NOT configured: a HasOne(...).WithMany() to SiteGroupAggregate. The database
                 // keeps its cascading foreign key on site_group_id — the migration created it and nothing here
-                // drops it — but the MODEL references the group by id only (D7/D19). Mapping the relationship
+                // drops it — but the MODEL references the group by id only. Mapping the relationship
                 // would put a navigation back and re-open the blocker above from the other side.
                 entity.Ignore(item => item.Version);
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // Visitor, UrlMapping and PageModule (D47). Tenant-side only, like Permission (D24), the leaf
-            // clusters (D44) and the SiteGroup pair (D45).
+            // Visitor, UrlMapping and PageModule. Tenant-side only, like Permission, the leaf
+            // clusters and the SiteGroup pair.
             //
             // These three needed NO navigation severed, and that is what made them a group: D22 already cut
             // Visitor.User, and D19/D21 already cut PageModule.Page and PageModule.Module while deliberately
@@ -307,14 +307,14 @@ namespace Stomme.Repository.Stores
 
                 // NOTE what is NOT configured: a HasOne(...).WithMany() to PageAggregate or ModuleAggregate.
                 // The database keeps both foreign keys — fk_page_module_page (cascade) and fk_page_module_module
-                // (no action) — but the MODEL references both by id only (D7/D19/D21). Mapping either
+                // (no action) — but the MODEL references both by id only. Mapping either
                 // relationship would put a navigation back and re-open the blocker D19 and D21 closed.
                 entity.Ignore(item => item.Version);
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // Folder (D48). Tenant-side only, like Permission (D24), the leaf clusters (D44), the SiteGroup
-            // pair (D45) and the D47 three.
+            // Folder. Tenant-side only, like Permission, the leaf clusters, the SiteGroup
+            // pair and the D47 three.
             //
             // Folder is NOT a leaf, and File.Folder was the reason — a MAPPED navigation from the File
             // CONTRACT into the Folder contract. While it stayed mapped, mapping FolderAggregate here made EF
@@ -332,7 +332,7 @@ namespace Stomme.Repository.Stores
             // src/Stomme.Server/README.md (persistence seam).
             //
             // The FILE row followed in D49 — see ConfigureFileAggregate below. Until then it stayed a DbSet on
-            // TenantDBContext because its .ToLower() reads had no portable spelling (D48, src/Stomme.Server/README.md persistence seam).
+            // TenantDBContext because its .ToLower() reads had no portable spelling (src/Stomme.Server/README.md persistence seam).
             builder.Entity<FolderAggregate>(entity =>
             {
                 entity.ToTable(database.RewriteName("Folder"));
@@ -347,7 +347,7 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // File (D49) — the last framework cluster onto the seam. Its DbSet is gone from TenantDBContext,
+            // File — the last framework cluster onto the seam. Its DbSet is gone from TenantDBContext,
             // which is the compiler's proof that it moved.
             //
             // NOTE there is no navigation to configure in EITHER direction, and that is what made this
@@ -356,7 +356,7 @@ namespace Stomme.Repository.Stores
             // claimed the table FolderAggregate owns. FileRepository stitches the member on by hand.
             //
             // Name and Path are NOT the columns these two clusters are looked up by any more: name_normalized
-            // and path_normalized are (D49). Both are derived in their aggregate's setter, so EF maps them as
+            // and path_normalized are. Both are derived in their aggregate's setter, so EF maps them as
             // ordinary properties with private setters — it writes them on materialization and reads them for
             // the filter, and the derivation makes an unnormalized row unrepresentable. See NormalizedText.
             builder.Entity<FileAggregate>(entity =>
@@ -372,7 +372,7 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // The SearchContent cluster (D50) — Phase 3's last. FOUR tables, tenant-side only, so none of them
+            // The SearchContent cluster — Phase 3's last. FOUR tables, tenant-side only, so none of them
             // is mapped by ConfigureMasterFrameworkStore and none should be.
             //
             // NONE of the four is IAuditable and none is IDeletable, and unlike D44/D48/D49 that was not a
@@ -439,7 +439,7 @@ namespace Stomme.Repository.Stores
 
         /// <summary>
         /// Configures the framework store's aggregates on the MASTER database — <see cref="SettingAggregate"/>
-        /// and nothing else (D23).
+        /// and nothing else.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -460,7 +460,7 @@ namespace Stomme.Repository.Stores
         {
             builder.ConfigureSettingAggregate(database);
 
-            // The Job/JobLog PAIR (D52) — the master-bookkeeping cluster. MASTER-side ONLY, unlike Setting
+            // The Job/JobLog PAIR — the master-bookkeeping cluster. MASTER-side ONLY, unlike Setting
             // (which is both): the harvested MasterDBContext held DbSet<Job> and DbSet<JobLog> and the master
             // migration set creates both tables; no tenant database has them. So they are mapped HERE and NOT in
             // ConfigureFrameworkStore.
@@ -494,14 +494,14 @@ namespace Stomme.Repository.Stores
 
                 // NOTE what is NOT configured: a HasOne(...).WithMany() to JobAggregate. The database keeps its
                 // cascading foreign key on job_id — the migration created it and nothing here drops it — but the
-                // MODEL references the job by id only (D7/D19). Mapping the relationship would put a navigation
+                // MODEL references the job by id only. Mapping the relationship would put a navigation
                 // back and let EF rediscover Job through JobLog.Job (D45's blocker), which is why that navigation
                 // is [NotMapped] on the contract.
                 entity.Ignore(item => item.Version);
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // Theme (D52) — the master-bookkeeping cluster's last member. MASTER-side ONLY like the Job/JobLog
+            // Theme — the master-bookkeeping cluster's last member. MASTER-side ONLY like the Job/JobLog
             // pair: the harvested MasterDBContext held DbSet<Theme> and the master migration set creates the
             // table; no tenant database has it. So it is mapped HERE and NOT in ConfigureFrameworkStore.
             //
@@ -530,7 +530,7 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // ModuleDefinition (D52) — installation-wide registry of installed module types, read during module
+            // ModuleDefinition — installation-wide registry of installed module types, read during module
             // discovery at startup. MASTER-side ONLY like the Job/JobLog pair and Theme: the harvested
             // MasterDBContext held DbSet<ModuleDefinition> and the master migration set creates the table; no
             // tenant database has it. So it is mapped HERE and NOT in ConfigureFrameworkStore.
@@ -563,7 +563,7 @@ namespace Stomme.Repository.Stores
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));
             });
 
-            // Tenant + Alias (D52) — the routing core, and the FINAL master-bookkeeping cluster of the wave. MASTER-
+            // Tenant + Alias — the routing core, and the FINAL master-bookkeeping cluster of the wave. MASTER-
             // side ONLY like Theme, ModuleDefinition and the Job/JobLog pair: the harvested MasterDBContext held
             // DbSet<Tenant> and DbSet<Alias>, the master migration set creates both tables, and no tenant database
             // has them. So they are mapped HERE and NOT in ConfigureFrameworkStore. When these land, the compiler's
@@ -581,8 +581,8 @@ namespace Stomme.Repository.Stores
             //
             // Both are IAuditable and NEITHER is IDeletable (no is_deleted/deleted_by/deleted_on in either live table).
             // No navigation is mapped in either direction: the relational FK_Alias_Tenant stays in the DB (the
-            // migration created it, nothing here drops it) but the MODEL references the tenant by id only (D7/D19).
-            // Alias has no Tenant/Site navigation on its contract, so — unlike SiteGroup (D45) or Folder/File
+            // migration created it, nothing here drops it) but the MODEL references the tenant by id only.
+            // Alias has no Tenant/Site navigation on its contract, so — unlike SiteGroup or Folder/File
             // (D48/D49) — there was no mapped navigation to sever and no D19 model-rediscovery blocker to hit.
             builder.Entity<TenantAggregate>(entity =>
             {
@@ -617,7 +617,7 @@ namespace Stomme.Repository.Stores
                 // is simply ignored (no column) as on every leaf cluster. Name/TenantId/SiteId/IsDefault are left to
                 // convention (name/tenant_id/site_id/is_default, matching the live table). NOTE what is NOT
                 // configured: a HasOne(...).WithMany() to TenantAggregate — the DB keeps its cascading FK_Alias_Tenant
-                // on tenant_id, but the model references the tenant by id only (D7/D19), and mapping the relationship
+                // on tenant_id, but the model references the tenant by id only, and mapping the relationship
                 // would put a navigation back that has no contract property to hang on anyway.
                 entity.Ignore(item => item.Version);
                 entity.Ignore(nameof(IHasDomainEvents.DomainEvents));

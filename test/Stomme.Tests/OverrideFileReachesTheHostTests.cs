@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-251 - the installation's <c>appsettings.override.json</c> reaches logging and the container's
+    /// The installation's <c>appsettings.override.json</c> reaches logging and the container's
     /// <see cref="IConfiguration"/>, not only the host's own root. Logging levels set there changed nothing (found by the
     /// app-guidance writers), because the web builder's configuration - which logging and the container read - never had
     /// the file. Driven: with <c>Logging:LogLevel:Default = Warning</c> in the override file, a category logs no Information,

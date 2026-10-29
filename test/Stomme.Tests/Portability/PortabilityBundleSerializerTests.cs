@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// BL-82 (D107 item 4) - the package format. the predecessor platform's eight serializer facts, ported by name onto format 1.1, plus what
+    /// The package format. the predecessor platform's eight serializer facts, ported by name onto format 1.1, plus what
     /// 1.1 adds: a predecessor platform 1.0 document stays readable, a newer minor is refused, and the ordering is deterministic whatever
     /// order the contributors produced.
     /// </summary>

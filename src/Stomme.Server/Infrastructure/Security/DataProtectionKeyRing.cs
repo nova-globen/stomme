@@ -10,7 +10,7 @@ using Stomme.Shared;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// BL-248 - where the Data Protection key ring is kept. The framework set no location, so the keys went to ASP.NET's
+    /// Where the Data Protection key ring is kept. The framework set no location, so the keys went to ASP.NET's
     /// default for the process's user, and a deployment that mounted only the installation's data lost them on every
     /// redeploy: every visitor signed out, and every secret the site had stored - connection credentials, site secrets - read
     /// as Unreadable for good. The choice, in this order:

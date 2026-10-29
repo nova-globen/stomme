@@ -24,7 +24,7 @@ using Xunit;
 namespace Stomme.Tests.CloudUsage
 {
     /// <summary>
-    /// BL-97 increment 2 - the three CloudUsage aggregates on every store the install can choose (D79/D80), composed through
+    /// The three CloudUsage aggregates on every store the install can choose, composed through
     /// the module's OWN startup: a cost row round-trips every Unified Cost Schema field with its decimal exact, a negative
     /// cost and its UTC-midnight date; a site lists its own rows in a window (from inclusive, to exclusive) and not another
     /// site's; a budget round-trips with and without a provider scope, the scope found by value; an alert marker is found by

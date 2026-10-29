@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Chat DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Google Chat DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Google's token endpoint and the Chat API that refuses a call without the token it issued: a
     /// Google Chat connection made over the API, the client's secret and refresh token vaulted, tested; a published pipeline SENDS
     /// a message through Send chat message - the chat connectors' step - over two lines, lists the spaces, edits the message,

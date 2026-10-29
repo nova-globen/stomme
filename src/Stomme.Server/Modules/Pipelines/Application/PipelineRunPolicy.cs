@@ -13,7 +13,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// How many runs of a pipeline may go at once (BL-229, <see cref="PipelineRunsAtOnce"/>), where the engine and the module
+    /// How many runs of a pipeline may go at once (<see cref="PipelineRunsAtOnce"/>), where the engine and the module
     /// read it. The setting lives in the graph (so versions, files and the collaborating merge carry it), and every save writes it
     /// onto the definition's engine options as an activation strategy - the engine's trigger starts (a schedule, a webhook, an
     /// event) consult that, and skip a start it refuses. A start the module makes itself - the Run button, Retry, MCP's
@@ -24,7 +24,7 @@ namespace Stomme.Modules.Pipelines.Application
     public static class PipelineRunPolicy
     {
         /// <summary>
-        /// The engine commit strategy a pipeline that saves its progress names (BL-229, n8n's "save execution progress"): the run is
+        /// The engine commit strategy a pipeline that saves its progress names (n8n's "save execution progress"): the run is
         /// stored after each step the scheduler runs - registered by the module's startup, the engine's own StepExecuted strategy.
         /// </summary>
         public const string SaveProgressStrategy = "Stomme.SaveProgress";

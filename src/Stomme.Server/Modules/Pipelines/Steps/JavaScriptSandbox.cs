@@ -20,7 +20,7 @@ namespace Stomme.Modules.Pipelines.Steps
         public sealed record ValueEvaluation(bool Succeeded, object? Value, string? Error);
 
         /// <summary>
-        /// BL-229 increment 5b: an EXPRESSION's value - the variables given by name (a record or a list, held as JSON text or a JSON
+        /// An EXPRESSION's value - the variables given by name (a record or a list, held as JSON text or a JSON
         /// value, as the JavaScript value it is; anything else as itself), the completion value as .NET: text, a number, true or
         /// false, nothing - and a record or a list as its JSON text, the way the data steps pass records.
         /// </summary>

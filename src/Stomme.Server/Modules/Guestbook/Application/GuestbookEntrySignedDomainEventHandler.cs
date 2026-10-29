@@ -13,7 +13,7 @@ namespace Stomme.Modules.Guestbook.Application
     /// the mediator's <c>GuestbookSignedNotification</c>. Having both fire on one signature is the point:
     /// D74 demonstrates the two in-process paths coexisting rather than collapsing them.
     /// <para>
-    /// It obeys the handler contract (D40): it stages/observes only — no <c>SaveChanges</c>, no new DI scope,
+    /// It obeys the handler contract: it stages/observes only — no <c>SaveChanges</c>, no new DI scope,
     /// no disposing the ambient session. <c>DomainEventHandlerContractTests</c> enforces that at build time.
     /// </para>
     /// </summary>

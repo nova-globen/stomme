@@ -19,7 +19,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Profile cluster on the persistence seam (D3/D7/D44). Profile-table access goes through
+    /// The Profile cluster on the persistence seam. Profile-table access goes through
     /// <see cref="IProfileStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class holds
     /// no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -32,7 +32,7 @@ namespace Stomme.Repository
     /// session factory (D22 rule 8). Do not add one without re-running that check.
     /// </para>
     /// <para>
-    /// These are profile property DEFINITIONS, not users' values for them — the values are Settings (D23)
+    /// These are profile property DEFINITIONS, not users' values for them — the values are Settings
     /// under <c>EntityNames.User</c>. See <see cref="ProfileAggregate"/>.
     /// </para>
     /// </remarks>
@@ -47,12 +47,12 @@ namespace Stomme.Repository
             _sessions = sessions;
         }
 
-        // The read path on the seam (D19): reads NEVER go through the store, because the store TRACKS what it
+        // The read path on the seam: reads NEVER go through the store, because the store TRACKS what it
         // loads and UpdateProfile would then attach a DIFFERENT instance with the same key, which EF rejects.
         // ProfileController.Put walks straight into it — it reads to authorize and then writes, on ONE
         // repository instance. A query session opens its own context, so reads leave the store's tracker clean.
         //
-        // The IQueryable is materialized inside this method, so it never leaves the repository (D7). The LINQ
+        // The IQueryable is materialized inside this method, so it never leaves the repository. The LINQ
         // operators are plain LINQ rather than EF Core's async ones, which would bind these reads to the
         // relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
@@ -127,7 +127,7 @@ namespace Stomme.Repository
 
         public async Task DeleteProfileAsync(int profileId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it
+            // The one read that legitimately goes through the store: it deletes the very instance it
             // loaded, so tracking is what we want and no second instance is ever attached.
             var aggregate = await _store.GetByIdAsync(profileId);
             if (aggregate == null)

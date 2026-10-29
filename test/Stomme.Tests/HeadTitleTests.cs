@@ -13,7 +13,7 @@ namespace Stomme.Tests
     /// <remarks>
     /// Found on UAT 2026-10-02, a WebAssembly site, and reproduced on a local one: "Cannot read properties of null (reading
     /// 'removeChild')", the node a <c>&lt;title&gt;</c> (traced through the browser's debugger). On an Interactive site Blazor's
-    /// <c>HeadOutlet</c> (mounted since BL-92) removes, on its first render, every <c>&lt;title&gt;</c> it does not take for its
+    /// <c>HeadOutlet</c> (mounted) removes, on its first render, every <c>&lt;title&gt;</c> it does not take for its
     /// own - one whose previous sibling is not a Blazor marker comment. <c>Head</c> rendered <c>"\n&lt;title&gt;..."</c>, so its
     /// title followed a text node, was removed, and <c>Head</c>'s next update failed on the node that was gone. Rendered first,
     /// the title follows <c>Head</c>'s own marker and stays: driven on a local WebAssembly site, the error gone and the title

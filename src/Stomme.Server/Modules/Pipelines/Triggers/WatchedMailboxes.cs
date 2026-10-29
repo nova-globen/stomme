@@ -33,7 +33,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// The site's watched mailboxes (BL-229, n8n's Email Trigger (IMAP)): where each "Email received" trigger's mailbox was when it
+    /// The site's watched mailboxes (n8n's Email Trigger (IMAP)): where each "Email received" trigger's mailbox was when it
     /// was last looked at - its UIDVALIDITY and the last UID handed on - and the look that starts the pipelines for each message
     /// since. Pipelines watching a mailbox the same way share one record (one stimulus hash), kept in the engine's key-value
     /// store under the SITE's key and the hash. A look reads, through the connection (<see cref="IConnectorExtractionService"/>:
@@ -338,7 +338,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// Looks at the site's watched mailboxes (BL-229): a recurring task the ENGINE runs per site tenant, on one node at a time -
+    /// Looks at the site's watched mailboxes: a recurring task the ENGINE runs per site tenant, on one node at a time -
     /// every stored "Email received" trigger's mailbox, once per way of watching it; then a mailbox no trigger watches any more
     /// is forgotten, so publishing it again starts afresh rather than with every message that arrived since.
     /// </summary>
@@ -373,7 +373,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// The first look at a mailbox as its pipeline is published (BL-229): when the engine indexes an "Email received" trigger,
+    /// The first look at a mailbox as its pipeline is published: when the engine indexes an "Email received" trigger,
     /// where the mailbox is recorded there and then - so a message already there starts nothing, and one arriving a moment after
     /// publishing starts a run though no look has come round yet. Whatever goes wrong is logged and never refuses the publish: the
     /// next look records the mailbox instead.

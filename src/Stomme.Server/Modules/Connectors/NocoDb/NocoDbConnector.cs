@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.NocoDb
 {
     /// <summary>
-    /// NocoDB (BL-229, n8n's NocoDB node: a table's rows created, got, read many, updated, upserted, counted and deleted): a NocoDB
+    /// NocoDB (n8n's NocoDB node: a table's rows created, got, read many, updated, upserted, counted and deleted): a NocoDB
     /// - its cloud or one of your own - over its v2 data API (<c>/api/v2/tables/{table}/records</c>, which NocoDB's cloud and every
     /// self-hosted version since 0.204 serve), an API token in the <c>xc-token</c> header, over the host's egress. A test names
     /// how many bases the token sees.

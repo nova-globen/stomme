@@ -29,7 +29,7 @@ namespace Stomme.Modules.HtmlText.Repository
         {
             base.OnModelCreating(builder);
 
-            // Relational-only (D53/D55): ActiveDatabase stays IDatabase for IMultiDatabase; on the only path that
+            // Relational-only: ActiveDatabase stays IDatabase for IMultiDatabase; on the only path that
             // reaches OnModelCreating it is a relational provider. A non-relational provider (RavenDatabase) never
             // resolves this context — its store is RavenHtmlTextStore — so it skips.
             if (ActiveDatabase is IRelationalDatabase relationalDatabase)

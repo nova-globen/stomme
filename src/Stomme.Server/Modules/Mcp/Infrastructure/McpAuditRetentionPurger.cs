@@ -8,7 +8,7 @@ using Stomme.Mcp.Persistence;
 namespace Stomme.Modules.Mcp.Infrastructure
 {
     /// <summary>
-    /// Ages out the MCP audit ledger, drained per site by <c>PurgeJob</c> (D101 item 6, on D104's contributed-pass seam).
+    /// Ages out the MCP audit ledger, drained per site by <c>PurgeJob</c> (on D104's contributed-pass seam).
     /// </summary>
     /// <remarks>
     /// <para>

@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Pipedrive
 {
     /// <summary>
-    /// Pipedrive (BL-229, n8n's Pipedrive node: deals, persons, organizations, activities and products listed, got, searched,
+    /// Pipedrive (n8n's Pipedrive node: deals, persons, organizations, activities and products listed, got, searched,
     /// created, updated and deleted, notes added): Pipedrive's API v2 (<c>https://api.pipedrive.com/api/v2</c>, or a company's
     /// own <c>https://your-company.pipedrive.com</c>), the account's API token in Pipedrive's <c>x-api-token</c> header - never in an
     /// address. A note goes through API v1, the only one with notes. A test names the user.

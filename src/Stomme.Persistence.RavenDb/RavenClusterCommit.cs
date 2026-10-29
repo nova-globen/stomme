@@ -6,7 +6,7 @@ using Raven.Client.Exceptions;
 namespace Stomme.Persistence.RavenDb;
 
 /// <summary>
-/// BL-68: an idempotent cluster operation (creating a database, deploying an index) whose commit notification was
+/// An idempotent cluster operation (creating a database, deploying an index) whose commit notification was
 /// lost. RavenDB 7.2.5 was measured answering "Waited for 00:00:15 for task with index 38787 ... Last commit index
 /// is: 38789. Number of errors is: 0" - the raft log had committed PAST the awaited index and the waiter never woke
 /// (a missed wakeup in the server's index notifications). A longer budget cannot fix a lost notification; a recheck

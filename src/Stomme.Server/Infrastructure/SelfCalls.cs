@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// Where the host's calls to its OWN API go (BL-234). The client's services run on the server too - in a prerender (the
+    /// Where the host's calls to its OWN API go. The client's services run on the server too - in a prerender (the
     /// install wizard's, measured) and behind an Interactive Server circuit - and call the API over HTTP at the site's PUBLIC
     /// address, so a host with no egress (a container behind a tunnel, a game app's host, 2026-10-13) failed every such call -
     /// the wizard answered 500 on every request - and a host with egress sent each round trip out through the edge and back.
@@ -38,7 +38,7 @@ namespace Stomme.Infrastructure
         private volatile Box _resolved;
         private volatile bool _said;
 
-        // The host's own configuration root - the one ending with appsettings.override.json, where a deployed install keeps what it is told (BL-162).
+        // The host's own configuration root - the one ending with appsettings.override.json, where a deployed install keeps what it is told.
         public SelfCallAddress(IServer server, IConfigurationRoot config, ILogger<SelfCallAddress> logger)
         {
             _server = server;
@@ -118,7 +118,7 @@ namespace Stomme.Infrastructure
     }
 
     /// <summary>
-    /// Sends a call the host makes to its own API (BL-234) to its own listener - <see cref="SelfCallAddress"/> - with the
+    /// Sends a call the host makes to its own API to its own listener - <see cref="SelfCallAddress"/> - with the
     /// address it was made to kept as the request's host and scheme (<c>Host</c>, <c>X-Forwarded-Proto</c>), so the alias,
     /// the site and the scheme are what they would have been; the caller's own address as <c>X-Forwarded-For</c> when the
     /// call is made in its request. A call already to the host's listener, or to a loopback address, is sent as it is. Only

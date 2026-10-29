@@ -11,7 +11,7 @@ namespace Stomme.Tests.Fixtures.GateTestModule
     /// <summary>
     /// The permission-key vocabulary of the BL-99 gate fixture - the shape a lifted the predecessor platform module's
     /// <c>XxxPermissions</c> class takes (a flat static class of <c>resource:operation</c> constants, lifted
-    /// verbatim; its <c>IPermissionContributor</c> registration is dropped at lift, D99 point 2).
+    /// verbatim; its <c>IPermissionContributor</c> registration is dropped at lift).
     /// </summary>
     public static class GateTestPermissions
     {

@@ -19,7 +19,7 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - QuickChart (n8n's QuickChart node) without a server: every type, label, number, colour, size and format held to
+    /// QuickChart (n8n's QuickChart node) without a server: every type, label, number, colour, size and format held to
     /// what QuickChart draws before anything is sent; n8n's chart - its type, labels, one dataset, a line's fill and point style, a
     /// bar on its side - or a whole configuration, sent as JSON and never as text QuickChart would run; the size, ratio,
     /// background and format beside it; the chart saved into the run's folder under the name of what came back; QuickChart's error
@@ -191,8 +191,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - QuickChart LIVE, against this machine's throwaway QuickChart 1.8 (scripts/quickchart-test-server.ps1), never
-    /// quickchart.io - fail-not-skip without it (D46): a test reading its health check; a bar chart drawn as a PNG and a line
+    /// QuickChart LIVE, against this machine's throwaway QuickChart 1.8 (scripts/quickchart-test-server.ps1), never
+    /// quickchart.io - fail-not-skip without it: a test reading its health check; a bar chart drawn as a PNG and a line
     /// chart as an SVG, each saved and each what it says it is; a webp asked for and the PNG QuickChart answers with named so; a
     /// whole configuration drawn; a chart past QuickChart's size refused here, and its own refusal of a configuration it cannot
     /// draw said in its words with nothing saved.

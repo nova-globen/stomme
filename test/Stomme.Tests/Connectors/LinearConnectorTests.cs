@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Linear (n8n's Linear node: issues, a comment, a link) over its GraphQL API: a personal key as Linear takes it and an
+    /// Linear (n8n's Linear node: issues, a comment, a link) over its GraphQL API: a personal key as Linear takes it and an
     /// OAuth token as a bearer; an app page's address taken to the API; issues by team, state, assignee (me too), label, priority
     /// and change, newest change first, page by page by cursor up to the most asked for, each a plain record; an issue got,
     /// created and updated with its team by key, its state by name in the team, its assignee by address and its labels by name -

@@ -6,9 +6,9 @@
 @inject ILocalizationCookieService LocalizationCookieService
 @inject NavigationManager NavigationManager
 
-@* Migrated to the --db-* design system (D11). The trigger was a `data-bs-toggle="dropdown"` button
+@* Migrated to the --db-* design system. The trigger was a `data-bs-toggle="dropdown"` button
    whose JS went with the CDN, so the language menu could never be opened; .db-dropdown opens on
-   hover/:focus-within and needs no script (D18). *@
+   hover/:focus-within and needs no script. *@
 @if (PageState.Site.Languages.Count() > 1)
 {
     <div class="app-languages db-dropdown" role="group">

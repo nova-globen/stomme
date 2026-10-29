@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Mailchimp
 {
     /// <summary>
-    /// Mailchimp (BL-229, n8n's Mailchimp node: an audience's members found, got, added, updated, deleted and tagged; campaigns
+    /// Mailchimp (n8n's Mailchimp node: an audience's members found, got, added, updated, deleted and tagged; campaigns
     /// found, got, sent, replicated, resent and deleted): the Marketing API of the key's data center
     /// (<c>https://us21.api.mailchimp.com/3.0</c>), the API key by Mailchimp's Basic pair (any name and the key). A test names the
     /// account.

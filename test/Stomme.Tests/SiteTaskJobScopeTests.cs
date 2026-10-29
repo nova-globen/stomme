@@ -22,7 +22,7 @@ namespace Stomme.Tests
     /// <remarks>
     /// Measured 2026-09-23: green as the code stands; with the per-task <c>SetAliasAsync</c> removed both tasks resolve
     /// site -1 and it fails. The cross-TENANT half of the refutation is <c>HostedServiceBase</c>'s per-tenant scope
-    /// (BL-107, <see cref="HostedServiceBaseTenantIsolationTests"/>), so no job run ever carries two tenants.
+    /// (<see cref="HostedServiceBaseTenantIsolationTests"/>), so no job run ever carries two tenants.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     public class SiteTaskJobScopeTests(ITestOutputHelper output)

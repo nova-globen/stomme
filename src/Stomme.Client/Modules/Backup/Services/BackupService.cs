@@ -12,7 +12,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Backup.Services
 {
     /// <summary>
-    /// The backup contract (BL-81, D106 item 9). Everything here is the Host's; the server decides every call again. A
+    /// The backup contract. Everything here is the Host's; the server decides every call again. A
     /// passphrase travels in a request BODY - never a URL - and is never kept.
     /// </summary>
     public interface IBackupService

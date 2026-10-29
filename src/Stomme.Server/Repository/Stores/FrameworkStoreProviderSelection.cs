@@ -8,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// Resolve-time selection between the framework store's two providers (D54). Both
+    /// Resolve-time selection between the framework store's two providers. Both
     /// <see cref="FrameworkStoreServiceExtensions.AddStommeFrameworkStore"/> (EF Core) and
     /// <see cref="RavenFrameworkStoreServiceExtensions.AddRavenFrameworkStore(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Func{System.IServiceProvider, Raven.Client.Documents.IDocumentStore}, System.Action{RavenFrameworkStoreOptions})"/>
-    /// register EVERY closed store contract (D42), so after both run each interface has two registrations. Plain
+    /// register EVERY closed store contract, so after both run each interface has two registrations. Plain
     /// DI is last-wins, which would silently pin the whole framework store to whichever extension ran last. This
     /// replaces each such pair with ONE factory that picks the provider at first resolve.
     /// </summary>
@@ -51,7 +51,7 @@ namespace Stomme.Repository.Stores
             services.SelectStoreProviderByConfig(StoresNamespace);
 
         /// <summary>
-        /// The reusable, MODULE-facing form of <see cref="SelectFrameworkStoreProviderByConfig"/> (D55, orchestrator
+        /// The reusable, MODULE-facing form of <see cref="SelectFrameworkStoreProviderByConfig"/> (orchestrator
         /// decision 2). Collapses every EF/Raven store pair whose implementation lives in
         /// <paramref name="implementationNamespace"/> into one resolve-time-selecting registration, keyed on
         /// <c>IConfigManager.GetDatabaseType()</c> exactly as the framework store is. A module registers both twins
@@ -122,7 +122,7 @@ namespace Stomme.Repository.Stores
         /// Whether <paramref name="databaseType"/> (an assembly-qualified <c>IDatabase</c> type string, as carried by
         /// <c>Tenant.DBType</c> / <c>AvailableDatabases</c>) is a relational (EF Core) provider rather than a document
         /// store. The same test <c>DatabaseManager.IsRelationalProvider</c> uses to branch the install pipeline —
-        /// exposed publicly (D55, orchestrator decision 2) so a module's <c>InstallAsync</c> can run its EF migrator
+        /// exposed publicly (orchestrator decision 2) so a module's <c>InstallAsync</c> can run its EF migrator
         /// ONLY on a relational tenant. An empty/unresolvable type is treated as NON-relational here: a module install
         /// with no known provider has no relational schema to migrate.
         /// </summary>

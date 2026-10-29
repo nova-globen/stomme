@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - HubSpot (n8n's Get Many, Search, Create, Update and Create or Update): the private app's token as a bearer; an
+    /// HubSpot (n8n's Get Many, Search, Create, Update and Create or Update): the private app's token as a bearer; an
     /// object's records searched page by page by their cursor up to the most asked for, a search, filters and properties passed
     /// on, each record its id, times and properties; records created, updated by their ids and upserted by a property, in
     /// HubSpot's batches of 100, each property as text; an object, an id or a property's name that could reach the path or the

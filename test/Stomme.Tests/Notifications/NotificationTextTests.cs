@@ -5,7 +5,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-229 - a notice's body as the inbox shows it (<see cref="NotificationText"/>): plain text out of what the channels stored,
+    /// A notice's body as the inbox shows it (<see cref="NotificationText"/>): plain text out of what the channels stored,
     /// and links only to the site's own origin - scheme, host and port all - so an inbox never sends a person elsewhere.
     /// </summary>
     public sealed class NotificationTextTests

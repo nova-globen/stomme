@@ -14,7 +14,7 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// A Notification is an outbound message, usually delivered as email by <c>NotificationJob</c>. It is a
     /// leaf: <see cref="FromUserId"/>, <see cref="ToUserId"/> and <see cref="ParentId"/> are all references BY
-    /// ID (D7/D19), all nullable, and the display names and emails are DENORMALIZED onto the row on purpose —
+    /// ID, all nullable, and the display names and emails are DENORMALIZED onto the row on purpose —
     /// a notification must still be deliverable after the user it names is deleted.
     /// </para>
     /// <para>
@@ -36,7 +36,7 @@ namespace Stomme.Repository.Stores
     /// to stamp this type on both providers.
     /// </para>
     /// <para>
-    /// <b>The <see cref="IDeletable"/> stamp now agrees across providers (D59).</b> It was formerly applied by
+    /// <b>The <see cref="IDeletable"/> stamp now agrees across providers.</b> It was formerly applied by
     /// the relational path only — <see cref="AuditStamp"/> did not port it, because <c>DbContextUtils</c>'s
     /// rule compares the incoming <c>IsDeleted</c> against the value in the database and a document provider
     /// cannot evaluate that without an extra load. D59 ported it WITHOUT that load: <see cref="AuditStamp.StampDeleted"/>
@@ -52,7 +52,7 @@ namespace Stomme.Repository.Stores
     /// </remarks>
     public class NotificationAggregate : AggregateRoot<int>, IDeletable
     {
-        /// <summary>The <see cref="Site"/> the notification belongs to, by id (D7/D19).</summary>
+        /// <summary>The <see cref="Site"/> the notification belongs to, by id.</summary>
         public int SiteId { get; set; }
 
         /// <summary>The sending <see cref="User"/>, by id, or null when the system sent it. Nullable — and the purge filters on it being null.</summary>

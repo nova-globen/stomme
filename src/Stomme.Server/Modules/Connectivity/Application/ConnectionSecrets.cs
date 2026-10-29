@@ -17,7 +17,7 @@ namespace Stomme.Modules.Connectivity.Application
     }
 
     /// <summary>
-    /// A connection's secrets, written and read ONLY through the per-site secret store (D110) under the closed grammar
+    /// A connection's secrets, written and read ONLY through the per-site secret store under the closed grammar
     /// <c>connectivity.connection-&lt;id:N&gt;.&lt;field&gt;</c>: a field is stored when the connector's authentication scheme
     /// declares it and its name already fits the store's segment grammar, never rewritten; a delete removes every key the
     /// aggregate records; a value is never echoed - a read answers Found / Unreadable / NotFound per field.

@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Portability.Services
 {
     /// <summary>
-    /// The portability contract (BL-82). No method takes a site or a requester: the request is the site, the caller is
+    /// The portability contract. No method takes a site or a requester: the request is the site, the caller is
     /// the requester, and the server decides every call again.
     /// </summary>
     public interface IPortabilityService

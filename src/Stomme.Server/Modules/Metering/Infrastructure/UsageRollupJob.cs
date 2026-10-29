@@ -26,7 +26,7 @@ namespace Stomme.Modules.Metering.Infrastructure
     public sealed record RollupPassResult(int RollupsWritten, int RollupsDeleted, int QuotasRepaired, int LedgerPurged, int AiLedgerPurged, int RollupsPurged);
 
     /// <summary>
-    /// The nightly pass: AI rollups, the counter repair, and retention (D102 item 7).
+    /// The nightly pass: AI rollups, the counter repair, and retention.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -282,7 +282,7 @@ namespace Stomme.Modules.Metering.Infrastructure
                     // PostgreSQL. One quota losing a race must not cost the others theirs.
                     //
                     // This guard only works because the REPOSITORY leaves the context usable after a failed save
-                    // (EfRepository.DiscardFailedWrite, BL-152). Until that landed, the first conflict poisoned
+                    // (EfRepository.DiscardFailedWrite). Until that landed, the first conflict poisoned
                     // the scope's DbContext and every LATER quota in this loop threw too — and was logged, right
                     // here, as though a live fold had beaten it. Measured by
                     // SaveOncePassContainmentTests; if that suite ever goes red, this message starts lying again.

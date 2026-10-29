@@ -4,12 +4,12 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// Translates between <see cref="JobLogAggregate"/> (the persisted aggregate) and <see cref="JobLog"/> (the
-    /// client/server wire contract) at the <see cref="JobLogRepository"/> boundary (D52).
+    /// client/server wire contract) at the <see cref="JobLogRepository"/> boundary.
     /// </summary>
     /// <remarks>
     /// <see cref="JobLog.Job"/> is deliberately absent — it is <c>[NotMapped]</c> view state that
     /// <see cref="JobLogRepository"/> populates from a second master-session query, exactly as
-    /// <see cref="SiteGroupMemberMapper"/> drops <c>SiteGroupMember.SiteGroup</c> (D45). Round-tripping a JobLog
+    /// <see cref="SiteGroupMemberMapper"/> drops <c>SiteGroupMember.SiteGroup</c>. Round-tripping a JobLog
     /// through this mapper therefore DROPS <c>Job</c> by design; the repository puts it back, the mapper does
     /// not. There are no audit stamps to copy — the JobLog table has none (see <see cref="JobLogAggregate"/>).
     /// </remarks>

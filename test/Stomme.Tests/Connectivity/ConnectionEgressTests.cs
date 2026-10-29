@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 6 (D110) - a connector dials only through the members the HOST hands it. With the real
+    /// A connector dials only through the members the HOST hands it. With the real
     /// <see cref="HostConnectorEgress"/> behind the harness: a test's HTTP call to a private address is refused at connect
     /// and answered as the policy's category, an allowlisted host is admitted and the receiver hears the request; a
     /// driver-style connector asking for an address to dial is refused BEFORE dialling (null) and admitted when the host

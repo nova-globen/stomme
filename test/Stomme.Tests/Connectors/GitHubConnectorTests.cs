@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - GitHub (n8n's GitHub node: an issue created, edited, got and commented on, a repository's issues got, a release
+    /// GitHub (n8n's GitHub node: an issue created, edited, got and commented on, a repository's issues got, a release
     /// created, a file got, created and edited, a workflow dispatched): a personal access token as a bearer, with the headers
     /// GitHub asks for (its media type, its API version, a User-Agent); a repository's issues read page by page by its Link header
     /// up to the most asked for - never to another host - each a plain record, a pull request said; an issue made, read, changed and

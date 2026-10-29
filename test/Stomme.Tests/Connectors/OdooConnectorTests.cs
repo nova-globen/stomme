@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Odoo (n8n's Odoo node: any model's records created, got, read, updated and deleted): over JSON-RPC the user's id
+    /// Odoo (n8n's Odoo node: any model's records created, got, read, updated and deleted): over JSON-RPC the user's id
     /// asked for once with the login, then execute_kw with the records (or a domain, or a create's values) first and the rest by
     /// name; over JSON-2 the API key as a bearer, the database in its header, the arguments by name; the database the setting's or
     /// the host's first label; a model's records page by page up to the most asked for, in an order, a link its id and its name, a

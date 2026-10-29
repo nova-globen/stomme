@@ -18,7 +18,7 @@ namespace Stomme.Modules.Pipelines.Application
     /// <summary>
     /// The step types the editor can place: the engine's registry, browsable entries only, ordered by category then name.
     /// A step with an EMBEDDED port - a loop's Body, an If's Then and Else - is offered with those ports as its
-    /// <see cref="StepCatalogEntry.Bodies"/> (BL-95, 2026-10-05): the editor opens each as a flowchart of its own. Until then
+    /// <see cref="StepCatalogEntry.Bodies"/>: the editor opens each as a flowchart of its own. Until then
     /// such a step was left out, because its child slots were drawn as outcome ports and it could only be saved empty (found
     /// walking the editor in a browser, 2026-10-02); <see cref="StepCatalogEntry.Ports"/> now names the FLOW ports alone.
     /// A container whose children are a LIST (Sequence, Parallel, the flowchart itself) is still not offered - the canvas is
@@ -42,7 +42,7 @@ namespace Stomme.Modules.Pipelines.Application
             return Catalog(registry);
         }
 
-        /// <summary>The steps the editor offers - and what the publish's problem check reads them by (BL-229 increment 4).</summary>
+        /// <summary>The steps the editor offers - and what the publish's problem check reads them by.</summary>
         internal static List<StepCatalogEntry> Catalog(IStepRegistry registry) =>
             registry.ListAll()
                 .Where(descriptor => descriptor.IsBrowsable && IsPlaceable(descriptor))
@@ -104,7 +104,7 @@ namespace Stomme.Modules.Pipelines.Application
         private static readonly HashSet<string> NotPlaceable = new(StringComparer.Ordinal) { "Stomme.Switch" };
 
         /// <summary>
-        /// The inputs a step cannot do without (BL-229 increment 4), read from the step itself rather than a list to keep: a step
+        /// The inputs a step cannot do without, read from the step itself rather than a list to keep: a step
         /// gives an input it can run without a starting value (<c>= new(new Literal&lt;int&gt;(1))</c>) or declares it nullable
         /// (<c>Input&lt;string?&gt;</c>); an input it leaves null (<c>= null!</c>) with a reference type that holds no null is one
         /// the author must fill. A step that reads an input with <c>GetOrDefault</c> and a fallback declares it nullable (Fault,
@@ -191,7 +191,7 @@ namespace Stomme.Modules.Pipelines.Application
         }
 
         /// <summary>
-        /// BL-229 increment 10: where a step's own outcomes come from, read off the engine's hints - a Fork (flow)'s Branches
+        /// Where a step's own outcomes come from, read off the engine's hints - a Fork (flow)'s Branches
         /// (<c>dynamic-outcomes</c>) and a Switch (flow)'s Cases (<c>flow-switch-editor</c>, a list the step holds directly).
         /// </summary>
         internal static string? OutcomesFrom(Stomme.Engine.Pipelines.Models.StepDescriptor descriptor) =>
@@ -232,14 +232,14 @@ namespace Stomme.Modules.Pipelines.Application
                 return null;
             }
 
-            // BL-229: the pinned test values are an author's (they can be real data); anyone else's graph has none.
+            // The pinned test values are an author's (they can be real data); anyone else's graph has none.
             var graph = PipelineGraphCodec.ToGraph(definition.StringData);
             return await guard.IsAllowedAsync(null, global::Stomme.Pipelines.PipelinesPermissions.Manage, ct) ? graph : PipelineGraphCodec.WithoutTestValues(graph);
         }
     }
 
     /// <summary>
-    /// BL-229 increment 7: the graph of ONE version of a pipeline - the editor opens it read-only, compares it with the canvas,
+    /// The graph of ONE version of a pipeline - the editor opens it read-only, compares it with the canvas,
     /// and restores it onto the canvas as an ordinary change (saved only when the author saves; undone like any change).
     /// </summary>
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.View)]
@@ -292,7 +292,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// The editor's save while it collaborates (BL-97 increment 12, D114): the graph measured against the graph the editor
+    /// The editor's save while it collaborates: the graph measured against the graph the editor
     /// LOADED, reconciled against what is stored now by the conflict resolver. Nothing changed underneath - the graph is saved
     /// as <see cref="SaveGraphCommand"/> would; another editor saved meanwhile - their changes and these are merged field by
     /// field, a multi-line input or a position overwritten last-writer-wins with a warning; a name, a setting, a step or a
@@ -321,7 +321,7 @@ namespace Stomme.Modules.Pipelines.Application
             }
 
             // The load-resolve-store of one pipeline is serialised in this process (the engine's draft save carries no version
-            // to refuse a stale write with); across nodes the same ADVISORY limit as the locks applies (D114).
+            // to refuse a stale write with); across nodes the same ADVISORY limit as the locks applies.
             using (await gate.EnterAsync("pipeline-graph:" + request.DefinitionId, ct))
             {
                 var draft = await publisher.GetDraftAsync(request.DefinitionId, VersionOptions.Latest, ct);
@@ -378,7 +378,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// The save's judgement of a graph with NOTHING stored (BL-97 increment 10): the assistant's pipeline proposals are held
+    /// The save's judgement of a graph with NOTHING stored: the assistant's pipeline proposals are held
     /// to exactly the rule the editor's save applies. The reasons it refuses, or none. Authoring rights, like the save.
     /// </summary>
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.Manage)]
@@ -408,7 +408,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// A new pipeline WITH a body (BL-229 increment 10): a file imported, or a starter. The graph is judged by the save's own rule
+    /// A new pipeline WITH a body: a file imported, or a starter. The graph is judged by the save's own rule
     /// BEFORE anything is stored, so a refused file leaves no empty pipeline behind; the draft is stored once, with its body and
     /// who saved it. Authoring rights, like the save.
     /// </summary>
@@ -454,7 +454,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// A graph the codec or the engine refuses - the editor's answer, not a fault (BL-251: every refused save was logged at
+    /// A graph the codec or the engine refuses - the editor's answer, not a fault (every refused save was logged at
     /// fail). Still an <see cref="ArgumentException"/>, so every caller that answers 400 for one is unchanged.
     /// </summary>
     public sealed class PipelineGraphRefusedException(string message, string? paramName, Exception? inner)

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Box DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Box DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Box (its token endpoint, its API, its upload host and its download host on one listener):
     /// a Box connection made over the API - the app's secret vaulted, the enterprise it acts as its setting - refused while loopback
     /// is not allowlisted, then tested; a published pipeline uploads a note over several lines from the step's Query box, lists the

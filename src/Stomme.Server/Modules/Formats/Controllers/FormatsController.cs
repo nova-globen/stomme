@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Formats.Controllers
 {
     /// <summary>
-    /// The Formats API (BL-94 increment 2, D110): <c>api/Formats</c>. Each action is gated on its key by
+    /// The Formats API: <c>api/Formats</c>. Each action is gated on its key by
     /// <c>[RequiresPermissionKey]</c> (an authorization POLICY, so it runs before the body); the request is decided again
     /// by the mediator's authorization behavior. The site is the request's - nothing here names one.
     /// </summary>

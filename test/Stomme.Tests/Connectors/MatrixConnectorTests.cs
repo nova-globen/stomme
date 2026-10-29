@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Matrix (n8n's Matrix node: messages sent and read, rooms made, joined and left, people invited and kicked):
+    /// Matrix (n8n's Matrix node: messages sent and read, rooms made, joined and left, people invited and kicked):
     /// every call the homeserver's client-server API v3 with the access token as a bearer token; a message sent under a
     /// transaction id of its own as a text, a notice or an emote with its HTML; a room's messages read newest first page by
     /// page by the homeserver's token, no more than asked, with a filter; rooms created, joined by id or alias, left; people

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Mautic DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Mautic DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for an instance's API that refuses a call without the user's name and password: a Mautic
     /// connection made over the API, its password vaulted, tested; a published pipeline creates a contact with an accent,
     /// reads the contacts over two pages - no more than asked - adds points, adds the contact to a segment, sets their

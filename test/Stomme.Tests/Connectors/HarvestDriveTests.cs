@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Harvest DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Harvest DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Harvest's API v2 that refuses a call without the token, the account or a User-Agent: a
     /// Harvest connection made over the API with its account, its token vaulted, tested; a published pipeline creates a client
     /// with an accent, reads the running time entries over two pages - no more than asked - logs time, stops its timer, changes

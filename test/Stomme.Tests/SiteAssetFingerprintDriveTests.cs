@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-228: the page an installed host renders carries the CONTENT hash of its web root's assets as their <c>?v=</c> - not
+    /// The page an installed host renders carries the CONTENT hash of its web root's assets as their <c>?v=</c> - not
     /// the installation date a container rewrites at every boot, and not the framework version while the files are there.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]

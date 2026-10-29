@@ -16,7 +16,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.OpenWeatherMap
 {
     /// <summary>
-    /// OpenWeatherMap (BL-229, n8n's OpenWeatherMap node: a place's weather now and its five-day forecast) over its API 2.5
+    /// OpenWeatherMap (n8n's OpenWeatherMap node: a place's weather now and its five-day forecast) over its API 2.5
     /// (<c>https://api.openweathermap.org/data/2.5</c>) by an API key - in the address, as OpenWeatherMap takes it alone. A test
     /// reads the weather in London.
     /// </summary>

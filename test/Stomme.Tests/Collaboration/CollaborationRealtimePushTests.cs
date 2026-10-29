@@ -23,7 +23,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// BL-97 increment 12 - presence and the change feed DRIVEN on an installed host with the SignalR transport on: Bo's hub
+    /// Presence and the change feed DRIVEN on an installed host with the SignalR transport on: Bo's hub
     /// connection is told, in order, of Ada's lock, her joining, her announced change, her save of the board through the
     /// Dashboards API, her save of a pipeline's graph, and her giving the lock up - each notice the resource, the kind and who,
     /// NOTHING else, addressed to the site's group alone. The hub is <c>collaboration:view</c>: a plain user and an anonymous

@@ -18,8 +18,8 @@
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 
 @* The Bootstrap JS that used to drive data-bs-toggle/data-bs-dismiss was removed with the CDN
-   in Phase 1, so the drawer is opened/closed from Blazor state instead (D18).
-   Chrome migrated off Bootstrap's .offcanvas/.row/.col/.btn to the --db-* drawer (D11). *@
+   in Phase 1, so the drawer is opened/closed from Blazor state instead.
+   Chrome migrated off Bootstrap's .offcanvas/.row/.col/.btn to the --db-* drawer. *@
 <button type="button" class="app-controlpanel db-icon-btn @ButtonClass" aria-controls="ControlPanel" aria-expanded="@_show.ToString().ToLower()" @onclick="ToggleControlPanel">
     <span class="oi oi-cog"></span>
 </button>
@@ -76,7 +76,7 @@
 
                 @if (_deleteConfirmation)
                 {
-                    @* --db-* confirm surface, shared with AdminContainer (D11, Phase 4). *@
+                    @* --db-* confirm surface, shared with AdminContainer (Phase 4). *@
                     <div class="db-admin-modal">
                         <div class="db-admin-modal-dialog" role="dialog" aria-modal="true" tabindex="-1">
                             <div class="db-admin-modal-content">
@@ -463,7 +463,7 @@
         foreach (var permission in permissionNames.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
         {
             // F2: a declaration entry containing ':' is an "EntityName:Permission:Roles" declaration for
-            // ANOTHER entity (a framework API policy, or a lifted module's resource:operation key, D99). It is
+            // ANOTHER entity (a framework API policy, or a lifted module's resource:operation key). It is
             // not a permission of this module PLACEMENT - writing it here creates a Module permission whose
             // name is the literal three-segment string, which authorizes nobody and which no consumer reads.
             if (permission != PermissionNames.View && !permission.Contains(':'))
@@ -649,7 +649,7 @@
         _message = "";
     }
 
-    // Replaces the Bootstrap JS offcanvas behaviour, which was removed along with the CDN (D18).
+    // Replaces the Bootstrap JS offcanvas behaviour, which was removed along with the CDN.
     private void ToggleControlPanel()
     {
         ClearMessage();

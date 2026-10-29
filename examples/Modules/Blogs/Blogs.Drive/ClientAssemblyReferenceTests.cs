@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace NovaGloben.Module.Blogs.Drive
 {
     /// <summary>
-    /// BL-13 — the WASM-download-safety REFERENCE check, run against the EXACT shipped artifact (the DLLs
+    /// The WASM-download-safety REFERENCE check, run against the EXACT shipped artifact (the DLLs
     /// inside the packed nupkg, read with System.Reflection.Metadata — nothing is loaded). The browser only
     /// receives the Client + Shared assemblies, so neither may reference any server-only assembly: a single
     /// leaked reference reproduces the 1.0.0 failure mode, where resolving the module's types threw

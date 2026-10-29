@@ -4,9 +4,9 @@
 @inject NavigationManager NavigationManager
 
 @*
-    The site's pipelines (BL-95 increment (b), D111): the latest version of each, whether it is published, and the actions
+    The site's pipelines (BL-95 increment (b)): the latest version of each, whether it is published, and the actions
     a key allows. Every action is decided again by the server, per key, on the request's site. Starting a run navigates
-    to the run's page, which POLLS the run - a run is dispatched and observed, never awaited in a handler (D111 item 3).
+    to the run's page, which POLLS the run - a run is dispatched and observed, never awaited in a handler.
 *@
 
 <PageTitle>Pipelines</PageTitle>
@@ -23,7 +23,7 @@ else
                 <h3 style="margin:0;flex:1 1 auto;">Pipelines</h3>
                 @if (_approvals > 0)
                 {
-                    @* BL-229: runs waiting for a person's decision ("Ask for approval") - listed at the top of the runs. *@
+                    @* Runs waiting for a person's decision ("Ask for approval") - listed at the top of the runs. *@
                     <a id="pipelines-approvals-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Runs")">@(_approvals == 1 ? "1 run waits for approval" : _approvals + " runs wait for approval")</a>
                 }
                 <a id="pipelines-runs-link" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Runs")">All runs</a>
@@ -37,7 +37,7 @@ else
             </div>
             @if (IsAuthorizedPermission(PipelinesPermissions.Manage) && (_creating || _pipelines is { Count: 0 }))
             {
-                @* BL-229: at the top, opened by New pipeline (n8n's Create workflow) - or open on a site with none yet; below a long
+                @* At the top, opened by New pipeline (n8n's Create workflow) - or open on a site with none yet; below a long
                    list it was out of sight. *@
                 <section id="pipelines-new" style="display:flex;flex-direction:column;gap:0.5rem;padding:0.75rem;border:1px solid var(--db-border);border-radius:var(--db-radius-sm);">
                     <h3 style="margin:0;">New pipeline</h3>
@@ -46,7 +46,7 @@ else
                         <input id="pipelines-new-name" type="text" class="db-input" style="width:16rem;" maxlength="200" @bind="_newName" />
                         <label for="pipelines-new-description">Description</label>
                         <input id="pipelines-new-description" type="text" class="db-input" style="width:24rem;" @bind="_newDescription" />
-                        @* BL-229 increment 10: start from a shipped pipeline (n8n's templates), or from nothing. *@
+                        @* Start from a shipped pipeline (n8n's templates), or from nothing. *@
                         <label for="pipelines-new-starter">Start from</label>
                         <select id="pipelines-new-starter" class="db-input" style="width:auto;" value="@_starterId" @onchange="e => ChooseStarter(e.Value?.ToString())">
                             <option value="">Nothing - an empty pipeline</option>
@@ -77,7 +77,7 @@ else
             }
             @if (_insights is { } insights)
             {
-                @* BL-229: n8n's Insights - how the site's pipelines have been running, over a day, a week or a month. *@
+                @* n8n's Insights - how the site's pipelines have been running, over a day, a week or a month. *@
                 <div id="pipelines-insights" class="db-pipelines-insights" style="display:flex;flex-wrap:wrap;gap:0.5rem 1.5rem;align-items:baseline;">
                     <label for="pipelines-insights-days">Insights</label>
                     <select id="pipelines-insights-days" class="db-input" style="width:auto;" value="@insights.Days" @onchange="e => InsightsAsync(e.Value?.ToString())">
@@ -102,7 +102,7 @@ else
                     {
                         <span id="pipelines-insights-unfinished"><strong>@insights.Total.Unfinished</strong> not ended</span>
                     }
-                    @* BL-229: n8n's time saved - each pipeline's minutes per run that finished well, added up. *@
+                    @* n8n's time saved - each pipeline's minutes per run that finished well, added up. *@
                     @if (insights.Total.MinutesSaved is { } saved)
                     {
                         <span id="pipelines-insights-saved" title="As each pipeline says one run that finishes well saves - set in its editor"><strong>@PipelineInsights.Saved(saved)</strong> saved</span>
@@ -113,7 +113,7 @@ else
                     }
                 </div>
             }
-            @* BL-229 - what runs next: the published pipelines' schedules and their next runs, the soonest first (beyond n8n). *@
+            @* What runs next: the published pipelines' schedules and their next runs, the soonest first (beyond n8n). *@
             @if (_upcoming is { } upcoming)
             {
                 <details id="pipelines-upcoming" class="db-pipelines-upcoming" open="@(upcoming.Schedules.Count > 0)">
@@ -160,20 +160,20 @@ else
             }
             else
             {
-                @* BL-229: n8n's workflow list - found by any words of its name or description, each with how its last run went. And
+                @* n8n's workflow list - found by any words of its name or description, each with how its last run went. And
                    n8n's archive: the pipelines set aside are out of the list, a button away - restored, or deleted for good, there. *@
                 var archivedCount = _pipelines.Count(pipeline => pipeline.ArchivedOnUtc is not null);
                 var inView = _pipelines.Where(pipeline => (pipeline.ArchivedOnUtc is not null) == _showArchived).ToList();
                 <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
                     <input id="pipelines-search" type="search" class="db-input" style="max-width:24rem;" placeholder="Find a pipeline" aria-label="Find a pipeline" value="@_search" @oninput="e => _search = e.Value?.ToString() ?? string.Empty" />
-                    @* BL-229 - find in every pipeline: where the text is used in steps, notes and variables, not only names. *@
+                    @* Find in every pipeline: where the text is used in steps, notes and variables, not only names. *@
                     @if (_search.Trim().Length >= PipelineContentSearch.MinLength)
                     {
                         <button id="pipelines-search-inside" type="button" class="db-btn" title="Where it is used in the pipelines' steps, notes and variables - a sensitive input is never read" @onclick="FindInsideAsync" disabled="@_busy">Search inside the pipelines</button>
                     }
-                    @* BL-229: the map of the site's pipelines - which runs which. *@
+                    @* The map of the site's pipelines - which runs which. *@
                     <button id="pipelines-map-toggle" type="button" class="db-btn" aria-pressed="@(_map is null ? "false" : "true")" title="Which pipeline runs which - calls, starts, failures and AI tools" @onclick="ToggleMapAsync" disabled="@_busy">@(_map is null ? "Map" : "Close the map")</button>
-                    @* BL-229: the site's pipeline activity - who changed or ran what, and when (n8n's audit log); an author's to read. *@
+                    @* The site's pipeline activity - who changed or ran what, and when (n8n's audit log); an author's to read. *@
                     @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
                     {
                         <button id="pipelines-activity-toggle" type="button" class="db-btn" aria-pressed="@(_activity is null ? "false" : "true")" title="Who changed or ran which pipeline, and when" @onclick="ToggleActivityAsync" disabled="@_busy">@(_activity is null ? "Activity" : "Close the activity")</button>
@@ -291,7 +291,7 @@ else
                 var allTags = TagsOf(inView);
                 @if (allTags.Count > 0)
                 {
-                    @* BL-229: n8n's tag filter - the pipelines carrying every tag chosen. *@
+                    @* n8n's tag filter - the pipelines carrying every tag chosen. *@
                     <div id="pipelines-tag-filter" class="db-pipelines-tags" role="group" aria-label="Show the pipelines tagged">
                         <span style="color:var(--db-text-2);">Tags:</span>
                         @foreach (var tag in allTags)
@@ -305,7 +305,7 @@ else
                         }
                     </div>
                 }
-                @* BL-229 - n8n's folders: the list shows one folder at a time - the folders inside it, then its pipelines - with the
+                @* n8n's folders: the list shows one folder at a time - the folders inside it, then its pipelines - with the
                    way back above; a search or a tag finds in every folder, each pipeline saying where it is. *@
                 var browsing = !_showArchived && string.IsNullOrWhiteSpace(_search) && _tags.Count == 0;
                 var allFolders = PipelineFolders.All(inView.Select(pipeline => pipeline.Folder));
@@ -336,7 +336,7 @@ else
                                 }
                             }
                         </nav>
-                        @* BL-229 - n8n's folder rename, move and delete, on the folder shown: what is in it goes along, or up. *@
+                        @* n8n's folder rename, move and delete, on the folder shown: what is in it goes along, or up. *@
                         @if (_folder.Length > 0 && allFolders.Any(known => PipelineFolders.IsIn(known, _folder)) && IsAuthorizedPermission(PipelinesPermissions.Manage))
                         {
                             <span id="pipelines-folder-actions" class="db-pipelines-folders__new">
@@ -362,7 +362,7 @@ else
                                 }
                             </span>
                         }
-                        @* BL-229: the folder shown - or every pipeline, at the top - as ONE file: imported elsewhere, its folders kept and
+                        @* The folder shown - or every pipeline, at the top - as ONE file: imported elsewhere, its folders kept and
                            the calls among its pipelines running the copies. *@
                         @if (inView.Any(pipeline => PipelineFolders.IsWithin(pipeline.Folder, _folder)))
                         {
@@ -401,7 +401,7 @@ else
                 }
                 @if (_leaving is not null && !_showArchived)
                 {
-                    @* BL-229: before a pipeline others run stops running - what stops working with it. *@
+                    @* Before a pipeline others run stops running - what stops working with it. *@
                     <div id="pipelines-leaving" class="db-pipelines-leaving" role="region" aria-label="Before it stops running">
                         <strong id="pipelines-leaving-what">@(_leavingAction == LeaveRetract ? "Retract" : "Archive") '@_leaving.Name'? It will not run, and:</strong>
                         <ul id="pipelines-leaving-list">
@@ -416,7 +416,7 @@ else
                         </span>
                     </div>
                 }
-                @* BL-229: pipelines chosen on the list, and what is done to them at once - moved, tagged, exported as one file, archived. *@
+                @* Pipelines chosen on the list, and what is done to them at once - moved, tagged, exported as one file, archived. *@
                 var choosing =!_showArchived && IsAuthorizedPermission(PipelinesPermissions.Manage);
                 var chosen = choosing ? shown.Where(pipeline => _chosen.Contains(pipeline.DefinitionId)).ToList() : new List<PipelineView>();
                 @if (chosen.Count > 0)
@@ -518,7 +518,7 @@ else
                                         {
                                             <div style="color:var(--db-text-2);">@pipeline.Description</div>
                                         }
-                                        @* BL-229: the discussion still open on its steps - a way to it for whoever reviews. *@
+                                        @* The discussion still open on its steps - a way to it for whoever reviews. *@
                                         @if (_openComments.GetValueOrDefault(pipeline.DefinitionId) is > 0 and var open)
                                         {
                                             <div class="db-pipelines-discussion"><a href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + Uri.EscapeDataString(pipeline.DefinitionId))" title="Open it to read the discussion of its steps">@open open @(open == 1 ? "comment" : "comments")</a></div>
@@ -581,7 +581,7 @@ else
                                             <span style="color:var(--db-text-2);"> @last.CreatedOnUtc.ToString("yyyy-MM-dd HH:mm") UTC</span>
                                             @if (pipeline.Queued > 0)
                                             {
-                                                @* BL-229: one at a time, the rest in turn - how many wait, a link to them. *@
+                                                @* One at a time, the rest in turn - how many wait, a link to them. *@
                                                 <span> · </span><a class="db-pipelines-queued" href="@NavigateUrl(ModuleState.ModuleId, "Runs", "definition=" + Uri.EscapeDataString(pipeline.DefinitionId) + "&state=" + PipelineRunStates.Queued)" title="Runs waiting their turn - the pipeline runs one at a time">@pipeline.Queued queued</a>
                                             }
                                         }
@@ -626,19 +626,19 @@ else
                                         }
                                         @if (IsAuthorizedPermission(PipelinesPermissions.Manage) && pipeline.ArchivedOnUtc is not null)
                                         {
-                                            @* BL-229 - n8n's archive: an archived pipeline comes back as a draft, or is deleted for good - only from here. *@
+                                            @* n8n's archive: an archived pipeline comes back as a draft, or is deleted for good - only from here. *@
                                             <button type="button" class="db-btn db-pipelines-restore" title="Back from the archive as a draft - publish it to run it again" @onclick="() => RestoreAsync(pipeline)" disabled="@_busy">Restore</button>
                                             <ActionDialog Header="Delete Pipeline" Message="Delete this pipeline for good - every version of it, and its triggers? It cannot be undone." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => { await DeleteAsync(pipeline); StateHasChanged(); })" Disabled="@_busy" />
                                         }
                                         else if (IsAuthorizedPermission(PipelinesPermissions.Manage))
                                         {
-                                            @* BL-229: the row's other actions behind More - six buttons alike to a row made Delete look like Edit. *@
+                                            @* The row's other actions behind More - six buttons alike to a row made Delete look like Edit. *@
                                             <details class="db-pipelines-more">
                                             <summary class="db-btn" title="Duplicate, publish or retract, archive">More</summary>
                                             <div class="db-pipelines-more__actions">
-                                            @* BL-229: n8n's Duplicate - a copy of the pipeline as a new draft, opened in the editor. *@
+                                            @* n8n's Duplicate - a copy of the pipeline as a new draft, opened in the editor. *@
                                             <button type="button" class="db-btn db-pipelines-duplicate" title="A copy of the pipeline as a new draft" @onclick="() => DuplicateAsync(pipeline)" disabled="@_busy">Duplicate</button>
-                                            @* BL-229 - n8n's Move: to another folder, or to the top - not an edit, nothing published. *@
+                                            @* n8n's Move: to another folder, or to the top - not an edit, nothing published. *@
                                             <button type="button" class="db-btn db-pipelines-move" title="Move it to a folder - or to the top of the list" @onclick="() => StartMove(pipeline)" disabled="@_busy">Move to folder…</button>
                                             @if (pipeline.IsPublished)
                                             {
@@ -648,7 +648,7 @@ else
                                             {
                                                 <button type="button" class="db-btn" @onclick="() => PublishAsync(pipeline)" disabled="@_busy">Publish</button>
                                             }
-                                            @* BL-229 - n8n's archive, where its Delete was: set aside, unpublished - nothing lost, so asked only when
+                                            @* n8n's archive, where its Delete was: set aside, unpublished - nothing lost, so asked only when
                                                another pipeline runs it. *@
                                             <button type="button" class="db-btn db-pipelines-archive" title="Set it aside: unpublished and out of the list - restore it, or delete it for good, under Archived" @onclick="() => AskBeforeLeavingAsync(pipeline, LeaveArchive)" disabled="@_busy">Archive</button>
                                             </div>
@@ -665,7 +665,7 @@ else
 
         @if (_variables is not null)
         {
-            @* BL-229 - n8n's Variables: values every pipeline on the site reads as {{ $vars.name }}; its authors change them here. *@
+            @* n8n's Variables: values every pipeline on the site reads as {{ $vars.name }}; its authors change them here. *@
             <section id="pipelines-variables" style="display:flex;flex-direction:column;gap:0.5rem;">
                 <h3 style="margin:0;">Site variables</h3>
                 <p style="margin:0;color:var(--db-text-2);">Every pipeline on this site reads them in its expressions as <code>{{ $vars.name }}</code>. Not for secrets - anyone who may view the pipelines sees them; keep a secret in a connection.</p>
@@ -731,7 +731,7 @@ else
 
 @code {
     private List<PipelineView> _pipelines;
-    private bool _creating; // BL-229: the New pipeline form shown at the top
+    private bool _creating; // The New pipeline form shown at the top
     private string _newName = "";
     private string _newDescription = "";
     private string _starterId = "";
@@ -739,7 +739,7 @@ else
     private string _message = "";
     private bool _busy;
 
-    // BL-229: the site's variables, as the page shows and edits them; null when they could not be read.
+    // The site's variables, as the page shows and edits them; null when they could not be read.
     private List<(string Name, string Value)> _variables;
     private string _newVariableName = "";
     private string _newVariableValue = "";
@@ -789,7 +789,7 @@ else
     public override List<Resource> Resources => new List<Resource>
     {
         new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Pipelines/pipelines-editor.css" },
-        // BL-229: a folder exported is a file to save (stommePipelineEditorDownload).
+        // A folder exported is a file to save (stommePipelineEditorDownload).
         new Resource { ResourceType = ResourceType.Script, Url = "Modules/Pipelines/pipelines-editor.js", Location = ResourceLocation.Body },
     };
 
@@ -881,12 +881,12 @@ else
 
     private int _approvals;
 
-    // BL-229: each pipeline's comments still open, by definition id; none when they could not be counted.
+    // Each pipeline's comments still open, by definition id; none when they could not be counted.
     private Dictionary<string, int> _openComments = new();
 
     private PipelineInsightsView _insights;
 
-    // BL-229 - what runs next, in the window chosen (the next day or week); the list works without it.
+    // What runs next, in the window chosen (the next day or week); the list works without it.
     private PipelineUpcomingView _upcoming;
 
     private async Task UpcomingAsync(string hours)
@@ -926,7 +926,7 @@ else
     private string _search = "";
 
     // Every word typed, anywhere in the name, the description or a tag, ignoring case - the step search's rule; and every tag
-    // chosen in the filter (BL-229, n8n's tag filter).
+    // chosen in the filter (n8n's tag filter).
     public static IEnumerable<PipelineView> Matching(IEnumerable<PipelineView> pipelines, string search, IReadOnlyCollection<string> tags = null)
     {
         var words = (search ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -1010,7 +1010,7 @@ else
         }
     }
 
-    // BL-229 - n8n's folders: the folder shown (empty: the top), a new one's name, and the pipeline being moved where.
+    // n8n's folders: the folder shown (empty: the top), a new one's name, and the pipeline being moved where.
     private string _folder = "";
     private string _newFolder = "";
     private string _moving;
@@ -1025,10 +1025,10 @@ else
         _chosenAction = null;
     }
 
-    // BL-229 - the map of the site's pipelines: null while it is not shown. Drawn left to right by who runs whom (the canvas's
+    // The map of the site's pipelines: null while it is not shown. Drawn left to right by who runs whom (the canvas's
     // own tidy-up, a pipeline a step and a link a connection); a pipeline linked to none is counted, not drawn.
     private PipelineMapView _map;
-    // BL-229: the site's pipeline activity (null while it is not shown) - read again each time it is opened.
+    // The site's pipeline activity (null while it is not shown) - read again each time it is opened.
     private List<PipelineAuditEntryView> _activity;
 
     private async Task ToggleActivityAsync()
@@ -1119,7 +1119,7 @@ else
 
     private static string Clip(string text, int most) => string.IsNullOrEmpty(text) || text.Length <= most ? text : text[..(most - 1)] + "…";
 
-    // BL-229 - find in every pipeline: the places the last search found (null when none was asked for) and what it looked for.
+    // Find in every pipeline: the places the last search found (null when none was asked for) and what it looked for.
     private List<PipelineFoundView> _found;
     private string _foundFor = "";
 
@@ -1144,7 +1144,7 @@ else
         }
     }
 
-    // BL-229: the pipelines chosen on the list (by definition id) and what is being done to them - each one's own call, as a row's
+    // The pipelines chosen on the list (by definition id) and what is being done to them - each one's own call, as a row's
     // action makes it, so what one refuses is said and the rest are done.
     private const string ChosenMove = "move";
     private const string ChosenTag = "tag";
@@ -1310,7 +1310,7 @@ else
         }
     }
 
-    // BL-229 - n8n's folder rename, move and delete, on the folder shown: which is being done, and where to.
+    // n8n's folder rename, move and delete, on the folder shown: which is being done, and where to.
     private const string RenameFolderAction = "rename";
     private const string RemoveFolderAction = "remove";
     private string _folderAction;
@@ -1348,7 +1348,7 @@ else
             $"'{PipelineFolders.Name(_folder)}' is {moved.Folder} now{(moved.Moved == 1 ? ", with its pipeline." : $", with its {moved.Moved} pipelines.")}");
     }
 
-    // BL-229: the pipelines in the folder shown - and in the folders inside it; every one at the top - as one file, each with its
+    // The pipelines in the folder shown - and in the folders inside it; every one at the top - as one file, each with its
     // id and its folder below this one (PipelineExchange.WriteMany). Archived ones stay behind, as the list leaves them out.
     private async Task ExportFolderAsync()
     {
@@ -1571,7 +1571,7 @@ else
         await LoadAsync();
     }
 
-    // BL-229 increment 10: a file read here (its shape checked by the one reader the editor uses too), stored by the server only
+    // A file read here (its shape checked by the one reader the editor uses too), stored by the server only
     // once its save would accept it.
     private async Task ImportFileAsync(InputFileChangeEventArgs args)
     {
@@ -1580,7 +1580,7 @@ else
         IReadOnlyList<PipelineExchangeDocument> documents;
         try
         {
-            // BL-229: n8n's export of many workflows is one file too - each a pipeline of its own (PipelineExchange.ReadMany).
+            // n8n's export of many workflows is one file too - each a pipeline of its own (PipelineExchange.ReadMany).
             if (args.File.Size > PipelineExchange.MaxManyBytes)
             {
                 throw new PipelineExchangeException($"The file is larger than {PipelineExchange.MaxManyBytes / (1024 * 1024)} MB.");
@@ -1608,7 +1608,7 @@ else
         await ImportAsync(new ImportPipelineRequest { Name = name, Description = string.IsNullOrWhiteSpace(_newDescription) ? document.Description : _newDescription, Graph = document.Graph });
     }
 
-    // BL-229: each workflow of n8n's export a draft of its own, judged by the save as any import is; the list says how many came
+    // Each workflow of n8n's export a draft of its own, judged by the save as any import is; the list says how many came
     // over, and which did not and why - the rest are not held back by one. A file of this site's many (a folder exported) keeps
     // its folders below the one shown, and once every pipeline is made, the calls among them are pointed at the new ones.
     private async Task ImportManyAsync(IReadOnlyList<PipelineExchangeDocument> documents, string fileName)
@@ -1720,7 +1720,7 @@ else
         await LoadAsync();
     }
 
-    // BL-229 - before a pipeline stops running (archived or retracted - only a published version runs): what stops working with it,
+    // Before a pipeline stops running (archived or retracted - only a published version runs): what stops working with it,
     // read from the map (PipelineLinks.LeftBehind) - asked only when something does; when nothing does, nothing is asked.
     private const string LeaveArchive = "archive";
     private const string LeaveRetract = "retract";
@@ -1794,7 +1794,7 @@ else
         await LoadAsync();
     }
 
-    // BL-229 - n8n's archive: set aside - unpublished, so nothing starts it - and out of the list until it is restored or deleted.
+    // n8n's archive: set aside - unpublished, so nothing starts it - and out of the list until it is restored or deleted.
     private async Task ArchiveAsync(PipelineView pipeline)
     {
         string message = null;
@@ -1861,7 +1861,7 @@ else
         }
     }
 
-    // BL-229 - n8n's archive: the list shows the pipelines in use, or - when asked - the ones set aside.
+    // n8n's archive: the list shows the pipelines in use, or - when asked - the ones set aside.
     private bool _showArchived;
 
     // Start = dispatch and leave. The run's page observes it by polling; nothing here waits for the engine.
@@ -1877,7 +1877,7 @@ else
         catch (Exception ex)
         {
             await logger.LogError(ex, "Error Starting Pipeline {Error}", ex.Message);
-            // The server's reason when it refused (BL-222) - e.g. a pipeline that runs one at a time, with a run still going.
+            // The server's reason when it refused - e.g. a pipeline that runs one at a time, with a run still going.
             // On a Server site the handler's own exception carries it; over HTTP the refusal does.
             _error = ex is Stomme.Services.ServiceRefusalException or InvalidOperationException ? "The run could not be started: " + ex.Message : "The run could not be started.";
         }

@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (D106, gate <c>BackupParticipantCoverageTests</c>) - nothing the installation holds is left out of a snapshot by
+    /// BL-81 (gate <c>BackupParticipantCoverageTests</c>) - nothing the installation holds is left out of a snapshot by
     /// accident. On an INSTALLED host (the registrations that really run): every framework store is carried by
     /// <c>framework:databases</c> or is one of the four search stores, which are rebuilt; every storage-blind module
     /// aggregate has exactly one participant or a stated <see cref="BackupExcludedAttribute"/>; every <c>IPortable</c> is
@@ -36,7 +36,7 @@ namespace Stomme.Tests.Backup
         [Fact]
         public async Task Everything_the_installation_holds_is_carried_or_excluded_for_a_stated_reason()
         {
-            // Pipelines composed: a store a module registers only behind its switch (the pipeline activity ledger, BL-229) is the
+            // Pipelines composed: a store a module registers only behind its switch (the pipeline activity ledger) is the
             // installation's whenever the switch is on, so the question is asked of a host that has it.
             using var scratch = await GateInstallTemplates.CloneAsync(new SqliteGateStore(), Host, output, colocateModuleAggregates: false,
                 extraSettings: new System.Text.Json.Nodes.JsonObject { ["Pipelines"] = new System.Text.Json.Nodes.JsonObject { ["Enabled"] = true } });
@@ -65,10 +65,10 @@ namespace Stomme.Tests.Backup
                 var problems = ModuleCoverageProblems(aggregates, names);
                 Assert.True(problems.Count == 0, string.Join(Environment.NewLine, problems));
 
-                // BL-232: the pipeline engine's own stores - every table its context maps and every document type it keeps - are
+                // The pipeline engine's own stores - every table its context maps and every document type it keeps - are
                 // carried by its part, so the next engine table cannot be missed the way all of them were.
                 Assert.Contains(Stomme.Modules.Pipelines.Persistence.EngineBackupParticipant.PartName, names);
-                // BL-233: and the site folders its file steps read and write - which no part carried.
+                // And the site folders its file steps read and write - which no part carried.
                 Assert.Contains(Stomme.Modules.Pipelines.Persistence.PipelineFilesBackupParticipant.PartName, names);
                 await using (var engine = await scope.ServiceProvider.GetRequiredService<Microsoft.EntityFrameworkCore.IDbContextFactory<Stomme.Modules.Pipelines.Persistence.EfCore.EngineDbContext>>().CreateDbContextAsync())
                 {

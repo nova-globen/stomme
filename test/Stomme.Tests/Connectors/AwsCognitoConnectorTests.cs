@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - n8n's AWS Cognito node over the Cognito Identity Provider's JSON protocol, each call signed with SigV4 for
+    /// n8n's AWS Cognito node over the Cognito Identity Provider's JSON protocol, each call signed with SigV4 for
     /// cognito-idp in the connection's region: every parameter held to its shape before anything is signed; users listed by an
     /// attribute's start or the whole of it - its value escaped - page by page up to the most, their attributes their fields unless
     /// asked not; a user read, created with their attributes and invitation and never a password, updated, deleted, added to a
@@ -242,11 +242,11 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the Amazon Cognito connector against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback), which
+    /// The Amazon Cognito connector against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback), which
     /// checks every SigV4 signature against the IAM key it issued, through the HOST's egress: loopback refused until allowlisted;
     /// a wrong secret refused; a test naming the pool; in a pool made for the test, a group made and changed, a user created with
     /// no invitation sent, found by the start of their email, read, updated, put in the group - which then lists them - and taken
-    /// out, deleted; the group deleted and the pool with it. Fails, never skips, when moto is absent (D46).
+    /// out, deleted; the group deleted and the pool with it. Fails, never skips, when moto is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class AwsCognitoConnectorLiveTests(ITestOutputHelper output)

@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- BL-81: the backup participant writes a module aggregate in the store's own document form. -->
+    <!-- The backup participant writes a module aggregate in the store's own document form. -->
     <InternalsVisibleTo Include="Stomme.Server" />
-    <!-- BL-170: the shape a backup part carries is pinned by tests. -->
+    <!-- The shape a backup part carries is pinned by tests. -->
     <InternalsVisibleTo Include="Stomme.Tests" />
   </ItemGroup>
 

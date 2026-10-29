@@ -5,7 +5,7 @@ using Stomme.Shared;
 namespace Stomme.Portability
 {
     /// <summary>
-    /// The portability permission keys (BL-82, D107 item 9), declared per key: four for Administrators, and
+    /// The portability permission keys, declared per key: four for Administrators, and
     /// <see cref="ExportOwn"/> for Registered Users - a person may ask for their OWN data without anyone's help.
     /// </summary>
     public static class PortabilityPermissions

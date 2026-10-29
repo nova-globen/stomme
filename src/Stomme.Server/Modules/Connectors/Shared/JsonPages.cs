@@ -16,7 +16,7 @@ namespace Stomme.Modules.Connectors.Shared
     {
         /// <summary>
         /// The page read from <paramref name="current"/>, its next link followed only while it stays on the same collection -
-        /// its scheme, host and path - and names another page, as Graph's own links do (BL-229): anything else is refused
+        /// its scheme, host and path - and names another page, as Graph's own links do: anything else is refused
         /// before the token is sent there.
         /// </summary>
         public static (List<ConnectorRecord> Records, string? NextLink) Read(string payload, string current)

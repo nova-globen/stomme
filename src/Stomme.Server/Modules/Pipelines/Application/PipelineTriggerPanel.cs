@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// The editor's trigger panel (BL-229 increment 10): for a webhook, the address under the site, the header a call is signed
+    /// The editor's trigger panel: for a webhook, the address under the site, the header a call is signed
     /// in, and whether the site receives webhooks and has a secret to verify them with (never the secret); for a schedule, its
     /// next runs or why its cron is not one. Read off the same rules the receiver and the schedules task apply.
     /// </summary>
@@ -33,7 +33,7 @@ namespace Stomme.Modules.Pipelines.Application
             {
                 var valid = Webhook.IsValidName(request.Value);
                 var name = valid ? Webhook.Normalize(request.Value!) : null;
-                // The secret its calls are verified under, as the receiver chooses it (D111a): its own, else the installation's
+                // The secret its calls are verified under, as the receiver chooses it: its own, else the installation's
                 // - a SecretFile counts, a missing one does not. Whether there is one, never what it is.
                 var (secret, _, own) = name is null ? (null, null, false) : await secrets.ForCallAsync(siteState.Alias?.SiteId, name, settings.Webhooks, ct);
                 return new TriggerInfoView
@@ -87,7 +87,7 @@ namespace Stomme.Modules.Pipelines.Application
                     return info;
                 }
 
-                // BL-229: in the schedule's time zone, as the schedules task reads it - daylight saving followed.
+                // In the schedule's time zone, as the schedules task reads it - daylight saving followed.
                 var zone = Schedule.FindZone(request.TimeZone, out var zoneError);
                 if (zone is null)
                 {
@@ -96,7 +96,7 @@ namespace Stomme.Modules.Pipelines.Application
                 }
 
                 info.TimeZone = Schedule.NormalizeZone(request.TimeZone);
-                // BL-229: every cron line's next runs, merged in order (n8n's trigger rules).
+                // Every cron line's next runs, merged in order (n8n's trigger rules).
                 foreach (var next in Schedule.Next(crons, clock.GetUtcNow().UtcDateTime, zone, NextRuns))
                 {
                     info.NextRunsUtc.Add(next);
@@ -118,7 +118,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// Waits for the next call to one of the site's webhooks (BL-229 increment 10) - what it sent, or that none came within the
+    /// Waits for the next call to one of the site's webhooks - what it sent, or that none came within the
     /// wait. Authoring rights: what a call carries is the author's to see, as the runs it starts are.
     /// </summary>
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.Manage)]

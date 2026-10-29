@@ -23,7 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Mcp.Controllers
 {
     /// <summary>
-    /// The MCP module's Web API (<c>api/Mcp</c>, BL-80 / D101 item 7): this site's EXTERNAL server registrations, what
+    /// The MCP module's Web API (<c>api/Mcp</c>): this site's EXTERNAL server registrations, what
     /// THIS install publishes, and the audit ledger.
     /// </summary>
     /// <remarks>
@@ -31,7 +31,7 @@ namespace Stomme.Modules.Mcp.Controllers
     /// <b>Two switches, and each half is gated by its OWN one - at the ROUTER, not in the action body.</b>
     /// <c>[RequiresPermissionKey]</c> is an authorization POLICY: it runs before any action body, so
     /// <c>if (!Enabled) return NotFound()</c> inside an action is never reached by a caller without the key, and a
-    /// config-gated route would answer 403 to everyone instead of "there is no such thing here" (measured in BL-85, and
+    /// config-gated route would answer 403 to everyone instead of "there is no such thing here" (measured, and
     /// the reason <see cref="McpClientEnabledAttribute"/> exists). An action constraint makes the ROUTER decide.
     /// </para>
     /// <para>
@@ -94,7 +94,7 @@ namespace Stomme.Modules.Mcp.Controllers
 
             try
             {
-                // Registering does NOT dial (D101 item 5): the row comes back Unverified with no tools, and only an
+                // Registering does NOT dial: the row comes back Unverified with no tools, and only an
                 // explicit refresh talks to the server. A dial here would make this endpoint an SSRF oracle.
                 var registered = await Registrations!.RegisterAsync(request.Name, request.Endpoint, request.MaxRequestsPerMinute, ct);
                 return registered is null

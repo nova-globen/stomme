@@ -12,10 +12,10 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Intune
 {
     /// <summary>
-    /// Microsoft Intune (BL-96 increment 3, lifted from the predecessor platform's <c>intune</c>): OAuth2 client credentials over Microsoft
+    /// Microsoft Intune (lifted from the predecessor platform's <c>intune</c>): OAuth2 client credentials over Microsoft
     /// Graph through the family's one token provider; the <c>managed-devices</c> operation streams
     /// <c>deviceManagement/managedDevices</c> pages following <c>@odata.nextLink</c>. Every request rides the client the
-    /// host's egress hands the connector (D110); throttling is retried per Retry-After by the family's policy; an
+    /// host's egress hands the connector; throttling is retried per Retry-After by the family's policy; an
     /// incomplete credential set fails before any call.
     /// </summary>
     public sealed class IntuneConnector(OAuth2TokenProvider? tokenProvider = null) : IConnector, IConnectorExtractor

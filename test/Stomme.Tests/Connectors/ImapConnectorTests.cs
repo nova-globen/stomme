@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the IMAP connector over MailKit for real, against a scripted IMAP server on loopback: a test signs in or says the
+    /// The IMAP connector over MailKit for real, against a scripted IMAP server on loopback: a test signs in or says the
     /// password was refused; status gives the mailbox's UIDVALIDITY and next UID; read gives the messages after a UID - headers,
     /// text, HTML, attachments by name or with their content, bounded - and never one at or below it (an IMAP server's "n:*"
     /// holds the highest UID even below n); a read under another UIDVALIDITY says the mailbox was renumbered and reads nothing;

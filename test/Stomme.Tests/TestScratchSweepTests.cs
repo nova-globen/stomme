@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-156: the start-of-run sweep removes earlier runs' leftovers - and nothing else. Driven against a folder of its
+    /// The start-of-run sweep removes earlier runs' leftovers - and nothing else. Driven against a folder of its
     /// own with controlled timestamps, never the real <c>%TEMP%</c> or <c>bin</c>, which the sweep itself owns at runtime.
     /// </summary>
     public sealed class TestScratchSweepTests : IDisposable

@@ -10,7 +10,7 @@ namespace Stomme.Modules
     /// <c>ModuleDefinition.ServerManagerType</c> implements this, creating that manager with <c>ActivatorUtilities</c>.
     /// </summary>
     /// <remarks>
-    /// <b>Asynchronous since 2026-09-27</b> (BL-86 increment 4, D33's correction): the contract was synchronous, so a module
+    /// <b>Asynchronous since 2026-09-27</b> (D33's correction): the contract was synchronous, so a module
     /// whose entries live in a store could implement it only by blocking on its own reads, which D33 bans. Nothing in the
     /// tree implemented it; the exemplar module (<c>examples/Modules/KnowledgeBase</c>) is its first implementation.
     /// </remarks>

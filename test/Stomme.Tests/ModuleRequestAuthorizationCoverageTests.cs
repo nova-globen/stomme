@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The request-authorization coverage leg BL-94 asks for (D110): every mediator REQUEST type in the Wave 2 modules'
+    /// The request-authorization coverage leg BL-94 asks for: every mediator REQUEST type in the Wave 2 modules'
     /// application layers (Formats, Connectivity, Datasets) carries a <c>[Requires]</c> naming a permission, because the
     /// mediator's AuthorizationBehavior decides on the request type and nothing else does - a request without one is an
     /// ungated door from every controller, service or MCP tool that sends it. Validated both ways: the clean tree passes,
@@ -41,7 +41,7 @@ namespace Stomme.Tests
             Assert.Empty(Ungated(requests));
         }
 
-        // BL-229 (2026-10-10): the Pipelines module too. Found by a mutation check on its Files page - the listing query's
+        // BL-229: the Pipelines module too. Found by a mutation check on its Files page - the listing query's
         // [Requires] removed, every test still green: an Interactive Server page sends the request to the mediator directly, so
         // the controller's key never sees it and the request's own requirement is the only door.
         private static readonly string[] PipelinesNamespaces =

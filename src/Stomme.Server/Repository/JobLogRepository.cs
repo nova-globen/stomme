@@ -20,7 +20,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The JobLog cluster on the persistence seam (D52) — the MASTER half of the master-bookkeeping wave.
+    /// The JobLog cluster on the persistence seam — the MASTER half of the master-bookkeeping wave.
     /// JobLog-table access goes through <see cref="IJobLogStore"/> (writes) and the MASTER read path
     /// <see cref="IMasterStoreSessionFactory"/> (reads, both JobLog AND the Job it stitches on).
     /// </summary>
@@ -33,14 +33,14 @@ namespace Stomme.Repository
     /// TWO seam hazards this cluster carries, both handled here rather than in the query:
     /// </para>
     /// <para>
-    /// 1. THE SEVERED NAVIGATION (D45). <c>JobLog.Job</c> was a mapped EF navigation the harvested repository
+    /// 1. THE SEVERED NAVIGATION. <c>JobLog.Job</c> was a mapped EF navigation the harvested repository
     /// eager-loaded with <c>.Include(item =&gt; item.Job)</c>; it is now <c>[NotMapped]</c> view state populated
     /// here from a second master-session query, exactly as <c>SiteGroupMemberRepository</c> stitches
     /// <c>SiteGroup</c>. The Admin &gt; Jobs &gt; Log screen dereferences <c>log.Job.Name</c> and
     /// <c>log.Job.IsExecuting</c>, so a null Job would NRE the screen — the population is not optional.
     /// </para>
     /// <para>
-    /// 2. THE -1 WILDCARD FOLD (D45). The harvested <c>GetJobLogsAsync</c> pushed the sentinel into the
+    /// 2. THE -1 WILDCARD FOLD. The harvested <c>GetJobLogsAsync</c> pushed the sentinel into the
     /// predicate: <c>Where(item =&gt; item.JobId == jobId || jobId == -1)</c>. EF folds <c>-1 == -1</c> to true
     /// and drops the arm; RavenDB's LINQ provider does NOT, and would compile the wildcard arm into RQL that
     /// matches NOTHING — returning 0 logs for the "all" call while passing on EF, the exact silent divergence
@@ -49,7 +49,7 @@ namespace Stomme.Repository
     /// </para>
     /// <para>
     /// 3. WRITES resolve a FRESH store per write (<see cref="NewStore"/>), the UrlMapping per-write-store pattern
-    /// (D47, BL-11). The scheduler opens a log running (<see cref="AddJobLogAsync"/>) and finalizes the SAME log
+    /// (BL-11). The scheduler opens a log running (<see cref="AddJobLogAsync"/>) and finalizes the SAME log
     /// (<see cref="UpdateJobLogAsync"/>) inside ONE scope every run tick. A store owns ONE <c>MasterDBContext</c>
     /// and <c>EfRepository</c> leaves each write TRACKED, so the finalizing Update through the same store attaches
     /// a second instance with the same key and EF throws <c>already being tracked</c> — which left every run's
@@ -73,8 +73,8 @@ namespace Stomme.Repository
         // tracker — letting the scheduler add then finalize the same log in one scope. See hazard 3 in the remarks.
         private IJobLogStore NewStore() => _services.GetRequiredService<IJobLogStore>();
 
-        // Reads go through a MASTER query session, never the store (D19). Materialized inside the method so no
-        // IQueryable escapes (D7); plain LINQ so the read is not bound to the relational provider.
+        // Reads go through a MASTER query session, never the store. Materialized inside the method so no
+        // IQueryable escapes; plain LINQ so the read is not bound to the relational provider.
         private async Task<T> QueryAsync<T>(System.Func<IQuerySession, T> read)
         {
             var session = _sessions.OpenQuerySession();
@@ -143,7 +143,7 @@ namespace Stomme.Repository
 
         public async Task DeleteJobLogAsync(int jobLogId)
         {
-            // The one read through the store (D19): it deletes the very instance it loaded, so read and delete
+            // The one read through the store: it deletes the very instance it loaded, so read and delete
             // share ONE store instance.
             var store = NewStore();
             var aggregate = await store.GetByIdAsync(jobLogId);
@@ -155,7 +155,7 @@ namespace Stomme.Repository
             await store.DeleteAsync(aggregate);
         }
 
-        // The severed .Include(item => item.Job), replayed as a second query and stitched on by hand (D45). Reads
+        // The severed .Include(item => item.Job), replayed as a second query and stitched on by hand. Reads
         // only the jobs the logs actually reference (a Contains over the distinct ids), not every job — the
         // harvested .Include carried no join predicate, so no database join is lost (D22 rule 9).
         private async Task PopulateJobsAsync(IReadOnlyList<JobLog> jobLogs)

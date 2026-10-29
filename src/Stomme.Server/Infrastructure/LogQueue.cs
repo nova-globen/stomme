@@ -27,7 +27,7 @@ namespace Stomme.Infrastructure
     /// </summary>
     /// <remarks>
     /// <para>
-    /// WHY THIS EXISTS (D34). <c>ILogManager.Log</c> is called from ~443 sites, many of them synchronous, and
+    /// WHY THIS EXISTS. <c>ILogManager.Log</c> is called from ~443 sites, many of them synchronous, and
     /// its body used to write the Log table and send notifications inline. Once the repositories became async
     /// (D33), that body could only be satisfied by blocking — the exact sync-over-async shape D29 shipped a
     /// dead master with. Making <c>Log</c> async instead would have pushed an await into all 443 call sites.

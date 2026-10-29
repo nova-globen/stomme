@@ -15,12 +15,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - LDAP DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// LDAP DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a real OpenLDAP (<see cref="LdapTestEndpoint"/>): an LDAP connection made over the API - the directory's address,
     /// its base DN a setting, the bind DN's password vaulted - refused while loopback is not allowlisted, then tested; a published
     /// pipeline makes a unit and a person in it, finds her by her mail, changes her title, compares it, moves her into a unit of
     /// former staff and deletes her and the units; the password in neither the graph nor the run. Fails, never skips, without a
-    /// directory (D46).
+    /// directory.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

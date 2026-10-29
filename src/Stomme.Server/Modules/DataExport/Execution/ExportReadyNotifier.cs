@@ -16,13 +16,13 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.DataExport.Execution
 {
     /// <summary>
-    /// Tells the requester their export is ready, through BL-78's producer port (D108 item 8).
+    /// Tells the requester their export is ready, through BL-78's producer port.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>Best-effort, and after the fact.</b> It is called by the processor once the Ready transition has been SAVED,
     /// never from a domain-event handler: the dispatcher persists and commits on its own, and a handler is drained BY
-    /// a commit (D40), so dispatching from one would be a save re-entering the save that raised it. A notice that
+    /// a commit, so dispatching from one would be a save re-entering the save that raised it. A notice that
     /// cannot be queued is logged and swallowed - the export is ready whether or not anyone could be told.
     /// </para>
     /// <para>

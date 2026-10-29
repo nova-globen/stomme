@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the rest of n8n's Mattermost node, without a server: every id, name, emoji, address, sort and choice held to
+    /// The rest of n8n's Mattermost node, without a server: every id, name, emoji, address, sort and choice held to
     /// Mattermost's shape before anything is sent; the token a bearer; a team by its name and a user by its username looked up;
     /// a channel made, archived, restored, joined, searched and counted, its members as users page by page; a reaction only as
     /// the token's own user, its removal reading first whether there was one; a user signing in through a service made, one
@@ -227,8 +227,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the rest of n8n's Mattermost node LIVE, against this machine's throwaway Mattermost Team Edition 10.11
-    /// (scripts/mattermost-test-server.ps1) - fail-not-skip without it (D46): a channel made in the team kafe by its name, a user
+    /// The rest of n8n's Mattermost node LIVE, against this machine's throwaway Mattermost Team Edition 10.11
+    /// (scripts/mattermost-test-server.ps1) - fail-not-skip without it: a channel made in the team kafe by its name, a user
     /// signing in through GitLab made and added to it, its members as users, the channel found and counted; a message posted, a
     /// reaction added as the token's own user and another's refused, removed - and a second removal saying there was none; a
     /// message to the user alone; users found by e-mail, by id and listed in the channel; an invitation Mattermost refuses

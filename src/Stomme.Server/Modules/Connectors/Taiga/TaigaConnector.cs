@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Taiga
 {
     /// <summary>
-    /// Taiga (BL-229, n8n's Taiga node: epics, issues, tasks and user stories) over Taiga's API (<c>{address}/api/v1</c>), signed
+    /// Taiga (n8n's Taiga node: epics, issues, tasks and user stories) over Taiga's API (<c>{address}/api/v1</c>), signed
     /// in as n8n's credential does - a user's name or e-mail and password for a token (<c>POST /auth</c>), sent as a bearer token.
     /// A test names the user the connection signs in as.
     /// </summary>

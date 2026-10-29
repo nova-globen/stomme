@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// A name belongs to ONE contributor (BL-80 increment 3, D101 items 1-2).
+    /// A name belongs to ONE contributor (D101 items 1-2).
     /// </summary>
     /// <remarks>
     /// <para>
@@ -234,7 +234,7 @@ namespace Stomme.Tests.Mcp
         [Fact]
         public async Task A_host_with_a_colliding_contributor_STARTS_and_serves_NEITHER_side_of_the_collision()
         {
-            // The BL-105 decision, driven on a real host (owner, 2026-09-22). D101 made this fatal; contributor
+            // The BL-105 decision, driven on a real host (owner). D101 made this fatal; contributor
             // discovery matches ANY assembly in /bin whose name contains Stomme, including a package
             // InstallationManager unpacked there - so a fatal check let a third-party package brick an install, and
             // after the restart there is no admin UI left to remove it.
@@ -287,7 +287,7 @@ namespace Stomme.Tests.Mcp
         [Fact]
         public void No_two_IN_TREE_contributors_publish_the_same_name()
         {
-            // THE BUILD GATE (D103's posture, adopted for MCP by BL-105). A collision between contributors that ship
+            // THE BUILD GATE (D103's posture, adopted for MCP). A collision between contributors that ship
             // in THIS repository is our own mistake, and the runtime rejection - correct for a package we do not
             // control - would quietly cost a name we meant to serve. So it fails here, before it ships.
             var contributors = AppDomain.CurrentDomain.GetAssemblies()

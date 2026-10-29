@@ -15,8 +15,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - SeaTable DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
-    /// against this machine's throwaway SeaTable 6.2 (scripts/seatable-test-server.ps1) - fail-not-skip without it (D46): a
+    /// SeaTable DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// against this machine's throwaway SeaTable 6.2 (scripts/seatable-test-server.ps1) - fail-not-skip without it: a
     /// SeaTable connection made over the API, its token vaulted, tested; a published pipeline making an order, finding it by a
     /// search for its name and changing its quantity - each an expression over the step before; the token in neither the graph
     /// nor the run. The test's tables are deleted afterwards.

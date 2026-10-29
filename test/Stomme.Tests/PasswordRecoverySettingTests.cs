@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-90: <c>LoginOptions:AllowPasswordRecovery</c> turns self-service recovery off AT THE SERVER.
+    /// <c>LoginOptions:AllowPasswordRecovery</c> turns self-service recovery off AT THE SERVER.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -109,7 +109,7 @@ namespace Stomme.Tests
                 return true;
             });
 
-        // Counted through the user's MAILBOX, never the delivery queue (BL-158). The queue read filters on
+        // Counted through the user's MAILBOX, never the delivery queue. The queue read filters on
         // `SendOn < UtcNow` - strictly - while a new notification is stamped `SendOn = CreatedOn = UtcNow`, so a row is
         // invisible to the queue for the instant it is created. MEASURED: 58 of 300 add-then-count pairs missed the row,
         // and all 58 saw it 20 ms later. That failed this test about three full runs in seven, always on the last, warm,

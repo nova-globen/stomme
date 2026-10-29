@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-// Lifted from the predecessor platform (BL-97 increment 3): the payload mapping is unchanged; only the namespaces moved.
+// Lifted from the predecessor platform: the payload mapping is unchanged; only the namespaces moved.
 namespace Stomme.Modules.CloudUsage.Providers
 {
     /// <summary>

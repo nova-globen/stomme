@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// <b>TWO SWITCHES, AND NEITHER IMPLIES THE OTHER</b> (D101): <c>Mcp:Enabled</c> is the CLIENT half - this site may
+    /// <b>TWO SWITCHES, AND NEITHER IMPLIES THE OTHER</b>: <c>Mcp:Enabled</c> is the CLIENT half - this site may
     /// register external MCP servers - and <c>Mcp:Server:Enabled</c> is the ENDPOINT this install publishes.
     /// </summary>
     /// <remarks>
@@ -122,7 +122,7 @@ namespace Stomme.Tests.Mcp
             var services = new ServiceCollection();
 
             // The module startup reads the configuration off the COLLECTION, the way AddStomme leaves it there as an
-            // instance before any module startup runs (BL-162).
+            // instance before any module startup runs.
             services.AddSingleton<IConfiguration>(configuration);
             services.AddSingleton((IConfigurationRoot)configuration);
             services.AddLogging();

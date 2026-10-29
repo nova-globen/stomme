@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-86 increment 7 - the in-app External module template, regenerated in the exemplar's shape (split, storage-blind,
+    /// The in-app External module template, regenerated in the exemplar's shape (split, storage-blind,
     /// tenant-owned, keyed, the slim SDK only). Every template file is expanded here through the host's own token replacer
     /// with the tokens the generator supplies, and the output is checked for what a generated module must and must not be.
     /// The template's generated module is BUILT, packed, installed and driven by the exemplar's drive
@@ -71,7 +71,7 @@ namespace Stomme.Tests
             Assert.Contains("\"field-notes:view\"", generated.Single(file => file.Path.EndsWith("FieldNotesContracts.cs", StringComparison.Ordinal)).Text);
 
             // The slim SDK only: every project that references Stomme does so through one package, at the chosen version -
-            // a preview's, label and all (BL-192) - while the package type, which NuGet refuses with a label, takes its release.
+            // a preview's, label and all - while the package type, which NuGet refuses with a label, takes its release.
             var projects = generated.Where(file => file.Path.EndsWith(".csproj", StringComparison.Ordinal) && !file.Path.Contains("Package", StringComparison.Ordinal)).ToList();
             Assert.Equal(3, projects.Count);
             Assert.All(projects, project => Assert.Contains("<PackageReference Include=\"Stomme.Sdk.Slim\" Version=\"10.5.0-preview.1\" />", project.Text));
@@ -89,7 +89,7 @@ namespace Stomme.Tests
             });
             Assert.DoesNotContain(generated, file => file.Path.Contains("Migrations", StringComparison.Ordinal));
 
-            // WebAssembly safety (BL-13, BL-54): the browser-bound projects drop the OpenApi generator; the pages can click.
+            // WebAssembly safety: the browser-bound projects drop the OpenApi generator; the pages can click.
             Assert.All(projects.Where(project => !project.Path.Contains("Server", StringComparison.Ordinal)), project => Assert.Contains("RemoveOpenApiSourceGenerator", project.Text));
             Assert.Contains("@using Microsoft.AspNetCore.Components.Web", generated.Single(file => file.Path.EndsWith("_Imports.razor", StringComparison.Ordinal)).Text);
 

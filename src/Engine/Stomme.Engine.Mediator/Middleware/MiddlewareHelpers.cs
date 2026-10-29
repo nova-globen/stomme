@@ -41,7 +41,7 @@ public static class MiddlewareHelpers
     /// <summary>
     /// Awaits a <see cref="Task{TResult}"/> whose result type is only known at runtime and returns its result boxed.
     /// The handler invokers use this instead of reflecting on <c>Task&lt;T&gt;.Result</c>: the task is awaited,
-    /// never blocked on (D33).
+    /// never blocked on.
     /// </summary>
     /// <param name="task">A task whose runtime type is <see cref="Task{TResult}"/> for <paramref name="resultType"/>.</param>
     /// <param name="resultType">The task's result type.</param>

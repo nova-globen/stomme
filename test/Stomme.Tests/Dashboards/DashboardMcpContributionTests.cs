@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Dashboards
 {
     /// <summary>
-    /// BL-96 increment 11 - the one read-only <c>IMcpContributor</c> over the module's real startup on the File store:
+    /// The one read-only <c>IMcpContributor</c> over the module's real startup on the File store:
     /// the descriptors carry the feature flag AND the view key, the list and dashboard resources project the definition
     /// (never data), unknown or malformed ids are null, <c>get_widget_data</c> answers what the page's widget shows with
     /// the rows only when the classification allows them, another site's board is not found, and the expected failures

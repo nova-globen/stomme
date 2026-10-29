@@ -70,7 +70,7 @@ namespace Stomme.Models.Export
         public bool CanDownload { get; set; }
     }
 
-    /// <summary>A recurring export (BL-95): the request, a name, and a five-field UTC cron. The owner is the caller.</summary>
+    /// <summary>A recurring export: the request, a name, and a five-field UTC cron. The owner is the caller.</summary>
     public sealed class ExportScheduleRequest
     {
         public string Name { get; set; } = string.Empty;

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Netlify DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Netlify DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for Netlify's API that refuses a call without the token: a Netlify connection made
     /// over the API, its token vaulted, tested; a published pipeline reads the sites over two pages as long as the stand-in
     /// links a next one - no more than asked - reads a site's ready deploys, builds the site, publishes an earlier deploy

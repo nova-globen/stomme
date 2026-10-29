@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-248 - the Data Protection key ring is kept where a redeploy does not lose it. The framework set no location, so a
+    /// The Data Protection key ring is kept where a redeploy does not lose it. The framework set no location, so a
     /// deployment that mounted only the installation's data lost the ring on every redeploy - every visitor signed out and
     /// every stored secret Unreadable for good. The choice is unit-tested; the drive stores a site secret, restarts the host
     /// and reads it back from a ring kept where the deployment named.

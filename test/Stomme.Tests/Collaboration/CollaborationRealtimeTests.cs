@@ -23,7 +23,7 @@ using Xunit;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// BL-97 increment 12 - presence and the change feed without a host: each domain event becomes ONE notice of its kind,
+    /// Presence and the change feed without a host: each domain event becomes ONE notice of its kind,
     /// naming the resource and who caused it and nothing else; a board stored by the Dashboards module is a Saved notice;
     /// with the switch off or outside a site's scope nothing is told; the notice rides the bus when one is composed and is
     /// delivered in-process otherwise, to the site key's signal and the site's hub group; the push is a no-op while the

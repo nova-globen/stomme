@@ -15,8 +15,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - YOURLS DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
-    /// this machine's throwaway YOURLS 1.10 (scripts/yourls-test-server.ps1) - fail-not-skip without it (D46): a YOURLS connection made
+    /// YOURLS DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
+    /// this machine's throwaway YOURLS 1.10 (scripts/yourls-test-server.ps1) - fail-not-skip without it: a YOURLS connection made
     /// over the API, its signature vaulted, tested; a published pipeline shortening a URL, expanding the short URL - an expression over
     /// the first step's result - and reading its stats; the signature in neither the graph nor the run.
     /// </summary>

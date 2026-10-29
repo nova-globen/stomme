@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - a variable named after a step, for the step's result read elsewhere (the editor's "earlier steps' results", an
+    /// A variable named after a step, for the step's result read elsewhere (the editor's "earlier steps' results", an
     /// n8n workflow's <c>$('Node')</c> brought over): the step's letters and digits in lower case joined by underscores, never a
     /// name the pipeline already has - one rule, so the editor and an import name alike.
     /// </summary>

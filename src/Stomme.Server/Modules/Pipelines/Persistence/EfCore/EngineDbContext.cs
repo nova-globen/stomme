@@ -10,13 +10,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Stomme.Modules.Pipelines.Persistence.EfCore
 {
     /// <summary>
-    /// The engine's eight store entities on the install's relational provider (BL-95 increment (a), D111). It lives
+    /// The engine's eight store entities on the install's relational provider (BL-95 increment (a)). It lives
     /// in the module store's database (co-located when <c>ConnectionStrings:ModuleAggregates</c> is set, the SQLite
     /// sidecar otherwise) under <c>Engine*</c> tables, and is created and caught up additively by the same schema
     /// initializer the storage-blind modules use. Rules that are load-bearing:
     /// <list type="bullet">
     /// <item>One context per store OPERATION, from the factory - never held by a scope, so an Interactive Server
-    /// circuit can never read a stale tracked instance (BL-160), and every read is <c>AsNoTracking</c>.</item>
+    /// circuit can never read a stale tracked instance, and every read is <c>AsNoTracking</c>.</item>
     /// <item>Every non-scalar member (an instance's state, payloads, variables, outputs...) is text in a SHADOW
     /// column written and read through <see cref="EngineEntitySerializer"/>; the entity types stay the engine's
     /// own, so the engine's filters apply to them verbatim.</item>

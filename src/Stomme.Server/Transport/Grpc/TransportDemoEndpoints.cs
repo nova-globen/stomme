@@ -8,7 +8,7 @@ namespace Stomme.Transport.Grpc
     /// <see cref="TransportDemoGrpcService"/> onto the host with gRPC-Web enabled, exactly as a real module's
     /// contributor would. The transport pipeline discovers this by reflection (no per-module wiring in the
     /// composition root) and calls <see cref="MapEndpoints"/> whenever at least one transport is enabled;
-    /// the gRPC gate below is this contributor's own (BL-53) — <c>MapGrpcService</c> requires the services
+    /// the gRPC gate below is this contributor's own — <c>MapGrpcService</c> requires the services
     /// <c>AddGrpc</c> registers, which only exist when gRPC is on.
     /// </summary>
     /// <remarks>

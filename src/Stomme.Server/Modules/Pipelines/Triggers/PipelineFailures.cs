@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// The other half of the "Pipeline failed" trigger (BL-229, n8n's error workflow): when a run of one of the site's pipelines
+    /// The other half of the "Pipeline failed" trigger (n8n's error workflow): when a run of one of the site's pipelines
     /// finishes FAULTED, the engine's finished notification reaches this handler on the worker, inside the run's engine tenant,
     /// and it fires the trigger's stimulus twice - under the failed pipeline's definition id and under "every pipeline" - through
     /// the engine's stimulus dispatcher, which carries the tenant, so only that site's pipelines start. What failed rides as the

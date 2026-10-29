@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the chat connectors (n8n's Slack, Telegram, Discord and Mattermost nodes, their message sent, and its Twilio
+    /// The chat connectors (n8n's Slack, Telegram, Discord and Mattermost nodes, their message sent, and its Twilio
     /// node's SMS): each sends to the address its service has, authorised as its service has it, the message as JSON (Twilio's
     /// a form); answers one record - the message's id and where it went - or the service's refusal in its own words; a test
     /// signs in. Telegram's token is in the request's path, so it is held to the characters Telegram issues and named by no
@@ -102,7 +102,7 @@ namespace Stomme.Tests.Connectors
             Assert.Null(handler.Request);
         }
 
-        // BL-229 - for the "Telegram message received" trigger: the updates from an offset, never waiting, each its fields - a
+        // For the "Telegram message received" trigger: the updates from an offset, never waiting, each its fields - a
         // message's and a channel post's, any other kind its id and kind only - and the newest update's id, Telegram told to
         // forget the earlier ones; a refusal (a webhook set) a record in Telegram's words.
         [Fact]

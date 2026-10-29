@@ -8,7 +8,7 @@ using Stomme.Persistence.Abstractions;
 namespace Stomme.Infrastructure.Locks
 {
     /// <summary>
-    /// The SINGLE-NODE <see cref="IDistributedLock"/> (BL-154): mutual exclusion within this process, and none across
+    /// The SINGLE-NODE <see cref="IDistributedLock"/>: mutual exclusion within this process, and none across
     /// processes - stated, not implied. It is what an install gets whose store cannot coordinate nodes at all: a SQLite
     /// file (one node by construction), the File store, or a host that has not been installed yet.
     /// </summary>

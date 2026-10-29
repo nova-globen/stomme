@@ -24,7 +24,7 @@ using Xunit;
 namespace Stomme.Tests.Landing
 {
     /// <summary>
-    /// BL-98 increment 1 - the landing page on every store the installation can choose: the content, the source, the status,
+    /// The landing page on every store the installation can choose: the content, the source, the status,
     /// the nullable instants and the site filter round-trip alike on SQLite, PostgreSQL, RavenDB and the file store.
     /// </summary>
     public abstract class LandingStoreConformanceTests : IAsyncLifetime
@@ -121,7 +121,7 @@ namespace Stomme.Tests.Landing
         [Fact]
         public async Task A_generated_page_round_trips_its_html_and_a_reset_clears_it()
         {
-            // BL-98 increment 3: the generated HTML is one scalar column on every store - long, with quotes, entities and
+            // The generated HTML is one scalar column on every store - long, with quotes, entities and
             // non-ASCII text, read back byte for byte.
             var html = "<section data-section=\"hero\" style=\"padding: 2rem; color: #123456\"><h1>Välkommen &amp; \"hello\"</h1>"
                 + string.Concat(System.Linq.Enumerable.Repeat("<p>Ett stycke text om det som webbplatsen erbjuder.</p>", 200))

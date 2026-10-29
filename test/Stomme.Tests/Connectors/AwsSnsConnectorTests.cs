@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon SNS (n8n's AWS SNS node: a topic made and deleted, a message published): every call SNS's query API - its
+    /// Amazon SNS (n8n's AWS SNS node: a topic made and deleted, a message published): every call SNS's query API - its
     /// action and version a form - signed with AWS Signature Version 4 for SNS in the connection's region; a message published
     /// with a subject and attributes to a topic by its ARN or its name (found among the topics, page by page), an SMS to a phone
     /// number, a FIFO topic's with its group; topics and a topic's subscriptions listed page by page, its attributes read (its

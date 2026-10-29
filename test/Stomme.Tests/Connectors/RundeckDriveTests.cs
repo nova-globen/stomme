@@ -15,8 +15,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Rundeck DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
-    /// this machine's throwaway Rundeck 6.2 (scripts/rundeck-test-server.ps1) - fail-not-skip without it (D46): a Rundeck connection
+    /// Rundeck DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
+    /// this machine's throwaway Rundeck 6.2 (scripts/rundeck-test-server.ps1) - fail-not-skip without it: a Rundeck connection
     /// made over the API, its token vaulted, tested; a published pipeline finding the menu job in its project, running it - its job
     /// and its options expressions over the first step's result and the run's input - waited for, and reading its output; the
     /// token in neither the graph nor the run.

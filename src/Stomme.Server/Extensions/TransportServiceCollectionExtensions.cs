@@ -36,7 +36,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 // The reference push adapter (brief 04 Phase 2): the transport-agnostic INotificationRealtimePush
                 // port a producing feature depends on, backed by NotificationHub. Absent when SignalR is off.
                 services.AddSingleton<INotificationRealtimePush, NotificationRealtimePush>();
-                // The health page's live update (BL-83): the state word pushed to one site's group. TryAdd, so a host (or a
+                // The health page's live update: the state word pushed to one site's group. TryAdd, so a host (or a
                 // drive) that registered its own port first keeps it.
                 services.TryAddSingleton<IHealthRealtimePush, HealthRealtimePush>();
 
@@ -70,7 +70,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </para>
         /// <para>
         /// A null/empty permission still means "any authenticated user" - what the notification hub ships with. The
-        /// health hub declares <c>health:view</c> since it began carrying the health page's live update (BL-83).
+        /// health hub declares <c>health:view</c> since it began carrying the health page's live update.
         /// </para>
         /// <para>
         /// Public so the hub policy can be driven without standing up a SignalR host (the replaced line was

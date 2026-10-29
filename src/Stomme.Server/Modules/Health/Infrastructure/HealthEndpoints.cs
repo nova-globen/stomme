@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Health.Infrastructure
 {
     /// <summary>
-    /// The two anonymous endpoints an orchestrator needs: liveness and readiness (D104 item 8).
+    /// The two anonymous endpoints an orchestrator needs: liveness and readiness.
     /// </summary>
     /// <remarks>
     /// <para>

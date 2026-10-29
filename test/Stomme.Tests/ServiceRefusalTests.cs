@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-222 (found on UAT, a WebAssembly site, 2026-10-04): adding a chart widget without a spec showed "The widget was not
+    /// BL-222 (found on UAT, a WebAssembly site): adding a chart widget without a spec showed "The widget was not
     /// added: Arg_NullReferenceException" - the server had answered 400 "A chart widget requires a chart spec.", the browser's
     /// service returned null and the page carried on with it. A service that opts in to <c>ThrowOnRefusal</c> now throws the
     /// server's reason, as its server-side twin does on a Server site; a service that has not opted in is unchanged.

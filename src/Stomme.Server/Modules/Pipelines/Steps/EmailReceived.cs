@@ -17,7 +17,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record EmailReceivedStimulus(string Connection, string Mailbox, bool MarkRead, bool KeepAttachments);
 
     /// <summary>
-    /// n8n's Email Trigger (IMAP), as an engine TRIGGER (BL-229): a published pipeline that starts with it is indexed under one of
+    /// n8n's Email Trigger (IMAP), as an engine TRIGGER: a published pipeline that starts with it is indexed under one of
     /// the site's IMAP connections and a mailbox, and <c>Triggers/WatchedMailboxes.cs</c> looks at that mailbox through the
     /// connection - the credentials in the site's secret store, the host's egress, never the pipeline's - starting a run for
     /// each message that arrived since it last looked, the message its result (<see cref="PipelineEmailEvent"/>). Messages are

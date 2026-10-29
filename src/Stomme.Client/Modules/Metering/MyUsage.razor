@@ -3,7 +3,7 @@
 @inject IMeteringService MeteringService
 
 @*
-    The caller's OWN consumption (D102 item 11, F10). It is its own control rather than a UserProfile tab: the
+    The caller's OWN consumption (F10). It is its own control rather than a UserProfile tab: the
     profile page is a hardcoded four-panel TabStrip, and the boot reconciliation adds missing PAGES, not tabs - so
     "a my-usage tab by reconciliation" was never a thing that could work. The query takes no user id; the server
     reads the subject from the request principal, so there is no parameter to forge.

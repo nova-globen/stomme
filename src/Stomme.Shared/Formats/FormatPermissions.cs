@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stomme.Formats
 {
     /// <summary>
-    /// The Formats module's permission KEYS (BL-94, D110), decided by the authorization bridge (D99): each key is a site
+    /// The Formats module's permission KEYS, decided by the authorization bridge: each key is a site
     /// Permission row <c>(EntityName = "formats", EntityId = -1, PermissionName = operation)</c>. In <c>Stomme.Shared</c>
     /// because both halves need it: the Client <c>ModuleInfo</c> declares it and gates its controls with it, the Server's
     /// requests and controller carry it. <see cref="View"/> reads the presets and the site's definitions;

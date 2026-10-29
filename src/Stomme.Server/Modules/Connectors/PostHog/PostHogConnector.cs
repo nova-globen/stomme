@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.PostHog
 {
     /// <summary>
-    /// PostHog (BL-229, n8n's PostHog node) over its capture API (<c>POST /batch/</c> on the project's ingestion host -
+    /// PostHog (n8n's PostHog node) over its capture API (<c>POST /batch/</c> on the project's ingestion host -
     /// <c>https://eu.i.posthog.com</c>, <c>https://us.i.posthog.com</c> or a self-hosted one), its project key in each body's
     /// <c>api_key</c> as PostHog and n8n send it. A test asks PostHog for a user's feature flags, which it answers only for a key
     /// it knows.

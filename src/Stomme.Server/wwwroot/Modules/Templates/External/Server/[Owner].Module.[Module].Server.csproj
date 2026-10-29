@@ -3,7 +3,7 @@
   <!--
     The SERVER layer: the domain, the storage-blind persistence wiring, the commands and queries, the API and the server
     manager. The host loads it from /bin; it never streams to a browser.
-    INDEPENDENT (D81/D82): Stomme arrives only through the Stomme.Sdk.Slim package - no source or project reference.
+    INDEPENDENT: Stomme arrives only through the Stomme.Sdk.Slim package - no source or project reference.
   -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>

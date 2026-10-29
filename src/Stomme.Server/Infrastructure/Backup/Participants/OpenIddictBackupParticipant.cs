@@ -24,13 +24,13 @@ using Raven.Client.Documents.Session;
 namespace Stomme.Infrastructure.Backup.Participants
 {
     /// <summary>
-    /// The per-tenant OpenIddict authority's registrations (BL-81, D106 item 3) - registered only while
+    /// The per-tenant OpenIddict authority's registrations - registered only while
     /// <c>OpenIddict:Enabled</c> is on. It carries the APPLICATIONS (the clients, with their hashed secrets) and the SCOPES,
     /// and on replace deletes every TOKEN and AUTHORIZATION: a restored installation must not honour a token issued after
     /// the snapshot, nor one it had revoked before - every client signs in again.
     /// </summary>
     /// <remarks>
-    /// Each tenant has its own OpenIddict store (D61/D62: <c>{key}_OpenIddict</c>, or derived from the tenant's own), provisioned
+    /// Each tenant has its own OpenIddict store (<c>{key}_OpenIddict</c>, or derived from the tenant's own), provisioned
     /// here before it is read, because a store is created lazily on the first request that reaches it. Relational: one
     /// transaction per tenant; RavenDB: delete by query, then the documents with their ids.
     /// </remarks>
@@ -51,7 +51,7 @@ namespace Stomme.Infrastructure.Backup.Participants
 
         public string Name => PartName;
 
-        /// <summary>The carried entities as the serializer writes them, on either store (BL-170): an OpenIddict upgrade that
+        /// <summary>The carried entities as the serializer writes them, on either store: an OpenIddict upgrade that
         /// reshapes an application or a scope refuses the parts from before it.</summary>
         public string SchemaVersion => Shape.Value;
 

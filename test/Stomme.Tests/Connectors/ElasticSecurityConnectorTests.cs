@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Elastic Security (n8n's Elastic Security node) without a server: every id, choice, tag, length and text held to
+    /// Elastic Security (n8n's Elastic Security node) without a server: every id, choice, tag, length and text held to
     /// Kibana's shape before anything is sent; the user as Basic and Kibana's kbn-xsrf header on every call, in the connection's
     /// space; cases found by their filters page by page with the page the same size each time; a case made with no external
     /// connector, changed at the version Kibana gave it, its tags added and removed - one already as asked leaving it as it is -
@@ -246,8 +246,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Elastic Security LIVE, against this machine's throwaway Kibana 9.5 over its own Elasticsearch
-    /// (scripts/kibana-test-server.ps1) - fail-not-skip without it (D46): a test signing in and refusing a wrong password with
+    /// Elastic Security LIVE, against this machine's throwaway Kibana 9.5 over its own Elasticsearch
+    /// (scripts/kibana-test-server.ps1) - fail-not-skip without it: a test signing in and refusing a wrong password with
     /// Kibana's words; a case made, found by its tag, changed, tagged and untagged, commented on, its comment changed and removed,
     /// a change at a stale version refused with Kibana's 409, the status counts read, and the case deleted, then gone.
     /// </summary>

@@ -66,7 +66,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(PipelineStatus.Finished, result.PipelineState.Status);
             Assert.Equal("composed", app.Services.GetRequiredService<ResultSink>().Value);
 
-            // BL-229 increment 9: the host's step pipeline tries a failed step again when the step says so.
+            // The host's step pipeline tries a failed step again when the step says so.
             var sink = app.Services.GetRequiredService<ResultSink>();
             sink.Value = null;
             var flaky = new FailOnceSinkStep { Value = "second try" };
@@ -75,10 +75,10 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(PipelineStatus.Finished, retried.PipelineState.Status);
             Assert.Equal("second try", sink.Value);
 
-            // BL-229 increment 5: the host composes the module's Template expression kind, so a definition holding one reads.
+            // The host composes the module's Template expression kind, so a definition holding one reads.
             Assert.NotNull(scope.ServiceProvider.GetRequiredService<Stomme.Engine.Expressions.Contracts.IExpressionDescriptorRegistry>().Find(Stomme.Modules.Pipelines.Expressions.TemplateExpressionHandler.Kind));
 
-            // BL-229: the activity ledger wraps the module's commands in the host - constructed under the host's validation - and
+            // The activity ledger wraps the module's commands in the host - constructed under the host's validation - and
             // its store is the module seam's.
             Assert.Contains(scope.ServiceProvider.GetServices<Stomme.Mediator.IPipelineBehavior<Stomme.Modules.Pipelines.Application.PublishPipelineCommand, Stomme.Models.Pipelines.PublishResult>>(),
                 behavior => behavior is Stomme.Modules.Pipelines.Audit.PipelineAuditBehavior<Stomme.Modules.Pipelines.Application.PublishPipelineCommand, Stomme.Models.Pipelines.PublishResult>);

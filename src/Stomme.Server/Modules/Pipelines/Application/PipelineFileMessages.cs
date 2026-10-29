@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - the site's pipeline folder as the Files page sees it: the very folder the file steps read and write
+    /// The site's pipeline folder as the Files page sees it: the very folder the file steps read and write
     /// (<see cref="PipelineFileSandbox"/>, one folder per site, a path that leaves it refused), listed a folder at a time, a file
     /// taken in, a folder made, a file or a folder deleted, a file given back. For the pipelines' authors only - what a run wrote
     /// is run data, which only they are shown.

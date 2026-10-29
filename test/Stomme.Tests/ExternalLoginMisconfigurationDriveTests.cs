@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-247 - one wrong External Login setting does not take the site down. Found by BL-239's validation, driven: saving
+    /// One wrong External Login setting does not take the site down. Found by BL-239's validation, driven: saving
     /// an OpenID Connect provider whose authority is plain http made EVERY request of the site answer 500 with an empty body
     /// - the handler's options are built for each request and refuse such an address while https metadata is required -
     /// and a restart did not help; recovery took a database edit. The address is now not handed to the handler, so only

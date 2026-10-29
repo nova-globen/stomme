@@ -11,12 +11,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-212 - the site the client receives says whether Help, Portability and Collaboration are on, so the help launcher, a
+    /// The site the client receives says whether Help, Portability and Collaboration are on, so the help launcher, a
     /// person's data on their profile and the collaboration panel ask only when they are.
     /// </summary>
     /// <remarks>
     /// The launcher asked <c>api/Help/topic</c> on every page; with <c>Help:Enabled</c> off - the default - the router
-    /// answers 404 (BL-210), and a WebAssembly site's browser logged it on every page (found driving BL-201, 2026-10-03). The
+    /// answers 404, and a WebAssembly site's browser logged it on every page (found driving BL-201). The
     /// switch travels in the site's settings, the channel D70 made for SAML's and Windows' switches; this reads it as a client
     /// does, over <c>GET api/Site/{id}</c>, from an installation with Help off and one with it on.
     /// </remarks>

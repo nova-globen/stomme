@@ -23,7 +23,7 @@ namespace Stomme.Modules.Portability.Services
     /// <summary>A request the server refuses, with a reason written to be shown to the requester.</summary>
 
     /// <summary>
-    /// The SERVER side of the portability surface (BL-82, D107 items 3, 5, 9): every decision - who the caller is, which
+    /// The SERVER side of the portability surface (D107 items 3, 5, 9): every decision - who the caller is, which
     /// site, which keys they hold, whose package it is - is made here from the request, never from an argument.
     /// </summary>
     /// <remarks>

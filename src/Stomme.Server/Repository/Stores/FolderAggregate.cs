@@ -59,7 +59,7 @@ namespace Stomme.Repository.Stores
     /// </remarks>
     public class FolderAggregate : AggregateRoot<int>, IAuditable
     {
-        /// <summary>The <see cref="Site"/> this folder belongs to, by id (D7/D19). NOT NULL, FK-cascaded from Site.</summary>
+        /// <summary>The <see cref="Site"/> this folder belongs to, by id. NOT NULL, FK-cascaded from Site.</summary>
         public int SiteId { get; set; }
 
         /// <summary>The parent folder, by id, or null for a site's root. NULLABLE. NOT a navigation — the hierarchy is walked in memory.</summary>
@@ -94,7 +94,7 @@ namespace Stomme.Repository.Stores
         private string _path;
 
         /// <summary>
-        /// The lowercase lookup key for <see cref="Path"/> (D49) — Identity's <c>NormalizedUserName</c> to
+        /// The lowercase lookup key for <see cref="Path"/> — Identity's <c>NormalizedUserName</c> to
         /// <see cref="Path"/>'s <c>UserName</c>. Column <c>path_normalized</c>, nullable varchar(512), added
         /// and backfilled by <c>10020003_AddFolderFileNormalizedColumns</c>.
         /// </summary>

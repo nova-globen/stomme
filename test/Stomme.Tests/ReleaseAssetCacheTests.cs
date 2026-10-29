@@ -6,7 +6,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-192: once per browser per release, a page response clears the browser's HTTP cache, so an asset whose URL a release
+    /// Once per browser per release, a page response clears the browser's HTTP cache, so an asset whose URL a release
     /// does not change (measured: FluentUI's module, 4.14.3 kept after the move to 5.0.0) is fetched again.
     /// </summary>
     public sealed class ReleaseAssetCacheTests

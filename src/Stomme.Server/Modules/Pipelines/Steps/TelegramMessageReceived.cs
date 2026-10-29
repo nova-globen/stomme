@@ -16,7 +16,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record TelegramMessageStimulus(string Connection);
 
     /// <summary>
-    /// n8n's Telegram Trigger, as an engine TRIGGER (BL-229): a published pipeline that starts with it is indexed under one of the
+    /// n8n's Telegram Trigger, as an engine TRIGGER: a published pipeline that starts with it is indexed under one of the
     /// site's Telegram connections, and <c>Triggers/WatchedTelegramBots.cs</c> asks the bot for its updates through the connection -
     /// the token in the site's secret store, the host's egress, never the pipeline's - starting a run for each message or channel
     /// post that came since it last asked, the message its result (<see cref="PipelineTelegramEvent"/>). n8n's trigger takes them by

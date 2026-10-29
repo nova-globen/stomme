@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Gmail DRIVEN on an installed SQLite host, with the REAL connector, the Send email step, the host's egress and the
+    /// Gmail DRIVEN on an installed SQLite host, with the REAL connector, the Send email step, the host's egress and the
     /// extraction port, against a loopback stand-in for Google's token endpoint and the Gmail API: a Gmail connection made over the
     /// API, its client secret and refresh token vaulted, tested (the mailbox's address read); a published pipeline reads the unread
     /// messages from a sender, answers the first in its thread with a body of two lines, and marks it read - the stand-in got the

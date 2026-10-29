@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-117: the module-aggregate store's UTC convention, both directions. The READ half is driven on five stores by
+    /// The module-aggregate store's UTC convention, both directions. The READ half is driven on five stores by
     /// <c>HealthAggregateConformanceTests.Every_instant_reads_back_with_KIND_Utc_not_merely_the_right_ticks</c> (SQLite and
     /// SQL Server returned <c>Unspecified</c> before it); this pins the WRITE half, which no module factory can reach
     /// because every one of them already stamps UTC.

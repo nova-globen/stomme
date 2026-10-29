@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - PagerDuty DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// PagerDuty DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for PagerDuty's REST API v2 that refuses a call without the token, and a write without its
     /// From: a PagerDuty connection made over the API with the e-mail its writes come from, its token vaulted, tested; a
     /// published pipeline creates an incident with an accent, reads the triggered incidents over two pages - no more than asked -

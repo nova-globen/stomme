@@ -7,7 +7,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Aggregate to view model, and the one place the handled site id is resolved (D102).
+    /// Aggregate to view model, and the one place the handled site id is resolved.
     /// </summary>
     /// <remarks>
     /// <b>The site is RESOLVED, never accepted.</b> the predecessor platform's override command took the tenant from the request

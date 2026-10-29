@@ -4,7 +4,7 @@
 @inject IStringLocalizer<Index> Localizer
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 
-@* Migrated to native FluentUI form controls + the --db-* design system (D11, Phase 4). *@
+@* Migrated to native FluentUI form controls + the --db-* design system (Phase 4). *@
 <div class="db-card">
     <div class="db-field">
         <Label For="searchprovider" HelpText="Specify the search provider for this site" ResourceKey="SearchProvider">Search Provider: </Label>
@@ -73,7 +73,7 @@
         _lastIndexedOn = SettingService.GetSetting(settings, "Search_LastIndexedOn", _lastIndexedOn);
         _ignorePages = SettingService.GetSetting(settings, "Search_IgnorePages", _ignorePages);
         _ignoreEntities = SettingService.GetSetting(settings, "Search_IgnoreEntities", _ignoreEntities);
-        // BL-251: the page wrote only the old, misspelt key, which the index reads only when the correct one is absent - so
+        // The page wrote only the old, misspelt key, which the index reads only when the correct one is absent - so
         // on a site holding the correct key a change here did nothing. It reads the correct key first and writes it.
         _minimumWordLength = SettingService.GetSetting(settings, "Search_MinimumWordLength", SettingService.GetSetting(settings, "Search_MininumWordLength", _minimumWordLength));
         _ignoreWords = SettingService.GetSetting(settings, "Search_IgnoreWords", _ignoreWords);

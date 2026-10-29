@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - the site's pipeline folder over the real HTTP surface of an installed host (SQLite - the folder is the file
+    /// The site's pipeline folder over the real HTTP surface of an installed host (SQLite - the folder is the file
     /// system's, whatever the store): the path a WebAssembly site's Files page and any outside caller take, which the page on an
     /// Interactive Server site does not (it asks the server's mediator directly). A multipart upload taken in and listed; the file
     /// given back byte for byte, as an attachment of no particular type; a name already there refused saying why; a request

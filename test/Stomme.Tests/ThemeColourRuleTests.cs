@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The owner's rule (2026-10-02, BL-192): "buttons must follow the colors defined in their theme and nothing must overide
+    /// The owner's rule: "buttons must follow the colors defined in their theme and nothing must overide
     /// that. if no color is defined then they must follow the default."
     /// </summary>
     /// <remarks>

@@ -17,7 +17,7 @@ using Xunit;
 namespace Stomme.Tests.CloudUsage
 {
     /// <summary>
-    /// BL-97 increment 4 - the predecessor platform's <c>SyncCloudCostsCommandHandlerTests</c> by name through the mediator and the module's
+    /// The predecessor platform's <c>SyncCloudCostsCommandHandlerTests</c> by name through the mediator and the module's
     /// own startup: a stubbed payload feeds the shared sync path, rows land in the SITE's ledger, a refusal is a code on the
     /// view, a named dataset materialises with the connection as its origin. The port's own: a connection of another
     /// connector type, a connection without its token, a fetch failure reported as a category and never the exception's
@@ -384,7 +384,7 @@ namespace Stomme.Tests.CloudUsage
     }
 
     /// <summary>
-    /// BL-97 increment 4 - the predecessor platform's <c>CloudCostAlertServiceTests</c> by name on the site-scoped service. CHANGED: the
+    /// The predecessor platform's <c>CloudCostAlertServiceTests</c> by name on the site-scoped service. CHANGED: the
     /// recipients are the site's administrators by user id (never a configured address list), the alerts default OFF, and
     /// the job is a framework job gated by <c>CloudUsage:Alerts:Enabled</c>.
     /// </summary>

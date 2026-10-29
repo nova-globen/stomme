@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// THE SITE IS THE UNIT (D99 point 10, BL-99): a permission key granted on site A must not admit the SAME
+    /// THE SITE IS THE UNIT: a permission key granted on site A must not admit the SAME
     /// user, in the SAME role, on site B of the SAME tenant - driven per alias over real HTTP.
     /// </summary>
     /// <remarks>
@@ -34,7 +34,7 @@ namespace Stomme.Tests
     /// </para>
     /// <para>
     /// PostgreSQL and RavenDB - the two stores a real deployment runs on, one relational and one document,
-    /// both FAIL-NOT-SKIP when unreachable (D46). SQLite is deliberately absent: the isolation claim is about
+    /// both FAIL-NOT-SKIP when unreachable. SQLite is deliberately absent: the isolation claim is about
     /// the query the provider runs, and the relational leg is worth more against the real thing.
     /// </para>
     /// </remarks>

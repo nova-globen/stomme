@@ -95,7 +95,7 @@ namespace Stomme.Tests.Connectivity
 
             new Stomme.Modules.Connectivity.Startup.ServerStartup().ConfigureServices(services);
             // The in-process harness composes no file manager, so it offers no managed file storage: the extraction context's
-            // FileSink is null here, exactly as on a host without it (BL-96 increment 2); the sink itself is driven on an installed host.
+            // FileSink is null here, exactly as on a host without it; the sink itself is driven on an installed host.
             services.RemoveAll<IConnectorFileSink>();
 
             foreach (var connector in connectors)

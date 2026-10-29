@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The REFLECTIVE declaration gate of the authorization bridge (D99, BL-99): every permission KEY a module
+    /// The REFLECTIVE declaration gate of the authorization bridge: every permission KEY a module
     /// declares is well formed, and every <c>[Requires]</c> in a loaded module assembly names a key some module
     /// actually declares.
     /// </summary>
@@ -26,7 +26,7 @@ namespace Stomme.Tests
     /// <b>Why a gate and not a convention.</b> The framework SILENTLY IGNORES a malformed declaration (F2,
     /// measured): a bare two-segment key renders no grid column, materialises no Permission row, and is written
     /// by the control-panel add-module path as a literal Module permission - and a key whose casing differs from
-    /// the row it is looked up against is a silent denial on PostgreSQL and a silent grant on RavenDB (D49).
+    /// the row it is looked up against is a silent denial on PostgreSQL and a silent grant on RavenDB.
     /// Every failure mode here is invisible at runtime, which is exactly what a gate is for.
     /// </para>
     /// <para>
@@ -208,7 +208,7 @@ namespace Stomme.Tests
             Assert.Throws<ArgumentException>(() => PermissionKeys.Declare(new[] { new string('g', 51) + ":manage" }));
         }
 
-        // BL-78 (D100 point 6): notifications declares DIFFERENT default roles per key (view-own for Registered
+        // Notifications declares DIFFERENT default roles per key (view-own for Registered
         // Users, the rest for Administrators only) - the uniform overload applies one role set to every key (F12).
 
         [Fact]
@@ -358,7 +358,7 @@ namespace Stomme.Tests
             Assert.NotEmpty(violations);
         }
 
-        // ---- [Requires] on a CONTROLLER type or action (never enforced, D105) ------------------------------
+        // ---- [Requires] on a CONTROLLER type or action (never enforced) ------------------------------
 
         [Fact]
         public void No_requires_attribute_sits_on_a_controller_type_or_action()
@@ -436,7 +436,7 @@ namespace Stomme.Tests
         {
             // A module installed as a .nupkg can write PermissionNames by hand, and an UPPERCASE resource
             // diverges by provider: the row query is case-SENSITIVE on PostgreSQL/SQLite and case-INSENSITIVE
-            // on RavenDB, while the guard always lower-cases the key. Normalise at the boundary (D49).
+            // on RavenDB, while the guard always lower-cases the key. Normalise at the boundary.
             var keys = PermissionKeys.ParseKeys("View,Edit,Pipelines:Manage:Administrators");
             var key = Assert.Single(keys);
             Assert.Equal("pipelines", key.Resource);
@@ -596,7 +596,7 @@ namespace Stomme.Tests
 
                 if (string.Equals(requirement.Permission, "system:admin", StringComparison.Ordinal))
                 {
-                    continue; // the one key that maps to Host role membership rather than to rows (D99)
+                    continue; // the one key that maps to Host role membership rather than to rows
                 }
 
                 if (!PermissionKeys.TrySplit(requirement.Permission, out var resource, out var operation))

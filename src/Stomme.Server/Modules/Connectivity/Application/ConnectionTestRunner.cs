@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Connectivity.Application
 {
     /// <summary>
-    /// Runs a connector's test for a connection (BL-94 increment 6, D110) - the one path the Test command and, in
+    /// Runs a connector's test for a connection - the one path the Test command and, in
     /// increment 11, the health probe share: the connector from the catalog, the credentials from the per-site secret
     /// store, the HOST's egress for the connection's site, the connection's timeout, and a CATEGORY back. The
     /// connector's message is discarded (it may echo the endpoint, a user name, a password); an exception is
@@ -46,7 +46,7 @@ namespace Stomme.Modules.Connectivity.Application
             try
             {
                 var result = await connector.TestConnectionAsync(context, bounded.Token);
-                return result.Success ? ConnectorOutcome.Succeeded : ConnectorOutcome.Failed; // result.Message is discarded on purpose (D110)
+                return result.Success ? ConnectorOutcome.Succeeded : ConnectorOutcome.Failed; // result.Message is discarded on purpose
             }
             catch (OperationCanceledException) when (!ct.IsCancellationRequested)
             {

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 namespace Stomme.Infrastructure.Backup.Participants
 {
     /// <summary>
-    /// The tenants' files (BL-81, D106 item 3): <c>Content/Tenants/**</c> under the content root (private, served through the
+    /// The tenants' files: <c>Content/Tenants/**</c> under the content root (private, served through the
     /// file controller) AND under the web root (public). Upload staging and logs are not carried.
     /// </summary>
     /// <remarks>
@@ -39,7 +39,7 @@ namespace Stomme.Infrastructure.Backup.Participants
 
         public string Name => PartName;
 
-        /// <summary>The files' record layout, not a type's shape (BL-170): files have none, so this is bumped by hand when the
+        /// <summary>The files' record layout, not a type's shape: files have none, so this is bumped by hand when the
         /// part's own record format changes.</summary>
         public string SchemaVersion => "1";
 
@@ -106,7 +106,7 @@ namespace Stomme.Infrastructure.Backup.Participants
             var trees = Trees().ToDictionary(entry => entry.Root, entry => entry.Tree);
             var staged = trees.ToDictionary(entry => entry.Key, entry => entry.Value + ".restoring-" + stamp);
             var written = trees.Keys.ToDictionary(root => root, _ => 0);
-            // BL-171: the tree is Tenants/{tenantId}/..., so a partial restore writes and swaps the selected tenants'
+            // The tree is Tenants/{tenantId}/..., so a partial restore writes and swaps the selected tenants'
             // folders only; every other tenant's folder stays as it is.
             var partial = scope.IsPartial ? scope.TenantIds.Select(id => id.ToString()).ToHashSet(StringComparer.Ordinal) : null;
             try

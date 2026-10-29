@@ -30,7 +30,7 @@ internal class ResumeExecutePipelineStep(IBookmarkQueue bookmarkQueue, IStimulus
 
         var parentInstanceId = (string)props["ParentInstanceId"];
         var stimulus = new ExecutePipelineStimulus(notification.PipelineState.Id);
-        // Stomme hand fix (BL-229, 2026-10-08): the child's result under keys of its own, not its output as the parent's input.
+        // Stomme hand fix: the child's result under keys of its own, not its output as the parent's input.
         var input = ChildPipelineCompletion.Input(pipelineState);
 
         var bookmarkQueueItem = new NewBookmarkQueueItem

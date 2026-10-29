@@ -19,7 +19,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (D106 item 7) - a replace is TRUSTED only when the store, read back, holds exactly the snapshot's ids. A store
+    /// A replace is TRUSTED only when the store, read back, holds exactly the snapshot's ids. A store
     /// that silently drops a write (a filter, a trigger, a provider quirk) makes the replace throw, never report success.
     /// </summary>
     public class ModuleAggregateBackupParticipantCountCheckTests

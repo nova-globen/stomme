@@ -21,7 +21,7 @@ namespace Stomme.Modules.Pipelines.Steps
     [Step("Stomme", "Files", "Write text to a file in the site's pipeline folder.", DisplayName = "Write text file")]
     public class WriteTextFile : DataStep
     {
-        // UTF-8 with no byte-order mark (BL-229, found driving the Form trigger: a JSON file written here began with one, which
+        // UTF-8 with no byte-order mark (found driving the Form trigger: a JSON file written here began with one, which
         // many JSON readers refuse). Reading still accepts a file that has one.
         private static readonly UTF8Encoding NoByteOrderMark = new(encoderShouldEmitUTF8Identifier: false);
 

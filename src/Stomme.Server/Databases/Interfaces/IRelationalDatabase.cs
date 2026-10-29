@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 namespace Stomme.Databases.Interfaces
 {
     /// <summary>
-    /// The relational-migrations surface of a database provider (D53) — the eleven members that only make
+    /// The relational-migrations surface of a database provider — the eleven members that only make
     /// sense for an EF-Core-backed relational store: EF options wiring, SQL name/value rewriting and the DDL
     /// helpers the migration builders call. Split off <see cref="IDatabase"/> so a document-store provider
     /// (<c>RavenDatabase</c>) can implement the storage-agnostic core WITHOUT pretending to supply
@@ -52,14 +52,14 @@ namespace Stomme.Databases.Interfaces
         public bool SupportsLogicalRestore { get; }
 
         /// <summary>
-        /// BL-81: after a restore inserted rows with their original keys, move <paramref name="table"/>'s identity past the
+        /// After a restore inserted rows with their original keys, move <paramref name="table"/>'s identity past the
         /// highest one, so the next insert collides with nothing. Runs on <paramref name="context"/>'s connection and
         /// transaction. SQLite needs nothing - its next rowid follows the highest present.
         /// </summary>
         public Task ResetIdentityAsync(DbContext context, string table, string keyColumn, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// BL-81: lets the restore insert ORIGINAL keys into <paramref name="table"/> - on PostgreSQL an identity declared
+        /// Lets the restore insert ORIGINAL keys into <paramref name="table"/> - on PostgreSQL an identity declared
         /// GENERATED ALWAYS refuses them (measured: 428C9 on the Tenant table), so it is switched to BY DEFAULT inside the
         /// restore's transaction. True when it switched one; the caller then calls <see cref="RestoreGeneratedAlwaysAsync"/>.
         /// </summary>
@@ -69,7 +69,7 @@ namespace Stomme.Databases.Interfaces
         public Task RestoreGeneratedAlwaysAsync(DbContext context, string table, string keyColumn, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// BL-173: called around each batch of rows a restore inserts with their ORIGINAL keys into <paramref name="table"/>,
+        /// Called around each batch of rows a restore inserts with their ORIGINAL keys into <paramref name="table"/>,
         /// whose key the database generates - <see cref="EndExplicitKeyInsertsAsync"/> after it. SQL Server refuses an explicit
         /// identity value unless IDENTITY_INSERT is ON for the table, and allows it ON for ONE table per session at a time, so
         /// the switch brackets each batch rather than the whole restore. Runs on <paramref name="context"/>'s connection.

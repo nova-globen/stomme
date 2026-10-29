@@ -4,7 +4,7 @@
 @inject IPipelinesService PipelinesService
 
 @*
-    BL-229 - n8n's Evaluations: a pipeline's published version run over a data table's rows as test cases - each row a run that
+    n8n's Evaluations: a pipeline's published version run over a data table's rows as test cases - each row a run that
     starts at the pipeline's "When evaluating" step with the row - and what its Evaluation steps record per row (metrics,
     averaged; outputs), newest evaluation first. A running evaluation is observed, never awaited: the page re-reads itself every
     two seconds through InvokeAsync, on the circuit's own dispatcher, while one runs.
@@ -118,7 +118,7 @@ else
                 @{ var earlier = (_evaluations ?? new List<PipelineEvaluationView>()).Where(each => each.Id != _open.Id && each.State != PipelineEvaluations.Running).ToList(); }
                 @if (earlier.Count > 0)
                 {
-                    @* BL-229 - n8n's comparison of evaluation runs: the previous one by default, any other on request. *@
+                    @* n8n's comparison of evaluation runs: the previous one by default, any other on request. *@
                     <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
                         <label for="pipelines-evaluation-compare">Compare with</label>
                         <select id="pipelines-evaluation-compare" class="db-input" style="width:auto;" value="@(_compare?.Id ?? "")" @onchange="e => CompareWithAsync(e.Value?.ToString())">

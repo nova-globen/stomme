@@ -13,10 +13,10 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The assistant's meter bridge (BL-97 increment 9; D113 over D102), as a <see cref="DelegatingChatClient"/> around the
+    /// The assistant's meter bridge (D113 over D102), as a <see cref="DelegatingChatClient"/> around the
     /// provider's client, so no agent can make an unmetered call: BEFORE a call the site's AI quota is asked - the calls
     /// metric for one more call, the tokens metric for any budget left - and a spent quota or an unreachable meter REFUSES
-    /// the call (fail-closed, D102); AFTER it the call is recorded through <see cref="IAiUsageRecorder"/>, which prices it
+    /// the call (fail-closed); AFTER it the call is recorded through <see cref="IAiUsageRecorder"/>, which prices it
     /// server-side and folds it into the same quotas.
     /// </summary>
     /// <remarks>
@@ -96,7 +96,7 @@ namespace Stomme.Modules.AiAssistant.Application
             var timer = Stopwatch.StartNew();
             long input = 0, output = 0;
             var recorded = false;
-            // BL-251: the stream used to be recorded only after it ended, so a streamed call that failed or that the egress
+            // The stream used to be recorded only after it ended, so a streamed call that failed or that the egress
             // guard refused was never metered nor in the usage log, and its refusal was not mapped. A yield cannot sit in a
             // try with a catch, so the enumerator is driven by hand: each step's failure is recorded and mapped like the
             // non-streamed call's, and a stream the caller stops reading early is recorded with what it used so far.
@@ -186,7 +186,7 @@ namespace Stomme.Modules.AiAssistant.Application
         }
 
         /// <summary>
-        /// A response the cache answered (BL-97 increment 10): no call reached the model, so it is recorded here as
+        /// A response the cache answered: no call reached the model, so it is recorded here as
         /// <see cref="AiCallStatus.Cached"/> with the original counts - D102 bills a cached call at nothing.
         /// </summary>
         public Task RecordCachedAsync(Stomme.CostOptimization.CachedModelResponse response, CancellationToken cancellationToken = default)

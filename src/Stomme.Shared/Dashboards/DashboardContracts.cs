@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Stomme.Dashboards
 {
     // ============================================================================================================
-    // The Dashboards module's Shared contracts (BL-96 increment 8, D110): the permission keys and the enumerations a
+    // The Dashboards module's Shared contracts: the permission keys and the enumerations a
     // page or an API consumer reads. BCL-ONLY like the other Shared contracts.
     // ============================================================================================================
 

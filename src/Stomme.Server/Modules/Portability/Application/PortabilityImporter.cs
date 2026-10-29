@@ -26,7 +26,7 @@ namespace Stomme.Modules.Portability.Application
     }
 
     /// <summary>
-    /// The contributors a host has, by entity type (BL-82, D107 item 16). A type claimed by TWO contributors is claimed
+    /// The contributors a host has, by entity type. A type claimed by TWO contributors is claimed
     /// by NEITHER: both are excluded and the collision logged at Error - the BL-105 posture, so a packaged module cannot
     /// take over another's type or brick the host. An in-tree duplicate is a build-gate failure instead.
     /// </summary>
@@ -64,7 +64,7 @@ namespace Stomme.Modules.Portability.Application
     }
 
     /// <summary>
-    /// Imports a configuration package: <b>validate everything, then change anything</b> (D107 item 3). The size cap, the
+    /// Imports a configuration package: <b>validate everything, then change anything</b>. The size cap, the
     /// format, the kind, every entity's invariants, a readable schema, no secrets, a contributor per type, the manifest,
     /// the dependency closure and order, and each contributor's own <see cref="IPortableEntityContributor.ValidateImportAsync"/>
     /// are ALL checked before the first <see cref="IPortableEntityContributor.ImportAsync"/> - the predecessor platform ran its providers in

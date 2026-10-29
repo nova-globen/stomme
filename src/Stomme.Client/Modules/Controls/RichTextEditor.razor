@@ -18,7 +18,7 @@
     private RenderFragment _textEditorComponent;
     private ITextEditor _textEditor;
 
-    // BL-083 (infra backlog, 2026-08-08): what Initialize was last called with, so a redundant render pass
+    // BL-083 (infra backlog): what Initialize was last called with, so a redundant render pass
     // (same Content, same editor instance) does not call it again and wipe an unsaved edit - see
     // OnAfterRenderAsync below.
     private ITextEditor _initializedTextEditor;
@@ -65,7 +65,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // BL-083: OnAfterRenderAsync runs after EVERY render of this component, not just the first -
+        // OnAfterRenderAsync runs after EVERY render of this component, not just the first -
         // including a render pass triggered by an ancestor that repeats the SAME Content value (Blazor
         // calls SetParametersAsync again whenever a parent re-renders this component's markup, regardless
         // of whether any parameter actually changed). Calling Initialize unconditionally on every one of

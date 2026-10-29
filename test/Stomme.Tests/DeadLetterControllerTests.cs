@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-36(b) — pins the DLQ admin controller's mapping onto the <see cref="IDeadLetterQueue"/> port:
+    /// Pins the DLQ admin controller's mapping onto the <see cref="IDeadLetterQueue"/> port:
     /// the three status shapes (messaging off / Null port / real queue), the list projection, and the
     /// found/not-found answers for retry and discard. The PORT itself is driven live against real RavenDB
     /// by <c>RavenDbDeadLetterAdminLiveTests</c> (poison → dead-letter → retry → redelivery → discard);

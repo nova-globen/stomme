@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Sentry (n8n's Sentry.io node: its events, issues, organizations, projects, releases and teams): every call
+    /// Sentry (n8n's Sentry.io node: its events, issues, organizations, projects, releases and teams): every call
     /// Sentry's web API with the token as a bearer token; a list read page by page by the cursor Sentry's Link header names
     /// - never its address - as long as Sentry says there are results, no more than asked; an issue got, updated and deleted;
     /// organizations, projects, releases and teams read, got, created, updated and deleted; what could go wrong refused

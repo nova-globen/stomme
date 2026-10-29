@@ -21,7 +21,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Send email (n8n's Gmail node, its Send and Reply), run by the real engine with the extraction port scripted: the
+    /// Send email (n8n's Gmail node, its Send and Reply), run by the real engine with the extraction port scripted: the
     /// connection, the connector's <c>send</c> operation and the message's recipients, subject, bodies and reply reach the port -
     /// a body of many lines as one value, the text the previous step's result when no body is given - and the message's id is the
     /// result and an output, its thread another; the mail service's refusal is the step's failure in its words; a connection that

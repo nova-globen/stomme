@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-184: the settings API authorized one entity and wrote another. The bulk door (<c>PUT api/Setting/{entity}/{id}</c>)
+    /// The settings API authorized one entity and wrote another. The bulk door (<c>PUT api/Setting/{entity}/{id}</c>)
     /// decided the ROUTE's entity - a registered user may edit their own User settings - then ADDED each new row with the
     /// entity its BODY named, so a user planted a Site row, and a Host row in the installation's master store. The by-id door
     /// (<c>PUT api/Setting/{id}</c>) decided the BODY's entity, then replaced whatever row the id named, so a user moved a

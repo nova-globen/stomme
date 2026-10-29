@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Erasure.Startup
 {
     /// <summary>
-    /// The right-to-erasure module (BL-116, D112): the request/receipt aggregate on the storage-blind seam, the queue
+    /// The right-to-erasure module: the request/receipt aggregate on the storage-blind seam, the queue
     /// deleting a user calls, the runner, the per-site job, and the framework's own participants. Always composed -
     /// erasure is not a feature an install opts into. A module's participant lives with the module (Sessions,
     /// IdentityAudit, Notifications, Metering register theirs).
@@ -37,7 +37,7 @@ namespace Stomme.Modules.Erasure.Startup
             services.AddScoped<IErasureQueue, ErasureQueue>();
             services.AddScoped<ErasureRunner>();
 
-            // BL-191: the receipts page's service on a Server-runtime site (the browser's HTTP twin is registered only in the
+            // The receipts page's service on a Server-runtime site (the browser's HTTP twin is registered only in the
             // WebAssembly client's Program).
             services.AddScoped<Services.IErasureService, Services.ServerErasureService>();
 

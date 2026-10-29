@@ -31,7 +31,7 @@ namespace Stomme.Infrastructure.Security
     /// http/https URLs are accepted (<see cref="IsPermittedScheme"/>).
     /// </para>
     /// <para>
-    /// <b>ONE guard (BL-132).</b> Every server-side outbound request to a URL somebody typed goes through this class:
+    /// <b>ONE guard.</b> Every server-side outbound request to a URL somebody typed goes through this class:
     /// the notification webhook channel, the file upload-by-URL path and the MCP client. BL-78 had shipped a
     /// webhook-scoped copy (<c>WebhookSsrfGuard</c>) with the same deny set and the same connect step; it was collapsed
     /// onto this class, and what is left of it is only the webhook's own setting name and wording. A caller's allowlist
@@ -179,7 +179,7 @@ namespace Stomme.Infrastructure.Security
             }
         }
 
-        /// <summary>True when <paramref name="exception"/> (or an inner exception) is this guard's refusal - or the connector contract's own (<see cref="Stomme.Connectivity.ConnectorEgressDeniedException"/>, BL-96), which a connector throws when the host pinned to nothing.</summary>
+        /// <summary>True when <paramref name="exception"/> (or an inner exception) is this guard's refusal - or the connector contract's own (<see cref="Stomme.Connectivity.ConnectorEgressDeniedException"/>), which a connector throws when the host pinned to nothing.</summary>
         public static bool IsDenial(Exception? exception)
         {
             if (FindDenial(exception) is not null)

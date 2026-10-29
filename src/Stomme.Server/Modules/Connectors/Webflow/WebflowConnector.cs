@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Webflow
 {
     /// <summary>
-    /// Webflow (BL-229, n8n's Webflow node: a collection's items created, got, read, updated and deleted): a workspace's or a
+    /// Webflow (n8n's Webflow node: a collection's items created, got, read, updated and deleted): a workspace's or a
     /// site's CMS over Webflow's Data API v2 (<c>https://api.webflow.com/v2</c>), its API token - a site token, a workspace token
     /// or an app's - sent as a bearer. A test names the sites the token reaches and its scopes.
     /// </summary>

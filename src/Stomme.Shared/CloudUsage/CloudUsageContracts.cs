@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Stomme.CloudUsage
 {
     // ============================================================================================================
-    // The CloudUsage module's Shared contracts (BL-97 increment 2): the Unified Cost Schema a cost source is normalised
+    // The CloudUsage module's Shared contracts: the Unified Cost Schema a cost source is normalised
     // into, and the permission keys a page or an API consumer reads. BCL-ONLY like the other Shared contracts.
     // ============================================================================================================
 
@@ -35,7 +35,7 @@ namespace Stomme.CloudUsage
     }
 
     /// <summary>
-    /// What a page shows for a <see cref="CloudProvider"/> (BL-22, 2026-10-22): the member names are identifiers, and the
+    /// What a page shows for a <see cref="CloudProvider"/>: the member names are identifiers, and the
     /// budget page listed "Aws", "Gcp", "Microsoft365" and "GenericRest" as they stand.
     /// </summary>
     public static class CloudProviderNames

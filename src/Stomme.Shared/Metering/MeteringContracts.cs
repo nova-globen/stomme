@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Stomme.Metering
 {
     /// <summary>
-    /// Records consumption of a metered capability (D102).
+    /// Records consumption of a metered capability.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -17,7 +17,7 @@ namespace Stomme.Metering
     /// </para>
     /// <para>
     /// <b>It is idempotent by operation, not atomic.</b> The ledger row and the quota counter are two commits on
-    /// every provider (the unit of work persists nothing of its own, D67), so a caller passes a stable
+    /// every provider (the unit of work persists nothing of its own), so a caller passes a stable
     /// <see cref="UsageEvent.OperationId"/> and a retry appends once. A crash between the two leaves the row
     /// pending and the recovery job folds it; that window is the honest cost of the split.
     /// </para>
@@ -29,7 +29,7 @@ namespace Stomme.Metering
         Task<UsageOutcome> RecordAsync(UsageEvent usage, CancellationToken ct = default);
     }
 
-    /// <summary>Records one AI call, priced server-side (D102).</summary>
+    /// <summary>Records one AI call, priced server-side.</summary>
     public interface IAiUsageRecorder
     {
         /// <summary>Records <paramref name="usage"/>; the cost is computed here, never supplied by the caller.</summary>

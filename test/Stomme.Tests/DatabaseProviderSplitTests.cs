@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D53 — the split of <see cref="IDatabase"/> into a storage-agnostic core and the relational sub-interface
+    /// The split of <see cref="IDatabase"/> into a storage-agnostic core and the relational sub-interface
     /// <see cref="IRelationalDatabase"/>, the metadata-only <see cref="RavenDatabase"/>, and the install
     /// branch predicate <c>DatabaseManager.IsRelationalProvider</c> that gates EF Core create/migrate.
     /// <para>

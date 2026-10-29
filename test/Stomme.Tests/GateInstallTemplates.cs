@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-164: install ONCE per provider-and-settings, then hand every case its OWN pristine copy of that install.
+    /// Install ONCE per provider-and-settings, then hand every case its OWN pristine copy of that install.
     /// </summary>
     /// <remarks>
     /// <para>

@@ -22,7 +22,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95's residue "ZIP file shapes" (2026-10-03): Zip files and Unzip files, run by the real engine on the site's pipeline
+    /// BL-95's residue "ZIP file shapes": Zip files and Unzip files, run by the real engine on the site's pipeline
     /// folder - a round trip with subfolders, a pattern, an archive written into the folder it zips, and the refusals an archive
     /// that is not trusted earns: an entry that climbs out (zip slip), more entries than <c>Files:Unzip:MaxEntries</c>, more
     /// decompressed bytes than <c>Files:Unzip:MaxTotalBytes</c>, an entry that expands past the ratio, a file already in the

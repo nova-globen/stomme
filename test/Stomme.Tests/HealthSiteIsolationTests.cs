@@ -29,7 +29,7 @@ namespace Stomme.Tests
     /// <para>
     /// <b>The acknowledge handler is run with site A's alias and site B's row id</b> - the IDOR its own remarks name: the ids
     /// are deterministic and therefore guessable, so "another site's alert" must answer exactly like "no such alert".
-    /// PostgreSQL and RavenDB FAIL rather than skip (D46).
+    /// PostgreSQL and RavenDB FAIL rather than skip.
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]

@@ -20,7 +20,7 @@ using MimeKit;
 namespace Stomme.Modules.Connectors.Outlook
 {
     /// <summary>
-    /// Microsoft Outlook (BL-229, n8n's Microsoft Outlook node: messages got, sent and replied to): a mailbox of a Microsoft 365
+    /// Microsoft Outlook (n8n's Microsoft Outlook node: messages got, sent and replied to): a mailbox of a Microsoft 365
     /// tenant over Microsoft Graph (<c>https://graph.microsoft.com/v1.0</c>), app-only - an Entra ID app registration's client id
     /// and secret and the tenant's token endpoint (OAuth2 client credentials, the <c>.default</c> scope; the app granted Mail.Send
     /// and Mail.ReadWrite) through the shared <see cref="OAuth2TokenProvider"/>, the access token cached, every call through the
@@ -37,7 +37,7 @@ namespace Stomme.Modules.Connectors.Outlook
     /// message's conversation - to its sender, its subject "RE:", the original quoted below the body given (to, cc, bcc and a
     /// subject given change Outlook's). A send answers ONE record, as the chat connectors'
     /// message does: its <c>id</c>, or <c>refused</c> with why - a recipient that is not an address, Graph's own code and message -
-    /// because the extraction port answers a thrown failure with its fixed words alone (D110). <c>mark_read</c>: the messages with the
+    /// because the extraction port answers a thrown failure with its fixed words alone. <c>mark_read</c>: the messages with the
     /// ids given marked read. The mailbox, a folder and a message id are held to their shapes and escaped before they reach the path;
     /// a throttled call waits as Graph says; a failure of a search or a mark is thrown with its status and Graph's code.
     /// </remarks>
@@ -283,7 +283,7 @@ namespace Stomme.Modules.Connectors.Outlook
         // What to send, read and checked before anything is asked of Microsoft.
         private sealed record Outgoing(IReadOnlyList<string> To, IReadOnlyList<string> Cc, IReadOnlyList<string> Bcc, string? Subject, string? Text, string? Html, string? ReplyTo);
 
-        // The message to send, or why not - in words an author can act on, answered as a record (D110).
+        // The message to send, or why not - in words an author can act on, answered as a record.
         private static (Outgoing? Draft, string? Problem) Draft(IReadOnlyDictionary<string, string> parameters)
         {
             try

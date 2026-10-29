@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-107: a job must run each tenant in its OWN scope, and one tenant's failure must not skip the rest.
+    /// A job must run each tenant in its OWN scope, and one tenant's failure must not skip the rest.
     /// </summary>
     /// <remarks>
     /// <para>

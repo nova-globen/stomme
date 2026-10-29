@@ -85,7 +85,7 @@ namespace Stomme.Modules.AiAssistant.Application
         MeteringUnavailable = 4,
         UnknownProvider = 5,
 
-        /// <summary>The site's outbound guard refused the model endpoint's address - a private, loopback or internal one the site has not allowed (BL-180).</summary>
+        /// <summary>The site's outbound guard refused the model endpoint's address - a private, loopback or internal one the site has not allowed.</summary>
         EndpointNotPermitted = 6,
     }
 

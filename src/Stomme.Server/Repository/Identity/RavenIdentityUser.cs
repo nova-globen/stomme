@@ -48,19 +48,19 @@ namespace Stomme.Repository.Identity
 
         public bool PhoneNumberConfirmed { get; set; }
 
-        /// <summary>When the lockout ends; null/past means not locked (<c>IUserLockoutStore</c>, BL-6). The
+        /// <summary>When the lockout ends; null/past means not locked (<c>IUserLockoutStore</c>). The
         /// document twin of AspNetUsers.LockoutEnd.</summary>
         public DateTimeOffset? LockoutEnd { get; set; }
 
         /// <summary>Whether lockout applies to this user at all — <c>UserManager.IsLockedOutAsync</c> consults
-        /// this BEFORE <see cref="LockoutEnd"/> (<c>IUserLockoutStore</c>, BL-6).</summary>
+        /// this BEFORE <see cref="LockoutEnd"/> (<c>IUserLockoutStore</c>).</summary>
         public bool LockoutEnabled { get; set; }
 
         /// <summary>Consecutive failed access attempts; reset to zero when the threshold trips the lockout
-        /// (<c>IUserLockoutStore</c>, BL-6).</summary>
+        /// (<c>IUserLockoutStore</c>).</summary>
         public int AccessFailedCount { get; set; }
 
-        /// <summary>The user's two-factor toggle (<c>IUserTwoFactorStore</c>, BL-6).</summary>
+        /// <summary>The user's two-factor toggle (<c>IUserTwoFactorStore</c>).</summary>
         public bool TwoFactorEnabled { get; set; }
 
         /// <summary>External OAuth/OIDC logins (<c>IUserLoginStore</c>). External login is live in this host.</summary>

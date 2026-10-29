@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - WooCommerce (n8n's WooCommerce node: orders, products and customers) over a store's REST API: the consumer key and
+    /// WooCommerce (n8n's WooCommerce node: orders, products and customers) over a store's REST API: the consumer key and
     /// secret by the Basic scheme; a pasted admin address cut back to the store's, a store in a folder kept; orders by status,
     /// customer, product, search and time, sorted, page by page up to the most asked for or WooCommerce's last page, each a plain
     /// record with its line items; an order, a product and a customer got, created, updated and deleted - to the trash, or for

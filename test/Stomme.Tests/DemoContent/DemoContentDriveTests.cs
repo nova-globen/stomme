@@ -79,7 +79,7 @@ namespace Stomme.Tests.DemoContent
 
             var datasetsResponse = await GateDrive.GetAsync(client, cookies, Host, "/api/Datasets", output, label + " datasets");
             var datasets = JsonSerializer.Deserialize<List<DatasetDescriptor>>(datasetsResponse.Body, Json)!;
-            Assert.Equal(new[] { "Cloud budget status", "Demo customers", "Demo inventory", "Demo sales", "Multi-cloud cost", "Underutilized resources" }, datasets.Select(d => d.Name).OrderBy(n => n, System.StringComparer.Ordinal)); // with the cloud cost board's three (BL-97 increment 5)
+            Assert.Equal(new[] { "Cloud budget status", "Demo customers", "Demo inventory", "Demo sales", "Multi-cloud cost", "Underutilized resources" }, datasets.Select(d => d.Name).OrderBy(n => n, System.StringComparer.Ordinal)); // with the cloud cost board's three
             Assert.DoesNotContain("@example.com", datasetsResponse.Body);
             var customers = datasets.Single(d => d.Name == "Demo customers");
             Assert.Equal((DataClassification.Restricted, true), (customers.Classification, customers.IsSensitive));

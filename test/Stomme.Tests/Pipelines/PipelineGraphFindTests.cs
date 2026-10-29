@@ -6,7 +6,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - find on the canvas: a step is found by its name, its type, its comment or what it holds - an input, an
+    /// Find on the canvas: a step is found by its name, its type, its comment or what it holds - an input, an
     /// expression, a script, a condition, a case - case-insensitively, wherever it sits (the bodies named, outermost first), one
     /// match per step in the order drawn, at most as many as asked; the text around a long match is cut to it.
     /// </summary>

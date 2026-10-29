@@ -16,7 +16,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// What an "Email received" trigger hands the pipeline it starts (BL-229, n8n's Email Trigger (IMAP)): the message, as JSON
+    /// What an "Email received" trigger hands the pipeline it starts (n8n's Email Trigger (IMAP)): the message, as JSON
     /// text, read with an expression - <c>{{ email.subject }}</c>, <c>{{ email.from }}</c>, <c>{{ email.text }}</c>. Its
     /// attachments are a list: each its name, type and size, and - when the trigger keeps them - its <c>path</c> in the site's
     /// pipeline folder, for a file step to read. ONE shape, written by the server from the IMAP connector's record and by the

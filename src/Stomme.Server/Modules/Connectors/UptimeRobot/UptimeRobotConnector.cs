@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.UptimeRobot
 {
     /// <summary>
-    /// UptimeRobot (BL-229, n8n's UptimeRobot node: its account, monitors, alert contacts, maintenance windows and public status
+    /// UptimeRobot (n8n's UptimeRobot node: its account, monitors, alert contacts, maintenance windows and public status
     /// pages): UptimeRobot's API v2 with an API key in each call's form, over the host's egress. A test names the key's account.
     /// </summary>
     /// <remarks>

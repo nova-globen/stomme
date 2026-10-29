@@ -22,7 +22,7 @@ namespace Stomme.Infrastructure
     /// caller reading "lock" is entitled to know it is a no-op on their install.
     /// </para>
     /// <para>
-    /// <b>2. Even with scale-out, the acquire is NOT ATOMIC</b> (measured by reading, BL-108). It does a
+    /// <b>2. Even with scale-out, the acquire is NOT ATOMIC</b> (measured by reading). It does a
     /// <c>Get</c> and then a <c>Set</c>, and <see cref="IDistributedCache"/> has no conditional write:
     /// <c>Set</c> OVERWRITES. Two instances that miss the same instant therefore both proceed, and the
     /// <c>try/catch</c> around the write cannot save it — the old comment claimed a failure there meant another
@@ -72,7 +72,7 @@ namespace Stomme.Infrastructure
             }
 
             // Random delay so instances starting together do not all check-and-set on the same tick. This is
-            // AWAITED now; it used to be a discarded Task.Delay, which is to say it did nothing (BL-108).
+            // AWAITED now; it used to be a discarded Task.Delay, which is to say it did nothing.
             await Task.Delay(Random.Shared.Next(0, (int)MaximumJitter.TotalMilliseconds), cancellationToken).ConfigureAwait(false);
 
             var bytes = await _cache.GetAsync(key, cancellationToken).ConfigureAwait(false);

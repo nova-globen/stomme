@@ -27,7 +27,7 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// The CostOptimization application layer over the File store through the module's OWN startup (BL-97 increment 6):
+    /// The CostOptimization application layer over the File store through the module's OWN startup:
     /// the mediator with the authorization and validation behaviours, a resolved tenant and a site the test can switch,
     /// the predecessor platform's settable clock, and one scripted analyzer standing for the predecessor platform's stub analyzers - it yields the scripted
     /// drafts in order, which is what the command sees of several analyzers in order.

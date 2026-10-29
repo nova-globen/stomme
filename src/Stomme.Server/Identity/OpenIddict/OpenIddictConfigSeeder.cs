@@ -17,7 +17,7 @@ namespace Stomme.Identity.OpenIddict
     /// Reconciles the declarative <see cref="OpenIddictSeedOptions"/> (the <c>OpenIddict:Applications</c> /
     /// <c>OpenIddict:Scopes</c> config) into the CURRENT tenant's OpenIddict store — the operator path for
     /// registering relying parties (a+b+c work). Runs once per tenant per process, invoked by the bootstrap
-    /// middleware AFTER the store is provisioned (BL-55).
+    /// middleware AFTER the store is provisioned.
     /// </summary>
     /// <remarks>
     /// <para>

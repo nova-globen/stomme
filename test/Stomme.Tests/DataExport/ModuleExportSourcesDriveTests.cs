@@ -30,7 +30,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-97 increment 1 - the three module export sources DRIVEN through the real export engine on installed hosts on
+    /// The three module export sources DRIVEN through the real export engine on installed hosts on
     /// SQLite and PostgreSQL: a dataset registered and a board built over HTTP, exports requested over <c>api/DataExport</c>,
     /// rendered by the queue job, downloaded and read. A projected dataset CSV, a Restricted dataset exported schema-only
     /// (the address never in the artifact), a grid widget as CSV, a whole board as XLSX with one sheet per grid widget and

@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - YOURLS (n8n's YOURLS node) without a server: a URL, a keyword, a title and a short URL held to YOURLS's shape before
+    /// YOURLS (n8n's YOURLS node) without a server: a URL, a keyword, a title and a short URL held to YOURLS's shape before
     /// anything is sent - YOURLS itself would store "not a url"; the signature in the form's body and in no address; a URL
     /// shortened with its keyword and title, and one YOURLS already has answered as its existing short URL; a short URL expanded
     /// and its stats read by its keyword or its whole address; YOURLS's message on a failure; a test reading its version.
@@ -150,7 +150,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - YOURLS LIVE, against this machine's throwaway YOURLS 1.10 (scripts/yourls-test-server.ps1) - fail-not-skip without it
+    /// YOURLS LIVE, against this machine's throwaway YOURLS 1.10 (scripts/yourls-test-server.ps1) - fail-not-skip without it
     /// (D46): a URL shortened with a keyword and a title, shortened again and answered as its existing short URL, its keyword
     /// refused for another URL, expanded and its stats read by keyword and by address; a wrong signature refused with YOURLS's own
     /// words.

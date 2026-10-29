@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Intercom (n8n's Intercom node: its users, leads and companies): the token as a bearer with Intercom's API version;
+    /// Intercom (n8n's Intercom node: its users, leads and companies): the token as a bearer with Intercom's API version;
     /// the contacts page by page by Intercom's cursor up to the most asked for, or searched by a role, an address and a query;
     /// each contact its fields, its times in UTC, its location, its tags' and companies' ids and its custom attributes; a contact
     /// found by its address or external id, got, made (a user by default), changed and deleted; companies page by page, got by id,

@@ -18,7 +18,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-229 - the Connections page's form became a component of its own (<c>ConnectionForm</c>) so the pipeline editor makes a
+    /// The Connections page's form became a component of its own (<c>ConnectionForm</c>) so the pipeline editor makes a
     /// connection where a step needs it. The page still makes one from a connector's fields and its credentials, edits one
     /// without reading its credentials back (blank leaves them), and says what the server refused, in its words.
     /// </summary>

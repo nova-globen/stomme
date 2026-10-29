@@ -30,7 +30,7 @@ internal sealed record FeatureFlagSnapshot(
 }
 
 /// <summary>
-/// The singleton per-tenant cache of feature-flag snapshots the evaluator reads through (BL-39), so N
+/// The singleton per-tenant cache of feature-flag snapshots the evaluator reads through, so N
 /// evaluations of a flag cost one store round trip instead of N — including evaluations inside background
 /// jobs, which run in their own scopes over this same singleton.
 /// <para>

@@ -18,7 +18,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// would leave the registration itself unproven. It also keeps the internal store classes internal.
 /// </para>
 /// <para>
-/// <b>Two databases, per D23.</b> The framework store and the master store get separate RavenDB databases,
+/// <b>Two databases,.</b> The framework store and the master store get separate RavenDB databases,
 /// because that is what the Setting cluster's routing means. Binding them to one database is the shape
 /// <c>The_master_and_tenant_setting_stores_are_separate_databases</c> exists to reject.
 /// </para>
@@ -63,7 +63,7 @@ public sealed class RavenFrameworkStoreConformanceTests : FrameworkStoreConforma
         }.InitializeStommeStore();
 
         // The document provider has no change tracker to ask "is this an insert?", so audit stamps come from
-        // a store-level listener (D26).
+        // a store-level listener.
         _store.StampAudit(new SystemAuditContext("conformance-user"));
 
         var services = new ServiceCollection();
@@ -123,37 +123,37 @@ public sealed class RavenFrameworkStoreConformanceTests : FrameworkStoreConforma
 
     protected override IMasterSettingStore NewMasterSettings() => Resolve<IMasterSettingStore>();
 
-    // The Job/JobLog pair (D52) — master-side only, pinned to the master RavenDB database by
+    // The Job/JobLog pair — master-side only, pinned to the master RavenDB database by
     // FixedRavenDatabaseResolver inside RavenJobStore/RavenJobLogStore. Resolved from the container like every
     // other store, which is what proves AddRavenFrameworkStore registered them (D42's reflective gate demands it).
     protected override IJobStore NewJobs() => Resolve<IJobStore>();
 
     protected override IJobLogStore NewJobLogs() => Resolve<IJobLogStore>();
 
-    // The Theme cluster (D52) — master-side only, pinned to the master RavenDB database by
+    // The Theme cluster — master-side only, pinned to the master RavenDB database by
     // FixedRavenDatabaseResolver inside RavenThemeStore. Resolved from the container like every other store,
     // which is what proves AddRavenFrameworkStore registered it (D42's reflective gate demands it).
     protected override IThemeStore NewThemes() => Resolve<IThemeStore>();
 
-    // The ModuleDefinition cluster (D52) — master-side only, pinned to the master RavenDB database by
+    // The ModuleDefinition cluster — master-side only, pinned to the master RavenDB database by
     // FixedRavenDatabaseResolver inside RavenModuleDefinitionStore. Resolved from the container like every other
     // store, which is what proves AddRavenFrameworkStore registered it (D42's reflective gate demands it).
     protected override IModuleDefinitionStore NewModuleDefinitions() => Resolve<IModuleDefinitionStore>();
 
-    // The Tenant/Alias routing pair (D52) — master-side only, pinned to the master RavenDB database by
+    // The Tenant/Alias routing pair — master-side only, pinned to the master RavenDB database by
     // FixedRavenDatabaseResolver inside RavenTenantStore/RavenAliasStore. Resolved from the container like every
     // other store, which is what proves AddRavenFrameworkStore registered them (D42's reflective gate demands it).
     protected override ITenantStore NewTenants() => Resolve<ITenantStore>();
 
     protected override IAliasStore NewAliases() => Resolve<IAliasStore>();
 
-    // The Permission cluster (D24), twinned by D42. Resolving it from the container is the discriminating
+    // The Permission cluster, twinned. Resolving it from the container is the discriminating
     // check for this whole increment: before RavenPermissionStore existed this threw
     // InvalidOperationException("No service for type 'IPermissionStore' has been registered") — which is
     // exactly what a host on the RavenDB path hit at its first PermissionRepository construction.
     protected override IPermissionStore NewPermissions() => Resolve<IPermissionStore>();
 
-    // The five leaf clusters (D44), resolved from the container like every store above — which is what proves
+    // The five leaf clusters, resolved from the container like every store above — which is what proves
     // AddRavenFrameworkStore actually registered them. Twinned in the same increment as their EF
     // counterparts, so unlike Permission these never spent a release EF-only.
     protected override ILanguageStore NewLanguages() => Resolve<ILanguageStore>();
@@ -166,7 +166,7 @@ public sealed class RavenFrameworkStoreConformanceTests : FrameworkStoreConforma
 
     protected override INotificationStore NewNotifications() => Resolve<INotificationStore>();
 
-    // The SiteGroup pair (D45), likewise twinned in the same increment as their EF counterparts. The pair is
+    // The SiteGroup pair, likewise twinned in the same increment as their EF counterparts. The pair is
     // the first on the seam whose EF model had a NAVIGATION between the two clusters; severing it cost this
     // provider nothing (a document store references by id anyway), but note what the RavenDB side does NOT
     // reproduce: SiteGroupMember's relational UNIQUE index on (SiteId, SiteGroupId) has no document-store
@@ -175,7 +175,7 @@ public sealed class RavenFrameworkStoreConformanceTests : FrameworkStoreConforma
 
     protected override ISiteGroupMemberStore NewSiteGroupMembers() => Resolve<ISiteGroupMemberStore>();
 
-    // Visitor, UrlMapping and PageModule (D47), twinned in the same increment as their EF counterparts. Two
+    // Visitor, UrlMapping and PageModule, twinned in the same increment as their EF counterparts. Two
     // divergences these three inherit are worth naming and neither is reproducible here: UrlMapping's
     // relational UNIQUE index on (SiteId, Url) — which UrlMappingRepository's try/catch actually DEPENDS on as
     // its race control — has no document-store equivalent, and PageModule's IDeletable stamp is applied by the
@@ -186,14 +186,14 @@ public sealed class RavenFrameworkStoreConformanceTests : FrameworkStoreConforma
 
     protected override IPageModuleStore NewPageModules() => Resolve<IPageModuleStore>();
 
-    // Folder (D48). No master twin — Folder is tenant-side only. There is deliberately no File store to
+    // Folder. No master twin — Folder is tenant-side only. There is deliberately no File store to
     // resolve: the File cluster is NOT on the seam, and this fixture is where the reason is measured rather
     // than asserted — see The_seam_cannot_express_a_case_insensitive_column_filter_portably.
     protected override IFolderStore NewFolders() => Resolve<IFolderStore>();
 
     protected override IFileStore NewFiles() => Resolve<IFileStore>();
 
-    // The SearchContent cluster (D50). Resolved from the container like every other store — which is what
+    // The SearchContent cluster. Resolved from the container like every other store — which is what
     // proves AddRavenFrameworkStore actually registers them, not just that the classes compile.
     protected override ISearchContentStore NewSearchContents() => Resolve<ISearchContentStore>();
 
@@ -204,7 +204,7 @@ public sealed class RavenFrameworkStoreConformanceTests : FrameworkStoreConforma
     protected override ISearchWordStore NewSearchWords() => Resolve<ISearchWordStore>();
 
     /// <summary>
-    /// The RavenDB search read (D50) — the FACET half. It needs <c>SearchContentWordIndex</c> deployed, which
+    /// The RavenDB search read — the FACET half. It needs <c>SearchContentWordIndex</c> deployed, which
     /// <c>BootstrapRavenFrameworkStoreAsync</c> does in <see cref="InitializeAsync"/>: the real bootstrap, not
     /// a hand-rolled one, so a fixture that forgot the index would be a failing test rather than a green
     /// suite over an absent artifact.

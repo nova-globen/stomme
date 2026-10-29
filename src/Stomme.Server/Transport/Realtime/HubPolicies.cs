@@ -15,14 +15,14 @@ namespace Stomme.Transport.Realtime
         /// <summary>In-app notifications hub — any authenticated user (SignalR's per-user grouping targets the recipient).</summary>
         public const string Notification = "hub:notification";
 
-        /// <summary>Health hub - <c>health:view</c> on the connecting request's site (BL-83 / D104). It carries the health
+        /// <summary>Health hub - <c>health:view</c> on the connecting request's site. It carries the health
         /// page's live update, so it is the page's own key; before that push existed it broadcast nothing and was
         /// authenticated-only.</summary>
         public const string Health = "hub:health";
 
         public const string Dashboards = "hub:dashboards";
 
-        /// <summary>Collaboration hub - <c>collaboration:view</c> (BL-97 increment 12), the key an editor's lock and session need.</summary>
+        /// <summary>Collaboration hub - <c>collaboration:view</c>, the key an editor's lock and session need.</summary>
         public const string Collaboration = "hub:collaboration";
 
         /// <summary>Policy name → required permission (null = authenticated only). The producing features tighten these

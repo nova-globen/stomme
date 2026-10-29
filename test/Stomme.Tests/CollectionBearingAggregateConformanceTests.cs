@@ -22,12 +22,12 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-78 (D100 design point 7) — a COLLECTION-BEARING storage-blind aggregate (one collection of each element
+    /// A COLLECTION-BEARING storage-blind aggregate (one collection of each element
     /// shape the notifications aggregates carry: enum, string, keyless record, record with a string value object,
     /// Entity&lt;Guid&gt; child with a UTC DateTime) round-trips member for member on EVERY module-aggregate
     /// provider: EF (SQLite), EF (PostgreSQL), RavenDB and File — the GuestbookStoreConformanceTests shape, so the
     /// JSON collection convention of <c>ModuleAggregatesDbContext</c> is held to the document stores' answer.
-    /// PostgreSQL and RavenDB FAIL rather than skip when unreachable (D46): a SQLite-only run proves nothing about
+    /// PostgreSQL and RavenDB FAIL rather than skip when unreachable: a SQLite-only run proves nothing about
     /// the provider the relational convention most often meets in production.
     /// </summary>
     public abstract class CollectionBearingAggregateConformanceTests : IAsyncLifetime

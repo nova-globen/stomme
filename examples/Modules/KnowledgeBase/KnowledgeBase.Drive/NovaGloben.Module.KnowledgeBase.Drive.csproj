@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    BL-86: the exemplar's DRIVE harness (not the module). It installs the packed module through the REAL
+    The exemplar's DRIVE harness (not the module). It installs the packed module through the REAL
     InstallationManager into the production host (Program.BuildAppAsync, TestServer transport) on SQLite, PostgreSQL and
     RavenDB, and drives it over HTTP. A harness may reference the framework by project (the render guard does); the
     packages-only bar is the MODULE's. It keeps its OWN bin - the InstallationManager extracts the module into the entry

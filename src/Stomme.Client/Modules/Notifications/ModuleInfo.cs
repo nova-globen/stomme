@@ -7,7 +7,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Notifications
 {
     /// <summary>
-    /// The Notifications module's <see cref="ModuleDefinition"/> (BL-78 step 5) - how the framework discovers it, what it
+    /// The Notifications module's <see cref="ModuleDefinition"/> - how the framework discovers it, what it
     /// declares to the authorization bridge, and where it lands on a fresh site.
     /// </summary>
     /// <remarks>

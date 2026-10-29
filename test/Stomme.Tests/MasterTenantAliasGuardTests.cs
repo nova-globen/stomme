@@ -25,14 +25,14 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-100 T1 (D109, spec refutation 1): deleting the LAST alias of the Master tenant through
+    /// BL-100 T1 (spec refutation 1): deleting the LAST alias of the Master tenant through
     /// <c>DELETE /api/Alias/{id}</c> must be refused, and the controller's delete log must say what actually happened.
     /// </summary>
     /// <remarks>
     /// <para>
     /// DRIVEN through the real composed host over HTTP (the <see cref="GateDrive"/> recipe: SQLite install,
     /// Identity cookie from <c>/pages/login</c>, a matched antiforgery pair on the DELETE). The SQLite store is the
-    /// pooled, targeted-<c>ClearPool</c> <see cref="SqliteGateStore"/> (BL-104).
+    /// pooled, targeted-<c>ClearPool</c> <see cref="SqliteGateStore"/>.
     /// </para>
     /// <para>
     /// What the UNCHANGED controller did, measured before the fix (the first test's output): the DELETE answered

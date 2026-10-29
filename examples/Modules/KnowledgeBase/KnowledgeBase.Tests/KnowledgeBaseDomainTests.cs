@@ -8,8 +8,8 @@ using Xunit;
 namespace NovaGloben.Module.KnowledgeBase.Tests
 {
     /// <summary>
-    /// BL-86 increment 1 - the exemplar's domain rules, with no host: the slug is normalised the way every lookup
-    /// normalises its argument (D49), the title is a string value object, a category and an article belong to a site of
+    /// The exemplar's domain rules, with no host: the slug is normalised the way every lookup
+    /// normalises its argument, the title is a string value object, a category and an article belong to a site of
     /// a tenant, an article is drafted with an author and published once, and each step raises its domain event.
     /// </summary>
     public sealed class KnowledgeBaseDomainTests

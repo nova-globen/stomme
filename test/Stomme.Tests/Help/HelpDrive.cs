@@ -66,7 +66,7 @@ namespace Stomme.Tests.Help
                     IsDefault = true,
                 });
 
-                // BL-176: the boot and install path decides a RavenDB tenant's database; this row was added behind it, so it
+                // The boot and install path decides a RavenDB tenant's database; this row was added behind it, so it
                 // is told what that path decides for a tenant naming the installation's own database - to share it.
                 app.Services.GetService<Stomme.Repository.Stores.RavenTenantDatabases>()?.Set(second.TenantId, null);
             }

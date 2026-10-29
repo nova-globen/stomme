@@ -19,7 +19,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// How the site's pipelines have been running over the last day, week or month (BL-229, n8n's Insights): the window's runs,
+    /// How the site's pipelines have been running over the last day, week or month (n8n's Insights): the window's runs,
     /// the newest <see cref="PipelineInsights.MaxRuns"/> of them, read as summaries (states and times, never data) and counted by
     /// <see cref="PipelineInsights.Of"/>, with the time they saved where a published pipeline says what one run saves. For anyone
     /// who may view runs - the runs list shows them the same.
@@ -67,7 +67,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 - how each step of one pipeline has been doing over the last day, week or month (better than n8n's Insights, which stop
+    /// How each step of one pipeline has been doing over the last day, week or month (better than n8n's Insights, which stop
     /// at the workflow): the window's runs of the pipeline, the newest <see cref="PipelineInsights.MaxRunsForSteps"/>, and their
     /// steps' passes read as summaries - states and times, never data - so anyone who may view runs sees them; a failure the step
     /// went on past (its Failed path, or on) counts as one, as the run's canvas shows it.

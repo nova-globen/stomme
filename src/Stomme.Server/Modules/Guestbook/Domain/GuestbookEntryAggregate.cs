@@ -17,7 +17,7 @@ namespace Stomme.Modules.Guestbook.Domain
     /// <see cref="Sign"/> so the invariants and the domain event cannot be skipped.
     /// </para>
     /// <para>
-    /// <b>Tenant-owned (BL-111, D79's correction).</b> The shared module store is ONE store per installation and
+    /// <b>Tenant-owned (D79's correction).</b> The shared module store is ONE store per installation and
     /// <c>ModuleId</c> is a per-tenant integer that repeats across tenants, so a module-scoped aggregate let module 5
     /// of tenant one read module 5 of tenant two on EF and RavenDB (measured; the File store partitions by tenant
     /// and did not). The signature therefore carries the tenant it was signed under and every provider's tenant

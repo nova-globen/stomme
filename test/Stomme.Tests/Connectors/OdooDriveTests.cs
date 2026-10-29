@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Odoo DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
+    /// Odoo DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
     /// a loopback stand-in for an Odoo instance's JSON-RPC: an Odoo connection made over the API, its password vaulted, tested (the
     /// contacts counted); a published pipeline makes a contact, reads the contacts a domain keeps over two pages, changes one and
     /// deletes it - the login asked for per step, every call execute_kw with the user's id; the password in neither the graph nor

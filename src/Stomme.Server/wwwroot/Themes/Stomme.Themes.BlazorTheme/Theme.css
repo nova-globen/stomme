@@ -1,8 +1,8 @@
-/* Per-theme accent override (D60).
+/* Per-theme accent override.
 
    The `--db-*` accent tokens default to the framework's signature amber in css/app.css (:root), and
    the shared component layer (`.db-btn`, focus rings, `.db-icon-btn.active`) reads them globally.
-   This file is linked AFTER app.css while BlazorTheme is active (D31), so a `:root` block here gives
+   This file is linked AFTER app.css while BlazorTheme is active, so a `:root` block here gives
    BlazorTheme its OWN accent. Without it, BlazorTheme's top-right Login/ControlPanel buttons -- which
    emit the shared `db-btn` -- rendered in the default amber, clashing with this theme's Bootstrap-blue
    sidebar. Blue matches the navbar/sidebar chrome; it can never inherit the amber again. */

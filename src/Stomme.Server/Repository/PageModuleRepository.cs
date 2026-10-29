@@ -22,15 +22,15 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The PageModule cluster on the persistence seam (D47): writes through <see cref="IPageModuleStore"/>,
-    /// reads through <see cref="IFrameworkStoreSessionFactory"/> (D19). The <c>DbSet&lt;PageModule&gt;</c> is
+    /// The PageModule cluster on the persistence seam: writes through <see cref="IPageModuleStore"/>,
+    /// reads through <see cref="IFrameworkStoreSessionFactory"/>. The <c>DbSet&lt;PageModule&gt;</c> is
     /// gone from <see cref="TenantDBContext"/> — that deletion is the compiler's proof this cluster moved.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>D19 and D21 deliberately left this cluster behind, and that is why it was cheap to move now.</b>
     /// PageModule.Page and PageModule.Module were EF navigations eager-loaded with <c>.Include(...)</c>. When
-    /// the Page cluster (D19) and the Module cluster (D21) took those tables onto the seam, both navigations
+    /// the Page cluster and the Module cluster took those tables onto the seam, both navigations
     /// had to go — they were severed to ids and this class started stitching the contract's Page and Module
     /// members on from second queries, while the PageModule ROW stayed in <c>TenantDBContext</c>. So this
     /// increment is a row move with no navigation work: the hard part was done, twice, by someone else.
@@ -49,7 +49,7 @@ namespace Stomme.Repository
     /// ModuleDefinition, Module, Permission and Setting. The one that looks dangerous is
     /// <see cref="IPermissionRepository"/>, because <c>PermissionRepository</c> takes
     /// <see cref="IRoleRepository"/> back — that is exactly why <c>RoleRepository</c> and
-    /// <c>UserRepository</c> take <see cref="IPermissionStore"/> instead of the repository (D24). It is NOT a
+    /// <c>UserRepository</c> take <see cref="IPermissionStore"/> instead of the repository. It is NOT a
     /// problem here: the cycle D24 avoids is Permission→Role→Permission, and NOTHING on Permission's outbound
     /// path (Role→Setting→stores) reaches back into PageModule. So this class may hold the REPOSITORY, and
     /// should: <c>PermissionRepository</c> is cache-backed (<c>ICacheManager</c>) and every render reads its
@@ -82,7 +82,7 @@ namespace Stomme.Repository
 
         /// <summary>
         /// Opens a read session, runs <paramref name="read"/> against it and disposes it. Reads NEVER go
-        /// through the store (D19).
+        /// through the store.
         /// </summary>
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -118,7 +118,7 @@ namespace Stomme.Repository
         {
             // THE site filter. It used to ride the Module eager load —
             //     db.PageModule.Include(item => item.Module).Where(item => item.Module.SiteId == siteId)
-            // — i.e. a join, filtered in the database. The navigation is gone (D21), and the lazy translation
+            // — i.e. a join, filtered in the database. The navigation is gone, and the lazy translation
             // would be to load every PageModule row in the tenant and filter in memory. That would be a
             // correctness/perf cliff on a shared tenant database, where a "tenant" can hold many sites: it
             // would read every OTHER site's page modules on every call.
@@ -225,7 +225,7 @@ namespace Stomme.Repository
         /// The exception moves; it does not appear or disappear.
         /// </para>
         /// <para>
-        /// <paramref name="tracking"/> is now INERT — a session read tracks nothing (D19). It is kept on the
+        /// <paramref name="tracking"/> is now INERT — a session read tracks nothing. It is kept on the
         /// interface because <c>PageModuleController.Put</c> passes it and removing it would churn the
         /// controller for no behaviour change. Nothing here ever depended on tracking to persist: the harvested
         /// code read on one context and wrote through <c>db.Entry(...).State = Modified</c> on another.
@@ -297,7 +297,7 @@ namespace Stomme.Repository
         /// </remarks>
         public async Task DeletePageModuleAsync(int pageModuleId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it
+            // The one read that legitimately goes through the store: it deletes the very instance it
             // loaded, so tracking is what we want and no second instance is ever attached.
             var aggregate = await _store.GetByIdAsync(pageModuleId);
             if (aggregate == null)

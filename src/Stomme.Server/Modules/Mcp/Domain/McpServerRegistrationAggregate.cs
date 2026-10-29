@@ -8,7 +8,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Mcp.Domain
 {
     /// <summary>
-    /// An EXTERNAL MCP server one SITE has registered, and what it last said it offers (BL-80, D101 items 4 and 6).
+    /// An EXTERNAL MCP server one SITE has registered, and what it last said it offers (D101 items 4 and 6).
     /// </summary>
     /// <remarks>
     /// <para>
@@ -18,7 +18,7 @@ namespace Stomme.Modules.Mcp.Domain
     /// <see cref="ITenantOwned"/>, and the repository gives ONE answer for "no such registration" and "another site's".
     /// </para>
     /// <para>
-    /// <b>Storage-blind</b> (D79): scalars and string value objects only, and every computed member is a METHOD - both
+    /// <b>Storage-blind</b>: scalars and string value objects only, and every computed member is a METHOD - both
     /// document resolvers serialise read-only properties, so a computed property would be written into the document.
     /// </para>
     /// <para>
@@ -32,7 +32,7 @@ namespace Stomme.Modules.Mcp.Domain
     /// nobody has talked to. A different address is a different registration.
     /// </para>
     /// <para>
-    /// Nothing raises a domain event: the audit trail is written by application code, never by a handler (D40).
+    /// Nothing raises a domain event: the audit trail is written by application code, never by a handler.
     /// </para>
     /// </remarks>
     public sealed class McpServerRegistrationAggregate : AggregateRoot<Guid>, ITenantOwned
@@ -61,7 +61,7 @@ namespace Stomme.Modules.Mcp.Domain
         public string Name { get; private set; }
 
         /// <summary>
-        /// <see cref="Name"/> upper-cased invariantly - what a by-name look-up compares, on BOTH sides (D49): a bare
+        /// <see cref="Name"/> upper-cased invariantly - what a by-name look-up compares, on BOTH sides: a bare
         /// string <c>==</c> is case-sensitive on the relational providers and case-insensitive on RavenDB.
         /// </summary>
         public string NameNormalized { get; private set; }
@@ -100,7 +100,7 @@ namespace Stomme.Modules.Mcp.Domain
 
         public static string Normalize(string? name) => (name ?? string.Empty).Trim().ToUpperInvariant();
 
-        /// <summary>Registers a server. It does NOT dial it: a new registration is Unverified with no tools (D101 item 5).</summary>
+        /// <summary>Registers a server. It does NOT dial it: a new registration is Unverified with no tools.</summary>
         public static McpServerRegistrationAggregate Register(
             Guid id, TenantId tenantId, int siteId, string name, McpServerTransport transport, McpGuardrail? guardrail, DateTime nowUtc)
         {

@@ -408,7 +408,7 @@ namespace Stomme.Tests
             public void Advance(TimeSpan by) => _now = _now.Add(by);
         }
 
-        /// <summary>The unit of work persists nothing of its own here, exactly as it does in production (D67).</summary>
+        /// <summary>The unit of work persists nothing of its own here, exactly as it does in production.</summary>
         private sealed class NoOpUnitOfWork : IUnitOfWork
         {
             public Task<int> SaveChangesAsync(CancellationToken ct = default) => Task.FromResult(0);

@@ -15,7 +15,7 @@ using Stomme.Modules.Pipelines.Tenancy;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// A message to a chat through one of the site's connections (BL-229, n8n's Slack, Telegram, Discord, Mattermost and Microsoft
+    /// A message to a chat through one of the site's connections (n8n's Slack, Telegram, Discord, Mattermost and Microsoft
     /// Teams nodes, their send message, its Twilio node's SMS and its WhatsApp Business Cloud node's text): a Slack channel, a
     /// Telegram chat, a Discord, a Mattermost or a Teams channel or a Teams chat, a phone by text message (or WhatsApp) through
     /// Twilio, or a phone on WhatsApp through Meta's Cloud API, the token kept in the site's secret store. The

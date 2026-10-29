@@ -12,7 +12,7 @@ using static Stomme.Tests.AiAssistant.TurnScriptChatClient;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 10 - the predecessor platform's <c>PipelineArchitectAgentTests</c>, by name: the model's ProposePipeline call becomes a
+    /// The predecessor platform's <c>PipelineArchitectAgentTests</c>, by name: the model's ProposePipeline call becomes a
     /// PROPOSED artifact whose draft round-trips; an invalid draft goes back to the model and the corrected one is proposed;
     /// a connection the user cannot reach is refused before any validation or write; applying runs the create command and
     /// only then marks the artifact applied. <b>CHANGED:</b> a step's type is one from the engine's catalog and the

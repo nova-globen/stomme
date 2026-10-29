@@ -17,7 +17,7 @@ using WireModel = Stomme.Modules.Guestbook.Models.GuestbookEntry;
 namespace Stomme.Modules.Guestbook.Startup
 {
     /// <summary>
-    /// Wires the Guestbook sample module into the host — and, in doing so, WIRES THE MEDIATOR LIVE (D74). It
+    /// Wires the Guestbook sample module into the host — and, in doing so, WIRES THE MEDIATOR LIVE. It
     /// is discovered by the framework's reflection scan the same way every other module's startup is, so the
     /// mediator and this module's CQRS/DDD stack plug in by convention rather than by editing the composition
     /// root <c>StommeServiceCollectionExtensions.cs</c>. Until this module, <c>Stomme.Mediator</c> was
@@ -37,7 +37,7 @@ namespace Stomme.Modules.Guestbook.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // ---- The module's clean-arch store, STORAGE-BLIND by construction (D79) ----------------------
+            // ---- The module's clean-arch store, STORAGE-BLIND by construction ----------------------
             // ONE call gives a working store on BOTH providers and the module authors ZERO EF code: no DbContext,
             // no value-object converter, no provider branch. On a relational install the HOST maps the aggregate
             // into the shared ModuleAggregatesDbContext (the AuthorName value object becomes a plain string column
@@ -49,7 +49,7 @@ namespace Stomme.Modules.Guestbook.Startup
             // AddRavenFrameworkStore in the composition root.
             services.AddModuleAggregatePersistence<GuestbookEntryAggregate, Guid>();
 
-            // The module-specific read GetByModuleAsync is now PROVIDER-NEUTRAL too (D78): it filters through
+            // The module-specific read GetByModuleAsync is now PROVIDER-NEUTRAL too: it filters through
             // IRepository.FindAsync on an int equality (ModuleId — a SAFE FindAsync predicate), so the closed
             // IGuestbookRepository has ONE implementation on both providers and no longer needs the EF/Raven twin
             // + provider branch it used to. The single GuestbookRepository is a CLOSED registration in
@@ -91,7 +91,7 @@ namespace Stomme.Modules.Guestbook.Startup
 
             // The relational store's EnsureCreated schema initializer is registered by
             // AddModuleAggregatePersistence (and only on a relational install — RavenDB is schemaless), so the
-            // module no longer ships its own seeder — nor its own DbContext (D79): the host maps the aggregate
+            // module no longer ships its own seeder — nor its own DbContext: the host maps the aggregate
             // into the shared ModuleAggregatesDbContext, so this module authors zero EF code.
         }
     }

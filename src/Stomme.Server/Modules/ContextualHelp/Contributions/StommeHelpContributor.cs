@@ -6,7 +6,7 @@ using Stomme.Help;
 namespace Stomme.Modules.ContextualHelp.Contributions
 {
     /// <summary>
-    /// The framework's own help topics (BL-84, D103 item 2): English topics for the admin dashboard page and the five
+    /// The framework's own help topics: English topics for the admin dashboard page and the five
     /// admin controls an operator meets first, so that an install with <c>Help:Enabled</c> has something to show and
     /// the feature can be DRIVEN.
     /// </summary>

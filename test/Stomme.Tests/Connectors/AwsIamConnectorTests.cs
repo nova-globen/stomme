@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - n8n's AWS IAM node over IAM's Query protocol, each call a form signed with SigV4 for iam in us-east-1 at IAM's
+    /// n8n's AWS IAM node over IAM's Query protocol, each call a form signed with SigV4 for iam in us-east-1 at IAM's
     /// global address: every name, path, ARN and tag held to IAM's shape before anything is signed; users listed by a path prefix
     /// page by page by IAM's Marker up to the most; a user read, created with its path, boundary and tags, renamed and moved, put
     /// in a group and taken out, deleted after leaving its groups; groups with their users, made, renamed and deleted after their
@@ -193,11 +193,11 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the AWS IAM connector against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback), which checks every
+    /// The AWS IAM connector against moto (<c>scripts/moto-test-server.ps1</c>'s throwaway on loopback), which checks every
     /// SigV4 signature against the IAM key it issued, through the HOST's egress: loopback refused until allowlisted; a test; under a
     /// path of the test's own, a group made, a user created with tags, found by the path, put in the group - which then lists them -
     /// renamed and moved; the group deleted with its user taken out first; the user put in a second group and deleted - out of it
-    /// first, the group then listing nobody - and gone in AWS's words. Fails, never skips, when moto is absent (D46).
+    /// first, the group then listing nobody - and gone in AWS's words. Fails, never skips, when moto is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class AwsIamConnectorLiveTests(ITestOutputHelper output)

@@ -15,7 +15,7 @@ namespace Stomme.Tests.Fixtures.GateTestModule
     /// <summary>
     /// The SERVER half of the BL-99 gate fixture: the handler behind the <c>[Requires]</c> command, the
     /// startup that registers it, and a controller carrying BOTH gates a lifted module can use - the new
-    /// <see cref="RequiresPermissionKeyAttribute"/> (D99 point 9) and, as a KNOWN-DIRTY control, the
+    /// <see cref="RequiresPermissionKeyAttribute"/> and, as a KNOWN-DIRTY control, the
     /// framework's dynamic 3-segment policy the survey refuted as a carrier for lifted keys (F8).
     /// </summary>
     /// <remarks>

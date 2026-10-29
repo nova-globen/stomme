@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - an operation's required parameters, as n8n marks a node's required fields: a connector step whose chosen
+    /// An operation's required parameters, as n8n marks a node's required fields: a connector step whose chosen
     /// operation - or its connector's first - needs a parameter with no default that its Parameters lines do not give, or give
     /// no value, is warned of on the step, naming the line to add; the Query box gives the query; an operation chosen by an
     /// expression, parameters written as a script, a switched-off step and a connection whose connector is not known are left

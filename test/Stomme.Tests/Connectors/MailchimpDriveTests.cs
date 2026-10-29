@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Mailchimp DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Mailchimp DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for the Marketing API: a Mailchimp connection made over the API, its key vaulted, tested (the
     /// account named); a published pipeline subscribes a member with merge fields, reads the audience's subscribed members over two
     /// pages, tags the member and sends a campaign - every call the key by Mailchimp's Basic pair, the member by the MD5 of its

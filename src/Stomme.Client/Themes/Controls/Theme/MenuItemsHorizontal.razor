@@ -1,12 +1,12 @@
 @namespace Stomme.Themes.Controls
 @inherits MenuItemsBase
 
-@* Migrated to the --db-* design system (D11).
+@* Migrated to the --db-* design system.
    The submenu used to be a pure `data-bs-toggle="dropdown"` anchor. That JS went away with the
    Bootstrap CDN in Phase 1 and the shim keeps `.dropdown-menu:not(.show)` hidden, so no submenu
    could ever be opened and every child page was unreachable from this menu. Submenus now open on
    hover *and* on :focus-within, which needs no script and so behaves identically whether the theme
-   renders statically or interactively (D18). *@
+   renders statically or interactively. *@
 @if (ParentPage != null)
 {
     <div class="db-nav-sub" aria-labelledby="@($"navMenu{ParentPage.PageId}")">

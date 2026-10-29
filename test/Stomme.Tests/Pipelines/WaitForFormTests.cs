@@ -31,7 +31,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Wait for a form (n8n's Wait node resumed "on form submitted"): the run parks on a bookmark keyed by its call
+    /// Wait for a form (n8n's Wait node resumed "on form submitted"): the run parks on a bookmark keyed by its call
     /// address's token hash, carrying the form; the form address shows that form; a submission resumes the run down Submitted with
     /// the answers as the result - once, the form closed after; nobody filling it in time goes down Timed out; a wait with no call
     /// address before it, or with fields that are no form, fails saying why.

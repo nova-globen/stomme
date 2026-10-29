@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zulip (n8n's Zulip node: messages sent, got, updated and deleted, streams and users kept): every call an
+    /// Zulip (n8n's Zulip node: messages sent, got, updated and deleted, streams and users kept): every call an
     /// organization's API v1 with the e-mail and the key, a body form-encoded; a message sent to a stream's topic or to people;
     /// a message got with its Markdown, a message's subject its topic too; messages searched newest first, page by page by
     /// Zulip's anchor, the size fixed and no bigger than asked, Zulip's found oldest or a short page the end; a message updated

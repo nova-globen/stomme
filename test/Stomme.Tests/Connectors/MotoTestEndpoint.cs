@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The AWS connectors' live tests' server (BL-229, Amazon Cognito first): MOTO_TEST_HOST / PORT / ACCESS_KEY / SECRET_KEY where
+    /// The AWS connectors' live tests' server (Amazon Cognito first): MOTO_TEST_HOST / PORT / ACCESS_KEY / SECRET_KEY where
     /// set, otherwise this machine's throwaway moto that <c>scripts/moto-test-server.ps1</c> makes on 127.0.0.1:15005 - which
     /// checks SigV4 signatures against the IAM key that script had it issue, its id and secret read from the file the script
-    /// writes under the user's temp folder. No key is a FAILURE that says how to get one, never a skip (D46).
+    /// writes under the user's temp folder. No key is a FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class MotoTestEndpoint
     {

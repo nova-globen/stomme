@@ -56,7 +56,7 @@ namespace Stomme.Tests.Connectors
         [Fact]
         public async Task Send_PostsTheBodyWithTheBearerToken_AndAnswersOneRecordWithTheStatusAndTheBody()
         {
-            // BL-95: a request whose answer is not rows - here an object - as ONE record; POST when no method is named.
+            // A request whose answer is not rows - here an object - as ONE record; POST when no method is named.
             var handler = new StubHandler(HttpStatusCode.Created, "{\"id\":5}");
             var parameters = new Dictionary<string, string> { ["path"] = "/v1/events", ["body"] = "{\"event\":\"deployed\"}" };
             var record = Assert.Single(await Contexts.DrainAsync(new RestApiConnector(), Contexts.Extract(new StubEgress(handler), "https://api.example.com", "send", parameters, credentials: new Dictionary<string, string> { ["token"] = "tok123" })));
@@ -76,7 +76,7 @@ namespace Stomme.Tests.Connectors
             Assert.True(connector is IConnectorExtractor);
             Assert.True(connector.Capabilities.HasFlag(ConnectorCapabilities.Extract));
             Assert.True(connector.Capabilities.HasFlag(ConnectorCapabilities.TestConnection));
-            // BL-95 (2026-10-03) added "send" beside the predecessor platform's single "read", which stays first: an extraction naming no operation reads.
+            // BL-95 added "send" beside the predecessor platform's single "read", which stays first: an extraction naming no operation reads.
             var operations = ((IConnectorExtractor)connector).Operations;
             Assert.Equal(new[] { "read", "send" }, operations.Select(operation => operation.Name));
             Assert.All(operations, operation => Assert.Contains(operation.Parameters.Fields, f => f.Name == "method" && f.Type == ConnectorConfigFieldType.Select));

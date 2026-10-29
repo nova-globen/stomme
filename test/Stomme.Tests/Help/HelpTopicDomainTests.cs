@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// The help topic aggregate (BL-84 increment 2, D103 item 3). Every case answers a measured refutation.
+    /// The help topic aggregate. Every case answers a measured refutation.
     /// </summary>
     public class HelpTopicDomainTests
     {

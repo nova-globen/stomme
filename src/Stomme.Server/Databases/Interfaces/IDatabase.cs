@@ -1,7 +1,7 @@
 namespace Stomme.Databases.Interfaces
 {
     /// <summary>
-    /// The storage-agnostic core of a Stomme database provider (D53). It carries only what EVERY store —
+    /// The storage-agnostic core of a Stomme database provider. It carries only what EVERY store —
     /// relational or document — can honestly supply: identity/metadata used by installation, module
     /// discovery and the <c>AvailableDatabases</c> registry. A provider is constructed reflectively via
     /// <c>Type.GetType(dbtype)</c> + <c>Activator.CreateInstance</c>, so a document-store provider

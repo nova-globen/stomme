@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - AWS Lambda (n8n's AWS Lambda node: a function invoked): every call signed with AWS Signature Version 4 for Lambda
+    /// AWS Lambda (n8n's AWS Lambda node: a function invoked): every call signed with AWS Signature Version 4 for Lambda
     /// in the connection's region; a function invoked by its name or its ARN - its path escaped - with a version or an alias and
     /// a JSON payload, waited for: its answer an object's fields or a value as result, a text not JSON as itself, a function that
     /// failed thrown with its error; one queued as an event; the functions page by page by Lambda's marker and one's

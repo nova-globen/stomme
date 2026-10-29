@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// A pipeline as a FILE (BL-229 increment 10): its name, its description and the editor's graph - steps, connections,
+    /// A pipeline as a FILE: its name, its description and the editor's graph - steps, connections,
     /// variables, notes - in a JSON document another site (or this one) can import. The graph is the editor's own contract, so a
     /// file carries exactly what the canvas shows and nothing engine-specific; the importing site's save judges it like any
     /// other graph. Credentials never travel: a step reaches a secret through one of the site's connections by name.
@@ -66,7 +66,7 @@ namespace Stomme.Models.Pipelines
             JsonSerializer.Serialize(new PipelineExchangeDocument { Name = name, Description = description, Graph = Shared(graph) }, Options);
 
         /// <summary>
-        /// BL-229 - many pipelines as ONE file (a folder exported): a list of documents, each as <see cref="Write"/> writes one, with
+        /// Many pipelines as ONE file (a folder exported): a list of documents, each as <see cref="Write"/> writes one, with
         /// its id - so calls among them are pointed at the pipelines they become - and its folder below the one exported.
         /// <see cref="ReadMany"/> reads it back, as it reads n8n's export of many workflows.
         /// </summary>
@@ -84,7 +84,7 @@ namespace Stomme.Models.Pipelines
         }
 
         /// <summary>
-        /// BL-229 - the pipelines a graph names by definition id: the one each call step runs (Execute, Dispatch, Bulk dispatch
+        /// The pipelines a graph names by definition id: the one each call step runs (Execute, Dispatch, Bulk dispatch
         /// pipeline), the one a "Pipeline failed" watches, and the ones it lets call it. An expression names what the run decides.
         /// </summary>
         public static IReadOnlyList<string> References(PipelineGraph? graph)
@@ -103,7 +103,7 @@ namespace Stomme.Models.Pipelines
         }
 
         /// <summary>
-        /// BL-229 - the pipelines a graph names, pointed at the ones they became (<paramref name="becameOf"/>, old definition id to
+        /// The pipelines a graph names, pointed at the ones they became (<paramref name="becameOf"/>, old definition id to
         /// new): a file of many imported, the calls among them run the copies, not the pipelines they were exported from. A
         /// pipeline the file did not hold is left as named. How many references changed.
         /// </summary>
@@ -142,20 +142,20 @@ namespace Stomme.Models.Pipelines
             _ => null,
         };
 
-        // BL-229: a pinned test value can be real data, and a file travels - so it stays behind (the caller's graph untouched).
+        // A pinned test value can be real data, and a file travels - so it stays behind (the caller's graph untouched).
         private static PipelineGraph Shared(PipelineGraph graph)
         {
             ArgumentNullException.ThrowIfNull(graph);
             return new PipelineGraph
             {
-                // BL-229: nothing pinned leaves in a file - a pinned result can be real data, as a test value can.
+                // Nothing pinned leaves in a file - a pinned result can be real data, as a test value can.
                 Steps = (graph.Steps ?? new List<PipelineGraphStep>()).Select(step => step?.PinnedResult is null ? step : step.WithoutPinnedResult()).ToList(),
                 Connections = graph.Connections,
                 Notes = graph.Notes,
                 Variables = (graph.Variables ?? new List<PipelineGraphVariable>()).Where(variable => variable is not null)
                     .Select(variable => new PipelineGraphVariable { Id = variable.Id, Name = variable.Name, TypeName = variable.TypeName, Value = variable.Value })
                     .ToList(),
-                RunsAtOnce = graph.RunsAtOnce, // BL-229: how many runs may go at once travels with the pipeline
+                RunsAtOnce = graph.RunsAtOnce, // How many runs may go at once travels with the pipeline
                 KeepSuccessfulRuns = graph.KeepSuccessfulRuns, // and whether it keeps the runs that finish well
                 SaveProgress = graph.SaveProgress == true ? true : null, // and whether it stores a run after each step
                 KeepStepData = PipelineStepDataKeeping.Stored(graph.KeepStepData), // and what its runs keep of their steps
@@ -196,7 +196,7 @@ namespace Stomme.Models.Pipelines
         public const int MaxManyBytes = 16 * 1024 * 1024;
 
         /// <summary>
-        /// BL-229 - the documents a file holds: the one <see cref="Read"/> reads; or, from n8n's own export of many workflows - a JSON
+        /// The documents a file holds: the one <see cref="Read"/> reads; or, from n8n's own export of many workflows - a JSON
         /// list, as <c>n8n export:workflow --all</c> writes it - each of them, read and judged as one file is (each up to
         /// <see cref="MaxBytes"/>, at most <see cref="MaxWorkflows"/>), so a team leaving n8n brings its workflows over at once. One
         /// that is not a pipeline refuses the file, saying which.
@@ -272,7 +272,7 @@ namespace Stomme.Models.Pipelines
             PipelineExchangeDocument? document;
             try
             {
-                // BL-229: an n8n workflow export is brought over as this site's pipeline (N8nWorkflowImport), then judged as any file is.
+                // An n8n workflow export is brought over as this site's pipeline (N8nWorkflowImport), then judged as any file is.
                 using var parsed = JsonDocument.Parse(json);
                 document = N8nWorkflowImport.IsWorkflow(parsed.RootElement)
                     ? N8nWorkflowImport.Convert(parsed.RootElement)
@@ -300,7 +300,7 @@ namespace Stomme.Models.Pipelines
             graph.Notes = (graph.Notes ?? new List<PipelineGraphNote>()).Where(note => note is not null).ToList();
             foreach (var variable in graph.Variables)
             {
-                variable.TestValue = null; // BL-229: a file carries no pinned test values, whatever wrote it
+                variable.TestValue = null; // A file carries no pinned test values, whatever wrote it
             }
 
             foreach (var step in graph.Steps)
@@ -368,7 +368,7 @@ namespace Stomme.Models.Pipelines
                 }
             }
 
-            // BL-229: a folder below the one imported into, as the folder rule allows - one that cannot be one is none.
+            // A folder below the one imported into, as the folder rule allows - one that cannot be one is none.
             var folder = PipelineFolders.Normalize(document.Folder, out var folderError);
             document.Folder = folderError is null && folder.Length > 0 ? folder : null;
             document.Id = string.IsNullOrWhiteSpace(document.Id) ? null : document.Id.Trim();
@@ -376,7 +376,7 @@ namespace Stomme.Models.Pipelines
         }
 
         /// <summary>
-        /// BL-229 - where a pipeline of a file of many goes: its folder (<see cref="PipelineExchangeDocument.Folder"/>) below the
+        /// Where a pipeline of a file of many goes: its folder (<see cref="PipelineExchangeDocument.Folder"/>) below the
         /// folder it is imported into - or that folder itself when the two together would be deeper than a folder may be.
         /// </summary>
         public static string FolderIn(string? into, string? below)

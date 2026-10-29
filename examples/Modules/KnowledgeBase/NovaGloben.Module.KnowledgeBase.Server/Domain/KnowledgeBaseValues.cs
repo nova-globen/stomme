@@ -8,7 +8,7 @@ namespace NovaGloben.Module.KnowledgeBase.Domain
 {
     /// <summary>
     /// An article's title: a VALUE OBJECT marked <see cref="IStringValueObject"/>, so every store the host can choose
-    /// (EF, RavenDB, File) keeps it as one plain string column or field - the sanctioned, non-fragile way (D79) - while the
+    /// (EF, RavenDB, File) keeps it as one plain string column or field - the sanctioned, non-fragile way - while the
     /// domain keeps its rule in one place.
     /// </summary>
     public sealed class ArticleTitle : ValueObject, IStringValueObject
@@ -47,7 +47,7 @@ namespace NovaGloben.Module.KnowledgeBase.Domain
     /// The URL segment of an article or a category: lower-case ASCII letters, digits and single hyphens. It is stored
     /// ALREADY NORMALISED and every lookup normalises its argument the same way, because string equality differs between
     /// the stores (case-sensitive on EF and File, case-insensitive on RavenDB) - normalise the data, do not translate the
-    /// query (D49). A slug derived from a title drops what it cannot express.
+    /// query. A slug derived from a title drops what it cannot express.
     /// </summary>
     public static class Slug
     {

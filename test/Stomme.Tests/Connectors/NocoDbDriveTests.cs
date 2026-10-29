@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - NocoDB DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// NocoDB DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for NocoDB's v2 data API that refuses a call without the token: a NocoDB connection made over
     /// the API, its token vaulted, tested; a published pipeline creates a record with an accent, reads a table's paid records
     /// over two pages - no more than asked - updates the record, counts the table and deletes the record; the token in neither

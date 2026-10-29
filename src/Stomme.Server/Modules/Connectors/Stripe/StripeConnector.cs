@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Stripe
 {
     /// <summary>
-    /// Stripe (BL-229, n8n's Stripe node: customers listed, got, created, updated and deleted, charges listed, the balance got):
+    /// Stripe (n8n's Stripe node: customers listed, got, created, updated and deleted, charges listed, the balance got):
     /// Stripe's API (<c>https://api.stripe.com/v1</c>), a secret or restricted key (<c>sk_...</c>, <c>rk_...</c>) as the bearer;
     /// bodies form-encoded, as Stripe takes them. A test reads the balance - what any key may read - and says whether the key is a
     /// live one or a test one.

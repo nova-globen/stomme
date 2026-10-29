@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Metabase
 {
     /// <summary>
-    /// Metabase (BL-229, n8n's Metabase node) over its REST API (<c>{address}/api</c>), by an API key (<c>x-api-key</c>, Metabase
+    /// Metabase (n8n's Metabase node) over its REST API (<c>{address}/api</c>), by an API key (<c>x-api-key</c>, Metabase
     /// 0.49 on) or a user's e-mail and password exchanged for a session (<c>POST /api/session</c>, its id sent as
     /// <c>X-Metabase-Session</c>, as n8n's credential does). A test names the user the connection signs in as.
     /// </summary>

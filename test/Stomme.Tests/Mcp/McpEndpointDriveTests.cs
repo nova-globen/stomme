@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// The MCP endpoint itself (BL-80 increment 4, D101 item 3), driven over real HTTP with raw JSON-RPC.
+    /// The MCP endpoint itself, driven over real HTTP with raw JSON-RPC.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -103,7 +103,7 @@ namespace Stomme.Tests.Mcp
                 var uris = resources?["result"]?["resources"]?.AsArray().Select(item => item?["uri"]?.GetValue<string>()).ToList() ?? new();
                 Assert.Contains(McpTestContributor.Greeting, uris);
 
-                // The framework's OWN contributor (D101 item 8) is published over the same endpoint, and reads: the
+                // The framework's OWN contributor is published over the same endpoint, and reads: the
                 // built-in resource is gated on mcp:view, which the MCP module's ModuleInfo declares and the installer
                 // seeds to Administrators - so the host account gets it and a registered-only user does not.
                 Assert.Contains(Stomme.Modules.Mcp.Contributions.StommeSiteContributor.SiteUri, uris);
@@ -154,7 +154,7 @@ namespace Stomme.Tests.Mcp
 
                 // ---- anonymous is refused by the ROUTE, before any of this --------------------------------------
                 // 401, and it is the ONE path in this host that answers a cookie challenge that way. 403 is what
-                // ConfigureApplicationCookie answers everywhere else, deliberately (BL-71: an HTML login page is
+                // ConfigureApplicationCookie answers everywhere else, deliberately (an HTML login page is
                 // useless in a fetch()). But 403 means "you may not" and 401 means "authenticate" - an MCP client
                 // cannot tell "sign in" from "this is not for you" out of a 403, and 401 is what the protocol's own
                 // authorization flow keys on. The carve-out is endpoint METADATA, not a path match, so it cannot

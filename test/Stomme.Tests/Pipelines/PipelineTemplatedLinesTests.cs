@@ -26,7 +26,7 @@ using RunPipelineResult = Stomme.Engine.Pipelines.Models.RunPipelineResult;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - a value from a run stays ONE value in a line-per-entry input. The engine renders a template input as a whole
+    /// A value from a run stays ONE value in a line-per-entry input. The engine renders a template input as a whole
     /// before the step reads it, so a value holding a line break became lines the author never wrote: a second <c>query =</c>
     /// replacing a connection's statement, an <c>Authorization:</c> header, another recipient, another script variable.
     /// Each case below plants exactly that value and asserts it lands as the one value it fills; a line the author wrote as

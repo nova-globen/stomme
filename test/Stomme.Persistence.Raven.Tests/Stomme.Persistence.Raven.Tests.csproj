@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <!--
-    Live provider smoke test for Stomme.Persistence.RavenDb. GATED in Stomme.slnx since BL-15
+    Live provider smoke test for Stomme.Persistence.RavenDb. GATED in Stomme.slnx
     (2026-08-03), fail-not-skip per D46: it needs a live RavenDB server and FAILS loudly when the one
     named by RAVENDB_TEST_URL (default: the infra UAT tier, http://192.168.10.20:8081) is unreachable —
     a suite that quietly shrinks reports green while proving nothing.

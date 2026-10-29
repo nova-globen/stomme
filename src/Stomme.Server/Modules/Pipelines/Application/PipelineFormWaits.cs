@@ -13,9 +13,9 @@ using Stomme.Modules.Pipelines.Triggers;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// A run waiting for a form (BL-229, <see cref="WaitForForm"/>), the site's side: the form a run's form address shows - read
+    /// A run waiting for a form (<see cref="WaitForForm"/>), the site's side: the form a run's form address shows - read
     /// from the waiting run's bookmark, found by the hash of the address's token (the request's site's, as every bookmark read is) -
-    /// and a submission DISPATCHED to it through the engine's stimulus path, never awaited (D111 item 3). No waiting bookmark, no
+    /// and a submission DISPATCHED to it through the engine's stimulus path, never awaited. No waiting bookmark, no
     /// form: the page says it is closed.
     /// </summary>
     public sealed class PipelineFormWaits(IBookmarkStore bookmarks, IStimulusHasher hasher, IStimulusDispatcher dispatcher)

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - MailerLite DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// MailerLite DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for MailerLite's API that refuses a call without the token: a MailerLite connection
     /// made over the API, its token vaulted, tested; a published pipeline creates a subscriber with an accent in a field,
     /// reads the active subscribers over two pages - no more than asked - updates the subscriber given by e-mail (looked up

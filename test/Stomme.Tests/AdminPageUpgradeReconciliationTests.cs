@@ -62,7 +62,7 @@ namespace Stomme.Tests
         // A stock admin page every install has; used as the do-not-touch control.
         private const string ExistingAdminPagePath = "admin/users";
 
-        // The admin page the MCP release adds (BL-80), behind its own switches.
+        // The admin page the MCP release adds, behind its own switches.
         private const string McpAdminPagePath = "admin/mcp";
         private const string HelpAdminPagePath = "admin/help";
 
@@ -203,7 +203,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task The_help_admin_page_reaches_a_site_installed_while_help_was_OFF()
         {
-            // BL-84 / D103 item 9: admin/help is declared in AdminSiteTemplate behind Help:Enabled (default FALSE), the
+            // Admin/help is declared in AdminSiteTemplate behind Help:Enabled (default FALSE), the
             // Data Export and MCP posture - so a site installed with help off must gain the page the moment it is
             // switched on, and a fresh install that never switches it on must not have it.
             using var scratch = new ScratchInstall();
@@ -730,7 +730,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

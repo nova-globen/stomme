@@ -23,7 +23,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-109: the hosted package download. A registry that refused, a package named without an address and a download
+    /// The hosted package download. A registry that refused, a package named without an address and a download
     /// that failed each left the admin screens saying "downloaded" - the server answered 200 with an empty body (or threw
     /// a 500 on the null address), and the client's <see cref="PackageService.DownloadPackageAsync"/> logged the status
     /// and returned. Driven here through the CLIENT service against a host whose registry is a loopback stand-in: every

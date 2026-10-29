@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Stomme.Models.Notifications
 {
-    // The WIRE contract of the Notifications module's admin + self-service surface (BL-78 step 5): what the controller
+    // The WIRE contract of the Notifications module's admin + self-service surface: what the controller
     // accepts and returns, what the Client IService and its controls bind to, and what the mediator requests carry. In
     // Stomme.Shared because the Client cannot see the Server's domain types. Enum numeric values mirror the domain enums
     // exactly (Stomme.Modules.Notifications.Domain) and never change - the handlers cast between them.

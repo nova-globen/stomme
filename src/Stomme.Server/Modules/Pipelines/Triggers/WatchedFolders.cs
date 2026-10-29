@@ -26,7 +26,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// The site's watched folders (BL-229, n8n's Local File Trigger): what each "File added" trigger's folder held when it was last
+    /// The site's watched folders (n8n's Local File Trigger): what each "File added" trigger's folder held when it was last
     /// looked at, and the look that starts the pipelines for what is new. Pipelines watching a folder the same way share one
     /// record (one stimulus hash), kept in the engine's key-value store under the SITE's key and the hash - each file's path and
     /// its size and time. A look starts the pipelines indexed under the hash once for each file there now that was not (or, for
@@ -271,7 +271,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// Looks at the site's watched folders (BL-229): a recurring task the ENGINE runs per site tenant (so the trigger store, the
+    /// Looks at the site's watched folders: a recurring task the ENGINE runs per site tenant (so the trigger store, the
     /// key-value store and the stimulus sender are the site's), on one node at a time - every stored "File added" trigger's
     /// folder, once per way of watching it; then a folder no trigger watches any more is forgotten (its pipeline retracted,
     /// archived or changed to watch another), so publishing it again starts afresh rather than with every file put there since.
@@ -307,7 +307,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// The first look at a folder as its pipeline is published (BL-229): when the engine indexes a "File added" trigger, what the
+    /// The first look at a folder as its pipeline is published: when the engine indexes a "File added" trigger, what the
     /// folder holds is recorded there and then - so "a file already there when the pipeline is published starts nothing" means
     /// exactly that, and a file put there a moment after publishing starts a run though no look has come round yet. Whatever
     /// goes wrong is logged and never refuses the publish: the next look records the folder instead.

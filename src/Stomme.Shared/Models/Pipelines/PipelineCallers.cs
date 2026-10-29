@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "This workflow can be called by": which of the site's pipelines may start this one through Execute, Dispatch
+    /// n8n's "This workflow can be called by": which of the site's pipelines may start this one through Execute, Dispatch
     /// or Bulk dispatch pipeline, kept with its graph (<see cref="PipelineGraph.CalledBy"/>) - any of them (null, as before), none,
     /// or the ones it names. A person, the Run API, MCP and its own triggers start it whatever it says: they are held to their own
     /// keys. A call it refuses fails at the CALLER's step, saying why, before the called pipeline runs anything - and the caller's

@@ -6,7 +6,7 @@
 
 @*
     One run (BL-95 increment (b)): its status and its execution log, re-read every two seconds while it is unfinished -
-    observed through InvokeAsync on the circuit's dispatcher, never awaited (D111 item 3, the Step 0 rule). A run is
+    observed through InvokeAsync on the circuit's dispatcher, never awaited (the Step 0 rule). A run is
     DISPATCHED, so the page a Run button opens (`started=1`) can ask before the engine has stored it: that page waits for
     the run for up to StartingPolls reads, showing it as starting, before it calls it missing - found walking the editor in
     a browser, where every new run read "There is no such run on this site" until Refresh was pressed.
@@ -25,7 +25,7 @@ else
             <h3 id="pipelines-run-title" style="margin:0;flex:1 1 auto;">@(string.IsNullOrEmpty(_run?.PipelineName) ? "Run" : "Run of " + _run.PipelineName)</h3>
             @if (!string.IsNullOrEmpty(_run?.PipelineName))
             {
-                @* BL-229: n8n's execution view - this run on the pipeline's canvas, each step's state and data. *@
+                @* n8n's execution view - this run on the pipeline's canvas, each step's state and data. *@
                 <a id="pipelines-run-open-editor" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + Uri.EscapeDataString(_run.DefinitionId) + "&run=" + Uri.EscapeDataString(_run.Id))">Open in the editor</a>
             }
             <a id="pipelines-runs-back" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Runs")">Runs</a>
@@ -46,7 +46,7 @@ else
         {
             @if (!_run.IsFinished && _run.SubStatus == "Pending")
             {
-                @* BL-229: one at a time, the rest in turn - a run stored and waiting for the runs before it to end. *@
+                @* One at a time, the rest in turn - a run stored and waiting for the runs before it to end. *@
                 <p id="pipelines-run-queued" style="margin:0 0 0.5rem;color:var(--db-text-2);">It waits its turn: its pipeline runs one at a time, and this run starts once the runs before it have ended, oldest first. Cancel it to take it out of the line.</p>
             }
             <dl class="db-pipeline-run-facts" style="display:grid;grid-template-columns:max-content 1fr;gap:0.25rem 1rem;margin:0;">
@@ -58,12 +58,12 @@ else
                 <dt>Incidents</dt><dd style="margin:0;">@_run.IncidentCount</dd>
                 @foreach (var pair in _run.Data ?? new Dictionary<string, string>())
                 {
-                    @* BL-229: what the run saved about itself ("Save run data", n8n's execution data). *@
+                    @* What the run saved about itself ("Save run data", n8n's execution data). *@
                     <dt class="db-pipeline-run-data-key">@pair.Key</dt><dd class="db-pipeline-run-data-value" style="margin:0;">@pair.Value</dd>
                 }
                 @if (_run.Review is { } said)
                 {
-                    @* BL-229 - n8n's execution annotations: what a person said about the run. *@
+                    @* n8n's execution annotations: what a person said about the run. *@
                     <dt>Reviewed</dt>
                     <dd id="pipelines-run-review-said" style="margin:0;">@(said.Rating == PipelineRunReviews.Good ? "Went well" : said.Rating == PipelineRunReviews.Bad ? "Went badly" : "Noted")@(said.Tags.Count > 0 ? " · " + string.Join(", ", said.Tags) : "")@(string.IsNullOrWhiteSpace(said.Note) ? "" : " · " + said.Note)@(said.By is null ? "" : $" - {said.By}, {said.AtUtc:u}")</dd>
                 }
@@ -74,20 +74,20 @@ else
                 }
                 @if (!string.IsNullOrEmpty(_run.ParentRunId))
                 {
-                    @* BL-229: a sub-pipeline's run, and the run that started it (n8n's parent execution). *@
+                    @* A sub-pipeline's run, and the run that started it (n8n's parent execution). *@
                     <dt>Started by</dt>
                     <dd style="margin:0;"><a id="pipelines-run-parent" href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + Uri.EscapeDataString(_run.ParentRunId))">a run of @(_run.ParentPipelineName ?? "another pipeline")</a></dd>
                 }
                 @if (!string.IsNullOrEmpty(_run.RetryOfRunId))
                 {
-                    @* BL-229: a run that went on from a failed run's failed step - the steps before it ran in that run, and are there. *@
+                    @* A run that went on from a failed run's failed step - the steps before it ran in that run, and are there. *@
                     <dt>Goes on from</dt>
                     <dd style="margin:0;"><a id="pipelines-run-retry-of" href="@NavigateUrl(ModuleState.ModuleId, "Run", "id=" + Uri.EscapeDataString(_run.RetryOfRunId))">the run that failed</a>, at the step that failed</dd>
                 }
             </dl>
             @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
             {
-                @* BL-229 - n8n's execution annotations: an author says how the run went - well or badly, tags, a note - to find it
+                @* n8n's execution annotations: an author says how the run went - well or badly, tags, a note - to find it
                    again from the runs list and its search. *@
                 @if (_reviewing)
                 {
@@ -126,7 +126,7 @@ else
             }
             @foreach (var approval in _approvals)
             {
-                @* BL-229: n8n's "send and wait for approval" - the run waits on a question; a person with the approve key decides here. *@
+                @* n8n's "send and wait for approval" - the run waits on a question; a person with the approve key decides here. *@
                 <section class="db-pipeline-approval" id="@("pipelines-approval-" + approval.Id)" style="display:flex;flex-direction:column;gap:0.5rem;padding:0.75rem;border:1px solid var(--db-border);border-radius:var(--db-radius-sm);">
                     <h4 style="margin:0;">Waiting for approval@(string.IsNullOrEmpty(approval.StepName) ? "" : " - " + approval.StepName)</h4>
                     <p class="db-pipeline-approval__question" style="margin:0;white-space:pre-wrap;">@approval.Question</p>
@@ -160,7 +160,7 @@ else
             }
             else if (_run.IsFinished && !string.IsNullOrEmpty(_run.PipelineName) && IsAuthorizedPermission(PipelinesPermissions.Run) && !_run.InputNotKept)
             {
-                @* BL-229: n8n's retry - the published version, with what this run was started with; a failed run also from the step
+                @* n8n's retry - the published version, with what this run was started with; a failed run also from the step
                    that failed, what had finished not run again. *@
                 <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
                     @if (_run.SubStatus == "Faulted")
@@ -170,7 +170,7 @@ else
                     <button id="pipelines-run-retry" type="button" class="db-btn" title="Run the pipeline's published version again with what this run was started with" @onclick="() => RetryAsync(false)" disabled="@_busy">@(_run.SubStatus == "Faulted" ? "Retry from the start" : "Run again")</button>
                     @if (_run.PublishedVersion is { } published && published != _run.Version)
                     {
-                        @* BL-229 - n8n's "retry with original workflow": the version this run ran, not the published one - to tell a
+                        @* n8n's "retry with original workflow": the version this run ran, not the published one - to tell a
                            fault the published version brought from one the run met. *@
                         <button id="pipelines-run-retry-its-version" type="button" class="db-btn" title="@($"Run version {_run.Version} - the one this run ran - again with what it was started with; version {published} is the published one")" @onclick="() => RetryAsync(true)" disabled="@_busy">@($"Run again on version {_run.Version}")</button>
                     }
@@ -185,12 +185,12 @@ else
             }
             else if (_run.InputNotKept)
             {
-                @* BL-229 - n8n Enterprise's execution data redaction: what the run was started with was emptied by its pipeline's setting. *@
+                @* n8n Enterprise's execution data redaction: what the run was started with was emptied by its pipeline's setting. *@
                 <p id="pipelines-run-input-not-kept" style="color:var(--db-text-2);margin:0;">What it was started with was not kept - the pipeline is set not to keep its runs' data - so it is not run again from here.</p>
             }
             @if (_steps.Count > 0)
             {
-                @* BL-229: the run's timeline - each step's pass a bar, where in the run it began and how long it took, so the slow
+                @* The run's timeline - each step's pass a bar, where in the run it began and how long it took, so the slow
                    step and the wait are seen at once (n8n lists them). *@
                 <h4 style="margin:0;">Timeline</h4>
                 <div id="pipelines-run-timeline" class="db-pipeline-run-timeline">
@@ -207,7 +207,7 @@ else
                         <p style="margin:0;color:var(--db-text-2);">The first @TimelineMax of @_steps.Count passes.</p>
                     }
                 </div>
-                @* BL-229: this run beside another of the same pipeline, step by step - where they part (n8n shows one at a time). *@
+                @* This run beside another of the same pipeline, step by step - where they part (n8n shows one at a time). *@
                 <div id="pipelines-run-compare" style="display:flex;flex-direction:column;gap:0.4rem;">
                     @if (_others is null)
                     {
@@ -323,7 +323,7 @@ else
     [Parameter]
     public TimeProvider Clock { get; set; } = TimeProvider.System;
 
-    // BL-229: the pipeline's other runs (null until asked for), the one chosen, and the two compared step by step.
+    // The pipeline's other runs (null until asked for), the one chosen, and the two compared step by step.
     private List<PipelineRunView> _others;
     private string _otherId = "";
     private List<PipelineRunStepComparison> _comparison;
@@ -498,7 +498,7 @@ else
         : milliseconds < 60_000 ? (milliseconds / 1000).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " s"
         : (milliseconds / 60_000).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " min";
 
-    // BL-229: the review form opens on what was said before.
+    // The review form opens on what was said before.
     private void OpenReview()
     {
         _reviewRating = _run?.Review?.Rating;

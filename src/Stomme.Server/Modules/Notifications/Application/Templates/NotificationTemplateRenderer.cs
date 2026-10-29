@@ -41,7 +41,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
     }
 
     /// <summary>
-    /// The hardened Liquid renderer for notification templates (BL-78 / D100 point 5), lifted from the predecessor platform
+    /// The hardened Liquid renderer for notification templates, lifted from the predecessor platform
     /// <c>LiquidTemplateRenderer</c> and closed against what the survey measured there.
     /// </summary>
     /// <remarks>
@@ -243,7 +243,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
             }
 
             // BEFORE rendering: Fluid builds a range's whole array before a loop takes its first step, so MaxSteps
-            // cannot stop it (BL-155, measured - see OversizedRange).
+            // cannot stop it (measured - see OversizedRange).
             if (OversizedRange(template) is { } range)
             {
                 return (null, range);
@@ -271,7 +271,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
         public const int MaxRangeItems = MaxSteps;
 
         /// <summary>
-        /// Refuses a literal range wider than <see cref="MaxRangeItems"/>, anywhere in the parsed template (BL-155).
+        /// Refuses a literal range wider than <see cref="MaxRangeItems"/>, anywhere in the parsed template.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -374,7 +374,7 @@ namespace Stomme.Modules.Notifications.Application.Templates
     }
 
     /// <summary>
-    /// The built-in notification templates (D100 point 5): <c>generic.message</c> ONLY - a subject and a body placeholder
+    /// The built-in notification templates: <c>generic.message</c> ONLY - a subject and a body placeholder
     /// that a producer fills verbatim. Every later module brings its own templates. Created per SITE (the template key
     /// is site-unique); the boot/upgrade reconciler (a later BL-78 step) creates an absent one and never overwrites an
     /// operator's edit.

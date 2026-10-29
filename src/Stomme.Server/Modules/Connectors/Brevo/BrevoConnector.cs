@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Brevo
 {
     /// <summary>
-    /// Brevo, formerly Sendinblue (BL-229, n8n's Brevo node: its contacts, contact attributes, transactional e-mail and senders):
+    /// Brevo, formerly Sendinblue (n8n's Brevo node: its contacts, contact attributes, transactional e-mail and senders):
     /// an account over Brevo's API (<c>https://api.brevo.com/v3</c>), its API key sent in Brevo's own <c>api-key</c> header. A test
     /// names the account.
     /// </summary>

@@ -29,7 +29,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// BL-97 increment 7 - the advisor and Metering's side of the AI-usage port on an installed SQLite host: the predecessor platform's
+    /// The advisor and Metering's side of the AI-usage port on an installed SQLite host: the predecessor platform's
     /// <c>CostOptimizationSignalSourceTests.AiUsageSignalSource_*</c> and <c>AdvisorJobTests</c> by name. CHANGED
     /// throughout: the predecessor platform's per-tenant pass over a tenant directory is a per-SITE pass of the framework's weekly job, and its
     /// "without a tenant directory" case is a run with no tenant set.

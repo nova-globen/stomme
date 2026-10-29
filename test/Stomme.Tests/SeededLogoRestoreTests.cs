@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-203 - a deployment that lost its content folder gets the SEEDED logo back on the next boot, and nothing else is touched.
+    /// A deployment that lost its content folder gets the SEEDED logo back on the next boot, and nothing else is touched.
     /// </summary>
     /// <remarks>
     /// UAT's and production's containers lost every file when they were recreated after infra BL-134's mounts, while the

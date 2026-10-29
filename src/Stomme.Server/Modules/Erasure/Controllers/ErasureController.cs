@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Erasure.Controllers
 {
     /// <summary>
-    /// The erasure receipts of the request's site, for the Host (D112): what an operator shows a supervisory
+    /// The erasure receipts of the request's site, for the Host: what an operator shows a supervisory
     /// authority. A receipt holds no personal data, so nothing here can leak one; a failed run can be retried.
     /// </summary>
     [Route(ControllerRoutes.ApiRoute)]

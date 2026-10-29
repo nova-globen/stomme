@@ -17,7 +17,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Snowflake (n8n's Snowflake node: a query run, rows inserted, rows updated): the account's SQL API v2 with a
+    /// Snowflake (n8n's Snowflake node: a query run, rows inserted, rows updated): the account's SQL API v2 with a
     /// programmatic access token as a bearer; a statement sent asynchronously and its status asked of the account's own address;
     /// a query's values bound - @name and ? - never spliced in, outside text, quoted names and comments, a stage left alone;
     /// every part of a result read, a gzipped one too, no further than asked, each value typed by its column; rows inserted

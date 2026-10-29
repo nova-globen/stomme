@@ -20,7 +20,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleBigQuery
 {
     /// <summary>
-    /// Google BigQuery (BL-229, n8n's Google BigQuery node: a query run, rows inserted): the BigQuery API v2 with a Google Cloud
+    /// Google BigQuery (n8n's Google BigQuery node: a query run, rows inserted): the BigQuery API v2 with a Google Cloud
     /// OAuth client's id and secret and a refresh token granted the BigQuery scope, exchanged at Google's token endpoint through
     /// the family's token provider, over the host's egress. A test signs in and names what the connection can see.
     /// </summary>

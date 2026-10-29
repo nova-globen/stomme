@@ -19,7 +19,7 @@ namespace NovaGloben.Module.KnowledgeBase.Domain
     /// </summary>
     /// <remarks>
     /// <b>Why <see cref="ITenantOwned"/>:</b> the host keeps ONE module store per installation and a site id repeats
-    /// across tenants, so a storage-blind aggregate is tenant-owned by contract (BL-111): the store stamps and filters by
+    /// across tenants, so a storage-blind aggregate is tenant-owned by contract: the store stamps and filters by
     /// the tenant, and the handler that creates the aggregate stamps it from the ambient tenant. A module whose aggregate
     /// is not tenant-owned is NAMED at the host's startup.
     /// </remarks>
@@ -108,7 +108,7 @@ namespace NovaGloben.Module.KnowledgeBase.Domain
         /// <summary>The site user who drafted it - <see cref="NoAuthor"/> once that user's personal data was erased.</summary>
         public int AuthorUserId { get; private set; }
 
-        /// <summary>The author of an article whose author was erased (D112): the article stays the site's, attributed to nobody.</summary>
+        /// <summary>The author of an article whose author was erased: the article stays the site's, attributed to nobody.</summary>
         public const int NoAuthor = 0;
 
         public DateTime CreatedUtc { get; private set; }
@@ -204,7 +204,7 @@ namespace NovaGloben.Module.KnowledgeBase.Domain
         }
 
         /// <summary>
-        /// Anonymises a PUBLISHED article whose author asked to be erased (D112): the article is the site's content and
+        /// Anonymises a PUBLISHED article whose author asked to be erased: the article is the site's content and
         /// stays, attributed to nobody. A draft is its author's unpublished work and is deleted instead - refused here.
         /// </summary>
         public void EraseAuthor()

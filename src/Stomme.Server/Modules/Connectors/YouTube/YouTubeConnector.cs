@@ -20,7 +20,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.YouTube
 {
     /// <summary>
-    /// YouTube (BL-229, n8n's YouTube node: channels, playlists, playlist items, videos and video categories): a channel over the
+    /// YouTube (n8n's YouTube node: channels, playlists, playlist items, videos and video categories): a channel over the
     /// YouTube Data API v3 (<c>https://www.googleapis.com/youtube/v3</c>) through an OAuth client and a refresh token granted
     /// YouTube's scope, exchanged at Google's token endpoint through the shared <see cref="OAuth2TokenProvider"/>, the access token
     /// sent as a bearer. A test names the channel.

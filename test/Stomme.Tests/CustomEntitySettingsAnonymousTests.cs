@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-245 - a custom entity's settings (an app module's own) are closed to anonymous callers. A row its author left
+    /// A custom entity's settings (an app module's own) are closed to anonymous callers. A row its author left
     /// non-private was readable by anyone at <c>api/Setting?entityName=&lt;custom&gt;</c>, with no cookie. Driven: anonymous
     /// is refused (403, nothing listed, by id too); a signed-in user still reads the non-private row and not the private one;
     /// the Site's non-private settings, which the browser client renders from, stay public.

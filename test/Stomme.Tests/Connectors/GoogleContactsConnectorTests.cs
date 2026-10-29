@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Contacts (n8n's Google Contacts node: a contact created, got, read, updated and deleted): the refresh token
+    /// Google Contacts (n8n's Google Contacts node: a contact created, got, read, updated and deleted): the refresh token
     /// exchanged at the token endpoint, the access token sent as a bearer; the contacts page by page by Google's token up to the
     /// most asked for, in an order, or those a search finds (warmed first, at most 30); the fields read held to Google's; each a
     /// plain record, its e-mail addresses and phone numbers typed; a contact made with names, typed addresses and numbers, a

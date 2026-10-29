@@ -19,7 +19,7 @@ using FluentFTP.Exceptions;
 namespace Stomme.Modules.Connectors.Ftp
 {
     /// <summary>
-    /// The FTP / FTPS connector (BL-96 increment 2, lifted from the predecessor platform's `ftp`): the server is the <c>host</c>/<c>port</c>
+    /// The FTP / FTPS connector (lifted from the predecessor platform's `ftp`): the server is the <c>host</c>/<c>port</c>
     /// settings, the Basic scheme's <c>username</c>/<c>password</c> authenticate the session, TLS follows the settings
     /// (<c>encryption_mode</c> none by default, TLS 1.2+ when on). A test connects, authenticates and disconnects. Its
     /// operations are the file servers' (<see cref="RemoteFiles"/>, BL-229 - n8n's FTP node made whole, shared with SFTP): a
@@ -47,7 +47,7 @@ namespace Stomme.Modules.Connectors.Ftp
 
         public IReadOnlyList<ConnectorCategory> Categories { get; } = new[] { ConnectorCategory.DataAndFiles };
 
-        /// <summary>Its address is not a web address: the server, <c>ftp://ftp.kafe.example:21</c> - no user in it (D110).</summary>
+        /// <summary>Its address is not a web address: the server, <c>ftp://ftp.kafe.example:21</c> - no user in it.</summary>
         public ConnectorEndpointKind EndpointKind => ConnectorEndpointKind.ConnectionString;
 
         public string EndpointExample => "ftp://ftp.kafe.example:21";
@@ -176,7 +176,7 @@ namespace Stomme.Modules.Connectors.Ftp
 
         /// <summary>
         /// The server the address names - <c>ftp://ftp.kafe.example:21</c>, <c>ftps://</c> or no scheme at all, port 21 where none is
-        /// given - and nothing else: a user in it is refused (the scheme's username signs in, D110), and so is a folder, a query or
+        /// given - and nothing else: a user in it is refused (the scheme's username signs in), and so is a folder, a query or
         /// a fragment (a step's path names its folder).
         /// </summary>
         internal static (string Host, int Port) Server(string? endpoint)

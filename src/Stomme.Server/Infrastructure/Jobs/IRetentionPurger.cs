@@ -19,7 +19,7 @@ namespace Stomme.Infrastructure
     /// <b>The contract is deliberately narrow.</b> An implementation names the SETTING it is configured by and the
     /// default that applies when the site has no value; the job owns reading, parsing and defaulting that setting,
     /// so one module cannot produce a different answer to "what does an unparseable retention value mean" than the
-    /// framework does (BL-113). The implementation is handed whole days and a site id and deletes; it does not read
+    /// framework does. The implementation is handed whole days and a site id and deletes; it does not read
     /// settings, does not schedule, and does not decide when it runs.
     /// </para>
     /// <para>

@@ -5,7 +5,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-78 (D100 point 8): the Client's live notification feed must name the hub route, and the Client cannot see
+    /// The Client's live notification feed must name the hub route, and the Client cannot see
     /// <c>Stomme.Server</c>. <see cref="HubRoutes"/> therefore lives in <c>Stomme.Shared</c> - under its original
     /// namespace, so every consumer compiles unchanged - and the Server forwards the type for binaries built against
     /// the old location.

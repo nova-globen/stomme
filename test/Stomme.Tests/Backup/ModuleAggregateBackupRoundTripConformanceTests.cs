@@ -31,12 +31,12 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (D106 item 3, gate <c>ModuleAggregateBackupRoundTripConformanceTests</c>) - the participant every storage-blind
+    /// BL-81 (gate <c>ModuleAggregateBackupRoundTripConformanceTests</c>) - the participant every storage-blind
     /// aggregate gets from <c>AddModuleAggregatePersistence</c>, driven through the real archive on EF SQLite, EF PostgreSQL,
     /// RavenDB and File, with the HOST's tenant context and two tenants: a snapshot is taken; a row is then ADDED, one
     /// DELETED and one MUTATED; the restore puts back exactly what every scope saw at the snapshot - the added row GONE, the
     /// deleted one back, the mutation reverted. A module-scoped aggregate (Guestbook - partitioned per tenant on File only)
-    /// and a tenant-OWNED one (Portability packages) both ride it. PostgreSQL and RavenDB FAIL rather than skip (D46).
+    /// and a tenant-OWNED one (Portability packages) both ride it. PostgreSQL and RavenDB FAIL rather than skip.
     /// </summary>
     public abstract class ModuleAggregateBackupRoundTripConformanceTests : IAsyncLifetime
     {

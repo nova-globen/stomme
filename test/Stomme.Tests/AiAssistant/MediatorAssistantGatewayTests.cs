@@ -27,7 +27,7 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 10 - the gateways over the mediator. The reads are the owning modules' gated queries, and a refused
+    /// The gateways over the mediator. The reads are the owning modules' gated queries, and a refused
     /// one is NOTHING to the agent; the writes are the modules' gated commands in order, and a failure part way removes what
     /// was created through the module's own delete. The pipeline draft becomes the editor's graph and is judged by the real
     /// engine's catalog and serializer (the engine composed as the host composes it, <c>PipelineGraphCodecTests</c>' way).

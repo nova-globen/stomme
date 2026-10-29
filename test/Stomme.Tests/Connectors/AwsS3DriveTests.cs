@@ -23,7 +23,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon S3 DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the extraction port and
+    /// Amazon S3 DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the extraction port and
     /// the run's pipeline folder, against a loopback S3-compatible store (buckets by path, as MinIO is reached) that checks every
     /// request's SigV4 signature - its body's hash included - for the connection's key alone. A connection made over the API,
     /// tested (the buckets listed); a published pipeline uploads text, lists a folder over two pages, downloads an object INTO

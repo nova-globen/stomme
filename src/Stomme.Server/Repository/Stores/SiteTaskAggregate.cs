@@ -13,7 +13,7 @@ namespace Stomme.Repository.Stores
     /// <remarks>
     /// <para>
     /// A SiteTask is a queued unit of work for one <see cref="Site"/>, executed by <c>SiteTaskJob</c> and
-    /// purged once complete. A leaf: <see cref="SiteId"/> is a reference BY ID (D7/D19) and nothing navigates
+    /// purged once complete. A leaf: <see cref="SiteId"/> is a reference BY ID and nothing navigates
     /// in.
     /// </para>
     /// <para>
@@ -27,7 +27,7 @@ namespace Stomme.Repository.Stores
     /// </remarks>
     public class SiteTaskAggregate : AggregateRoot<int>, IAuditable
     {
-        /// <summary>The <see cref="Site"/> the task runs for, by id (D7/D19).</summary>
+        /// <summary>The <see cref="Site"/> the task runs for, by id.</summary>
         public int SiteId { get; set; }
 
         /// <summary>A human-readable name for the task.</summary>

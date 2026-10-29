@@ -17,7 +17,7 @@ using FluentValidation;
 namespace Stomme.Modules.Connectivity.Application
 {
     /// <summary>
-    /// The Connectivity module's CQRS surface (BL-94 increment 6, D110). Every request carries <c>[Requires]</c> and is
+    /// The Connectivity module's CQRS surface. Every request carries <c>[Requires]</c> and is
     /// decided by the authorization bridge; the site is the request's, never a parameter; a HostOnly connector's
     /// connection is created or edited by the Host role alone; a credential travels ONLY into the per-site secret
     /// store, and a connection records the field NAMES; a connector's message never reaches the caller - a category does.

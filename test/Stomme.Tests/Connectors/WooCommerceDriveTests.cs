@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - WooCommerce DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// WooCommerce DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a store's REST API: a WooCommerce connection made over the API, its consumer secret
     /// vaulted, tested (the orders counted); a published pipeline adds an order with its line items, reads the processing orders
     /// over two pages, completes one and deletes a product for good - every call the REST API key's Basic pair; the secret is in

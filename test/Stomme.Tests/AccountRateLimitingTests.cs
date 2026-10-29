@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-121: the account endpoints are rate-limited per (site, client address), driven over HTTP on an installed host.
+    /// The account endpoints are rate-limited per (site, client address), driven over HTTP on an installed host.
     /// </summary>
     /// <remarks>
     /// <para>

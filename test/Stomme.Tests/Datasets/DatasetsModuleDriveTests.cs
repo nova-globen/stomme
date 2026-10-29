@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 10 (D110) - the Datasets module on an installed host, over real HTTP, on SQLite, PostgreSQL and
+    /// The Datasets module on an installed host, over real HTTP, on SQLite, PostgreSQL and
     /// RavenDB: the admin page exists from the module's own template and renders for the Host; a PII sample registered
     /// as Public comes back Restricted with a masked summary and a refused preview; an open dataset previews its rows; a
     /// same-name different-origin registration is 400; a refresh and a delete land; a registered user is refused; a user

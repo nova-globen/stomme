@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - DeepL (n8n's DeepL node: a text translated): every call DeepL's API v2 - its Free API for a key ending in :fx,
+    /// DeepL (n8n's DeepL node: a text translated): every call DeepL's API v2 - its Free API for a key ending in :fx,
     /// its Pro API otherwise, or the address given - with the key in DeepL's own header; a text or a list of texts translated,
     /// fifty to a call, into a language from one (its variant dropped) or detected, with a formality, sentence splitting,
     /// formatting kept, tags, a context, a glossary and a model, each translation its text, the language detected and the text

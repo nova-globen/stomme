@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Stomme.Backup
 {
-    /// <summary>One snapshot as the Host sees it (BL-81). No path, no key, no passphrase - ever.</summary>
+    /// <summary>One snapshot as the Host sees it. No path, no key, no passphrase - ever.</summary>
     public sealed class BackupSnapshotView
     {
         public Guid Id { get; set; }
@@ -33,7 +33,7 @@ namespace Stomme.Backup
         public bool CanDelete { get; set; }
     }
 
-    /// <summary>A backup schedule (D106 item 8).</summary>
+    /// <summary>A backup schedule.</summary>
     public sealed class BackupScheduleView
     {
         public Guid Id { get; set; }
@@ -55,7 +55,7 @@ namespace Stomme.Backup
         public string Passphrase { get; set; } = string.Empty;
 
         /// <summary>
-        /// For a restore (BL-171): the tenants to put back, or null/empty for the whole installation. A selection that
+        /// For a restore: the tenants to put back, or null/empty for the whole installation. A selection that
         /// would split a shared physical database is refused - a tenant that shares its database is restored with the
         /// tenants it shares it with, or not at all.
         /// </summary>

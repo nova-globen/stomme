@@ -32,7 +32,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - a pipeline calling another (n8n's sub-workflows), through the engine as the host composes it: the caller sends its
+    /// A pipeline calling another (n8n's sub-workflows), through the engine as the host composes it: the caller sends its
     /// variables, the called pipeline takes them from its run's input and gives back what it sets as its output, and the caller
     /// reads that back - whether the called one finished at once or after a pause. Found building the editor's sub-pipelines: a
     /// caller whose called pipeline had paused read nothing back, and a variable of any kind read after a pause read wrong.

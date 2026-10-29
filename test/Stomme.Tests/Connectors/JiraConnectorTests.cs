@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Jira (n8n's Jira Software node: Get Many, Create, Update, Add comment and a transition): the account's email and
+    /// Jira (n8n's Jira Software node: Get Many, Create, Update, Add comment and a transition): the account's email and
     /// API token by the Basic scheme; the issues a JQL query finds read page by page by Jira's token up to the most asked for, each
     /// field a plain value - a person their name, a status its name, a description's document its text; an issue created in a
     /// project, updated, commented on and moved by a transition named by itself or its status; an issue or a project key, a field's

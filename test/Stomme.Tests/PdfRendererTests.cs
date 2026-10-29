@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The hand-written PDF renderer (BL-85, D108 item 3): that the file is structurally a PDF, that a cell cannot
+    /// The hand-written PDF renderer: that the file is structurally a PDF, that a cell cannot
     /// write operators of its own, that what Latin-1 cannot show is shown as <c>?</c>, and that it streams.
     /// </summary>
     /// <remarks>

@@ -24,7 +24,7 @@ using Xunit;
 namespace Stomme.Tests.Dashboards
 {
     /// <summary>
-    /// BL-96 increment 8 - the Dashboard aggregate on every store the install can choose (D79/D80): the widgets ride the
+    /// The Dashboard aggregate on every store the install can choose: the widgets ride the
     /// JSON collection column, every value object its scalar; a board round-trips with its widgets in order, its layout,
     /// its enums and its UTC instants; a site lists its own boards and not another's; a change to a widget is read back;
     /// a delete is a delete. Composed through the module's OWN startup, the way the host does it. the predecessor platform's

@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Erasure.Participants
 {
     /// <summary>
-    /// The framework's own subject-bearing stores (D112): each declares its handling once, in code. Everything acts on
+    /// The framework's own subject-bearing stores: each declares its handling once, in code. Everything acts on
     /// ids and is idempotent - a second run finds nothing.
     /// </summary>
     public sealed class UserSettingsErasureParticipant(ISettingRepository settings) : ISubjectErasureParticipant
@@ -191,7 +191,7 @@ namespace Stomme.Modules.Erasure.Participants
         }
     }
 
-    /// <summary>A read through the framework seam's query session (D19: reads never go through a store).</summary>
+    /// <summary>A read through the framework seam's query session (reads never go through a store).</summary>
     internal static class FrameworkStoreReads
     {
         public static T Query<T>(IFrameworkStoreSessionFactory sessions, Func<IQuerySession, T> read)

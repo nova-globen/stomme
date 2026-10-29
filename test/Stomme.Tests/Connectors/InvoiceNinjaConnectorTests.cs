@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Invoice Ninja (n8n's Invoice Ninja node) without a server: every id, date, amount, percentage, choice, line and
+    /// Invoice Ninja (n8n's Invoice Ninja node) without a server: every id, date, amount, percentage, choice, line and
     /// contact held to Invoice Ninja's shape before anything is sent; the token in Invoice Ninja's header and in no address; an
     /// invoice made under version 5's names - its date as date, not n8n's invoice_date, n8n's line names taken - marked sent and
     /// part paid in its query; a country, a currency and a payment type looked up by code or name in Invoice Ninja's own lists;
@@ -265,8 +265,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Invoice Ninja LIVE, against this machine's throwaway Invoice Ninja 5.13 (scripts/invoiceninja-test-server.ps1) -
-    /// fail-not-skip without it (D46): a test naming the company and a wrong token refused; a client made with its country by
+    /// Invoice Ninja LIVE, against this machine's throwaway Invoice Ninja 5.13 (scripts/invoiceninja-test-server.ps1) -
+    /// fail-not-skip without it: a test naming the company and a wrong token refused; a client made with its country by
     /// code and a contact; an invoice of two lines dated as given and marked sent, read with its client, found by its number; a
     /// payment over its balance refused, the balance paid by type name and the invoice then paid; a quote and the invoice
     /// e-mailed (Invoice Ninja's mail goes to its log); an expense in SEK by Swish, dated as given; a task of an hour and a half;

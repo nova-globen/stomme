@@ -4,7 +4,7 @@ using System.Net.Sockets;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Central SQL Server test-endpoint resolution - the counterpart of <see cref="PostgresTestEndpoint"/> (BL-117, which
+    /// Central SQL Server test-endpoint resolution - the counterpart of <see cref="PostgresTestEndpoint"/> (which
     /// needed a module-aggregate store measured on SQL Server and found no suite that could reach one).
     /// </summary>
     /// <remarks>

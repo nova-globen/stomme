@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Coda
 {
     /// <summary>
-    /// Coda (BL-229, n8n's Coda node: a table's or a view's rows read, got, created, upserted, updated and deleted, its buttons
+    /// Coda (n8n's Coda node: a table's or a view's rows read, got, created, upserted, updated and deleted, its buttons
     /// pushed, its columns, a doc's formulas and controls read): Coda's API v1 (<c>/apis/v1</c>), an API token as a bearer
     /// token, over the host's egress. A test names the token.
     /// </summary>

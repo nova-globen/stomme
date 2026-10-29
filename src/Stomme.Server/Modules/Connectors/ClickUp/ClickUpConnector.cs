@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.ClickUp
 {
     /// <summary>
-    /// ClickUp (BL-229, n8n's ClickUp node: a task created, got, listed, updated and deleted, a comment added): ClickUp's API
+    /// ClickUp (n8n's ClickUp node: a task created, got, listed, updated and deleted, a comment added): ClickUp's API
     /// (<c>https://api.clickup.com/api/v2</c>), a personal API token (<c>pk_...</c>) as the API key - sent as ClickUp has it, the
     /// <c>Authorization</c> header's whole value, no scheme before it. A test asks ClickUp who the token is (<c>user</c>).
     /// </summary>

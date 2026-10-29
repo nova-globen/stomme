@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.HtmlText.Repository
 {
     /// <summary>
-    /// Registers the HtmlText module's store on the persistence seam (D55) — the REFERENCE the module template
+    /// Registers the HtmlText module's store on the persistence seam — the REFERENCE the module template
     /// copies. Both providers register EVERY module closed store contract, exactly as the framework's two
     /// extensions do, so the module-scoped reflective gate (<c>ModuleStoreRegistrationTests</c>) can hold each
     /// provider to the same interface set with no hand-maintained list.

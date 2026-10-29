@@ -25,7 +25,7 @@ namespace Stomme.Models.Pipelines
         long? ReplyToMessageId);
 
     /// <summary>
-    /// What a "Telegram message received" trigger hands the pipeline it starts (BL-229, n8n's Telegram Trigger): the message, as
+    /// What a "Telegram message received" trigger hands the pipeline it starts (n8n's Telegram Trigger): the message, as
     /// JSON text, read with an expression - <c>{{ message.text }}</c>, <c>{{ message.chat.id }}</c>, <c>{{ message.from.username }}</c>
     /// - and answered with Send chat message to <c>{{ message.chat.id }}</c>, in reply to <c>{{ message.messageId }}</c>. ONE
     /// shape, written by the server from the Telegram connector's record and by the editor for the sample an author tests with.

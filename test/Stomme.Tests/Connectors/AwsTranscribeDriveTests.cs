@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon Transcribe DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Amazon Transcribe DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for Transcribe that RE-SIGNS every call with the secret at its own time and refuses one
     /// whose signature does not agree, and serves a finished job's transcript at the address it answers with: a Transcribe
     /// connection made over the API and tested; a published pipeline starts a job, reads it once done - its transcript fetched

@@ -4,7 +4,7 @@
 @inject ITenantService TenantService
 
 @*
-    Backup and restore (BL-81): encrypted snapshots of the whole installation, restored when the host restarts. Placed for the
+    Backup and restore: encrypted snapshots of the whole installation, restored when the host restarts. Placed for the
     Host while Backup:Enabled is on; every action is decided again by the server, which requires the Host role.
 *@
 
@@ -110,7 +110,7 @@
     <section style="display:flex;flex-direction:column;gap:0.5rem;">
         <h3 style="margin:0;">Import an archive</h3>
         <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
-            @* .stbak since 10.75.0; .dcbak, the earlier name, is still read (BL-261) *@
+            @* .stbak since 10.75.0; .dcbak, the earlier name, is still read *@
             <InputFile id="backup-import-file" OnChange="PickArchive" accept=".stbak,.dcbak" />
             <label for="backup-import-passphrase">Passphrase</label>
             <input id="backup-import-passphrase" type="password" class="db-input" style="width:auto;" autocomplete="off" @bind="_importPassphrase" />
@@ -208,7 +208,7 @@
         _message = string.Empty;
         try
         {
-            // BL-171: a multi-tenant installation may put back some tenants only; the default is all of them.
+            // A multi-tenant installation may put back some tenants only; the default is all of them.
             _tenants = await TenantService.GetTenantsAsync() ?? new List<Tenant>();
         }
         catch (Exception ex)

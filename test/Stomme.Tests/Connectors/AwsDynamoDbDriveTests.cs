@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon DynamoDB DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Amazon DynamoDB DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for DynamoDB's JSON protocol that checks every request's signature as AWS would - its
     /// target signed with it, re-signed with the key's secret at the request's own time and refused when it differs: an Amazon
     /// DynamoDB connection made over the API, its key pair vaulted, tested; a published pipeline puts an item with an accent, a

@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D102: the recording port must not let a caller name the subject, the site or the time.
+    /// The recording port must not let a caller name the subject, the site or the time.
     /// </summary>
     /// <remarks>
     /// <para>

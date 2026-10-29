@@ -11,13 +11,13 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Sessions.Persistence
 {
     /// <summary>
-    /// The session rows' reads (BL-119). Every filter is an int, a Guid or a UTC range - the provider-safe set (D78). "Active"
+    /// The session rows' reads. Every filter is an int, a Guid or a UTC range - the provider-safe set. "Active"
     /// is the range filter alone: a revoke moves <see cref="UserSessionAggregate.ExpiresOnUtc"/> to the revocation instant,
     /// so a revoked row is never in the future (pinned by the conformance suite).
     /// </summary>
     public interface IUserSessionRepository : IRepository<UserSessionAggregate, Guid>
     {
-        /// <summary>One session by id, or null. A lookup - not tracked (the storage-blind registration never tracks, D79).</summary>
+        /// <summary>One session by id, or null. A lookup - not tracked (the storage-blind registration never tracks).</summary>
         Task<UserSessionAggregate?> FindSessionAsync(Guid id, CancellationToken ct = default);
 
         /// <summary>A user's ACTIVE sessions on a site, newest first.</summary>
@@ -30,7 +30,7 @@ namespace Stomme.Sessions.Persistence
         Task<IReadOnlyList<UserSessionAggregate>> ListEndedBeforeAsync(int siteId, DateTime cutoffUtc, CancellationToken ct = default);
     }
 
-    /// <summary>The storage-blind implementation over the closed repository (D79/D80) - no provider code.</summary>
+    /// <summary>The storage-blind implementation over the closed repository - no provider code.</summary>
     public sealed class UserSessionRepository(IRepository<UserSessionAggregate, Guid> inner) : IUserSessionRepository
     {
         public Task<UserSessionAggregate?> GetByIdAsync(Guid id, CancellationToken ct = default) => inner.GetByIdAsync(id, ct);

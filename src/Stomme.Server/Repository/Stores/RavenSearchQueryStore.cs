@@ -17,7 +17,7 @@ using Raven.Client.Documents.Queries.Facets;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// <b>The RavenDB static index behind the search read (D50).</b> One entry per
+    /// <b>The RavenDB static index behind the search read.</b> One entry per
     /// <see cref="SearchContentWordAggregate"/>, with the word and the owning content's filterable columns
     /// pulled across by <c>LoadDocument</c>.
     /// </summary>
@@ -84,7 +84,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="ISearchQueryStore"/> (D50) — <b>the same numbers as the EF half, by a
+    /// The RavenDB <see cref="ISearchQueryStore"/> — <b>the same numbers as the EF half, by a
     /// deliberately different mechanism.</b>
     /// </summary>
     /// <remarks>
@@ -115,7 +115,7 @@ namespace Stomme.Repository.Stores
     /// <remarks>
     /// <para>
     /// <b>It takes the raw <see cref="IDocumentStore"/>, and that is forced rather than chosen.</b> Every other
-    /// read on this seam goes through <c>IQuerySession</c> (D19), which hands back a bare
+    /// read on this seam goes through <c>IQuerySession</c>, which hands back a bare
     /// <see cref="IQueryable{T}"/> so the caller cannot know the provider. <c>AggregateBy</c> is a RavenDB
     /// extension over <c>IRavenQueryable</c> and does not exist on <see cref="IQueryable{T}"/> — the seam's
     /// read surface cannot express this query, which is the entire reason <see cref="ISearchQueryStore"/> is a
@@ -147,7 +147,7 @@ namespace Stomme.Repository.Stores
                 return [];
             }
 
-            // The tenant's database (BL-176) - the one RavenFrameworkStoreSessionFactory reads, so the facet and the load agree.
+            // The tenant's database - the one RavenFrameworkStoreSessionFactory reads, so the facet and the load agree.
             var database = RavenTenantRouting.DatabaseOf(databaseResolver, tenantContext, options);
             using var session = string.IsNullOrEmpty(database)
                 ? store.OpenSession()
@@ -260,7 +260,7 @@ namespace Stomme.Repository.Stores
                 query = query.Where(entry => entry.ContentModifiedOn >= searchQuery.FromDate);
             }
 
-            // BL-251: ToDate defaults to DateTime.MinValue, so a query without one found NOTHING; the default means "no end".
+            // ToDate defaults to DateTime.MinValue, so a query without one found NOTHING; the default means "no end".
             if (searchQuery.ToDate.Date != DateTime.MaxValue.Date && searchQuery.ToDate.Date != DateTime.MinValue.Date)
             {
                 query = query.Where(entry => entry.ContentModifiedOn <= searchQuery.ToDate);

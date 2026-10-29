@@ -19,7 +19,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "When executed by another workflow": When called by another pipeline holds what its caller sent to the fields
+    /// n8n's "When executed by another workflow": When called by another pipeline holds what its caller sent to the fields
     /// it expects - each value as its field holds it, the engine's own keys left out - fails the run when a value cannot be what
     /// its field holds or a required field was not sent, saying which; with no fields it hands on whatever came. The fields read
     /// as Extract information's, and make the caller's template.

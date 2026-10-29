@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     <!-- Bare ADO driver for the PostgreSQL advisory-lock IDistributedLock (pg_try_advisory_lock). -->
     <PackageReference Include="Npgsql" />
-    <!-- BL-78 (D100): the JSON collection column of ModuleAggregatesDbContext serializes with the SAME Newtonsoft
+    <!-- The JSON collection column of ModuleAggregatesDbContext serializes with the SAME Newtonsoft
          contract the File and RavenDB module stores use, so a collection reconstructs identically on all three. MIT. -->
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>

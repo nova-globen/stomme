@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Pins the decision rules of <see cref="PermissionRowAccessGuard"/> (D99 point 5, BL-99 step 1) against a
+    /// Pins the decision rules of <see cref="PermissionRowAccessGuard"/> against a
     /// recording <see cref="IUserPermissions"/> stub — and, for the "no rows" rule, against the REAL
     /// <see cref="UserPermissions"/> over an empty permission repository, because "deny when no rows" is a
     /// property of the overload chosen, not of the stub.
@@ -47,7 +47,7 @@ namespace Stomme.Tests
             Assert.Single(permissions.Calls);
         }
 
-        // The load-bearing rule (D99: "deny when no rows exist for a key"). Driven through the REAL
+        // The load-bearing rule ("deny when no rows exist for a key"). Driven through the REAL
         // UserPermissions so the choice of overload is what is under test: the six-argument overload falls
         // back to role membership when no rows exist, which would admit this Administrator; the
         // five-argument one evaluates the (empty) rows and denies.

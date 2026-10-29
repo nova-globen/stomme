@@ -21,7 +21,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.MailerLite
 {
     /// <summary>
-    /// MailerLite (BL-229, n8n's MailerLite node: a subscriber created, got, read and updated): MailerLite's API with an API
+    /// MailerLite (n8n's MailerLite node: a subscriber created, got, read and updated): MailerLite's API with an API
     /// token as a bearer token, over the host's egress. A test names how many groups the token's account has.
     /// </summary>
     /// <remarks>

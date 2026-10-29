@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.DataExport.Startup
 {
     /// <summary>
-    /// Wires the data-export module (BL-85, D108): two storage-blind aggregates, the renderers and the queue
+    /// Wires the data-export module: two storage-blind aggregates, the renderers and the queue
     /// processor.
     /// </summary>
     /// <remarks>
@@ -29,7 +29,7 @@ namespace Stomme.Modules.DataExport.Startup
     /// Discovered by the framework's assembly scan like every other module startup. Each aggregate takes ONE
     /// <c>AddModuleAggregatePersistence</c> call and the module authors no persistence code: on a relational
     /// install the host maps them into the shared context, on RavenDB or the File store they round-trip through
-    /// the install's own store (D79/D80).
+    /// the install's own store.
     /// </para>
     /// <para>
     /// <b>Off by default, and closed in three places.</b> <c>DataExport:Enabled</c> is false, so the queue job's body
@@ -58,9 +58,9 @@ namespace Stomme.Modules.DataExport.Startup
 
             services.AddScoped<IExportJobRepository, ExportJobRepository>();
             services.AddScoped<IExportAuditRepository, ExportAuditRepository>();
-            services.AddModuleAggregatePersistence<ExportScheduleAggregate, Guid>(); // BL-95: recurring exports, run as their owner
+            services.AddModuleAggregatePersistence<ExportScheduleAggregate, Guid>(); // Recurring exports, run as their owner
             services.AddScoped<IExportScheduleRepository, ExportScheduleRepository>();
-            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.DataExportErasureParticipant>(); // D112: the subject's jobs go; the export audit is retained one year
+            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.DataExportErasureParticipant>(); // The subject's jobs go; the export audit is retained one year
 
             // One renderer per format. TryAddEnumerable keys on the implementation type, so a second startup pass
             // cannot double them; ExportRendererRegistry refuses two renderers claiming one format.
@@ -107,7 +107,7 @@ namespace Stomme.Modules.DataExport.Startup
             services.TryAddScoped<ExportQueueProcessor>();
             services.TryAddScoped<ExportExpiryPass>();
 
-            // The user-facing CQRS surface (D108 item 5). Handlers are registered EXPLICITLY - never AddMediator() here:
+            // The user-facing CQRS surface. Handlers are registered EXPLICITLY - never AddMediator() here:
             // Guestbook's startup already composed the mediator, and a second AddMediator would double every pipeline
             // behavior (BL-78 F13). Nothing on the JOB path carries [Requires]: a job has no HttpContext.
             services.TryAddScoped<ExportCaller>();
@@ -118,7 +118,7 @@ namespace Stomme.Modules.DataExport.Startup
             services.AddScoped<IRequestHandler<ListSiteExportsQuery, IReadOnlyList<ExportJobView>>, ListSiteExportsQueryHandler>();
             services.AddScoped<IRequestHandler<GetExportQuery, ExportJobView?>, GetExportQueryHandler>();
             services.AddScoped<IRequestHandler<ListExportSourcesQuery, IReadOnlyList<ExportSourceView>>, ListExportSourcesQueryHandler>();
-            // BL-95: recurring exports, authored by a person who may make the export now, run as their owner.
+            // Recurring exports, authored by a person who may make the export now, run as their owner.
             services.AddScoped<IRequestHandler<CreateExportScheduleCommand, ExportScheduleView>, CreateExportScheduleCommandHandler>();
             services.AddScoped<IRequestHandler<ListExportSchedulesQuery, IReadOnlyList<ExportScheduleView>>, ListExportSchedulesQueryHandler>();
             services.AddScoped<IRequestHandler<ChangeExportScheduleCommand, bool>, ChangeExportScheduleCommandHandler>();
@@ -134,7 +134,7 @@ namespace Stomme.Modules.DataExport.Startup
     /// <summary>
     /// The Wave-1 formatter: declines every value, so each renderer writes its own culture-invariant text.
     /// </summary>
-    /// <remarks>The real, per-site formatter arrives with Formats (BL-94) and replaces this registration.</remarks>
+    /// <remarks>The real, per-site formatter arrives with Formats and replaces this registration.</remarks>
     public sealed class InvariantExportCellFormatter : IExportCellFormatter
     {
         public string? Format(object? value, ExportColumn column) => null;

@@ -36,7 +36,7 @@ namespace Stomme.Modules.AiAssistant.Services
     }
 
     /// <summary>
-    /// The chat panel's client over <c>api/AiAssistant</c> (BL-97 increment 10b). A refusal (400, 403, 409, 429, 503) carries its
+    /// The chat panel's client over <c>api/AiAssistant</c>. A refusal (400, 403, 409, 429, 503) carries its
     /// code and a message written to be shown, so the panel reads the body rather than treating the status as an exception.
     /// </summary>
     public class AiAssistantService : ServiceBase, IAiAssistantService, IClientService

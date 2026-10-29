@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-191: every browser-side service a page injects has a SERVER side, resolved from an installed host's request scope.
+    /// Every browser-side service a page injects has a SERVER side, resolved from an installed host's request scope.
     /// </summary>
     /// <remarks>
     /// <para>

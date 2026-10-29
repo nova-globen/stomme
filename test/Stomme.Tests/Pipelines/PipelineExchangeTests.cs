@@ -23,7 +23,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 10 - a pipeline as a FILE and the pipelines a site starts from. The file is the editor's graph with a name, read
+    /// A pipeline as a FILE and the pipelines a site starts from. The file is the editor's graph with a name, read
     /// back exactly; a file that is not one is refused with the reason, before anything is stored. Every shipped starter is held to the
     /// engine's save and the problem check, and the smallest one runs.
     /// </summary>
@@ -122,7 +122,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(note.Parent);
         }
 
-        // BL-229: a test value kept with the pipeline can be real data, so a file (an export, a copy to the clipboard) never
+        // A test value kept with the pipeline can be real data, so a file (an export, a copy to the clipboard) never
         // carries one - not written, and not read from a file that holds one anyway; the canvas's graph is left as it was.
         [Fact]
         public void A_file_carries_no_kept_test_values_either_way()
@@ -142,7 +142,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(PipelineExchange.Read(written).Graph!.Variables.Single().TestValue);
         }
 
-        // BL-229 - a folder as ONE file: each pipeline with its id and its folder below the one exported, no kept test value, read
+        // A folder as ONE file: each pipeline with its id and its folder below the one exported, no kept test value, read
         // back as n8n's list of workflows is; a folder in the file that cannot be one is none, and below one too deep it is not.
         [Fact]
         public void Many_pipelines_are_one_file_with_their_ids_and_folders()
@@ -173,7 +173,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("A/B/C", PipelineExchange.FolderIn("A/B/C", "D/E")); // five deep: kept where it is imported
         }
 
-        // BL-229 - what a graph names of other pipelines, pointed at the ones they became: a call step's pipeline (Execute, Dispatch,
+        // What a graph names of other pipelines, pointed at the ones they became: a call step's pipeline (Execute, Dispatch,
         // Bulk dispatch), a "Pipeline failed"'s, and the ones that may call it - a pipeline the file did not hold left as named, an
         // expression left to the run.
         [Fact]
@@ -219,7 +219,7 @@ namespace Stomme.Tests.Pipelines
             Assert.True(PipelineStarters.All.Count >= 5);
             Assert.Equal(PipelineStarters.All.Count, PipelineStarters.All.Select(starter => starter.Id).Distinct().Count());
 
-            // BL-229: and the failure handler the editor makes from the pipeline that fails (n8n's "Error workflow" setting).
+            // And the failure handler the editor makes from the pipeline that fails (n8n's "Error workflow" setting).
             var starters = PipelineStarters.All.Select(starter => (starter.Id, Graph: (Func<PipelineGraph>)starter.Graph))
                 .Append(("failure-handler", () => PipelineStarters.FailureHandler("def-1", "Orders")));
             foreach (var (id, make) in starters)
@@ -257,7 +257,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains(result.Journal.PipelineExecutionLogEntries, entry => entry.Message == "Hello, world!");
         }
 
-        // BL-229 - an n8n workflow brought over is a graph this installation's save accepts - every step a type it offers, the
+        // An n8n workflow brought over is a graph this installation's save accepts - every step a type it offers, the
         // placeholders and the conditions left to set no refusal - and an import stores it as one draft, its notes with it.
         [Fact]
         public async Task An_n8n_workflow_brought_over_is_one_the_save_accepts_and_the_import_stores()

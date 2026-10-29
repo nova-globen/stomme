@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Notion
 {
     /// <summary>
-    /// Notion (BL-229, n8n's Notion node: a database's pages got, created and updated): Notion's API
+    /// Notion (n8n's Notion node: a database's pages got, created and updated): Notion's API
     /// (<c>https://api.notion.com/v1</c>, version 2022-06-28), an integration's secret as the Bearer token. A test asks Notion
     /// who the integration is (<c>users/me</c>).
     /// </summary>
@@ -33,7 +33,7 @@ namespace Stomme.Modules.Connectors.Notion
     /// address - and the properties to change, typed by the page's own. A field no property names, or one Notion computes, is
     /// left out and named in <c>left_out</c>. A database's or a page's id is held to Notion's shape - thirty-two hex digits, an
     /// address's last ones - before it reaches the path. A failure is thrown with its status and Notion's own code
-    /// (<c>HTTP 404 object_not_found.</c>), the port answering it in its words (D110); a throttled call waits as Notion says.
+    /// (<c>HTTP 404 object_not_found.</c>), the port answering it in its words; a throttled call waits as Notion says.
     /// </remarks>
     public sealed class NotionConnector : IConnector, IConnectorExtractor
     {

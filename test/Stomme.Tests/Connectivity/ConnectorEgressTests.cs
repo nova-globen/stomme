@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 4 (D110) - the host's connector egress over the framework's ONE outbound guard. In both directions:
+    /// The host's connector egress over the framework's ONE outbound guard. In both directions:
     /// a guarded client refuses a loopback receiver at CONNECT (the receiver sees nothing) and a name resolving to loopback
     /// too; an allowlisted loopback receiver receives the request; a redirect is not followed; the resolve-and-pin call
     /// answers null for a refused address, the address for an allowlisted or a public one, and null for a name that does

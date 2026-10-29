@@ -4,7 +4,7 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// Translates between <see cref="AliasAggregate"/> (the persisted aggregate) and <see cref="Alias"/> (the
-    /// client/server contract) at the <see cref="Repository.AliasRepository"/> boundary (D52).
+    /// client/server contract) at the <see cref="Repository.AliasRepository"/> boundary.
     /// </summary>
     /// <remarks>
     /// This mapping is PARTIAL by design. <see cref="Alias"/> carries <c>[NotMapped]</c> runtime state —

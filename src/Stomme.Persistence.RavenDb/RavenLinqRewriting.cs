@@ -34,7 +34,7 @@ internal static class RavenLinqRewriting
             && method.GetParameters()[1].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 
     /// <summary>
-    /// Rewrites a PREDICATE into RavenDB's dialect (BL-106).
+    /// Rewrites a PREDICATE into RavenDB's dialect.
     /// </summary>
     /// <remarks>
     /// <see cref="RavenRepository{TAggregate,TId}.FindAsync"/> composes <c>.Where(predicate)</c> on RavenDB's own
@@ -144,7 +144,7 @@ internal static class RavenLinqRewriting
         }
 
         /// <summary>
-        /// Strips a conversion the COMPILER inserted around the collection (BL-106).
+        /// Strips a conversion the COMPILER inserted around the collection.
         /// </summary>
         /// <remarks>
         /// An ARRAY is the ordinary way to write "any of these", and on .NET 10 <c>array.Contains(x)</c> no longer

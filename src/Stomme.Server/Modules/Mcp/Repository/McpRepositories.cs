@@ -28,7 +28,7 @@ namespace Stomme.Mcp.Persistence
     /// </para>
     /// <para>
     /// Filters stay inside the <c>FindAsync</c> safe set - an <c>int</c> site id and a <c>bool</c> - with ONE string:
-    /// the by-name look-up compares <c>NameNormalized</c>, normalised on BOTH sides with the same function (D49), because
+    /// the by-name look-up compares <c>NameNormalized</c>, normalised on BOTH sides with the same function, because
     /// a bare string <c>==</c> is case-sensitive on the relational providers and case-insensitive on RavenDB.
     /// </para>
     /// </remarks>
@@ -45,7 +45,7 @@ namespace Stomme.Mcp.Persistence
         Task<McpServerRegistrationAggregate?> GetByNameAsync(int siteId, string name, CancellationToken ct = default);
     }
 
-    /// <summary>The audit ledger's closed read surface (D101 item 6).</summary>
+    /// <summary>The audit ledger's closed read surface.</summary>
     public interface IMcpAuditRepository : IRepository<McpAuditEntryAggregate, Guid>
     {
         Task<IReadOnlyList<McpAuditEntryAggregate>> ListBySiteAsync(int siteId, CancellationToken ct = default);

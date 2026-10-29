@@ -1,6 +1,6 @@
 namespace Stomme.Modules.Metering.Domain
 {
-    /// <summary>The window a quota counts over (D102).</summary>
+    /// <summary>The window a quota counts over.</summary>
     /// <remarks>
     /// the predecessor platform had TWO rival authorities with different windows: <c>Quota.IsPeriodElapsed</c> slid from the period
     /// start, while the AI guard counted the raw ledger from a CALENDAR month start. One had to win, and the
@@ -29,7 +29,7 @@ namespace Stomme.Modules.Metering.Domain
     }
 
     /// <summary>
-    /// Whether a ledger row has been folded into its quota counter (D102).
+    /// Whether a ledger row has been folded into its quota counter.
     /// </summary>
     /// <remarks>
     /// The append and the fold are two commits on every provider, so this flag is what makes the pair recoverable:

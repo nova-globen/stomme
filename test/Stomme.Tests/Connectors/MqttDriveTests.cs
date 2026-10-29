@@ -15,12 +15,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - MQTT DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// MQTT DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a real Mosquitto 2.1 (<see cref="MqttTestEndpoint"/>): an MQTT connection made over the API - an address that
     /// carries no credential, the password vaulted - refused while loopback is not allowlisted, then tested; a published pipeline
     /// publishes a retained status at QoS 1 and a message over several lines from the step's Query box, receives the retained
     /// status on a topic filter, and clears it; the password in neither the graph nor the run. Fails, never skips, without a
-    /// broker (D46).
+    /// broker.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

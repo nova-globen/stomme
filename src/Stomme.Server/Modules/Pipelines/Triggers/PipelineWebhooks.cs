@@ -117,7 +117,7 @@ namespace Stomme.Modules.Pipelines.Triggers
 
         /// <summary>
         /// The receiver's rate-limit policy: a fixed window per site and caller address. The host owns the 429 answer. The forms'
-        /// pages (BL-229) take one of their own under another name, so a busy webhook never starves a form, nor a form a webhook.
+        /// pages take one of their own under another name, so a busy webhook never starves a form, nor a form a webhook.
         /// </summary>
         public static void AddPolicy(IServiceCollection services, int requestsPerMinute, string policyName = PolicyName)
         {

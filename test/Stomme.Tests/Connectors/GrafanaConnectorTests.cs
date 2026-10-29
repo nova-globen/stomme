@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Grafana (n8n's Grafana node: its dashboards, teams, team members and the organization's users): every call the
+    /// Grafana (n8n's Grafana node: its dashboards, teams, team members and the organization's users): every call the
     /// server's HTTP API with the token as a bearer token; dashboards searched page by page, got by uid or address, created
     /// in a folder with tags, updated with their panels kept - read first, saved at their version - and deleted; teams
     /// searched page by page, got, created, updated with what is not given kept, and deleted; members listed, added and

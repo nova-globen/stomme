@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Analytics DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Google Analytics DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for Google's token endpoint and the GA4 Data API that refuses a call without the token it
     /// issued: a Google Analytics connection made over the API with its property, the client's secret and refresh token vaulted,
     /// tested; a published pipeline listing the property's metrics and reading last calendar month's active users and sessions by

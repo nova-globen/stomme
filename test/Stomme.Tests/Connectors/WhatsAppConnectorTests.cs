@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - WhatsApp Business (n8n's WhatsApp Business Cloud node, its text message sent) for Send chat message: Meta's Cloud
+    /// WhatsApp Business (n8n's WhatsApp Business Cloud node, its text message sent) for Send chat message: Meta's Cloud
     /// API under the endpoint's Graph version, a system user's token as the bearer, the connection's phone number ID the sender
     /// and the path's one segment of digits; a text to a phone number - its spaces, dashes and + dropped - quoting a message when
     /// it answers one; a number, a message id and a text too long refused before anything is sent; Meta's refusal its message

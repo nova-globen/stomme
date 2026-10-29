@@ -28,7 +28,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The File cluster on the persistence seam (D49) — the last one to cross, and the one D48 escalated.
+    /// The File cluster on the persistence seam — the last one to cross, and the one D48 escalated.
     /// Writes through <see cref="IFileStore"/>, reads through <see cref="IFrameworkStoreSessionFactory"/>
     /// (D19). The <c>DbSet&lt;File&gt;</c> is gone from <see cref="TenantDBContext"/> — that deletion is the
     /// compiler's proof this cluster moved.
@@ -62,7 +62,7 @@ namespace Stomme.Repository
     /// longer get this wrong, and <c>A_file_resolves_by_name_whatever_case_the_caller_passes</c> pins that.
     /// </para>
     /// <para>
-    /// <b>The join stays decomposed (D22 rule 9, the D21 pattern), unchanged from D48.</b>
+    /// <b>The join stays decomposed (D22 rule 9, the D21 pattern), unchanged.</b>
     /// <see cref="GetFileAsync(int, string, string)"/> cannot filter across <c>File.Folder</c> — D48 severed
     /// that navigation to <c>[NotMapped]</c> because while it stayed mapped EF rediscovered the Folder
     /// contract through it and broke the model at startup. So the folder ids are resolved FIRST (their own
@@ -83,7 +83,7 @@ namespace Stomme.Repository
     /// That was checked, not assumed — and the first draft of this class got it wrong.</b> The hazard is real:
     /// a store owns ONE <see cref="TenantDBContext"/> for its lifetime and a controller holds one transient
     /// repository per request, so two writes to the SAME key through one instance hit the identity map and
-    /// throw (D44). <c>PROBE_two_writes_to_the_same_file_through_one_repository_instance</c> demonstrates it
+    /// throw. <c>PROBE_two_writes_to_the_same_file_through_one_repository_instance</c> demonstrates it
     /// live rather than describing it.
     /// </para>
     /// <para>
@@ -98,7 +98,7 @@ namespace Stomme.Repository
     /// one, and it is out of scope here.
     /// </para>
     /// <para>
-    /// So this matches <see cref="FolderRepository"/> (D48) and the eleven clusters before it; UrlMapping
+    /// So this matches <see cref="FolderRepository"/> and the eleven clusters before it; UrlMapping
     /// remains the sole exception, because it is the sole cluster whose READ writes.
     /// <c>TheFileWriteLifetimeTests</c> pins the shapes production actually uses.
     /// </para>
@@ -122,7 +122,7 @@ namespace Stomme.Repository
 
         /// <summary>
         /// Opens a read session, runs <paramref name="read"/> against it and disposes it. Reads NEVER go
-        /// through the store (D19).
+        /// through the store.
         /// </summary>
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -144,8 +144,8 @@ namespace Stomme.Repository
 
         /// <summary>
         /// NOTE the <paramref name="tracking"/> parameter is now INERT, and deliberately kept on the
-        /// interface — as on <see cref="IFolderRepository"/> (D48) and the leaf clusters (D44). A session read
-        /// tracks nothing (D19), so both arms return the same detached models. Removing the overload would
+        /// interface — as on <see cref="IFolderRepository"/> and the leaf clusters. A session read
+        /// tracks nothing, so both arms return the same detached models. Removing the overload would
         /// churn <c>FileController</c> for no behaviour change; it stays at parity.
         /// </summary>
         public async Task<IEnumerable<File>> GetFilesAsync(int folderId, bool tracking)
@@ -153,7 +153,7 @@ namespace Stomme.Repository
             var folder = await _folderRepository.GetFolderAsync(folderId, false);
             var permissions = (await _permissions.GetPermissionsAsync(folder.SiteId, EntityNames.Folder, folderId)).ToList();
 
-            // The .Include(item => item.Folder) is gone with the navigation (D48); every file in this call
+            // The .Include(item => item.Folder) is gone with the navigation; every file in this call
             // shares ONE folder (it is the argument), so the stitch below is a single object, not a second
             // query per row. This read does NOT pay N+1.
             var files = await QueryAsync(session => session.Query<FileAggregate>()
@@ -292,7 +292,7 @@ namespace Stomme.Repository
         /// <para>
         /// THIS is the read that used to keep the File cluster off the seam: it was
         /// <c>item.Path.ToLower() == folderPath</c>, which throws <c>NotSupportedException</c> on RavenDB
-        /// (D48, measured — and <c>TheToLowerTranslationGapTests</c> still pins that measurement, because the
+        /// (measured — and <c>TheToLowerTranslationGapTests</c> still pins that measurement, because the
         /// gap is real and D49 routed around it rather than closing it). Filtering
         /// <see cref="FolderAggregate.PathNormalized"/> with plain <c>==</c> says the same thing on every
         /// provider.

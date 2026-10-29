@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google BigQuery (n8n's Google BigQuery node: a query run, rows inserted): the OAuth client's refresh token at
+    /// Google BigQuery (n8n's Google BigQuery node: a query run, rows inserted): the OAuth client's refresh token at
     /// Google's token endpoint, the BigQuery API v2 with the access token as a bearer; a query in a project with a default
     /// dataset, a location and named parameters, its job waited for no longer than asked, its rows read page by page by
     /// BigQuery's page token no further than asked and typed by the schema; rows inserted in batches of 500 with an insert id

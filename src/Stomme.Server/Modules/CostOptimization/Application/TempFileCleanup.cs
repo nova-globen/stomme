@@ -16,7 +16,7 @@ namespace Stomme.Modules.CostOptimization.Application
 {
     /// <summary>
     /// The resource-cleanup settings (the predecessor platform's <c>CleanupOptions</c>), read from the HOST's configuration section
-    /// <c>CostOptimization:Cleanup</c> (BL-162). Reversible by default: <see cref="DryRun"/> starts true (the job only
+    /// <c>CostOptimization:Cleanup</c>. Reversible by default: <see cref="DryRun"/> starts true (the job only
     /// reports what it would remove) and nothing newer than <see cref="SafetyWindowDays"/> is ever touched.
     /// </summary>
     /// <remarks>
@@ -167,7 +167,7 @@ namespace Stomme.Modules.CostOptimization.Application
     }
 
     /// <summary>
-    /// The daily temp-file cleanup (BL-97 increment 8, the predecessor platform's <c>TempFileCleanupJob</c>): gated at run time by the HOST's
+    /// The daily temp-file cleanup (the predecessor platform's <c>TempFileCleanupJob</c>): gated at run time by the HOST's
     /// <c>CostOptimization:Cleanup:TempFiles:Enabled</c> (default off). The directories are the installation's, so the sweep
     /// runs in the MASTER tenant's pass only - the scheduler runs a job once per tenant, and every other tenant's pass says so
     /// and touches nothing.

@@ -78,7 +78,7 @@ namespace Stomme.Controllers
         [Authorize(Roles = RoleNames.Host)]
         public async Task<Package> Post(string packageid, string version, string download, string install)
         {
-            // BL-109: packageid and version are written straight into a FILE NAME under the Packages folder
+            // Packageid and version are written straight into a FILE NAME under the Packages folder
             // below, so a name containing a separator or ".." would place a .nupkg outside it - which the next
             // restart would then install. Host-only, but a Host does not expect a package id to be a path.
             if (!IsPackageNameSafe(packageid) || !IsPackageNameSafe(version))
@@ -100,7 +100,7 @@ namespace Stomme.Controllers
                     package = await GetJson<Package>(client, url + $"/api/registry/package/?id={_configManager.GetInstallationId()}&package={packageid}&version={version}&download={download}&email={WebUtility.UrlEncode(await GetPackageRegistryEmailAsync())}");
                 }
 
-                // BL-109: a registry that refused, or answered nothing usable, used to leave a 200 with an empty body - which
+                // A registry that refused, or answered nothing usable, used to leave a 200 with an empty body - which
                 // every admin screen read as "downloaded". Now it is a 502 the client turns into an error message.
                 if (package == null)
                 {
@@ -111,7 +111,7 @@ namespace Stomme.Controllers
 
                 if (bool.TryParse(install, out var installRequested) && installRequested)
                 {
-                    // BL-109: a package the registry names without a usable address used to reach GetAsync(null) and throw
+                    // A package the registry names without a usable address used to reach GetAsync(null) and throw
                     // outside any try - an unhandled 500.
                     if (!Stomme.Shared.Utilities.TryCreateAbsoluteUri(package.PackageUrl, out var packageUri) || (packageUri.Scheme != Uri.UriSchemeHttps && packageUri.Scheme != Uri.UriSchemeHttp))
                     {
@@ -165,7 +165,7 @@ namespace Stomme.Controllers
             }
             else
             {
-                // BL-109: no registry is configured, so nothing can be downloaded - an error, not an empty success.
+                // No registry is configured, so nothing can be downloaded - an error, not an empty success.
                 _logger.Log(LogLevel.Error, this, LogFunction.Read, "Package {PackageId} {Version} Requested With No Package Registry Configured", packageid, version);
                 HttpContext.Response.StatusCode = FailedDependency;
                 return null;
@@ -210,7 +210,7 @@ namespace Stomme.Controllers
                     }
                 }
 
-                // BL-109: a refusal (402, 403, any non-success) or a non-JSON answer used to return nothing with no log.
+                // A refusal (402, 403, any non-success) or a non-JSON answer used to return nothing with no log.
                 // The path only: the query carries the installation's registry e-mail.
                 _logger.Log(LogLevel.Error, this, LogFunction.Read, "Marketplace API {Url} Answered {StatusCode} {MediaType}", uri.GetLeftPart(UriPartial.Path), (int)response.StatusCode, response.Content?.Headers.ContentType?.MediaType ?? "(no content type)");
                 return default(T);
@@ -237,7 +237,7 @@ namespace Stomme.Controllers
         }
 
         /// <summary>
-        /// Whether a package id or version may be used in a file name (BL-109).
+        /// Whether a package id or version may be used in a file name.
         /// </summary>
         /// <remarks>
         /// NuGet ids and versions are letters, digits, dot, dash, underscore and plus - nothing that can

@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsLambda
 {
     /// <summary>
-    /// AWS Lambda (BL-229, n8n's AWS Lambda node: a function invoked): an account's functions over Lambda's REST API
+    /// AWS Lambda (n8n's AWS Lambda node: a function invoked): an account's functions over Lambda's REST API
     /// (<c>https://lambda.{region}.amazonaws.com</c>), every call signed with AWS Signature Version 4 by an IAM user's access key
     /// and secret, over the host's egress. A test names how many functions the key sees.
     /// </summary>

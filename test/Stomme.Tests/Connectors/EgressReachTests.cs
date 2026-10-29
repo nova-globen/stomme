@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the egress reaches a pinned address within a connection's timeout before a directory library is let dial it (on
+    /// The egress reaches a pinned address within a connection's timeout before a directory library is let dial it (on
     /// Linux libldap connects synchronously with the system's two-minute timeout, measured on UAT): a listening port answers; a
     /// closed one is refused in words; an address that does not answer is cut off at the timeout; the caller's own cancellation
     /// stays its own; the address checked against the policy where the bytes go - loopback refused unless the host is allowlisted

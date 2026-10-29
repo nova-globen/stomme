@@ -20,7 +20,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AzureCosmosDb
 {
     /// <summary>
-    /// Azure Cosmos DB (BL-229, n8n's Azure Cosmos DB node: a database's containers and items, and its SQL) over the NoSQL API's
+    /// Azure Cosmos DB (n8n's Azure Cosmos DB node: a database's containers and items, and its SQL) over the NoSQL API's
     /// REST interface, every request signed with the account's key (Cosmos DB's master-key token over the verb, the resource type,
     /// its link and the date), over the host's egress. A test names the database and its account.
     /// </summary>

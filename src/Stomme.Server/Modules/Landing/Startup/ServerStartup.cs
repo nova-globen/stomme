@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Landing.Startup
 {
     /// <summary>
-    /// The Landing module's composition (BL-98): the storage-blind page aggregate, its repository and its requests. The
+    /// The Landing module's composition: the storage-blind page aggregate, its repository and its requests. The
     /// handlers are registered explicitly - an earlier startup composed the mediator, and a second AddMediator would double
     /// every pipeline behaviour (BL-78 F13).
     /// </summary>

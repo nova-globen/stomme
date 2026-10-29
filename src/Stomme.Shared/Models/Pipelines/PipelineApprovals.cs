@@ -7,7 +7,7 @@ using Stomme.Models.Notifications;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// The "Ask for approval" step (BL-229, n8n's human in the loop) as the step, the server, the run page and the editor name
+    /// The "Ask for approval" step (n8n's human in the loop) as the step, the server, the run page and the editor name
     /// it: the run pauses on a question until a person with <c>pipelines:approve</c> on the site decides, and goes on down the
     /// outcome they chose - or down Expired when a time to decide was given and passed.
     /// </summary>

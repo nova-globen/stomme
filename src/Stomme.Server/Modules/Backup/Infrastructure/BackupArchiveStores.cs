@@ -5,7 +5,7 @@ using Stomme.Modules.Backup.Domain;
 namespace Stomme.Modules.Backup.Infrastructure
 {
     /// <summary>
-    /// The archive stores of this host (BL-169): the local one, always, and the S3 one when <c>Backup:Archive:S3</c> is
+    /// The archive stores of this host: the local one, always, and the S3 one when <c>Backup:Archive:S3</c> is
     /// configured. NEW snapshots go to <see cref="Current"/>, the one <c>Backup:Archive:Provider</c> names; an existing snapshot
     /// is read from the store its row names (<see cref="BackupSnapshotAggregate.ArchiveStore"/>) - so switching the provider
     /// leaves every earlier snapshot restorable where it is, and a row older than the field reads as Local.

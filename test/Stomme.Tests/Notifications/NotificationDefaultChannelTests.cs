@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-251 - a site with no e-mail or in-app channel gets a default one at its first notification. A new site had none, so
+    /// A site with no e-mail or in-app channel gets a default one at its first notification. A new site had none, so
     /// every notification failed ("No enabled channel is configured for InApp") and was retried until an administrator
     /// created them (found by the app-guidance writers). Neither kind needs settings of its own; a channel an administrator
     /// disabled is left alone, and a kind that needs configuring (webhook) still fails.

@@ -22,7 +22,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Nextcloud
 {
     /// <summary>
-    /// Nextcloud (BL-229, n8n's Nextcloud node: files, folders, shares and users) over a Nextcloud server's own interfaces - its
+    /// Nextcloud (n8n's Nextcloud node: files, folders, shares and users) over a Nextcloud server's own interfaces - its
     /// files through WebDAV (<c>/remote.php/dav/files/{user}</c>), its shares and users through OCS
     /// (<c>/ocs/v2.php/...</c>, JSON) - signed in by a user's name and an app password (Basic, as n8n's access-token credential
     /// does). The address is the server's own, <c>https://cloud.example.com</c> or a folder it is installed under; n8n's WebDAV

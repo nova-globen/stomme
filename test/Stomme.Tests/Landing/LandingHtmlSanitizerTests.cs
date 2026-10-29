@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.Landing
 {
     /// <summary>
-    /// BL-98 increment 3 - the allowlist a generated landing page passes through (<see cref="LandingHtmlSanitizer"/>): a page
+    /// The allowlist a generated landing page passes through (<see cref="LandingHtmlSanitizer"/>): a page
     /// every visitor sees is held to structure, text, links, images and a narrow inline style - no script in any spelling, no
     /// handler, no frame, no form, no second parser, no style that fetches or positions over the site - and each section keeps
     /// its name once. What was taken out is reported, for the agent to put right.

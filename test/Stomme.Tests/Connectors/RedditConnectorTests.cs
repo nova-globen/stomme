@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Reddit (n8n's Reddit node: posts, comments, the profile, subreddits and users): the refresh token exchanged at
+    /// Reddit (n8n's Reddit node: posts, comments, the profile, subreddits and users): the refresh token exchanged at
     /// Reddit's token endpoint with the client as HTTP Basic and the user agent, the access token a bearer and the user agent on
     /// every call; a subreddit's posts and a search page by page by Reddit's after up to the most asked for, a page no bigger
     /// than what is left, Reddit's text unescaped; a post got, submitted as text or a link, its comments depth first without the

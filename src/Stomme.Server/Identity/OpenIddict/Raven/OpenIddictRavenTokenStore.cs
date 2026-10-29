@@ -13,7 +13,7 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Stomme.Identity.OpenIddict.Raven
 {
-    /// <summary>RavenDB-backed <see cref="IOpenIddictTokenStore{TToken}"/> (D62).</summary>
+    /// <summary>RavenDB-backed <see cref="IOpenIddictTokenStore{TToken}"/>.</summary>
     internal sealed class OpenIddictRavenTokenStore : IOpenIddictTokenStore<OpenIddictRavenToken>
     {
         private readonly IRavenOpenIddictSessionProvider _sessions;
@@ -120,7 +120,7 @@ namespace Stomme.Identity.OpenIddict.Raven
         {
             using var session = await _sessions.OpenSessionAsync(cancellationToken);
 
-            // D70: a reference-token identifier is an opaque, case-SENSITIVE secret (OpenIddict generates it as
+            // A reference-token identifier is an opaque, case-SENSITIVE secret (OpenIddict generates it as
             // random base64url), and the EF OpenIddict store's `==` matches it case-sensitively. RavenDB's `==`
             // is case-INSENSITIVE, so a bare Raven query could resolve the WRONG token for a differently-cased
             // identifier (a real security divergence). Query the selective field on the server, then post-filter

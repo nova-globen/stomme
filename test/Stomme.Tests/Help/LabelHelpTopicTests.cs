@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84 increment 9 (D103 item 6): <c>Label HelpTopic</c> - and the promise that a label WITHOUT it is untouched.
+    /// <c>Label HelpTopic</c> - and the promise that a label WITHOUT it is untouched.
     /// </summary>
     /// <remarks>
     /// <para>

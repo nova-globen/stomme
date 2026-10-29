@@ -11,7 +11,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Landing.Services
 {
     /// <summary>
-    /// The landing service in the BROWSER (BL-98): <c>api/Landing</c> over HTTP. A refusal the server explains (a 400 with the
+    /// The landing service in the BROWSER: <c>api/Landing</c> over HTTP. A refusal the server explains (a 400 with the
     /// domain's reason, a 409) is thrown with that reason, so the page can show it - the base class's helpers would return
     /// nothing and lose it.
     /// </summary>

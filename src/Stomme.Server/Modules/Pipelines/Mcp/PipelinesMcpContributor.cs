@@ -17,15 +17,15 @@ namespace Stomme.Modules.Pipelines.Mcp
     /// <summary>
     /// The pipelines' MCP surface (BL-95 increment (f), over BL-80's contributor seam): four resources (the site's
     /// pipelines, one pipeline, one run with its log, and - a residue of (f), 2026-09-28 - the step catalog an agent
-    /// authors against) and eight tools - the fifth (BL-229) lists the runs waiting for a person's decision, read-only: the
+    /// authors against) and eight tools - the fifth lists the runs waiting for a person's decision, read-only: the
     /// decision is a person's, on the run's page; the sixth says how the pipelines have been running (n8n's Insights); the
-    /// seventh and eighth list the site's data tables and read a table's rows, read-only (BL-229, n8n's Data tables). Every
+    /// seventh and eighth list the site's data tables and read a table's rows, read-only (n8n's Data tables). Every
     /// read and every call goes through the
     /// module's mediator messages, so the D99 keys decide a second time behind the MCP gates; the two tools that
     /// change something (`run_pipeline`, `send_pipeline_event`) carry the mutating prefixes and are `Confirm` - which
     /// the MCP server DENIES until an approval pipeline exists (its own posture, logged as such), so an agent can list,
     /// read and observe today and cannot start a run. the predecessor platform's `execute_pipeline` (ran through its concurrency policy)
-    /// is not carried: the engine's activation strategy is the policy here. Since 10.30.0 (BL-229), `list_pipeline_activity` reads
+    /// is not carried: the engine's activation strategy is the policy here. Since 10.30.0, `list_pipeline_activity` reads
     /// the site's pipeline activity - who did what, and when - under <c>pipelines:manage</c>, as the list's Activity does.
     /// </summary>
     public sealed class PipelinesMcpContributor : IMcpContributor, IMcpResourceReader
@@ -55,7 +55,7 @@ namespace Stomme.Modules.Pipelines.Mcp
         public const int LogLinesInRun = 200;
 
         private static readonly IReadOnlyList<McpAccessGate> ViewGate = new[] { McpAccessGate.ForPermission(PipelinesPermissions.View) };
-        // BL-229: the activity ledger is an author's to read, over MCP as on the list.
+        // The activity ledger is an author's to read, over MCP as on the list.
         private static readonly IReadOnlyList<McpAccessGate> ManageGate = new[] { McpAccessGate.ForPermission(PipelinesPermissions.Manage) };
         private static readonly IReadOnlyList<McpAccessGate> RunGate = new[] { McpAccessGate.ForPermission(PipelinesPermissions.Run) };
         private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
@@ -89,32 +89,32 @@ namespace Stomme.Modules.Pipelines.Mcp
                 """{"type":"object","properties":{"runId":{"type":"string","description":"Only this run's; leave it out for the site's."}}}""", ViewGate, McpToolApproval.Auto),
             new McpToolDescriptor(GetPipelineInsights, "How the site's pipelines have been running over the last 1, 7 or 30 days: runs, failed, cancelled and unfinished, the failure rate and the median run time - in all and per pipeline, with each one's last failed run.",
                 """{"type":"object","properties":{"days":{"type":"integer","enum":[1,7,30],"description":"The window in days; 7 when left out."}}}""", ViewGate, McpToolApproval.Auto),
-            // BL-229: beyond n8n's Insights - which step of a pipeline fails, or takes long.
+            // Beyond n8n's Insights - which step of a pipeline fails, or takes long.
             new McpToolDescriptor(GetPipelineStepInsights, "How each step of one pipeline has been doing over the last 1, 7 or 30 days: per step (its id and name), how many times it ran, how many of those failed, and its median time - which step fails, which takes long. Reads the newest 500 runs.",
                 """{"type":"object","properties":{"definitionId":{"type":"string","description":"The pipeline's definition id."},"days":{"type":"integer","enum":[1,7,30],"description":"The window in days; 7 when left out."}},"required":["definitionId"]}""", ViewGate, McpToolApproval.Auto),
-            // BL-229: what runs next - the published pipelines' schedules, the soonest first.
+            // What runs next - the published pipelines' schedules, the soonest first.
             new McpToolDescriptor(ListUpcomingPipelineRuns, "What runs next: every published pipeline's schedules with their next runs (UTC) in the next 24 or 168 hours, the soonest first - its cron and time zone, how many runs in the window - and whether the site runs schedules at all.",
                 """{"type":"object","properties":{"hours":{"type":"integer","enum":[24,168],"description":"The window in hours; 24 when left out."}}}""", ViewGate, McpToolApproval.Auto),
             new McpToolDescriptor(ListDataTables, "List the site's data tables - the rows its pipelines keep between runs: each table's id, name and columns (name and type).",
                 """{"type":"object","properties":{}}""", ViewGate, McpToolApproval.Auto),
             new McpToolDescriptor(ReadDataTable, "Read a data table's rows, oldest first, at most 100 at a time: each row's id, createdAt, updatedAt and its columns' values.",
                 """{"type":"object","properties":{"table":{"type":"string","description":"The table's id or name."},"skip":{"type":"integer","description":"Rows to pass over; 0 when left out."},"take":{"type":"integer","description":"At most so many rows, up to 100; 100 when left out."}},"required":["table"]}""", ViewGate, McpToolApproval.Auto),
-            // BL-229 - n8n's Evaluations: a pipeline's runs over a data table's rows, scored - listed, read and started.
+            // n8n's Evaluations: a pipeline's runs over a data table's rows, scored - listed, read and started.
             new McpToolDescriptor(ListEvaluations, "List a pipeline's evaluations, newest first - runs of its published version over a data table's rows as test cases: each one's state, rows done and failed, and each metric's average.",
                 """{"type":"object","properties":{"definitionId":{"type":"string","description":"The pipeline's definition id."}},"required":["definitionId"]}""", ViewGate, McpToolApproval.Auto),
             new McpToolDescriptor(GetEvaluation, "Read one evaluation with every row: the row's values, its run, its state, and the metrics and outputs its Evaluation steps recorded.",
                 """{"type":"object","properties":{"evaluationId":{"type":"string","description":"The evaluation's id."}},"required":["evaluationId"]}""", ViewGate, McpToolApproval.Auto),
             new McpToolDescriptor(StartEvaluation, "Start an evaluation of a published pipeline over a data table's rows (at most 100): each row runs the pipeline from its 'When evaluating' step. Observed with get_pipeline_evaluation, never awaited.",
                 """{"type":"object","properties":{"definitionId":{"type":"string","description":"The pipeline's definition id."},"table":{"type":"string","description":"The data table's id or name."},"maxRows":{"type":"integer","description":"At most so many rows from the top; 100 when left out."}},"required":["definitionId","table"]}""", RunGate, McpToolApproval.Confirm),
-            // BL-229 - n8n's retry: a run again on the published version - a failed one from the step that failed, or any from the start.
+            // n8n's retry: a run again on the published version - a failed one from the step that failed, or any from the start.
             new McpToolDescriptor(RunPipelineAgain, "Run a pipeline's run again on its published version: a failed run from the step that failed ('failed-step' - the steps that had finished are not run again, what they saved is kept), or any run from the start with what it was started with ('start') - from the start also on the version the run ran ('version': 'its-own', n8n's retry with the original workflow). Observed with get_pipeline_run, never awaited.",
                 """{"type":"object","properties":{"runId":{"type":"string","description":"The run's id."},"from":{"type":"string","enum":["failed-step","start"],"description":"Where the new run begins."},"version":{"type":"string","enum":["published","its-own"],"description":"From the start: the pipeline's published version (the default) or the version the run ran."}},"required":["runId","from"]}""", RunGate, McpToolApproval.Confirm),
-            // BL-229 - n8n's Stop execution: what an assistant started, it can stop - with what that run started.
+            // n8n's Stop execution: what an assistant started, it can stop - with what that run started.
             new McpToolDescriptor(StopPipelineRun, "Stop a run where it is - a step that is waiting is cancelled, one at work finishes first, nothing after it runs - and every run it started with it. Observed with get_pipeline_run.",
                 """{"type":"object","properties":{"runId":{"type":"string","description":"The run's id."}},"required":["runId"]}""", RunGate, McpToolApproval.Confirm),
             new McpToolDescriptor(SendPipelineEvent, "Raise a named event for the site's pipelines: starts every pipeline whose Event trigger names it and resumes every run waiting on it.",
                 """{"type":"object","properties":{"name":{"type":"string"},"payload":{"type":"string"},"correlationId":{"type":"string"}},"required":["name"]}""", RunGate, McpToolApproval.Confirm),
-            // BL-229: the site's pipeline activity (n8n Enterprise's audit log), read-only.
+            // The site's pipeline activity (n8n Enterprise's audit log), read-only.
             new McpToolDescriptor(ListPipelineActivity, "Who did what to the site's pipelines, and when - newest first: created, saved, published (with what changed), archived, deleted, a run started or stopped, a folder moved, the site's variables changed (by name, never a value). All of it, or one pipeline's.",
                 """{"type":"object","properties":{"definitionId":{"type":"string","description":"Only this pipeline's; leave it out for the site's."},"take":{"type":"integer","description":"At most so many lines, up to 500; 100 when left out."}}}""", ManageGate, McpToolApproval.Auto),
         };

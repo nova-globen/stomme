@@ -24,7 +24,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// BL-85 (D108 item 5; refutations 10, 11 and 14) - the export HTTP surface, driven with real sessions.
+    /// BL-85 (refutations 10, 11 and 14) - the export HTTP surface, driven with real sessions.
     /// </summary>
     /// <remarks>
     /// The question throughout is WHO gets WHAT: a requester reaches their own export and nobody else's; a manage
@@ -227,7 +227,7 @@ namespace Stomme.Tests.DataExport
                     var door = await GateDrive.GetAsync(asRequester.Client, asRequester.Cookies, Host, path, _output, "requester via " + path);
                     Assert.True(door.Status != HttpStatusCode.OK || !door.Body.Contains("row 1", StringComparison.Ordinal),
                         $"{path} handed the artifact to an ordinary requester ({(int)door.Status})");
-                    // BL-159: a REFUSAL, said as one. This scratch install ships no wwwroot/images/error.png, which used to turn
+                    // A REFUSAL, said as one. This scratch install ships no wwwroot/images/error.png, which used to turn
                     // every one of these into a 500 - a null action result on the API, a FileNotFoundException on the page.
                     Assert.Equal(HttpStatusCode.Forbidden, door.Status);
                     var anon = await GateDrive.GetAsync(anonymous.Client, null, Host, path, _output, "anonymous via " + path);

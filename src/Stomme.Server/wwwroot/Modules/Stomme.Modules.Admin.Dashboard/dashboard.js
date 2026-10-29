@@ -1,6 +1,6 @@
-// The Admin Dashboard's search (BL-204), a page script: the framework's <page-script> element imports it on a static page
+// The Admin Dashboard's search, a page script: the framework's <page-script> element imports it on a static page
 // and calls onLoad, then onUpdate after every enhanced navigation; on an interactive page ModuleBase imports it and calls
-// onUpdate after each later render (BL-202). The dashboard control is static, so the filter cannot be a Blazor event - it
+// onUpdate after each later render. The dashboard control is static, so the filter cannot be a Blazor event - it
 // runs here, over what each tile carries in data-search (its name, title and path, lower-cased). It does nothing on a page
 // without the dashboard.
 //

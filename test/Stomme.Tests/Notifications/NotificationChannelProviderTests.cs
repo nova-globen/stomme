@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 step 3 - the channel seam: resolution by kind (+ the <c>provider</c> selector), the skip cases, the
+    /// The channel seam: resolution by kind (+ the <c>provider</c> selector), the skip cases, the
     /// kind-specific settings validation, and each shipped channel's send. Ported from the predecessor platform
     /// <c>NotificationChannelProviderTests</c> (11 facts) and EXTENDED, not merely carried.
     /// <para>
@@ -109,7 +109,7 @@ namespace Stomme.Tests.Notifications
         [Fact]
         public void Resolver_ReturnsNull_ForAnUnregisteredNamedProvider_InsteadOfTheFirstCandidate()
         {
-            // the predecessor platform: "?? candidates[0]" silently delivered over the first same-kind transport. Dropped (D100 point 2).
+            // the predecessor platform: "?? candidates[0]" silently delivered over the first same-kind transport. Dropped.
             var resolver = Resolver(out var logger, AllChannels());
             var channel = Channel(ChannelKind.Email,
                 new TransportSettings(ChannelKind.Email, null, null, [new TransportOption(NotificationProviderKeys.SelectorOption, "sendgrid")]));

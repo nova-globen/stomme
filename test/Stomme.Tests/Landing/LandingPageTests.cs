@@ -121,7 +121,7 @@ namespace Stomme.Tests.Landing
             Assert.Equal(LandingTemplate.Default.Sections.Count, page.Predefined()!.Sections.Count);
         }
 
-        // BL-98 increment 2 - the dashboard mode.
+        // The dashboard mode.
 
         [Fact]
         public void A_dashboard_page_names_its_dashboard_carries_no_content_and_publishes()

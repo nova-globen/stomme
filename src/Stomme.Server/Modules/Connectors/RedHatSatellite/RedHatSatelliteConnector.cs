@@ -14,10 +14,10 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.RedHatSatellite
 {
     /// <summary>
-    /// Red Hat Satellite (BL-96 increment 4, lifted from the predecessor platform's <c>satellite</c>): the Foreman, Katello and Foreman-Tasks
+    /// Red Hat Satellite (lifted from the predecessor platform's <c>satellite</c>): the Foreman, Katello and Foreman-Tasks
     /// surfaces paged by <c>page</c>/<c>per_page</c> (clamped to 1000) using the <c>subtotal</c> metadata, the organization
     /// and search scopes on every call, a custom endpoint by raw path. Basic credentials; every request through the host's
-    /// egress (D110).
+    /// egress.
     /// </summary>
     public sealed class RedHatSatelliteConnector : IConnector, IConnectorExtractor
     {

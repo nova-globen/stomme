@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// Puts a site's SEEDED logo file back when its row is there and its file is not (BL-203).
+    /// Puts a site's SEEDED logo file back when its row is there and its file is not.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -76,7 +76,7 @@ namespace Stomme.Infrastructure
 
             context.Services.GetRequiredService<ILogger<SeededLogoReconciler>>().LogWarning(
                 "Restored the seeded logo of site {SiteId}: its file row was there and its file was not - a deployment that " +
-                "lost its content folder (BL-203).", context.Site.SiteId);
+                "lost its content folder.", context.Site.SiteId);
         }
     }
 }

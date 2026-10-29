@@ -14,7 +14,7 @@ namespace Stomme.Modules.Pipelines.Services
     /// The Pipelines module's service contract (BL-95 increment (b)). The client implementation calls the module's
     /// controller over HTTP; the server implementation dispatches the same requests through the mediator. Every call is
     /// decided by the server per permission key; a run is STARTED and then observed through <see cref="GetRunAsync"/>,
-    /// never awaited to completion (D111 item 3).
+    /// never awaited to completion.
     /// </summary>
     public interface IPipelinesService
     {
@@ -50,13 +50,13 @@ namespace Stomme.Modules.Pipelines.Services
         Task<ScriptPreviewView> PreviewScriptAsync(ScriptPreviewRequest request);
 
         /// <summary>
-        /// BL-229 - n8n's AI workflow builder: the canvas changed by the site's model as the author asks - nothing stored - or its
+        /// n8n's AI workflow builder: the canvas changed by the site's model as the author asks - nothing stored - or its
         /// answer alone (no graph); when the model cannot be asked or made what the save refuses, throws the reason.
         /// </summary>
         Task<PipelineGraphDesignView> DesignGraphAsync(PipelineGraphDesignRequest request);
 
         /// <summary>
-        /// BL-229 - n8n's "Ask AI" in its Code node: a Run script step's script written by the site's model as the author asks -
+        /// n8n's "Ask AI" in its Code node: a Run script step's script written by the site's model as the author asks -
         /// nothing stored, nothing run; when the model cannot be asked or scripts are off, throws the reason.
         /// </summary>
         Task<PipelineScriptView> WriteScriptAsync(PipelineScriptRequest request);
@@ -84,7 +84,7 @@ namespace Stomme.Modules.Pipelines.Services
 
         Task<PipelineView> UpdatePipelineAsync(string definitionId, UpdatePipelineRequest request);
 
-        /// <summary>Publishes the latest version - with what changed in the author's words (BL-229), when given.</summary>
+        /// <summary>Publishes the latest version - with what changed in the author's words, when given.</summary>
         Task<PublishResult> PublishPipelineAsync(string definitionId, string note = null);
 
         Task RetractPipelineAsync(string definitionId);
@@ -234,7 +234,7 @@ namespace Stomme.Modules.Pipelines.Services
 
         Task DeleteRunAsync(string runId);
 
-        /// <summary>The step types this installation offers (BL-95 (c)): the engine's registry, browsable entries only.</summary>
+        /// <summary>The step types this installation offers: the engine's registry, browsable entries only.</summary>
         Task<List<StepCatalogEntry>> GetStepsAsync();
 
         Task<PipelineGraph> GetGraphAsync(string definitionId);
@@ -242,7 +242,7 @@ namespace Stomme.Modules.Pipelines.Services
         Task<PipelineView> SaveGraphAsync(string definitionId, PipelineGraph graph);
 
         /// <summary>
-        /// The collaborating save (BL-97 increment 12): the graph and the graph it was based on. A rejection is an answer,
+        /// The collaborating save: the graph and the graph it was based on. A rejection is an answer,
         /// not a failure - its conflicts and the graph stored now come back; null when the pipeline is gone.
         /// </summary>
         Task<GraphSaveResult> SaveGraphMergedAsync(string definitionId, PipelineGraph graph, PipelineGraph loaded);

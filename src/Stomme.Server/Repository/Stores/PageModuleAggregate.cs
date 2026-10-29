@@ -19,7 +19,7 @@ namespace Stomme.Repository.Stores
     /// </para>
     /// <para>
     /// <b>This cluster was migrated LAST of its group and it is the only one that already had both its
-    /// references severed.</b> <see cref="PageId"/> and <see cref="ModuleId"/> are references BY ID (D7/D19)
+    /// references severed.</b> <see cref="PageId"/> and <see cref="ModuleId"/> are references BY ID
     /// and have been since D19 (Page) and D21 (Module) took those tables onto the seam — the
     /// <c>.Include(item =&gt; item.Page)</c> / <c>.Include(item =&gt; item.Module)</c> eager loads became second
     /// queries then, and <see cref="PageModuleRepository"/> has stitched the contract's Page and Module members
@@ -57,11 +57,11 @@ namespace Stomme.Repository.Stores
     /// </remarks>
     public class PageModuleAggregate : AggregateRoot<int>, IAuditable, IDeletable
     {
-        /// <summary>The <see cref="Page"/> this instance sits on, by id (D7/D19). NOT NULL, and FK-cascaded from Page.</summary>
+        /// <summary>The <see cref="Page"/> this instance sits on, by id. NOT NULL, and FK-cascaded from Page.</summary>
         public int PageId { get; set; }
 
         /// <summary>
-        /// The <see cref="Module"/> being instanced, by id (D7/D21). NOT NULL. The FK to Module is
+        /// The <see cref="Module"/> being instanced, by id. NOT NULL. The FK to Module is
         /// <c>NoAction</c>, not cascade — <see cref="PageModuleRepository.DeletePageModuleAsync"/> deletes the
         /// orphaned module by hand once its last instance goes.
         /// </summary>

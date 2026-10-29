@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Datasets.Services
 {
     /// <summary>
-    /// The Datasets module's client contract (BL-94 increment 10). No method takes a site: the request is the site, and the
+    /// The Datasets module's client contract. No method takes a site: the request is the site, and the
     /// server decides every call again on its key. A list or a get carries the masked summary and never raw rows; a
     /// preview is the higher key and comes back refused, not thrown, for a sensitive dataset.
     /// </summary>

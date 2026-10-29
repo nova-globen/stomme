@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// An input's EXPRESSION (BL-229 increment 5): text with <c>{{ name }}</c> placeholders, each a pipeline variable and, after
+    /// An input's EXPRESSION: text with <c>{{ name }}</c> placeholders, each a pipeline variable and, after
     /// it, a path into what the variable holds - <c>{{ person.town }}</c>, <c>{{ records[0].name }}</c>. No code runs: a
     /// placeholder reads, nothing else. ONE implementation, run by the engine when the step runs and by the editor for its
     /// preview, so what the author sees is what the step gets.
@@ -50,7 +50,7 @@ namespace Stomme.Models.Pipelines
 
         /// <summary>
         /// The template with each placeholder that reads the variable <paramref name="from"/> reading <paramref name="to"/> instead
-        /// (BL-229, a variable renamed) - its path and filters as they were; a quoted text, and the same word further along a path,
+        /// (a variable renamed) - its path and filters as they were; a quoted text, and the same word further along a path,
         /// left alone.
         /// </summary>
         public static string? Rename(string? template, string from, string to)

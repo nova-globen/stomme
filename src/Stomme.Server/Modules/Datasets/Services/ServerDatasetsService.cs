@@ -11,7 +11,7 @@ using Stomme.Shared;
 
 namespace Stomme.Modules.Datasets.Services
 {
-    /// <summary>The module's server IService (BL-94 increment 10): the client contract dispatched through the mediator. Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).</summary>
+    /// <summary>The module's server IService: the client contract dispatched through the mediator. Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).</summary>
     public sealed class ServerDatasetsService(IMediator mediator) : IDatasetsService, ITransientService
     {
         public async Task<List<DatasetDescriptor>> ListAsync() => (await mediator.Send(new ListDatasetsQuery())).ToList();

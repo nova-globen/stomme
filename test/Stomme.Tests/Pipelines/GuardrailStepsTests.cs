@@ -22,7 +22,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Guardrails node as two steps, run by the real engine with the site's model scripted: Check text goes on
+    /// n8n's Guardrails node as two steps, run by the real engine with the site's model scripted: Check text goes on
     /// through Passed or Flagged with the text unchanged and the findings an output (never what they matched); the model is asked
     /// ONCE for every model check, told the text is data, and a check is found at the threshold; a known jailbreak phrase is found
     /// without asking it; an answer missing a check is asked again, then AI_WRONG_SHAPE; Sanitize text replaces what it finds; a

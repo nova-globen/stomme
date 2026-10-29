@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Stomme.Datasets
 {
     // ============================================================================================================
-    // The Datasets module's Shared contracts (BL-94 increment 9, D110): the unified classification order, the
+    // The Datasets module's Shared contracts: the unified classification order, the
     // consumer-facing catalog and the producer-facing registrar ports, the delete guard's port, the keys. BCL-only.
     // ============================================================================================================
 
@@ -62,7 +62,7 @@ namespace Stomme.Datasets
         Json = 4,
     }
 
-    /// <summary>The bounds a sample is held to (D110): the rows kept for preview, and the bytes a registration may carry.</summary>
+    /// <summary>The bounds a sample is held to: the rows kept for preview, and the bytes a registration may carry.</summary>
     public static class DatasetLimits
     {
         public const int MaxSampleRows = 50;
@@ -100,7 +100,7 @@ namespace Stomme.Datasets
     public sealed record DatasetPreviewRows(bool Allowed, string RowsJson, string Reason);
 
     /// <summary>
-    /// The consumer-facing read port (D110): a site's datasets with their schema and classification-masked summary, and a
+    /// The consumer-facing read port: a site's datasets with their schema and classification-masked summary, and a
     /// bounded, classification-gated preview. A consumer (a dashboard, an export source, MCP) binds to datasets through
     /// this port and never sees the aggregate. Every read is the request's site's.
     /// </summary>
@@ -135,7 +135,7 @@ namespace Stomme.Datasets
         Task<IReadOnlyList<string>> FindReferencesAsync(Guid datasetId, CancellationToken ct = default);
     }
 
-    /// <summary>What a registration carries over the wire (BL-94 increment 10): the same origin registered again refreshes its one row; the classification asserted is escalated by the classifier, never lowered.</summary>
+    /// <summary>What a registration carries over the wire: the same origin registered again refreshes its one row; the classification asserted is escalated by the classifier, never lowered.</summary>
     public sealed class RegisterDatasetRequest
     {
         public string Name { get; set; } = string.Empty;
@@ -155,7 +155,7 @@ namespace Stomme.Datasets
         public string SampleJson { get; set; } = "[]";
     }
 
-    /// <summary>A dataset from a file the file manager holds (BL-94 increment 13): the file's id; the name defaults to the file's stem; the classification asserted is escalated by the classifier, never lowered.</summary>
+    /// <summary>A dataset from a file the file manager holds: the file's id; the name defaults to the file's stem; the classification asserted is escalated by the classifier, never lowered.</summary>
     public sealed class UploadDatasetRequest
     {
         public int FileId { get; set; }
@@ -165,7 +165,7 @@ namespace Stomme.Datasets
         public DataClassification Classification { get; set; } = DataClassification.Internal;
     }
 
-    /// <summary>The Datasets module's permission KEYS (D99): view (the list, the schema, the masked summary), manage (register, refresh, delete), preview (raw rows - the higher privilege).</summary>
+    /// <summary>The Datasets module's permission KEYS: view (the list, the schema, the masked summary), manage (register, refresh, delete), preview (raw rows - the higher privilege).</summary>
     public static class DatasetPermissions
     {
         public const string Resource = "datasets";

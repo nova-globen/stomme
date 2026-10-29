@@ -6,7 +6,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - where a variable is used: the steps that set it (an output saved to it, a Set Variable step's variable) and those
+    /// Where a variable is used: the steps that set it (an output saved to it, a Set Variable step's variable) and those
     /// that read it (an input bound to it, an expression, a condition or a Switch case naming it, a script with it as a word -
     /// not a longer word holding it).
     /// </summary>

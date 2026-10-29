@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-235 - a success answer a connector cannot read is a failure, never an empty result: every in-tree connector's
+    /// A success answer a connector cannot read is a failure, never an empty result: every in-tree connector's
     /// connection test, against a stand-in answering each call with a sign-in page under HTTP 200 (a proxy's, or Cloudflare
     /// Access's) - a token issued where one is asked for, so the test reaches the service - does not call the connection
     /// healthy. The connectors that reach no HTTP service here are left out by kind (a driver's connection string) and by name

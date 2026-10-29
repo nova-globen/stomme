@@ -22,11 +22,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Collaboration.Startup
 {
     /// <summary>
-    /// Wires the collaboration seam (BL-97 increment 11, D114): the lock and the session (storage-blind, tenant-owned), the
+    /// Wires the collaboration seam: the lock and the session (storage-blind, tenant-owned), the
     /// services over them, the gated requests, <c>api/Collaboration</c> and the <c>admin/collaboration</c> overview, the
     /// sweep job, and the subject-rights participants. The persistence is registered UNCONDITIONALLY - a switch turned off
     /// must not take the data with it (the Help module's rule); the requests and the API answer only while
-    /// <c>Collaboration:Enabled</c> is on, so with it off editing is exactly the single-editor behaviour (D114). The presence
+    /// <c>Collaboration:Enabled</c> is on, so with it off editing is exactly the single-editor behaviour. The presence
     /// and change feed over the hub, and the editors' wiring, are increment 12.
     /// </summary>
     public class ServerStartup : IServerStartup
@@ -49,7 +49,7 @@ namespace Stomme.Modules.Collaboration.Startup
             services.AddScoped<IEditSessionRepository, EditSessionRepository>();
             services.TryAddSingleton(TimeProvider.System);
 
-            // Collaboration (D114: off by default) - from THIS host's configuration, the override file included (BL-162).
+            // Collaboration (off by default) - from THIS host's configuration, the override file included.
             services.TryAddSingleton(provider =>
             {
                 var options = new CollaborationOptions();

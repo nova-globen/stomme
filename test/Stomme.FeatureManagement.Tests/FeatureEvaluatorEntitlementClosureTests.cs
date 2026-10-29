@@ -100,7 +100,7 @@ public sealed class FeatureEvaluatorEntitlementClosureTests
 
     private static void Drop(string connectionString)
     {
-        // BL-104: clear THIS database's pool only — ClearAllPools would yank connections from parallel tests.
+        // Clear THIS database's pool only — ClearAllPools would yank connections from parallel tests.
         using (var connection = new SqliteConnection(connectionString))
         {
             SqliteConnection.ClearPool(connection);

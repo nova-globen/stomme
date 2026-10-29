@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// What <see cref="ScratchSqlite.Release"/> actually promises, measured in both directions (BL-104).
+    /// What <see cref="ScratchSqlite.Release"/> actually promises, measured in both directions.
     /// </summary>
     /// <remarks>
     /// The point of the row is that a targeted release is enough, so "targeted is enough" has to be MEASURED

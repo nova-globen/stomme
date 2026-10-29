@@ -11,13 +11,13 @@ using Stomme.Modules.Backup.Domain;
 namespace Stomme.Modules.Backup.Infrastructure
 {
     /// <summary>
-    /// Where archives are kept (D106 item 9): write-then-publish, read, delete, list - by a file NAME
-    /// (<see cref="StorageLocation"/>), never a path. Two implementations: the local folder and (BL-169) an S3-compatible
+    /// Where archives are kept: write-then-publish, read, delete, list - by a file NAME
+    /// (<see cref="StorageLocation"/>), never a path. Two implementations: the local folder and an S3-compatible
     /// object store; <see cref="BackupArchiveStores"/> says which one holds a snapshot.
     /// </summary>
     /// <remarks>
     /// Writing is a synchronous-looking <see cref="Create"/> because the archive writer pushes into a stream; every operation
-    /// that may cross a network is asynchronous (sync-over-async is banned, D33).
+    /// that may cross a network is asynchronous (sync-over-async is banned).
     /// </remarks>
     public interface IBackupArchiveStore
     {

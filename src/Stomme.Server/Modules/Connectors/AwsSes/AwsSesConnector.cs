@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsSes
 {
     /// <summary>
-    /// Amazon SES (BL-229, n8n's AWS SES node: e-mail sent, plain or from a template, its templates and its custom verification
+    /// Amazon SES (n8n's AWS SES node: e-mail sent, plain or from a template, its templates and its custom verification
     /// e-mails): an account's Simple Email Service over the SES API v2 (<c>https://email.{region}.amazonaws.com</c>), every call
     /// signed with AWS Signature Version 4 by an IAM user's access key and secret, over the host's egress. A test names the
     /// account's sending state and quota.

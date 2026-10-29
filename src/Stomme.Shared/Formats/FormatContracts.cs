@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Stomme.Formats
 {
-    /// <summary>What a format renders (BL-94, D110): a date, a number, a currency, or a locale (the culture alone drives rendering).</summary>
+    /// <summary>What a format renders: a date, a number, a currency, or a locale (the culture alone drives rendering).</summary>
     public enum FormatKind
     {
         Date = 0,
@@ -24,7 +24,7 @@ namespace Stomme.Formats
     }
 
     /// <summary>
-    /// A display format as consumers see it (D110): the same shape for a system preset and a tenant definition. <see cref="Format"/>
+    /// A display format as consumers see it: the same shape for a system preset and a tenant definition. <see cref="Format"/>
     /// and <see cref="TryParse"/> NEVER throw - an unknown culture, a local <see cref="DateTime"/>, a bad time zone or an
     /// unconvertible value fall back to an invariant rendering (measured: the predecessor platform's threw on the first two).
     /// </summary>
@@ -167,7 +167,7 @@ namespace Stomme.Formats
         };
     }
 
-    /// <summary>What a save carries (BL-94 increment 2): no id creates, an id the site owns updates. The site is the request's.</summary>
+    /// <summary>What a save carries: no id creates, an id the site owns updates. The site is the request's.</summary>
     public sealed class FormatDefinitionRequest
     {
         public Guid? Id { get; set; }
@@ -183,7 +183,7 @@ namespace Stomme.Formats
         public string? TimeZone { get; set; }
     }
 
-    /// <summary>The formats a site can render with: the system presets and the site's own definitions (D110; a Shared port so a consumer needs no module reference).</summary>
+    /// <summary>The formats a site can render with: the system presets and the site's own definitions (a Shared port so a consumer needs no module reference).</summary>
     public interface IFormatService
     {
         Task<FormatDescriptor?> GetAsync(Guid id, CancellationToken ct = default);
@@ -191,7 +191,7 @@ namespace Stomme.Formats
         Task<IReadOnlyList<FormatDescriptor>> ListAsync(FormatKind? kind = null, string? culture = null, FormatScope? scope = null, CancellationToken ct = default);
     }
 
-    /// <summary>A consumer that references formats by id names the references, so a definition in use is not deleted (D110; no implementer until the pipelines' steps take formats).</summary>
+    /// <summary>A consumer that references formats by id names the references, so a definition in use is not deleted (no implementer until the pipelines' steps take formats).</summary>
     public interface IFormatUsageProvider
     {
         Task<IReadOnlyList<string>> FindReferencesAsync(Guid formatId, CancellationToken ct = default);

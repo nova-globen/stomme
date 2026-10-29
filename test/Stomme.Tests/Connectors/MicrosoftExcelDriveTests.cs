@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Excel 365 DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2
+    /// Microsoft Excel 365 DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2
     /// token provider and the extraction port, against a loopback stand-in for the tenant's token endpoint and Graph: a Microsoft
     /// Excel 365 connection made over the API, its secret vaulted, tested (the drive named); a published pipeline reads a sheet's
     /// rows under its headers, appends a record after the last used row, changes a row it finds by a column - a formula it leaves

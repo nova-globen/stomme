@@ -16,7 +16,7 @@ using Stomme.Modules.Pipelines.Application;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// BL-229 - n8n's Execution Data node: saves key/value pairs about the run - "order: 42", "customer: Ada" - which its page and
+    /// n8n's Execution Data node: saves key/value pairs about the run - "order: 42", "customer: Ada" - which its page and
     /// the runs list show and the runs search finds ("order: 42", or just "42"). Pairs saved again replace those keys; at most
     /// <see cref="PipelineRunData.MaxKeys"/> per run. The previous step's result passes through, so the step sits in a chain.
     /// </summary>

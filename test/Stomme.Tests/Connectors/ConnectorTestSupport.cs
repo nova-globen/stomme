@@ -10,9 +10,9 @@ using Stomme.Connectivity;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The egress a connector unit test hands in (BL-96): an <see cref="IConnectorEgress"/> over a test handler, so every
+    /// The egress a connector unit test hands in: an <see cref="IConnectorEgress"/> over a test handler, so every
     /// request a connector sends is captured without a socket - the shape the predecessor platform reached through its per-connector
-    /// handler-factory constructor, which the port dropped (the client is the host's, D110). <see cref="Pinned"/> is what
+    /// handler-factory constructor, which the port dropped (the client is the host's). <see cref="Pinned"/> is what
     /// a driver connector gets back for any host; null refuses every host.
     /// </summary>
     internal sealed class StubEgress(HttpMessageHandler? handler = null) : IConnectorEgress
@@ -44,7 +44,7 @@ namespace Stomme.Tests.Connectors
             return Task.FromResult(Pinned);
         }
 
-        /// <summary>What a reach answers (BL-229) - nothing, as the contract's default, unless a test says.</summary>
+        /// <summary>What a reach answers - nothing, as the contract's default, unless a test says.</summary>
         public Func<IPAddress, int, string, Task>? Reach { get; init; }
 
         public List<(IPAddress Address, int Port, string Host, TimeSpan Timeout, string Service)> Reaches { get; } = new();

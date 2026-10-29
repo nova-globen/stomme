@@ -21,7 +21,7 @@ namespace Stomme.Tests.Notifications
 {
     /// <summary>
     /// Ported from the predecessor platform <c>tests/Persistence.Aspire.Tests/NotificationsRavenStoreTests.cs</c> (the 4 RavenDB container
-    /// cases, BL-78): the four notification aggregates round-trip through a LIVE RavenDB with their nested value/entity
+    /// cases): the four notification aggregates round-trip through a LIVE RavenDB with their nested value/entity
     /// graphs - the persistence proof an in-memory store cannot give. Assertions kept; types adapted (site id, int user
     /// id, UTC DateTime, the secret REFERENCE KEY).
     /// <para>
@@ -30,7 +30,7 @@ namespace Stomme.Tests.Notifications
     /// Abstractions / SharedKernel / Tenancy. Rather than hang the whole host off a leaf persistence test project they
     /// live here as <c>RavenNotificationStoreTests</c>, against infra RavenDB via <c>RAVENDB_TEST_URL</c>, composed the
     /// way the host composes them (the module <c>ServerStartup</c> under a RavenDB config). the predecessor platform's Aspire container
-    /// fixture became a per-class scratch database. Fails, never skips, when RavenDB is unreachable (D46).
+    /// fixture became a per-class scratch database. Fails, never skips, when RavenDB is unreachable.
     /// </para>
     /// </summary>
     [Trait("Category", "ExternalDatabase")]

@@ -4,7 +4,7 @@ using Stomme.Shared;
 namespace Stomme.Mcp
 {
     /// <summary>
-    /// The MCP module's permission KEYS (BL-80 / D101 item 7), decided by the authorization bridge (D99): each key is a
+    /// The MCP module's permission KEYS, decided by the authorization bridge: each key is a
     /// site Permission row <c>(EntityName = "mcp", EntityId = -1, PermissionName = operation)</c>, seeded from the module
     /// definition's <c>PermissionNames</c> and consulted by <c>[Requires]</c>, the controller's
     /// <c>[RequiresPermissionKey]</c> and the Client's <c>ModuleBase.IsAuthorizedPermission</c> alike.

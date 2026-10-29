@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-174 - the framework-upgrade endpoint, over real HTTP on an installed host: a POST (antiforgery-checked; it was a GET
+    /// The framework-upgrade endpoint, over real HTTP on an installed host: a POST (antiforgery-checked; it was a GET
     /// a cross-site link could trigger), Host-only, that AWAITS the hand-off and answers with why an upgrade did not start -
     /// BL-172's pre-upgrade refusal included - instead of leaving it to the log.
     /// </summary>

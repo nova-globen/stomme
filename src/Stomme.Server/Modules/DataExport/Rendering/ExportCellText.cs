@@ -6,7 +6,7 @@ using Stomme.Export;
 namespace Stomme.Modules.DataExport.Rendering
 {
     /// <summary>
-    /// Turning a value into cell text, and making that text safe to open (BL-85, D108 refutation 11).
+    /// Turning a value into cell text, and making that text safe to open (D108 refutation 11).
     /// </summary>
     internal static class ExportCellText
     {

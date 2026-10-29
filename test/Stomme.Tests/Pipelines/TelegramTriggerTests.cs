@@ -33,7 +33,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Telegram Trigger as "Telegram message received": a published pipeline on a bot is started once for each
+    /// n8n's Telegram Trigger as "Telegram message received": a published pipeline on a bot is started once for each
     /// message or channel post the bot gets - the message its trigger's result - and never for one waiting when it was published
     /// (Telegram told to forget them); any other kind of update is moved past; every pipeline on one bot gets each message from
     /// ONE ask; at most so many a look; a bot the publish could not ask recorded by the next look; a bot with a webhook set

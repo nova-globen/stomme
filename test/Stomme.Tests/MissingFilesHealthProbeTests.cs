@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-218: the <c>files</c> contributor's Site-scope probe names the file rows whose file is gone from disk. Driven in
+    /// The <c>files</c> contributor's Site-scope probe names the file rows whose file is gone from disk. Driven in
     /// an installed SQLite host, through the contributors the host's container hands the probe pass: a folder holding one
     /// file that is there and one whose file was deleted under its row answers Degraded and names the second; with the file
     /// put back it answers Healthy again.

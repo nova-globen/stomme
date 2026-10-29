@@ -24,7 +24,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The agents' reads (BL-97 increment 10, D113): each is the owning module's own <c>[Requires]</c>-gated query, sent
+    /// The agents' reads: each is the owning module's own <c>[Requires]</c>-gated query, sent
     /// through the mediator AS THE USER - so an agent sees exactly what its user may. A query the user may not run answers as
     /// nothing visible (an empty list, no summary), never as an error the model could read something into.
     /// </summary>
@@ -151,7 +151,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// The assistant's writes (D113): ONLY on the user's explicit apply, and only through the owning module's own gated
+    /// The assistant's writes: ONLY on the user's explicit apply, and only through the owning module's own gated
     /// commands sent AS THE USER - create pipeline then save its graph; create board then add each widget. A failure part
     /// way removes what was created (through the module's own delete) and rethrows, so an apply is all or nothing.
     /// </summary>
@@ -281,7 +281,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// A pipeline draft as the editor's graph (BL-95 (c)): steps get ids by position, a connection id fills the step's
+    /// A pipeline draft as the editor's graph: steps get ids by position, a connection id fills the step's
     /// <see cref="ConnectionInput"/> input, and steps are laid out by their depth from the first one. <see cref="Check"/> is
     /// what the assistant refuses before the engine judges: an unknown type, an input the type does not take, a SENSITIVE
     /// input (the user enters a secret in the editor, never an agent), a connection on a step that takes none, a relation
@@ -289,7 +289,7 @@ namespace Stomme.Modules.AiAssistant.Application
     /// </summary>
     public static class AssistantPipelineGraph
     {
-        /// <summary>The input a step reads its connection from (<c>ExtractFromConnection</c>, BL-95).</summary>
+        /// <summary>The input a step reads its connection from (<c>ExtractFromConnection</c>).</summary>
         public const string ConnectionInput = "Connection";
 
         private const double ColumnWidth = 260;

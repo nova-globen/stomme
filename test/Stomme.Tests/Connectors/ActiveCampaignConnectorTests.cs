@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - ActiveCampaign (n8n's ActiveCampaign node: its contacts, lists, tags, deals, accounts and e-commerce records): the
+    /// ActiveCampaign (n8n's ActiveCampaign node: its contacts, lists, tags, deals, accounts and e-commerce records): the
     /// key in ActiveCampaign's Api-Token header; contacts page by page up to the most asked for, filtered by a search, a list and a
     /// tag by their names, a status, times in UTC, an order and ActiveCampaign's own filters, the count it gives ending the pages;
     /// a contact found by its address, got with its lists, tags and custom fields by their personalization tags, made, synced,

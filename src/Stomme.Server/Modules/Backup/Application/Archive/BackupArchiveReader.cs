@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Stomme.Modules.Backup.Application.Archive
 {
     /// <summary>
-    /// Reads a <c>DCBAK1</c> archive (BL-81, D106 item 4). Opening it bounds the header, derives the key and verifies the
+    /// Reads a <c>DCBAK1</c> archive. Opening it bounds the header, derives the key and verifies the
     /// manifest - nothing in the manifest is believed before GCM has checked it. A part is then read FORWARD, one chunk at a
     /// time; every chunk is verified before a byte of it is returned, and the end of a part checks its length and SHA-256.
     /// <see cref="VerifyAsync"/> is the restore pre-flight's pass over every chunk. The archive stream must be seekable;
@@ -47,7 +47,7 @@ namespace Stomme.Modules.Backup.Application.Archive
         }
 
         /// <summary>
-        /// Opens an archive with its already-derived KEY (BL-81, D106 item 7): a staged restore is applied after a restart,
+        /// Opens an archive with its already-derived KEY: a staged restore is applied after a restart,
         /// and the operator's passphrase is never written down - the per-archive key derived from it is, for that window.
         /// </summary>
         internal static Task<BackupArchiveReader> OpenWithKeyAsync(Stream archive, byte[] key, CancellationToken cancellationToken = default)
@@ -157,7 +157,7 @@ namespace Stomme.Modules.Backup.Application.Archive
 
         /// <summary>
         /// Whether a host of <paramref name="frameworkVersion"/> may restore this archive, refused here before any participant
-        /// is asked anything (D106, corrected by BL-170). The same version, or an OLDER one, provided no release in between
+        /// is asked anything (corrected). The same version, or an OLDER one, provided no release in between
         /// has a data upgrade step (<paramref name="upgradeStepVersions"/>: the step would never run again over the restored
         /// rows); whether each part's data reads unchanged is the parts' own shapes, compared next. A NEWER archive is refused,
         /// and so is a version either side cannot read as a release number.

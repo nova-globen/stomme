@@ -47,7 +47,7 @@ namespace Stomme.Modules.Pipelines.Triggers
             var tenant = await bridge.ResolveAsync(@event.TenantId, @event.SiteId, ct);
             using (bridge.Enter(tenant))
             {
-                // asynchronous: the engine DISPATCHES the starts and resumes (D111 item 3) - a request that raises an event never runs a pipeline.
+                // asynchronous: the engine DISPATCHES the starts and resumes - a request that raises an event never runs a pipeline.
                 await services.GetRequiredService<IEventPublisher>().PublishAsync(
                     @event.Name, @event.CorrelationId, payload: @event.Payload, asynchronous: true, cancellationToken: ct);
             }

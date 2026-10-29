@@ -18,7 +18,7 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Dropbox (n8n's Dropbox node): the app's key and secret and a refresh token for a token; a folder listed and a
+    /// Dropbox (n8n's Dropbox node): the app's key and secret and a refresh token for a token; a folder listed and a
     /// search page by page through Dropbox's cursor, their entries named as n8n's node names them; a file's or a folder's
     /// metadata, a copy, a move, a folder made and a delete as Dropbox answers them; a download into the run's folder and an
     /// upload from it - or of text - their arguments in the content host's header as ASCII JSON, a file over the folder's cap or

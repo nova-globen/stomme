@@ -64,7 +64,7 @@ public static class RavenAuditListener
             }
         }
 
-        // IDeletable soft-delete stamp (D59) — independent of IAuditable (Notification is IDeletable-only;
+        // IDeletable soft-delete stamp — independent of IAuditable (Notification is IDeletable-only;
         // Page is both). AuditStamp.StampDeleted reproduces DbContextUtils' DeletedBy/DeletedOn outcome
         // without the DB load EF uses, keyed on the (IsDeleted, DeletedOn) pair. See that method's remarks.
         if (AuditStamp.IsDeletable(type))

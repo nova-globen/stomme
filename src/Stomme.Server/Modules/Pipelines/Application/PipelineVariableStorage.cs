@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - what a run saves is kept with the run. The engine holds a variable that names no storage in memory only, so
+    /// What a run saves is kept with the run. The engine holds a variable that names no storage in memory only, so
     /// whatever a run had saved was gone once it paused - after a Wait, an approval, a call or a form waited for (measured
     /// 2026-10-07: a value saved before a two-hour Wait read empty after it) - and a retry from a failed step had nothing of
     /// the steps before it. The engine's own designer names the run's storage for each variable it writes; this editor's codec

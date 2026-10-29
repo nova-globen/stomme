@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Zendesk
 {
     /// <summary>
-    /// Zendesk (BL-229, n8n's Zendesk node: tickets found, got, created, updated and deleted, users and organizations found, got
+    /// Zendesk (n8n's Zendesk node: tickets found, got, created, updated and deleted, users and organizations found, got
     /// and created): an account's Support API (<c>https://your-subdomain.zendesk.com/api/v2</c>), an agent's email and an API
     /// token by Zendesk's own Basic pair (<c>{email}/token</c> and the token). A test names the agent.
     /// </summary>

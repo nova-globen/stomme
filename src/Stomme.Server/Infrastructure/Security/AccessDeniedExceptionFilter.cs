@@ -12,7 +12,7 @@ namespace Stomme.Infrastructure.Security
     /// <summary>
     /// Turns an <see cref="AccessDeniedException"/> escaping a controller action — a <c>[Requires]</c>-gated
     /// mediator request the <c>AuthorizationBehavior</c> refused — into a <b>403</b> <see cref="ProblemDetails"/>
-    /// response (D99 point 7). Before this filter a denial surfaced as HTTP 500 through the generic exception
+    /// response. Before this filter a denial surfaced as HTTP 500 through the generic exception
     /// path (F5). Logged at Error under the Security function, the way <c>PermissionHandler</c> logs a
     /// denied policy, so a denial is visible in the site's log like any other.
     /// </summary>

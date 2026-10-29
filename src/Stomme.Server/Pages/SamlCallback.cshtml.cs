@@ -11,13 +11,13 @@ using Stomme.Shared;
 namespace Stomme.Pages
 {
     /// <summary>
-    /// D65 — the SAML2 provisioning callback (the async half of the bridge). After the IdP assertion, Sustainsys
+    /// The SAML2 provisioning callback (the async half of the bridge). After the IdP assertion, Sustainsys
     /// signs the RAW principal into the short-lived external cookie and returns here. This reads that principal
     /// and routes it through <see cref="StommeSiteAuthenticationBuilderExtensions.ProvisionExternalPrincipalAsync"/>
     /// — the SAME link-or-create path OIDC uses — which creates-or-links the IdentityUser + writes the UserLogin
     /// row (provider <c>saml2:{siteId}</c>) and returns the Identity-cookie identity. On success it swaps the
     /// external cookie for the real Identity cookie and lands the user on their return url. Fully async: no
-    /// sync-over-async is introduced (D33).
+    /// sync-over-async is introduced.
     /// </summary>
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]
@@ -34,7 +34,7 @@ namespace Stomme.Pages
         {
             returnurl = (returnurl == null) ? "/" : returnurl;
             returnurl = (!returnurl.StartsWith("/")) ? "/" + returnurl : returnurl;
-            returnurl = Utilities.LocalReturnUrl(returnurl); // BL-244: "//host" and "/\host" are another site
+            returnurl = Utilities.LocalReturnUrl(returnurl); // "//host" and "/\host" are another site
 
             var alias = HttpContext.GetAlias();
 

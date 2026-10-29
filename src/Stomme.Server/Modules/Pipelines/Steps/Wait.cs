@@ -20,7 +20,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record WaitStimulus(string ResumeAt);
 
     /// <summary>
-    /// Wait (BL-229, n8n's Wait node): the run pauses for a while, or until a moment, DURABLY - the step leaves a bookmark that
+    /// Wait (n8n's Wait node): the run pauses for a while, or until a moment, DURABLY - the step leaves a bookmark that
     /// carries when it is due, the run is stored and holds no worker (unlike <see cref="Delay"/>, which holds one and is bounded
     /// to minutes), and <see cref="DueWaitsTask"/> picks it up again when the moment comes - across restarts, as the run is in
     /// the store. A moment already past goes straight on.

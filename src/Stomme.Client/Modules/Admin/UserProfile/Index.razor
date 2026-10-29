@@ -806,7 +806,7 @@
         }
     }
 
-    // D112 (BL-116 increment 4): the person's own deletion - the same server path as an administrator's delete,
+    // The person's own deletion - the same server path as an administrator's delete,
     // so the erasure is queued; then this browser's session ends the way Logout does (the API sign-out cannot reach
     // an interactive circuit's cookie).
     private async Task DeleteAccount()

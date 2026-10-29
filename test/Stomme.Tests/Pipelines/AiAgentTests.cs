@@ -28,7 +28,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's AI Agent with workflow tools, run by the real engine with the model scripted: a published pipeline starting
+    /// n8n's AI Agent with workflow tools, run by the real engine with the model scripted: a published pipeline starting
     /// with "AI agent tool" is a tool the model sees by its name and description; when the model calls it, the tool's pipeline RUNS
     /// with the model's argument (the agent's run its parent) and the result of its last step goes back to the model, which then
     /// answers. Bounded: tools named that are not published refused, at most so many tool runs (the model told to answer with what
@@ -158,7 +158,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Single(_model.Calls); // the refusal asked the model nothing
         }
 
-        // BL-229: a tool's run is a call from the agent's pipeline, so a tool whose pipeline does not let it call is never offered
+        // A tool's run is a call from the agent's pipeline, so a tool whose pipeline does not let it call is never offered
         // - and, named, is refused saying why.
         [Fact]
         public async Task A_tool_whose_pipeline_may_not_be_called_from_here_is_left_out_or_refused()

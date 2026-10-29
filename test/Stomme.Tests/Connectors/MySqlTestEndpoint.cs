@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The MySQL connector's live tests' server (BL-229): MYSQL_TEST_HOST / PORT / USER / PASSWORD where set (a CI job's
+    /// The MySQL connector's live tests' server: MYSQL_TEST_HOST / PORT / USER / PASSWORD where set (a CI job's
     /// service container), otherwise this machine's throwaway container that <c>scripts/mysql-test-server.ps1</c> makes on
     /// 127.0.0.1:13306, its root password read from the file that script writes under the user's temp folder. No password
-    /// is a FAILURE that says how to get one, never a skip (D46: a suite that quietly shrinks proves nothing).
+    /// is a FAILURE that says how to get one, never a skip (a suite that quietly shrinks proves nothing).
     /// </summary>
     internal static class MySqlTestEndpoint
     {

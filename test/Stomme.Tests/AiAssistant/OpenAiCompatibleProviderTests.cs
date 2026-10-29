@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 9 - the shipped provider (D113) DRIVEN over a real socket: the OpenAI-compatible client, handed the
+    /// The shipped provider DRIVEN over a real socket: the OpenAI-compatible client, handed the
     /// site's egress, sends <c>POST {endpoint}/chat/completions</c> with the model, the messages and the key as a Bearer, and
     /// reads the reply and its token usage back - against a minimal HTTP server on the loopback address, which the egress
     /// admits only because the site allowlists it (as a local Ollama or LM Studio would be). Without the allowlist the host's

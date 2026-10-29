@@ -25,7 +25,7 @@ namespace Stomme.Infrastructure
     /// Module-owned content a site must carry, brought up to date on the boot/upgrade path - ADDITIVELY: create what a
     /// newer release declares and the site lacks, never re-process what exists (an operator's edit must survive every
     /// boot). BL-78's notification templates are the first implementation; BL-79's metering and BL-84's help topics use
-    /// the same seam (D103).
+    /// the same seam.
     /// </summary>
     /// <remarks>
     /// Registered in DI (scoped) by a module startup. The framework's <see cref="SiteContentReconciliationRunner"/> is
@@ -58,12 +58,12 @@ namespace Stomme.Infrastructure
     /// after it. Here: the tenant scope is entered BEFORE a fresh DI scope is created (the <c>FeatureSeeder</c> order,
     /// pinned by <c>HostCompositionTests.The_tenant_scope_flows_into_a_di_scope_created_inside_it</c>), each site gets
     /// its own DI scope, and each reconciler's failure is logged by name and contained to that site.
-    /// <b>Corrected 2026-10-02 (BL-205):</b> the framework loop had the same defect for its OWN writes - a second tenant's
+    /// <b>Corrected 2026-10-02:</b> the framework loop had the same defect for its OWN writes - a second tenant's
     /// pages landed in the first tenant's database - and now takes this runner's shape (a tenant scope, a DI scope per
     /// site, a failure contained to its site). This runner still runs after it, whatever happened to a site there.
     /// </para>
     /// <para>
-    /// <b>That is TWO independent guards, and each is sufficient on its own - MEASURED (BL-84, 2026-09-23).</b>
+    /// <b>That is TWO independent guards, and each is sufficient on its own - MEASURED.</b>
     /// <c>StommeTenantContext</c> answers from an ambient <c>BeginScope</c> first, else from <c>SiteState.Alias</c> once
     /// per DI scope. So removing only the <c>BeginScope</c> is harmless here (each site's fresh scope has its alias set
     /// before anything reads the tenant), and so is sharing one DI scope across sites while keeping it (the ambient

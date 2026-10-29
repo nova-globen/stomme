@@ -23,7 +23,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The trap the tenancy adapter (D16) had to defuse in the same change, proven by running it.
+    /// The trap the tenancy adapter had to defuse in the same change, proven by running it.
     /// <para>
     /// Brief 06 seeds feature flags at <see cref="TenantId.Default"/> — correct while the host had no real
     /// tenant context, because the module's fallback reported <see cref="TenantId.Default"/> for everybody.
@@ -165,7 +165,7 @@ namespace Stomme.Tests
             foreach (var database in _databases)
             {
                 // Each host's own pool, by the exact string TenantFlagHost handed to UseSqlite. ClearAllPools is
-                // process-wide and would reach into every other suite's pool (BL-104).
+                // process-wide and would reach into every other suite's pool.
                 ScratchSqlite.Release($"Data Source={database}");
 
                 try

@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// The outcomes a step NAMES ITSELF (BL-229 increment 10): a Fork (flow)'s branches - a list held in its Branches input - and
+    /// The outcomes a step NAMES ITSELF: a Fork (flow)'s branches - a list held in its Branches input - and
     /// a Switch (flow)'s cases, each beside its Default. The editor draws one port per outcome; the engine goes out through the
     /// ones it completes with.
     /// </summary>

@@ -7,7 +7,7 @@ namespace Stomme.Models.Notifications
     /// What a producer hands to <see cref="Stomme.Notifications.INotificationDispatcher"/>: the template to render,
     /// who to reach, the channels to reach them over, the parameters the template binds, and - optionally - the
     /// severity and a subscription topic used to honour per-user preferences. Lifted verbatim in shape from the predecessor platform's
-    /// published DTO (BL-78 / D100 point 3); <see cref="Severity"/> and <see cref="Topic"/> are appended optional
+    /// published DTO; <see cref="Severity"/> and <see cref="Topic"/> are appended optional
     /// members so producers stay source-compatible.
     /// </summary>
     public sealed record NotificationDispatchRequest(

@@ -17,7 +17,7 @@ public sealed record TenantConnection(string ConnectionString, string? Schema = 
 public interface ITenantConnectionResolver
 {
     /// <summary>
-    /// Async because a tenant's store binding LIVES IN THE TENANT STORE — the host reads it (D32). Callers
+    /// Async because a tenant's store binding LIVES IN THE TENANT STORE — the host reads it. Callers
     /// must therefore resolve the binding where awaiting is legal (building a context in
     /// <c>IDbContextFactory.CreateDbContextAsync</c>), NOT from inside a synchronous platform virtual such as
     /// <c>DbContext.OnConfiguring</c> or a synchronous DI factory lambda.

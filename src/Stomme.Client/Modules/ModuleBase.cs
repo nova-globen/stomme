@@ -74,7 +74,7 @@ namespace Stomme.Modules
 
         // base lifecycle method for handling JSInterop script registration
 
-        // The page scripts (ResourceLoadBehavior.BlazorPageScript) this module imported at its first render (BL-202).
+        // The page scripts (ResourceLoadBehavior.BlazorPageScript) this module imported at its first render.
         private readonly List<string> _pageScripts = new List<string>();
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -111,7 +111,7 @@ namespace Stomme.Modules
                         {
                             if (!string.IsNullOrEmpty(resource.Url) && resource.LoadBehavior == ResourceLoadBehavior.BlazorPageScript)
                             {
-                                // An ES module (BL-202): imported, never added as a classic <script>.
+                                // An ES module: imported, never added as a classic <script>.
                                 _pageScripts.Add((resource.Url.Contains("://")) ? resource.Url : PageState.Alias.BaseUrl + resource.Url);
                             }
                             else if (!string.IsNullOrEmpty(resource.Url))
@@ -140,7 +140,7 @@ namespace Stomme.Modules
             }
             else if (_pageScripts.Count > 0)
             {
-                // A page script's onUpdate after every later render (BL-202): an interactive module renders its content when its
+                // A page script's onUpdate after every later render: an interactive module renders its content when its
                 // data arrives, after the first render - the static path's <page-script> never meets that, its HTML arrives whole.
                 // Driven: a dashboard landing page on a WebAssembly site drew no chart, its element absent at the first render.
                 var interop = new Interop(JSRuntime);
@@ -221,7 +221,7 @@ namespace Stomme.Modules
         /// <summary>
         /// True when the current user holds <paramref name="permissionName"/> on this module instance.
         /// Accepts BOTH vocabularies: a plain permission name (<c>View</c>, <c>Edit</c> - the module's own
-        /// rows) and a lifted <c>resource:operation</c> permission KEY (D99 point 8, BL-99).
+        /// rows) and a lifted <c>resource:operation</c> permission KEY.
         /// </summary>
         /// <remarks>
         /// <para>

@@ -12,7 +12,7 @@ using Stomme.Modules.DataExport.Sources;
 namespace Stomme.Modules.Datasets.Infrastructure
 {
     /// <summary>
-    /// A dataset's rows as an export (BL-97 increment 1, the predecessor platform's <c>DatasetExportSourceResolver</c> on D108's contract):
+    /// A dataset's rows as an export (the predecessor platform's <c>DatasetExportSourceResolver</c> on D108's contract):
     /// key <c>datasets.rows</c>, one table named after the dataset, its columns the published schema in order or the
     /// request's projection, each typed from the schema and carrying the column's format for the D108 cell formatter.
     /// </summary>

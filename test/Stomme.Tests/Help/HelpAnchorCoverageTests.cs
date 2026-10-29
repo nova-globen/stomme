@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// Every literal <c>Label HelpTopic="…"</c> in the tree names a topic an in-tree contributor SHIPS (BL-84, D103 item 6).
+    /// Every literal <c>Label HelpTopic="…"</c> in the tree names a topic an in-tree contributor SHIPS.
     /// </summary>
     /// <remarks>
     /// A label naming an anchor nobody contributes renders as a plain label - silently, which is the correct runtime

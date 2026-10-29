@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-100 O2 (D109) — <see cref="DeadLetterSweepJob"/> ages dead letters by the time they became visible
+    /// BL-100 O2 — <see cref="DeadLetterSweepJob"/> ages dead letters by the time they became visible
     /// in the dead-letter queue (<see cref="DeadLetterMessage.VisibleUtc"/>), NOT by
     /// <see cref="DeadLetterMessage.EnqueuedUtc"/>, which the RavenDB queue fills from the Rebus SentTime
     /// header — the ORIGINAL send time. the predecessor platform's job aged by that send time, so a message sent months ago

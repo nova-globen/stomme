@@ -11,7 +11,7 @@ namespace Stomme.Modules.Connectors.Shared
     /// Retries an HTTP 429 (and 503) answer, honouring Retry-After when present and falling back to a short exponential
     /// backoff when absent; retries are bounded and delays capped; any other status passes through untouched (BL-96
     /// increment 3, lifted from the predecessor platform's <c>RetryAfterHandler</c>). The port is a policy AROUND a send rather than a
-    /// handler INSIDE a client, because the client is the host's (D110): a connector cannot wrap the egress's handler
+    /// handler INSIDE a client, because the client is the host's: a connector cannot wrap the egress's handler
     /// chain, so it asks the policy to send for it, handing a factory - a request message cannot be sent twice, and a
     /// throttled attempt is disposed before the next one is built. Safe for a request whose content can be rebuilt:
     /// the Graph and ARM GETs, the token, GraphQL and SOAP POSTs all qualify.
@@ -40,7 +40,7 @@ namespace Stomme.Modules.Connectors.Shared
 
         /// <summary>Sends a fresh request from <paramref name="request"/> until the answer is not throttled or the retries are spent; the caller owns the returned response.</summary>
         /// <param name="completion">When the answer is handed back: its whole body read (the default), or its headers only, for a body
-        /// streamed somewhere as it comes - a download (BL-229, S3) - which the caller reads and disposes.</param>
+        /// streamed somewhere as it comes - a download (S3) - which the caller reads and disposes.</param>
         public async Task<HttpResponseMessage> SendAsync(HttpClient client, Func<HttpRequestMessage> request, CancellationToken cancellationToken = default,
             HttpCompletionOption completion = HttpCompletionOption.ResponseContentRead)
         {

@@ -26,8 +26,8 @@ using Stomme.Tenancy.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (D106, gates <c>InstalledSiteBackupDriveTests</c> and <c>InstalledSiteBackupFreshHostDriveTests</c>) - the D30 bar
-    /// on SQLite, PostgreSQL, RavenDB AND (BL-173) SQL Server: an installed site with a guestbook entry, the home page's HtmlText content and an
+    /// BL-81 (gates <c>InstalledSiteBackupDriveTests</c> and <c>InstalledSiteBackupFreshHostDriveTests</c>) - the D30 bar
+    /// on SQLite, PostgreSQL, RavenDB AND SQL Server: an installed site with a guestbook entry, the home page's HtmlText content and an
     /// uploaded file; a snapshot taken over HTTP; afterwards another entry, new content, the file deleted; the restore staged
     /// over HTTP and the host RESTARTED - the file is served again, the later entry is gone, the home page renders the old
     /// content, the Host signs in. And the same archive IMPORTED into a second, fresh installation of the same version and
@@ -47,7 +47,7 @@ namespace Stomme.Tests.Backup
 
         private protected abstract IGateStore Store();
 
-        // Pipelines composed too (BL-232): an installation's pipelines are part of what a backup holds.
+        // Pipelines composed too: an installation's pipelines are part of what a backup holds.
         private Task<ScratchGateInstall> ScratchAsync() =>
             GateInstallTemplates.CloneAsync(Store(), Host, _output, colocateModuleAggregates: false,
                 extraSettings: new JsonObject { ["Backup"] = new JsonObject { ["Enabled"] = true }, ["Pipelines"] = new JsonObject { ["Enabled"] = true } });
@@ -126,7 +126,7 @@ namespace Stomme.Tests.Backup
                     await SetHomeContentAsync(app, "<p>BL81-FROM-THE-FIRST-INSTALLATION</p>");
                     await SignAsync(app, "written on the first installation");
 
-                    // BL-232: a pipeline, published and run, on the first installation.
+                    // A pipeline, published and run, on the first installation.
                     using var client = GateDrive.NewClient(app, Host);
                     var cookies = await GateDrive.LoginAsync(app, client, Host, GateDrive.HostUsername, GateDrive.HostPassword, _output);
                     var hostId = await GateDrive.UserIdAsync(app, Host, GateDrive.HostUsername);
@@ -136,7 +136,7 @@ namespace Stomme.Tests.Backup
                     var started = await GateDrive.SendJsonAsync(app, client, cookies, Host, hostId, HttpMethod.Post, $"/api/Pipelines/{definitionId}/runs", new StartPipelineRequest { CorrelationId = "before-the-backup" }, _output, "run it");
                     Assert.Equal(HttpStatusCode.OK, started.Status);
                     await UntilRunStoredAsync(client, cookies, definitionId);
-                    // BL-233: and a file in the site's pipeline folder, put there through the Files page's API.
+                    // And a file in the site's pipeline folder, put there through the Files page's API.
                     Assert.Equal(HttpStatusCode.OK, (await GateDrive.SendJsonAsync(app, client, cookies, Host, hostId, HttpMethod.Post, "/api/Pipelines/files/folders", new PipelineFileFolderRequest { Path = "inputs" }, _output, "make a folder of files")).Status);
                     Assert.Equal(HttpStatusCode.OK, await UploadPipelineFileAsync(app, client, cookies, hostId, "inputs", "customers.csv", PipelineFileContent));
                     var id = await Engine(app).CreateSnapshotAsync(Passphrase, RetentionTag.Manual);
@@ -179,14 +179,14 @@ namespace Stomme.Tests.Backup
                 Assert.Equal(HttpStatusCode.OK, home.Status);
                 Assert.Contains("BL81-FROM-THE-FIRST-INSTALLATION", home.Body, StringComparison.Ordinal);
 
-                // BL-232: the pipeline is the fresh installation's now - published, with its run.
+                // The pipeline is the fresh installation's now - published, with its run.
                 var pipelines = JsonNode.Parse((await GateDrive.GetAsync(client, cookies, Host, "/api/Pipelines", _output, "the fresh host's pipelines")).Body)!.AsArray();
                 var pipeline = Assert.Single(pipelines, p => p?["definitionId"]?.GetValue<string>() == definitionId)!;
                 Assert.Equal(("Kept by the backup", true), (pipeline["name"]?.GetValue<string>(), pipeline["isPublished"]?.GetValue<bool>()));
                 var runs = JsonNode.Parse((await GateDrive.GetAsync(client, cookies, Host, $"/api/Pipelines/runs?definitionId={definitionId}", _output, "its runs")).Body)!.AsArray();
                 Assert.Equal("before-the-backup", Assert.Single(runs)!["correlationId"]?.GetValue<string>());
 
-                // BL-233: and the file its pipelines read, in the fresh installation's site folder.
+                // And the file its pipelines read, in the fresh installation's site folder.
                 var kept = await GateDrive.GetAsync(client, cookies, Host, "/api/Pipelines/files/content?path=inputs%2Fcustomers.csv", _output, "the restored pipeline file");
                 Assert.Equal((HttpStatusCode.OK, PipelineFileContent), (kept.Status, kept.Body));
             }

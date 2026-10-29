@@ -8,7 +8,7 @@ using System.Text;
 namespace Stomme.Models.Health
 {
     /// <summary>
-    /// The health page's sparklines over BL-83's rollups (BL-96 increment 10, re-booked from D104): one subject's
+    /// The health page's sparklines over BL-83's rollups (re-booked): one subject's
     /// availability per rollup period as an inline SVG polyline - the oldest period at the left, 100 percent at the top,
     /// nothing drawn for fewer than two periods. BCL-only, so the page and a test draw the same line; the SVG carries
     /// no colour of its own and takes the current text colour.

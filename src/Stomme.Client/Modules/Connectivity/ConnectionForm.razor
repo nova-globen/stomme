@@ -2,7 +2,7 @@
 @inject IConnectionsService ConnectionsService
 
 @*
-    A connection made or edited (BL-94 increment 7, D110; a component of its own since BL-229, so the pipeline editor makes one
+    A connection made or edited (a component of its own, so the pipeline editor makes one
     where a step needs it, as n8n makes a credential from the node): the chosen connector's declared settings and its scheme's
     credential fields; a credential is typed in and never read back - on an edit a blank one means "leave it". The server
     decides every save: a refusal is said here, in its words.

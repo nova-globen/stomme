@@ -12,8 +12,8 @@ using Stomme.Shared;
 namespace Stomme.Controllers
 {
     /// <summary>
-    /// BL-36(b) — the dead-letter queue admin surface: status, list, retry, discard over the wired
-    /// <see cref="IDeadLetterQueue"/> port (D69). Host-only throughout: dead letters carry raw message
+    /// The dead-letter queue admin surface: status, list, retry, discard over the wired
+    /// <see cref="IDeadLetterQueue"/> port. Host-only throughout: dead letters carry raw message
     /// payload details, and retrying/discarding is installation-wide bus surgery.
     /// </summary>
     /// <remarks>

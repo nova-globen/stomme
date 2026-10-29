@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Pipedrive (n8n's Pipedrive node: deals, persons, organizations, activities and products listed, got, searched,
+    /// Pipedrive (n8n's Pipedrive node: deals, persons, organizations, activities and products listed, got, searched,
     /// created, updated and deleted, notes added) over Pipedrive's API v2: the token in Pipedrive's x-api-token header, never in
     /// an address; an object's records page by page by Pipedrive's cursor up to the most asked for, its filters held to Pipedrive's
     /// shapes; a search's finds each its score; a record got, created, updated by PATCH and deleted; a note added through API v1;

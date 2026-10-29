@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Redis connector's live tests' server (BL-229): REDIS_TEST_HOST / PORT / PASSWORD where set (a CI job's service
+    /// The Redis connector's live tests' server: REDIS_TEST_HOST / PORT / PASSWORD where set (a CI job's service
     /// container), otherwise this machine's throwaway Valkey that <c>scripts/redis-test-server.ps1</c> makes on
     /// 127.0.0.1:16379, its password read from the file that script writes under the user's temp folder. No password is a
-    /// FAILURE that says how to get one, never a skip (D46).
+    /// FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class RedisTestEndpoint
     {

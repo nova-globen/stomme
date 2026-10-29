@@ -20,7 +20,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Dashboards.Realtime
 {
     // ============================================================================================================
-    // Real-time refresh (BL-96 increment 10, the predecessor platform's IDashboardDataSignal on Stomme's seams): a dataset's refresh or
+    // Real-time refresh (the predecessor platform's IDashboardDataSignal on Stomme's seams): a dataset's refresh or
     // schema change - a DOMAIN event of the Datasets module, dispatched in the request's scope - becomes ONE integration
     // event on the bus (delivered in-process when no bus is composed, the Pipelines pattern), whose handler pushes the
     // change to the widgets rendered on this host (the in-process signal, for an Interactive Server circuit) and to the

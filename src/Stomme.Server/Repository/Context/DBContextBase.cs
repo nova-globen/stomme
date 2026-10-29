@@ -25,7 +25,7 @@ namespace Stomme.Repository
         private readonly IConfigurationRoot _config;
 
         // Null only via the obsolete constructor below, which has no host to ask; the expansion falls back to the
-        // process-wide slot there, exactly as it always did (BL-153).
+        // process-wide slot there, exactly as it always did.
         private readonly IConfigManager _configManager;
         private string _connectionString = "";
         private string _databaseType = "";
@@ -46,7 +46,7 @@ namespace Stomme.Repository
 
             if (string.IsNullOrEmpty(_connectionString))
             {
-                // Sync and reads NO store (D37). OnConfiguring is a sync EF platform virtual Stomme does not
+                // Sync and reads NO store. OnConfiguring is a sync EF platform virtual Stomme does not
                 // own, so it stays sync legitimately ONLY while it touches nothing. GetResolvedTenant reads the
                 // alias off SiteState and looks the tenant up in the scope's warmed bindings; it returns null
                 // only when there is no alias at all (the installer state handled below), and THROWS rather
@@ -57,7 +57,7 @@ namespace Stomme.Repository
                     _connectionString = _config.GetConnectionString(tenant.DBConnectionString);
                     if (_connectionString != null)
                     {
-                        // THIS host's data directory (BL-153) - see IConfigManager.GetDataDirectory.
+                        // THIS host's data directory - see IConfigManager.GetDataDirectory.
                         _connectionString = _connectionString.Replace(
                             $"|{Constants.DataDirectory}|",
                             _configManager?.GetDataDirectory()
@@ -77,8 +77,8 @@ namespace Stomme.Repository
                 ActiveDatabase = Activator.CreateInstance(type) as IDatabase;
             }
 
-            // Relational-only EF configuration (D53). ActiveDatabase stays IDatabase because module contexts
-            // deriving from this class satisfy IMultiDatabase.ActiveDatabase (the module contract, D55); a
+            // Relational-only EF configuration. ActiveDatabase stays IDatabase because module contexts
+            // deriving from this class satisfy IMultiDatabase.ActiveDatabase (the module contract); a
             // non-relational provider is IDatabase but not IRelationalDatabase and skips configuration.
             if (!string.IsNullOrEmpty(_connectionString) && ActiveDatabase is IRelationalDatabase relationalDatabase)
             {

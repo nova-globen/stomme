@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// What changed from one graph to another, in words (BL-229 increment 7: a version compared with the canvas): steps,
+    /// What changed from one graph to another, in words (a version compared with the canvas): steps,
     /// variables and connections added or removed, and every name, input, expression, binding and body that changed - read
     /// off the collaboration fields (<see cref="PipelineGraphFields"/>), so it sees exactly what a merge sees. A step's
     /// position is layout, not a change of what the pipeline does, and is left out.
@@ -25,7 +25,7 @@ namespace Stomme.Models.Pipelines
         public static List<string> Lines(PipelineGraph? from, PipelineGraph? to) => Changes(from, to).Select(change => change.Line).ToList();
 
         /// <summary>
-        /// BL-229 - the same changes, each with what it is about, for the canvas to mark while a version is compared: the step
+        /// The same changes, each with what it is about, for the canvas to mark while a version is compared: the step
         /// (a connection's: the step it leaves) and, for a connection, the outcome it leaves by and the step it goes to.
         /// </summary>
         public static List<PipelineGraphChange> Changes(PipelineGraph? from, PipelineGraph? to)
@@ -60,7 +60,7 @@ namespace Stomme.Models.Pipelines
                         changes.Add(Of(parts, (now is null ? "Removed " : "Added ") + PipelineGraphFields.Describe(path, now is null ? from : to), now is null ? Removed : Added));
                         break;
                     case ["step", _, "input-condition", _]:
-                        // A condition in words, not its JSON (BL-229 increment 10).
+                        // A condition in words, not its JSON.
                         changes.Add(Of(parts, PipelineGraphFields.Describe(path, to) + ": " + Said(was is null ? null : PipelineConditions.Describe(PipelineConditions.Read(was))) + " → " + Said(now is null ? null : PipelineConditions.Describe(PipelineConditions.Read(now))), Changed));
                         break;
                     case ["step", _, "cases"]:

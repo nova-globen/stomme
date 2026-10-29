@@ -35,7 +35,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D65 — the SAML2 + Windows/Negotiate external-login CONSUMERS, DRIVEN.
+    /// The SAML2 + Windows/Negotiate external-login CONSUMERS, DRIVEN.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -98,7 +98,7 @@ namespace Stomme.Tests
             => RunSamlProvisioningDriveAsync(providerName, patchRemoteIp: true);
 
         /// <summary>
-        /// D70 item 2 — <c>ValidateUser</c> null-guards <c>RemoteIpAddress</c>. A reverse proxy can strip the
+        /// <c>ValidateUser</c> null-guards <c>RemoteIpAddress</c>. A reverse proxy can strip the
         /// connection IP, leaving <c>HttpContext.Connection.RemoteIpAddress</c> null; the unguarded
         /// <c>.ToString()</c> at the external-login success path then NRE'd and failed the whole login. This
         /// drives the SAME real SAML provisioning flow but WITHOUT the loopback-IP startup filter (so the IP
@@ -123,7 +123,7 @@ namespace Stomme.Tests
                 builder =>
                 {
                     builder.WebHost.UseTestServer();
-                    // D70: patchRemoteIp=false leaves RemoteIpAddress null (TestServer's default), driving the
+                    // PatchRemoteIp=false leaves RemoteIpAddress null (TestServer's default), driving the
                     // null-IP path ValidateUser now guards. The existing per-provider drives keep the loopback IP.
                     if (patchRemoteIp)
                     {
@@ -252,7 +252,7 @@ namespace Stomme.Tests
 
                     if (!patchRemoteIp)
                     {
-                        // D70: with no connection IP the guarded ValidateUser persists the empty placeholder
+                        // With no connection IP the guarded ValidateUser persists the empty placeholder
                         // instead of NRE-ing. Reaching this assertion at all proves the login did not throw.
                         Assert.Equal("", user.LastIPAddress ?? "");
                     }
@@ -345,7 +345,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task Login_scheme_flags_are_surfaced_to_the_client_only_when_enabled()
         {
-            // D70 item 3 — DRIVE the channel that gates the login buttons. The client login UI cannot read the
+            // DRIVE the channel that gates the login buttons. The client login UI cannot read the
             // installation-wide Saml2/WindowsAuth appsettings directly; ServerSiteService surfaces them into the
             // site settings that reach PageState.Site.Settings (the SAME channel ExternalLogin:* already uses).
             // GET /api/Site/{id} runs that exact service over HTTP, so this asserts the flag the login page's
@@ -742,7 +742,7 @@ namespace Stomme.Tests
             public void BindToScratch(string scratch) => _tenant = $"Data Source={Path.Combine(scratch, "tenant.db")};";
             public void Dispose()
             {
-                // This provider's own database, never the process-wide ClearAllPools (BL-104).
+                // This provider's own database, never the process-wide ClearAllPools.
                 ScratchSqlite.Release(_tenant);
             }
         }
@@ -877,7 +877,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

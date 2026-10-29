@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zammad (n8n's Zammad node: its tickets, users, organizations and groups): every call the help desk's API v1 with
+    /// Zammad (n8n's Zammad node: its tickets, users, organizations and groups): every call the help desk's API v1 with
     /// the token in Zammad's Token header; a list read page by page, a short or empty page the end, no more than asked; a
     /// ticket got with its articles, created with its first article - a note or an e-mail - updated with an internal note and
     /// deleted; users searched and sorted, got, the token's own, created, updated and deleted; organizations and groups read,

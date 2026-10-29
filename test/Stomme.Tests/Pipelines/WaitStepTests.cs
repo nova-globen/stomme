@@ -30,7 +30,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Wait, n8n's Wait node, through the engine as the host composes it: a run that reaches a Wait is STORED, waiting,
+    /// Wait, n8n's Wait node, through the engine as the host composes it: a run that reaches a Wait is STORED, waiting,
     /// with a bookmark that carries its moment; the due-waits task leaves it alone until then and resumes it after, so the step
     /// after the wait runs - once, a second tick finding nothing. A moment already past goes straight on; a wait past
     /// Pipelines:Waits:MaxDays, or one that names no time, fails the step saying why. Durations are read as people write them.

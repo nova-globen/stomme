@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Freshdesk
 {
     /// <summary>
-    /// Freshdesk (BL-229, n8n's Freshdesk node: tickets and contacts found, got, created, updated and deleted - and a reply and a note
+    /// Freshdesk (n8n's Freshdesk node: tickets and contacts found, got, created, updated and deleted - and a reply and a note
     /// on a ticket): a helpdesk's API (<c>https://your-domain.freshdesk.com/api/v2</c>), an agent's API key by Freshdesk's Basic pair
     /// (the key and X). A test names the agent.
     /// </summary>

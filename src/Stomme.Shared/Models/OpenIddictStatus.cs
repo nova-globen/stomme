@@ -7,7 +7,7 @@ namespace Stomme.Models
     /// missing route).
     /// </summary>
     /// <remarks>
-    /// The issuer is INFERRED from the request host — <c>SetIssuer</c> is deliberately never called (D61), which
+    /// The issuer is INFERRED from the request host — <c>SetIssuer</c> is deliberately never called, which
     /// is what gives each tenant a distinct <c>iss</c> for free. So these values are per-alias, resolved from the
     /// request that asked, not from configuration.
     /// </remarks>

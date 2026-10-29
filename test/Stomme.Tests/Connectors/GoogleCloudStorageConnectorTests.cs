@@ -21,10 +21,10 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Google Cloud Storage connector's live tests' server (BL-229): GCS_TEST_HOST / PORT where set, otherwise this machine's
+    /// The Google Cloud Storage connector's live tests' server: GCS_TEST_HOST / PORT where set, otherwise this machine's
     /// throwaway fake-gcs-server that <c>scripts/gcs-test-server.ps1</c> makes on 127.0.0.1:14443. It checks no token, so the
     /// tests give the connector a loopback stand-in for Google's token endpoint. No server is a FAILURE that says how to get
-    /// one, never a skip (D46).
+    /// one, never a skip.
     /// </summary>
     internal static class GcsTestEndpoint
     {
@@ -95,7 +95,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Google Cloud Storage (n8n's Google Cloud Storage node) without a server: the app's client and a refresh token for
+    /// Google Cloud Storage (n8n's Google Cloud Storage node) without a server: the app's client and a refresh token for
     /// a token, asked for only once everything is held to its shape; a project's buckets and a bucket's objects listed page by
     /// page through Google's nextPageToken, a folder's subfolders as folders; a bucket made with its location, class, labels and
     /// versioning; an object uploaded in one multipart call - its metadata first, then its bytes - from the run's folder or the
@@ -275,13 +275,13 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the Google Cloud Storage connector against a real fake-gcs-server (<c>scripts/gcs-test-server.ps1</c>'s throwaway
+    /// The Google Cloud Storage connector against a real fake-gcs-server (<c>scripts/gcs-test-server.ps1</c>'s throwaway
     /// on loopback - an independent implementation of Google's JSON API) and a loopback stand-in for Google's token endpoint,
     /// through the HOST's egress: loopback refused until allowlisted; a test that lists the project's buckets; a bucket made -
     /// again 409 - listed by its prefix and got; text and a file uploaded with their types and metadata - an accent and a space
     /// in a name - replaced, and refused 412 when not to be; a folder listed with its subfolders as folders, page by page; an
     /// object got, downloaded into the run's folder, its metadata patched, copied by a rewrite and deleted; the bucket, emptied,
-    /// deleted. Fails, never skips, when the server is absent (D46).
+    /// deleted. Fails, never skips, when the server is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class GoogleCloudStorageConnectorLiveTests(ITestOutputHelper output) : IDisposable

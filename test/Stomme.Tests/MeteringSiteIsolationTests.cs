@@ -30,7 +30,7 @@ namespace Stomme.Tests
     /// the SAME answer as an unknown id, and why that is asserted here rather than assumed.
     /// </para>
     /// <para>
-    /// PostgreSQL and RavenDB - one relational, one document, both FAIL-NOT-SKIP when unreachable (D46). SQLite is
+    /// PostgreSQL and RavenDB - one relational, one document, both FAIL-NOT-SKIP when unreachable. SQLite is
     /// deliberately absent: the claim is about the query the provider runs.
     /// </para>
     /// </remarks>

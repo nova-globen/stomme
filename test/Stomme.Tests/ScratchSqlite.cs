@@ -7,7 +7,7 @@ using Microsoft.Data.Sqlite;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Connection strings for the FILE-BACKED scratch SQLite databases the host-installing suites use (BL-104).
+    /// Connection strings for the FILE-BACKED scratch SQLite databases the host-installing suites use.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -19,7 +19,7 @@ namespace Stomme.Tests
     /// exception was exactly that lock.
     /// </para>
     /// <para>
-    /// <b>CORRECTION 2026-09-20 (BL-104).</b> This used to read "two settings, and BOTH are needed", crediting
+    /// <b>CORRECTION 2026-09-20.</b> This used to read "two settings, and BOTH are needed", crediting
     /// <c>Default Timeout</c> with supplying a busy wait. Measured: <c>SqliteConnectionStringBuilder.DefaultTimeout</c>
     /// is <b>already 30 seconds</b> with nothing set (<c>SqliteWalJournalTests</c>), so the explicit setting below
     /// restates the default and changes nothing. That explains the original measurement rather than contradicting it —
@@ -74,7 +74,7 @@ namespace Stomme.Tests
         /// </summary>
         /// <remarks>
         /// <para>
-        /// <b>This exists because <c>SqliteConnection.ClearAllPools()</c> is PROCESS-WIDE</b> (BL-104). About
+        /// <b>This exists because <c>SqliteConnection.ClearAllPools()</c> is PROCESS-WIDE</b>. About
         /// thirty fixtures used to call it at teardown, and test classes in this assembly run in parallel
         /// collections, so one class finishing tore the pooled connections out from under whatever else was
         /// mid-request. Measured: a probe calling <c>ClearAllPools</c> every 25 ms while a definition PUT ran
@@ -173,7 +173,7 @@ namespace Stomme.Tests
         /// FeatureManagement's <c>Stomme.Features.db</c>. A first version of this helper believed that comment
         /// and released exactly those two; the A/B measurement that followed showed the scratch directories
         /// surviving anyway, and the file still held was a THIRD sidecar neither the comment nor this helper knew
-        /// about — <c>Stomme.ModuleAggregates.db</c>, the shared reflective module-aggregate store (D79/D80).
+        /// about — <c>Stomme.ModuleAggregates.db</c>, the shared reflective module-aggregate store.
         /// </para>
         /// <para>
         /// So this enumerates instead. Both sidecars compose their connection string by expanding

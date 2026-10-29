@@ -69,7 +69,7 @@ namespace Stomme.Models
         /// visitors, exactly as the eager-loaded navigation left it.
         /// </summary>
         /// <remarks>
-        /// NOT an EF navigation any more. The User cluster moved onto the persistence seam (D22): the User
+        /// NOT an EF navigation any more. The User cluster moved onto the persistence seam: the User
         /// table is owned by <c>UserAggregate</c>, and an EF navigation from here would make EF rediscover
         /// <see cref="User"/> as a second entity type on that same table, which breaks the model at startup.
         /// <see cref="UserId"/> is the persisted reference. Visitors are NOT part of the Users/Roles cluster —

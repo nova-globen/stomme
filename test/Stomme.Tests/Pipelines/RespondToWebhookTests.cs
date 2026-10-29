@@ -27,7 +27,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Respond to webhook (n8n's Respond to Webhook): a Webhook set to answer from the pipeline is indexed under a
+    /// Respond to webhook (n8n's Respond to Webhook): a Webhook set to answer from the pipeline is indexed under a
     /// stimulus of its own, so every webhook already published keeps its hash; a call to the name starts every pipeline
     /// listening on it and, when one answers from the pipeline, waits for its Respond to webhook step - its status, type and
     /// body - up to the configured time, after which it is accepted and the run goes on. A Respond step no call waits for

@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Graph Security (n8n's Microsoft Graph Security node: secure scores and their control profiles): the
+    /// Microsoft Graph Security (n8n's Microsoft Graph Security node: secure scores and their control profiles): the
     /// app's client credentials at the tenant's token endpoint, Graph's security API with the token as a bearer; scores and
     /// profiles read page by page by Graph's next link - followed only while it stays under the same collection - no more than
     /// asked, a score's control scores dropped unless asked for; one got; a profile updated by a PATCH with Graph's vendor

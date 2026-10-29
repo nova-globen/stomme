@@ -13,7 +13,7 @@ using Stomme.Modules.Pipelines.Steps;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// The form submissions waiting to be taken on to their next page (BL-229, n8n's multi-page forms - its Form node's next page):
+    /// The form submissions waiting to be taken on to their next page (n8n's multi-page forms - its Form node's next page):
     /// one entry per submission, in this process - the dispatcher runs the pipeline here, so the next page is known here, as
     /// Respond to webhook's answer is (<see cref="PipelineWebhookAnswers"/>). The id rides with the run's input for that one burst
     /// (<see cref="InputKey"/>); a <see cref="WaitForForm"/> with Next page ticked answers it with the run's form token once the run
@@ -83,7 +83,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// A burst that carried a form submission and ended without reaching a next page answers it with none (BL-229): the person is
+    /// A burst that carried a form submission and ended without reaching a next page answers it with none: the person is
     /// thanked as soon as the run has nothing more to show them. A next page reached in the burst answered first, from the deferred
     /// task that runs before this notification; only a run whose pipeline has a next page answers - several pipelines may share a
     /// form's name, and one with no next page must not thank the person before the one that has one shows it.

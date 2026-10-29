@@ -72,7 +72,7 @@ namespace Stomme.Tests.Connectors
             Assert.All(graph, r => Assert.Equal(("Bearer", "tok-1"), (r.Headers.Authorization?.Scheme, r.Headers.Authorization?.Parameter)));
         }
 
-        // BL-229 - Graph's next link followed only while it stays on the collection and names another page: one to another host,
+        // Graph's next link followed only while it stays on the collection and names another page: one to another host,
         // another scheme, another collection, an item of it, the page itself or no address at all refused, nothing sent there.
         [Theory]
         [InlineData("https://elsewhere.example.test/v1.0/deviceManagement/managedDevices?$skiptoken=abc")]

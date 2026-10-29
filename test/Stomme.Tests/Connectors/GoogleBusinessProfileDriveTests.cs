@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Business Profile DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// Google Business Profile DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against a loopback stand-in for Google's token endpoint and its Business Profile APIs that refuses a call
     /// without the token it issued: a connection made over the API with its account and location, the client's secret and
     /// refresh token vaulted, tested; a published pipeline reading the location's reviews, replying to the first by the name the

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Stomme.Connectivity
 {
     /// <summary>
-    /// The files of the place an operation runs in, handed to a connector by the HOST (BL-229, D110's file sink extended: n8n's
+    /// The files of the place an operation runs in, handed to a connector by the HOST (D110's file sink extended: n8n's
     /// binary data on its file nodes - S3, Google Drive, Dropbox, OneDrive): in a pipeline run, the run's site's pipeline folder,
     /// the one the file steps read and write. A connector reads a file it is to send (an upload) and writes one it received (a
     /// download) by a path RELATIVE to that folder, held to the folder's rules - never a rooted path, never outside the folder,

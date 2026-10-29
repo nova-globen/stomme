@@ -18,7 +18,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// Classify text (BL-229, n8n's Text Classifier): the site's language model puts a text in ONE of the author's categories, and
+    /// Classify text (n8n's Text Classifier): the site's language model puts a text in ONE of the author's categories, and
     /// the run goes on through that category's outcome - the categories are the step's ports, as a Fork's branches are (the same
     /// dynamic-outcomes input, <see cref="Branches"/>). A category's description, when given, tells the model what belongs in it.
     /// The text passes through as the result, the category is an output; an answer that is none of the categories fails the step

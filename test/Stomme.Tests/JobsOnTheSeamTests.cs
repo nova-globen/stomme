@@ -261,7 +261,7 @@ namespace Stomme.Tests
             Assert.Equal(added.JobId, byId.JobId);
         }
 
-        // The scheduler's read-then-write shape (D19): read the job through a session, mutate the detached model,
+        // The scheduler's read-then-write shape: read the job through a session, mutate the detached model,
         // write it back through the store. ModifiedOn must advance (re-stamped), and IsExecuting must persist —
         // the concurrency flag the scheduler flips to stop a job running twice.
         [Fact]
@@ -348,7 +348,7 @@ namespace Stomme.Tests
             Assert.True(reloaded.Succeeded);
         }
 
-        // THE severed-navigation guard (D45). JobLog.Job is [NotMapped]; the repository re-populates it from a
+        // THE severed-navigation guard. JobLog.Job is [NotMapped]; the repository re-populates it from a
         // second master-session query. The Admin > Jobs > Log screen reads log.Job.Name and log.Job.IsExecuting,
         // so a null Job would NRE it. Drop PopulateJobsAsync and this fails.
         [Fact]
@@ -373,7 +373,7 @@ namespace Stomme.Tests
             Assert.Equal("The Named Job", Assert.Single(list).Job.Name);
         }
 
-        // The -1 wildcard, composed in C# so it never becomes a -1 == -1 fold the providers disagree on (D45).
+        // The -1 wildcard, composed in C# so it never becomes a -1 == -1 fold the providers disagree on.
         // Here on SQLite it only guards the composition logic; the cross-provider divergence is caught in the
         // conformance suite against a live RavenDB.
         [Fact]
@@ -393,7 +393,7 @@ namespace Stomme.Tests
         // BL-11 SITE 1. The scheduler auto-registers a job and then, in the SAME scope (ONE repository
         // instance, ONE store, ONE MasterDBContext), immediately flips IsExecuting and updates it
         // (HostedServiceBase lines 109 then 151). AddJobAsync leaves the added aggregate tracked in the store's
-        // context — EfRepository leaves writes tracked (BL-11) — so UpdateJobAsync attaching a DIFFERENT
+        // context — EfRepository leaves writes tracked — so UpdateJobAsync attaching a DIFFERENT
         // aggregate with the same key throws "already being tracked". This reuses ONE repository instance on
         // purpose: every other test here news a fresh repository per call, which dodges the defect. Before the
         // fix (constructor-injected store) this throws; after it (a fresh transient store per write, the

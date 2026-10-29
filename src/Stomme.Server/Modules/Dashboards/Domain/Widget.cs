@@ -6,7 +6,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.Dashboards.Domain
 {
     /// <summary>
-    /// One widget on a dashboard (BL-96 increment 8, lifted from the predecessor platform's Widget): a titled cell of one kind bound to a
+    /// One widget on a dashboard: a titled cell of one kind bound to a
     /// dataset's columns, placed on the grid, refreshed one way, optionally interactive; a chart carries a theme-free
     /// spec and nothing else does; a grid carries its view state. A child entity of the aggregate: it rides the
     /// dashboard's JSON collection column and is changed only through the dashboard.

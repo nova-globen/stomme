@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D102 item 10: a quota crossing reaches the site's ADMINISTRATORS through BL-78's producer port, exactly ONCE
+    /// A quota crossing reaches the site's ADMINISTRATORS through BL-78's producer port, exactly ONCE
     /// per crossing per window.
     /// </summary>
     /// <remarks>
@@ -34,7 +34,7 @@ namespace Stomme.Tests
     /// <b>Recipients are the site's operators by USER ID, never an address.</b> The dispatcher refuses an external
     /// address unless the site opts in and refuses an endpoint recipient outright; a quota warning has no business
     /// being the first thing to test that. The operators are the site's administrators AND the Host Users: a fresh
-    /// install's site has no administrator at all, so a warning to administrators alone reached nobody (BL-177) - the
+    /// install's site has no administrator at all, so a warning to administrators alone reached nobody - the
     /// second test is that install, untouched.
     /// </para>
     /// </remarks>
@@ -91,7 +91,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task On_a_fresh_install_with_no_administrator_the_host_is_told()
         {
-            // BL-177: the install's one user is the host, holding Host Users only; the site's Administrators role has no
+            // The install's one user is the host, holding Host Users only; the site's Administrators role has no
             // member. Before the fix both crossings were logged as "no administrator to tell" and queued nothing.
             using var scratch = await GateInstallTemplates.CloneAsync(new SqliteGateStore(), Host, _output);
             var app = await GateDrive.InstallAsync(scratch, _output);

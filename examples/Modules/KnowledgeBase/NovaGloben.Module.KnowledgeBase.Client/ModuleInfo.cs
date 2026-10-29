@@ -8,7 +8,7 @@ namespace NovaGloben.Module.KnowledgeBase
 {
     /// <summary>
     /// The module definition the host discovers by convention. It declares the module's permission KEYS with the roles a
-    /// new site grants them to (D99), names the Shared assembly a WebAssembly site must also load, and places the module
+    /// new site grants them to, names the Shared assembly a WebAssembly site must also load, and places the module
     /// on a public page, and the package's categories module on a page nested under it, through
     /// <see cref="ModuleDefinition.PageTemplates"/> (<c>AliasName = "*"</c> - the default empty alias never matches, so a
     /// template without it is silently skipped).

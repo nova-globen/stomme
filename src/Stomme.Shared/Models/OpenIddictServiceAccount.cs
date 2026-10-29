@@ -1,7 +1,7 @@
 namespace Stomme.Models
 {
     /// <summary>
-    /// BL-224: a client-credentials application's service account on this site - the Stomme user its tokens sign in on
+    /// A client-credentials application's service account on this site - the Stomme user its tokens sign in on
     /// <c>api/*</c>, granted roles and permission rows like a person. Its name is derived from the client id; it exists when
     /// the server made it (locked out of every sign-in for good). <see cref="NameTaken"/> means an account of that name
     /// exists that the server did NOT make - a person's, which is never used for an application.

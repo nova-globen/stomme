@@ -272,7 +272,7 @@ namespace Stomme.Services
         }
 
         /// <summary>
-        /// BL-222: when true, a refused request throws <see cref="ServiceRefusalException"/> carrying the server's reason - as
+        /// When true, a refused request throws <see cref="ServiceRefusalException"/> carrying the server's reason - as
         /// the service's server-side twin throws on a Server site - instead of returning the type's default. A GET answered 404
         /// still returns the default (not found). Off by default: the inherited services and their pages read a null result.
         /// A module service whose page shows the reason of a failure turns it on; on a WebAssembly site the page otherwise

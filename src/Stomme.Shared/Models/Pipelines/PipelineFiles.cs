@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - the site's pipeline folder, one folder of it at a time: what the file steps (Read and Write text file, the
+    /// The site's pipeline folder, one folder of it at a time: what the file steps (Read and Write text file, the
     /// spreadsheet, ZIP and HTTP file steps) read and write, by paths relative to it. n8n keeps a run's files in its execution
     /// data; here they are files of the site's own folder, so the Files page lists them, takes a file to read and gives back
     /// one a run wrote.

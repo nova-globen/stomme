@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    BL-96: the EXTERNAL connector template. One connector authored outside the tree, referencing Stomme ONLY
+    The EXTERNAL connector template. One connector authored outside the tree, referencing Stomme ONLY
     through the slim SDK from the local feed (examples/pack-sdk-slim.ps1) - the contract is Stomme.Shared's
     (IConnector, IConnectorEgress, the schemes, the schema) and the one registration is an IServerStartup from
     the Stomme.Server.Sdk compile-surface shim. The assembly name ends in "Stomme" so the host's convention
-    scan discovers it from /bin exactly like a module (D81/D82); a nupkg of it installs through the real
+    scan discovers it from /bin exactly like a module; a nupkg of it installs through the real
     InstallationManager. No socket policy of its own: the egress the host hands in is the only network.
   -->
   <PropertyGroup>
@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Stomme.Sdk.Slim" Version="10.75.1" />
+    <PackageReference Include="Stomme.Sdk.Slim" Version="10.75.2" />
   </ItemGroup>
 
 </Project>

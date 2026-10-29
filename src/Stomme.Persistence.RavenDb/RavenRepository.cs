@@ -86,7 +86,7 @@ public sealed class RavenRepository<TAggregate, TId>(
     {
         ArgumentNullException.ThrowIfNull(predicate);
         using var session = OpenSession();
-        // BL-106: the predicate is rewritten into RavenDB's dialect first - the framework seam gets this through
+        // The predicate is rewritten into RavenDB's dialect first - the framework seam gets this through
         // IQuerySession's wrapping provider, and without it the module seam threw on ids.Contains(...).
         var matches = await session.Query<TAggregate>()
             .Customize(c => c.WaitForNonStaleResults())

@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - urlscan.io (n8n's urlscan.io node) without a server: every URL, id, tag, choice and length held to urlscan.io's
+    /// Urlscan.io (n8n's urlscan.io node) without a server: every URL, id, tag, choice and length held to urlscan.io's
     /// shape before anything is sent; the key in urlscan.io's API-Key header and in no address; a scan submitted private by
     /// default, and - beyond n8n's node - waited for until urlscan.io stops answering 404, its verdict, score, page and screenshot
     /// beside urlscan.io's own sections; a result read, asked again a few times while not finished; scans searched page by page

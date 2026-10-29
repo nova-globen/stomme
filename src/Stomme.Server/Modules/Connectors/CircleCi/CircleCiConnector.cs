@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.CircleCi
 {
     /// <summary>
-    /// CircleCI (BL-229, n8n's CircleCI node: a project's pipelines read and triggered) over CircleCI's API v2
+    /// CircleCI (n8n's CircleCI node: a project's pipelines read and triggered) over CircleCI's API v2
     /// (<c>https://circleci.com/api/v2</c>) by a personal API token in its <c>Circle-Token</c> header - never in the address. A
     /// test reads who the token belongs to. A CircleCI server installation is its own address.
     /// </summary>

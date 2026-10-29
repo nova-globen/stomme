@@ -24,7 +24,7 @@ using Xunit;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// BL-80 (D101 item 6) - the reshaped registration aggregate and the audit aggregate round-trip member for member on
+    /// The reshaped registration aggregate and the audit aggregate round-trip member for member on
     /// EVERY module-aggregate provider - EF (SQLite), EF (PostgreSQL), RavenDB and File - through the module's own
     /// <c>ServerStartup</c> and closed repositories, and every query those repositories expose answers identically.
     /// </summary>
@@ -37,7 +37,7 @@ namespace Stomme.Tests.Mcp
     /// <para>
     /// <see cref="DateTime.Kind"/> is asserted EXPLICITLY: equality ignores it, so a suite that only compared instants
     /// would be green on exactly the divergence the aggregates re-stamp to hide. PostgreSQL and RavenDB FAIL rather than
-    /// skip (D46). In <c>Stomme.Tests</c> because the conformance project has no File-store module fixture (the BL-78
+    /// skip. In <c>Stomme.Tests</c> because the conformance project has no File-store module fixture (the BL-78
     /// F11 precedent) - D101 named the conformance project; this is where its three predecessors went for that reason.
     /// </para>
     /// </remarks>
@@ -252,7 +252,7 @@ namespace Stomme.Tests.Mcp
                 (await InScopeAsync<IMcpServerRegistrationRepository, IReadOnlyList<McpServerRegistrationAggregate>>(r => r.ListBySiteAsync(Site))).Select(x => x.Name).OrderBy(n => n));
             Assert.Equal(on.Id, Assert.Single(await InScopeAsync<IMcpServerRegistrationRepository, IReadOnlyList<McpServerRegistrationAggregate>>(r => r.ListEnabledAsync(Site))).Id);
 
-            // Normalised on BOTH sides (D49): whatever the caller's casing or padding, and never another site's row.
+            // Normalised on BOTH sides: whatever the caller's casing or padding, and never another site's row.
             foreach (var asked in new[] { "Docs Server", "docs server", "  DOCS SERVER  " })
             {
                 Assert.Equal(on.Id, (await InScopeAsync<IMcpServerRegistrationRepository, McpServerRegistrationAggregate?>(r => r.GetByNameAsync(Site, asked)))!.Id);

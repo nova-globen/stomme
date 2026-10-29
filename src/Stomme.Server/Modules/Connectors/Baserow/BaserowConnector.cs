@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Baserow
 {
     /// <summary>
-    /// Baserow (BL-229, n8n's Baserow node: a table's rows) over its REST API - Baserow's cloud at <c>https://api.baserow.io</c>,
+    /// Baserow (n8n's Baserow node: a table's rows) over its REST API - Baserow's cloud at <c>https://api.baserow.io</c>,
     /// or a self-hosted Baserow's own address - with a database token (<c>Authorization: Token ...</c>), over the host's egress.
     /// A test counts the tables the token sees.
     /// </summary>

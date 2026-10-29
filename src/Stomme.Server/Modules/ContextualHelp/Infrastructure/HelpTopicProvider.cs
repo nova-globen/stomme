@@ -15,7 +15,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.ContextualHelp.Infrastructure
 {
     /// <summary>
-    /// Resolves and renders help for the CURRENT site (BL-84, D103 items 4 and 12) - the port the launcher, the
+    /// Resolves and renders help for the CURRENT site (D103 items 4 and 12) - the port the launcher, the
     /// controller and BL-97's assistant all read through.
     /// </summary>
     /// <remarks>
@@ -87,7 +87,7 @@ namespace Stomme.Modules.ContextualHelp.Infrastructure
                 return Array.Empty<HelpTopicSummary>();
             }
 
-            // D103 item 10: no full-text search in Wave 1 (Contains/ToLower have no provider-neutral translation). An
+            // No full-text search in Wave 1 (Contains/ToLower have no provider-neutral translation). An
             // in-memory filter over THIS site's published rows - the repository's own FindAsync on the site id - is
             // admin scale and one answer on every provider.
             return (await _topics.ListPublishedAsync(ct))

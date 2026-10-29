@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - XML (n8n's XML node), run by the engine as the host composes it: XML into JSON (attributes, repeated elements as
+    /// XML (n8n's XML node), run by the engine as the host composes it: XML into JSON (attributes, repeated elements as
     /// lists, text, mixed text), JSON into XML and back, names XML cannot hold encoded, and a DTD refused so no entity reaches a
     /// file or the network.
     /// </summary>

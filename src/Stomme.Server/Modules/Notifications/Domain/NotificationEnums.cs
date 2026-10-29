@@ -1,6 +1,6 @@
 namespace Stomme.Modules.Notifications.Domain
 {
-    // Lifted from the predecessor platform src/Modules/Notifications/the predecessor platform.Notifications.Domain/NotificationEnums.cs (BL-78). The
+    // Lifted from the predecessor platform src/Modules/Notifications/the predecessor platform.Notifications.Domain/NotificationEnums.cs. The
     // numeric values are the WIRE contract shared with the published mirrors in Stomme.Shared
     // (Stomme.Models.Notifications.NotificationChannelKind / NotificationRecipientKind) and never change.
     // NotificationSeverity is NOT redeclared here: the domain uses the published Stomme.Models.Notifications

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zammad DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Zammad DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a help desk that refuses a call without the token: a Zammad connection made over the
     /// API, its token vaulted, tested; a published pipeline creates a ticket with an accent and a custom field, updates it with
     /// an internal note, gets it with its articles, reads the tickets over two pages - no more than asked - and creates a user;

@@ -5,12 +5,12 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The live tests' QuestDB and CrateDB (BL-229) - databases that speak PostgreSQL's protocol, which n8n's QuestDB and
+    /// The live tests' QuestDB and CrateDB - databases that speak PostgreSQL's protocol, which n8n's QuestDB and
     /// CrateDB nodes come over as the PostgreSQL connector's: this machine's throwaway servers that
     /// <c>scripts/questdb-test-server.ps1</c> and <c>scripts/cratedb-test-server.ps1</c> make on 127.0.0.1:18812 and :15432
     /// (or PGWIRE_TEST_HOST, QUESTDB_TEST_PORT and CRATEDB_TEST_PORT where set), their user <c>kafe</c>; the passwords read
     /// from the files those scripts write under the user's temp folder, or QUESTDB_TEST_PASSWORD and CRATEDB_TEST_PASSWORD.
-    /// No password is a FAILURE that says how to get one, never a skip (D46).
+    /// No password is a FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class PgWireTestEndpoint
     {

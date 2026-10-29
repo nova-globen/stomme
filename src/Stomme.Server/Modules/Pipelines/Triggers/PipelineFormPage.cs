@@ -8,7 +8,7 @@ using Stomme.Models.Pipelines;
 
 namespace Stomme.Modules.Pipelines.Triggers
 {
-    /// <summary>A published form as the site serves it (BL-229, n8n's Form trigger): what the Form step says, literally.</summary>
+    /// <summary>A published form as the site serves it (n8n's Form trigger): what the Form step says, literally.</summary>
     public sealed record PipelineFormSpec(string Name, string Title, string? Description, IReadOnlyList<PipelineFormField> Fields, string SubmitLabel, string? Answer)
     {
         /// <summary>BL-229: a next page may follow it (a Wait for a form with Next page in its pipeline) - a submission waits to be taken on.</summary>
@@ -57,7 +57,7 @@ namespace Stomme.Modules.Pipelines.Triggers
             """;
 
         /// <summary>
-        /// What the form's address gives its fields (BL-229, n8n's prefilled fields): <c>?name=Ada&amp;source=newsletter</c> - a field's
+        /// What the form's address gives its fields (n8n's prefilled fields): <c>?name=Ada&amp;source=newsletter</c> - a field's
         /// key and a value, a file field never; none when the address names no field.
         /// </summary>
         public static Dictionary<string, string?> FromAddress(PipelineFormSpec form, IEnumerable<KeyValuePair<string, string?>> query)

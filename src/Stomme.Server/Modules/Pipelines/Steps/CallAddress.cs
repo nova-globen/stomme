@@ -11,10 +11,10 @@ using Stomme.Shared;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// The run's call address (BL-229, n8n's resume URL): the address another system POSTs to so that this run goes on past its
+    /// The run's call address (n8n's resume URL): the address another system POSTs to so that this run goes on past its
     /// <see cref="WaitForCall"/> - send it to them (an HTTP request, a notification), then wait. One address per run: a second
     /// "Call address" in the run gives the same one. The address is the result; the run's log never shows it, as whoever holds
-    /// it can resume the run. Its Form address (BL-229) is the same address with <c>/form</c> after it: where a person fills in
+    /// it can resume the run. Its Form address is the same address with <c>/form</c> after it: where a person fills in
     /// the form a <see cref="WaitForForm"/> of this run waits on.
     /// </summary>
     [Step("Stomme", "Control Flow", "The address another system calls to go on with this run past 'Wait for a call' - send it to them, then wait.", DisplayName = "Call address")]

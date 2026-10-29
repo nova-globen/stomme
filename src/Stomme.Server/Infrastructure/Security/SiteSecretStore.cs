@@ -13,7 +13,7 @@ namespace Stomme.Infrastructure.Security
 {
     /// <summary>
     /// THE shared per-site secret store (BL-78 CORRECTION / D101 - one seam, not four): a credential a site-scoped
-    /// feature needs at runtime - a notification channel's webhook token, an MCP server's API key (BL-80), BL-81's
+    /// feature needs at runtime - a notification channel's webhook token, an MCP server's API key, BL-81's
     /// and BL-96's credentials - is written here once, by REFERENCE KEY, and the feature's own aggregate stores only
     /// that key, never the secret.
     /// </summary>
@@ -27,7 +27,7 @@ namespace Stomme.Infrastructure.Security
     /// drives SQLite, PostgreSQL and RavenDB instead.
     /// </para>
     /// <para>
-    /// <b>The settings API cannot reach these rows (BL-147).</b> A private Site row in this store's reference-key
+    /// <b>The settings API cannot reach these rows.</b> A private Site row in this store's reference-key
     /// namespace is refused by every door of <c>SettingController</c> - list, get, post, put (by id, by name, in bulk),
     /// delete and import - for EVERY caller, the Host included, matching the name case-insensitively. Before that, the
     /// API's Administrator gate let a site Administrator without the module's own key read the ciphertext, overwrite the

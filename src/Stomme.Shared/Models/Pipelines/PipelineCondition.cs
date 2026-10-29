@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// A CONDITION built from rules (BL-229 increment 10, n8n's IF and Switch): each rule compares two sides - text with
+    /// A CONDITION built from rules (n8n's IF and Switch): each rule compares two sides - text with
     /// <c>{{ variable.path }}</c> placeholders, as an expression is - and the condition holds when all of them do, or any.
     /// Nothing runs but the comparison. It is what a Decision, an If and a While test, and what a Switch case matches on.
     /// </summary>
@@ -193,7 +193,7 @@ namespace Stomme.Models.Pipelines
         }
 
         /// <summary>
-        /// Whether the condition holds for one record (BL-229, n8n's Filter): <c>{{ field }}</c> reads the record's field, a name
+        /// Whether the condition holds for one record (n8n's Filter): <c>{{ field }}</c> reads the record's field, a name
         /// the record lacks reads <paramref name="variables"/>, and a name neither has is empty - a record without a field is one
         /// whose field is empty, not an error.
         /// </summary>

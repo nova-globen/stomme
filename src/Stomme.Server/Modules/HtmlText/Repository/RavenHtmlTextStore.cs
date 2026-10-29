@@ -10,7 +10,7 @@ using Raven.Client.Documents;
 namespace Stomme.Modules.HtmlText.Repository
 {
     /// <summary>
-    /// The RavenDB <see cref="IHtmlTextStore"/> (D55) — the module's twin of the framework's <c>RavenSiteStore</c>,
+    /// The RavenDB <see cref="IHtmlTextStore"/> — the module's twin of the framework's <c>RavenSiteStore</c>,
     /// a thin binding of <see cref="HtmlTextAggregate"/> to <see cref="RavenFrameworkStore{TAggregate}"/> over the
     /// framework (tenant) RavenDB database.
     /// </summary>
@@ -38,7 +38,7 @@ namespace Stomme.Modules.HtmlText.Repository
     }
 
     /// <summary>
-    /// The RavenDB <see cref="IHtmlTextStoreSessionFactory"/> (D55): the module's read path (D19) over the framework
+    /// The RavenDB <see cref="IHtmlTextStoreSessionFactory"/>: the module's read path over the framework
     /// database — the module's twin of the framework's <c>RavenFrameworkStoreSessionFactory</c>, bound to the same
     /// framework database (the tenant side D54 already ensured) via the shared <see cref="RavenFrameworkStoreOptions"/>
     /// host singleton.
@@ -55,7 +55,7 @@ namespace Stomme.Modules.HtmlText.Repository
             ITenantContext tenantContext,
             IRavenTenantDatabaseResolver databaseResolver)
         {
-            // The database of the tenant the session opens for (BL-176) - the one RavenHtmlTextStore writes to.
+            // The database of the tenant the session opens for - the one RavenHtmlTextStore writes to.
             _factory = new RavenDocumentSessionFactory(
                 store,
                 storeName => storeName.Equals(StoreNames.Main, System.StringComparison.OrdinalIgnoreCase)

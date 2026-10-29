@@ -51,7 +51,7 @@ namespace Stomme.Modules.CloudUsage.Application
     }
 
     /// <summary>
-    /// A site's cloud-cost alerts (BL-97 increment 4, the predecessor platform's <c>CloudCostAlertService</c>): each budget's month-to-date
+    /// A site's cloud-cost alerts (the predecessor platform's <c>CloudCostAlertService</c>): each budget's month-to-date
     /// spend against 80 % (Warning) and 100 % (Critical) - one alert per pass, the highest newly crossed threshold, every
     /// crossed threshold marked so a jump past 100 % never back-fills an 80 % warning - and the latest full day against the
     /// rolling average per currency. Every alert is raised once: a marker keyed by site and key, written only after the
@@ -61,7 +61,7 @@ namespace Stomme.Modules.CloudUsage.Application
     /// <b>CHANGED from the predecessor platform: no address list.</b> the predecessor platform dispatched to e-mail addresses, user ids and webhook endpoints
     /// taken from configuration - an open relay by another name, which D100's dispatcher refuses. Here the recipients are
     /// the SITE's operators by user id (<see cref="SiteOperators"/>: its administrators and the Host Users - a fresh install's
-    /// site has no administrator at all, BL-177), as the metering and health alerts address them; with none, nothing is sent
+    /// site has no administrator at all), as the metering and health alerts address them; with none, nothing is sent
     /// and the pass says so in the log.
     /// </remarks>
     public sealed class CloudCostAlertService(

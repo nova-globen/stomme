@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - AWS Signature Version 4: AWS's own documented example (IAM's ListUsers, 2015-08-30, AKIDEXAMPLE) signed to the
+    /// AWS Signature Version 4: AWS's own documented example (IAM's ListUsers, 2015-08-30, AKIDEXAMPLE) signed to the
     /// signature AWS gives; the session token and the payload hash as headers when asked, both signed; a path's and a query's
     /// characters encoded and the headers canonical as AWS documents - the path twice outside S3, once in it; a port in the host.
     /// </summary>

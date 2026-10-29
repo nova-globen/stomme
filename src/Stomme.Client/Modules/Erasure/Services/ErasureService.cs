@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Erasure.Services
 {
     /// <summary>
-    /// The erasure receipts contract (BL-116 increment 4, D112). Host only: the server answers 403 to anyone else, and
+    /// The erasure receipts contract. Host only: the server answers 403 to anyone else, and
     /// the browser side reports that as an empty list. No method takes a site - the request is the site.
     /// </summary>
     public interface IErasureService

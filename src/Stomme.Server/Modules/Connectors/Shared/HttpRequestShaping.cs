@@ -9,9 +9,9 @@ using Stomme.Connectivity;
 namespace Stomme.Modules.Connectors.Shared
 {
     /// <summary>
-    /// The request shaping every HTTP connector of the family shares (BL-96 increment 1, lifted from the predecessor platform's REST
+    /// The request shaping every HTTP connector of the family shares (lifted from the predecessor platform's REST
     /// connector): header lines, the content-type routing, the JSON records reader. None of it opens a connection - the
-    /// client is always the one the host's egress hands the connector (D110), which is what <c>ConnectorEgressOnlyTests</c> pins.
+    /// client is always the one the host's egress hands the connector, which is what <c>ConnectorEgressOnlyTests</c> pins.
     /// </summary>
     public static class HeaderLines
     {

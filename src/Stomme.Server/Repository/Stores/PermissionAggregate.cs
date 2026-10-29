@@ -41,7 +41,7 @@ namespace Stomme.Repository.Stores
     public class PermissionAggregate : AggregateRoot<int>, IAuditable
     {
         /// <summary>
-        /// The <see cref="Site"/> this permission belongs to. A reference to another aggregate BY ID (D7/D19)
+        /// The <see cref="Site"/> this permission belongs to. A reference to another aggregate BY ID
         /// — permissions never navigate to the site. The harvested schema does carry an
         /// <c>FK_Permission_Site</c> with a CASCADE delete, which is unchanged: this is a mapping change, not
         /// a schema change.

@@ -25,7 +25,7 @@ namespace Stomme.Modules.DataExport.Execution
         public DateTime UtcNow => DateTime.UtcNow;
     }
 
-    /// <summary>The knobs of <c>DataExport</c> in configuration (D108 item 11), with their defaults.</summary>
+    /// <summary>The knobs of <c>DataExport</c> in configuration, with their defaults.</summary>
     public sealed class DataExportOptions
     {
         public const string SectionName = "DataExport";
@@ -94,7 +94,7 @@ namespace Stomme.Modules.DataExport.Execution
     public sealed record ExportDrainResult(int Completed, int Failed, int Abandoned, int LostRace);
 
     /// <summary>
-    /// Claims and renders a site's queued exports (D108 item 6).
+    /// Claims and renders a site's queued exports.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -394,7 +394,7 @@ namespace Stomme.Modules.DataExport.Execution
             }
         }
 
-        // Written HERE, at the transition, by application code - never by a domain-event handler (D40).
+        // Written HERE, at the transition, by application code - never by a domain-event handler.
         private Task RecordAsync(ExportJobAggregate job, ExportAuditAction action, CancellationToken ct, ExportFailureCode? code = null) =>
             _audit.AddAsync(
                 ExportAuditEntryAggregate.Record(Guid.NewGuid(), job.TenantId, job.SiteId, job.Id, actorUserId: null, action, _clock.UtcNow, code),

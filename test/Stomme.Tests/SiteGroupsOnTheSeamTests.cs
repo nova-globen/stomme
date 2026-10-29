@@ -25,7 +25,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The SiteGroup PAIR on the persistence seam (D3/D7/D45): SiteGroup and SiteGroupMember.
+    // The SiteGroup PAIR on the persistence seam: SiteGroup and SiteGroupMember.
     //
     // NOT leaf clusters, and that is the whole point of this file. Every cluster D44 moved was a single table
     // with no navigation in or out; these two are joined by SiteGroupMember.SiteGroup, a MAPPED navigation into
@@ -363,7 +363,7 @@ namespace Stomme.Tests
             // DbSet was never what the probe rested on: measured both ways, removing it leaves the assertions
             // green, and re-adding a migrated contract still fails them with EF's "the table '...' cannot be
             // used for entity type" — so the proof comes from ConfigureFrameworkStore plus the assertion,
-            // exactly as PermissionMustNotBeResurrectedTests has shown since D48. MigrationHistory is NOT a
+            // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
             // protection now, and it needed no edit across D47, D48, D49 or D50.
@@ -544,7 +544,7 @@ namespace Stomme.Tests
             Assert.DoesNotContain(typeof(SiteGroupMember), declared);
         }
 
-        // Tenant-side only, like Permission (D24) and unlike Setting (D23).
+        // Tenant-side only, like Permission and unlike Setting.
         private sealed class MasterLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
             protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureMasterFrameworkStore(database);

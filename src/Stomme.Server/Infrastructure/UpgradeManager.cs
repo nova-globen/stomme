@@ -12,7 +12,7 @@ namespace Stomme.Infrastructure
     public class UpgradeManager : IUpgradeManager
     {
         /// <summary>
-        /// Every version the switch below has a case for (BL-170). A backup taken before one of them cannot be restored after
+        /// Every version the switch below has a case for. A backup taken before one of them cannot be restored after
         /// it - the step changed data that the restore would put back unchanged, and the step never runs again - so the
         /// restore's pre-flight refuses across it. <c>UpgradeStepVersionsTests</c> holds this list to the switch.
         /// </summary>

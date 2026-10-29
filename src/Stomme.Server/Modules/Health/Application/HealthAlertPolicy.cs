@@ -53,7 +53,7 @@ namespace Stomme.Modules.Health.Application
     /// </para>
     /// <para>
     /// What this lift CHANGES from the predecessor platform, and why: the decision no longer carries channels, a severity or a
-    /// template key. Routing is the notification module's job (D100) and baking three template keys into the
+    /// template key. Routing is the notification module's job and baking three template keys into the
     /// policy is what made the predecessor platform's version untestable without the notification stack. Here the policy answers
     /// only "what should happen", and the caller decides who hears about it.
     /// </para>

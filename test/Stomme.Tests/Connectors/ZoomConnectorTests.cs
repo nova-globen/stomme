@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zoom (n8n's Zoom node: its meetings created, got, read, updated and deleted): the server-to-server grant - the
+    /// Zoom (n8n's Zoom node: its meetings created, got, read, updated and deleted): the server-to-server grant - the
     /// account in the form, the client as HTTP Basic at Zoom's token endpoint - the access token a bearer; a user's meetings page
     /// by page by Zoom's token up to the most asked for; each meeting its id, topic, kind by name, start, duration, host and join
     /// link, never its start link; a meeting made (a start in UTC, or the time zone's clock beside a time zone), got with an

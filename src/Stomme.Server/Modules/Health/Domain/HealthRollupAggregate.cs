@@ -27,7 +27,7 @@ namespace Stomme.Modules.Health.Domain
     /// Every instant here is UTC, and <see cref="HealthTime.AsUtc"/> is how it stays that way. This is not
     /// theoretical: the relational providers hand an instant back with <c>Kind=Unspecified</c>, and calling
     /// <c>ToUniversalTime()</c> on such a value treats it as LOCAL and subtracts the machine offset — which in the
-    /// metering module (D102) silently moved usage into the previous day and the previous month's allowance, and
+    /// metering module silently moved usage into the previous day and the previous month's allowance, and
     /// is invisible on a UTC machine such as CI.
     /// </para>
     /// </remarks>

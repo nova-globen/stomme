@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - NocoDB (n8n's NocoDB node: a table's rows created, got, read many, updated, upserted, counted and deleted): every
+    /// NocoDB (n8n's NocoDB node: a table's rows created, got, read many, updated, upserted, counted and deleted): every
     /// call NocoDB's v2 data API with the API token in xc-token; a table's records page by page by offset - a page no bigger than
     /// what is left, NocoDB's last page or a short one the end - filtered by a where formula, sorted, some fields, a view; a
     /// record got by its id, created (one, or a list) with its key as NocoDB gave it, updated by its id or its key among its fields,

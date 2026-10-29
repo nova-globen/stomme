@@ -5,14 +5,14 @@ using System.Collections.Generic;
 namespace Stomme.Collaboration
 {
     // ============================================================================================================
-    // The Collaboration module's Shared contracts (BL-97 increment 11, D114): the keys, the resource kinds an editor can be
+    // The Collaboration module's Shared contracts: the keys, the resource kinds an editor can be
     // coordinated on, and what a page reads. BCL-ONLY like the other Shared contracts.
     // ============================================================================================================
 
     /// <summary>
     /// <c>collaboration:view</c> - join an editor's session, take and renew an advisory lock, see who else is there;
     /// <c>collaboration:manage</c> - close a session and release another user's lock. Neither grants anything over the
-    /// RESOURCE: joining or locking one needs the owning module's own write key for it as well (D114).
+    /// RESOURCE: joining or locking one needs the owning module's own write key for it as well.
     /// </summary>
     public static class CollaborationPermissions
     {
@@ -74,7 +74,7 @@ namespace Stomme.Collaboration
     /// <summary>A lock as the site's administrator sees it on the overview.</summary>
     public sealed record LockView(string ResourceType, string ResourceId, LockScope Scope, int HolderUserId, string HolderDisplayName, DateTime AcquiredUtc, DateTime ExpiresUtc);
 
-    /// <summary>The site's live locks and open sessions - the administrator's overview (D114: an administrator may take a lock over).</summary>
+    /// <summary>The site's live locks and open sessions - the administrator's overview (an administrator may take a lock over).</summary>
     public sealed record CollaborationOverviewView(IReadOnlyList<LockView> Locks, IReadOnlyList<EditSessionView> Sessions);
 
     /// <summary>A lock to take, renew, release or take over; the lease in seconds, or the site's default.</summary>

@@ -13,7 +13,7 @@ namespace Stomme.Models.Pipelines
         IReadOnlyDictionary<string, object?>? Input = null, string? TimeZone = null);
 
     /// <summary>
-    /// The values every expression and condition can read beside the pipeline's variables (BL-229, n8n's <c>$now</c>,
+    /// The values every expression and condition can read beside the pipeline's variables (n8n's <c>$now</c>,
     /// <c>$today</c>, <c>$execution</c> and <c>$workflow</c>): <c>{{ $now }}</c> - the moment, ISO 8601 to the second, in the
     /// pipeline's time zone (UTC unless it has one, <see cref="PipelineTimeZone"/>); <c>{{ $today }}</c> - the date there; <c>{{ $run.id }}</c>, <c>{{ $run.correlationId }}</c>, <c>{{ $run.startedAt }}</c>;
     /// <c>{{ $pipeline.id }}</c>, <c>{{ $pipeline.name }}</c>, <c>{{ $pipeline.version }}</c>; <c>{{ $vars.name }}</c> - the site's
@@ -73,7 +73,7 @@ namespace Stomme.Models.Pipelines
         public static IReadOnlyList<(string Name, object? Value)> Values(PipelineRunFacts facts)
         {
             ArgumentNullException.ThrowIfNull(facts);
-            // BL-229: read in the pipeline's zone (PipelineTimeZone) - UTC when it has none, as before.
+            // Read in the pipeline's zone (PipelineTimeZone) - UTC when it has none, as before.
             var zone = PipelineTimeZone.Find(facts.TimeZone);
             return new (string, object?)[]
             {

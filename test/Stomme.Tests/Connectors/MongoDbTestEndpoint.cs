@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The MongoDB connector's live tests' server (BL-229): MONGODB_TEST_HOST / PORT / USER / PASSWORD where set (a CI job's
+    /// The MongoDB connector's live tests' server: MONGODB_TEST_HOST / PORT / USER / PASSWORD where set (a CI job's
     /// service container), otherwise this machine's throwaway MongoDB that <c>scripts/mongodb-test-server.ps1</c> makes on
     /// 127.0.0.1:27018, its root user's password read from the file that script writes under the user's temp folder. No
-    /// password is a FAILURE that says how to get one, never a skip (D46).
+    /// password is a FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class MongoDbTestEndpoint
     {

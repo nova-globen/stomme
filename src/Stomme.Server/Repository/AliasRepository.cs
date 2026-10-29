@@ -22,7 +22,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Alias cluster on the persistence seam (D52) — the MASTER half of the master-bookkeeping wave, and half of
+    /// The Alias cluster on the persistence seam — the MASTER half of the master-bookkeeping wave, and half of
     /// the routing core. Alias-table access goes through <see cref="IAliasStore"/> (writes) and the MASTER read path
     /// <see cref="IMasterStoreSessionFactory"/> (reads); this class holds no <c>DbContext</c> and no
     /// <c>IQueryable</c> escapes it.
@@ -34,7 +34,7 @@ namespace Stomme.Repository
     /// <see cref="IFrameworkStoreSessionFactory"/>) and writes through a store bound to <see cref="MasterDBContext"/>.
     /// </para>
     /// <para>
-    /// Reads NEVER go through the store (D19): a query session opens its own context, so the store's change tracker
+    /// Reads NEVER go through the store: a query session opens its own context, so the store's change tracker
     /// stays clean. The harvested <c>UpdateAliasAsync</c> set <c>_db.Entry(alias).State = Modified</c> — a tracked
     /// write — which on the seam becomes an <c>Update</c> through the store that attaches a fresh aggregate.
     /// </para>
@@ -42,7 +42,7 @@ namespace Stomme.Repository
     /// <b>The routing lookup is unchanged and provider-neutral by construction.</b> <see cref="GetAliasAsync(string)"/>
     /// matches the request URL against the cached alias list ENTIRELY IN MEMORY with
     /// <see cref="StringComparison.OrdinalIgnoreCase"/> — it never issues a translated query, so the EF-vs-RavenDB
-    /// string-equality divergence (D48/D49) cannot reach it. <see cref="AddAliasAsync"/>/<see cref="UpdateAliasAsync"/>
+    /// string-equality divergence cannot reach it. <see cref="AddAliasAsync"/>/<see cref="UpdateAliasAsync"/>
     /// lower-case the stored name in C# (not in a query), so the in-memory match sees lowercase on both sides.
     /// </para>
     /// </remarks>
@@ -59,7 +59,7 @@ namespace Stomme.Repository
             _cache = cache;
         }
 
-        // The read path on the seam (D19): reads go through a MASTER query session, never the store, so the store's
+        // The read path on the seam: reads go through a MASTER query session, never the store, so the store's
         // tracker stays clean. The IQueryable is materialized inside this method, so it never leaves the repository
         // (D7). Plain LINQ rather than EF's async operators, which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
@@ -111,7 +111,7 @@ namespace Stomme.Repository
 
         public async Task<Alias> GetAliasAsync(int aliasId, bool tracking)
         {
-            // On the seam every read is an untracked session query (D19), so the harvested tracking flag is inert —
+            // On the seam every read is an untracked session query, so the harvested tracking flag is inert —
             // no caller mutates the returned instance and saves it through the same context any more; writes go
             // through the store. The parameter is kept so the interface and its one caller (AliasController's
             // existence check) are unchanged.
@@ -156,7 +156,7 @@ namespace Stomme.Repository
 
         public async Task DeleteAliasAsync(int aliasId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it loaded, so
+            // The one read that legitimately goes through the store: it deletes the very instance it loaded, so
             // tracking is what we want and no second instance is ever attached. The harvested code NRE'd on an unknown
             // id (Remove(null)); returning silently matches DeleteTheme/DeleteModuleDefinition's strictly-safer shape.
             var aggregate = await _store.GetByIdAsync(aliasId);

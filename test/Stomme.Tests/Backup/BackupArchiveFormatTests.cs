@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (D106 item 4, refutation 16) - the <c>DCBAK1</c> archive: parts and the manifest round-trip, and every way of
+    /// BL-81 (refutation 16) - the <c>DCBAK1</c> archive: parts and the manifest round-trip, and every way of
     /// altering the file is REFUSED - the wrong passphrase, a flipped header, manifest or chunk byte, a dropped final chunk,
     /// reordered chunks, a chunk transplanted between parts, a truncated file. A version mismatch is refused before a part is
     /// read. Small chunks (4 KiB) so a part spans several without megabytes of test data.

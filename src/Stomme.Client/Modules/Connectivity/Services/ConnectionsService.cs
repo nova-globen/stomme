@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Connectivity.Services
 {
     /// <summary>
-    /// The Connectivity module's client contract (BL-94 increment 7). No method takes a site: the request is the site,
+    /// The Connectivity module's client contract. No method takes a site: the request is the site,
     /// and the server decides every call again on its key. A refused save comes back as an exception the page shows; a
     /// test comes back as a category, never the connector's words; no call returns a credential.
     /// </summary>
@@ -29,7 +29,7 @@ namespace Stomme.Modules.Connectivity.Services
 
         Task DeleteAsync(Guid id);
 
-        /// <summary>The private hosts this site may reach (BL-180), and whether the caller may change them - the Host role alone.</summary>
+        /// <summary>The private hosts this site may reach, and whether the caller may change them - the Host role alone.</summary>
         Task<ConnectionEgressView> GetEgressAsync();
 
         Task<ConnectionEgressView> SaveEgressAsync(string allowedHosts);

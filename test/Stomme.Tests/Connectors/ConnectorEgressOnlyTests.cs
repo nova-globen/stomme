@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 (D110, BL-94 refutation 2): a connector obtains the network ONLY through the contract's egress. This source
+    /// BL-96 (BL-94 refutation 2): a connector obtains the network ONLY through the contract's egress. This source
     /// gate scans every file under the Connectors family for the ways a connector could open its own socket - a client or
     /// handler of its own, a raw socket, its own DNS, a process - and, for a driver connector, requires that a file which
     /// constructs a driver connection also pins the host through <c>ResolveAndPinAsync</c>. A <c>HostOnly</c> connector that
@@ -53,7 +53,7 @@ namespace Stomme.Tests.Connectors
                 }
             }
 
-            // BL-97 increment 3: CloudUsage fetches billing payloads, so it reaches the network only through the same egress
+            // CloudUsage fetches billing payloads, so it reaches the network only through the same egress
             // (the query carries the host's IConnectorEgress). No process, no driver: every rule applies, nothing is pinned.
             var cloudUsage = Path.Combine(RepositoryRoot(), "src", "Stomme.Server", "Modules", "CloudUsage");
             var cloudUsageFiles = Directory.GetFiles(cloudUsage, "*.cs", SearchOption.AllDirectories);

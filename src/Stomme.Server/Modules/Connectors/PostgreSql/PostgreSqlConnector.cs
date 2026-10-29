@@ -11,8 +11,8 @@ using Npgsql;
 namespace Stomme.Modules.Connectors.PostgreSql
 {
     /// <summary>
-    /// The PostgreSQL connector (BL-96 increment 1, lifted from the predecessor platform's `postgresql`): the endpoint is an Npgsql connection
-    /// string WITHOUT credentials (D110: a connection string is never a place for a credential); the Basic scheme's
+    /// The PostgreSQL connector (lifted from the predecessor platform's `postgresql`): the endpoint is an Npgsql connection
+    /// string WITHOUT credentials (a connection string is never a place for a credential); the Basic scheme's
     /// <c>username</c>/<c>password</c> are applied from the per-site secret store. A test opens a connection and runs
     /// <c>SELECT 1</c> within the timeout; the <c>query</c> operation runs a statement and streams each row into a record, its
     /// <c>@name</c> values bound as parameters (<see cref="SqlValues"/>).
@@ -21,7 +21,7 @@ namespace Stomme.Modules.Connectors.PostgreSql
     /// <b>The driver dials only an address the host has checked.</b> Before Npgsql opens anything the connection string's host
     /// is handed to <see cref="IConnectorEgress.ResolveAndPinAsync"/>; the one permitted address comes back and is written
     /// into the connection string as the host, so the driver dials THAT (a driver that re-resolves on its own reopens the
-    /// window between the check and its connect - stated, not solved, D110). A host every address of which the policy
+    /// window between the check and its connect - stated, not solved). A host every address of which the policy
     /// refuses - a private database not on the site's allowlist, loopback - is a refusal, thrown as the contract's own
     /// <see cref="ConnectorEgressDeniedException"/> (which the host's guard recognises beside its own) so the runner
     /// categorises it <c>DeniedByPolicy</c> and the page says why without a socket ever opening. A multi-host connection
@@ -85,7 +85,7 @@ namespace Stomme.Modules.Connectors.PostgreSql
             }
             catch (Exception ex) when (ex is NpgsqlException or TimeoutException or InvalidOperationException or System.Net.Sockets.SocketException)
             {
-                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner (D110)
+                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner
             }
         }
 

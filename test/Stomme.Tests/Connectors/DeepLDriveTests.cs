@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - DeepL DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// DeepL DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for DeepL's API v2 that refuses a call without the key in DeepL's header: a DeepL connection
     /// made over the API, its key vaulted, tested; a published pipeline translates a text with an accent from British English,
     /// sixty texts in two calls, and reads the target languages, the usage and the glossaries; the key in neither the graph nor

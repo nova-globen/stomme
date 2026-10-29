@@ -114,6 +114,10 @@ Put the database and the host account in configuration before the first start, f
   `Installation:HostPassword` (`Installation__HostPasswordFile=/run/secrets/host-password`). The file's trailing line
   break is ignored. A missing or empty file, or both keys set, stops the install with a `fail` line naming the key and
   the path, never the password.
+- **The password must meet the password policy** (by default: 6 characters or more, a digit, a lower-case and an
+  upper-case letter, and a character that is not a letter or digit). One that does not stops the install before anything
+  is created, with a `fail` line naming the key and the rules it misses ("Installation:HostPasswordFile fails the password
+  policy (it needs a digit, ...)"), never the password - rather than an installation with no host account.
 - **No browser wizard once the `Installation` section asks for an unattended install**: when any of
   `Installation:DefaultAlias`, `HostEmail`, `HostPassword` or `HostPasswordFile` is set and the install has not
   completed (the connection string is missing, say), the home page says the host is configured for an unattended

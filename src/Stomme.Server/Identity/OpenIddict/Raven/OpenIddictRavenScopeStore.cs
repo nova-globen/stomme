@@ -13,7 +13,7 @@ using Raven.Client.Documents.Linq;
 
 namespace Stomme.Identity.OpenIddict.Raven
 {
-    /// <summary>RavenDB-backed <see cref="IOpenIddictScopeStore{TScope}"/> (D62).</summary>
+    /// <summary>RavenDB-backed <see cref="IOpenIddictScopeStore{TScope}"/>.</summary>
     internal sealed class OpenIddictRavenScopeStore : IOpenIddictScopeStore<OpenIddictRavenScope>
     {
         private readonly IRavenOpenIddictSessionProvider _sessions;

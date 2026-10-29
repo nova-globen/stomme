@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsTranscribe
 {
     /// <summary>
-    /// Amazon Transcribe (BL-229, n8n's AWS Transcribe node: speech in an S3 recording turned into text) over Transcribe's JSON
+    /// Amazon Transcribe (n8n's AWS Transcribe node: speech in an S3 recording turned into text) over Transcribe's JSON
     /// protocol (<c>https://transcribe.{region}.amazonaws.com</c>, <c>X-Amz-Target: Transcribe.*</c>) through the shared
     /// <see cref="AwsJsonSession"/>, every call signed with SigV4 by an IAM user's access key and secret, over the host's egress. A
     /// test lists the account's transcription jobs, one.

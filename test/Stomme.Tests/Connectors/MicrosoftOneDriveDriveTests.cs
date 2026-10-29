@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft OneDrive and a SharePoint site's documents DRIVEN on an installed SQLite host, with the REAL connectors,
+    /// Microsoft OneDrive and a SharePoint site's documents DRIVEN on an installed SQLite host, with the REAL connectors,
     /// the host's egress (which follows no redirect of its own), the extraction port and the run's pipeline folder, against a
     /// loopback stand-in for the tenant's token endpoint and Graph's drives: a token for the app's client credentials alone, Graph
     /// answering that token alone, its download address answering only WITHOUT it. Both connections made over the API and tested;

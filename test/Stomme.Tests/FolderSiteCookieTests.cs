@@ -5,15 +5,19 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Stomme.Infrastructure;
+using Stomme.Models;
 using Stomme.Server;
 using Stomme.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
 using File = System.IO.File;
@@ -21,7 +25,7 @@ using File = System.IO.File;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// M2 row 8 (rulings C33, C34): a site in a folder (<c>host/sv</c>) keeps the framework's cookies to itself - the
+    /// A site in a folder (<c>host/sv</c>) keeps the framework's cookies to itself - the
     /// sign-in, antiforgery and release cookies it sets are named <c>&lt;name&gt;-sv</c> and scoped to <c>Path=/sv</c>, and a
     /// same-named cookie the root site set at <c>Path=/</c> is never read there. Without it one sign-in served every site on
     /// the host. The culture cookie, set in the browser, takes the site's path instead (<see cref="Utilities.SitePath"/>).
@@ -113,7 +117,95 @@ namespace Stomme.Tests
             }
         }
 
+        [Fact]
+        public async Task On_an_interactive_folder_site_the_servers_own_api_calls_carry_the_sites_sign_in_and_antiforgery_cookies()
+        {
+            // An interactive page's services call the site's API from the server, through the host's HttpClient, with the
+            // cookies of the request the circuit started in - which the folder middleware had already handed to the
+            // framework under their usual names. Forwarded under those names, the self-call's own translation dropped them as
+            // another site's: the sign-in form answered 400 (no antiforgery cookie) and no signed-in call was signed in.
+            using var scratch = new Scratch();
+            using var env = new EnvironmentVariables(new Dictionary<string, string>
+            {
+                ["Installation__Sites__0__Name"] = "Svenska",
+                ["Installation__Sites__0__Aliases"] = Folder
+            });
+            var app = await BootAsync(scratch);
+            try
+            {
+                using var client = GateDrive.NewClient(app, Root);
+                var alias = await GateDrive.AliasAsync(app, Folder);
+                var (requestToken, antiforgeryCookie) = GateDrive.Antiforgery(app);
+                var browser = antiforgeryCookie.Replace(Constants.AntiForgeryTokenCookieName + "=", Constants.AntiForgeryTokenCookieName + "-sv=", StringComparison.Ordinal);
+
+                // The sign-in form, as the server calls it.
+                var forwarded = SelfCallCookies(app, alias, browser);
+                Assert.Contains(forwarded, cookie => cookie.StartsWith(Constants.AntiForgeryTokenCookieName + "-sv=", StringComparison.Ordinal));
+                var signIn = await SignInAsync(client, forwarded, requestToken);
+                Assert.Equal(HttpStatusCode.OK, signIn.StatusCode);
+                Assert.True(JsonNode.Parse(await signIn.Content.ReadAsStringAsync())?["isAuthenticated"]?.GetValue<bool>() == true, "the folder site's sign-in through the server did not sign the host in");
+                var identity = signIn.Headers.GetValues("Set-Cookie").Select(value => value.Split(';')[0])
+                    .Single(pair => pair.StartsWith(".AspNetCore.Identity.Application-sv=", StringComparison.Ordinal));
+
+                // One signed-in call, as the server makes it on behalf of the now signed-in browser.
+                var signedIn = SelfCallCookies(app, alias, browser + "; " + identity);
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://" + Folder + "/api/User/authenticate");
+                request.Headers.TryAddWithoutValidation("Cookie", string.Join("; ", signedIn));
+                var response = await client.SendAsync(request);
+                var body = await response.Content.ReadAsStringAsync();
+                _output.WriteLine($"GET /sv/api/User/authenticate (server-side) -> {(int)response.StatusCode} {body}");
+                Assert.True(JsonNode.Parse(body)?["isAuthenticated"]?.GetValue<bool>() == true, "a signed-in call the server made for the folder site was not signed in");
+
+                // What it did before: the framework names forwarded as they are - refused for want of the antiforgery cookie.
+                var bare = FolderSiteCookieMiddleware.TranslateHeader(browser, "sv", Names)!.Split("; ");
+                Assert.Equal(HttpStatusCode.BadRequest, (await SignInAsync(client, bare, requestToken)).StatusCode);
+            }
+            finally
+            {
+                await GateDrive.ShutdownAsync(app);
+            }
+        }
+
         // ---- helpers ------------------------------------------------------------------------------------------------------
+
+        // The Cookie header the host's own HttpClient carries for a circuit started by a browser request to the folder site:
+        // that request as the folder middleware left it (framework names), the client taken from the host's container.
+        private List<string> SelfCallCookies(WebApplication app, Alias alias, string browserHeader)
+        {
+            var circuit = new DefaultHttpContext();
+            circuit.Request.Scheme = "http";
+            circuit.Request.Host = new HostString(Root);
+            circuit.Request.Headers.Cookie = FolderSiteCookieMiddleware.TranslateHeader(browserHeader, "sv", Names) ?? browserHeader;
+            circuit.Items[Constants.HttpContextAliasKey] = alias;
+
+            var accessor = app.Services.GetRequiredService<IHttpContextAccessor>();
+            var previous = accessor.HttpContext;
+            accessor.HttpContext = circuit;
+            try
+            {
+                using var scope = app.Services.CreateScope();
+                var cookies = scope.ServiceProvider.GetRequiredService<HttpClient>().DefaultRequestHeaders.GetValues("Cookie").ToList();
+                _output.WriteLine("server-side HttpClient cookies: " + string.Join(", ", cookies.Select(cookie => cookie.Split('=')[0])));
+                return cookies;
+            }
+            finally
+            {
+                accessor.HttpContext = previous;
+            }
+        }
+
+        private async Task<HttpResponseMessage> SignInAsync(HttpClient client, IEnumerable<string> cookies, string requestToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "http://" + Folder + "/api/User/signin?setCookie=true&isPersistent=false")
+            {
+                Content = JsonContent.Create(new { username = UserNames.Host, password = Password })
+            };
+            request.Headers.TryAddWithoutValidation("Cookie", string.Join("; ", cookies));
+            request.Headers.TryAddWithoutValidation(Constants.AntiForgeryTokenHeaderName, requestToken);
+            var response = await client.SendAsync(request);
+            _output.WriteLine($"POST /sv/api/User/signin (cookies: {string.Join(", ", cookies.Select(cookie => cookie.Split('=')[0]))}) -> {(int)response.StatusCode}");
+            return response;
+        }
 
         private async Task<bool> AuthenticatedAsync(HttpClient client, CookieContainer jar, string path)
         {

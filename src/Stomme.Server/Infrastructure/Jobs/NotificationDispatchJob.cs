@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// The authoritative delivery loop of the Notifications module (BL-78 step 4, D100 point 3): every minute, per tenant,
+    /// The authoritative delivery loop of the Notifications module: every minute, per tenant,
     /// per non-deleted site, <see cref="NotificationDispatchProcessor.RunSiteAsync"/> - due requests delivered with scalar
     /// retries, quiet-hours deferral and digest holds, plus the hourly digest flush and retention purge. ENABLED by default
     /// (a producer's dispatch must reach someone on a stock install); gated at run time by the <c>notifications.dispatch</c>
@@ -23,7 +23,7 @@ namespace Stomme.Infrastructure
     /// <remarks>
     /// <para>
     /// <b>Scopes (the trap this job is built around) - premise corrected 2026-09-20, behaviour unchanged.</b> This said
-    /// <c>HostedServiceBase</c> runs every tenant of a run through ONE DI scope. Since <c>ff19714</c> (BL-107, 2026-09-17)
+    /// <c>HostedServiceBase</c> runs every tenant of a run through ONE DI scope. Since <c>ff19714</c>
     /// it does not: each tenant gets its own ambient tenant scope and its own DI scope. The job still does no module work
     /// in the scope it is HANDED, so that it is correct whatever its caller's scope is rather than only under a
     /// well-behaved base class. The hazard is unchanged: the seam's <c>StommeTenantContext</c> caches the first alias's

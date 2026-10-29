@@ -6,7 +6,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// BL-229 increment 8 - "Tidy up": every flowchart of the graph (the pipeline's own and each body) laid out left to right
+    /// "Tidy up": every flowchart of the graph (the pipeline's own and each body) laid out left to right
     /// by its flow. A step goes one column right of the furthest step that leads to it (a step nothing leads to is in the first
     /// column); within a column, steps follow the rows of the steps leading to them, then their order in the graph. A cycle is
     /// cut where it is met, so every step gets a place. Positions only - nothing else of the graph changes. Or only the steps

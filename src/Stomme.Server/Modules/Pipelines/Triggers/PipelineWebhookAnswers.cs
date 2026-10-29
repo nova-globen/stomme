@@ -30,7 +30,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// The webhook calls waiting for their pipeline's answer (BL-229, n8n's Respond to Webhook): one entry per call, in this
+    /// The webhook calls waiting for their pipeline's answer (n8n's Respond to Webhook): one entry per call, in this
     /// process - the dispatcher runs the pipeline here, so its Respond to webhook step answers here too. A call is waited for
     /// only while the receiver waits; an answer to a call no longer waited for is dropped, and says so.
     /// </summary>

@@ -24,7 +24,7 @@ using Thresholds = Stomme.Modules.Health.Thresholds;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The health THRESHOLDS page (BL-83 / D104 item 12, with its correction): installation-wide Host-scope settings, so
+    /// The health THRESHOLDS page (with its correction): installation-wide Host-scope settings, so
     /// the page is HOST-ONLY - a site's administrator must not change every other site's alerting.
     /// </summary>
     /// <remarks>

@@ -19,7 +19,7 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Drive (n8n's Google Drive node: files, folders and shared drives): the OAuth client's refresh token at
+    /// Google Drive (n8n's Google Drive node: files, folders and shared drives): the OAuth client's refresh token at
     /// Google's token endpoint, then Drive's API as a bearer; a search as n8n builds Drive's query - a name escaped, a folder's
     /// children, files or folders, types, the trash - page by page no further than asked; a download into the run's folder, a
     /// Google file exported to n8n's default for its kind or to what is asked, a path ending with / taking the file's name; an

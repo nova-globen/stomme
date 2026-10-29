@@ -5,7 +5,7 @@ Stomme.Interop = {
         var d = new Date();
         d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
         var expires = "expires=" + d.toUTCString();
-        // A site in a folder passes its own path, so its cookie is not the root site's (M2 row 8).
+        // A site in a folder passes its own path, so its cookie is not the root site's.
         var cookieString = name + "=" + value + ";" + expires + ";path=" + (path || "/");
         if (secure) {
             cookieString += "; secure";
@@ -197,7 +197,7 @@ Stomme.Interop = {
             }
         });
     },
-    // BL-202: a page script (ResourceLoadBehavior.BlazorPageScript) is an ES module with onLoad/onUpdate/onDispose - the
+    // A page script (ResourceLoadBehavior.BlazorPageScript) is an ES module with onLoad/onUpdate/onDispose - the
     // static path's <page-script> imports it (Stomme.Server.lib.module.js). On an interactive page it was added as a
     // classic <script> by includeScripts, which a module cannot be ("Unexpected token 'export'"). This is the interactive
     // twin of <page-script>: imported once per URL, onLoad on the first import, onUpdate on every call (as the static path
@@ -483,7 +483,7 @@ Stomme.Interop = {
     scrollToId: function (id) {
         var element = document.getElementById(id);
         if (element instanceof HTMLElement) {
-            // A visitor who asked for less motion gets the jump without the animation (BL-22's depth-2 pass).
+            // A visitor who asked for less motion gets the jump without the animation.
             var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
             element.scrollIntoView({
                 behavior: reduce ? "auto" : "smooth",

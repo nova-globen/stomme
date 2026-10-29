@@ -20,7 +20,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - the palette's Set Variable, saved and run as the editor writes it. Its Variable is a property holding the variable
+    /// The palette's Set Variable, saved and run as the editor writes it. Its Variable is a property holding the variable
     /// itself, not an input holding an expression: written as an input, the engine read a variable of its own making and every run
     /// failed "Variable '...' not found" (measured through the engine, before the fix). Saved, run, read back and checked here as
     /// the editor and the save do it.

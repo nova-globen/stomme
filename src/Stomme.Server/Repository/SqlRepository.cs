@@ -126,9 +126,9 @@ namespace Stomme.Repository
         private IRelationalDatabase GetActiveDatabase(string databaseType)
         {
             // These callers (ExecuteReaderAsync/ExecuteNonQueryAsync) invoke relational members, so the
-            // provider must be relational (D53). A non-relational provider narrows to null here — its script
+            // provider must be relational. A non-relational provider narrows to null here — its script
             // execution has no relational meaning; that is the honest partial until the module-script path is
-            // provider-neutral (D55).
+            // provider-neutral.
             IRelationalDatabase activeDatabase = null;
             if (!String.IsNullOrEmpty(databaseType))
             {

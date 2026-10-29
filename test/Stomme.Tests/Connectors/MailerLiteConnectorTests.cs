@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - MailerLite (n8n's MailerLite node: a subscriber created, got, read and updated): every call MailerLite's API
+    /// MailerLite (n8n's MailerLite node: a subscriber created, got, read and updated): every call MailerLite's API
     /// with the token as a bearer token, asking for JSON; subscribers read by status page by page by MailerLite's cursor, the
     /// size fixed and no bigger than asked; a subscriber got by id or e-mail, created with its fields, groups, status, times
     /// and addresses, updated, deleted and forgotten, an e-mail looked up to its id where MailerLite asks for one; groups read

@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    BL-13: the SHARED layer of the split (WASM-download-safe) Blogs module — the wire model
+    The SHARED layer of the split (WASM-download-safe) Blogs module — the wire model
     (BlogPostModel) and the IBlogService contract, and NOTHING else. It is referenced by BOTH the
     Client and the Server projects, and it STREAMS to the browser on a WebAssembly site: the Client's
     ModuleDefinition.Dependencies names this assembly, so api/Installation/list includes it and the
     WASM host loads it beside the Client assembly. It must therefore stay free of any server-only
     surface — no controllers, no persistence, no Stomme.Server types.
 
-    INDEPENDENT (D81/D82): references Stomme ONLY through a meta-package from the local feed — since
+    INDEPENDENT: references Stomme ONLY through a meta-package from the local feed — since
     BL-44 the SLIM one, Stomme.Sdk.Slim (examples/local-feed, produced by examples/pack-sdk-slim.ps1).
     ZERO project/source references into the framework.
   -->
@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <!--
-    WASM-safety (measured, BL-13): Microsoft.AspNetCore.OpenApi (transitive via Stomme.Sdk ->
+    WASM-safety (measured): Microsoft.AspNetCore.OpenApi (transitive via Stomme.Sdk ->
     Stomme.Server) ships a SOURCE GENERATOR that injects interceptor types into every consuming
     assembly; those types force references to Microsoft.AspNetCore.OpenApi/Microsoft.OpenApi/Mvc.Core
     and make Assembly.GetTypes() THROW ReflectionTypeLoadException wherever those assemblies are

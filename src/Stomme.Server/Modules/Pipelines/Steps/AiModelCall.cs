@@ -12,7 +12,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// One call to the site's language model for a pipeline step (BL-229): the site resolved for the run, the model opened as
+    /// One call to the site's language model for a pipeline step: the site resolved for the run, the model opened as
     /// the "pipelines" agent through <see cref="IAssistantModelAccess"/> - quota-gated before, metered after, as Ask AI's - and the
     /// answer, or the failure's code and words. Ask AI, Extract information and Classify text share it.
     /// </summary>

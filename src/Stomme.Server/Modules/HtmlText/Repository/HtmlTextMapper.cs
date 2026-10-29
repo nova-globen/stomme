@@ -5,7 +5,7 @@ namespace Stomme.Modules.HtmlText.Repository
     /// <summary>
     /// Translates between <see cref="HtmlTextAggregate"/> (the persisted aggregate) and
     /// <see cref="Models.HtmlText"/> (the client/server wire contract) at the <see cref="HtmlTextRepository"/>
-    /// boundary — the module's twin of <c>PermissionMapper</c> (D24/D55). Only the columns the harvested schema
+    /// boundary — the module's twin of <c>PermissionMapper</c>. Only the columns the harvested schema
     /// actually has are mapped.
     /// </summary>
     [PrivateApi("Mark HtmlText classes as private, since it's not very useful in the public docs")]

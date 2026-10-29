@@ -41,7 +41,7 @@ namespace Stomme.Modules.Mcp.Infrastructure
     }
 
     /// <summary>
-    /// Dials an external MCP server and asks it what it offers (D101 item 5). The ONLY thing in this module that makes
+    /// Dials an external MCP server and asks it what it offers. The ONLY thing in this module that makes
     /// an outbound connection.
     /// </summary>
     /// <remarks>

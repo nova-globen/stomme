@@ -31,7 +31,7 @@ using Raven.Client.Documents.Session;
 namespace Stomme.Modules.Pipelines.Persistence
 {
     /// <summary>
-    /// BL-232 - the site's PIPELINES in a backup: the engine's definitions and their versions, runs, waits, triggers, queued
+    /// The site's PIPELINES in a backup: the engine's definitions and their versions, runs, waits, triggers, queued
     /// resumes, step executions, execution logs and key-value store (folders, tags, archive marks, site variables, data
     /// tables, reviews). Registered with the engine's stores, so only where Pipelines is composed. Until it, no participant
     /// read them, and a restore kept whatever pipelines the live store had - or, onto a new host, none.
@@ -46,13 +46,13 @@ namespace Stomme.Modules.Pipelines.Persistence
     /// </para>
     /// <para>
     /// <b>Scope.</b> An engine tenant is a site (<see cref="EngineTenantIds"/>: <c>{tenant}/{site}</c>), so a row belongs to
-    /// the framework tenant its id names. A full restore replaces every row; a partial one (BL-171) the restored tenants'
+    /// the framework tenant its id names. A full restore replaces every row; a partial one the restored tenants'
     /// rows only - another tenant's, and the engine's default tenant's, stay as they are.
     /// </para>
     /// <para>
     /// <b>Replace.</b> Relational: one transaction - the rows in scope deleted, the part's inserted in batches, each table's
     /// count checked. RavenDB: per database (BL-176 gives a tenant its own), delete by query, then the documents with their
-    /// ids, each collection's count checked - RavenDB has no transaction across that, as for every RavenDB part (D106 item 7).
+    /// ids, each collection's count checked - RavenDB has no transaction across that, as for every RavenDB part.
     /// </para>
     /// </remarks>
     public sealed class EngineBackupParticipant(IServiceScopeFactory scopes) : IBackupParticipant
@@ -87,7 +87,7 @@ namespace Stomme.Modules.Pipelines.Persistence
 
         public string Name => PartName;
 
-        /// <summary>The engine's tables and documents as the serializer reads their members, and the stores' text columns (BL-170).</summary>
+        /// <summary>The engine's tables and documents as the serializer reads their members, and the stores' text columns.</summary>
         public string SchemaVersion => Shape.Value;
 
         private static readonly Lazy<string> Shape = new(() => FileStoreSerializer.Shape(Tables.Concat(Documents), new[]

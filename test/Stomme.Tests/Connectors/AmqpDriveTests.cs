@@ -15,8 +15,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - AMQP 1.0 DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
-    /// against this machine's throwaway RabbitMQ 4.1 (scripts/rabbitmq-test-server.ps1) - fail-not-skip without it (D46): an AMQP
+    /// AMQP 1.0 DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// against this machine's throwaway RabbitMQ 4.1 (scripts/rabbitmq-test-server.ps1) - fail-not-skip without it: an AMQP
     /// connection made over the API, its password vaulted, tested; a published pipeline sending an order to a queue, receiving
     /// it back and sending its id on - an expression over the message received; the password in neither the graph nor the run.
     /// The queue is deleted afterwards.

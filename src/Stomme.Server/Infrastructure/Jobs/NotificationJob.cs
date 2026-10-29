@@ -39,7 +39,7 @@ namespace Stomme.Infrastructure
             var notificationRepository = provider.GetRequiredService<INotificationRepository>();
             var features = provider.GetRequiredService<IFeatureEvaluator>();
 
-            // The e-mail capability is gated by a feature flag (D12). It is read once per run rather than
+            // The e-mail capability is gated by a feature flag. It is read once per run rather than
             // per site: a flag is installation-wide, and the evaluator reads the flag store on every call.
             var emailEnabled = await features.IsEnabledAsync(FeatureCatalog.EmailNotifications);
             if (!emailEnabled)

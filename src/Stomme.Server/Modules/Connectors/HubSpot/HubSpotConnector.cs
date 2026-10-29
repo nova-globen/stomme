@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.HubSpot
 {
     /// <summary>
-    /// HubSpot (BL-229, n8n's HubSpot node: contacts, companies, deals and tickets got, searched, created, updated and upserted):
+    /// HubSpot (n8n's HubSpot node: contacts, companies, deals and tickets got, searched, created, updated and upserted):
     /// the CRM's objects over HubSpot's API (<c>https://api.hubapi.com</c>), a private app's access token as the Bearer token. A
     /// test asks HubSpot which account the token is (<c>account-info/v3/details</c>).
     /// </summary>
@@ -32,7 +32,7 @@ namespace Stomme.Modules.Connectors.HubSpot
     /// HubSpot's batches of 100, each answering the records HubSpot kept. The object is one of HubSpot's (or a custom one's
     /// <c>p_</c>name or id), a record id its digits, both held to that shape before they reach the path. A throttled call waits as
     /// HubSpot says; a failure is thrown with its status and HubSpot's category (<c>HTTP 400 VALIDATION_ERROR.</c>), the port
-    /// answering it in its words (D110).
+    /// answering it in its words.
     /// </remarks>
     public sealed class HubSpotConnector : IConnector, IConnectorExtractor
     {

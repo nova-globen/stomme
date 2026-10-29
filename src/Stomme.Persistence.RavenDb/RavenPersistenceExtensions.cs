@@ -27,7 +27,7 @@ public static class RavenPersistenceExtensions
         // at 30 s so a stalled server surfaces as a timeout rather than hanging indefinitely.
         store.Conventions.RequestTimeout = TimeSpan.FromSeconds(30);
 
-        // BL-4b: on a container network or behind a reverse proxy the RavenDB client must NOT chase the
+        // On a container network or behind a reverse proxy the RavenDB client must NOT chase the
         // server's advertised PublicServerUrl — a shared RavenDB commonly advertises its LAN address, which
         // an internal-network app cannot route to (the client then fails with FailedToContactAllNodes even
         // though the configured Url is reachable). Setting RAVEN_DISABLE_TOPOLOGY_UPDATES=true pins the client
@@ -66,7 +66,7 @@ public static class RavenPersistenceExtensions
         // Database-assigned identities for aggregates inserted with an unset id. Singleton: each HiLo
         // generator caches a server-reserved range, so a shorter lifetime burns a range per scope.
         services.TryAddSingleton<IRavenIdGenerator>(_ => new RavenHiLoIdGenerator(store));
-        // The seam's read path (D19). Bound to the store's default database and to StoreNames.Main only;
+        // The seam's read path. Bound to the store's default database and to StoreNames.Main only;
         // a host needing D23's two stores binds two factories over two databases explicitly.
         services.TryAddSingleton<IDocumentSessionFactory>(provider =>
             new RavenDocumentSessionFactory(store, provider.GetRequiredService<IRavenIdGenerator>()));

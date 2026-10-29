@@ -20,7 +20,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The combination no transport test had ever run (BL-53a): SignalR ON, gRPC OFF. Both existing transport
+    // The combination no transport test had ever run: SignalR ON, gRPC OFF. Both existing transport
     // suites (HostCompositionTests and TransportSmokeTests) set BOTH flags true, which masked the defect this
     // suite pins: MapStommeTransport ran the IModuleEndpointContributor loop only inside the
     // `if (options.Grpc.Enabled)` gate, so a module contributing a SignalR hub was silently never mapped on a
@@ -47,7 +47,7 @@ namespace Stomme.Tests
 
             public void MapEndpoints(IEndpointRouteBuilder endpoints, TransportOptions transports)
             {
-                // The generalized contract (BL-53): the loop runs when ANY transport is enabled, and the
+                // The generalized contract: the loop runs when ANY transport is enabled, and the
                 // per-transport gate is the contributor's own — exactly what a real module's hub needs.
                 if (transports.SignalR.Enabled)
                 {

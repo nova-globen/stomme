@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - TheHive 5 (n8n's TheHive 5 node) without a server: every id, level, date, choice and length held to TheHive's
+    /// TheHive 5 (n8n's TheHive 5 node) without a server: every id, level, date, choice and length held to TheHive's
     /// shape before anything is sent; the key as a bearer token and in no address; alerts and cases searched through TheHive's
     /// query API page by page, newest first, by title, status, severity, tag, source, type and assignee; a case by id or number;
     /// alerts raised, changed, promoted, merged and deleted; comments, tasks, task logs and observables on a case or an alert;
@@ -236,8 +236,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - TheHive LIVE, against this machine's throwaway TheHive 5.5 (scripts/thehive-test-server.ps1) - fail-not-skip without
-    /// it (D46): an alert raised, found by its source, changed, commented and given an observable, promoted to a case; the case read
+    /// TheHive LIVE, against this machine's throwaway TheHive 5.5 (scripts/thehive-test-server.ps1) - fail-not-skip without
+    /// it: an alert raised, found by its source, changed, commented and given an observable, promoted to a case; the case read
     /// by its number, given a task, the task a log, changed and closed with a summary; another alert merged into it; everything
     /// read back as TheHive keeps it, and deleted again; a wrong key refused with TheHive's own words.
     /// </summary>

@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-166: <c>HostDataDirectory.Expand</c> touches the file system only when there is a <c>|DataDirectory|</c> token to
+    /// <c>HostDataDirectory.Expand</c> touches the file system only when there is a <c>|DataDirectory|</c> token to
     /// expand. It used to create the data directory for EVERY connection string, so a fixture with an explicit path raced
     /// another suite's deleted content root through the process-wide fallback (measured: a DirectoryNotFoundException in a
     /// full gate). Asked through a host environment instance - never the process-wide slot, which other suites share.

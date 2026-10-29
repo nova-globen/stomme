@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D104 design point 6: <see cref="PurgeJob"/> drains contributed <see cref="IRetentionPurger"/> passes per
+    /// <see cref="PurgeJob"/> drains contributed <see cref="IRetentionPurger"/> passes per
     /// site, after its own five.
     /// </summary>
     /// <remarks>
@@ -105,7 +105,7 @@ namespace Stomme.Tests
                 _output.WriteLine($"[sites] A={siteA} B={siteB}");
 
                 // Site A says 7 days. Site B says "soon", which is not a number - the framework's own answer to
-                // that (BL-113) must be the answer the contributed pass gets too.
+                // that must be the answer the contributed pass gets too.
                 await SetSiteSettingAsync(app, siteA, "TestRetention", "7");
                 await SetSiteSettingAsync(app, siteB, "TestRetention", "soon");
 
@@ -207,11 +207,11 @@ namespace Stomme.Tests
                     new[]
                     {
                         "Broken Urls", "Completed Tasks", "Events",
-                        "Health Rollups",   // BL-83 / D104 - the first contributed pass
-                        "Identity Audit",   // BL-120 - the identity ledger, retention floor 30 days
+                        "Health Rollups",   // The first contributed pass
+                        "Identity Audit",   // The identity ledger, retention floor 30 days
                         "Notifications", "Orphaned Upload Parts",
-                        "Portability",      // BL-82 - retires package artifacts and old audit rows; 0 while disabled
-                        "Sessions",         // BL-119 - ended sessions, 30 days after they ended
+                        "Portability",      // Retires package artifacts and old audit rows; 0 while disabled
+                        "Sessions",         // Ended sessions, 30 days after they ended
                         "Visitors"
                     },
                     labels);

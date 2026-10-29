@@ -46,7 +46,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// JWT (BL-229, n8n's JWT node): signs claims into a token, decodes one, or verifies one - how a call to another system is
+    /// JWT (n8n's JWT node): signs claims into a token, decodes one, or verifies one - how a call to another system is
     /// authorised, or a token a caller sent is checked. HS256/384/512 under a shared secret (at least as long as the hash: 32, 48
     /// or 64 bytes - a shorter one is refused, as the .NET token handler refuses it); RS256/384/512 and ES256/384/512 under a PEM
     /// key - a private key to sign, a public key or a certificate to verify. A token is verified only under the algorithm the

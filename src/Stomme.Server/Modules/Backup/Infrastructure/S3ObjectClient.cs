@@ -13,7 +13,7 @@ using Amazon.S3.Model;
 namespace Stomme.Modules.Backup.Infrastructure
 {
     /// <summary>
-    /// The object-store operations the S3 archive store uses (BL-169) - exactly the ones infra's key permits: multipart (start,
+    /// The object-store operations the S3 archive store uses - exactly the ones infra's key permits: multipart (start,
     /// part, complete, abort), put, get, delete, list. Its own seam so the store's rules are tested against an in-memory store
     /// that behaves like S3 (a part below 5 MiB other than the last refused), and the SDK is one adapter.
     /// </summary>

@@ -25,7 +25,7 @@ namespace Stomme.Modules.Metering.Infrastructure
     /// <remarks>
     /// <para>
     /// <b>This job exists because the append and the fold are two commits.</b> Stomme's unit of work persists
-    /// nothing of its own - every repository call commits eagerly (D67) - so the predecessor platform's single-<c>SaveChanges</c>
+    /// nothing of its own - every repository call commits eagerly - so the predecessor platform's single-<c>SaveChanges</c>
     /// atomicity does not survive the lift. Rather than claim an atomicity the seam cannot provide, the recorder
     /// writes the ledger row <c>Pending</c>, folds, and flips it to <c>Applied</c>; a crash or a lock timeout in
     /// between leaves a Pending row, and this job is what makes that recoverable instead of a silent under-count.
@@ -37,7 +37,7 @@ namespace Stomme.Modules.Metering.Infrastructure
     /// </para>
     /// <para>
     /// <b>Scopes - and a correction, 2026-09-20.</b> This paragraph used to say <c>HostedServiceBase</c> hands ONE
-    /// DI scope to every tenant of a run. It does not, and had not since <c>ff19714</c> (BL-107, 2026-09-17): the
+    /// DI scope to every tenant of a run. It does not, and had not since <c>ff19714</c>: the
     /// base class enters an ambient tenant scope and a FRESH DI scope per tenant, with a per-tenant catch. The
     /// behaviour below is kept anyway, for a narrower reason - this job does no module work in the scope it is
     /// HANDED, so it is correct whatever its caller's scope is, not only when its caller is the fixed base class.

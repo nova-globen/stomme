@@ -18,7 +18,7 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft SharePoint (n8n's Microsoft SharePoint node: a site's lists and their items): the app's client
+    /// Microsoft SharePoint (n8n's Microsoft SharePoint node: a site's lists and their items): the app's client
     /// credentials at the tenant's token endpoint, Graph's sites API with the token as a bearer; a site by its address, id or
     /// host; lists read and one got with its columns; items read page by page by Graph's next link - followed only while it
     /// stays on the list - no further than asked, by a filter asked even of columns not indexed; an item got, created, updated

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// The outcome of scanning one file's content (BL-100 F1, D109 item 1).
+    /// The outcome of scanning one file's content (BL-100 F1).
     /// </summary>
     /// <param name="IsClean">True when the scanner found nothing wrong.</param>
     /// <param name="ThreatName">What the scanner found, when <paramref name="IsClean"/> is false.</param>
@@ -17,7 +17,7 @@ namespace Stomme.Infrastructure
 
     /// <summary>
     /// The malware-scanner hook every file-ingestion path runs through <see cref="IFileIngestionGuard"/> before a
-    /// file reaches its folder (BL-100 F1, D109 item 1). The stock registration is <see cref="NullFileScanner"/>;
+    /// file reaches its folder (BL-100 F1). The stock registration is <see cref="NullFileScanner"/>;
     /// a real scanner (ClamAV is the booked residue) replaces it by registering its own <see cref="IFileScanner"/>
     /// before <c>AddStomme</c> runs, because the framework registers the null scanner with <c>TryAdd</c>.
     /// </summary>

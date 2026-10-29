@@ -27,7 +27,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Reliability
 {
     /// <summary>
-    /// BL-229 - one at a time, the REST IN TURN (n8n's concurrency control queues what it cannot run yet; "one at a time" here
+    /// One at a time, the REST IN TURN (n8n's concurrency control queues what it cannot run yet; "one at a time" here
     /// skipped a trigger's start and refused Run's, so a webhook called during a run was answered 202 and never ran). A start of
     /// such a pipeline is STORED as a run before anything runs - under the pipeline's turn lock, so two starts cannot both find
     /// nothing going - and waits its turn when a run of it is going or waiting: a run like any other, listed as Queued, with what

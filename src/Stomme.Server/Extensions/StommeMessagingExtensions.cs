@@ -39,8 +39,8 @@ namespace Microsoft.Extensions.DependencyInjection
     /// Relational deployments should stay on the in-memory transport plus the transactional outbox, or
     /// move to RabbitMQ / Azure Service Bus. A RavenDB install can select <c>ravendb</c>: a durable
     /// queue-document transport over the same lazily-built <c>IDocumentStore</c> the framework store
-    /// uses (D54/D56) — no broker, no connection string — with the RavenDB-backed dead-letter queue
-    /// replacing the null admin port. There is deliberately no SQL bus transport (D9).
+    /// uses — no broker, no connection string — with the RavenDB-backed dead-letter queue
+    /// replacing the null admin port. There is deliberately no SQL bus transport.
     /// </summary>
     public static class StommeMessagingExtensions
     {
@@ -60,7 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var inputQueue = configuration["Messaging:InputQueue"] ?? "stomme";
 
             // RavenDB is the one transport the messaging library cannot config-select itself: it rides the
-            // host's lazily-built shared IDocumentStore (D54/D56), which the library deliberately does not
+            // host's lazily-built shared IDocumentStore, which the library deliberately does not
             // reference. The host maps the config string to the code-passed configurator here — matching
             // trim + case-insensitively, like the library's own transport switch. IDocumentStore is resolved
             // at bus-build time (the same runtime resolution AddRavenDbDeadLetterQueue uses), so composing
@@ -96,7 +96,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 },
                 transport: transport);
 
-            // The framework's own PUBLISHED events (BL-249). A published event reaches this host's handlers only once its topic is
+            // The framework's own PUBLISHED events. A published event reaches this host's handlers only once its topic is
             // subscribed, so without these the bus silently dropped every live notice the moment messaging was switched on: an
             // editor's lock, presence and save notices, a dashboard's dataset change, and every pipeline event trigger. Point-to-
             // point sends (the notifications hint) need none. Each handler resolves its module lazily, so a subscription for a

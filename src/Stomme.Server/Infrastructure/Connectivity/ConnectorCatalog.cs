@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Infrastructure.Connectivity
 {
     /// <summary>
-    /// The host's connector catalog (BL-94 increment 3, D110): every registered <see cref="IConnector"/> by type key,
+    /// The host's connector catalog: every registered <see cref="IConnector"/> by type key,
     /// compared case-insensitively. A type key published twice REFUSES the composition - it throws when the catalog is
     /// first built - because the predecessor platform's first-registration-wins let whichever assembly loaded first own a key (the hijack
     /// D101 and D103 refused for MCP names). In-tree that is a build gate; an install that composes a duplicate does not

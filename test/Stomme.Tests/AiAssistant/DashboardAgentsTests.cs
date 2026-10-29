@@ -14,7 +14,7 @@ using static Stomme.Tests.AiAssistant.TurnScriptChatClient;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-97 increment 10 - the predecessor platform's <c>DashboardDesignerAgentTests</c> and <c>WidgetGeneratorAgentTests</c>, by name. The
+    /// The predecessor platform's <c>DashboardDesignerAgentTests</c> and <c>WidgetGeneratorAgentTests</c>, by name. The
     /// Designer asks the Widget Generator for a chart spec as ONE tool and proposes the board; applying runs the create command
     /// and only then marks it applied. The Generator accepts a spec only when theme-free with every column resolved, within
     /// three submissions. <b>ADDED:</b> a widget bound to a dataset the user cannot see, or of a kind the Dashboards module does

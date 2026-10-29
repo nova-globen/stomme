@@ -19,7 +19,7 @@ using FluentValidation;
 namespace Stomme.Modules.CloudUsage.Application
 {
     // ============================================================================================================
-    // CloudUsage's commands and queries (BL-97 increment 4, the predecessor platform's by name): the manual sync over the shared sync
+    // CloudUsage's commands and queries: the manual sync over the shared sync
     // path, the budget upsert, and the rollups - every one through the REQUEST's site, so another site's rows and
     // budgets do not exist for it. Totals stay per currency; no FX.
     // ============================================================================================================

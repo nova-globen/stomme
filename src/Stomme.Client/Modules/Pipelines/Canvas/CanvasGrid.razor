@@ -2,7 +2,7 @@
 @using Blazor.Diagrams
 @implements IDisposable
 
-@* BL-229 - n8n's dotted canvas: a dot every 20 of the diagram's pixels in the theme's border colour, moving with the pan and spaced
+@* n8n's dotted canvas: a dot every 20 of the diagram's pixels in the theme's border colour, moving with the pan and spaced
    by the zoom, behind everything on the canvas and never in a pointer's way. It redraws itself on the diagram's pan and zoom,
    never the editor (the library's grid widget has colours of its own, so the theme could not govern it). *@
 <div class="db-pipeline-editor__grid" aria-hidden="true" style="@StyleFor(Diagram?.Zoom ?? 1, Diagram?.Pan.X ?? 0, Diagram?.Pan.Y ?? 0)"></div>

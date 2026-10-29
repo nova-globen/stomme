@@ -19,7 +19,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Date &amp; time (n8n's Date &amp; Time node), run by the engine as the host composes it with a fixed clock: Add and
+    /// Date &amp; time (n8n's Date &amp; Time node), run by the engine as the host composes it with a fixed clock: Add and
     /// Subtract by calendar (a month from the 31st, a day across a clock change in a zone keeps its time of day), Format (iso,
     /// date, time, unix, a pattern, in a zone), Difference (whole months and years, other units to two decimals, either way),
     /// Start of (a Monday week, a month in a zone), an empty date as now, a Unix time read, and what it refuses saying why.

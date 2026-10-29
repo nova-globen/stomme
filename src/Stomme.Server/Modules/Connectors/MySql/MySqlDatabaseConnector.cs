@@ -14,8 +14,8 @@ using MySqlConnector;
 namespace Stomme.Modules.Connectors.MySql
 {
     /// <summary>
-    /// The MySQL connector (BL-229, n8n's MySQL node; MariaDB too, through the same driver - named apart from the driver's own
-    /// namespace, MySqlConnector): the endpoint is a MySqlConnector connection string WITHOUT credentials (D110: a connection string is never a place for a credential); the Basic scheme's
+    /// The MySQL connector (n8n's MySQL node; MariaDB too, through the same driver - named apart from the driver's own
+    /// namespace, MySqlConnector): the endpoint is a MySqlConnector connection string WITHOUT credentials (a connection string is never a place for a credential); the Basic scheme's
     /// <c>username</c>/<c>password</c> are applied from the per-site secret store. A test opens a connection and runs
     /// <c>SELECT 1</c> within the timeout, naming the server's version; the <c>query</c> operation runs a statement and streams
     /// each row into a record, its <c>@name</c> values bound as parameters (<see cref="SqlValues"/>) - a statement that returns
@@ -94,7 +94,7 @@ namespace Stomme.Modules.Connectors.MySql
             }
             catch (Exception ex) when (ex is MySqlException or TimeoutException or InvalidOperationException or SocketException)
             {
-                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner (D110)
+                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner
             }
         }
 

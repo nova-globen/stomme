@@ -76,7 +76,7 @@ namespace Stomme.Tests.DemoContent
                 Assert.Equal(new[] { "Demo PostgreSQL", "Demo REST API" }, connections.Select(c => c.Name).OrderBy(n => n, StringComparer.Ordinal));
                 Assert.All(connections, c => Assert.Equal(ConnectionStatus.Untested, c.Status));
                 Assert.Equal(new[] { "password" }, connections.Single(c => c.Name == "Demo PostgreSQL").CredentialFields);
-                Assert.Equal(new[] { "Cloud budget status", "Demo customers", "Demo inventory", "Demo sales", "Multi-cloud cost", "Underutilized resources" }, datasets.Select(d => d.Name).OrderBy(n => n, StringComparer.Ordinal)); // with the cloud cost board's three (BL-97 increment 5)
+                Assert.Equal(new[] { "Cloud budget status", "Demo customers", "Demo inventory", "Demo sales", "Multi-cloud cost", "Underutilized resources" }, datasets.Select(d => d.Name).OrderBy(n => n, StringComparer.Ordinal)); // with the cloud cost board's three
                 var customers = datasets.Single(d => d.Name == "Demo customers");
                 Assert.Equal((DataClassification.Restricted, "demo:customers", OriginKind.DemoSeed), (customers.Classification, customers.OriginReference, customers.OriginKind));
                 Assert.Equal(DataClassification.Internal, datasets.Single(d => d.Name == "Demo inventory").Classification); // the classifier's floor
@@ -123,7 +123,7 @@ namespace Stomme.Tests.DemoContent
                 connections = await ConnectionsAsync(app, site);
                 datasets = await DatasetsAsync(app, site);
                 Assert.Equal(new[] { "Demo PostgreSQL", "Demo REST API", "Our REST API" }, connections.Select(c => c.Name).OrderBy(n => n, StringComparer.Ordinal));
-                Assert.Equal(new[] { "Cloud budget status", "Demo customers", "Demo inventory", "Demo sales", "Multi-cloud cost", "Underutilized resources" }, datasets.Select(d => d.Name).OrderBy(n => n, StringComparer.Ordinal)); // with the cloud cost board's three (BL-97 increment 5)
+                Assert.Equal(new[] { "Cloud budget status", "Demo customers", "Demo inventory", "Demo sales", "Multi-cloud cost", "Underutilized resources" }, datasets.Select(d => d.Name).OrderBy(n => n, StringComparer.Ordinal)); // with the cloud cost board's three
             }
             finally
             {

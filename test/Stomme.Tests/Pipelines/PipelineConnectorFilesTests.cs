@@ -22,7 +22,7 @@ using File = System.IO.File;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - a pipeline run's folder as a connector's files (n8n's binary data on its file nodes, the S3 connector its first
+    /// A pipeline run's folder as a connector's files (n8n's binary data on its file nodes, the S3 connector its first
     /// user): a file read and written under the site's folder only, at most the cap, a write landing whole or not at all - over
     /// the cap or failing midway it leaves nothing under the name or beside it, and an earlier file of that name as it was; and
     /// Extract from connection handing the port the run's own site folder at the configured cap.

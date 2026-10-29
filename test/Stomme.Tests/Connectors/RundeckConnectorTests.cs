@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Rundeck (n8n's Rundeck node) without a server: every id, name, number and status held to Rundeck's shape before
+    /// Rundeck (n8n's Rundeck node) without a server: every id, name, number and status held to Rundeck's shape before
     /// anything is sent; the token in its header and in no address, API 44 whatever address is given; a job run with its options
     /// as Rundeck's options object - never n8n's argString - each checked against the job's own definition first, and waited for
     /// with its output's last lines; a job's metadata, a project's jobs by group, a job's executions by status, an execution and
@@ -203,8 +203,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Rundeck LIVE, against this machine's throwaway Rundeck 6.2 (scripts/rundeck-test-server.ps1) - fail-not-skip without
-    /// it (D46): a test counting the projects and a wrong token refused in Rundeck's words; a job found by name, run with a value
+    /// Rundeck LIVE, against this machine's throwaway Rundeck 6.2 (scripts/rundeck-test-server.ps1) - fail-not-skip without
+    /// it: a test counting the projects and a wrong token refused in Rundeck's words; a job found by name, run with a value
     /// holding Rundeck's own dashes - which stays one value, where n8n's argString overrode another option - waited for and its
     /// output read; an option the job does not have refused before Rundeck runs it; a required option missing and a value outside
     /// an enforced list refused in Rundeck's words; a failing job's status and output; a long job aborted, and an abort of a

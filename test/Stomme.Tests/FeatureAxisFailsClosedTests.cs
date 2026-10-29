@@ -19,7 +19,7 @@ using CoreFeatureEvaluator = Stomme.FeatureManagement.Application.IFeatureEvalua
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The feature axis of the authorization bridge fails CLOSED (D99, F11). The spike's bridge answered
+    /// The feature axis of the authorization bridge fails CLOSED (F11). The spike's bridge answered
     /// "enabled" whenever Stomme.FeatureManagement's evaluator was absent, which turned every
     /// <c>[Requires(Feature = "...")]</c> into an ungated request on a host without FeatureManagement.
     /// Driven end-to-end: the REAL <see cref="AuthorizationBehavior{TRequest,TResponse}"/>, the REAL

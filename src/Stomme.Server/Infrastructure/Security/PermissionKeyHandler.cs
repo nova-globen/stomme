@@ -69,7 +69,7 @@ namespace Stomme.Infrastructure.Security
             }
 
             // No request means no resolved site and no principal to decide for: denied, never admitted
-            // (a hosted job has no principal - granting one is a separate, security-relevant decision, D99).
+            // (a hosted job has no principal - granting one is a separate, security-relevant decision).
             var ctx = _accessor.HttpContext;
             if (ctx == null)
             {

@@ -7,7 +7,7 @@ using Stomme.Repository;
 namespace Stomme.Migrations.Tenant
 {
     /// <summary>
-    /// Adds the <c>AdminThemeType</c> column to the Site table (D87) — the theme mirror of
+    /// Adds the <c>AdminThemeType</c> column to the Site table — the theme mirror of
     /// <c>AdminContainerType</c> (added by <c>02000103_UpdatePageAndAddColumnToSite</c>). A site renders its
     /// public pages in <c>DefaultThemeType</c> and its admin pages (path "admin"/"admin/...") in
     /// <c>AdminThemeType</c>; empty means "fall back to <c>DefaultThemeType</c>", so an upgraded site with the

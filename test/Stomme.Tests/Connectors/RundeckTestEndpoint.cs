@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Rundeck connector's live tests' server (BL-229): RUNDECK_TEST_URL / RUNDECK_TEST_TOKEN where set, otherwise this machine's
+    /// The Rundeck connector's live tests' server: RUNDECK_TEST_URL / RUNDECK_TEST_TOKEN where set, otherwise this machine's
     /// throwaway Rundeck 6.2 that <c>scripts/rundeck-test-server.ps1</c> makes on 127.0.0.1:18091 - its user kafe's API token in the
     /// file that script writes under the user's temp folder, its project kafe and jobs made by it. Neither is a FAILURE that says
-    /// how to get one, never a skip (D46).
+    /// how to get one, never a skip.
     /// </summary>
     internal static class RundeckTestEndpoint
     {

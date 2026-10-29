@@ -33,7 +33,7 @@
     <PackageReference Include="Stomme.Persistence.File" Version="$(Version)" />
     <PackageReference Include="Stomme.Tenancy.Abstractions" Version="$(Version)" />
     <PackageReference Include="Stomme.Mediator" Version="$(Version)" />
-    <!-- D99/BL-99: the authorization bridge. Security.Abstractions is what a module compiles [Requires],
+    <!-- The authorization bridge. Security.Abstractions is what a module compiles [Requires],
          IAccessGuard and ICurrentUser against; Authorization carries the behavior + AddStommeAuthorization
          a host composes. Both are already package dependencies of Stomme.Server above — listing them here
          makes the module-facing surface explicit rather than transitive. -->
@@ -42,7 +42,7 @@
   </ItemGroup>
 
 
-  <!-- D98: LICENSE and THIRD-PARTY-NOTICES.md at the package root, as the framework's own packages carry them (BL-186). -->
+  <!-- LICENSE and THIRD-PARTY-NOTICES.md at the package root, as the framework's own packages carry them. -->
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" PackagePath="" Visible="false" />
     <None Include="..\..\THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" Visible="false" />

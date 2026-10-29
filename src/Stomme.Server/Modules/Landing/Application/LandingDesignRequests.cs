@@ -20,7 +20,7 @@ namespace Stomme.Modules.Landing.Application
     // ============================================================================================================
     // The AI mode and the edit mode (BL-98 increments 3 and 4; the predecessor platform's planned increments 7 and 8, never built there): an
     // administrator's brief becomes a proposed page, a section and an instruction a proposed revision - PROPOSED, never stored
-    // (D113: an agent proposes, its user applies) - and applying stores the HTML only after the landing sanitizer, run again
+    // (an agent proposes, its user applies) - and applying stores the HTML only after the landing sanitizer, run again
     // here whatever the page sent. Both need landing:manage AND the assistant's own key: the model is the site's, metered and
     // quota-gated, and assistant:use is who may spend it.
     // ============================================================================================================

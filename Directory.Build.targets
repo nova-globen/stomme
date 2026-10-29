@@ -12,7 +12,7 @@
   -->
   <ItemGroup Condition="'$(IsTestProject)' == 'true' and '$(Language)' == 'C#'">
     <Compile Include="$(MSBuildThisFileDirectory)test/TestHostLock/MachineWideTestHostLock.cs" Link="Properties/MachineWideTestHostLock.cs" Visible="false" />
-    <!-- BL-156: the sweep of earlier runs' leftovers, run by the lock once it is held. -->
+    <!-- The sweep of earlier runs' leftovers, run by the lock once it is held. -->
     <Compile Include="$(MSBuildThisFileDirectory)test/TestHostLock/TestScratchSweep.cs" Link="Properties/TestScratchSweep.cs" Visible="false" />
     <!-- 2026-10-03: and the test databases earlier runs left on this machine's own RavenDB. -->
     <Compile Include="$(MSBuildThisFileDirectory)test/TestHostLock/RavenTestDatabaseSweep.cs" Link="Properties/RavenTestDatabaseSweep.cs" Visible="false" />

@@ -37,7 +37,7 @@ namespace Stomme.Modules.Notifications.Application
     public sealed record NotificationDispatchHint(Guid RequestId);
 
     /// <summary>
-    /// The implementation of the published <see cref="INotificationDispatcher"/> port (BL-78 step 4; D100 points 3 and 4),
+    /// The implementation of the published <see cref="INotificationDispatcher"/> port (D100 points 3 and 4),
     /// lifted from the predecessor platform <c>NotificationDispatcher</c>: validate, constrain the RECIPIENTS, persist a <c>Queued</c> request
     /// WITH its parameters, and - only when a bus is registered - send a latency hint. Delivery is the
     /// <c>NotificationDispatchJob</c>'s.
@@ -188,7 +188,7 @@ namespace Stomme.Modules.Notifications.Application
 
                     case NotificationRecipientKind.Endpoint:
                         throw Refuse(siteId,
-                            $"recipient #{index + 1} is an Endpoint recipient, which is never accepted (an endpoint is a channel's configuration, guarded there - BL-78 F9)");
+                            $"recipient #{index + 1} is an Endpoint recipient, which is never accepted (an endpoint is a channel's configuration, guarded there)");
 
                     default:
                         throw Refuse(siteId, $"recipient #{index + 1} has an unknown recipient kind");

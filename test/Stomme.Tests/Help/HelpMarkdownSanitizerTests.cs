@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// Help text reaches ANONYMOUS readers, so nothing in it may run (BL-84 increment 4, D103 item 5).
+    /// Help text reaches ANONYMOUS readers, so nothing in it may run.
     /// </summary>
     /// <remarks>
     /// <para>

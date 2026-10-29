@@ -784,7 +784,7 @@ else
         {
             if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
             {
-                // An OpenID Connect provider is reached over https; a plain-http address is refused here (BL-247) - the
+                // An OpenID Connect provider is reached over https; a plain-http address is refused here - the
                 // site would not use it, and before that it took every page of the site down.
                 if (_providertype == AuthenticationProviderTypes.OpenIDConnect && new[] { _authority, _metadataurl }.Any(address => !string.IsNullOrWhiteSpace(address) && !address.Trim().StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
                 {

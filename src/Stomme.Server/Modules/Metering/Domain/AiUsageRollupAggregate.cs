@@ -87,7 +87,7 @@ namespace Stomme.Modules.Metering.Domain
 
         /// <summary>The deterministic id for a slice - the same inputs always name the same row.</summary>
         /// <remarks>
-        /// The TENANT is part of the key (BL-151). Site ids are not unique across tenants sharing one physical
+        /// The TENANT is part of the key. Site ids are not unique across tenants sharing one physical
         /// database, so without it two tenants' rollups for one site would be the same row - a primary-key
         /// collision, or a silent overwrite where the write is GetById-then-Update. This id was missed by the
         /// first pass of that fix and caught by sweeping every deterministic id in the tree afterwards.

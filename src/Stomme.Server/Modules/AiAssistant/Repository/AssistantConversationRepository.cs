@@ -22,7 +22,7 @@ namespace Stomme.AiAssistant.Persistence
         Task<AssistantConversationAggregate?> GetForUserAsync(Guid id, int siteId, int userId, CancellationToken ct = default);
     }
 
-    /// <summary>The storage-blind repository over the module store (D79): one provider-neutral query, no store of its own.</summary>
+    /// <summary>The storage-blind repository over the module store: one provider-neutral query, no store of its own.</summary>
     public sealed class AssistantConversationRepository(IRepository<AssistantConversationAggregate, Guid> inner) : IAssistantConversationRepository
     {
         public async Task<IReadOnlyList<AssistantConversationAggregate>> ListForUserAsync(int siteId, int userId, CancellationToken ct = default) =>

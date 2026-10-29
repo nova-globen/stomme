@@ -9,7 +9,7 @@ using Stomme.Engine.Pipelines.Runtime.Filters;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229: a finished run's answer - the result of the last step it completed (its containers aside) - as the AI agent's tools
+    /// A finished run's answer - the result of the last step it completed (its containers aside) - as the AI agent's tools
     /// and the site's chats give it back: text as it is, anything else as its JSON. A stored run gives results back as JSON
     /// elements, so a string element is its text, not JSON quoting it (found driving: an answer arrived quoted twice).
     /// </summary>

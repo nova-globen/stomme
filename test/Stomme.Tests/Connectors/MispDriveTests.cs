@@ -15,8 +15,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - MISP DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
-    /// this machine's throwaway MISP 2.5 (scripts/misp-test-server.ps1) - fail-not-skip without it (D46): a MISP connection made over
+    /// MISP DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
+    /// this machine's throwaway MISP 2.5 (scripts/misp-test-server.ps1) - fail-not-skip without it: a MISP connection made over
     /// the API, its key vaulted, tested; a published pipeline making an event, putting an attribute on it - the event named by an
     /// expression over the first step's result - finding the attribute by its value, and deleting the event; the key in neither the
     /// graph nor the run.

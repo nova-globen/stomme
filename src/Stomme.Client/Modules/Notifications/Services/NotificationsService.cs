@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Notifications.Services
 {
     /// <summary>
-    /// The client/server contract of the Notifications module's UI (BL-78 step 5). The controls depend on this interface,
+    /// The client/server contract of the Notifications module's UI. The controls depend on this interface,
     /// never on a repository: the server binds it to <c>ServerNotificationsService</c> (a mediator dispatch, so every call is
     /// decided by the request's <c>[Requires]</c>), the browser to <see cref="NotificationsService"/> (HTTP to
     /// <c>api/Notifications</c>, decided by the action's <c>[RequiresPermissionKey]</c> AND the request's <c>[Requires]</c>).

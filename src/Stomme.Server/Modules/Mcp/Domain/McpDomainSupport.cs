@@ -6,7 +6,7 @@ namespace Stomme.Modules.Mcp.Domain
     /// <summary>Whether this site has ever successfully talked to the server. Stored as its integer value; never renumber.</summary>
     public enum McpServerTrustState
     {
-        /// <summary>Registered, never refreshed. Registration does NOT dial (D101 item 5), so every server starts here.</summary>
+        /// <summary>Registered, never refreshed. Registration does NOT dial, so every server starts here.</summary>
         Unverified = 0,
 
         /// <summary>A refresh reached it and it answered with a tool list.</summary>

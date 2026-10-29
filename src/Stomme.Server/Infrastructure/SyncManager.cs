@@ -24,7 +24,7 @@ namespace Stomme.Infrastructure
     /// <remarks>
     /// WHY THIS IS NOT AN EVENT. This was <c>event EventHandler&lt;SyncEvent&gt; EntityChanged</c>. A sync
     /// event cannot be awaited, so once cache invalidation had to call the async-only
-    /// <see cref="ICacheManager.RemoveCacheAsync(string)"/> (D32) the only way to raise it from an event
+    /// <see cref="ICacheManager.RemoveCacheAsync(string)"/> the only way to raise it from an event
     /// handler was <c>async void</c> — fire-and-forget. The invalidation could then land AFTER a subsequent
     /// read had already repopulated the cache from the pre-write state, leaving a stale entry with no further
     /// event to clear it. The invocation list is awaited instead, which puts invalidation back in front of the

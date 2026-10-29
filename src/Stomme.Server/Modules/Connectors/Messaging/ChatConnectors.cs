@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Messaging
 {
     /// <summary>
-    /// What the chat connectors share (BL-229, for n8n's Slack, Telegram, Discord, Mattermost and Twilio nodes): one operation, <c>message</c> - a
+    /// What the chat connectors share (for n8n's Slack, Telegram, Discord, Mattermost and Twilio nodes): one operation, <c>message</c> - a
     /// text sent <c>to</c> a channel or chat, optionally <c>reply_to</c> a message - answered by ONE record: the message's
     /// <c>id</c> and where it went, or <c>refused</c> with the service's own reason (one line, at most
     /// <see cref="MaxReason"/> characters) when the service answered and said no. The reason travels as a record, not an
@@ -269,7 +269,7 @@ namespace Stomme.Modules.Connectors.Messaging
 
         public Uri ApiDocumentationUrl { get; } = new("https://core.telegram.org/bots/api#sendmessage");
 
-        /// <summary>The updates waiting for the bot (BL-229, for the "Telegram message received" trigger).</summary>
+        /// <summary>The updates waiting for the bot (for the "Telegram message received" trigger).</summary>
         public const string UpdatesOperation = "updates";
 
         /// <summary>The newest update's id - every earlier one forgotten, as Telegram does for a negative offset.</summary>

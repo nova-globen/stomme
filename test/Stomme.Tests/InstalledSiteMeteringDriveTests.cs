@@ -60,7 +60,7 @@ namespace Stomme.Tests
             Assert.True(store.IsReachable(), store.UnreachableMessage);
 
             // Through appsettings.override.json - where a deployed install keeps it - and NOT builder.Configuration: the host's
-            // IConfiguration does not include the override, and the jobs read the merged root (HostConfiguration, BL-162).
+            // IConfiguration does not include the override, and the jobs read the merged root (HostConfiguration).
             using var scratch = new ScratchGateInstall(store, Host, colocateModuleAggregates: storeName == PostgresGateStore.StoreName,
                 extraSettings: new System.Text.Json.Nodes.JsonObject { ["Metering"] = new System.Text.Json.Nodes.JsonObject { ["Enabled"] = true } });
             var app = await GateDrive.InstallAsync(scratch, _output);

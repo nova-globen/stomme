@@ -5,7 +5,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Sessions
 {
     /// <summary>
-    /// The sessions module's <see cref="ModuleDefinition"/> (BL-119): one admin page, <c>admin/sessions</c>, listing every
+    /// The sessions module's <see cref="ModuleDefinition"/>: one admin page, <c>admin/sessions</c>, listing every
     /// signed-in session of the site, placed through <see cref="ModuleDefinition.PageTemplates"/> and reconciled
     /// additively per site on every boot. A user's OWN sessions are listed on their profile (<see cref="MySessions"/>).
     /// </summary>

@@ -215,7 +215,7 @@
         createdon = pagemodule.Module.CreatedOn;
         modifiedby = pagemodule.Module.ModifiedBy;
         modifiedon = pagemodule.Module.ModifiedOn;
-        // BL-102: this grid edits ONE module INSTANCE, so it may only carry that module's own rows. A ':' entry
+        // This grid edits ONE module INSTANCE, so it may only carry that module's own rows. A ':' entry
         // (a lifted key or a framework policy) is a SITE-WIDE row (EntityId -1): offering one here let Edit on a
         // single module write a framework policy, and PermissionGrid's host branch added a "Host Users" row for
         // every such column on a plain save. PageModuleRepository merges those site-wide rows into the module's

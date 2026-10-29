@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Stomme.AiAssistant
 {
     /// <summary>
-    /// The assistant's keys (BL-97 increment 10b, D113). <c>assistant:use</c> - start a conversation, send, apply or discard a
+    /// The assistant's keys. <c>assistant:use</c> - start a conversation, send, apply or discard a
     /// proposal - grants NO authority of its own: what an agent reads, and what an apply writes, is still decided by the owning
     /// module's key for that user. <c>assistant:configure</c> - the site's switch, provider, endpoint, model and API key.
     /// Administrators by default; a site grants them to more roles as it chooses.

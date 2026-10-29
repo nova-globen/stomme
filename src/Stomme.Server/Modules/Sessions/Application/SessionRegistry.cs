@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Sessions.Application
 {
     /// <summary>
-    /// The server-side sessions of a site (BL-119): opened when a cookie is issued, checked on every request that
+    /// The server-side sessions of a site: opened when a cookie is issued, checked on every request that
     /// validates one, listed for their owner and for an administrator, and revoked one at a time or all together.
     /// </summary>
     public interface ISessionRegistry
@@ -145,7 +145,7 @@ namespace Stomme.Modules.Sessions.Application
                 }
 
                 // One update per DISTINCT row, each read by this same list and never loaded twice - and the storage-blind
-                // registration does not track reads (D79), so no two instances of one key ever meet in a context.
+                // registration does not track reads, so no two instances of one key ever meet in a context.
                 await sessions.UpdateAsync(session);
                 await cache.RemoveCacheAsync(alias, CacheKeyPrefix + session.Id);
                 revoked++;

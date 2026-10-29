@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Baserow (n8n's Baserow node): a database token as <c>Token ...</c>; a table's rows by their fields' names, page
+    /// Baserow (n8n's Baserow node): a database token as <c>Token ...</c>; a table's rows by their fields' names, page
     /// by page up to <c>max</c>, filtered by Baserow's own filter types (a field by its name or by its id, n8n's way, filtered by
     /// id), searched, sorted and some fields - a name with a comma quoted as Baserow reads one - from a view; a row got, created,
     /// updated and deleted, its fields by name or id; up to 200 at once in Baserow's batch; the tables and a table's fields;

@@ -15,7 +15,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Dashboards.Infrastructure
 {
     /// <summary>
-    /// One grid widget as an export (BL-97 increment 1, the predecessor platform's <c>DashboardGridExportSourceResolver</c>): key
+    /// One grid widget as an export (the predecessor platform's <c>DashboardGridExportSourceResolver</c>): key
     /// <c>dashboards.grid</c>, arguments <c>{"dashboardId": "...", "widgetId": "..."}</c>, one table named after the
     /// widget - what the widget's data query answers, never more: the board through the job's site, every bound column
     /// checked against the dataset's published schema, the rows only when the dataset's classification allows them.

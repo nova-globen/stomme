@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Records one AI call: the ledger row, its server-computed price, and the shared metric it consumes (D102).
+    /// Records one AI call: the ledger row, its server-computed price, and the shared metric it consumes.
     /// </summary>
     /// <remarks>
     /// AiUsage is NOT a second module. the predecessor platform ran two of them and bridged one into the other in the host's

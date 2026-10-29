@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-97 increment 12 - the collaborating save DRIVEN over HTTP on an installed SQLite host with TWO signed-in
+    /// The collaborating save DRIVEN over HTTP on an installed SQLite host with TWO signed-in
     /// administrators, through the real engine: a save on an unchanged graph applies; a save on a stale base keeps the other
     /// editor's change beside its own; a name both changed is REJECTED with the stored value and nothing stored; a multi-line
     /// input both changed is overwritten last-writer-wins with a warning; a step one removed that the other still used is

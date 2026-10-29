@@ -5,7 +5,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The N-way module persistence registry (D80, Part A). It replaces the hard-coded
+    /// The N-way module persistence registry (Part A). It replaces the hard-coded
     /// <c>relational ? EF : Raven</c> binary with a lookup keyed on <c>Database:DefaultDBType</c>, so a third
     /// store (the file provider) is one registration and modules are unchanged. These tests pin the two contract
     /// properties the binary could not offer: every known provider resolves to its own factory, and an UNKNOWN

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace NovaGloben.Module.KnowledgeBase
 {
     /// <summary>
-    /// The module's permission KEYS (D99): <c>resource:action</c>, lower-case, declared once here and used by the
+    /// The module's permission KEYS: <c>resource:action</c>, lower-case, declared once here and used by the
     /// requests' <c>[Requires]</c>, the controller's <c>[RequiresPermissionKey]</c> and the page's
     /// <c>IsAuthorizedPermission</c>. The client's <c>ModuleInfo</c> declares them - with the roles they are granted to on
     /// a new site - through <c>PermissionKeys.Declare</c>; a key no module declares denies everyone, which the

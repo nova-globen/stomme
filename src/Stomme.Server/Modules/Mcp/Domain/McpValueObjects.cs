@@ -9,7 +9,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.Mcp.Domain
 {
     /// <summary>
-    /// Where an external MCP server is reached: an absolute http(s) URL (D101 item 6).
+    /// Where an external MCP server is reached: an absolute http(s) URL.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -18,7 +18,7 @@ namespace Stomme.Modules.Mcp.Domain
     /// </para>
     /// <para>
     /// <b>There is no stdio transport, and that is a decision, not an omission.</b> the predecessor platform's second transport launched
-    /// an administrator-supplied COMMAND on the host - and seeded a demo of it. It does not travel (D101 item 5), and
+    /// an administrator-supplied COMMAND on the host - and seeded a demo of it. It does not travel, and
     /// this type has nowhere to put one: a value that is not an http(s) URL cannot be constructed, so it cannot be
     /// stored, so nothing downstream ever has to refuse it.
     /// </para>
@@ -70,12 +70,12 @@ namespace Stomme.Modules.Mcp.Domain
     }
 
     /// <summary>
-    /// The limits this site puts on ONE external server (D101 item 6). Canonical <see cref="Value"/>:
+    /// The limits this site puts on ONE external server. Canonical <see cref="Value"/>:
     /// <c>"rpm=60"</c>, or <c>"rpm=-"</c> for no cap.
     /// </summary>
     /// <remarks>
     /// Reshaped from a predecessor platform record. Its second field, <c>AllowSensitivePayloads</c>, is NOT here: it configured the
-    /// egress/PII guard, which does not travel in Wave 1 (BL-97), and a flag nothing reads is a switch an operator can
+    /// egress/PII guard, which does not travel in Wave 1, and a flag nothing reads is a switch an operator can
     /// turn believing it does something. The canonical string is a <c>key=value</c> list precisely so that a later
     /// release can add one without a schema step.
     /// </remarks>
@@ -133,7 +133,7 @@ namespace Stomme.Modules.Mcp.Domain
     public sealed record DiscoveredTool(string Name, string? Description, string? ParametersJsonSchema);
 
     /// <summary>
-    /// The tools last discovered on an external server, as ONE value (D101 item 6). Canonical <see cref="Value"/>: a
+    /// The tools last discovered on an external server, as ONE value. Canonical <see cref="Value"/>: a
     /// compact JSON array.
     /// </summary>
     /// <remarks>

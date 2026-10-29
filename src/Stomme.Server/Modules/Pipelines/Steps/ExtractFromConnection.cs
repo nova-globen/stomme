@@ -128,7 +128,7 @@ namespace Stomme.Modules.Pipelines.Steps
 
             var operation = Operation?.GetOrDefault(context);
             var cap = ConnectorExtractionLimits.Clamp(MaxRecords.GetOrDefault(context));
-            // The run's folder as the connector's files (BL-229): an upload reads from it, a download writes into it.
+            // The run's folder as the connector's files: an upload reads from it, a download writes into it.
             var result = await extraction.ExtractAsync(connectionId, string.IsNullOrWhiteSpace(operation) ? null : operation.Trim(), parameters, cap, PipelineConnectorFiles.For(context), context.CancellationToken).ConfigureAwait(false);
             if (!result.Success)
             {

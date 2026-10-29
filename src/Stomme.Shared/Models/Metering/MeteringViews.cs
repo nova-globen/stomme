@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Stomme.Models.Metering
 {
     /// <summary>
-    /// The wire shapes the metering UI renders (D102 item 11). They are deliberately FLAT and carry no aggregate
+    /// The wire shapes the metering UI renders. They are deliberately FLAT and carry no aggregate
     /// type: the Client never sees the metering domain, which is also what the dependency-direction gate asserts.
     /// </summary>
     /// <remarks>

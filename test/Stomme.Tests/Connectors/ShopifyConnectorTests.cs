@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Shopify (n8n's Shopify node: orders and products listed, got, created, updated and deleted) over Shopify's GraphQL
+    /// Shopify (n8n's Shopify node: orders and products listed, got, created, updated and deleted) over Shopify's GraphQL
     /// Admin API: the token in Shopify's own header; the orders and products a search finds - its query, statuses, an address, a
     /// vendor, a type, a title and times written into Shopify's search syntax - newest first, page by page by Shopify's cursor up
     /// to the most asked for, each a plain record; an order made from variants and items of no product, changed and deleted; a

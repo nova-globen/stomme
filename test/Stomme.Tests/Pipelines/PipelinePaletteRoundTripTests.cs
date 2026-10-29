@@ -24,7 +24,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - every step the palette offers, each input given a value the editor would write, saved as the editor saves it and
+    /// Every step the palette offers, each input given a value the editor would write, saved as the editor saves it and
     /// read back: by the editor (the same values), and by the engine (the step it is, each input holding what was given, in a
     /// form the engine can turn into the input's type). Found by building on Set Variable: its variable was saved in a shape the
     /// engine read as a variable of its own making, so every run failed - and nothing held the palette to its own save.

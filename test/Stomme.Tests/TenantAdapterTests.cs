@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The tenancy adapter that four backlog items blocked on (D16). These cover the two things that are easy
+    // The tenancy adapter that four backlog items blocked on. These cover the two things that are easy
     // to get wrong and impossible to see at a glance: the int<->GUID encoding (whose exact shape is what makes
     // the change safe to ship at all), and the fail-closed default (whose opposite is a cross-tenant leak).
     public class FrameworkTenantIdTests
@@ -266,7 +266,7 @@ namespace Stomme.Tests
 
     /// <summary>
     /// Stands in for the request's alias — what TenantMiddleware publishes to HttpContext.Items and
-    /// StommeTenantContext reads back synchronously (D32). Counts reads so the tests can pin that a
+    /// StommeTenantContext reads back synchronously. Counts reads so the tests can pin that a
     /// populated SiteState costs no read at all, and that the alias is read once per scope.
     /// </summary>
     public sealed class StubAliasAccessor : IAliasAccessor

@@ -11,7 +11,7 @@ namespace Stomme.Tests
     /// <remarks>
     /// <para>
     /// It runs the identical assertions rather than a paraphrase, because a parity claim only means something
-    /// when both sides are asked the same question (D46). The seam's providers have diverged exactly where the
+    /// when both sides are asked the same question. The seam's providers have diverged exactly where the
     /// compiler could not see it before - EF folds <c>-1 == -1</c> and RavenDB does not (0 of 2 rows, green on
     /// EF); bare <c>==</c> is case-SENSITIVE on EF and case-INSENSITIVE on Raven. A permission row is
     /// <c>(EntityName, EntityId = -1, PermissionName)</c>: every one of those hazards is in this decision's

@@ -24,7 +24,7 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// A Log row is append-mostly: <see cref="ILogRepository"/> adds and purges, and never updates. It is a
     /// leaf — <see cref="SiteId"/>, <see cref="PageId"/>, <see cref="ModuleId"/> and <see cref="UserId"/> are
-    /// all references BY ID (D7/D19) and all nullable, because a log entry outlives the thing it is about and
+    /// all references BY ID and all nullable, because a log entry outlives the thing it is about and
     /// must survive it being deleted.
     /// </para>
     /// <para>
@@ -38,7 +38,7 @@ namespace Stomme.Repository.Stores
 
         /// <summary>
         /// The entry's timestamp, and this cluster's ONLY clock. Set by <c>LogManager</c> on the request
-        /// thread before the entry is queued (D34), never by an audit hook — there is no audit hook here.
+        /// thread before the entry is queued, never by an audit hook — there is no audit hook here.
         /// <see cref="ILogRepository.GetLogsAsync"/> orders by it descending and
         /// <see cref="ILogRepository.DeleteLogsAsync"/> purges by it, so it is both the sort key and the
         /// retention key.

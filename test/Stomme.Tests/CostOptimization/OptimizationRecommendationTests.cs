@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// BL-97 increment 6 - the predecessor platform's <c>OptimizationRecommendationTests</c> by name (24 cases). CHANGED throughout: the
+    /// The predecessor platform's <c>OptimizationRecommendationTests</c> by name (24 cases). CHANGED throughout: the
     /// recommendation belongs to a site, the saving is read from its two scalars, and the instants are UTC <c>DateTime</c>
     /// values. The port's own: a recommendation without a site is refused.
     /// </summary>

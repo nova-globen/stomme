@@ -27,7 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Stomme.SharedKernel\Stomme.SharedKernel.csproj" />
     <!-- The feature-contributor contract is compiled there (and forwarded from here) so a module on the slim SDK can
-         declare a flag without this project's EF Core closure - BL-86 increment 4. -->
+         declare a flag without this project's EF Core closure. -->
     <ProjectReference Include="..\Stomme.Security.Abstractions\Stomme.Security.Abstractions.csproj" />
     <ProjectReference Include="..\Stomme.Persistence.Abstractions\Stomme.Persistence.Abstractions.csproj" />
     <ProjectReference Include="..\Stomme.Persistence.EfCore\Stomme.Persistence.EfCore.csproj" />

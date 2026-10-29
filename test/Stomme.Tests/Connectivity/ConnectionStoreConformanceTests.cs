@@ -24,11 +24,11 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 5 (D110) - the Connection store's observable contract once, driven on EF (SQLite and PostgreSQL),
+    /// The Connection store's observable contract once, driven on EF (SQLite and PostgreSQL),
     /// RavenDB and File through the module's own startup: a connection round-trips with its endpoint, its settings JSON
     /// (VALUES asserted) and its credential field names (the JSON-list convention, values asserted), a UTC test instant;
     /// found by site and normalised name whatever the case; listed in name order; an update and a delete land. Fail-not-skip
-    /// on the external stores (D46).
+    /// on the external stores.
     /// </summary>
     public abstract class ConnectionStoreConformanceTests : IAsyncLifetime
     {

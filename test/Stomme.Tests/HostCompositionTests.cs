@@ -44,7 +44,7 @@ namespace Stomme.Tests
         }
 
         // The framework building blocks the Server references directly must OPT OUT of the module-convention
-        // scan (D13). The scan auto-registers by marker interface over every Stomme.* assembly it loads, so
+        // scan. The scan auto-registers by marker interface over every Stomme.* assembly it loads, so
         // a library that is composed EXPLICITLY - the mediator, the authorization bridge and its ports - has
         // to carry [StommeFrameworkLibrary] or a type added to it later is registered twice over, once by
         // hand and once by convention. The csproj comment beside these references asserts the opt-out; this is
@@ -57,7 +57,7 @@ namespace Stomme.Tests
                 typeof(Stomme.Mediator.IMediator).Assembly,
                 typeof(Stomme.Authorization.AuthorizationBehavior<,>).Assembly,
                 typeof(Stomme.Security.Abstractions.IAccessGuard).Assembly,
-                // BL-78: composed explicitly (AddSecretProtection) for the shared per-site secret store.
+                // Composed explicitly (AddSecretProtection) for the shared per-site secret store.
                 typeof(Stomme.Infrastructure.Security.Cryptography.SecretProtectionServiceExtensions).Assembly
             };
 
@@ -77,7 +77,7 @@ namespace Stomme.Tests
                 ["Messaging:Enabled"] = "true",
                 ["Messaging:Transport"] = "inmemory",
                 ["Messaging:InputQueue"] = "stomme-host-composition-test",
-                // D105: the offline licence ring is an opt-in switch like the others.
+                // The offline licence ring is an opt-in switch like the others.
                 ["Deployment:Mode"] = "OnPrem",
             });
 
@@ -92,7 +92,7 @@ namespace Stomme.Tests
             Assert.NotNull(bus);
         }
 
-        // D105: Deployment:Mode=OnPrem on its own composes the offline licence provider and its singleton state; the
+        // Deployment:Mode=OnPrem on its own composes the offline licence provider and its singleton state; the
         // composition must validate (ValidateOnBuild + ValidateScopes) and every hosted service must still construct.
         [Fact]
         public void Host_container_composes_under_OnPrem()
@@ -105,7 +105,7 @@ namespace Stomme.Tests
             AssertEveryHostedServiceIsConstructible(app);
         }
 
-        // The tenancy adapter (D16) is a new composition path, so it gets the same guard the rest of the host
+        // The tenancy adapter is a new composition path, so it gets the same guard the rest of the host
         // has. Two things are asserted that a unit test on the adapter itself cannot see:
         //   * the REAL adapter wins over Stomme.FeatureManagement's single-tenant DefaultTenantContext
         //     fallback. That fallback is a TryAdd, so winning depends entirely on AddStommeTenancy() running
@@ -254,7 +254,7 @@ namespace Stomme.Tests
 
             var unitOfWork = Assert.Single(unitsOfWork);
 
-            // The single collapsed impl (D67). By full name for parity with the guard below; typeof() would
+            // The single collapsed impl. By full name for parity with the guard below; typeof() would
             // also work now that the type is public in Stomme.Persistence.Abstractions.
             Assert.Equal(
                 "Stomme.Persistence.Abstractions.UnitOfWork",
@@ -274,7 +274,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// Pins the DELIBERATE current state: the composed host registers NO <see cref="IDomainEventSerializer"/>.
-        /// This is the outbox footgun turned into a red build (docs/decisions.md D69; model answered by D75).
+        /// This is the outbox footgun turned into a red build (docs/decisions.md D69; model answered).
         /// </summary>
         /// <remarks>
         /// <para>

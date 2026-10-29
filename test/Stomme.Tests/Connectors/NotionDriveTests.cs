@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Notion DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Notion DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Notion's API: a Notion connection made over the API, its secret vaulted and its database a
     /// setting, tested (who the integration is); a published pipeline reads the database's open pages over two cursors, creates a
     /// page typed by the database's properties and updates the one it found - each call with the secret as the bearer and the API
@@ -59,7 +59,7 @@ namespace Stomme.Tests.Connectors
                 var connection = JsonSerializer.Deserialize<ConnectionView>(made.Body, Json)!.Id.ToString();
                 var tested = await Send(HttpMethod.Post, $"/api/Connections/{connection}/test", new { }, "test the connection");
                 Assert.True(JsonNode.Parse(tested.Body)!["success"]!.GetValue<bool>(), tested.Body);
-                Assert.Contains(notion.Received, request => request.Path == "/v1/users/me"); // the host words the answer itself (D110)
+                Assert.Contains(notion.Received, request => request.Path == "/v1/users/me"); // the host words the answer itself
 
                 var created = await Send(HttpMethod.Post, "/api/Pipelines", new CreatePipelineRequest { Name = "Orders database" }, "create");
                 var definitionId = JsonNode.Parse(created.Body)!["definitionId"]!.GetValue<string>();

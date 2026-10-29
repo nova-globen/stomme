@@ -39,7 +39,7 @@ public interface IFeatureContextProvider
 /// <para>
 /// The capability asked about is a flag's required entitlement as declared by its code-registered
 /// <see cref="FeatureDescriptor"/>, which is authoritative whenever one is registered for the key -- on both the
-/// row and the row-less config path; the stored row value is used only when no descriptor exists (D105).
+/// row and the row-less config path; the stored row value is used only when no descriptor exists.
 /// </para>
 /// </summary>
 public interface IEntitlementProvider

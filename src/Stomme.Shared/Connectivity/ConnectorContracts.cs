@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Stomme.Connectivity
 {
     // ============================================================================================================
-    // The connector contract (BL-94 increment 3, D110): BCL-ONLY, so the connectors of BL-96 reference
+    // The connector contract: BCL-ONLY, so the connectors of BL-96 reference
     // Stomme.Shared and nothing else. The catalog implementation and the DI extension live in the Server;
     // egress is HOST-supplied through the contexts (a guarded HttpClient, a resolve-check-and-pin call), never a
     // connector's own socket policy. SharedConnectivityDependencyTests pins the BCL-only rule.
@@ -50,7 +50,7 @@ namespace Stomme.Connectivity
     /// <summary>One named credential a scheme needs; a secret one is stored in the per-site secret store and never echoed.</summary>
     public sealed record AuthCredentialField(string Name, string DisplayName, bool Secret = true);
 
-    /// <summary>The credential fields each <see cref="AuthenticationType"/> declares - the closed set a connection's secrets are keyed by (D110).</summary>
+    /// <summary>The credential fields each <see cref="AuthenticationType"/> declares - the closed set a connection's secrets are keyed by.</summary>
     public static class AuthenticationScheme
     {
         private static readonly IReadOnlyList<AuthCredentialField> NoFields = Array.Empty<AuthCredentialField>();
@@ -235,7 +235,7 @@ namespace Stomme.Connectivity
         public ConnectorConfigSchema Parameters { get; init; } = ConnectorConfigSchema.Empty;
     }
 
-    /// <summary>The outcome of testing a connection: a sanitised message - a connector's own error text never reaches a page or an event (D110).</summary>
+    /// <summary>The outcome of testing a connection: a sanitised message - a connector's own error text never reaches a page or an event.</summary>
     public sealed record ConnectionTestResult(bool Success, string Message)
     {
         public static ConnectionTestResult Ok(string message = "Connection succeeded.") => new(true, message);
@@ -244,7 +244,7 @@ namespace Stomme.Connectivity
     }
 
     /// <summary>
-    /// The network access the HOST hands a connector (D110: egress is host-owned). An HTTP connector takes a guarded client
+    /// The network access the HOST hands a connector (egress is host-owned). An HTTP connector takes a guarded client
     /// (private, link-local, loopback and metadata addresses refused at connect, redirects off, one attempt with a timeout);
     /// a driver connector asks the host to resolve, check and pin its endpoint before the driver dials - the residual
     /// window between the check and the driver's own resolution is stated, not solved.
@@ -259,7 +259,7 @@ namespace Stomme.Connectivity
 
         /// <summary>
         /// Connects to <paramref name="address"/> - the one <see cref="ResolveAndPinAsync"/> returned for <paramref name="host"/> -
-        /// on <paramref name="port"/> and closes, within <paramref name="timeout"/> (BL-229): for a driver that connects
+        /// on <paramref name="port"/> and closes, within <paramref name="timeout"/>: for a driver that connects
         /// synchronously with the system's own timeout whatever its own says (libldap on Linux, about two minutes), so an address
         /// that does not answer fails in the connection's time. A refusal or no answer is thrown as an
         /// <see cref="InvalidOperationException"/> naming <paramref name="service"/>, the host and the port; an address the policy
@@ -271,7 +271,7 @@ namespace Stomme.Connectivity
         /// <summary>
         /// Whether <paramref name="exception"/> (or an inner exception) is the HOST's refusal of the destination - which a
         /// connector must let propagate, never fold into a <see cref="ConnectionTestResult.Fail"/>, so the runner
-        /// categorises it <c>DeniedByPolicy</c> (BL-96). A connector references the contract only; the host's guard answers.
+        /// categorises it <c>DeniedByPolicy</c>. A connector references the contract only; the host's guard answers.
         /// </summary>
         bool IsDenial(Exception exception) => exception is ConnectorEgressDeniedException || exception.InnerException is ConnectorEgressDeniedException;
     }
@@ -287,10 +287,10 @@ namespace Stomme.Connectivity
     {
         public IReadOnlyDictionary<string, string> Credentials { get; init; } = new Dictionary<string, string>(StringComparer.Ordinal);
 
-        /// <summary>The host's managed file storage for an operation that produces files (BL-96 increment 2); null when the host offers none, and such an operation says so.</summary>
+        /// <summary>The host's managed file storage for an operation that produces files; null when the host offers none, and such an operation says so.</summary>
         public IConnectorFileSink? FileSink { get; init; }
 
-        /// <summary>The files of the place the operation runs in - a pipeline run's folder (BL-229) - to upload from and download to; null outside a run, and an operation that needs it says so.</summary>
+        /// <summary>The files of the place the operation runs in - a pipeline run's folder - to upload from and download to; null outside a run, and an operation that needs it says so.</summary>
         public IConnectorFiles? Files { get; init; }
     }
 
@@ -311,7 +311,7 @@ namespace Stomme.Connectivity
 
         AuthenticationType AuthType => AuthenticationType.None;
 
-        /// <summary>Whether the endpoint is a URL or a driver connection string; a connection string is never a place for a credential (D110).</summary>
+        /// <summary>Whether the endpoint is a URL or a driver connection string; a connection string is never a place for a credential.</summary>
         ConnectorEndpointKind EndpointKind => ConnectorEndpointKind.Url;
 
         /// <summary>An endpoint of this connector's own, shown in the connection form where one is typed; null: the kind's generic example.</summary>
@@ -334,7 +334,7 @@ namespace Stomme.Connectivity
         /// <summary>
         /// The credential fields' labels in the service's own words - a field of the scheme shown as the service names it (a key
         /// pair's secret key as Trello's "Token"). Only the LABEL changes: the field's name, and so where its secret is kept, stays
-        /// the scheme's (D110), and a label for a name the scheme does not declare is refused by the catalogue's test. Null: the
+        /// the scheme's, and a label for a name the scheme does not declare is refused by the catalogue's test. Null: the
         /// scheme's own labels.
         /// </summary>
         IReadOnlyDictionary<string, string>? CredentialLabels => null;
@@ -350,7 +350,7 @@ namespace Stomme.Connectivity
         IAsyncEnumerable<ConnectorRecord> ExtractAsync(ConnectorExtractContext context, CancellationToken cancellationToken = default);
     }
 
-    /// <summary>Every registered connector, by type key (case-insensitive). The host's catalog REFUSES a duplicate key at composition (D110; the predecessor platform's first-registration-wins is the hijack D101 and D103 refused).</summary>
+    /// <summary>Every registered connector, by type key (case-insensitive). The host's catalog REFUSES a duplicate key at composition (the predecessor platform's first-registration-wins is the hijack D101 and D103 refused).</summary>
     public interface IConnectorCatalog
     {
         IConnector? Find(string connectorType);

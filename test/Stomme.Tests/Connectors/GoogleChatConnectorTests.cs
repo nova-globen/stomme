@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Chat (n8n's Google Chat node) without a server: every name held to Chat's shape before a token is asked for
+    /// Google Chat (n8n's Google Chat node) without a server: every name held to Chat's shape before a token is asked for
     /// - a send to somewhere that is not a space, or a reply to another space's thread, a refused record as the chat connectors
     /// answer; a text sent to a space, in a thread by its name or a key of the author's own, its message's name the record; Chat's
     /// refusal of a send its record, any other failure thrown; a message's JSON sent with a thread key and a request id; a message

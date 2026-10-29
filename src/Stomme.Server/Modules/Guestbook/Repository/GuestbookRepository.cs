@@ -10,7 +10,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Guestbook.Persistence
 {
     /// <summary>
-    /// The Guestbook module's closed repository — now PROVIDER-NEUTRAL by construction (D78). Every member,
+    /// The Guestbook module's closed repository — now PROVIDER-NEUTRAL by construction. Every member,
     /// including the by-module read, DELEGATES to the CLOSED <see cref="IRepository{TAggregate, TId}"/> the
     /// module registered through <c>AddModuleAggregatePersistence</c> (an <c>EfRepository</c> over the host's
     /// shared <c>ModuleAggregatesDbContext</c> on a relational install, a <c>RavenRepository</c> over the

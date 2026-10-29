@@ -20,13 +20,13 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Visitor cluster on the persistence seam (D47): writes through <see cref="IVisitorStore"/>, reads
-    /// through <see cref="IFrameworkStoreSessionFactory"/> (D19). The <c>DbSet&lt;Visitor&gt;</c> is gone from
+    /// The Visitor cluster on the persistence seam: writes through <see cref="IVisitorStore"/>, reads
+    /// through <see cref="IFrameworkStoreSessionFactory"/>. The <c>DbSet&lt;Visitor&gt;</c> is gone from
     /// <see cref="TenantDBContext"/> — that deletion is the compiler's proof this cluster moved.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Its reference into the User aggregate was severed by D22, BEFORE this increment — <c>Visitor.User</c> is
+    /// Its reference into the User aggregate was severed, BEFORE this increment — <c>Visitor.User</c> is
     /// <c>[NotMapped]</c> view state and <see cref="GetVisitorsAsync"/> re-populates it from the User
     /// aggregate. So this increment moved the ROW and nothing else; the navigation work was already done.
     /// </para>
@@ -51,7 +51,7 @@ namespace Stomme.Repository
 
         /// <summary>
         /// Opens a read session, runs <paramref name="read"/> against it and disposes it. Reads NEVER go
-        /// through the store (D19) — the store is the write path.
+        /// through the store — the store is the write path.
         /// </summary>
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -77,7 +77,7 @@ namespace Stomme.Repository
                 .ToList()
                 .ConvertAll(VisitorMapper.ToModel));
 
-            // Populate the severed navigation (D22) from the User aggregate. Read through the seam's query
+            // Populate the severed navigation from the User aggregate. Read through the seam's query
             // session rather than IUserRepository: one IN (...) query for the page of visitors, where the
             // repository offers only GetUsers() (every user in the tenant) or a per-visitor GetUser(id) (N+1).
             var userIds = visitors.Where(item => item.UserId != null).Select(item => item.UserId.Value).Distinct().ToList();

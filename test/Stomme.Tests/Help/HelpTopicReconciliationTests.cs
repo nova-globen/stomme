@@ -27,7 +27,7 @@ using TenantId = Stomme.Tenancy.Domain.TenantId;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84 increment 5 (D103 item 7, refutations 1, 2, 6 and 7): contributed help topics reach every site of every
+    /// BL-84 increment 5 (refutations 1, 2, 6 and 7): contributed help topics reach every site of every
     /// tenant on the boot path, under THAT tenant, once - and an upgrade touches only what it owns.
     /// </summary>
     /// <remarks>
@@ -48,7 +48,7 @@ namespace Stomme.Tests.Help
     /// <para>
     /// <b>The upgrade is driven the only way that class of defect shows</b>: TWO hosts over ONE database, never a
     /// fresh install. PostgreSQL co-locates the module store so that leg is PostgreSQL end to end. PostgreSQL and
-    /// RavenDB FAIL rather than skip (D46).
+    /// RavenDB FAIL rather than skip.
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]

@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// Takes the <c>Everyone</c> View grant off user folders created before BL-115 (BL-142).
+    /// Takes the <c>Everyone</c> View grant off user folders created before BL-115.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -85,7 +85,7 @@ namespace Stomme.Infrastructure
 
                 logger.LogWarning(
                     "Removed the {Role} View grant from the user folder '{Path}' on site {SiteId}: a user's folder is " +
-                    "private, and that row made every file under it readable by an anonymous caller (BL-142).",
+                    "private, and that row made every file under it readable by an anonymous caller.",
                     RoleNames.Everyone, folder.Path, siteId);
             }
         }

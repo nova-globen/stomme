@@ -94,7 +94,7 @@ namespace Stomme.Database.PostgreSQL
             return $"\"{name}\"";
         }
 
-        // BL-81: the column's identity sequence moves to one past the highest restored key (is_called=false: the next
+        // The column's identity sequence moves to one past the highest restored key (is_called=false: the next
         // nextval RETURNS that value). A column with no sequence yields NULL and setval, being STRICT, does nothing.
         public override async Task ResetIdentityAsync(DbContext context, string table, string keyColumn, System.Threading.CancellationToken cancellationToken)
         {
@@ -106,7 +106,7 @@ namespace Stomme.Database.PostgreSQL
 #pragma warning restore EF1002
         }
 
-        // BL-81: some tables' keys are GENERATED ALWAYS (the Tenant table, measured), which refuses an explicit value. PostgreSQL
+        // Some tables' keys are GENERATED ALWAYS (the Tenant table, measured), which refuses an explicit value. PostgreSQL
         // DDL is transactional, so relaxing it inside the restore's transaction is undone by a rollback as well.
         public override async Task<bool> AllowExplicitKeysAsync(DbContext context, string table, string keyColumn, System.Threading.CancellationToken cancellationToken)
         {

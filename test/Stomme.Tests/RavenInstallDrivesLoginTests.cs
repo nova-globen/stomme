@@ -37,7 +37,7 @@ namespace Stomme.Tests
     /// the stamp).</item>
     /// </list>
     /// <para>
-    /// HONEST LIMIT: this does NOT assert the home page renders. HtmlText is still pure EF (D55), so a Raven
+    /// HONEST LIMIT: this does NOT assert the home page renders. HtmlText is still pure EF, so a Raven
     /// install cannot render until then; D54b's bar is host account + framework data in Raven + login.
     /// </para>
     /// <para>
@@ -61,7 +61,7 @@ namespace Stomme.Tests
         private static int Port => Endpoint.Port;
 
         // Mixed-case on purpose: proves the normalized (upper-cased) lookup neutralizes the EF/Raven == case
-        // split (D48/D49) by DRIVING it, rather than assuming it.
+        // split by DRIVING it, rather than assuming it.
         private const string HostUsername = "HostAdmin";
         private const string HostPassword = "Pass123!";
         private const string HostEmail = "hostadmin@example.com";
@@ -110,7 +110,7 @@ namespace Stomme.Tests
                 };
 
                 // Drive the ENTIRE installer. Its overall Success may be false because InitializeSites touches the
-                // still-EF HtmlText module (D55) — that is expected and NOT the D54b bar. The host account is
+                // still-EF HtmlText module — that is expected and NOT the D54b bar. The host account is
                 // created in CreateSiteAsync, and the Raven IUserStore persists it immediately, so it exists
                 // regardless of a later render-path failure. Report the outcome either way.
                 var result = await manager.InstallAsync(install);

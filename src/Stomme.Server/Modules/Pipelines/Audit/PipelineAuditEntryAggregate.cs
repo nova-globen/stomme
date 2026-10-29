@@ -7,7 +7,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Pipelines.Audit
 {
     /// <summary>
-    /// One line of a site's pipeline activity (BL-229, n8n Enterprise's audit log): who did what to which pipeline, and when -
+    /// One line of a site's pipeline activity (n8n Enterprise's audit log): who did what to which pipeline, and when -
     /// written by <see cref="PipelineAuditBehavior{TRequest, TResponse}"/> after a Pipelines command succeeds, so every change
     /// made through the module's surface (the editor, the API, MCP) is recorded by construction, not by each handler
     /// remembering to.
@@ -22,7 +22,7 @@ namespace Stomme.Modules.Pipelines.Audit
     /// value or a row's content, which may be secrets or personal data and are read by more people here than there.
     /// </para>
     /// <para>
-    /// Immutable: no mutator. Removed only by the per-site retention purge and by erasure after its retention (D112).
+    /// Immutable: no mutator. Removed only by the per-site retention purge and by erasure after its retention.
     /// </para>
     /// </remarks>
     public sealed class PipelineAuditEntryAggregate : AggregateRoot<Guid>, ITenantOwned

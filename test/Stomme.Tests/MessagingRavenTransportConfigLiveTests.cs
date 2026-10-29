@@ -18,7 +18,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-36(a): proves <c>Messaging:Transport=ravendb</c> — pure configuration through the host's own
+    /// Proves <c>Messaging:Transport=ravendb</c> — pure configuration through the host's own
     /// <c>AddStommeMessaging</c>, no code-passed configurator — composes the RavenDB-backed bus and
     /// round-trips a published integration event through a LIVE RavenDB server. Raven-ness is asserted,
     /// not assumed: the subscription this host registers at startup must exist as a document in this

@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Notifications.Startup
 {
     /// <summary>
-    /// Wires the Notifications module (BL-78 / D100) into the host by the startup scan. STORAGE-BLIND (D79): ONE
+    /// Wires the Notifications module into the host by the startup scan. STORAGE-BLIND: ONE
     /// <c>AddModuleAggregatePersistence&lt;TAggregate, Guid&gt;()</c> per aggregate and ZERO persistence code - no
     /// <c>DbContext</c>, no RavenDB twin, no provider branch. On a relational install the four aggregates join the host's
     /// shared <c>ModuleAggregatesDbContext</c> (value objects as string columns, collections as JSON columns - the
@@ -53,11 +53,11 @@ namespace Stomme.Modules.Notifications.Startup
             services.AddScoped<INotificationTemplateRepository, NotificationTemplateRepository>();
             services.AddScoped<INotificationChannelRepository, NotificationChannelRepository>();
             services.AddScoped<INotificationPreferenceRepository, NotificationPreferenceRepository>();
-            services.AddScoped<Stomme.Portability.ISubjectDataContributor, Application.NotificationPreferenceSubjectContributor>(); // BL-82: a person's choices, in their data package
-            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.NotificationPreferenceErasureParticipant>(); // D112: the subject's preferences go
-            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.NotificationRequestErasureParticipant>(); // D112: the subject's recipient entries leave every request
+            services.AddScoped<Stomme.Portability.ISubjectDataContributor, Application.NotificationPreferenceSubjectContributor>(); // A person's choices, in their data package
+            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.NotificationPreferenceErasureParticipant>(); // The subject's preferences go
+            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.NotificationRequestErasureParticipant>(); // The subject's recipient entries leave every request
 
-            // The channel seam (BL-78 step 3, D100 point 2). Scoped: the e-mail and in-app channels write through the
+            // The channel seam. Scoped: the e-mail and in-app channels write through the
             // scoped INotificationRepository, the webhook channel reads the scoped ISiteSecretStore. SMS has NO transport
             // (the resolver skips it) and SendGrid does not travel. The guarded webhook client is ONE singleton.
             services.AddScoped<INotificationChannel, EmailNotificationChannel>();
@@ -69,13 +69,13 @@ namespace Stomme.Modules.Notifications.Startup
             services.AddSingleton<WebhookHttpClient>();
             services.AddSingleton<NotificationTemplateRenderer>();
 
-            // Templates on the boot/upgrade path (BL-78 step 4, D100 point 5 + the D103 correction): additive,
+            // Templates on the boot/upgrade path (D100 point 5 + the D103 correction): additive,
             // create-if-absent per site, run by the framework's SiteContentReconciliationRunner. A later module adds
             // its own INotificationTemplateSource.
             services.TryAddEnumerable(ServiceDescriptor.Singleton<INotificationTemplateSource, BuiltInNotificationTemplateSource>());
             services.AddScoped<ISiteContentReconciler, NotificationTemplateReconciler>();
 
-            // The producer port + the Job-backed pipeline (BL-78 step 4, D100 points 3-4). NotificationDispatchJob (a
+            // The producer port + the Job-backed pipeline (D100 points 3-4). NotificationDispatchJob (a
             // HostedServiceBase in Infrastructure/Jobs) is auto-registered by the framework's scan, not here. Nothing on
             // this path carries [Requires] (F3: no HttpContext in a job). TryAdd for the clock so a host or a test can
             // supply its own TimeProvider first.
@@ -86,7 +86,7 @@ namespace Stomme.Modules.Notifications.Startup
             services.AddScoped<INotificationSiteSettings, SettingRepositoryNotificationSiteSettings>();
             services.AddScoped<INotificationRecipientDirectory, SiteUserRecipientDirectory>();
 
-            // The USER-FACING CQRS surface (BL-78 step 5, D100 point 6): every request carries [Requires] with one of the five
+            // The USER-FACING CQRS surface: every request carries [Requires] with one of the five
             // split keys; the job path above carries none (F3). Handlers and validators are registered EXPLICITLY - never
             // AddMediator()/AddMediatorBehavior() here (F13: Guestbook's startup already composed the mediator, and a second
             // AddMediator doubles every behavior; the authorization behavior is the host's, composed before any module).

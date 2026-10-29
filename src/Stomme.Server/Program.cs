@@ -67,7 +67,7 @@ namespace Stomme.Server
                 .SetBasePath(builder.Environment.ContentRootPath)
                 .AddJsonFile("appsettings.json", false, true)
                 .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
-                // D84: an optional dedicated feature-flag file. Its "FeatureManagement" section (Microsoft's
+                // An optional dedicated feature-flag file. Its "FeatureManagement" section (Microsoft's
                 // default section name) feeds the config-backed feature source, so bundled modules can be
                 // enabled/disabled by config without touching appsettings. Reloads on change; env vars still
                 // win over it.
@@ -76,7 +76,7 @@ namespace Stomme.Server
             if (!string.IsNullOrEmpty(overrideSettings))
             {
                 configurationBuilder.AddJsonFile(overrideSettings, true, true);
-                // BL-251: the web builder's own configuration gets the override file too, last, as in the root above. It is
+                // The web builder's own configuration gets the override file too, last, as in the root above. It is
                 // what logging, the container's IConfiguration and any library reading builder.Configuration see, and
                 // without it a value the installation keeps there - Logging:LogLevel, a claim type - was ignored by them.
                 builder.Configuration.AddJsonFile(overrideSettings, true, true);
@@ -113,7 +113,7 @@ namespace Stomme.Server
         /// templates - and ASP.NET leaves it NULL when the folder does not exist.
         /// </summary>
         /// <remarks>
-        /// An app built on the Stomme.Server package (BL-186) has no web root of its own under <c>dotnet run</c>: the
+        /// An app built on the Stomme.Server package has no web root of its own under <c>dotnet run</c>: the
         /// framework's static files are served from the package. Its first install failed creating the site,
         /// <c>ArgumentNullException</c> for <c>path1</c> in <c>DefaultSiteTemplate</c> (measured 2026-09-30); some thirty
         /// test harnesses had created an empty <c>wwwroot</c> to get past the same line. The folder is created and named,
@@ -143,7 +143,7 @@ namespace Stomme.Server
             var databaseManager = app.Services.GetService<IDatabaseManager>();
             var install = await databaseManager.InstallAsync();
 
-            // BL-81 (D106 item 7): THE BOOT PHASE - a staged restore is applied here, after the install/upgrade path and
+            // THE BOOT PHASE - a staged restore is applied here, after the install/upgrade path and
             // before hosted services start or the first request is served (Main calls RunAsync only after this returns).
             if (install.Success && string.IsNullOrEmpty(install.Message))
             {
@@ -170,7 +170,7 @@ namespace Stomme.Server
                 }
             }
 
-            // BL-258: the backup schedule Backup:Schedule:IntervalHours configures, seeded on a boot that finds none and the
+            // The backup schedule Backup:Schedule:IntervalHours configures, seeded on a boot that finds none and the
             // job enabled with it. An invalid one refuses to serve, by name, with nothing written.
             if (install.Success && string.IsNullOrEmpty(install.Message)
                 && await Stomme.Modules.Backup.Application.ConfiguredBackupSchedule.SeedAsync(app.Services, DateTime.UtcNow) is { } refusal)

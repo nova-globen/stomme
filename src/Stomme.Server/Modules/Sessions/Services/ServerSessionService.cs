@@ -22,7 +22,7 @@ namespace Stomme.Modules.Sessions.Services
     }
 
     /// <summary>
-    /// The SERVER side of <see cref="ISessionService"/> (BL-119), and what the controller calls: every decision - who the
+    /// The SERVER side of <see cref="ISessionService"/>, and what the controller calls: every decision - who the
     /// caller is, which site, whether they are an Administrator, whether the session is theirs - is made here from the
     /// request, never from an argument.
     /// </summary>

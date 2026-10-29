@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Misp
 {
     /// <summary>
-    /// MISP (BL-229, n8n's MISP node: events, their attributes and tags) over a MISP instance's REST API by an authentication key
+    /// MISP (n8n's MISP node: events, their attributes and tags) over a MISP instance's REST API by an authentication key
     /// in its <c>Authorization</c> header, as MISP takes it - never in the address. A test asks MISP for its version.
     /// </summary>
     /// <remarks>

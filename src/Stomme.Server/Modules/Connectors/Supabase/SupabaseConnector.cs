@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Supabase
 {
     /// <summary>
-    /// Supabase (BL-229, n8n's Supabase node: a table's rows read, got, created, updated and deleted): a project's REST API
+    /// Supabase (n8n's Supabase node: a table's rows read, got, created, updated and deleted): a project's REST API
     /// (<c>https://your-project.supabase.co/rest/v1</c>, PostgREST), its secret key in Supabase's <c>apikey</c> header - and as a
     /// bearer too when it is one of the older JWT keys (<c>service_role</c>), the newer <c>sb_secret_</c> keys going in
     /// <c>apikey</c> alone. A test reads the project's API description and counts its tables.

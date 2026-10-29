@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Business Profile (n8n's Google Business Profile node) without a server: every account, location, post,
+    /// Google Business Profile (n8n's Google Business Profile node) without a server: every account, location, post,
     /// review, type, time, day, call to action, link, length and number held to Google's shape before a token is asked for;
     /// the accounts and an account's locations from Google's Account Management and Business Information APIs, posts and
     /// reviews from the My Business API, each page by page by Google's page token up to the most; a post made as each of its

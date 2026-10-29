@@ -15,11 +15,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Metabase DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Metabase DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a real Metabase 0.63 (<c>scripts/metabase-test-server.ps1</c>'s throwaway on loopback): a connection made over the
     /// API with an API key, tested; a published pipeline listing the questions, reading the first one's result as rows by its
     /// number from the first step's records, saving its CSV into the run's folder and listing the databases; the key in neither the
-    /// graph nor the run. Fails, never skips, without Metabase (D46).
+    /// graph nor the run. Fails, never skips, without Metabase.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

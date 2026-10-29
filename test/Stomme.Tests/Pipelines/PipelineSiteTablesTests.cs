@@ -25,7 +25,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Data tables: tables a site keeps for its pipelines (<see cref="PipelineSiteTables"/>), kept one key per
+    /// n8n's Data tables: tables a site keeps for its pipelines (<see cref="PipelineSiteTables"/>), kept one key per
     /// table and one per row in the engine's key-value store under the site (<see cref="PipelineSiteTableStore"/>), and the Data
     /// table step that gets, inserts, updates, upserts and deletes their rows - each value converted to what its column holds,
     /// the Filter step's rules choosing rows, and nothing that would change every row by mistake.
@@ -219,7 +219,7 @@ namespace Stomme.Tests.Pipelines
             Assert.False(await PipelineSiteTableStore.DeleteAsync(KeyValues, Tenant, "t-1", CancellationToken.None));
         }
 
-        // BL-229: n8n's import into a data table, and its download - a CSV's header names the columns (id, createdAt and updatedAt
+        // n8n's import into a data table, and its download - a CSV's header names the columns (id, createdAt and updatedAt
         // the table's own, any other name passed over and named back), the delimiter the header's; all or nothing.
         [Fact]
         public async Task A_csv_adds_rows_all_or_nothing_and_a_table_downloads_as_one()
@@ -299,7 +299,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(2, count);
         }
 
-        // BL-229: n8n's data table view - a column renamed keeps its values (and a removed one's go), and the rows are found
+        // n8n's data table view - a column renamed keeps its values (and a removed one's go), and the rows are found
         // by any value and sorted by a column as it holds its values: numbers as numbers, dates as dates, text whatever its case.
         [Fact]
         public async Task A_renamed_column_keeps_its_values_and_rows_are_found_and_sorted_as_their_columns_hold_them()
@@ -355,7 +355,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(("second", "first"), (pair["a"], pair["b"]));
         }
 
-        // BL-229: a table made by the step when asked to - a column per field, typed by what all its values are - so a starter that
+        // A table made by the step when asked to - a column per field, typed by what all its values are - so a starter that
         // keeps a feed's items runs on its first schedule; without the switch, a missing table fails the step as before.
         [Fact]
         public async Task An_insert_or_upsert_makes_its_table_when_asked_and_the_next_run_finds_nothing_new()

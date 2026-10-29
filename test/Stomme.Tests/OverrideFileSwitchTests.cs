@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-162 - a switch set in <c>appsettings.override.json</c> is a switch that is ON.
+    /// A switch set in <c>appsettings.override.json</c> is a switch that is ON.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -109,7 +109,7 @@ namespace Stomme.Tests
         [InlineData(false)]
         public async Task The_cloud_cost_alert_job_obeys_the_override_file(bool enabled)
         {
-            // BL-97 increment 4: the daily alert pass reads CloudUsage:Alerts:Enabled from the HOST's configuration.
+            // The daily alert pass reads CloudUsage:Alerts:Enabled from the HOST's configuration.
             await WithInstallAsync(new JsonObject { ["CloudUsage"] = new JsonObject { ["Alerts"] = new JsonObject { ["Enabled"] = enabled } } }, async app =>
             {
                 var pass = await RunJobAsync(app, scopes => new Stomme.Modules.CloudUsage.Application.CloudCostAlertJob(scopes));
@@ -124,7 +124,7 @@ namespace Stomme.Tests
         [InlineData(false)]
         public async Task The_collaboration_sweep_job_obeys_the_override_file(bool enabled)
         {
-            // BL-97 increment 11 (D114): the lock sweep reads Collaboration:Enabled from the HOST's configuration each run;
+            // The lock sweep reads Collaboration:Enabled from the HOST's configuration each run;
             // with it on and nothing lapsed on a fresh install, the pass says so and touches nothing.
             await WithInstallAsync(new JsonObject { ["Collaboration"] = new JsonObject { ["Enabled"] = enabled } }, async app =>
             {
@@ -141,7 +141,7 @@ namespace Stomme.Tests
         [InlineData(false)]
         public async Task The_temp_file_cleanup_job_obeys_the_override_file(bool enabled)
         {
-            // BL-97 increment 8: the daily sweep reads CostOptimization:Cleanup:TempFiles:Enabled from the HOST's configuration;
+            // The daily sweep reads CostOptimization:Cleanup:TempFiles:Enabled from the HOST's configuration;
             // with it on and no directory named, the master tenant's pass says so and touches nothing.
             await WithInstallAsync(new JsonObject { ["CostOptimization"] = new JsonObject { ["Cleanup"] = new JsonObject { ["TempFiles"] = new JsonObject { ["Enabled"] = enabled } } } }, async app =>
             {
@@ -158,7 +158,7 @@ namespace Stomme.Tests
         [InlineData(30)]
         public async Task The_pipeline_run_retention_obeys_the_override_file(int keepDays)
         {
-            // BL-229: Pipelines:Runs:KeepDays - how long a finished run is kept - is read from the HOST's configuration, where an
+            // Pipelines:Runs:KeepDays - how long a finished run is kept - is read from the HOST's configuration, where an
             // install keeps it; the retention task reads it through these options each tick. Pipelines:Forms:Enabled - whether the
             // site serves its public forms - is read through the same options, so it rides the same theory (on with retention).
             var forms = keepDays > 0;
@@ -215,7 +215,7 @@ namespace Stomme.Tests
 
             await WithInstallAsync(new JsonObject { ["Metering"] = pricing }, app =>
             {
-                // The premise has changed (BL-251): the web builder's configuration reads the override file too now, so both agree.
+                // The premise has changed: the web builder's configuration reads the override file too now, so both agree.
                 // The price list still has to come from the layered root, which is what the calculator is built from.
                 Assert.Equal("sek", app.Services.GetRequiredService<IConfiguration>()["Metering:AiPricing:testmodel:Currency"]);
                 Assert.Equal("sek", app.Services.GetRequiredService<IConfigurationRoot>()["Metering:AiPricing:testmodel:Currency"]);
@@ -235,7 +235,7 @@ namespace Stomme.Tests
         [InlineData(false)]
         public async Task The_connection_health_probe_obeys_the_override_file(bool enabled)
         {
-            // BL-94 increment 11: the contributor offers its probe only when Connectivity:HealthProbes:Enabled is on in the
+            // The contributor offers its probe only when Connectivity:HealthProbes:Enabled is on in the
             // override FILE - the switch is read from this host's configuration, never the container's IConfiguration.
             await WithInstallAsync(new JsonObject { ["Connectivity"] = new JsonObject { ["HealthProbes"] = new JsonObject { ["Enabled"] = enabled } } }, async app =>
             {
@@ -269,7 +269,7 @@ namespace Stomme.Tests
         [InlineData(false)]
         public async Task The_backup_archive_provider_is_read_from_the_override_file(bool s3)
         {
-            // BL-169: Backup:Archive is read from this host's configuration - the override file where a deployed install keeps it.
+            // Backup:Archive is read from this host's configuration - the override file where a deployed install keeps it.
             var archive = s3
                 ? new JsonObject
                 {
@@ -294,7 +294,7 @@ namespace Stomme.Tests
         [InlineData(false)]
         public async Task The_assistant_installation_switch_is_read_from_the_override_file(bool enabled)
         {
-            // BL-97 increment 9 (D113): AiAssistant:Enabled is read from this host's configuration, the override file included.
+            // AiAssistant:Enabled is read from this host's configuration, the override file included.
             await WithInstallAsync(new JsonObject { ["AiAssistant"] = new JsonObject { ["Enabled"] = enabled } }, async app =>
             {
                 var options = app.Services.GetRequiredService<Stomme.Modules.AiAssistant.Application.AssistantOptions>();

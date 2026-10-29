@@ -7,7 +7,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Metering.Domain
 {
     /// <summary>
-    /// The allowance for one metric on one SITE, and the counter that tracks it (D102).
+    /// The allowance for one metric on one SITE, and the counter that tracks it.
     /// </summary>
     /// <remarks>
     /// <para>

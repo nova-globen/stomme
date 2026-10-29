@@ -60,7 +60,7 @@ namespace Stomme.Pages
                     {
                         if (user != null && !user.IsDeleted && UserSecurity.ContainsRole(user.Roles, RoleNames.Registered))
                         {
-                            // The same gates as UserManager.LoginUser (BL-254): this page sets the cookie, so a password alone must
+                            // The same gates as UserManager.LoginUser: this page sets the cookie, so a password alone must
                             // not pass where the site asks for a second factor or a confirmed address - posting here directly
                             // skipped both. A second factor is the code the sign-in mailed, still valid, used once.
                             detail = await SecondGateAsync(identityuser, username, siteId, code);
@@ -114,7 +114,7 @@ namespace Stomme.Pages
             {
                 returnurl = "/" + returnurl;
             }
-            returnurl = Utilities.LocalReturnUrl(returnurl); // BL-244: "//host" and "/\host" are another site
+            returnurl = Utilities.LocalReturnUrl(returnurl); // "//host" and "/\host" are another site
 
             return LocalRedirect(Url.Content("~" + returnurl));
         }

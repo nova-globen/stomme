@@ -6,7 +6,7 @@ namespace Stomme.Mcp
 {
     /// <summary>
     /// Matches a resource URI against a template with <c>{name}</c> segments, e.g.
-    /// <c>stomme://pages/{pageId}</c> (D101, BL-80). Lifted from the predecessor platform, with the three refusals below added.
+    /// <c>stomme://pages/{pageId}</c>. Lifted from the predecessor platform, with the three refusals below added.
     /// </summary>
     /// <remarks>
     /// A parameter is one WHOLE path segment. Literals compare case-insensitively (a scheme and a host do); the

@@ -63,7 +63,7 @@ namespace Stomme.Tests.Portability
     }
 
     /// <summary>
-    /// BL-82 (D107 item 3) - validate EVERYTHING, then change anything. Each way a package can be wrong is refused with a
+    /// Validate EVERYTHING, then change anything. Each way a package can be wrong is refused with a
     /// reason and ZERO import calls on any contributor - the predecessor platform ran its providers in document order and validated
     /// afterwards, so a bad entity left side effects with no report.
     /// </summary>
@@ -243,7 +243,7 @@ namespace Stomme.Tests.Portability
         }
     }
 
-    /// <summary>BL-82 (D107 item 16, the BL-105 posture) - a type claimed twice is claimed by nobody, loudly, and the host goes on.</summary>
+    /// <summary>BL-82 (the BL-105 posture) - a type claimed twice is claimed by nobody, loudly, and the host goes on.</summary>
     public class PortabilityContributorConflictTests
     {
         [Fact]

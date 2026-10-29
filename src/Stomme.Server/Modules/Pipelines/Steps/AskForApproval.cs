@@ -30,7 +30,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record ApprovalStimulus(string StepId, string StepName, string Question, string? Details, string RequestedAt, string? ExpiresAt);
 
     /// <summary>
-    /// Ask for approval (BL-229, n8n's "send and wait for approval", human in the loop): the run pauses on a question until a
+    /// Ask for approval (n8n's "send and wait for approval", human in the loop): the run pauses on a question until a
     /// person with <c>pipelines:approve</c> on the site approves or rejects it - on the run's page, or from the list of runs
     /// waiting for a decision - and goes on down Approved or Rejected. Durable like <see cref="Wait"/>: the step leaves a
     /// bookmark that carries the question, the run is stored and holds no worker. With "Decide within" given, a run nobody

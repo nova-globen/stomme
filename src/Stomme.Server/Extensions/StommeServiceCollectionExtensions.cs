@@ -24,7 +24,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.FluentUI.AspNetCore.Components;
-using IThemeService = Stomme.Services.IThemeService; // FluentUI 5 brings its own two of these names (BL-192)
+using IThemeService = Stomme.Services.IThemeService; // FluentUI 5 brings its own two of these names
 using INotificationService = Stomme.Services.INotificationService;
 using Stomme.Authorization;
 using Stomme.Extensions;
@@ -59,10 +59,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddStomme(this IServiceCollection services, IConfigurationRoot configuration, IWebHostEnvironment environment)
         {
             // process forwarded headers from the proxies a deployment has - loopback and the private networks unless it names
-            // its own (BL-243: believing every caller let one choose its issuer, scheme, client address and alias)
+            // its own (believing every caller let one choose its issuer, scheme, client address and alias)
             services.Configure<ForwardedHeadersOptions>(options => Stomme.Infrastructure.Security.ForwardedHeadersTrust.Configure(options, configuration));
 
-            // BL-121: the host's ONE rate limiter - the account endpoints' policies, ON by default. A module that limits its
+            // The host's ONE rate limiter - the account endpoints' policies, ON by default. A module that limits its
             // own endpoint (MCP) adds its policy to these options; the middleware is placed once, in UseStomme.
             services.AddAccountRateLimiting(configuration);
 
@@ -73,7 +73,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // register scoped core services
             services.AddScoped<IAuthorizationHandler, PermissionHandler>()
-                // D99 point 9 (BL-99): the handler for a LIFTED PERMISSION KEY policy ("key:resource:operation",
+                // The handler for a LIFTED PERMISSION KEY policy ("key:resource:operation",
                 // written as [RequiresPermissionKey]). Registered beside PermissionHandler, never instead of it —
                 // the framework's own EntityName:PermissionName:Roles policies keep their handler. Each handler
                 // only ever sees its OWN requirement type, so this adds nothing to a stock install's decision.
@@ -89,7 +89,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // setup HttpClient for server side in a client side compatible fashion ( with auth cookie )
             services.AddHttpClients();
 
-            // BL-100 F1 (D109): the ONE file-ingestion guard every FileController path runs through, its guarded
+            // BL-100 F1: the ONE file-ingestion guard every FileController path runs through, its guarded
             // download client, and the null scanner (TryAdd - a scanner registered before AddStomme wins).
             services.AddStommeFileIngestion();
 
@@ -99,31 +99,31 @@ namespace Microsoft.Extensions.DependencyInjection
             // register transient scoped core services
             services.AddStommeTransientServices();
 
-            // tenancy adapters over the persistence seam (D16). MUST precede AddStommeAssemblies: the scan
+            // tenancy adapters over the persistence seam. MUST precede AddStommeAssemblies: the scan
             // runs the module startups, and Stomme.FeatureManagement's AddFeatureManagement registers a
             // single-tenant ITenantContext fallback with TryAdd — first registration wins, so ours has to be
             // in the collection before that runs.
             services.AddStommeTenancy();
 
-            // The connector catalog (BL-94 increment 3, D110): every IConnector a module startup or a /bin package registers
+            // The connector catalog: every IConnector a module startup or a /bin package registers
             // is in it, by type key, and a key published twice refuses the composition when the catalog is first resolved.
             Stomme.Infrastructure.Connectivity.ConnectorCatalogServiceExtensions.AddConnectorCatalog(services);
             // ...and the egress a connector runs with (increment 4): the framework's one outbound guard, with the site's
             // ConnectivityAllowedHosts on every request. Scoped: it reads the site's settings.
             services.AddScoped<Stomme.Infrastructure.Connectivity.IConnectorEgressFactory, Stomme.Infrastructure.Connectivity.SiteSettingConnectorEgressFactory>();
 
-            // the framework store's aggregate clusters that run on the persistence seam (D17). MUST follow
+            // the framework store's aggregate clusters that run on the persistence seam. MUST follow
             // AddStommeTenancy (the seam's repositories take ITenantContext).
             services.AddStommeFrameworkStore();
 
-            // D54: the RavenDB provider for the SAME closed store contracts, registered alongside the EF
+            // The RavenDB provider for the SAME closed store contracts, registered alongside the EF
             // provider above. Its IDocumentStore is built lazily from the persisted connection string, so a
             // relational install never constructs it and never touches RavenDB. SelectFrameworkStoreProviderByConfig
             // then makes the provider actually resolved for each contract a resolve-time decision keyed on the
             // configured database type — necessary because the type is written mid-install, after this container
             // is built (a composition-time branch would only ever see the empty fresh-boot config's relational
             // default). Both extensions still register every twin, so D42's reflective gate stays green.
-            // BL-176: on a RavenDB install a tenant's rows live in the database its connection string names (the master
+            // On a RavenDB install a tenant's rows live in the database its connection string names (the master
             // tenant's is the installation's own). The host's resolver REPLACES the one-shared-database default that
             // AddRavenFrameworkStore and the module store's Raven registration add with TryAdd.
             services.TryAddSingleton<Stomme.Repository.Stores.RavenTenantDatabases>();
@@ -132,7 +132,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddRavenFrameworkStore(BuildRavenFrameworkDocumentStore);
             services.SelectFrameworkStoreProviderByConfig();
 
-            // The authorization bridge (D99, BL-99): [Requires] on a mediator request is enforced by the
+            // The authorization bridge: [Requires] on a mediator request is enforced by the
             // AuthorizationBehavior over the row-evaluating PermissionRowAccessGuard. UNCONDITIONAL — never gated on
             // "a lifted module exists" (F4) — and BEFORE AddStommeAssemblies: Mediator.Send reverses the resolved
             // IPipelineBehavior registrations and wraps the handler once per behavior, so the FIRST registered
@@ -141,7 +141,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // inside the module's exception boundary instead of before it. Pinned by AuthorizationBehaviorOrderingTests.
             services.AddStommeAuthorization<PermissionRowAccessGuard, StommeCurrentUser, FeatureEvaluatorBridge>();
 
-            // The shared per-site secret store (BL-78 CORRECTION / D101 - one seam for notifications, MCP, BL-81, BL-96):
+            // The shared per-site secret store (BL-78 CORRECTION / D101 - one seam for notifications, MCP):
             // private Site setting rows whose values are protected through ISecretProtector (ASP.NET Data Protection).
             // UNCONDITIONAL, like the bridge above. The key ring is kept where a redeploy does not lose it (BL-248,
             // DataProtectionKeyRing): a key ring lost made every secret stored before it Unreadable.
@@ -149,7 +149,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSecretProtection();
             services.AddScoped<ISiteSecretStore, SiteSecretStore>();
 
-            // The site's visitor cookie, protected with the same Data Protection key ring (BL-185): the settings API's Visitor
+            // The site's visitor cookie, protected with the same Data Protection key ring: the settings API's Visitor
             // door, the visitor API and the visit tracking all read it through this one service.
             services.TryAddSingleton<VisitorCookie>();
 
@@ -161,7 +161,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // Must follow AddStommeAssemblies so module handler assemblies are already loaded.
             services.AddStommeMessaging(configuration);
 
-            // D105 (BL-2): the offline licence ring. Registers NOTHING unless Deployment:Mode=OnPrem (absent/Hosted leave
+            // The offline licence ring. Registers NOTHING unless Deployment:Mode=OnPrem (absent/Hosted leave
             // the descriptor list byte-identical, so FeatureManagement's entitlement leg stays permissive), and throws on
             // any other value. The "exactly one provider, and it is ours" rule is NOT checked here — module startups ran
             // in the scan above and could still be followed by later registrations — but post-build, first thing in
@@ -211,7 +211,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             authenticationBuilder.AddTwoFactorUserIdCookie();
 
-            // D65: installation-wide, config-gated SAML2 + Windows/Negotiate consumer schemes. OFF by default,
+            // Installation-wide, config-gated SAML2 + Windows/Negotiate consumer schemes. OFF by default,
             // so a stock install registers neither and DefaultScheme stays the Identity cookie above. Both are
             // challenged ONLY explicitly by their login pages (never a default/global challenge — that would
             // force Windows auth on every request and break the D30 render guard). A successful assertion/
@@ -246,12 +246,12 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                // D99 point 7: a [Requires]-denied mediator request escaping a controller is a 403 ProblemDetails, not a 500 (F5).
+                // A [Requires]-denied mediator request escaping a controller is a 403 ProblemDetails, not a 500 (F5).
                 options.Filters.Add<AccessDeniedExceptionFilter>();
-                // BL-251: a validation failure or a stale write escaping an action is a 400 / 409, not a 500.
+                // A validation failure or a stale write escaping an action is a 400 / 409, not a 500.
                 options.Filters.Add<RequestRefusalExceptionFilter>();
             })
-            // BL-251: an enum may be sent by name as well as by number; responses keep the numbers.
+            // An enum may be sent by name as well as by number; responses keep the numbers.
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new Stomme.Infrastructure.EnumNameOrNumberConverterFactory()))
             .AddStommeApplicationParts() // register any Controllers from custom modules
             .ConfigureStommeMvc(); // any additional configuration from IStartup classes
@@ -273,7 +273,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddSwagger(configuration);
 
-            // opt-in transports (gRPC-Web + SignalR) — no-op unless enabled in the Transport config section (D10)
+            // opt-in transports (gRPC-Web + SignalR) — no-op unless enabled in the Transport config section
             services.AddStommeTransport(configuration);
 
             return services;
@@ -341,7 +341,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IDatabaseManager, DatabaseManager>();
             services.AddSingleton<IConfigManager, ConfigManager>();
             // Singleton: it IS the hand-off between every request thread that logs and the single
-            // LogDrainService that writes (D34). LogDrainService is registered by the dynamic
+            // LogDrainService that writes. LogDrainService is registered by the dynamic
             // IHostedService scan below, like every other hosted service — do not add it explicitly here.
             services.AddSingleton<LogQueue>();
             // What the hosts are told of the logs, held back when it repeats - one per node, as the drain is.
@@ -354,7 +354,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddHttpClients(this IServiceCollection services)
         {
-            // BL-234: the client's services call the site's own API from the server too; those calls go to the host's own
+            // The client's services call the site's own API from the server too; those calls go to the host's own
             // listener, never out through the edge and back (SelfCallHandler).
             services.AddSingleton<SelfCallAddress>();
             if (!services.Any(x => x.ServiceType == typeof(HttpClient)))
@@ -369,10 +369,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     if (httpContextAccessor.HttpContext != null)
                     {
                         client.BaseAddress = new Uri(httpContextAccessor.HttpContext.Request.Scheme + "://" + httpContextAccessor.HttpContext.Request.Host);
-                        // set the cookies to allow HttpClient API calls to be authenticated
-                        foreach (var cookie in httpContextAccessor.HttpContext.Request.Cookies)
+                        // set the cookies to allow HttpClient API calls to be authenticated - under a folder site's own names
+                        foreach (var cookie in FolderSiteCookieMiddleware.SelfCallCookies(httpContextAccessor.HttpContext))
                         {
-                            client.DefaultRequestHeaders.Add("Cookie", cookie.Key + "=" + WebUtility.UrlEncode(cookie.Value));
+                            client.DefaultRequestHeaders.Add("Cookie", cookie);
                         }
                     }
 
@@ -387,10 +387,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (httpContextAccessor.HttpContext != null)
                 {
                     client.BaseAddress = new Uri(httpContextAccessor.HttpContext.Request.Scheme + "://" + httpContextAccessor.HttpContext.Request.Host);
-                    // set the cookies to allow HttpClient API calls to be authenticated
-                    foreach (var cookie in httpContextAccessor.HttpContext.Request.Cookies)
+                    // set the cookies to allow HttpClient API calls to be authenticated - under a folder site's own names
+                    foreach (var cookie in FolderSiteCookieMiddleware.SelfCallCookies(httpContextAccessor.HttpContext))
                     {
-                        client.DefaultRequestHeaders.Add("Cookie", cookie.Key + "=" + WebUtility.UrlEncode(cookie.Value));
+                        client.DefaultRequestHeaders.Add("Cookie", cookie);
                     }
                 }
             }).AddHttpMessageHandler(provider => new SelfCallHandler(provider.GetRequiredService<SelfCallAddress>(), provider.GetRequiredService<IHttpContextAccessor>()));
@@ -429,18 +429,18 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<IFolderRepository, FolderRepository>();
 
-            // BL-142: take the Everyone View grant off user folders created before BL-115 closed the seed. This
+            // Take the Everyone View grant off user folders created before BL-115 closed the seed. This
             // is the FRAMEWORK's first ISiteContentReconciler, so the shared runner now has work on a stock
             // install - it walks each site once per boot, reads that site's user folders, and writes only where
             // the exposing row is still there.
             services.AddScoped<ISiteContentReconciler, UserFolderPrivacyReconciler>();
 
-            // BL-103: a declared permission key reaches a site only when something reads that site's module
+            // A declared permission key reaches a site only when something reads that site's module
             // definitions, and the bridge DENIES a key with no rows - to administrators too. This asks each site
             // for them once on the boot path, which performs the reconciliation that was already there.
             services.AddScoped<ISiteContentReconciler, DeclaredPermissionKeyReconciler>();
 
-            // BL-203: a deployment that lost its content folder gets the SEEDED logo back on the next boot.
+            // A deployment that lost its content folder gets the SEEDED logo back on the next boot.
             services.AddScoped<ISiteContentReconciler, SeededLogoReconciler>();
             services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<ISiteTemplateRepository, SiteTemplateRepository>();
@@ -459,7 +459,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ITenantManager, TenantManager>();
 
             // Scoped, alongside SiteState: the tenants already resolved in this scope, keyed by TenantId, so
-            // DbContext.OnConfiguring can route without a store read (D37). It MUST be scoped rather than
+            // DbContext.OnConfiguring can route without a store read. It MUST be scoped rather than
             // transient — ITenantManager and the contexts are transient, so the scope is the only thing a
             // SetTenant on one instance and an OnConfiguring on another share. Holds pure state and no
             // dependency, so it captures nothing.
@@ -670,18 +670,18 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddDbContextFactory<TenantDBContext>(opt => { }, ServiceLifetime.Transient);
             // The master half of the Setting cluster's store resolves its own context per instance rather
             // than taking the transient MasterDBContext above, mirroring the tenant factory on the line
-            // above it (D23). Closed-generic, so it cannot collide with the DbContext registration
+            // above it. Closed-generic, so it cannot collide with the DbContext registration
             // AddFeatureManagement owns.
             services.AddDbContextFactory<MasterDBContext>(opt => { }, ServiceLifetime.Transient);
 
-            // BL-81 (D106 item 3): the framework's own tables in the installation snapshot - beside the contexts they read.
+            // The framework's own tables in the installation snapshot - beside the contexts they read.
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Backup.IBackupParticipant, Stomme.Infrastructure.Backup.Participants.FrameworkDatabasesBackupParticipant>());
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Backup.IBackupParticipant, Stomme.Infrastructure.Backup.Participants.TenantContentFilesBackupParticipant>());
             return services;
         }
 
         // Builds the RavenDB document store the framework-store provider addresses, from the persisted
-        // ConnectionStrings:DefaultConnection (D54). Invoked LAZILY on the first resolve of an IDocumentStore,
+        // ConnectionStrings:DefaultConnection. Invoked LAZILY on the first resolve of an IDocumentStore,
         // which only happens on a RavenDB install; a relational install never calls this and never connects to
         // RavenDB. The connection string is a RavenDB descriptor of the form
         // "Url=http://host:port;Database=name" (Urls= with a comma-separated list is accepted for a cluster).
@@ -697,7 +697,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }.InitializeStommeStore();
 
             // The document provider has no change tracker to decide "is this an insert?", so audit stamps come
-            // from a store-level listener (D26). The context is the REQUEST's (BL-175, found by the erasure drive
+            // from a store-level listener. The context is the REQUEST's (found by the erasure drive
             // 2026-09-27): until then the listener carried SystemAuditContext(string.Empty), so a RavenDB install
             // stamped every row with an empty author for its whole life while the relational path stamped the
             // signed-in name - measured, a page POSTed by a signed-in administrator came back CreatedBy "". With no
@@ -837,7 +837,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     return Task.CompletedTask;
                 };
                 options.Events.OnValidatePrincipal = PrincipalValidator.ValidateAsync;
-                // BL-119: every cookie issued opens a server-side session, and a sign-out ends it.
+                // Every cookie issued opens a server-side session, and a sign-out ends it.
                 options.Events.OnSigningIn = SessionCookieEvents.SigningInAsync;
                 options.Events.OnSigningOut = SessionCookieEvents.SigningOutAsync;
             });
@@ -846,7 +846,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// BL-71 — is this challenge the interactive OIDC authorization hop? The authority's authorization
+        /// Is this challenge the interactive OIDC authorization hop? The authority's authorization
         /// endpoint is mapped at the fixed root path (<c>MapStommeOpenIddict</c>), independent of the tenant's
         /// alias path, so an exact segment match is the whole test.
         /// </summary>
@@ -984,7 +984,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ICacheManager, CacheManager>();
             services.AddSingleton<IDistributedLockManager, DistributedLockManager>();
 
-            // BL-154: the ONE registered IDistributedLock, choosing its primitive from the install's store at resolve
+            // The ONE registered IDistributedLock, choosing its primitive from the install's store at resolve
             // time (PostgreSQL advisory, SQL Server app lock, RavenDB compare-exchange, or the explicit single-node
             // in-process lock). TryAdd, so a host or a test that registered its own keeps it.
             services.TryAddSingleton<Stomme.Persistence.Abstractions.IDistributedLock, Stomme.Infrastructure.Locks.ConfiguredDistributedLock>();

@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsElb
 {
     /// <summary>
-    /// AWS Elastic Load Balancing (BL-229, n8n's AWS ELB node: application and network load balancers, and their listeners'
+    /// AWS Elastic Load Balancing (n8n's AWS ELB node: application and network load balancers, and their listeners'
     /// certificates) over ELB's Query protocol (<c>https://elasticloadbalancing.{region}.amazonaws.com</c>, version 2015-12-01)
     /// through the shared <see cref="AwsQuerySession"/>, every call signed with SigV4 by an IAM user's access key and secret, over
     /// the host's egress. A test lists a load balancer.

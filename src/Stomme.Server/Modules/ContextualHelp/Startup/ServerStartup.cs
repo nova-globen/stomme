@@ -20,7 +20,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.ContextualHelp.Startup
 {
     /// <summary>
-    /// Wires contextual help (BL-84, D103): the aggregate and its closed repository (always), and - only while
+    /// Wires contextual help: the aggregate and its closed repository (always), and - only while
     /// <c>Help:Enabled</c> - the contributors and their registry.
     /// </summary>
     /// <remarks>
@@ -48,7 +48,7 @@ namespace Stomme.Modules.ContextualHelp.Startup
             }
 
             // The registry is resolved ONCE here, while the pipeline is built, so whatever it REJECTED is in the boot log
-            // before the first reader asks for help - the MCP module's pattern (BL-105). A rejection never stops the host.
+            // before the first reader asks for help - the MCP module's pattern. A rejection never stops the host.
             using var scope = app.ApplicationServices.CreateScope();
             var registry = scope.ServiceProvider.GetRequiredService<HelpTopicContributorRegistry>();
             var logger = scope.ServiceProvider.GetService<ILogger<HelpTopicContributorRegistry>>();
@@ -103,7 +103,7 @@ namespace Stomme.Modules.ContextualHelp.Startup
             // only, by construction (D103 refutation 12). Scoped, because it reads the site this request resolved.
             services.TryAddScoped<IHelpTopicProvider, HelpTopicProvider>();
 
-            // The gated surface (D103 item 8). Handlers are registered EXPLICITLY - never AddMediator() here: an earlier
+            // The gated surface. Handlers are registered EXPLICITLY - never AddMediator() here: an earlier
             // startup already composed the mediator, and a second call would double every pipeline behaviour (BL-78
             // F13). Found by driving: without these every api/Help call was a 500 - the mediator had no handler.
             services.AddScoped<IRequestHandler<ResolveHelpTopicQuery, HelpTopicView?>, ResolveHelpTopicQueryHandler>();
@@ -119,7 +119,7 @@ namespace Stomme.Modules.ContextualHelp.Startup
         }
     }
 
-    /// <summary>Contextual help's switches, read from the configuration THIS host runs on (BL-162).</summary>
+    /// <summary>Contextual help's switches, read from the configuration THIS host runs on.</summary>
     public static class HelpSettings
     {
         /// <summary>
@@ -135,7 +135,7 @@ namespace Stomme.Modules.ContextualHelp.Startup
 
         /// <summary>
         /// The merged root while the container is still being composed: <c>AddStomme</c> registers it as an INSTANCE
-        /// before any module startup runs, so it can be read off the service collection (BL-162).
+        /// before any module startup runs, so it can be read off the service collection.
         /// </summary>
         public static IConfiguration? ComposeTimeConfiguration(IServiceCollection services) =>
             services.LastOrDefault(descriptor => descriptor.ServiceType == typeof(IConfigurationRoot))?.ImplementationInstance as IConfigurationRoot

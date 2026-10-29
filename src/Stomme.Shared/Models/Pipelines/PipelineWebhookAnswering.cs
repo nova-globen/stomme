@@ -3,7 +3,7 @@
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// A webhook answered from the pipeline (BL-229, n8n's Respond to Webhook): the names the editor and the problems panel need
+    /// A webhook answered from the pipeline (n8n's Respond to Webhook): the names the editor and the problems panel need
     /// - the Webhook step's Answer input and the value that makes its caller wait, and the step that gives the answer.
     /// </summary>
     public static class PipelineWebhookAnswering

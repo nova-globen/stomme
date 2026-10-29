@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Discourse DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Discourse DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a forum that refuses a call without the key and its user: a Discourse connection made over
     /// the API, its key vaulted, tested; a published pipeline posts a topic with an accent, replies in it, reads the latest posts
     /// over three pages by the last one's id - no more than asked - creates a group, adds users to it and reads the staff; the

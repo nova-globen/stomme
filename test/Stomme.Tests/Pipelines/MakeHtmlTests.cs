@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's HTML node, its Convert to HTML Table and Generate HTML Template, as Make HTML run by the real engine: records
+    /// n8n's HTML node, its Convert to HTML Table and Generate HTML Template, as Make HTML run by the real engine: records
     /// as a table - a header of their fields, a row each, every header and value ENCODED, a nested value as its JSON, columns chosen,
     /// a caption, headers in words - and a template as written; and the template language's html filter that encodes a value.
     /// </summary>

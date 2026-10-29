@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D76 — the clean-arch module persistence provider-neutrality GATE. It closes the exact hole that let the
+    /// The clean-arch module persistence provider-neutrality GATE. It closes the exact hole that let the
     /// Guestbook sample ship EF/SQLite-only (D74 open follow-up): a clean-arch module authored in the
     /// FeatureManagement shape works on a relational install and is silently broken on a RavenDB install,
     /// GREEN on the compiler and every EF test.

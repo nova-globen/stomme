@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 10 - a condition built from rules, ONE evaluator for the engine and the editor: numbers compare as numbers,
+    /// A condition built from rules, ONE evaluator for the engine and the editor: numbers compare as numbers,
     /// ISO dates as dates, anything else as text (ordinal, or ignoring case when asked); a list contains an item; empty, true and
     /// false read what a person means; all or any; a name no variable has is an error, as in an expression.
     /// </summary>

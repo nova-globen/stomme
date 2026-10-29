@@ -5,7 +5,7 @@ using Stomme.Health;
 namespace Stomme.Models.Health
 {
     /// <summary>
-    /// The wire shapes the health API answers with (D104 item 8).
+    /// The wire shapes the health API answers with.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -53,7 +53,7 @@ namespace Stomme.Models.Health
     /// <summary>What the admin page shows: the current picture plus whatever is outstanding.</summary>
     /// <param name="ProbingEnabled">
     /// Whether the probe JOB runs on this install (<c>Health:Enabled</c>). Without it the page could not tell "not
-    /// checked YET" from "never going to be checked" - found by driving (BL-83, 2026-09-23): with probing off it promised
+    /// checked YET" from "never going to be checked" - found by driving: with probing off it promised
     /// a tick "every minute" that would never come.
     /// </param>
     public sealed record HealthDashboard(

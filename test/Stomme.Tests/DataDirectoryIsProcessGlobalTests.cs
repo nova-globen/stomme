@@ -10,7 +10,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// <c>Constants.DataDirectory</c> is an AppDomain-GLOBAL mutable string, and this is what that costs a test
-    /// run (BL-153).
+    /// run.
     /// </summary>
     /// <remarks>
     /// <para>

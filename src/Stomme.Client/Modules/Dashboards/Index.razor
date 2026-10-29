@@ -11,7 +11,7 @@
 @inject IServiceProvider Services
 
 @*
-    The Dashboards page (BL-96 increment 9, D110): this site's boards, listed for a holder of dashboards:view; one board
+    The Dashboards page: this site's boards, listed for a holder of dashboards:view; one board
     opened as the VIEWER - its widgets on the layout grid, each loading its data through the Datasets catalogue (a chart
     over ECharts, a grid, a list, a KPI), refreshed by hand or on its interval; and, for a holder of dashboards:manage,
     the BUILDER beneath it - the add-widget form with the site's datasets as the picker, the widget table with reorder
@@ -108,7 +108,7 @@ else
 
                 @if (_canManage)
                 {
-                    @* Two builders of one board (BL-97 increment 12, D114): presence, the advisory lock, and a warning when the other saves.
+                    @* Two builders of one board: presence, the advisory lock, and a warning when the other saves.
                        Keyed by the board, so opening another one leaves this one's session and gives its lock up. *@
                     <CollaborationPanel @key="board.Id" @ref="_collaboration" ResourceType="@CollaborativeResourceTypes.Dashboard" ResourceId="@board.Id.ToString("D")" ResourceLabel="board"
                                         Enabled="true" CurrentUserId="@(PageState?.User?.UserId ?? 0)"
@@ -510,10 +510,10 @@ else
     private async Task OpenAsync(DashboardView dashboard)
     {
         await ShowAsync(dashboard);
-        BringIntoView("dashboard-viewer"); // below the list (BL-22)
+        BringIntoView("dashboard-viewer"); // below the list
     }
 
-    // Someone else saved the open board (BL-97 increment 12): read it again. The builder's own form is left as it is.
+    // Someone else saved the open board: read it again. The builder's own form is left as it is.
     private async Task ReloadBoardAsync()
     {
         if (_selected is null)

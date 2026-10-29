@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Baserow DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Baserow DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Baserow's REST API that refuses a call without the database token: a Baserow connection
     /// made over the API, its token vaulted, tested; a published pipeline creates a row by a field's name and one by its id (n8n's
     /// field_123, read by its name through the table's fields), reads the paid rows over two pages - filtered by the field's id,

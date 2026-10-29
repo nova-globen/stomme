@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stomme.CloudUsage;
 
-// Lifted verbatim from the predecessor platform's CloudCostNormalizer (BL-97 increment 2): the per-cloud keyword tables, the SaaS defaults,
+// Lifted verbatim from the predecessor platform's CloudCostNormalizer: the per-cloud keyword tables, the SaaS defaults,
 // the ISO 4217 rule and the tag aliases are unchanged; only the namespace moved.
 namespace Stomme.Modules.CloudUsage.Domain
 {

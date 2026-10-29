@@ -18,7 +18,7 @@ namespace Stomme.Modules.Dashboards.Domain
     public sealed record DashboardPublishedEvent(Guid DashboardId) : DomainEvent;
 
     /// <summary>
-    /// A dashboard (BL-96 increment 8, lifted from the predecessor platform's Dashboard): a named, tenant-owned, per-site board of widgets on a
+    /// A dashboard: a named, tenant-owned, per-site board of widgets on a
     /// layout grid - no two widgets overlap, none reaches past the last column, a layout change that would orphan one is
     /// refused - published once and cloned as a fresh draft. Storage-blind: the widgets ride the module store's JSON
     /// collection column, the layout is one scalar, and every store round-trips the same shape (the conformance suite).

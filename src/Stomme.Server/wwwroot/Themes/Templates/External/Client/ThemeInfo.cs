@@ -11,7 +11,7 @@ namespace [Owner].Theme.[Theme]
         {
             Name = "[Owner] [Theme]",
             Version = "1.0.0",
-            // A theme designed for one colour mode says so; empty follows the visitor (BL-198):
+            // A theme designed for one colour mode says so; empty follows the visitor:
             // ColorMode = ThemeColorModes.Dark,
             PackageName = "[Owner].Theme.[Theme]",
             ThemeSettingsType = "[Owner].Theme.[Theme].ThemeSettings, [Owner].Theme.[Theme].Client.Stomme",

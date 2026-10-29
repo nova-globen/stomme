@@ -12,7 +12,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// D111a: a new secret of a webhook's own on the request's site, replacing any it had - its calls are verified under it from
+    /// A new secret of a webhook's own on the request's site, replacing any it had - its calls are verified under it from
     /// now on, the installation's no longer opens it. Given out in the answer this once. Authoring rights, as the trigger is
     /// the author's.
     /// </summary>

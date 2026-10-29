@@ -7,7 +7,7 @@ namespace Stomme.Identity.OpenIddict
 {
     /// <summary>
     /// Loads the OpenIddict signing / encryption certificate from configuration so the authority survives a
-    /// process restart (D66). When NOTHING is configured every method returns <c>null</c> and the caller falls
+    /// process restart. When NOTHING is configured every method returns <c>null</c> and the caller falls
     /// back to the pre-D66 ephemeral keys — so a stock install (and every existing test) is byte-for-byte
     /// unchanged.
     /// </summary>

@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// BL-212 - a person's data section on their profile asks the portability API only when the site does not say it is off.
+    /// A person's data section on their profile asks the portability API only when the site does not say it is off.
     /// Off is the default, the API then answers 404, and a WebAssembly site's browser logged that 404 on every profile view.
     /// </summary>
     public sealed class MyDataSwitchTests : BunitContext

@@ -9,13 +9,13 @@ namespace Stomme.Persistence.Conformance.Tests;
 
 /// <summary>
 /// The FRAMEWORK STORE's contract — the migrated clusters (Sites, Pages, Modules, Users/Roles, Settings,
-/// Permissions) — expressed once and run against EVERY provider (D3/D7). Where
+/// Permissions) — expressed once and run against EVERY provider. Where
 /// <see cref="PersistenceConformanceTests"/> proves the seam's primitives on a synthetic aggregate, this
 /// proves the thing the product actually stores, through the CLOSED store interfaces the repositories
-/// consume (D17) and the two session factories they read through (D19/D23).
+/// consume and the two session factories they read through.
 /// <para>
-/// <b>The cluster set here is hand-maintained, and that is a known limit (D42).</b> The header used to say
-/// "the five migrated clusters" while Permission (D24) had no coverage on either provider — the same
+/// <b>The cluster set here is hand-maintained, and that is a known limit.</b> The header used to say
+/// "the five migrated clusters" while Permission had no coverage on either provider — the same
 /// staleness that let the RavenDB twin go missing. It is NOT fixed the same way: the registration gate could
 /// go reflective because a registration is uniform (a service type either is in the collection or is not),
 /// but a conformance test is a HAND-WRITTEN query copied from a named repository read, and no reflection can
@@ -56,24 +56,24 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
 
     protected abstract IMasterSettingStore NewMasterSettings();
 
-    // The Job/JobLog PAIR (D52) — the master-bookkeeping cluster. MASTER-side only, so both are bound to the
+    // The Job/JobLog PAIR — the master-bookkeeping cluster. MASTER-side only, so both are bound to the
     // master database (the EF fixture's master connection, a separate RavenDB database), NOT the tenant side,
     // and their reads go through MasterSessions rather than FrameworkSessions.
     protected abstract IJobStore NewJobs();
 
     protected abstract IJobLogStore NewJobLogs();
 
-    // The Theme cluster (D52) — the master-bookkeeping cluster's last member. MASTER-side only, so it is bound to
+    // The Theme cluster — the master-bookkeeping cluster's last member. MASTER-side only, so it is bound to
     // the master database (the EF fixture's master connection, a separate RavenDB database), NOT the tenant side,
     // and its reads go through MasterSessions rather than FrameworkSessions.
     protected abstract IThemeStore NewThemes();
 
-    // The ModuleDefinition cluster (D52) — installation-wide registry of installed module types. MASTER-side only,
+    // The ModuleDefinition cluster — installation-wide registry of installed module types. MASTER-side only,
     // like Theme and the Job/JobLog pair, so it is bound to the master database (the EF fixture's master
     // connection, a separate RavenDB database) and its reads go through MasterSessions rather than FrameworkSessions.
     protected abstract IModuleDefinitionStore NewModuleDefinitions();
 
-    // The Tenant/Alias routing PAIR (D52) — the master-bookkeeping wave's final cluster and the routing core.
+    // The Tenant/Alias routing PAIR — the master-bookkeeping wave's final cluster and the routing core.
     // MASTER-side only, like Theme/ModuleDefinition and the Job/JobLog pair, so both are bound to the master database
     // (the EF fixture's master connection, a separate RavenDB database) and their reads go through MasterSessions
     // rather than FrameworkSessions.
@@ -81,10 +81,10 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
 
     protected abstract IAliasStore NewAliases();
 
-    /// <summary>The Permission cluster (D24). ONE store — Permission is tenant-side only, so there is no master twin.</summary>
+    /// <summary>The Permission cluster. ONE store — Permission is tenant-side only, so there is no master twin.</summary>
     protected abstract IPermissionStore NewPermissions();
 
-    // The five LEAF clusters (D44). All tenant-side only, so none has a master twin.
+    // The five LEAF clusters. All tenant-side only, so none has a master twin.
 
     protected abstract ILanguageStore NewLanguages();
 
@@ -96,14 +96,14 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
 
     protected abstract INotificationStore NewNotifications();
 
-    // The SiteGroup pair (D45). Two stores, and they are the first pair on the seam that USED to be joined by a
+    // The SiteGroup pair. Two stores, and they are the first pair on the seam that USED to be joined by a
     // mapped navigation — SiteGroupMemberRepository now stitches the group on by hand from a second query, so
     // "can this provider serve both reads" is a product question, not a hypothetical.
     protected abstract ISiteGroupStore NewSiteGroups();
 
     protected abstract ISiteGroupMemberStore NewSiteGroupMembers();
 
-    // Visitor, UrlMapping and PageModule (D47). All tenant-side only, so none has a master twin. PageModule is
+    // Visitor, UrlMapping and PageModule. All tenant-side only, so none has a master twin. PageModule is
     // the render path's own table — every page render enumerates its page's module instances — so "can this
     // provider serve that read" is the most load-bearing question in this file.
     protected abstract IVisitorStore NewVisitors();
@@ -113,17 +113,17 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     protected abstract IPageModuleStore NewPageModules();
 
     /// <summary>
-    /// Folder (D48). Tenant-side only, so no master twin. Its File half landed one increment later — see
+    /// Folder. Tenant-side only, so no master twin. Its File half landed one increment later — see
     /// <see cref="The_seam_cannot_express_a_case_insensitive_column_filter_portably"/> for the measurement
     /// that delayed it and <see cref="A_normalized_column_filter_is_identical_on_every_provider"/> for the one
     /// that unblocked it. Both run against both providers here.
     /// </summary>
     protected abstract IFolderStore NewFolders();
 
-    /// <summary>File (D49). Tenant-side only, so no master twin.</summary>
+    /// <summary>File. Tenant-side only, so no master twin.</summary>
     protected abstract IFileStore NewFiles();
 
-    // The SearchContent cluster (D50) — Phase 3's LAST. Four tables, tenant-side only, so no master twin.
+    // The SearchContent cluster — Phase 3's LAST. Four tables, tenant-side only, so no master twin.
 
     protected abstract ISearchContentStore NewSearchContents();
 
@@ -134,7 +134,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     protected abstract ISearchWordStore NewSearchWords();
 
     /// <summary>
-    /// The SEARCH READ (D50) — the seam's one closed contract that is NOT a repository, because the read is a
+    /// The SEARCH READ — the seam's one closed contract that is NOT a repository, because the read is a
     /// prefix filter plus an aggregation keyed at runtime and no portable LINQ expresses it. The two
     /// implementations are deliberately unalike (EF: <c>GROUP BY</c>+<c>SUM</c> in SQL; RavenDB: a query-time
     /// FACET over a static index), which makes "do they agree" a real question rather than a formality — and
@@ -142,17 +142,17 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// </summary>
     protected abstract ISearchQueryStore NewSearchQueries();
 
-    /// <summary>The tenant-side read path (D19) — what every repository but SettingRepository's master half reads through.</summary>
+    /// <summary>The tenant-side read path — what every repository but SettingRepository's master half reads through.</summary>
     protected abstract IFrameworkStoreSessionFactory FrameworkSessions { get; }
 
-    /// <summary>The MASTER read path (D23). A SECOND database, not a second table.</summary>
+    /// <summary>The MASTER read path. A SECOND database, not a second table.</summary>
     protected abstract IMasterStoreSessionFactory MasterSessions { get; }
 
     public abstract Task InitializeAsync();
 
     public abstract Task DisposeAsync();
 
-    // --- Sites (D17) ---
+    // --- Sites ---
 
     /// <summary>
     /// SiteRepository.GetSites — <c>Query&lt;SiteAggregate&gt;().OrderBy(item =&gt; item.Name)</c>. The whole
@@ -170,7 +170,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal(["alpha", "zulu"], names);
     }
 
-    // --- Pages (D19) ---
+    // --- Pages ---
 
     /// <summary>
     /// PageRepository.GetPages(siteId) — <c>Where(item =&gt; item.SiteId == siteId &amp;&amp; item.UserId == null)</c>.
@@ -224,8 +224,8 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
 
     /// <summary>
     /// The D58 cross-provider AGREEMENT guard for <c>Page.Path</c>, mirroring
-    /// <see cref="A_url_mapping_lookup_is_case_insensitive_on_every_provider"/> (D57) and
-    /// <see cref="A_normalized_column_filter_is_identical_on_every_provider"/> (D49).
+    /// <see cref="A_url_mapping_lookup_is_case_insensitive_on_every_provider"/> and
+    /// <see cref="A_normalized_column_filter_is_identical_on_every_provider"/>.
     /// <para>
     /// A row stored with a MIXED-CASE path (<c>Foo/Bar</c>) is found by a lowercased lookup (<c>foo/bar</c>)
     /// through the repository's exact read expression — <c>item.PathNormalized == "foo/bar"</c> — on EVERY
@@ -256,7 +256,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal("foo/bar", found.PathNormalized);
     }
 
-    // --- Modules (D21) ---
+    // --- Modules ---
 
     /// <summary>
     /// ModuleRepository.GetModules(siteId) — <c>Where(item =&gt; item.SiteId == siteId)</c>. D21's severed
@@ -277,7 +277,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal(siteId, Assert.Single(modules).SiteId);
     }
 
-    // --- Users (D22) ---
+    // --- Users ---
 
     /// <summary>
     /// UserRepository.GetUser(username) — <c>FirstOrDefault(item =&gt; item.Username == username)</c>. Runs on
@@ -296,7 +296,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal("host", found!.Username);
     }
 
-    // --- Roles (D22) ---
+    // --- Roles ---
 
     /// <summary>
     /// RoleRepository.GetRoles(siteId, includeGlobalRoles: true) —
@@ -330,7 +330,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.DoesNotContain("Intruders", names); // another site's role must not leak
     }
 
-    // --- UserRoles (D22) ---
+    // --- UserRoles ---
 
     /// <summary>
     /// UserRoleRepository.GetUserRoles(userId, siteId) — <c>Where(item =&gt; item.UserId == userId)</c> then
@@ -360,7 +360,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal(granted, Assert.Single(assignments).RoleId);
     }
 
-    // --- Settings (D23): one aggregate, TWO databases ---
+    // --- Settings: one aggregate, TWO databases ---
 
     /// <summary>
     /// SettingRepository.GetSettings(entityName, entityId) —
@@ -467,7 +467,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal([1, 2], ids);
     }
 
-    // --- Jobs (D52): a MASTER-database cluster, read through MasterSessions ---
+    // --- Jobs: a MASTER-database cluster, read through MasterSessions ---
 
     /// <summary>
     /// JobRepository.GetJobAsync(jobType) — <c>FirstOrDefault(item =&gt; item.JobType == jobType)</c>. The
@@ -493,7 +493,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal("Stomme.Infrastructure.NotificationJob, Stomme.Server", found!.JobType);
     }
 
-    // --- JobLogs (D52) ---
+    // --- JobLogs ---
 
     /// <summary>
     /// JobLogRepository.GetJobLogsAsync(jobId) — the log list for one job AND the <c>-1</c> "all" overload,
@@ -570,7 +570,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.DoesNotContain(jobs, item => item.Id == unreferencedJobId);
     }
 
-    // --- Themes (D52): a MASTER-database cluster, read through MasterSessions ---
+    // --- Themes: a MASTER-database cluster, read through MasterSessions ---
 
     /// <summary>
     /// ThemeRepository.ProcessThemesAsync — <c>session.Query&lt;ThemeAggregate&gt;().ToList()</c>, the theme-sync
@@ -603,7 +603,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal("4.2.1", found.ThemeVersion);   // the `version` column, past the concurrency-token shadow
     }
 
-    // --- ModuleDefinitions (D52): a MASTER-database cluster, read through MasterSessions ---
+    // --- ModuleDefinitions: a MASTER-database cluster, read through MasterSessions ---
 
     /// <summary>
     /// ModuleDefinitionRepository.ProcessModuleDefinitionsAsync —
@@ -640,7 +640,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal("4.2.1", found.ModuleDefinitionVersion);   // the `version` column, past the concurrency-token shadow
     }
 
-    // --- Tenants (D52): a MASTER-database cluster and half of the routing core, read through MasterSessions ---
+    // --- Tenants: a MASTER-database cluster and half of the routing core, read through MasterSessions ---
 
     /// <summary>
     /// TenantRepository.GetTenantsAsync — <c>session.Query&lt;TenantAggregate&gt;().ToList()</c>, the routing read,
@@ -674,7 +674,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal("5.0.0", found.TenantVersion);   // the `version` column, past the concurrency-token shadow
     }
 
-    // --- Aliases (D52): a MASTER-database cluster and the other half of the routing core, read through MasterSessions ---
+    // --- Aliases: a MASTER-database cluster and the other half of the routing core, read through MasterSessions ---
 
     /// <summary>
     /// AliasRepository.GetAliasesAsync — <c>session.Query&lt;AliasAggregate&gt;().ToList()</c>, the read whose result
@@ -704,7 +704,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.True(found.IsDefault);   // the is_default column, absent from the builder but present in the live table
     }
 
-    // --- Permissions (D24) ---
+    // --- Permissions ---
 
     /// <summary>
     /// PermissionRepository.GetPermissionsAsync(siteId, entityName) —
@@ -797,7 +797,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.False(reloaded.IsAuthorized); // a DENY, not an absence
     }
 
-    // --- Languages (D44) ---
+    // --- Languages ---
 
     /// <summary>
     /// LanguageRepository.ClearDefaultAsync — <c>Where(item =&gt; item.SiteId == siteId).Where(item =&gt; item.IsDefault)</c>,
@@ -805,7 +805,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// <para>
     /// <b>Why this one.</b> Nothing in the schema enforces that invariant; the repository enforces it by
     /// reading the site's current defaults and writing each one back false. The harvested code did it by
-    /// mutating TRACKED entities, which the seam cannot do (D19) — so this read, and the write that follows
+    /// mutating TRACKED entities, which the seam cannot do — so this read, and the write that follows
     /// it, ARE the invariant. A provider that cannot filter on a bool leaves every language default and
     /// nothing raises.
     /// </para>
@@ -829,7 +829,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal("en-US", Assert.Single(defaults).Code);
     }
 
-    // --- Logs (D44) ---
+    // --- Logs ---
 
     /// <summary>
     /// LogRepository.GetLogsAsync — <c>Where(SiteId).Where(Level).OrderByDescending(LogDate).Take(rows)</c>.
@@ -867,7 +867,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal([baseDate.AddDays(4), baseDate.AddDays(3)], dates);
     }
 
-    // --- Profiles (D44) ---
+    // --- Profiles ---
 
     /// <summary>
     /// ProfileRepository.GetProfilesAsync(siteId) — <c>Where(item =&gt; item.SiteId == siteId || item.SiteId == null)</c>.
@@ -899,7 +899,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.DoesNotContain("Intruder", names);  // another site's must not leak
     }
 
-    // --- SiteTasks (D44) ---
+    // --- SiteTasks ---
 
     /// <summary>
     /// SiteTaskRepository.GetSiteTasksAsync — <c>Where(item =&gt; item.SiteId == siteId &amp;&amp; !item.IsCompleted).OrderBy(item =&gt; item.CreatedOn)</c>.
@@ -931,7 +931,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal(["first", "second"], names);
     }
 
-    // --- Notifications (D44) ---
+    // --- Notifications ---
 
     /// <summary>
     /// NotificationRepository.GetNotificationsAsync(siteId, -1, -1) — the DELIVERY QUEUE:
@@ -1035,7 +1035,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.DoesNotContain("user-to-user", subjects);
     }
 
-    // --- SiteGroups (D45) ---
+    // --- SiteGroups ---
 
     /// <summary>
     /// SiteGroupMemberRepository.GetSiteGroupMembersAsync(siteId, siteGroupId) — the -1 wildcards, composed.
@@ -1192,7 +1192,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
             Assert.Null(session.Query<SiteGroupMemberAggregate>().First(item => item.Id == member.Id).SynchronizedOn);
         }
 
-        // The read-through-a-session, write-through-the-store shape the repository uses (D19).
+        // The read-through-a-session, write-through-the-store shape the repository uses.
         var synchronizedOn = new DateTime(2024, 8, 9, 10, 11, 12, DateTimeKind.Utc);
         SiteGroupMemberAggregate detached;
         await using (var session = FrameworkSessions.OpenQuerySession())
@@ -1209,7 +1209,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         }
     }
 
-    // --- Visitors (D47) ---
+    // --- Visitors ---
 
     /// <summary>
     /// VisitorRepository.GetVisitorsAsync(siteId, fromDate) —
@@ -1275,7 +1275,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.NotEqual(found.Id, foundOther.Id); // the same IP is TWO visitors, one per site
     }
 
-    // --- UrlMappings (D47) ---
+    // --- UrlMappings ---
 
     /// <summary>
     /// UrlMappingRepository.GetUrlMappingsAsync(siteId, isMapped) — the table split on
@@ -1329,7 +1329,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// <c>FirstOrDefault(item =&gt; item.SiteId == siteId &amp;&amp; item.UrlNormalized == urlNormalized)</c>.
     /// App.razor's 404 handler runs this on every request that does not resolve to a page.
     /// <para>
-    /// An EXACT match on the NORMALIZED lookup key (D57) — not StartsWith. The url is stored without its
+    /// An EXACT match on the NORMALIZED lookup key — not StartsWith. The url is stored without its
     /// leading slash and truncated to 750 characters by the repository before it gets here; a provider that
     /// matched loosely would redirect one URL to another's target. Before D57 the read filtered <c>Url</c>
     /// raw, which case-diverged behind the seam (see
@@ -1385,7 +1385,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal("foo/bar", found.UrlNormalized);
     }
 
-    // --- PageModules (D47) ---
+    // --- PageModules ---
 
     /// <summary>
     /// PageModuleRepository.GetPageModulesAsync(siteId) — <c>Where(item =&gt; moduleIds.Contains(item.ModuleId))</c>.
@@ -1489,7 +1489,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal(4, found.Order); // the reserved word survived the round trip
     }
 
-    // --- Folders (D48) ---
+    // --- Folders ---
 
     /// <summary>
     /// FolderRepository.GetFoldersAsync(siteId) — <c>Where(item =&gt; item.SiteId == siteId)</c>, the read
@@ -1602,7 +1602,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// <b>THE MEASUREMENT THAT KEPT THE FILE CLUSTER OFF THE SEAM (D48), run against both providers. It still
+    /// <b>THE MEASUREMENT THAT KEPT THE FILE CLUSTER OFF THE SEAM, run against both providers. It still
     /// passes, and D49 did NOT make it obsolete — read the note at the end.</b>
     /// <para>
     /// <c>FileRepository</c>'s two name lookups filter with <c>.ToLower()</c> on a COLUMN. That is not a
@@ -1666,7 +1666,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// <b>THE MEASUREMENT THAT LET THE FILE CLUSTER ONTO THE SEAM (D49), run against both providers. This is
+    /// <b>THE MEASUREMENT THAT LET THE FILE CLUSTER ONTO THE SEAM, run against both providers. This is
     /// the load-bearing evidence for the whole decision.</b>
     /// <para>
     /// The test above proves the seam has no portable way to SAY "match case-insensitively". D49's answer was
@@ -1737,10 +1737,10 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Equal(ProviderStringEqualityIsOrdinal, ordinalEquality);
     }
 
-    // --- SearchContent (D50) ---
+    // --- SearchContent ---
 
     /// <summary>
-    /// <b>THE LOAD-BEARING TEST OF THE WHOLE CLUSTER (D50).</b> <c>SearchContentRepository
+    /// <b>THE LOAD-BEARING TEST OF THE WHOLE CLUSTER.</b> <c>SearchContentRepository
     /// .GetSearchContentsAsync</c>, through <see cref="ISearchQueryStore"/> — the read whose two
     /// implementations are deliberately NOT alike, so this is the only place their agreement is checked.
     /// </summary>
@@ -1768,7 +1768,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// </para>
     /// </remarks>
     /// <summary>
-    /// BL-251: a query that sets no dates - an API caller's, or code's that builds a <c>SearchQuery</c> with only its keywords -
+    /// A query that sets no dates - an API caller's, or code's that builds a <c>SearchQuery</c> with only its keywords -
     /// finds what is indexed. <c>ToDate</c> defaults to <c>DateTime.MinValue</c>, and the date arm applied "on or before"
     /// it, so such a query found nothing on either provider.
     /// </summary>
@@ -1826,7 +1826,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// The entity include/exclude arms of <c>GetSearchContentsAsync</c> (D50). On EF Core these become a
+    /// The entity include/exclude arms of <c>GetSearchContentsAsync</c>. On EF Core these become a
     /// <c>HAVING ... IN (...)</c>; on RavenDB they filter the index entry's <c>EntityName</c>, which
     /// <c>LoadDocument</c> carried across from the SearchContent document. Both stay in the store.
     /// </summary>
@@ -1849,7 +1849,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// The <c>SearchQuery.Properties</c> arm (D50) — <b>the one that THREW on EF Core before this cluster
+    /// The <c>SearchQuery.Properties</c> arm — <b>the one that THREW on EF Core before this cluster
     /// moved</b>, and the reason "keep today's query verbatim" was not an option.
     /// </summary>
     /// <remarks>
@@ -1889,7 +1889,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// An empty keyword set returns nothing on every provider (D50). <c>FilterByItems</c> composes
+    /// An empty keyword set returns nothing on every provider. <c>FilterByItems</c> composes
     /// <c>Expression.Constant(false)</c> for an empty list, which the relational providers turn into
     /// <c>WHERE 1=0</c>; the RavenDB half short-circuits rather than issuing a query it would have to spell
     /// differently. Asserted because the two halves reach the same answer by different routes.
@@ -1905,10 +1905,10 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Assert.Empty(await NewSearchQueries().SearchAsync(NewSearchQuery(siteId, "")));
     }
 
-    // --- SearchContent (D50): the two measurements that kept the cluster OFF the seam ---
+    // --- SearchContent: the two measurements that kept the cluster OFF the seam ---
 
     /// <summary>
-    /// <b>THE MEASUREMENT THAT KEEPS THE SEARCHCONTENT CLUSTER OFF THE SEAM (D50), run against both
+    /// <b>THE MEASUREMENT THAT KEEPS THE SEARCHCONTENT CLUSTER OFF THE SEAM, run against both
     /// providers.</b>
     /// <para>
     /// <c>SearchContentRepository.GetSearchContentsAsync</c> is a two-level join that <c>GroupBy</c>s every
@@ -1984,7 +1984,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// <b>The HONEST NEGATIVE that goes with the test above (D50), run against both providers.</b>
+    /// <b>The HONEST NEGATIVE that goes with the test above, run against both providers.</b>
     /// <para>
     /// The keyword arm of the search read — <c>SearchWord.Word.StartsWith(keyword)</c>, composed into an OR
     /// chain by <c>QueryableExtensions.FilterByItems</c>'s expression tree — was expected to be the portability
@@ -2052,7 +2052,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// Deliberately NOT folded into <see cref="ProviderStringEqualityIsOrdinal"/>, which is true for EF Core
     /// and describes <c>==</c>. <c>StartsWith</c> is a different operator with different semantics, and on the
     /// relational side it is the DATABASE's <c>LIKE</c> rule rather than EF Core's: PostgreSQL would answer
-    /// <c>true</c> here where SQLite answers <c>false</c>. Both EF fixtures are SQLite (D46), so that case is
+    /// <c>true</c> here where SQLite answers <c>false</c>. Both EF fixtures are SQLite, so that case is
     /// unrepresented — naming the property after the fixture rather than the provider is what keeps it from
     /// reading as a guarantee about EF Core that it is not.
     /// </remarks>
@@ -2124,7 +2124,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         var file = NewFile(folder.Id, "Old-Name.PNG");
         await NewFiles().AddAsync(file);
 
-        // The read-through-a-session, write-through-the-store shape the repository uses (D19).
+        // The read-through-a-session, write-through-the-store shape the repository uses.
         FileAggregate detached;
         await using (var read = FrameworkSessions.OpenQuerySession())
         {
@@ -2168,7 +2168,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         await AssertTwoSurvive(() => NewSetting("Site", 4242, "s-" + Guid.NewGuid().ToString("N"), "v"), NewSettings);
         await AssertTwoSurvive(() => NewPermission(4242, "Page", 4242, "p-" + Guid.NewGuid().ToString("N"), roleId: 1), NewPermissions);
 
-        // The Job/JobLog pair (D52) — the MASTER-database cluster. JobLog is the one that most needs this guard:
+        // The Job/JobLog pair — the MASTER-database cluster. JobLog is the one that most needs this guard:
         // the scheduler INSERTS a log when a run starts and reads its assigned id straight back to UPDATE the
         // FinishDate when the run ends, so an id generator that addressed every insert as JobLog/0 would keep
         // exactly one log per database and update the wrong row every tick. Each Job gets a distinct type only
@@ -2176,7 +2176,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         await AssertTwoSurvive(() => NewJob("Stomme.Jobs.Job" + Guid.NewGuid().ToString("N") + ", Stomme.Server"), NewJobs);
         await AssertTwoSurvive(() => NewJobLog(Interlocked.Increment(ref _jobLogJobId)), NewJobLogs);
 
-        // The five leaf clusters (D44). Log and Notification are the two that most need this: both are
+        // The five leaf clusters. Log and Notification are the two that most need this: both are
         // append-heavy and neither is IAuditable, so an id generator that addressed every insert as {Type}/0
         // would silently keep exactly one log entry and one notification per database.
         await AssertTwoSurvive(() => NewLanguage(4242, "l-" + Guid.NewGuid().ToString("N"), isDefault: false), NewLanguages);
@@ -2185,7 +2185,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         await AssertTwoSurvive(() => NewSiteTask(4242, "t-" + Guid.NewGuid().ToString("N"), isCompleted: false, createdOn: DateTime.UtcNow), NewSiteTasks);
         await AssertTwoSurvive(() => NewNotification(4242, "n-" + Guid.NewGuid().ToString("N")), NewNotifications);
 
-        // The SiteGroup pair (D45). The MEMBER is the one that needs this guard most: SiteGroupMember carries a
+        // The SiteGroup pair. The MEMBER is the one that needs this guard most: SiteGroupMember carries a
         // UNIQUE index on (SiteId, SiteGroupId) on the relational providers and nothing equivalent on RavenDB,
         // so a blind upsert to SiteGroupMember/0 is exactly the failure this suite exists to catch — every
         // site's membership silently collapsing onto one document, with the synchronization job then seeing a
@@ -2194,7 +2194,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         await AssertTwoSurvive(() => NewSiteGroup(SiteGroupTypes.Synchronization, 4242, synchronize: false), NewSiteGroups);
         await AssertTwoSurvive(() => NewSiteGroupMember(4242, Interlocked.Increment(ref _siteGroupMemberSiteId)), NewSiteGroupMembers);
 
-        // Visitor, UrlMapping and PageModule (D47). Visitor is the one that most needs this guard: App.razor
+        // Visitor, UrlMapping and PageModule. Visitor is the one that most needs this guard: App.razor
         // INSERTS a visitor on the render path and reads the assigned id straight into the response cookie, so
         // an id generator that addressed every insert as Visitor/0 would keep exactly one visitor per database
         // AND hand every browser a cookie for it. PageModule is a close second — it is the render path's own
@@ -2206,14 +2206,14 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         await AssertTwoSurvive(() => NewUrlMapping(4242, "u-" + Guid.NewGuid().ToString("N"), ""), NewUrlMappings);
         await AssertTwoSurvive(() => NewPageModule(4242, 4242, "Content", 1), NewPageModules);
 
-        // Folder (D48). Each folder below gets a DISTINCT path so the relational UNIQUE index on
+        // Folder. Each folder below gets a DISTINCT path so the relational UNIQUE index on
         // (site_id, path) is not what makes the test pass — the same care D45 took with SiteGroupMember's and
         // D47 with UrlMapping's. A blind upsert to Folder/0 would leave one folder per database, which is a
         // site with no content directories at all: every file upload and every file read resolves through one.
         await AssertTwoSurvive(() => NewFolder(4242, "f-" + Guid.NewGuid().ToString("N") + "/"), NewFolders);
         await AssertTwoSurvive(() => NewFile(4242, "f-" + Guid.NewGuid().ToString("N") + ".png"), NewFiles);
 
-        // The SearchContent cluster (D50) — Phase 3's last. SearchContentWord is the one that needs this most:
+        // The SearchContent cluster — Phase 3's last. SearchContentWord is the one that needs this most:
         // it is the highest-cardinality table in the product (one row per distinct word PER indexed document),
         // it is rewritten wholesale on every content save, and it is NOT IAuditable — so an id generator that
         // addressed every insert as SearchContentWordAggregate/0 would silently collapse the entire inverted
@@ -2380,7 +2380,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
             IsAuthorized = true
         });
 
-    // A Job (D52). IAuditable, so STAMPED — the job table carries the audit quartet (unlike JobLog below). Every
+    // A Job. IAuditable, so STAMPED — the job table carries the audit quartet (unlike JobLog below). Every
     // NOT NULL column the harvested schema declares is populated; StartDate/EndDate/NextExecution stay null.
     private static JobAggregate NewJob(string jobType) => Stamp(new JobAggregate
     {
@@ -2396,7 +2396,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     });
 
     /// <summary>
-    /// A JobLog (D52). NOT stamped: the job_log table has no audit columns, so <see cref="JobLogAggregate"/> is
+    /// A JobLog. NOT stamped: the job_log table has no audit columns, so <see cref="JobLogAggregate"/> is
     /// not <c>IAuditable</c> (like <see cref="LogAggregate"/> and <see cref="NotificationAggregate"/>). Its
     /// <c>Job</c> navigation is <c>[NotMapped]</c> view state the repository populates, absent here by design.
     /// </summary>
@@ -2411,7 +2411,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         Instance = ""
     };
 
-    // A Theme (D52). IAuditable, so STAMPED — the theme table carries the audit quartet. ThemeVersion is the
+    // A Theme. IAuditable, so STAMPED — the theme table carries the audit quartet. ThemeVersion is the
     // `version` STRING column, carried past the AggregateRoot.Version uint shadow.
     private static ThemeAggregate NewTheme(string themeName, string name, string version) => Stamp(new ThemeAggregate
     {
@@ -2420,7 +2420,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         ThemeVersion = version
     });
 
-    // A ModuleDefinition (D52). IAuditable, so STAMPED — the module_definition table carries the audit quartet.
+    // A ModuleDefinition. IAuditable, so STAMPED — the module_definition table carries the audit quartet.
     // ModuleDefinitionVersion is the `version` STRING column, carried past the AggregateRoot.Version uint shadow.
     private static ModuleDefinitionAggregate NewModuleDefinition(string moduleDefinitionName, string name, string description, string categories, string version) => Stamp(new ModuleDefinitionAggregate
     {
@@ -2431,7 +2431,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         ModuleDefinitionVersion = version
     });
 
-    // A Tenant (D52). IAuditable, so STAMPED — the tenant table carries the audit quartet. DBType is the
+    // A Tenant. IAuditable, so STAMPED — the tenant table carries the audit quartet. DBType is the
     // provider-selector (absent from the builder); TenantVersion is the `version` STRING column, carried past the
     // AggregateRoot.Version uint shadow.
     private static TenantAggregate NewTenant(string name, string dbType, string version) => Stamp(new TenantAggregate
@@ -2442,7 +2442,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
         TenantVersion = version
     });
 
-    // An Alias (D52). IAuditable, so STAMPED — the alias table carries the audit quartet. IsDefault maps to the
+    // An Alias. IAuditable, so STAMPED — the alias table carries the audit quartet. IsDefault maps to the
     // NULLABLE is_default column (absent from the builder). Alias has NO version column, so nothing shadows
     // AggregateRoot.Version.
     private static AliasAggregate NewAlias(string name, int tenantId, int siteId, bool isDefault) => Stamp(new AliasAggregate
@@ -2552,7 +2552,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
     /// <c>CreatedOn</c> here is the visitor's OWN column — when it was FIRST seen — and
     /// <paramref name="visitedOn"/> is the filter/sort key the report and the purge both use.
     /// </summary>
-    // --- SearchContent factories (D50) ---
+    // --- SearchContent factories ---
 
     /// <summary>
     /// A SearchQuery as <c>Admin/SearchResults/Index.razor</c> builds one — note <c>FromDate</c>/<c>ToDate</c>
@@ -2728,7 +2728,7 @@ public abstract class FrameworkStoreConformanceTests : IAsyncLifetime
 
     /// <summary>
     /// <see cref="FileAggregate"/>. Note nothing here sets <see cref="FileAggregate.NameNormalized"/> — it has
-    /// no public setter, because <see cref="FileAggregate.Name"/> derives it (D49). That is exactly the
+    /// no public setter, because <see cref="FileAggregate.Name"/> derives it. That is exactly the
     /// property under test: this factory is a store write that BYPASSES <c>FileMapper</c>, which is the way in
     /// a normalization living in the mapper would have missed.
     /// </summary>

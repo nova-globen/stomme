@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// THE DRIVEN GATE OF THE AUTHORIZATION BRIDGE (D99, BL-99) - the one test that answers "does a lifted
+    /// THE DRIVEN GATE OF THE AUTHORIZATION BRIDGE - the one test that answers "does a lifted
     /// <c>[Requires]</c> key actually DECIDE anything over real HTTP".
     /// </summary>
     /// <remarks>
@@ -45,7 +45,7 @@ namespace Stomme.Tests
     ///   <item>an ANONYMOUS caller is denied 403 on both paths.</item>
     /// </list>
     /// <para>
-    /// SQLite and PostgreSQL. Both cases FAIL rather than skip when their store is unreachable (D46): a suite
+    /// SQLite and PostgreSQL. Both cases FAIL rather than skip when their store is unreachable: a suite
     /// that quietly shrinks reports green while proving nothing, which has shipped here before. The RavenDB
     /// case is the same scenario in <see cref="RavenLiftedRequiresGateTests"/>.
     /// </para>
@@ -81,7 +81,7 @@ namespace Stomme.Tests
 
         /// <summary>
         /// THE NO-REQUEST CASE, and the honest limit of the circuit claim: a gated command dispatched from a
-        /// scope that has NO <c>HttpContext</c> is DENIED, never admitted (D99 point 5).
+        /// scope that has NO <c>HttpContext</c> is DENIED, never admitted.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -130,7 +130,7 @@ namespace Stomme.Tests
         /// <summary>
         /// The whole scenario, store-parameterised so the RavenDB suite drives the IDENTICAL assertions rather
         /// than a paraphrase of them. Any divergence between the providers therefore shows up as a failure in
-        /// one suite and not the other, which is the only way a parity claim means anything (D46).
+        /// one suite and not the other, which is the only way a parity claim means anything.
         /// </summary>
         internal static async Task RunAsync(IGateStore store, ITestOutputHelper output)
         {

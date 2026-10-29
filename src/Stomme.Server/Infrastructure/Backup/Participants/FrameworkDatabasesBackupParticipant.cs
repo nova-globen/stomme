@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Infrastructure.Backup.Participants
 {
     /// <summary>
-    /// The framework's own data on a RELATIONAL install (BL-81, D106 item 3): the master database's tables and every tenant
+    /// The framework's own data on a RELATIONAL install: the master database's tables and every tenant
     /// database's - the framework store's aggregates and the ASP.NET Identity tables - with their ORIGINAL keys. One part for
     /// all of them, because the tables carry foreign keys (some NO ACTION: PageModule -&gt; Module, Permission -&gt; User and
     /// Role, UserRole -&gt; Role), so a replace has to delete child-first and insert parent-first across tables - an order no
@@ -40,9 +40,9 @@ namespace Stomme.Infrastructure.Backup.Participants
     /// carried table deleted child-first, the rows inserted parent-first with their keys, each table's count checked, and the
     /// identity moved past the highest key (<see cref="IRelationalDatabase.ResetIdentityAsync"/>). Audit stamping is off
     /// while it writes (<see cref="AuditStampSuppression"/>) - a restored row keeps its history. SQL Server takes the original
-    /// keys with IDENTITY_INSERT, one table and one batch at a time (BL-173); a provider without a logical restore is refused
+    /// keys with IDENTITY_INSERT, one table and one batch at a time; a provider without a logical restore is refused
     /// (<see cref="IRelationalDatabase.SupportsLogicalRestore"/>). <c>MigrationHistory</c> is not carried: a restore needs
-    /// this part's shape, migrations included, to be the host's own (BL-170), so the host's history already describes it.
+    /// this part's shape, migrations included, to be the host's own, so the host's history already describes it.
     /// </para>
     /// </remarks>
     public sealed partial class FrameworkDatabasesBackupParticipant(IServiceScopeFactory scopes) : IBackupParticipant
@@ -83,7 +83,7 @@ namespace Stomme.Infrastructure.Backup.Participants
         public string Name => PartName;
 
         /// <summary>
-        /// What the part's rows are (BL-170): the carried aggregates as the serializer writes them, and every master and tenant
+        /// What the part's rows are: the carried aggregates as the serializer writes them, and every master and tenant
         /// migration this host has - a column added between two versions comes with a migration, so the part from before it
         /// is refused, while a version that changed neither restores an older archive. It was a hand-kept "1" nothing bumped.
         /// </summary>
@@ -163,7 +163,7 @@ namespace Stomme.Infrastructure.Backup.Participants
             var found = new List<string>();
             Dictionary<string, Type>? tables = null;
             Type? table = null;
-            var skipping = false; // BL-171: a context a partial restore leaves alone is read past, not judged
+            var skipping = false; // A context a partial restore leaves alone is read past, not judged
             var index = 0;
             await using var stream = reader.OpenRead();
             try
@@ -218,7 +218,7 @@ namespace Stomme.Infrastructure.Backup.Participants
                 problems.Add(ex.Message);
             }
 
-            // A whole restore: the snapshot's databases are exactly this installation's. A partial one (BL-171): every
+            // A whole restore: the snapshot's databases are exactly this installation's. A partial one: every
             // selected tenant's database is in the snapshot; the rest of the snapshot is read past.
             if (scope.IsPartial ? expected.Any(key => !found.Contains(key)) : !found.SequenceEqual(expected))
             {
@@ -235,7 +235,7 @@ namespace Stomme.Infrastructure.Backup.Participants
             {
                 if (scope.IsPartial)
                 {
-                    throw new NotSupportedException($"{Name}: a tenant-scoped restore is not supported on a RavenDB installation (BL-176).");
+                    throw new NotSupportedException($"{Name}: a tenant-scoped restore is not supported on a RavenDB installation.");
                 }
 
                 await RavenReplaceAsync(di.ServiceProvider, reader, cancellationToken);
@@ -247,7 +247,7 @@ namespace Stomme.Infrastructure.Backup.Participants
 
             using var suppressed = AuditStampSuppression.Begin();
             ContextReplace? current = null;
-            var skipping = false; // BL-171: a context the partial restore leaves alone - its tables and rows are read past
+            var skipping = false; // A context the partial restore leaves alone - its tables and rows are read past
             try
             {
                 await using var stream = reader.OpenRead();
@@ -389,7 +389,7 @@ namespace Stomme.Infrastructure.Backup.Participants
             var byKey = tenants.GroupBy(tenant => tenant.DBType + "|" + Resolve(config.GetConnectionString(tenant.DBConnectionString))).ToList();
             var databases = new List<DatabaseTarget>();
             var masterShared = byKey.FirstOrDefault(group => group.Key == masterKey);
-            // BL-171: a partial restore leaves the master context (tenants, aliases, jobs, the installation's settings)
+            // A partial restore leaves the master context (tenants, aliases, jobs, the installation's settings)
             // alone - only the selected tenants' own contexts are targets.
             databases.Add(new DatabaseTarget("master", masterShared?.ToList() ?? new List<Tenant>(), hasMaster: !scope.IsPartial));
             foreach (var group in byKey.Where(group => group.Key != masterKey).OrderBy(group => group.Min(tenant => tenant.TenantId)))
@@ -479,7 +479,7 @@ namespace Stomme.Infrastructure.Backup.Participants
                 SearchTables);
 
             /// <summary>
-            /// HtmlText - the one module still on the framework seam (D55), in its own context on the tenant database. Its
+            /// HtmlText - the one module still on the framework seam, in its own context on the tenant database. Its
             /// rows go with a CASCADE when the tenant context deletes Module, and come back here, after it.
             /// </summary>
             public static ContextTarget HtmlText(Tenant tenant) => new(
@@ -620,7 +620,7 @@ namespace Stomme.Infrastructure.Backup.Participants
                     return;
                 }
 
-                // SQL Server takes original identity values only with IDENTITY_INSERT ON, for one table at a time (BL-173).
+                // SQL Server takes original identity values only with IDENTITY_INSERT ON, for one table at a time.
                 var identity = IdentityColumn(_context, _table);
                 if (identity is { } keyed)
                 {

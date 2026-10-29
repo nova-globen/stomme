@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Mailgun DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Mailgun DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Mailgun's API: a Mailgun connection made over the API, its domain a setting and its key
     /// vaulted, tested (the domain named); a published pipeline sends an e-mail with HTML and an accent, reads the failed events
     /// over two pages by Mailgun's own next link, reads the bounces over two pages by theirs and deletes one - every call the key

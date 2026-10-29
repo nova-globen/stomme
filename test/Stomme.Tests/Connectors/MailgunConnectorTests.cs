@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Mailgun (n8n's Mailgun node: an e-mail sent): the key as HTTP Basic, the sending domain a setting; an e-mail sent as
+    /// Mailgun (n8n's Mailgun node: an e-mail sent): the key as HTTP Basic, the sending domain a setting; an e-mail sent as
     /// a form with its sender, recipients, copies, reply-to, subject, text and HTML as written, or a stored template and its
     /// variables, tags, headers, a delivery time and the test mode; the domain's events page by page by Mailgun's own next link -
     /// followed only under the domain's events - up to the most asked for, each a record; bounces, unsubscribes and complaints, a

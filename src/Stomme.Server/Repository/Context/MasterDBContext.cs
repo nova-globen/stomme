@@ -43,7 +43,7 @@ namespace Stomme.Repository
                 if (_config.IsInstalled())
                 {
                     // THIS host's data directory, not the process-wide slot the last-composed host happened to
-                    // write (BL-153, DataDirectoryIsProcessGlobalTests).
+                    // write (DataDirectoryIsProcessGlobalTests).
                     _connectionString = _config.GetConnectionString(SettingKeys.ConnectionStringKey)
                         .Replace($"|{Constants.DataDirectory}|", _config.GetDataDirectory());
                 }
@@ -57,8 +57,8 @@ namespace Stomme.Repository
                 ActiveDatabase = Activator.CreateInstance(type) as IDatabase;
             }
 
-            // Only a relational provider configures an EF provider here (D53). ActiveDatabase stays typed
-            // IDatabase because it satisfies IMultiDatabase (the module contract, D55); a RavenDatabase is
+            // Only a relational provider configures an EF provider here. ActiveDatabase stays typed
+            // IDatabase because it satisfies IMultiDatabase (the module contract); a RavenDatabase is
             // IDatabase but not IRelationalDatabase, so the pattern-match skips relational configuration.
             if (!string.IsNullOrEmpty(_connectionString) && ActiveDatabase is IRelationalDatabase relationalDatabase)
             {
@@ -72,7 +72,7 @@ namespace Stomme.Repository
         {
             base.OnModelCreating(builder);
 
-            // The Setting cluster's MASTER half (D23) and the whole master-bookkeeping wave (D52).
+            // The Setting cluster's MASTER half and the whole master-bookkeeping wave.
             // ConfigureMasterFrameworkStore maps SettingAggregate + JobAggregate + JobLogAggregate + ThemeAggregate
             // + ModuleDefinitionAggregate + TenantAggregate + AliasAggregate — the master-side framework-store
             // aggregates. The other framework-store aggregates are per-tenant tables that the master migration set
@@ -88,10 +88,10 @@ namespace Stomme.Repository
             }
         }
 
-        // NOTE: this context holds ZERO content DbSets — the master-bookkeeping wave (D52) is COMPLETE. There is
+        // NOTE: this context holds ZERO content DbSets — the master-bookkeeping wave is COMPLETE. There is
         // deliberately no DbSet<Setting>, DbSet<Job>, DbSet<JobLog>, DbSet<Theme>, DbSet<ModuleDefinition>,
-        // DbSet<Tenant> or DbSet<Alias>: the master half of the Setting cluster (D23) and the whole master-bookkeeping
-        // cluster (D52) are on the seam, mapped above as SettingAggregate/JobAggregate/JobLogAggregate/ThemeAggregate/
+        // DbSet<Tenant> or DbSet<Alias>: the master half of the Setting cluster and the whole master-bookkeeping
+        // cluster are on the seam, mapped above as SettingAggregate/JobAggregate/JobLogAggregate/ThemeAggregate/
         // ModuleDefinitionAggregate/TenantAggregate/AliasAggregate and reached only through their master stores
         // (writes) and IMasterStoreSessionFactory (reads). Deleting DbSet<Tenant> and DbSet<Alias> — the last two — is
         // the compiler's proof the whole cluster left EF's model, the same status as the tenant side's MigrationHistory

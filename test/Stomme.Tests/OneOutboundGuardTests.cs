@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-132: the server has ONE outbound connect guard (<c>OutboundConnectGuard</c>). The webhook channel once carried a
+    /// The server has ONE outbound connect guard (<c>OutboundConnectGuard</c>). The webhook channel once carried a
     /// line-for-line copy of its deny set and connect step, and a copy is a guard that stops being fixed: the next range
     /// added to one would not reach the other. This fails the build on a second connect callback or a second deny set
     /// anywhere under <c>src/</c>.

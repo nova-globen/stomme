@@ -24,7 +24,7 @@ using Microsoft.Extensions.Options;
 
 namespace Stomme.Modules.Pipelines.Steps
 {
-    /// <summary>How a paginated request finds its next page (BL-229, n8n's HTTP Request pagination).</summary>
+    /// <summary>How a paginated request finds its next page (n8n's HTTP Request pagination).</summary>
     public enum HttpPagination
     {
         /// <summary>One request.</summary>
@@ -52,10 +52,10 @@ namespace Stomme.Modules.Pipelines.Steps
 
     /// <summary>
     /// the predecessor platform's REST action and its ControlFlow HTTP request, as one engine step. The URL and the authorization
-    /// header value are inputs of the step (a Connection with a vaulted secret is the Connectors absorption's, BL-96);
+    /// header value are inputs of the step (a Connection with a vaulted secret is the Connectors absorption's);
     /// the response body is the result, the status code an output, and a non-2xx answer or a transport failure is a
     /// FAILURE under the step's policy (fault, or the <c>Failed</c> port with the body still in the result). Egress is
-    /// the framework's ONE outbound guard (<see cref="OutboundConnectGuard"/>, BL-132): the destination is checked
+    /// the framework's ONE outbound guard (<see cref="OutboundConnectGuard"/>): the destination is checked
     /// before the send and again inside the connect step, and redirects are followed by the step so each hop is checked.
     /// BL-229 (n8n's binary data on its HTTP Request node): a file in the site's pipeline folder can be SENT - its bytes as the
     /// body, or as a multipart form's file - and a response SAVED to one as it streams in, binary or text, so a download is no

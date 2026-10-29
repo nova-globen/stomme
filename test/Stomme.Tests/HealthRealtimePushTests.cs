@@ -24,7 +24,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The health page's live update (BL-83 / D104): a real hub connection, a real push, on an installed host.
+    /// The health page's live update: a real hub connection, a real push, on an installed host.
     /// </summary>
     /// <remarks>
     /// <para>

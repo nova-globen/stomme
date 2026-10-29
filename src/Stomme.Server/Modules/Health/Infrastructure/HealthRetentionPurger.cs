@@ -11,7 +11,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.Health.Infrastructure
 {
     /// <summary>
-    /// Ages out the Hour and Day rollups, drained per site by <see cref="PurgeJob"/> (D104 item 6).
+    /// Ages out the Hour and Day rollups, drained per site by <see cref="PurgeJob"/>.
     /// </summary>
     /// <remarks>
     /// <para>

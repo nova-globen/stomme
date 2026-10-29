@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsComprehend
 {
     /// <summary>
-    /// Amazon Comprehend (BL-229, n8n's AWS Comprehend node: a text's language, sentiment and entities) over Comprehend's JSON
+    /// Amazon Comprehend (n8n's AWS Comprehend node: a text's language, sentiment and entities) over Comprehend's JSON
     /// protocol (<c>https://comprehend.{region}.amazonaws.com</c>, <c>X-Amz-Target: Comprehend_20171127.*</c>), every call signed
     /// with AWS Signature Version 4 by an IAM user's access key and secret, over the host's egress. A test detects the language of
     /// a word.

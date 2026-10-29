@@ -14,12 +14,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Infrastructure.Security
 {
     /// <summary>
-    /// The account endpoints' rate limits (BL-121): the host's ONE rate limiter, and the two policies it applies to the
+    /// The account endpoints' rate limits: the host's ONE rate limiter, and the two policies it applies to the
     /// sign-in and account-email endpoints.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>Why.</b> Per-account lockout (BL-6) stops guessing ONE password; it does nothing about spraying one password across
+    /// <b>Why.</b> Per-account lockout stops guessing ONE password; it does nothing about spraying one password across
     /// many accounts, and nothing about hammering the endpoints that SEND mail - password reset, forgot-username, the
     /// login link, registration - each of which writes a live token or a message. the predecessor platform's host limited sign-in per client
     /// address; D98 dropped that host, and Stomme had no limiter at all.

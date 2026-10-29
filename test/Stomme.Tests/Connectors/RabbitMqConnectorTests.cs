@@ -15,10 +15,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The RabbitMQ connector's live tests' broker (BL-229): RABBITMQ_TEST_HOST / PORT / PASSWORD where set, otherwise this
+    /// The RabbitMQ connector's live tests' broker: RABBITMQ_TEST_HOST / PORT / PASSWORD where set, otherwise this
     /// machine's throwaway RabbitMQ that <c>scripts/rabbitmq-test-server.ps1</c> makes on 127.0.0.1:15673, its user <c>kafe</c>
     /// and its password read from the file that script writes under the user's temp folder. No password is a FAILURE that
-    /// says how to get one, never a skip (D46).
+    /// says how to get one, never a skip.
     /// </summary>
     internal static class RabbitMqTestEndpoint
     {
@@ -46,7 +46,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the RabbitMQ connector without a broker: an address that is not AMQP's, or carries options, invalid; a user or
+    /// The RabbitMQ connector without a broker: an address that is not AMQP's, or carries options, invalid; a user or
     /// password in it and a list of brokers refused as the egress's denial - each before any pin; the host pinned on its port
     /// and AMQP's own 5672 and 5671, a refused host the guard's own denial; the virtual host from the path; TLS naming the
     /// broker's host; the scheme's credentials applied and the client's own recovery off; every parameter held to its shape
@@ -126,12 +126,12 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the RabbitMQ connector against a real RabbitMQ 4.1 (<c>scripts/rabbitmq-test-server.ps1</c>'s throwaway broker on
+    /// The RabbitMQ connector against a real RabbitMQ 4.1 (<c>scripts/rabbitmq-test-server.ps1</c>'s throwaway broker on
     /// loopback) through the HOST's egress: loopback refused until allowlisted; a test naming the broker, a wrong password
     /// failing; the client dialling the pinned address and never the name; a message published to a queue - declared first -
     /// with its type, headers and ids, confirmed, counted, got with them all and acknowledged; one put back and got again,
     /// redelivered; a message through an exchange to the queue bound to it by its routing key; no further than asked; a queue
-    /// that is not there the broker's refusal. Fails, never skips, when the broker is absent (D46).
+    /// that is not there the broker's refusal. Fails, never skips, when the broker is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class RabbitMqConnectorLiveTests(ITestOutputHelper output) : IAsyncLifetime

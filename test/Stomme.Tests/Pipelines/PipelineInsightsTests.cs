@@ -23,7 +23,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Insights: each pipeline's runs in a window counted - failed, cancelled, not ended - with the failure rate of
+    /// n8n's Insights: each pipeline's runs in a window counted - failed, cancelled, not ended - with the failure rate of
     /// those that ended and the MEDIAN time they took (a run waiting days for a decision would make an average say nothing); and
     /// the window read through the engine's stores, its runs and no older one.
     /// </summary>
@@ -107,7 +107,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(((int?)null, (int?)null, 1, PipelineInsights.MaxMinutesSavedPerRun), (PipelineInsights.MinutesSaved(0), PipelineInsights.MinutesSaved(null), PipelineInsights.MinutesSaved(1), PipelineInsights.MinutesSaved(int.MaxValue)));
         }
 
-        // BL-229 - each step's figures from its passes: how many, how many failed (faulted, or failed and gone on down its Failed
+        // Each step's figures from its passes: how many, how many failed (faulted, or failed and gone on down its Failed
         // path), the median time of those that ended; a pass naming no step is none of them.
         [Fact]
         public void Each_steps_passes_are_counted_with_their_failures_and_median_time()
@@ -251,7 +251,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(7, (await handler.Handle(new GetInsightsQuery(365), CancellationToken.None)).Days);
         }
 
-        // BL-229 - what runs next, off the published bodies with the schedules task's rules: a schedule that starts its pipeline, its
+        // What runs next, off the published bodies with the schedules task's rules: a schedule that starts its pipeline, its
         // cron in its zone (06:00 in Stockholm is 04:00 UTC in October), the soonest first; an every-minute one counted to the limit;
         // one switched off, or one something leads to, not listed; nothing listed past the window.
         [Fact]
@@ -311,7 +311,7 @@ namespace Stomme.Tests.Pipelines
             public override DateTimeOffset GetUtcNow() => now;
         }
 
-        // BL-229 - each step's figures read through the engine's stores: the window's runs of the one pipeline, their passes' states
+        // Each step's figures read through the engine's stores: the window's runs of the one pipeline, their passes' states
         // and times; the engine's own wrappers left out, an older run not counted.
         [Fact]
         public async Task Each_steps_figures_are_read_through_the_engines_stores()

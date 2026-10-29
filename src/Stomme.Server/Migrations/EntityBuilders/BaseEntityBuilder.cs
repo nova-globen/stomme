@@ -14,7 +14,7 @@ namespace Stomme.Migrations.EntityBuilders
         private readonly MigrationBuilder _migrationBuilder;
 
         // The ctor param stays IDatabase: the concrete entity-builder ctors declare (MigrationBuilder, IDatabase)
-        // and pass through here, and the migration ecosystem hands an IDatabase down by reflection (D53). The
+        // and pass through here, and the migration ecosystem hands an IDatabase down by reflection. The
         // narrowing to the relational surface is done ONCE here — migrations only ever run on a relational
         // install, so the cast is always valid — and exposed as IRelationalDatabase so builders reach both the
         // metadata members (Name/TypeName) and the SQL helpers (RewriteName/DelimitName/...) unchanged.

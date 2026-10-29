@@ -1,4 +1,4 @@
-// The Landing module's page script (BL-98 increment 2), loaded by the framework as a <page-script>: onLoad runs on the first
+// The Landing module's page script, loaded by the framework as a <page-script>: onLoad runs on the first
 // load and onUpdate after every enhanced navigation. The home page's landing component is STATIC - a visitor's view of it
 // opens no circuit - so a dashboard shown there cannot draw its charts through Blazor's interop; this script draws them in
 // the browser from what each chart element carries. It loads the chart runtime only when the page holds a chart, so a home

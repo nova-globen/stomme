@@ -44,14 +44,14 @@ namespace Stomme.Extensions
         /// contributors are discovered by reflection across the loaded Stomme assemblies — the same seam that
         /// drives <c>IServerStartup</c> — so the composition root maps nothing per-module. Also checks every
         /// scanned module's <see cref="Models.ModuleDefinition.Transports"/> declaration against the enabled
-        /// transports and logs an ERROR naming the module and the missing transport (BL-53c) — a declared
+        /// transports and logs an ERROR naming the module and the missing transport — a declared
         /// requirement must fail loudly, not silently vanish the module's endpoints.
         /// </summary>
         public static void MapStommeTransport(this IEndpointRouteBuilder endpoints, IConfigurationRoot configuration)
         {
             var options = TransportOptions.Read(configuration);
 
-            // BL-53c: loud, attributable failure for a module whose declared transport requirement the install
+            // Loud, attributable failure for a module whose declared transport requirement the install
             // does not satisfy. Runs unconditionally (a module requiring gRPC on an all-transports-off install
             // must still be named), against the DB-free assembly scan so it works pre-install too.
             var logger = endpoints.ServiceProvider

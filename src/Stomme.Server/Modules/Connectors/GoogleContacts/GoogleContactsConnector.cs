@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleContacts
 {
     /// <summary>
-    /// Google Contacts (BL-229, n8n's Google Contacts node: a contact created, got, read, updated and deleted): a Google account's
+    /// Google Contacts (n8n's Google Contacts node: a contact created, got, read, updated and deleted): a Google account's
     /// contacts over the People API (<c>https://people.googleapis.com/v1</c>) and the OAuth2 REFRESH-TOKEN scheme - a Google Cloud
     /// OAuth client's id and secret and a refresh token granted the contacts scope - exchanged at Google's token endpoint (the
     /// <c>token_url</c> setting) through the shared <see cref="OAuth2TokenProvider"/>, as Google Calendar's is. A test names the

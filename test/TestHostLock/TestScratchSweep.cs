@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.TestInfrastructure
 {
     /// <summary>
-    /// BL-156: what the suites leave on disk, removed when a test host starts - measured 2026-09-23 after a full gate:
+    /// What the suites leave on disk, removed when a test host starts - measured 2026-09-23 after a full gate:
     /// <list type="bullet">
     /// <item>13,787 RavenDB topology-cache files (<c>{database}.{hash}.raven-database-topology</c>) across five test
     /// <c>bin</c> folders - the client writes one per scratch database, and nothing ever removed one;</item>

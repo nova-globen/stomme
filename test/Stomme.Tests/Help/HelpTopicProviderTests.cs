@@ -25,7 +25,7 @@ namespace Stomme.Tests.Help
     /// D103 refutation 12: the predecessor platform's provider returned every topic on the site, drafts included, from outside the
     /// mediator's authorization behavior - so an assistant would have quoted unpublished text to a user. The isolation
     /// case runs on SQLite, PostgreSQL and RavenDB, with TWO TENANTS on ONE site id; PostgreSQL and RavenDB FAIL rather
-    /// than skip (D46).
+    /// than skip.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

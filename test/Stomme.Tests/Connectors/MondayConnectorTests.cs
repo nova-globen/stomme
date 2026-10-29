@@ -17,7 +17,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - monday.com (n8n's Monday.com node, its board items) over the GraphQL API: the token in Authorization alone; a page of
+    /// Monday.com (n8n's Monday.com node, its board items) over the GraphQL API: the token in Authorization alone; a page of
     /// monday.com taken to the API; a board's items - and one group's, and those a column's values keep - page by page by cursor up to
     /// the most asked for, each a plain record with its columns as a JSON object of ids and texts; an item got, created with column
     /// values (sent as JSON text), changed, moved, deleted and updated; the boards page by page; what is not an id, a group's or a

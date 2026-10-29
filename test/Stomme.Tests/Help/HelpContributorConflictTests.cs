@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// An (anchor, locale) belongs to ONE contribution (BL-84 increment 3, D103 refutation 8, BL-105's rule).
+    /// An (anchor, locale) belongs to ONE contribution (D103 refutation 8, BL-105's rule).
     /// </summary>
     /// <remarks>
     /// <para>

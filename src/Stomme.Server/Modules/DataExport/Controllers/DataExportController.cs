@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.DataExport.Controllers
 {
     /// <summary>
-    /// The data-export HTTP surface (D108 item 5).
+    /// The data-export HTTP surface.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -119,7 +119,7 @@ namespace Stomme.Modules.DataExport.Controllers
             return PhysicalFile(download.PhysicalPath, download.ContentType, download.DownloadName, enableRangeProcessing: true);
         }
 
-        // ---- schedules (BL-95: recurring exports, each run requested as the schedule's owner) -----------------------
+        // ---- schedules (recurring exports, each run requested as the schedule's owner) -----------------------
 
         // GET api/DataExport/schedules - the caller's own; every schedule of the site for a manager.
         [HttpGet("schedules")]

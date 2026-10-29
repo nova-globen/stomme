@@ -22,7 +22,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (D106 item 8, gate <c>BackupScheduleJobTests</c>) - the scheduled job on an INSTALLED host, run exactly as
+    /// BL-81 (gate <c>BackupScheduleJobTests</c>) - the scheduled job on an INSTALLED host, run exactly as
     /// <c>HostedServiceBase</c> runs it (per tenant: its tenant scope, a DI scope, <c>SetTenant</c>): off twice by default; with
     /// TWO tenants a due schedule is taken ONCE per tick, not twice; without the configured passphrase nothing is taken and the
     /// passphrase never reaches a note; the lease skips while a snapshot is being taken and fails an abandoned one; retention

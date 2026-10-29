@@ -29,7 +29,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Information Extractor and Text Classifier, on the site's model seam as Ask AI is, run by the real engine with
+    /// n8n's Information Extractor and Text Classifier, on the site's model seam as Ask AI is, run by the real engine with
     /// the seam scripted: Extract information asks for the author's fields and holds the answer to them (each value as its field
     /// holds it, a key not asked for dropped, a value that will not convert empty); Classify text puts the text in one category and
     /// the run goes on through that category's port - the categories are the step's outcomes, from a graph through the codec.
@@ -143,7 +143,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("AI_QUOTA_EXCEEDED: The site's AI quota for this month is spent.", OutputsOf<ExtractInformation>(run)["Error"]);
         }
 
-        // BL-229 - n8n's Correctness and Helpfulness metrics: the site's model judges an evaluation's answer from 1 to 5 - told the
+        // n8n's Correctness and Helpfulness metrics: the site's model judges an evaluation's answer from 1 to 5 - told the
         // scale, the question, the reference (correctness) and the answer, asked for JSON - its score the step's Score; outside an
         // evaluation the model is not asked at all (a call costs the site's quota); a score that is not from 1 to 5 fails the step.
         [Fact]

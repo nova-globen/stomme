@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Splunk (n8n's Splunk node: its searches, reports, fired alerts and users): every call the server's REST API under
+    /// Splunk (n8n's Splunk node: its searches, reports, fired alerts and users): every call the server's REST API under
     /// /services with output_mode=json and the token as a bearer token; lists read page by page by count and offset, the size
     /// fixed and no bigger than asked, a total, a short page or an empty one the end; a search run blocking with its times and
     /// settings and read back, its results matched by a quoted value, a job not finished a failure that says so; reports made

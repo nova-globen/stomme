@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// What a real file-backed SQLite install gets for its single write lock (BL-104, product side).
+    /// What a real file-backed SQLite install gets for its single write lock (product side).
     /// </summary>
     public class SqliteWalJournalTests : IDisposable
     {

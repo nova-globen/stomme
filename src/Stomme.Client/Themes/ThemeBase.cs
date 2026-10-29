@@ -72,7 +72,7 @@ namespace Stomme.Themes
                         {
                             if (!string.IsNullOrEmpty(resource.Url) && resource.LoadBehavior == ResourceLoadBehavior.BlazorPageScript)
                             {
-                                // An ES module (BL-202): imported, never added as a classic <script>.
+                                // An ES module: imported, never added as a classic <script>.
                                 pageScripts.Add((resource.Url.Contains("://")) ? resource.Url : PageState.Alias.BaseUrl + resource.Url);
                             }
                             else if (!string.IsNullOrEmpty(resource.Url))

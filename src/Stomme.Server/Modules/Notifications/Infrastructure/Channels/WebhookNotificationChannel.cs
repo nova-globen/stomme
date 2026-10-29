@@ -18,12 +18,12 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Notifications.Infrastructure.Channels
 {
     /// <summary>
-    /// The webhook channel (D100 point 2): one HTTP POST of a small JSON envelope (<c>to</c>/<c>subject</c>/<c>body</c>) to
+    /// The webhook channel: one HTTP POST of a small JSON envelope (<c>to</c>/<c>subject</c>/<c>body</c>) to
     /// the channel's endpoint, lifted from the predecessor platform <c>WebhookChannelProvider</c> and closed against the SSRF path it had.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>SSRF guard - the framework's ONE outbound guard (<see cref="OutboundConnectGuard"/>, BL-132).</b> Checked at CONFIGURE time (<see cref="ValidateSettingsAsync"/>
+    /// <b>SSRF guard - the framework's ONE outbound guard (<see cref="OutboundConnectGuard"/>).</b> Checked at CONFIGURE time (<see cref="ValidateSettingsAsync"/>
     /// resolves the host) AND at SEND time inside the guarded client's connect callback, on the addresses actually
     /// connected to - so a name that resolved to a public address at save and to loopback at send (DNS rebinding) is
     /// still refused. Redirects are never followed, the client uses no proxy, http/https only. A site may allowlist

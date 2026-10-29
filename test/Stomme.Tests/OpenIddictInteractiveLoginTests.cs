@@ -34,7 +34,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D64 — THE INTERACTIVE OIDC LOGIN LOOPBACK, DRIVEN.
+    /// THE INTERACTIVE OIDC LOGIN LOOPBACK, DRIVEN.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -61,7 +61,7 @@ namespace Stomme.Tests
     /// PROVIDER DIMENSION. SQLite is the always-on EF case (the primary drive). PostgreSQL runs additionally
     /// when the local service is reachable. RavenDB is yielded UNCONDITIONALLY (D46/D62 discipline: an EF-only
     /// parity run proves nothing, so an unreachable RavenDB FAILS rather than skips) — this drives the OIDC
-    /// login loopback through the Raven OpenIddict stores AND the hand-written Raven IUserStore (D54), the first
+    /// login loopback through the Raven OpenIddict stores AND the hand-written Raven IUserStore, the first
     /// time the interactive authority meets the document provider end to end.
     /// </para>
     /// </remarks>
@@ -204,7 +204,7 @@ namespace Stomme.Tests
                 Assert.Contains("/connect/userinfo", discovery?["userinfo_endpoint"]?.ToString() ?? "");
                 Assert.False(string.IsNullOrEmpty(discovery?["jwks_uri"]?.ToString()));
 
-                // ===== PART A2 (BL-196): the access token alone signs the user in to api/* =================
+                // ===== PART A2: the access token alone signs the user in to api/* =================
                 // A client holding NO cookie: anonymous without a token, the user with the authority's token, and
                 // anonymous again with the token's signature broken - each answered by the API, not the authority.
                 using (var cookieless = new HttpClient(server.CreateHandler()) { BaseAddress = new Uri("http://" + Host) })
@@ -284,7 +284,7 @@ namespace Stomme.Tests
 
                 _output.WriteLine($"[{providerName}] INTERACTIVE OIDC LOOPBACK DRIVEN: login succeeded end to end.");
 
-                // ===== PART C (BL-224): a locked-out account signs in by no route ===========================
+                // ===== PART C: a locked-out account signs in by no route ===========================
                 // The same linked account, now locked out (a service account is locked out for good): the external
                 // sign-in that just succeeded is refused, landing on the login page with AccessDenied.
                 using (var scope = app.Services.CreateScope())
@@ -328,7 +328,7 @@ namespace Stomme.Tests
             await tenantManager.SetAliasAsync(alias);
 
             // Relational: create the per-tenant OpenIddict schema (EnsureCreated). Raven: the context is not
-            // registered (D62) — the DB is created lazily by the session provider on the first store write.
+            // registered — the DB is created lazily by the session provider on the first store write.
             var context = sp.GetService<TenantOpenIddictDbContext>();
             if (context != null)
             {
@@ -617,7 +617,7 @@ namespace Stomme.Tests
 
             public void Dispose()
             {
-                // Exactly the two databases this provider handed out - never the process-wide form (BL-104).
+                // Exactly the two databases this provider handed out - never the process-wide form.
                 ScratchSqlite.Release(_tenant);
                 ScratchSqlite.Release(_oidc);
             }
@@ -749,7 +749,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

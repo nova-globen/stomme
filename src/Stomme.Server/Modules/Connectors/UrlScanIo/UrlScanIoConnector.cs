@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.UrlScanIo
 {
     /// <summary>
-    /// urlscan.io (BL-229, n8n's urlscan.io node: a URL scanned, a scan read, scans searched) over urlscan.io's API v1
+    /// urlscan.io (n8n's urlscan.io node: a URL scanned, a scan read, scans searched) over urlscan.io's API v1
     /// (<c>https://urlscan.io/api/v1</c>) by an API key in its <c>API-Key</c> header - never in the address. A test asks
     /// urlscan.io for the key's quotas.
     /// </summary>

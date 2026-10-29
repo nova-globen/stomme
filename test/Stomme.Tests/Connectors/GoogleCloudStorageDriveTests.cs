@@ -15,12 +15,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Cloud Storage DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// Google Cloud Storage DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against a real fake-gcs-server (<see cref="GcsTestEndpoint"/>) and a loopback stand-in for Google's token
     /// endpoint: a connection made over the API - the client's secret and refresh token vaulted - refused while loopback is not
     /// allowlisted, then tested; a published pipeline makes a bucket, uploads a note over several lines from the step's Query box,
     /// lists the bucket, downloads the note into the site's pipeline folder, deletes it and the bucket; the secrets in neither the
-    /// graph nor the run. Fails, never skips, without a server (D46).
+    /// graph nor the run. Fails, never skips, without a server.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

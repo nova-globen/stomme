@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - MISP (n8n's MISP node) without a server: every id, choice, colour, date, flag and length held to MISP's shape
+    /// MISP (n8n's MISP node) without a server: every id, choice, colour, date, flag and length held to MISP's shape
     /// before anything is sent; the key in MISP's Authorization header and in no address; events and attributes listed and
     /// searched page by page with the page the same size each time, an event searched without its attributes; an event made,
     /// changed with only what is given, published, tagged and deleted; an attribute of any MISP type made on an event; tags
@@ -303,7 +303,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - MISP LIVE, against this machine's throwaway MISP 2.5 (scripts/misp-test-server.ps1) - fail-not-skip without it
+    /// MISP LIVE, against this machine's throwaway MISP 2.5 (scripts/misp-test-server.ps1) - fail-not-skip without it
     /// (D46): an event made, an attribute of its own type put on it, both searched for and found, the event tagged and untagged,
     /// published and unpublished, changed, read without its attributes, and everything deleted again; a wrong key refused with
     /// MISP's own words.

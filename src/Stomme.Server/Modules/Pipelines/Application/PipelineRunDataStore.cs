@@ -13,7 +13,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - a run's data (<see cref="PipelineRunData"/>), kept in the engine's key-value store under the SITE and the run (a
+    /// A run's data (<see cref="PipelineRunData"/>), kept in the engine's key-value store under the SITE and the run (a
     /// key-value key is one row per installation - the schedules' lesson), one JSON object per run. Read for one run, or for every
     /// run of the site at once (the runs list and its search); deleted with the run.
     /// </summary>

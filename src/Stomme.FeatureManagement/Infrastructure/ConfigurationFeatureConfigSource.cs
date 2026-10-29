@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 namespace Stomme.FeatureManagement.Infrastructure;
 
 /// <summary>
-/// The <see cref="IFeatureConfigurationSource"/> backed by <see cref="IConfiguration"/> (D84). It reads flags
+/// The <see cref="IFeatureConfigurationSource"/> backed by <see cref="IConfiguration"/>. It reads flags
 /// from the <c>FeatureManagement</c> section — <b>Microsoft.FeatureManagement's own default section name</b> —
 /// so the shape a <c>features.json</c> author writes is the same shape Microsoft's config provider expects,
 /// and adding <c>builder.Configuration.AddAzureAppConfiguration(o =&gt; o.UseFeatureFlags())</c> later feeds

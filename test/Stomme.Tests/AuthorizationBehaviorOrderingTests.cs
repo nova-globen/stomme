@@ -20,7 +20,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Pins the ORDER of the authorization bridge in the REAL host (D99 point 5, F4): the
+    /// Pins the ORDER of the authorization bridge in the REAL host (F4): the
     /// <see cref="AuthorizationBehavior{TRequest,TResponse}"/> is the FIRST pipeline behavior — hence the
     /// OUTERMOST, because <c>Mediator.Send</c> reverses the resolved behaviors and wraps once per behavior —
     /// on a STOCK install (no lifted module, no opt-in switch), and an un-annotated request passes through it

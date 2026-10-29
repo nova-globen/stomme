@@ -23,7 +23,7 @@ namespace Stomme.Tests
         private readonly string _databasePath =
             Path.Combine(Path.GetTempPath(), $"stomme-guestbook-conformance-{Guid.NewGuid():N}.db");
 
-        /// <summary>The one string both the store and the teardown use — the pool is keyed by it (BL-104).</summary>
+        /// <summary>The one string both the store and the teardown use — the pool is keyed by it.</summary>
         private string ConnectionString => $"Data Source={_databasePath}";
 
         /// <summary>BL-150, measured.</summary>
@@ -34,7 +34,7 @@ namespace Stomme.Tests
         protected override void AddStore(IServiceCollection services)
         {
             // Compose exactly as the module's ServerStartup does on a relational install: the STORAGE-BLIND
-            // overload (D79) — no module DbContext, no options lambda. The shared ModuleAggregatesDbContext maps
+            // overload — no module DbContext, no options lambda. The shared ModuleAggregatesDbContext maps
             // the aggregate; ConnectionStrings:ModuleAggregates points it at this fixture's own throwaway SQLite
             // file (the install's SQLite provider applied to it), so the run is isolated.
             services.AddSingleton<IConfigurationRoot>(new ConfigurationBuilder()
@@ -52,7 +52,7 @@ namespace Stomme.Tests
         protected override System.Threading.Tasks.Task DisposeStoreAsync()
         {
             // This database's pool only: ClearAllPools is process-wide and tears pooled connections out from
-            // under whatever else is running in parallel (BL-104).
+            // under whatever else is running in parallel.
             ScratchSqlite.Release(ConnectionString);
             try
             {

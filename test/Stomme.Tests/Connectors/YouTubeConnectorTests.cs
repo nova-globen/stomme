@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - YouTube (n8n's YouTube node: channels, playlists, playlist items, videos and video categories): the refresh token
+    /// YouTube (n8n's YouTube node: channels, playlists, playlist items, videos and video categories): the refresh token
     /// exchanged at the token endpoint, the access token sent as a bearer; channels, playlists, a playlist's items and videos page
     /// by page by YouTube's token up to the most asked for, a page no bigger than what is left - the account's own by default, or
     /// by ids, a handle, a user name, a channel, a search; each a record, counts as numbers, a duration in seconds too, the largest

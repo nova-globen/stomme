@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon Textract, Rekognition and Comprehend DRIVEN on an installed SQLite host, with the REAL connectors, the host's
+    /// Amazon Textract, Rekognition and Comprehend DRIVEN on an installed SQLite host, with the REAL connectors, the host's
     /// egress and the extraction port, against a loopback stand-in for the three services that re-signs every request with the
     /// secret at its own time and its own service: a connection to each made over the API and tested; a published pipeline reads a
     /// note's sentiment from the step's Query box, an S3 image's labels and an S3 receipt's fields; every signature agreed; the

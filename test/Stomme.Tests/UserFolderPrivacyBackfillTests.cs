@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-142: the backfill that takes the <c>Everyone</c> View grant off user folders BL-115 could not reach.
+    /// The backfill that takes the <c>Everyone</c> View grant off user folders BL-115 could not reach.
     /// </summary>
     /// <remarks>
     /// <para>

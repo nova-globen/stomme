@@ -18,7 +18,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - n8n's folders: the folder a pipeline sits in on the pipelines list, kept as its tags are - beside its versions in
+    /// n8n's folders: the folder a pipeline sits in on the pipelines list, kept as its tags are - beside its versions in
     /// the engine's key-value store, under the site (<see cref="PipelineTagStore"/>): moving a pipeline is not an edit, publishes
     /// nothing and never conflicts with a collaborator's save.
     /// </summary>
@@ -102,7 +102,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 - n8n's folder rename, move and delete (<see cref="PipelineFolderMoveRequest"/>): every pipeline in the folder, or
+    /// n8n's folder rename, move and delete (<see cref="PipelineFolderMoveRequest"/>): every pipeline in the folder, or
     /// in a folder inside it, goes along to the new path - or, removed, up to the folder above, where a folder of the same name
     /// is the same folder. Null when no pipeline is in the folder; a move that cannot be is refused with the reason
     /// (<see cref="PipelineFolders.MoveProblem"/>).

@@ -13,7 +13,7 @@ using Stomme.Connectivity;
 namespace Stomme.Modules.Connectors.ActiveDirectory
 {
     /// <summary>
-    /// The Active Directory connector (BL-96 increment 2, lifted from the predecessor platform's `activedirectory`): the endpoint is the
+    /// The Active Directory connector (lifted from the predecessor platform's `activedirectory`): the endpoint is the
     /// directory host (<c>dc.corp.example.com</c>, <c>ldap://host:389</c>, <c>ldaps://host</c>), the Basic scheme's
     /// <c>username</c>/<c>password</c> bind (anonymous without a username), and four operations stream computers, users,
     /// sites-with-subnets or any LDAP filter as flattened records.

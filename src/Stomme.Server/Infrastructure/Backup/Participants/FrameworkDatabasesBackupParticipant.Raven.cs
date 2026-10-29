@@ -22,7 +22,7 @@ using Raven.Client.Documents.Session;
 namespace Stomme.Infrastructure.Backup.Participants
 {
     /// <summary>
-    /// The RavenDB half of <c>framework:databases</c> (BL-81, D106 item 3 and refutation 14): the framework store's
+    /// The RavenDB half of <c>framework:databases</c> (D106 item 3 and refutation 14): the framework store's
     /// collections and the Identity users, in the framework database and - when it is a different one - the master
     /// database, each document with its ORIGINAL id.
     /// </summary>
@@ -30,7 +30,7 @@ namespace Stomme.Infrastructure.Backup.Participants
     /// <para>
     /// <b>Replace.</b> Per database: every carried collection and the search index are deleted by query, the documents
     /// bulk-inserted with their ids, each collection's count checked from the database's own statistics - then the HiLo.
-    /// RavenDB has no transaction across collections; the safety snapshot is the answer (D106 item 7).
+    /// RavenDB has no transaction across collections; the safety snapshot is the answer.
     /// </para>
     /// <para>
     /// <b>HiLo (refutation 14).</b> Ids are reserved in ranges per collection, recorded server-side in

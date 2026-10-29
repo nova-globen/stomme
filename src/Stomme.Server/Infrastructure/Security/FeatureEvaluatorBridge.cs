@@ -16,7 +16,7 @@ namespace Stomme.Infrastructure.Security
     /// </summary>
     /// <remarks>
     /// FeatureManagement is opt-in, so its evaluator is resolved OPTIONALLY per call — and when it is absent
-    /// the answer is FALSE. This bridge fails CLOSED (D99): the spike's bridge answered <c>true</c> here,
+    /// the answer is FALSE. This bridge fails CLOSED: the spike's bridge answered <c>true</c> here,
     /// which turned every feature-gated request into an ungated one on any host without FeatureManagement
     /// (F11). A feature that cannot be evaluated is a feature that is off.
     /// </remarks>

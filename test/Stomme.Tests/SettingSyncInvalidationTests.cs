@@ -26,7 +26,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-31 — the <c>SettingController</c> sync path must actually invalidate what a setting write makes
+    /// The <c>SettingController</c> sync path must actually invalidate what a setting write makes
     /// stale. Two defects, both driven over real HTTP against the composed host (the D88 harness shape):
     /// <list type="number">
     ///   <item><b>The Host case.</b> <c>ServerSiteService.GetSiteAsync</c> caches the merged Site object, and
@@ -40,7 +40,7 @@ namespace Stomme.Tests
     ///     <c>ModuleDefinitionSetting</c> ever sees. The event must carry the exact
     ///     <see cref="EntityNames"/> casing.</item>
     /// </list>
-    /// Subscribes to the real <see cref="ISyncManager"/> (D35: subscribers are awaited before the write's
+    /// Subscribes to the real <see cref="ISyncManager"/> (subscribers are awaited before the write's
     /// caller proceeds), so an event recorded here IS the invalidation firing.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -80,7 +80,7 @@ namespace Stomme.Tests
                 await app.StartAsync();
                 var server = app.GetTestServer();
 
-                // record every sync event the controller publishes (D35: awaited before the PUT returns,
+                // record every sync event the controller publishes (awaited before the PUT returns,
                 // so by the time the response arrives the events are in the list)
                 var recorded = new List<SyncEvent>();
                 var syncManager = app.Services.GetRequiredService<ISyncManager>();
@@ -317,7 +317,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.QuickChart
 {
     /// <summary>
-    /// QuickChart (BL-229, n8n's QuickChart node) - a chart drawn by a QuickChart server (<c>{address}/chart</c>: quickchart.io, or
+    /// QuickChart (n8n's QuickChart node) - a chart drawn by a QuickChart server (<c>{address}/chart</c>: quickchart.io, or
     /// one of your own, which n8n's node cannot use - its address is fixed) and saved into the run's pipeline folder.
     /// </summary>
     /// <remarks>

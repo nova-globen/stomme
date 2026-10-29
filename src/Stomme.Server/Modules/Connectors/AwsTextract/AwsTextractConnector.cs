@@ -13,7 +13,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsTextract
 {
     /// <summary>
-    /// Amazon Textract (BL-229, n8n's AWS Textract node: a receipt's or an invoice's fields) over Textract's JSON protocol
+    /// Amazon Textract (n8n's AWS Textract node: a receipt's or an invoice's fields) over Textract's JSON protocol
     /// (<c>https://textract.{region}.amazonaws.com</c>, <c>X-Amz-Target: Textract.*</c>), every call signed with AWS Signature
     /// Version 4 by an IAM user's access key and secret, over the host's egress.
     /// </summary>

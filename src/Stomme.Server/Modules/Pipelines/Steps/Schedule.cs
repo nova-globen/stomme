@@ -164,7 +164,7 @@ namespace Stomme.Modules.Pipelines.Steps
             }
 
             var zone = TimeZone is null ? null : context.Get(TimeZone);
-            // BL-229: a schedule with no zone of its own is read in the pipeline's (n8n's workflow timezone) - UTC when it has none.
+            // A schedule with no zone of its own is read in the pipeline's (n8n's workflow timezone) - UTC when it has none.
             zone = NormalizeZone(zone) ?? Application.PipelineGraphCodec.TimeZone(context.PipelineIndexingContext.Pipeline.Root.Metadata);
             if (FindZone(zone, out var zoneError) is null)
             {

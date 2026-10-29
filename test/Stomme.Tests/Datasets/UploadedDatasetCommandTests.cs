@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 13 (D110) - the predecessor platform's upload cases by name (DatasetTests:
+    /// The predecessor platform's upload cases by name (DatasetTests:
     /// <c>RegisterUploadedDataset_MaterializesFile_AsUploadOriginDataset</c>, <c>RegisterUploadedDataset_ExplicitName_OverridesTheFileName</c>;
     /// <c>RegisterUploadedDataset_WithoutSourceWired_Throws</c> is CHANGED - the module's startup always wires the source, so the
     /// case here is a refusal from the source registering nothing) over the module's real startup on the File store, with

@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// A provider entry in the N-way module persistence registry (D80). Given a module aggregate + its id type
+    /// A provider entry in the N-way module persistence registry. Given a module aggregate + its id type
     /// and the active <c>Database:DefaultDBType</c>, it registers the CLOSED <c>IRepository&lt;TAggregate, TId&gt;</c>
     /// (and any provider-specific supporting services) for exactly one persistence provider. This REPLACES the
     /// hard-coded <c>relational ? EF : Raven</c> binary that had nowhere for a third store to go: a new provider is
@@ -39,7 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
     }
 
     /// <summary>
-    /// The N-way registry keyed on <c>Database:DefaultDBType</c> (D80). It maps the active provider type to the
+    /// The N-way registry keyed on <c>Database:DefaultDBType</c>. It maps the active provider type to the
     /// factory that registers the closed <c>IRepository</c> for it — relational EF providers, RavenDB, and the
     /// D80 file store, each an <see cref="IModuleRepositoryProvider"/>. <see cref="Resolve"/> FAILS LOUDLY on a
     /// <c>DefaultDBType</c> no provider handles, rather than silently defaulting — an unknown provider is a
@@ -133,7 +133,7 @@ namespace Microsoft.Extensions.DependencyInjection
     }
 
     /// <summary>
-    /// The FILE (JSON-per-aggregate) module persistence provider (D80) — the third store, proving the registry is
+    /// The FILE (JSON-per-aggregate) module persistence provider — the third store, proving the registry is
     /// provider-extensible. Binds the generic <see cref="FileRepository{TAggregate, TId}"/> and registers the store
     /// root (<c>ModuleStore:FilePath</c>, default <c>{DataDirectory}/module-store</c>) once. No relational wiring;
     /// the store is schemaless (a directory tree).

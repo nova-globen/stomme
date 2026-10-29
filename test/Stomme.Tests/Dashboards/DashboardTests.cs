@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.Dashboards
 {
     /// <summary>
-    /// BL-96 increment 8 - the predecessor platform's DashboardTests (14) by name over the port's domain: the grid rules, the theme-free
+    /// The predecessor platform's DashboardTests (14) by name over the port's domain: the grid rules, the theme-free
     /// chart spec, the widget kind and spec pairing, the refresh floor, publishing, the layout that would orphan a widget.
     /// The round-trip case runs on every store in <see cref="DashboardStoreConformanceTests"/>. Plus the port's own:
     /// every value object's scalar reconstructs it exactly, since that scalar is what every store persists.

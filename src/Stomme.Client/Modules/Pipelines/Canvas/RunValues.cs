@@ -7,7 +7,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// BL-229 increment 5 - what a run left in the pipeline's variables, read from what its steps produced: for each variable, the
+    /// What a run left in the pipeline's variables, read from what its steps produced: for each variable, the
     /// output that the LAST execution of a step saving to it gave. The editor previews an expression with these. They come from
     /// the step records an author is shown (increment 2) - a viewer gets no outputs, so no values - because the engine keeps
     /// nothing better to ask: its variable reader reads the pipeline's own variables, the editor's are its flowchart's, and a

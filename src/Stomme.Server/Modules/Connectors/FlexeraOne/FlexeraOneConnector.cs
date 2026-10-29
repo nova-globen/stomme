@@ -13,12 +13,12 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.FlexeraOne
 {
     /// <summary>
-    /// Flexera One (BL-96 increment 3, lifted from the predecessor platform's <c>flexeraone</c>): the OAuth2 refresh-token grant through the
+    /// Flexera One (lifted from the predecessor platform's <c>flexeraone</c>): the OAuth2 refresh-token grant through the
     /// family's token provider, the token endpoint from the <c>region</c> setting (<c>login.flexera.{region}/oidc/token</c>)
     /// and the API base from the endpoint (or <c>api.flexera.{region}</c> when empty). The <c>reports</c> operation executes
     /// each configured report and follows next-link paging - BOUNDED with cycle detection (the legacy loop could follow a
     /// cyclic link forever) - and checks the API's <c>error</c> property before the rows (the legacy misreported errors as a
-    /// missing <c>values</c> array). Every request through the host's egress (D110).
+    /// missing <c>values</c> array). Every request through the host's egress.
     /// </summary>
     public sealed class FlexeraOneConnector(OAuth2TokenProvider? tokenProvider = null) : IConnector, IConnectorExtractor
     {

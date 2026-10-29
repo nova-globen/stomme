@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Chat trigger, hosted by the site, DRIVEN over the real receiver on an installed SQLite host: a published
+    /// n8n's Chat trigger, hosted by the site, DRIVEN over the real receiver on an installed SQLite host: a published
     /// pipeline's chat is a page any visitor opens (a session cookie of the chat's own, the welcome first); a message RUNS the
     /// pipeline and the reply is its last step's result, both kept in that visitor's conversation; another visitor sees only theirs;
     /// "New conversation" forgets it; a message too long is refused with the page again; a robot's is dropped. With

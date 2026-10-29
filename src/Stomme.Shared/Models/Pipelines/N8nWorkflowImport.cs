@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - an n8n workflow brought over, for a team leaving n8n: its nodes become this site's steps where a step does the same
+    /// An n8n workflow brought over, for a team leaving n8n: its nodes become this site's steps where a step does the same
     /// - a webhook, a schedule, an HTTP request, IF, Switch, Wait, Edit Fields and Rename Keys, the record steps, a Code node's
     /// JavaScript, Stop and Error, a wait on a call or a form, any node's "send and wait" (Ask for approval, or a form), an AI
     /// agent, an LLM chain, an extractor and a classifier - with
@@ -343,7 +343,7 @@ namespace Stomme.Models.Pipelines
             {
                 if (Text(p, "operation") is "removeItemsRepeatedWithinPreviousExecutions" or "clearDeduplicationHistory")
                 {
-                    // BL-229: what earlier runs had seen - Remove records seen before.
+                    // What earlier runs had seen - Remove records seen before.
                     SeenBefore(p, step, todo);
                 }
                 else if (Text(p, "compare") == "selectedFields")
@@ -5089,7 +5089,7 @@ namespace Stomme.Models.Pipelines
         // n8n's Postgres and Microsoft SQL insert, update, upsert, select and delete, as Extract from connection running the SQL they
         // stood for: the columns' values bound (@name, never spliced), a write returning what it wrote (RETURNING, OUTPUT), a
         // select's conditions bound too. What has no plain statement - a truncate, a drop, columns mapped from the item by name
-        // with none listed - stays a placeholder or is named; the connection is this site's to choose. n8n's MySQL (BL-229) the
+        // with none listed - stays a placeholder or is named; the connection is this site's to choose. n8n's MySQL the
         // same in MySQL's words: its identifiers in backticks, no RETURNING (the connector answers a write's changed rows and
         // last id), an upsert ON DUPLICATE KEY UPDATE, its Map Each Column Below's values and its Column to Match On - the
         // match's own value among the columns - and its options' IGNORE, priority, DISTINCT and output columns.

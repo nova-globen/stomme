@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 step 3 (D100 point 5) - <c>NotificationTemplateRenderingTests</c>: the hardened Fluid renderer. Encoding is
+    /// <c>NotificationTemplateRenderingTests</c>: the hardened Fluid renderer. Encoding is
     /// chosen by the CHANNEL (HTML-encoded for e-mail, in-app and preview; raw then JSON-escaped once, by the webhook
     /// envelope); a parameter value is data, never re-evaluated; a runaway loop is a render ERROR (MaxSteps), not an
     /// exception; an undeclared placeholder is rejected at save; <c>{% include %}</c> reads no file.

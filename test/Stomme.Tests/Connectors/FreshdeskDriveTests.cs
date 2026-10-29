@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Freshdesk DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Freshdesk DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a helpdesk's API: a Freshdesk connection made over the API, its key vaulted, tested (the agent
     /// named); a published pipeline opens a ticket (open, low and portal by default), reads a requester's tickets over two pages,
     /// resolves one, adds a private note and replies - every call the key by Freshdesk's Basic pair; the key is in neither the graph

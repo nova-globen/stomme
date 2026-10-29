@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Vonage DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Vonage DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Vonage's SMS and Account APIs that refuses a call without the key and secret as Basic: a
     /// Vonage connection made over the API, its secret vaulted, tested by the balance; a published pipeline sending an SMS over
     /// several lines from the step's Query box, then a second to the number the first answered - an expression over its result -

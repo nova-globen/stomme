@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The reflective gates for the metering module (D102): what it declares, what it may depend on, what kind of
+    /// The reflective gates for the metering module: what it declares, what it may depend on, what kind of
     /// hosted service it is allowed to be, and that it is OFF until an operator says otherwise.
     /// </summary>
     /// <remarks>

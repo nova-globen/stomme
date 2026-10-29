@@ -29,7 +29,7 @@ namespace Stomme.Modules.CloudUsage.Domain
         string Currency) : DomainEvent;
 
     /// <summary>
-    /// One normalised cost row (BL-97 increment 2, lifted from the predecessor platform's <c>CloudCostRecord</c>): the Unified Cost Schema's
+    /// One normalised cost row (lifted from the predecessor platform's <c>CloudCostRecord</c>): the Unified Cost Schema's
     /// fields, the provider and category a defined value, the currency a three-letter code upper-cased, the optional tags
     /// trimmed with a blank one stored as none, a negative cost accepted (credits and refunds).
     /// </summary>

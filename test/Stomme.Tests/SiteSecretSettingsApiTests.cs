@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-147: a secret in the per-site secret store is a private Site SETTING row, and the generic settings API is
+    /// A secret in the per-site secret store is a private Site SETTING row, and the generic settings API is
     /// Administrator-gated for Site settings - so without a guard any site Administrator, holding none of the module's
     /// own keys, could read the ciphertext, overwrite the secret (it then reads back Unreadable) or delete it through
     /// <c>/api/Setting</c>, bypassing the module's <c>[Requires]</c> gate.

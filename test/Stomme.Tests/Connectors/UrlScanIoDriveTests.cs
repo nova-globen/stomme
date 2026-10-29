@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - urlscan.io DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Urlscan.io DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for urlscan.io's API v1 that refuses a call without the key in its API-Key header and answers
     /// 404 for a scan's result until it has been asked a few times: a urlscan.io connection made over the API, its key vaulted,
     /// tested; a published pipeline scanning a URL and waiting for its verdict, then searching the scans of the page's domain - an

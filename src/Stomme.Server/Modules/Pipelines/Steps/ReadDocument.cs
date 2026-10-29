@@ -19,7 +19,7 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// BL-229 - n8n's Extract from File, for documents: the text of a PDF (PdfPig, Apache-2.0) or a Word document (.docx, the
+    /// n8n's Extract from File, for documents: the text of a PDF (PdfPig, Apache-2.0) or a Word document (.docx, the
     /// OpenXml SDK the spreadsheets already use) in the site's pipeline folder - all of it, or chosen pages of a PDF, or page by
     /// page as a list - so an invoice saved by an HTTP request reaches Extract information or Ask AI as text. A scanned PDF holds
     /// pictures, not text: its pages come back empty, which the step says. Bounded by <c>Pipelines:Files:MaxFileBytes</c>.

@@ -20,7 +20,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84 increments 7-8: the help controls are CLICKED (BL-54) - the launcher in both render modes, and the admin
+    /// BL-84 increments 7-8: the help controls are CLICKED - the launcher in both render modes, and the admin
     /// control's editor.
     /// </summary>
     /// <remarks>
@@ -48,7 +48,7 @@ namespace Stomme.Tests.Help
             Services.AddSingleton(new SiteState { Alias = Alias() });
             Services.AddSingleton<ILogService>(new NoOpLogService());
             Services.AddSingleton<IHelpService>(_service);
-            Services.AddLocalization(); // the delete's confirmation dialog (BL-22) is localized
+            Services.AddLocalization(); // the delete's confirmation dialog is localized
         }
 
         // ---- the launcher ----------------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ namespace Stomme.Tests.Help
             Assert.Equal(string.Empty, failing.Markup.Trim());
         }
 
-        // BL-212: the server says whether Help is on, in the site's settings; with it off the launcher asks nothing - each ask
+        // The server says whether Help is on, in the site's settings; with it off the launcher asks nothing - each ask
         // was a 404 in a WebAssembly site's console on every page - and a server that does not say is asked as before.
         [Fact]
         public void With_Help_switched_off_the_launcher_asks_NOTHING_and_renders_nothing()
@@ -173,7 +173,7 @@ namespace Stomme.Tests.Help
             row.QuerySelectorAll("button").First(button => button.TextContent.Trim() == "Unpublish").Click();
             cut.WaitForAssertion(() => Assert.Equal((RecordingHelpService.ExistingId, false), _service.Published.Single()));
 
-            // BL-22: a delete asks first - the row's Delete opens the confirmation, and only its own Delete deletes.
+            // A delete asks first - the row's Delete opens the confirmation, and only its own Delete deletes.
             cut.FindAll("#help-topics tbody tr").First().QuerySelectorAll("button").First(button => button.TextContent.Trim() == "Delete").Click();
             Assert.Empty(_service.Deleted);
             cut.Find(".app-actiondialog .db-dialog-foot").QuerySelectorAll("button").First(button => button.TextContent.Trim() == "Delete").Click();
@@ -212,7 +212,7 @@ namespace Stomme.Tests.Help
             Site = new Site { SiteId = 1, Name = "Site" },
             Page = new Page { PageId = 9, SiteId = 1, Path = "admin/help", Name = "Help" },
             User = new User { UserId = 7, Username = "user7", Roles = ";" + role + ";" },
-            RenderMode = RenderModes.Interactive, // an admin page is interactive; the delete's dialog (BL-22) takes that path
+            RenderMode = RenderModes.Interactive, // an admin page is interactive; the delete's dialog takes that path
             QueryString = new Dictionary<string, string>(),
             UrlParameters = "",
         };

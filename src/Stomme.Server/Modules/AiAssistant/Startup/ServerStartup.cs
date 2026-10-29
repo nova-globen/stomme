@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.AiAssistant.Startup
 {
     /// <summary>
-    /// Wires the AI assistant (BL-97 increments 9-10, D113): the conversation (storage-blind, tenant-owned), the installation
+    /// Wires the AI assistant (BL-97 increments 9-10): the conversation (storage-blind, tenant-owned), the installation
     /// switch and limits, the OpenAI-compatible provider, the per-site model access with its metered and quota-gated client,
     /// the guardrail, the erasure participant; then the agents over the workspace gateways, the appliers and the conversation
     /// service. Everything is OFF until <c>AiAssistant:Enabled</c> and the site's own switch are on; with either off nothing
@@ -42,7 +42,7 @@ namespace Stomme.Modules.AiAssistant.Startup
             services.AddScoped<IAssistantConversationRepository, AssistantConversationRepository>();
             services.TryAddSingleton(TimeProvider.System);
 
-            // AiAssistant (D113: off by default) - from THIS host's configuration, the override file included (BL-162).
+            // AiAssistant (off by default) - from THIS host's configuration, the override file included.
             services.TryAddSingleton(provider =>
             {
                 var options = new AssistantOptions();
@@ -80,7 +80,7 @@ namespace Stomme.Modules.AiAssistant.Startup
             {
                 services.TryAddEnumerable(ServiceDescriptor.Scoped<IAssistantSpecialist, PipelineArchitectAgent>());
 
-                // BL-229: the editor's AI builder - over the Pipelines module's "none composed" default, a plain Add as the Landing
+                // The editor's AI builder - over the Pipelines module's "none composed" default, a plain Add as the Landing
                 // designer's is, so it wins whichever startup runs first.
                 services.AddScoped<Stomme.Modules.Pipelines.Application.IPipelineGraphDesigner, PipelineGraphDesignerAgent>();
                 services.AddScoped<Stomme.Modules.Pipelines.Application.IPipelineScriptWriter, PipelineScriptWriterAgent>();
@@ -96,7 +96,7 @@ namespace Stomme.Modules.AiAssistant.Startup
             services.TryAddScoped<DashboardArtifactApplier>();
             services.TryAddScoped<AssistantConversationService>();
 
-            // The surface (increment 10b): every request under assistant:use, decided before a handler runs (D99).
+            // The surface (increment 10b): every request under assistant:use, decided before a handler runs.
             services.AddScoped<IRequestHandler<StartConversationCommand, AssistantConversationView>, StartConversationCommandHandler>();
             services.AddScoped<IRequestHandler<ListConversationsQuery, System.Collections.Generic.IReadOnlyList<AssistantConversationSummary>>, ListConversationsQueryHandler>();
             services.AddScoped<IRequestHandler<GetConversationQuery, AssistantConversationView?>, GetConversationQueryHandler>();

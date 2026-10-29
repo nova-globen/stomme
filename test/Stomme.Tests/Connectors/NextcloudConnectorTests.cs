@@ -20,10 +20,10 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Nextcloud connector's live tests' server (BL-229): NEXTCLOUD_TEST_HOST / PORT / PASSWORD where set, otherwise this
+    /// The Nextcloud connector's live tests' server: NEXTCLOUD_TEST_HOST / PORT / PASSWORD where set, otherwise this
     /// machine's throwaway Nextcloud that <c>scripts/nextcloud-test-server.ps1</c> makes on 127.0.0.1:18088, its administrator
     /// <c>kafe</c> and its password read from the file that script writes under the user's temp folder. No password is a
-    /// FAILURE that says how to get one, never a skip (D46).
+    /// FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class NextcloudTestEndpoint
     {
@@ -51,7 +51,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Nextcloud (n8n's Nextcloud node) without a server: the server's address - n8n's WebDAV address read as it -
+    /// Nextcloud (n8n's Nextcloud node) without a server: the server's address - n8n's WebDAV address read as it -
     /// and no user, query or fragment in it; the signed-in user's id, from OCS, naming their WebDAV root; a folder listed and a
     /// file got through a PROPFIND, each entry named as n8n's folder List names it, the folder itself and the properties
     /// Nextcloud has not left out; a copy and a move naming their destination on that root, replacing or not; an upload of text
@@ -334,12 +334,12 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the Nextcloud connector against a real Nextcloud 34 (<c>scripts/nextcloud-test-server.ps1</c>'s throwaway server
+    /// The Nextcloud connector against a real Nextcloud 34 (<c>scripts/nextcloud-test-server.ps1</c>'s throwaway server
     /// on loopback) through the HOST's egress: loopback refused until allowlisted; a test that names the account, a wrong
     /// password refused; a folder made, text and a file uploaded - an accent and a space in the name - replaced, or refused when
     /// not to be; the folder listed and a file got; a copy and a move, a download into the run's folder; a link shared, an
     /// internal link by the file's id, a share with a user made for it; a user made, got, found, updated, disabled and deleted.
-    /// Each test cleans up what it made. Fails, never skips, when the server is absent (D46).
+    /// Each test cleans up what it made. Fails, never skips, when the server is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class NextcloudConnectorLiveTests(ITestOutputHelper output) : IDisposable

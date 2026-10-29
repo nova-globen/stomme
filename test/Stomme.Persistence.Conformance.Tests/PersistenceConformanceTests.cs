@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Persistence.Conformance.Tests;
 
 /// <summary>
-/// The persistence seam's contract, expressed once and run against EVERY provider (D3/D7: the abstraction
+/// The persistence seam's contract, expressed once and run against EVERY provider (the abstraction
 /// is provider-agnostic, or it is not an abstraction). Each provider supplies a fixture; the tests below
 /// know nothing about EF Core or RavenDB.
 /// </summary>
@@ -24,7 +24,7 @@ public abstract class PersistenceConformanceTests : IAsyncLifetime
     /// </summary>
     protected abstract IRepository<Widget, int> NewRepository(IDomainEventSerializer? serializer = null, IAggregateTracker? tracker = null);
 
-    /// <summary>The seam's read path (D19). Every framework-store read goes through this, never the repository.</summary>
+    /// <summary>The seam's read path. Every framework-store read goes through this, never the repository.</summary>
     protected abstract IDocumentSessionFactory Sessions { get; }
 
     public abstract Task InitializeAsync();
@@ -180,7 +180,7 @@ public abstract class PersistenceConformanceTests : IAsyncLifetime
         await Assert.ThrowsAsync<ConcurrencyConflictException>(() => repositoryB.UpdateAsync(b));
     }
 
-    // --- IQuerySession / IDocumentSession (the seam's read path, D19) ---
+    // --- IQuerySession / IDocumentSession (the seam's read path) ---
 
     [Fact]
     public async Task Query_session_loads_by_id()
@@ -204,7 +204,7 @@ public abstract class PersistenceConformanceTests : IAsyncLifetime
 
     /// <summary>
     /// The read every migrated cluster performs: filter server-side, materialize with plain LINQ inside the
-    /// repository so the IQueryable never leaks (D7).
+    /// repository so the IQueryable never leaks.
     /// </summary>
     [Fact]
     public async Task Query_session_filters_and_materializes()

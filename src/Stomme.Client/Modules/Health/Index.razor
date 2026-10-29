@@ -7,11 +7,11 @@
 @inject NavigationManager NavigationManager
 
 @*
-    The health entry control (D104 item 12). It renders in Static, Interactive and Headless alike: the table is
+    The health entry control. It renders in Static, Interactive and Headless alike: the table is
     plain markup, and nothing here needs an event to be readable. The permission is checked here so a user is never
     offered a view the server would refuse - and the server decides again on every call regardless.
 
-    LIVE UPDATE (BL-83): in the browser, the page connects to the health hub (HubRoutes.Health, health:view) and re-reads
+    LIVE UPDATE: in the browser, the page connects to the health hub (HubRoutes.Health, health:view) and re-reads
     the dashboard whenever its site's state is pushed - after each job tick and after any "run probes now". The push is a
     nudge carrying one word; the detail still comes from api/Health. The transport is opt-in (Transport:SignalR) and a
     refused or absent hub degrades silently to load-and-Refresh, as the notification centre does.
@@ -59,7 +59,7 @@ else
         }
         else if (_dashboard.Subjects.Count == 0 && !_dashboard.ProbingEnabled)
         {
-            @* Found by driving (BL-83): with probing off, the "not yet" text below promised a tick that never comes. *@
+            @* Found by driving: with probing off, the "not yet" text below promised a tick that never comes. *@
             <p id="health-probing-off" style="margin:0;color:var(--db-text-2);">
                 Health probing is switched off on this install (<code>Health:Enabled</code>), so nothing is being checked.
                 Switch it on in the installation's configuration and restart to start the health job.
@@ -97,7 +97,7 @@ else
                                 <td>@subject.State</td>
                                 <td>@(subject.BadSinceUtc is null ? "—" : $"{subject.BadSinceUtc:u}")</td>
                                 <td>@subject.AlertCount</td>
-                                @* The sparkline (BL-96 increment 10, re-booked from D104): the subject's availability per hourly rollup,
+                                @* The sparkline (re-booked): the subject's availability per hourly rollup,
                                    oldest at the left; empty until two periods exist. Drawn by HealthSparkline, BCL-only, so it renders statically. *@
                                 <td class="db-health-sparkline">@((MarkupString)HealthSparkline.Svg(_rollups, subject.Subject))</td>
                                 @* A null description is NORMAL, not an error: the raw text of a SHARED dependency

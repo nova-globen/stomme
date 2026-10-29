@@ -18,7 +18,7 @@ namespace Stomme.Models
 
         /// <summary>
         /// False while <see cref="InstallationId"/> is empty. No key can then be valid, and a signed key reports
-        /// <c>NoInstallationId</c> - never <c>WrongInstallation</c> (refutation 9 of D105).
+        /// <c>NoInstallationId</c> - never <c>WrongInstallation</c> (refutation 9).
         /// </summary>
         public bool InstallationInitialised { get; set; }
 

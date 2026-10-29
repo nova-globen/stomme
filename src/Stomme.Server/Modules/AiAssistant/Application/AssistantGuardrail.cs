@@ -11,7 +11,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The guardrail run on every assistant request before any model call (BL-97 increment 9; lifted from the predecessor platform's
+    /// The guardrail run on every assistant request before any model call (lifted from the predecessor platform's
     /// <c>AssistantGuardrail</c>). Three checks, cheapest first: a per-user fixed-window rate limit
     /// (<see cref="AssistantOptions.RateLimitPerMinute"/>), a prompt-injection / system-prompt-exfiltration filter over the
     /// USER messages, and an authorization check of every resource the request explicitly targets. The first refusal throws
@@ -22,7 +22,7 @@ namespace Stomme.Modules.AiAssistant.Application
     /// user is the request's principal rather than a string the caller passes, and the default authorizer REFUSES every
     /// explicit reference instead of allowing it (the predecessor platform's no-op was permissive) - fail-closed until the owning module
     /// answers. The phrase list is the predecessor platform's, verbatim; it is a tripwire for the obvious, not a defence on its own - the
-    /// defence is that an agent only PROPOSES (D113).
+    /// defence is that an agent only PROPOSES.
     /// </remarks>
     public sealed class AssistantGuardrail : IAssistantGuardrail
     {

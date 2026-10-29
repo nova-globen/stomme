@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Bitwarden
 {
     /// <summary>
-    /// Bitwarden (BL-229, n8n's Bitwarden node: an organization's collections, events, groups and members): Bitwarden's public
+    /// Bitwarden (n8n's Bitwarden node: an organization's collections, events, groups and members): Bitwarden's public
     /// API with an organization API key's client credentials, over the host's egress - Bitwarden's US or EU cloud, or a
     /// self-hosted server. A test names the organization's member count.
     /// </summary>

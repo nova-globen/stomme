@@ -20,7 +20,7 @@ namespace Stomme.Infrastructure
 
         public async Task Invoke(HttpContext context)
         {
-            // BL-196: a request the authority's token already authenticated is not re-read as a site JWT
+            // A request the authority's token already authenticated is not re-read as a site JWT
             if (context.Request.Headers.ContainsKey("Authorization") && context.User?.Identity?.IsAuthenticated != true)
             {
                 var alias = context.GetAlias();

@@ -157,7 +157,7 @@ namespace Stomme.Tests.Pipelines
                 Assert.Contains(await GetAsync<List<PipelineRunView>>(client, cookies, $"/api/Pipelines/runs?definitionId={created.DefinitionId}", "runs of the pipeline"), r => r.Id == started.RunId);
                 Assert.Equal(HttpStatusCode.NotFound, (await GateDrive.GetAsync(client, cookies, Host, "/api/Pipelines/runs/no-such-run", output, "unknown run")).Status);
 
-                // BL-229: one run as n8n's execution view has it - its pipeline's name and what it was started with (the Host is
+                // One run as n8n's execution view has it - its pipeline's name and what it was started with (the Host is
                 // an author), every run listed with its pipeline's name; Retry starts the PUBLISHED version again with the same
                 // input and correlation, a run it does not know is 404.
                 var shown = await GetAsync<PipelineRunView>(client, cookies, $"/api/Pipelines/runs/{started.RunId}", "the run");
@@ -201,7 +201,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229: a sub-pipeline's run (Execute Pipeline) names the run that started it, and that run lists the runs it started -
+        // A sub-pipeline's run (Execute Pipeline) names the run that started it, and that run lists the runs it started -
         // n8n's links between a workflow's execution and its sub-workflows'.
         [Fact]
         public async Task A_sub_pipelines_run_and_the_run_that_started_it_name_each_other()

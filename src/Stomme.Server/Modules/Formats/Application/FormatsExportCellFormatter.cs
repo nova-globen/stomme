@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Formats.Application
 {
     /// <summary>
-    /// The D108 cell formatter Formats replaces the invariant pass-through with (BL-94 increment 8, D110): a column whose
+    /// The D108 cell formatter Formats replaces the invariant pass-through with: a column whose
     /// <see cref="ExportColumn.Format"/> names a format - a preset's or a site definition's id, or its name - renders its
     /// values through that <see cref="FormatDescriptor"/> (which never throws); any other column is declined, so the
     /// renderer writes its own invariant text. The site's definitions are loaded ONCE per export by
@@ -39,7 +39,7 @@ namespace Stomme.Modules.Formats.Application
             {
                 var descriptor = definition.ToDescriptor();
                 _byId[descriptor.Id] = descriptor;
-                _byName[descriptor.Name] = descriptor; // the store keeps a site's names unique (D49)
+                _byName[descriptor.Name] = descriptor; // the store keeps a site's names unique
             }
 
             _preparedSiteId = siteId;

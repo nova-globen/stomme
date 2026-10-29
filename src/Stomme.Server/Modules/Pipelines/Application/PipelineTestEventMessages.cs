@@ -15,7 +15,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - n8n's "Fetch test event" for the Email received trigger: the newest message in a mailbox of one of the site's
+    /// n8n's "Fetch test event" for the Email received trigger: the newest message in a mailbox of one of the site's
     /// connections, shaped as a run gets it, for the editor to test the next steps with real mail. Read through the connection,
     /// as the trigger reads (the password stays in the site's secret store); nothing is marked read and no attachment is kept -
     /// each is named. For the pipelines' authors only: a message is what the mailbox holds.

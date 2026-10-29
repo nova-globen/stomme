@@ -30,7 +30,7 @@ public abstract class FeatureFlagStoreConformanceTests : IAsyncLifetime
 
     private ServiceProvider _services = default!;
 
-    // A live, mutable in-memory configuration the tests drive the REAL config source through (D84). The
+    // A live, mutable in-memory configuration the tests drive the REAL config source through. The
     // provider is read on every evaluation, so SetConfig in a test body takes effect immediately without a
     // rebuild — which is how the config-precedence facts below run on BOTH the EF and RavenDB stores.
     private readonly MemoryConfigurationProvider _configProvider = new(new MemoryConfigurationSource());
@@ -66,7 +66,7 @@ public abstract class FeatureFlagStoreConformanceTests : IAsyncLifetime
         services.AddSingleton(Principal);
         services.AddSingleton<IFeatureContextProvider>(Principal);
 
-        // A live IConfiguration, so the module's real config-backed source (D84) composes over it exactly as
+        // A live IConfiguration, so the module's real config-backed source composes over it exactly as
         // in a host. Registered before AddStore so the module's TryAdd factory reads THIS config root.
         services.AddSingleton<IConfiguration>(new ConfigurationRoot([_configProvider]));
 
@@ -305,7 +305,7 @@ public abstract class FeatureFlagStoreConformanceTests : IAsyncLifetime
         Assert.True(await IsEnabledAsync(TestFeatures.Dependent));
     }
 
-    // --- configuration precedence (D84): config -> DB -> catalog default, on BOTH providers ---
+    // --- configuration precedence: config -> DB -> catalog default, on BOTH providers ---
 
     /// <summary>
     /// Config present WINS, in both directions, over the DB toggle — and it must do so identically on the EF

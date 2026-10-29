@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Stomme.Help
 {
     /// <summary>
-    /// The contextual-help CONTRIBUTION SEAM (BL-84, D103 item 2).
+    /// The contextual-help CONTRIBUTION SEAM.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -144,7 +144,7 @@ namespace Stomme.Help
     }
 
     /// <summary>
-    /// One topic a contributor ships (D103 item 2). A contribution is a STATEMENT, not a row: the reconciler turns it
+    /// One topic a contributor ships. A contribution is a STATEMENT, not a row: the reconciler turns it
     /// into a row per site, and an operator may then edit that row without the contributor overwriting the edit.
     /// </summary>
     /// <remarks>

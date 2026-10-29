@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Vonage (n8n's Vonage node: an SMS sent) without a server: every number, name, text, link, length and choice held
+    /// Vonage (n8n's Vonage node: an SMS sent) without a server: every number, name, text, link, length and choice held
     /// to Vonage's shape before anything is sent; the SMS form-encoded to Vonage's SMS API with the key and secret as Basic and
     /// never in the body; a text GSM-7 cannot carry sent as Unicode; n8n's time to live in minutes sent as Vonage's milliseconds;
     /// a record for each part sent, a refused part Vonage's status and words; a test reading the balance, sending nothing.

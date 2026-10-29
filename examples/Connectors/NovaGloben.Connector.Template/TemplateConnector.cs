@@ -13,7 +13,7 @@ namespace NovaGloben.Connector.Template
     /// on every Connection row - never change it once shipped), declare the scheme and the settings, and write the test.
     /// </summary>
     /// <remarks>
-    /// <para><b>The three rules of a Stomme connector (D110, BL-96).</b></para>
+    /// <para><b>The three rules of a Stomme connector.</b></para>
     /// <list type="number">
     /// <item>The network is the egress's: <see cref="IConnectorEgress.CreateHttpClient"/> for HTTP, <see cref="IConnectorEgress.ResolveAndPinAsync"/> before a driver dials. Never a client, handler, socket, DNS lookup or process of your own.</item>
     /// <item>A refusal by the host's policy is not yours to report: ask <see cref="IConnectorEgress.IsDenial"/> and let it propagate - the runner categorises it <c>DeniedByPolicy</c>. A driver whose host pins to nothing throws <see cref="ConnectorEgressDeniedException"/>. Your own words go in a <see cref="ConnectionTestResult.Fail"/> and stay inside the host.</item>

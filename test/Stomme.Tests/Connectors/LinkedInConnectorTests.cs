@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - LinkedIn (n8n's LinkedIn node: a post made as a member or an organization): the token as a bearer, LinkedIn's
+    /// LinkedIn (n8n's LinkedIn node: a post made as a member or an organization): the token as a bearer, LinkedIn's
     /// version and Rest.li's protocol on its versioned calls; the signed-in member read; a post made as the member (its URN read
     /// first), another person or an organization - its text with LinkedIn's reserved characters escaped, # left for hashtags; an
     /// article; a reshare; resharing kept off - its URN and address said; a post's text changed and a post deleted by Rest.li's

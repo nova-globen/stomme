@@ -22,7 +22,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's pinned data: the result an author pins for a step is kept with the pipeline, and a TEST hands it on in place
+    /// n8n's pinned data: the result an author pins for a step is kept with the pipeline, and a TEST hands it on in place
     /// of running the step - an API not called again, a model not asked again - its outputs and the variables they save to set
     /// as the step's own would be, and the run going on through its first outcome. The step tested itself runs (that is how its
     /// result is had again), and a published run never reads a pin. It can be real data, so an author alone is given it and a

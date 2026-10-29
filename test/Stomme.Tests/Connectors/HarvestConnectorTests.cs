@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Harvest (n8n's Harvest node: an account's clients, contacts, projects, tasks, users, invoices, estimates,
+    /// Harvest (n8n's Harvest node: an account's clients, contacts, projects, tasks, users, invoices, estimates,
     /// expenses and time entries created, got, read, updated and deleted, a timer restarted and stopped, the company read): every
     /// call Harvest's API v2 with the token as a bearer token, the account it acts in and a User-Agent; every list page by page,
     /// the page size fixed and no bigger than asked, Harvest's next page none the end, with its filters held to their kinds; each

@@ -16,7 +16,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Messaging
 {
     /// <summary>
-    /// Microsoft Teams (BL-229, n8n's Microsoft Teams node, its channel and chat message create): Microsoft Graph
+    /// Microsoft Teams (n8n's Microsoft Teams node, its channel and chat message create): Microsoft Graph
     /// (<c>https://graph.microsoft.com/v1.0</c>) as a person signed in - delegated, since Graph lets an app post to a channel or a
     /// chat only on someone's behalf - over the OAuth2 REFRESH-TOKEN scheme: an Entra app's client id and secret and a refresh token
     /// granted <c>ChannelMessage.Send</c> and <c>ChatMessage.Send</c>, exchanged at the tenant's token endpoint (the

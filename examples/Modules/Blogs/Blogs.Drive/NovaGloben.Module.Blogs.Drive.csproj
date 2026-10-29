@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    THE FINALE (D82) + BL-13 — the DRIVE HARNESS (NOT the module). This is the vehicle that installs the
+    THE FINALE + BL-13 — the DRIVE HARNESS (NOT the module). This is the vehicle that installs the
     packaged SPLIT Blogs module (Client/Server/Shared in one nupkg) through the REAL InstallationManager and
     asserts it renders + persists, and that a WebAssembly site STREAMS the right subset of it (Client +
     Shared to the browser, Server never). Unlike the module, a test harness legitimately references the
@@ -43,7 +43,7 @@
           Link="NovaGloben.Module.Blogs.2.0.0.nupkg"
           CopyToOutputDirectory="PreserveNewest" />
     <!-- BL-44 repair: the copy item hardcoded Stomme.Theme.Aurora.1.0.0.nupkg, but the theme nuspec
-         moved to 1.1.0 (D92), so the harness could not BUILD in a fresh worktree (MSB3030). The wildcard
+         moved to 1.1.0, so the harness could not BUILD in a fresh worktree (MSB3030). The wildcard
          matches whatever version pack-themes.ps1 produced — same pattern the streaming drive stages by —
          and when no nupkg exists yet the build succeeds and the drive reports its own actionable miss. -->
     <None Include="..\..\..\Themes\Stomme.Theme.Aurora\Package\Stomme.Theme.Aurora.*.nupkg"

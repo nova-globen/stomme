@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 1 - the PostgreSQL connector without a server: the endpoint carries no credential and the scheme's
+    /// The PostgreSQL connector without a server: the endpoint carries no credential and the scheme's
     /// fields are applied; a malformed connection string fails with the connector's message; the host is handed to the
     /// egress to resolve and pin BEFORE the driver dials, so a refused host is the guard's own denial and no socket opens;
     /// a multi-host string is refused; a missing query parameter throws.
@@ -67,7 +67,7 @@ namespace Stomme.Tests.Connectors
         [Fact]
         public async Task A_value_whose_name_is_not_a_SQL_parameter_name_is_refused_before_any_pin()
         {
-            // BL-229: '@name = value' lines are bound values; a name the query could not write is refused before anything is dialled.
+            // '@name = value' lines are bound values; a name the query could not write is refused before anything is dialled.
             var egress = new StubEgress();
             var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => Contexts.DrainAsync(new PostgreSqlConnector(), Contexts.Extract(egress, "Host=db.internal;Database=demo", "query",
                 new Dictionary<string, string> { ["query"] = "SELECT @ok", ["@ok"] = "1", ["@not ok"] = "2" })));
@@ -86,10 +86,10 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-96 increment 1 - the predecessor platform's live PostgreSqlConnectorTests (3, from its Aspire suite) by name against the infra
+    /// The predecessor platform's live PostgreSqlConnectorTests (3, from its Aspire suite) by name against the infra
     /// UAT PostgreSQL through the HOST's egress: the private address is refused until the site allowlists it, and with it
     /// allowlisted the test succeeds with the credentials applied from the scheme and the query operation streams real rows
-    /// that serialise to the wire shape. Fails, never skips, when the server is unreachable (D46).
+    /// that serialise to the wire shape. Fails, never skips, when the server is unreachable.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class PostgreSqlConnectorLiveTests(ITestOutputHelper output)
@@ -131,7 +131,7 @@ namespace Stomme.Tests.Connectors
         [Fact]
         public async Task Extract_binds_each_at_name_value_as_a_parameter_never_as_SQL()
         {
-            // BL-229: a value that, spliced in, would end the string and run a statement of its own comes back as the text it is;
+            // A value that, spliced in, would end the string and run a statement of its own comes back as the text it is;
             // a value sent with no stated type is read as the type its place needs (an integer, added to).
             const string hostile = "x'); DROP TABLE nothing; --";
             var context = Contexts.Extract(new HostConnectorEgress(new[] { PostgresTestEndpoint.Host }), Endpoint, "query",

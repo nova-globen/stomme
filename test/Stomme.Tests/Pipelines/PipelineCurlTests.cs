@@ -5,7 +5,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "Import cURL": a curl command read into the HTTP request step's inputs - as API documentation writes one,
+    /// n8n's "Import cURL": a curl command read into the HTTP request step's inputs - as API documentation writes one,
     /// as a browser's "Copy as cURL" writes one (bash and Windows), and what the step cannot do the same way said.
     /// </summary>
     public sealed class PipelineCurlTests

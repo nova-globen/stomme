@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Datasets.Controllers
 {
     /// <summary>
-    /// The Datasets API (BL-94 increment 10, D110): <c>api/Datasets</c>. Each action is gated on its key by
+    /// The Datasets API: <c>api/Datasets</c>. Each action is gated on its key by
     /// <c>[RequiresPermissionKey]</c> (an authorization POLICY, so it runs before the body); the request is decided again by
     /// the mediator's authorization behavior. The site is the request's. A preview needs the higher key and is refused
     /// for a sensitive dataset whoever asks; a list or a get never carries raw rows. <c>upload</c> (increment 13) registers a

@@ -28,7 +28,7 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-55 — THE OPENIDDICT STORE MUST PROVISION ITSELF, STORAGE-BLIND.
+    /// THE OPENIDDICT STORE MUST PROVISION ITSELF, STORAGE-BLIND.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -112,7 +112,7 @@ namespace Stomme.Tests
                 yield return new object[] { PostgresProvider.ProviderName };
             }
 
-            // RavenDB is ALWAYS yielded (D46/D62): unreachable RavenDB = a hard red, never a silent shrink.
+            // RavenDB is ALWAYS yielded: unreachable RavenDB = a hard red, never a silent shrink.
             yield return new object[] { RavenProvider.ProviderName };
         }
 
@@ -292,7 +292,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 // The tenant store AND the store the app DERIVED from it — both by their exact connection
-                // strings, since the pool is keyed by the string and a near-miss releases nothing (BL-104).
+                // strings, since the pool is keyed by the string and a near-miss releases nothing.
                 // The derivation is the product's own, so the two can never drift apart here.
                 ScratchSqlite.Release(_tenant);
                 if (!string.IsNullOrEmpty(_tenant))
@@ -416,7 +416,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

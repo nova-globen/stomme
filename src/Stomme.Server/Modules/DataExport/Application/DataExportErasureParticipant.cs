@@ -13,7 +13,7 @@ namespace Stomme.Modules.DataExport.Application
     /// The data-export ledgers under D112: the subject's export jobs are operational rows the module keeps for days
     /// and go at once (Delete; the exported file follows the job through the module's own retention); the export
     /// audit - who exported what - is a SECURITY record, retained one year (Article 17(3)) and then deleted by the
-    /// same job. The subject's export SCHEDULES go too (BL-95): a schedule runs as its owner, and with the owner gone it
+    /// same job. The subject's export SCHEDULES go too: a schedule runs as its owner, and with the owner gone it
     /// could never run again.
     /// </summary>
     public sealed class DataExportErasureParticipant(IExportJobRepository jobs, IExportAuditRepository audit, IExportScheduleRepository schedules, IUnitOfWork unitOfWork, TimeProvider clock) : ISubjectErasureParticipant

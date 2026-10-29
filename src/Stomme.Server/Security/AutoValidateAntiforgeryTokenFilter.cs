@@ -49,7 +49,7 @@ namespace Stomme.Security
             }
         }
 
-        // BL-250: the bearer skip below is for a caller the TOKEN signs in. A request whose sign-in cookie authenticates it is
+        // The bearer skip below is for a caller the TOKEN signs in. A request whose sign-in cookie authenticates it is
         // validated whatever else it carries: before, any Authorization header - an invalid one included - switched the check
         // off while the cookie still signed the request in (driven: a board created with no token and a bogus bearer).
         private static async Task<bool> SignedInByCookieAsync(AuthorizationFilterContext context)

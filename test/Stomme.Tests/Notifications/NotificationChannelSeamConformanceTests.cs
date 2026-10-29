@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 step 3 - <c>NotificationChannelSeamConformanceTests</c> (SQLite + PostgreSQL) and
+    /// <c>NotificationChannelSeamConformanceTests</c> (SQLite + PostgreSQL) and
     /// <see cref="RavenNotificationChannelSeamConformanceTests"/>: the channel seam DRIVEN through an INSTALLED production
     /// host on each store. A channel aggregate round-trips; the production resolver (plus a FAKE transport added beside
     /// the registered channels) resolves and skips; the real e-mail and in-app channels and the fake deliver; the
@@ -29,7 +29,7 @@ namespace Stomme.Tests.Notifications
     /// <b>EF == Raven.</b> The persisted attempts are compared as a CANONICAL string (channel, status, UTC instant to the
     /// tick, DateTimeKind, error - in recorded order) against one literal expected value shared by every store, so a
     /// green SQLite, PostgreSQL and RavenDB run is byte-identical by construction; attempt identities are compared with
-    /// the written aggregate separately. PostgreSQL and RavenDB FAIL rather than skip (D46).
+    /// the written aggregate separately. PostgreSQL and RavenDB FAIL rather than skip.
     /// </para>
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -227,7 +227,7 @@ namespace Stomme.Tests.Notifications
         }
     }
 
-    /// <summary>The same drive on RavenDB. Fails, never skips, when RavenDB is unreachable (D46).</summary>
+    /// <summary>The same drive on RavenDB. Fails, never skips, when RavenDB is unreachable.</summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]
     public class RavenNotificationChannelSeamConformanceTests

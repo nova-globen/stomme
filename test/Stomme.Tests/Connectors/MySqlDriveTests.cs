@@ -15,11 +15,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - MySQL DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// MySQL DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a real MySQL 8.4 (<see cref="MySqlTestEndpoint"/>): a MySQL connection made over the API - a connection string
     /// that carries no credential, the password vaulted - refused while loopback is not allowlisted, then tested (the server
     /// named); a published pipeline makes a table, adds a row with its values bound from the step's Parameters, reads it back
-    /// and drops the table; the password in neither the graph nor the run. Fails, never skips, without a server (D46).
+    /// and drops the table; the password in neither the graph nor the run. Fails, never skips, without a server.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

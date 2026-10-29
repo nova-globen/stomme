@@ -25,7 +25,7 @@ using MimeKit;
 namespace Stomme.Modules.Connectors.Imap
 {
     /// <summary>
-    /// The IMAP connector (BL-229, for n8n's Email Trigger): a mailbox on an IMAP server - the connection's endpoint names it
+    /// The IMAP connector (for n8n's Email Trigger): a mailbox on an IMAP server - the connection's endpoint names it
     /// (<c>imap.example.com</c>, <c>imap.example.com:993</c>, <c>imaps://...</c>), TLS from the first byte by default (<c>encryption</c> ssl; starttls; none for a trusted network only), the Basic scheme's
     /// <c>username</c>/<c>password</c>. A test connects, signs in and leaves. Three operations: <c>status</c> - the mailbox's
     /// UIDVALIDITY and next UID, the anchor a watcher starts from; <c>read</c> - the messages with a UID after <c>after_uid</c>,
@@ -56,7 +56,7 @@ namespace Stomme.Modules.Connectors.Imap
 
         public AuthenticationType AuthType => AuthenticationType.Basic;
 
-        /// <summary>The endpoint is the server - imap.example.com, imap.example.com:993, imaps://imap.example.com - not an http URL; a credential written into it is refused (D110).</summary>
+        /// <summary>The endpoint is the server - imap.example.com, imap.example.com:993, imaps://imap.example.com - not an http URL; a credential written into it is refused.</summary>
         public ConnectorEndpointKind EndpointKind => ConnectorEndpointKind.ConnectionString;
 
         public string EndpointExample => "imaps://imap.example.com (or imap.example.com:993)";

@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Dropbox DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the extraction port and
+    /// Dropbox DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the extraction port and
     /// the run's pipeline folder, against a loopback stand-in for Dropbox's token endpoint and API v2: a token for the app's
     /// refresh grant alone, the API answering that token alone. The connection made over the API and tested; a published
     /// pipeline lists a folder over two pages, searches it, downloads a file INTO the run's folder - its path in the content

@@ -95,7 +95,7 @@ public sealed class FeatureEvaluatorCacheTests
     private static void DropDb(string path)
     {
         // THIS database's pool, by the exact string Compose handed to UseSqlite. ClearAllPools is process-wide
-        // and drops the pooled connections of whatever else is running, mid-request (BL-104).
+        // and drops the pooled connections of whatever else is running, mid-request.
         using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={path}"))
         {
             Microsoft.Data.Sqlite.SqliteConnection.ClearPool(connection);

@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - SeaTable (n8n's SeaTable node) without a server: the API token exchanged for the base's access token, every
+    /// SeaTable (n8n's SeaTable node) without a server: the API token exchanged for the base's access token, every
     /// call under the connection's own address and never the server SeaTable names; every field held to its column by the
     /// table's metadata before a write is sent - a word in a number, a date that is none, a select option the column does not
     /// offer (SeaTable would add it), a read-only column, a field the table has not got (SeaTable would drop it); a row made and
@@ -233,8 +233,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - SeaTable LIVE, against this machine's throwaway SeaTable 6.2 (scripts/seatable-test-server.ps1) - fail-not-skip
-    /// without it (D46): a test naming the base Kafe; a table of its own made for the test over SeaTable's API; a row made with
+    /// SeaTable LIVE, against this machine's throwaway SeaTable 6.2 (scripts/seatable-test-server.ps1) - fail-not-skip
+    /// without it: a test naming the base Kafe; a table of its own made for the test over SeaTable's API; a row made with
     /// its number, checkbox, date and choice, read back by name, changed, found by a search for a name with a quote (n8n's
     /// escaping found nothing), refused a choice the column does not offer (SeaTable would have added it), locked and
     /// unlocked; a second row linked, listed and unlinked; both deleted, a second delete saying it deleted nothing. The table is

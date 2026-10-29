@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Stomme.Modules.Connectors.Shared
 {
     /// <summary>
-    /// BL-235 - a success answer a connector cannot read is a failure, never an empty answer: a sign-in page, a proxy's or
+    /// A success answer a connector cannot read is a failure, never an empty answer: a sign-in page, a proxy's or
     /// Cloudflare Access's HTML under HTTP 200 used to pass a connection test that asked only for the status.
     /// </summary>
     public static class JsonAnswers

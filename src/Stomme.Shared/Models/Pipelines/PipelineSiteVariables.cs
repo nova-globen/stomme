@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Variables (an Enterprise feature there): values every pipeline on the site reads in its expressions as
+    /// n8n's Variables (an Enterprise feature there): values every pipeline on the site reads in its expressions as
     /// <c>{{ $vars.name }}</c> - an API's base address, a team's e-mail, a threshold - set once for the site by its authors. Not for
     /// secrets: a value is shown to whoever may view the site's pipelines; a secret belongs in a connection. The one rule for both sides.
     /// </summary>

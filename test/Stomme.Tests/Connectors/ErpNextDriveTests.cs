@@ -18,8 +18,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - ERPNext DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
-    /// against this machine's throwaway ERPNext 16 (scripts/erpnext-test-server.ps1) - fail-not-skip without it (D46): an ERPNext
+    /// ERPNext DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// against this machine's throwaway ERPNext 16 (scripts/erpnext-test-server.ps1) - fail-not-skip without it: an ERPNext
     /// connection made over the API, its key and secret vaulted, tested; a published pipeline making a contact with its e-mail
     /// row, a ToDo naming it - an expression over the first step's result - and finding the ToDo by a filter; the secret in neither
     /// the graph nor the run. Both documents are deleted again.

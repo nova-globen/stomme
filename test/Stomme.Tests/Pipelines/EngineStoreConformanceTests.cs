@@ -61,7 +61,7 @@ namespace Stomme.Tests.Pipelines
     /// a fresh memory store and compares what comes back - ids, counts, order where an order was asked for, and the
     /// text the engine's serializers produce for the non-scalar members. One test per contract keeps the per-test
     /// scratch database count low; each test pushes its own engine tenant, so the tenant scoping is exercised by
-    /// every scenario, not one. The external providers FAIL rather than skip when unreachable (D46).
+    /// every scenario, not one. The external providers FAIL rather than skip when unreachable.
     /// </summary>
     public abstract class EngineStoreConformanceTests : IAsyncLifetime
     {
@@ -481,12 +481,12 @@ namespace Stomme.Tests.Pipelines
                 ["BeforeLastUpdated"] = new() { BeforeLastUpdated = At(5) },
                 ["CreatedAt >= a day (zero time)"] = new() { TimestampFilters = [new TimestampFilter { Column = "CreatedAt", Operator = TimestampFilterOperator.GreaterThanOrEqual, Timestamp = new DateTimeOffset(T0.Date.AddDays(1)) }] },
                 ["CreatedAt < an instant"] = new() { TimestampFilters = [new TimestampFilter { Column = "CreatedAt", Operator = TimestampFilterOperator.LessThan, Timestamp = At(4) }] },
-                // BL-229: the window n8n's Insights reads - every run since an instant.
+                // The window n8n's Insights reads - every run since an instant.
                 ["CreatedAt >= an instant"] = new() { TimestampFilters = [new TimestampFilter { Column = "CreatedAt", Operator = TimestampFilterOperator.GreaterThanOrEqual, Timestamp = At(4) }] },
                 ["UpdatedAt is a day"] = new() { TimestampFilters = [new TimestampFilter { Column = "UpdatedAt", Operator = TimestampFilterOperator.Is, Timestamp = new DateTimeOffset(T0.Date) }] },
                 ["FinishedAt is not an instant"] = new() { TimestampFilters = [new TimestampFilter { Column = "FinishedAt", Operator = TimestampFilterOperator.IsNot, Timestamp = At(7) }] },
                 ["combined"] = new() { DefinitionId = definitionId, PipelineStatus = PipelineStatus.Finished, HasIncidents = false },
-                // BL-229: the step-data pass's windows (PipelineRunSettingsTask) - every run ended, or ended well, since its mark
+                // The step-data pass's windows (PipelineRunSettingsTask) - every run ended, or ended well, since its mark
                 // and before the grace.
                 ["ended since a mark, before a cutoff"] = new()
                 {
@@ -519,7 +519,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(summariesOracle.TotalCount, summaries.TotalCount);
             Assert.Equal(summariesOracle.Items.Select(s => (s.Id, s.Status, s.SubStatus, s.Name, s.IncidentCount, s.FinishedAt)), summaries.Items.Select(s => (s.Id, s.Status, s.SubStatus, s.Name, s.IncidentCount, s.FinishedAt)));
             SameSequence((await sut.SummarizeManyAsync(new PipelineInstanceFilter(), byCreated)).Select(s => s.Id), (await oracle.SummarizeManyAsync(new PipelineInstanceFilter(), byCreated)).Select(s => s.Id), "summaries ordered, unpaged");
-            // BL-229: the step-data pass pages the runs that ended by when they were last updated, oldest first.
+            // The step-data pass pages the runs that ended by when they were last updated, oldest first.
             var byUpdated = new PipelineInstanceOrder<DateTimeOffset?>(x => x.UpdatedAt, OrderDirection.Ascending);
             var ended = new PipelineInstanceFilter { PipelineStatus = PipelineStatus.Finished };
             var endedPage = await sut.SummarizeManyAsync(ended, PageArgs.FromRange(0, 2), byUpdated);
@@ -728,7 +728,7 @@ namespace Stomme.Tests.Pipelines
             SameSet(Ids(await sut.FindManyAsync(new TriggerFilter())), Ids(await oracle.FindManyAsync(new TriggerFilter())), "after the delete");
         }
 
-        // BL-229 - a run kept without its steps' data: a record emptied by the pipeline's setting (PipelineRunSettingsTask.Empty)
+        // A run kept without its steps' data: a record emptied by the pipeline's setting (PipelineRunSettingsTask.Empty)
         // and saved reads back with no inputs, outputs or payload, marked - its status, times and error kept - on every store.
         [Fact]
         public async Task A_step_record_emptied_of_its_data_saves_and_reads_back_empty_and_marked()
@@ -779,7 +779,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229: a run emptied of what it was started with and returned saves as read - its UpdatedAt, which the emptying pass
+        // A run emptied of what it was started with and returned saves as read - its UpdatedAt, which the emptying pass
         // pages by, unmoved - and reads back empty and marked on every provider.
         [Fact]
         public async Task A_run_emptied_of_its_input_saves_and_reads_back_empty_and_marked_with_its_times_unmoved()
@@ -813,7 +813,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229 - one at a time, the rest in turn: a waiting run's mark and its whole input are kept by the store; the turn keeper
+        // One at a time, the rest in turn: a waiting run's mark and its whole input are kept by the store; the turn keeper
         // finds it, takes the OLDEST - its mark gone on the store, so it is the run going - and takes nothing more while it goes.
         [Fact]
         public async Task A_waiting_runs_mark_and_input_are_kept_and_the_turn_keeper_takes_the_oldest_on_the_store()
@@ -858,7 +858,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229: the task itself, on the provider - its writes reach the store. The memory store hands back the very object it
+        // The task itself, on the provider - its writes reach the store. The memory store hands back the very object it
         // holds, so a change made without a save looks kept there (measured: the task with its run save removed passed the
         // memory-backed trigger test); a store that reads back a copy is the only one that sees a missing save.
         [Fact]
@@ -1195,7 +1195,7 @@ namespace Stomme.Tests.Pipelines
                 new DispatchPipelineDefinitionRequest(definition.Id) { CorrelationId = correlation }, options: null);
             Assert.Null(response.Fault);
 
-            // D111 item 3: dispatched, never awaited - the observer polls the instance store until the run is finished.
+            // Dispatched, never awaited - the observer polls the instance store until the run is finished.
             var instances = services.GetRequiredService<IPipelineInstanceStore>();
             PipelineInstance? instance = null;
             var deadline = DateTime.UtcNow.AddSeconds(30);
@@ -1335,7 +1335,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229 - n8n's workflow tags, on each provider: a pipeline's tags are the site's (the same pipeline id tagged on
+        // n8n's workflow tags, on each provider: a pipeline's tags are the site's (the same pipeline id tagged on
         // another site is another record - the schedules' lesson above), listed with the pipelines, cleared by an empty list,
         // refused with the reason when one cannot be a tag, absent for a pipeline the site does not have, and gone with it.
         [Fact]
@@ -1396,7 +1396,7 @@ namespace Stomme.Tests.Pipelines
                 Assert.Empty((await Tagger(services).Handle(new(pipelines[sites[0].Id], Array.Empty<string>()), CancellationToken.None))!);
                 Assert.Empty(await ListedAsync(services, pipelines[sites[0].Id]));
                 await Tagger(services).Handle(new(pipelines[sites[0].Id], new[] { "again" }), CancellationToken.None);
-                // BL-229: what its Remove records seen before steps have seen goes with it - and only its: found by the key's start on
+                // What its Remove records seen before steps have seen goes with it - and only its: found by the key's start on
                 // the store, a pipeline whose id begins with its own is untouched.
                 var keyValues = services.GetRequiredService<IKeyValueStore>();
                 var seenKeys = new[]
@@ -1425,7 +1425,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229 - n8n's folders: a pipeline's folder is kept as its tags are - per site, listed with the pipelines, made tidy,
+        // n8n's folders: a pipeline's folder is kept as its tags are - per site, listed with the pipelines, made tidy,
         // refused with the reason, cleared by the top, absent for a pipeline the site does not have, and gone with it.
         [Fact]
         public async Task A_pipelines_folder_is_kept_per_site_listed_refused_when_not_one_and_goes_with_it()
@@ -1500,7 +1500,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229 - n8n's folder rename, move and delete: every pipeline in the folder, or in one inside it, goes along - on this
+        // n8n's folder rename, move and delete: every pipeline in the folder, or in one inside it, goes along - on this
         // site only - or, removed, up to the folder above, joining a folder of the same name there; refused saying why.
         [Fact]
         public async Task A_folder_renamed_moved_or_removed_takes_what_is_in_it_on_its_site_only()
@@ -1663,7 +1663,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // A partial restore (BL-171) puts back the restored tenant's pipelines and leaves every other tenant's as they are.
+        // A partial restore puts back the restored tenant's pipelines and leaves every other tenant's as they are.
         [Fact]
         public async Task A_partial_restore_puts_back_the_restored_tenants_pipelines_and_no_other()
         {

@@ -33,7 +33,7 @@ using Endpoint = Stomme.Engine.Pipelines.Steps.Flowchart.Models.Endpoint;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Wait for a call (n8n's Wait node resumed "on webhook call"): Call address gives the run an address once and keeps
+    /// Wait for a call (n8n's Wait node resumed "on webhook call"): Call address gives the run an address once and keeps
     /// its token on the run; Wait for a call parks the run on a bookmark keyed by the token's hash (never the token); a call to
     /// the address resumes it down Called with the body as the result - once; a call that comes before the run reaches its wait
     /// is queued by the engine and delivered when it does; a wait with a time out goes down Timed out when nothing came; a

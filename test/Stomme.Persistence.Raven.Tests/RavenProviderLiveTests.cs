@@ -13,7 +13,7 @@ namespace Stomme.Persistence.Raven.Tests;
 
 // Live smoke test proving the RavenDB provider satisfies the persistence seam end-to-end against a
 // real server (aggregate round-trip, query session, optimistic concurrency, transactional outbox).
-// GATED in Stomme.slnx since BL-15 (2026-08-03), fail-not-skip per D46: an unreachable server fails
+// GATED in Stomme.slnx, fail-not-skip per D46: an unreachable server fails
 // InitializeAsync loudly. Defaults to the infra UAT tier (env-overridable via RAVENDB_TEST_URL — the
 // PostgresTestEndpoint convention); the old default :8091 was a Docker-era port that never existed here.
 public sealed class RavenProviderLiveTests : IAsyncLifetime

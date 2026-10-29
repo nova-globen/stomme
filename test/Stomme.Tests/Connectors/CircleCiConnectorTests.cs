@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - CircleCI (n8n's CircleCI node) without a server: every project, number, branch, tag, parameter and id held to
+    /// CircleCI (n8n's CircleCI node) without a server: every project, number, branch, tag, parameter and id held to
     /// CircleCI's shape before anything is sent; a project as CircleCI's slug or as n8n's provider and org/repo, the step's or the
     /// connection's; the token in CircleCI's header and never in an address; a project's pipelines page by page by CircleCI's
     /// page token up to the most, on a branch; one by its number; one triggered on a branch or at a tag with its parameters; a

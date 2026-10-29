@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "save execution progress" DRIVEN on an installed SQLite host, through the host's own startup (which fills the
+    /// n8n's "save execution progress" DRIVEN on an installed SQLite host, through the host's own startup (which fills the
     /// engine's strategy registry) and its background dispatcher: a run of a pipeline that saves its progress is there to read
     /// while a Delay holds it - its first step's log line stored, the second's not yet - and a run of the same pipeline without the
     /// setting is not stored until it ends.

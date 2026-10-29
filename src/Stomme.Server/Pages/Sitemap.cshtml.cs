@@ -88,7 +88,7 @@ namespace Stomme.Pages
                                         var urls = await ((ISitemap)moduleobject).GetUrlsAsync(_alias.Path, page.Path, pageModule.Module);
                                         foreach (var url in urls)
                                         {
-                                            // The module's own last-change date when it gives one (BL-86 increment 4).
+                                            // The module's own last-change date when it gives one.
                                             sitemap.Add(new Sitemap { Url = rooturl + url.Url, ModifiedOn = url.ModifiedOn == default ? DateTime.UtcNow : url.ModifiedOn });
                                         }
                                     }

@@ -38,7 +38,7 @@
 @if (_initialized)
 {
     <!DOCTYPE html>
-    @* BL-198: a theme that declares one colour mode fixes the page to it, here, before any script or stylesheet runs. *@
+    @* A theme that declares one colour mode fixes the page to it, here, before any script or stylesheet runs. *@
     <html lang="@_language" data-theme-fixed="@_fixedColorMode" data-theme="@_fixedColorMode" style="@(_fixedColorMode == null ? null : "color-scheme: " + _fixedColorMode)">
     <head>
         <meta charset="utf-8" />
@@ -47,14 +47,14 @@
         <script>
             // Single source of truth for the --db-* theme attributes on <html>. `apply` runs both from the
             // no-flash bootstrap below (before first paint) and at runtime via the theme toggle (JS interop),
-            // so the --db-* surfaces and FluentUI repaint together (D11; FluentUI 5 since BL-192).
+            // so the --db-* surfaces and FluentUI repaint together.
             window.stommeTheme = {
-                // FluentUI 5's theme functions, once Blazor and its initializer have started (measured: Blazor.theme).
+                // FluentUI 5's theme functions (Blazor.theme), once Blazor and its initializer have started.
                 fluent: function () {
                     return window.Blazor && window.Blazor.theme;
                 },
                 // Hands FluentUI 5 - the first time it is there to receive it - the mode the bootstrap applied before Blazor
-                // existed; after that, apply() keeps it in step. Its COLOURS are the theme's, bound in app.css (BL-192).
+                // existed; after that, apply() keeps it in step. Its COLOURS are the theme's, bound in app.css.
                 sync: function () {
                     var fluent = window.stommeTheme.fluent();
                     if (fluent && fluent.setThemeMode && !window.stommeTheme.modeSynced) {
@@ -62,7 +62,7 @@
                         try { fluent.setThemeMode(document.documentElement.getAttribute('data-theme-mode') || 'system'); } catch (e) { /* ignore */ }
                     }
                 },
-                // BL-198: the mode the page's theme declares (dark or light), which no stored choice and no toggle changes.
+                // The mode the page's theme declares (dark or light), which no stored choice and no toggle changes.
                 fixed: function () {
                     var mode = document.documentElement.getAttribute('data-theme-fixed');
                     return mode === 'dark' || mode === 'light' ? mode : null;
@@ -75,7 +75,7 @@
                         try { return JSON.parse(stored).mode || 'system'; } catch (e) { return stored; }
                     } catch (e) { return 'system'; }
                 },
-                // FluentUI 5 reads its own stored mode when it starts, before sync() can hand it ours (BL-198): seeding it means
+                // FluentUI 5 reads its own stored mode when it starts, before sync() can hand it ours: seeding it means
                 // its controls start in the page's mode instead of the system's. Its key is FluentUI's; sync() corrects it anyway.
                 seedFluent: function (mode) {
                     try {
@@ -87,7 +87,7 @@
                 },
                 apply: function (mode) {
                     try {
-                        // BL-89: no stored choice means "follow the visitor's system", never a hardcoded dark. BL-198: a theme's
+                        // No stored choice means "follow the visitor's system", never a hardcoded dark. A theme's
                         // declared mode wins over both.
                         mode = window.stommeTheme.fixed() || (mode || 'system').toLowerCase();
                         var resolved = mode;
@@ -96,19 +96,18 @@
                         }
                         document.documentElement.setAttribute('data-theme', resolved);
                         document.documentElement.setAttribute('data-theme-mode', mode);
-                        // BL-49: a Bootstrap-based theme (BlazorTheme loads Bootstrap 5.3 from the CDN)
-                        // owns its OWN colour mode via data-bs-theme. Setting only data-theme flipped the
-                        // --db-* layer while Bootstrap's chrome stayed light: measured on a dark site,
-                        // body computed rgb(255,255,255) and the dark --db-* cards carried near-black
-                        // heading text -- unreadable. Bootstrap ignores this attribute when absent, so
+                        // A Bootstrap-based theme (BlazorTheme loads Bootstrap 5.3 from the CDN)
+                        // owns its OWN colour mode via data-bs-theme. Setting only data-theme would flip the
+                        // --db-* layer while Bootstrap's chrome stayed light: on a dark site the body
+                        // stays white and the dark --db-* cards carry near-black heading text -- unreadable. Bootstrap ignores this attribute when absent, so
                         // themes that do not load it (Graphite, Stomme, Aurora, Slate) are unaffected.
                         document.documentElement.setAttribute('data-bs-theme', resolved);
-                        // BL-89: the browser's own widgets (scrollbars, form controls, the canvas behind a late
+                        // The browser's own widgets (scrollbars, form controls, the canvas behind a late
                         // stylesheet) follow the RESOLVED mode too, not the OS - otherwise a forced mode paints a
                         // light scrollbar on a dark page. Site CSS should key on html[data-theme], never on a
                         // prefers-color-scheme media query, which answers for the OS rather than for this site.
                         document.documentElement.style.colorScheme = resolved;
-                        // BL-192: FluentUI 5 keeps its own mode (there is no <fluent-design-theme> to set any more);
+                        // FluentUI 5 keeps its own mode (there is no <fluent-design-theme> to set any more);
                         // 'system' hands it no mode, so it follows the OS as the --db-* layer does.
                         var fluent = window.stommeTheme.fluent();
                         if (fluent && fluent.setThemeMode) { fluent.setThemeMode(mode); } else { window.stommeTheme.seedFluent(mode); }
@@ -125,7 +124,7 @@
                         window.stommeTheme.apply(next);
                     } catch (e) { /* ignore */ }
                 },
-                // BL-198: the theme on screen changed without a page load (an interactive page moving to another theme); its
+                // The theme on screen changed without a page load (an interactive page moving to another theme); its
                 // declared mode, or none, replaces the one App.razor rendered.
                 fix: function (mode) {
                     mode = mode === 'dark' || mode === 'light' ? mode : null;
@@ -135,7 +134,7 @@
             };
             window.stommeTheme.apply(window.stommeTheme.stored());
             (function () {
-                // BL-198: when the fixed mode changes - fix() above, or an enhanced navigation bringing another theme's <html> -
+                // When the fixed mode changes - fix() above, or an enhanced navigation bringing another theme's <html> -
                 // the page takes the new one, or the visitor's again.
                 try {
                     new MutationObserver(function () { window.stommeTheme.apply(window.stommeTheme.stored()); })
@@ -143,7 +142,7 @@
                 } catch (e) { /* ignore */ }
             })();
             (function () {
-                // BL-89: while the mode is "system", a change in the OS preference repaints the page live.
+                // While the mode is "system", a change in the OS preference repaints the page live.
                 try {
                     if (!window.matchMedia) { return; }
                     var media = window.matchMedia('(prefers-color-scheme: dark)');
@@ -164,7 +163,7 @@
         @((MarkupString)_styleSheets)
         <link id="app-stylesheet-page" />
         <link id="app-stylesheet-module" />
-        @* D98 / BL-92: Blazor's <PageTitle>/<HeadContent> render through <HeadOutlet>, which this host never
+        @* Blazor's <PageTitle>/<HeadContent> render through <HeadOutlet>, which this host never
            mounted — so a lifted page's <PageTitle> was silently inert (50 of 122 the predecessor platform razor files use it).
            Mounted BEFORE <Head> deliberately: a page that sets <PageTitle> then owns the FIRST <title> in
            document order, which is the one the browser reports as document.title, while a page that does not
@@ -192,7 +191,7 @@
             {
                 @if (_runtime == Runtimes.WebAssembly && !_prerender)
                 {
-                    @* BL-206: this body is ONE WebAssembly root component and nothing else, so a visitor saw a blank page until the
+                    @* This body is ONE WebAssembly root component and nothing else, so a visitor saw a blank page until the
                        client had downloaded and started - 238 files, 57.4 MB decoded, measured on UAT 2026-10-02. The status shows
                        meanwhile, with the download's percentage blazor.web.js sets; app.css hides it once Routes has rendered. *@
                     <div id="db-boot" class="db-boot" role="status" aria-live="polite"><span class="db-boot-text">Loading</span></div>
@@ -234,7 +233,7 @@
     private string _platform = "";
     private string _authorizationToken = "";
     private string _language = "en";
-    // BL-198: the page's theme's declared colour mode ("dark"/"light"), or null when it follows the visitor.
+    // The page's theme's declared colour mode ("dark"/"light"), or null when it follows the visitor.
     private string _fixedColorMode;
     private string _headResources = "";
     private string _bodyResources = "";
@@ -251,7 +250,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // BL-192: a new release's unversioned assets reach a browser that cached the previous release's.
+        // A new release's unversioned assets reach a browser that cached the previous release's.
         Stomme.Infrastructure.ReleaseAssetCache.Apply(Context, Stomme.Shared.Constants.PackageVersion);
 
         _antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
@@ -485,7 +484,7 @@
             int? userid = Context.User.UserId();
             userid = (userid == -1) ? null : userid;
 
-            // get cookie value: the visitor id and the time the visit record is next refreshed, protected (BL-185). A value
+            // get cookie value: the visitor id and the time the visit record is next refreshed, protected. A value
             // this host did not issue - forged, tampered, or a legacy plain cookie - reads as no visitor, and a new
             // protected cookie is issued below.
             var visitorCookieName = Stomme.Infrastructure.Security.VisitorCookie.Name(SiteId);
@@ -720,7 +719,7 @@
     {
         var resources = new List<Resource>();
 
-        // SSR head resources: resolve the same theme the client router will render (D87) — admin pages get the
+        // SSR head resources: resolve the same theme the client router will render — admin pages get the
         // site's AdminThemeType (when set), public pages the DefaultThemeType, empty falls back to the default.
         var themeType = Utilities.ResolveThemeType(page.ThemeType, page.Path, site.DefaultThemeType, site.AdminThemeType);
         var theme = site.Themes.FirstOrDefault(item => item.Themes.Any(item => item.TypeName == themeType));
@@ -987,7 +986,7 @@
         // get culture cookie
         string cultureCookie = Context.Request.Cookies[Shared.CookieRequestCultureProvider.DefaultCookieName];
 
-        // BL-251: the language the visitor chose (the language switcher writes it into the cookie) wins over the profile and
+        // The language the visitor chose (the language switcher writes it into the cookie) wins over the profile and
         // the site's default while the site offers it. Before, every server render rewrote the cookie to the computed
         // language, so the switcher changed nothing.
         var chosen = cultureCookie == null ? null : Shared.CookieRequestCultureProvider.ParseCookieValue(cultureCookie)?.UICulture.Name;
@@ -1015,7 +1014,7 @@
         }
 
         // html element language attribute: the content's language where the site localizes content, otherwise the language
-        // the page's text is shown in (BL-251: it named the content culture while the page read in another)
+        // the page's text is shown in (it named the content culture while the page read in another)
         return contentLocalization ? culture : uiCulture;
     }
 

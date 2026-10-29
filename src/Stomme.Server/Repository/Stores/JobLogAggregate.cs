@@ -23,7 +23,7 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// <b>NOTE WHAT IS ABSENT: <c>Job</c>.</b> The contract's <c>JobLog.Job</c> was a MAPPED navigation the
     /// harvested repository eager-loaded with <c>.Include(item =&gt; item.Job)</c>. This aggregate references the
-    /// job BY ID only (<see cref="JobId"/>, D7/D19). The <c>job_id</c> column still carries its cascading foreign
+    /// job BY ID only (<see cref="JobId"/>). The <c>job_id</c> column still carries its cascading foreign
     /// key to <c>job</c> in the database; what is gone is the EF NAVIGATION, not the constraint.
     /// <see cref="JobLogRepository"/> re-populates the (now <c>[NotMapped]</c>) <c>JobLog.Job</c> member from a
     /// second master-session query — the Admin &gt; Jobs &gt; Log screen dereferences <c>log.Job.Name</c> and
@@ -36,7 +36,7 @@ namespace Stomme.Repository.Stores
     public class JobLogAggregate : AggregateRoot<int>
     {
         /// <summary>
-        /// The <see cref="Job"/> this entry logs, by id (D7/D19) — the reference that replaces the severed
+        /// The <see cref="Job"/> this entry logs, by id — the reference that replaces the severed
         /// navigation. The <c>job_id</c> column keeps its cascading foreign key to <c>job</c>.
         /// </summary>
         public int JobId { get; set; }

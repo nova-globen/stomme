@@ -16,14 +16,14 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// What a concurrency conflict inside a multi-row pass ACTUALLY costs (BL-152).
+    /// What a concurrency conflict inside a multi-row pass ACTUALLY costs.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>BL-152 was booked on a premise this suite REFUTES.</b> The row reads: "three more <i>update many, save
     /// once</i> loops … all mutate a collection and call <c>SaveChangesAsync</c> ONCE afterwards. If any single row
     /// conflicts, the whole pass is lost." The first half describes the source faithfully; the conclusion does not
-    /// follow, because <b>this framework's <c>IUnitOfWork</c> persists nothing</b> (D67). Its
+    /// follow, because <b>this framework's <c>IUnitOfWork</c> persists nothing</b>. Its
     /// <c>SaveChangesAsync</c> drains tracked aggregates and dispatches their domain events; the WRITE already
     /// happened, eagerly, inside the repository call — <c>EfRepository.Add/Update/DeleteAsync</c> each end in
     /// <c>context.SaveChangesAsync</c>, and it is there that a <c>DbUpdateConcurrencyException</c> becomes a

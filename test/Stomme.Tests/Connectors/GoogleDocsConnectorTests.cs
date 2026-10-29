@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Docs (n8n's Google Docs node: a document created, got and updated): the refresh token exchanged at the token
+    /// Google Docs (n8n's Google Docs node: a document created, got and updated): the refresh token exchanged at the token
     /// endpoint, the access token sent as a bearer; a document by its id or its address; its text - paragraphs, tables and
     /// contents in order; a document made in a folder through Drive; text inserted at an index or at the end, in the body or a
     /// segment; every occurrence of a text replaced, how many said; Docs requests sent as they are, with a revision required or

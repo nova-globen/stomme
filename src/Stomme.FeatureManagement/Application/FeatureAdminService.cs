@@ -45,7 +45,7 @@ internal sealed class FeatureAdminService(
     IFeatureRegistry registry,
     IFeatureFlagCache cache) : IFeatureAdminService
 {
-    // Every mutation below invalidates the evaluator cache for the flag's OWN tenant (BL-39) — the exact
+    // Every mutation below invalidates the evaluator cache for the flag's OWN tenant — the exact
     // owner even for a system-scope write that reaches another tenant's flag — and does so AFTER the write
     // committed: both store providers commit inside the repository call, and the unit-of-work call after it
     // only dispatches domain events (staging the audit row), so the invalidation is strictly post-commit.

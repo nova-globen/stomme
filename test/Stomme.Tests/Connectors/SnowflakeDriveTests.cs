@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Snowflake DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Snowflake DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for an account's SQL API that answers one programmatic access token alone. A Snowflake
     /// connection made over the API, its token vaulted, tested; a published pipeline runs a query with a value bound - still
     /// running when first asked, its result in two parts, the second gzipped - no further than asked, inserts two rows and

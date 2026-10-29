@@ -2,7 +2,7 @@ using System;
 
 namespace Stomme.Models.IdentityAudit
 {
-    /// <summary>What happened to an account (BL-120). The numbers are stored - append, never renumber.</summary>
+    /// <summary>What happened to an account. The numbers are stored - append, never renumber.</summary>
     public enum IdentityAuditEvent
     {
         SignIn = 0,

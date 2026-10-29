@@ -3,7 +3,7 @@ using Stomme.Models;
 namespace Stomme.Modules.Backup
 {
     /// <summary>
-    /// The backup module's definition (BL-81, D106 item 9).
+    /// The backup module's definition.
     /// </summary>
     /// <remarks>
     /// It declares NO permission keys, on purpose (refutation 8): <c>PermissionKeys.Declare</c> always admits Administrators,

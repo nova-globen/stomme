@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Kit (n8n's ConvertKit node: subscribers through forms, sequences and tags, and the custom fields): every call
+    /// Kit (n8n's ConvertKit node: subscribers through forms, sequences and tags, and the custom fields): every call
     /// Kit's API v4 with the key in X-Kit-Api-Key; subscribers read by status, e-mail, dates and sort page by page by Kit's
     /// cursor as long as Kit says there is a next page, no more than asked; a subscriber got, created with its first name,
     /// state and fields, updated and unsubscribed; forms, sequences and tags read, a subscriber added to a form with a

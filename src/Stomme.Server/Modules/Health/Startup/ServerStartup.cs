@@ -19,14 +19,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Health.Startup
 {
     /// <summary>
-    /// Wires the health module (D104): two storage-blind aggregates, the contribution seam, and the probe pass.
+    /// Wires the health module: two storage-blind aggregates, the contribution seam, and the probe pass.
     /// </summary>
     /// <remarks>
     /// <para>
     /// Discovered by the framework's assembly scan like every other module startup. Both aggregates take one
     /// <c>AddModuleAggregatePersistence</c> call and the module authors no persistence code: on a relational
     /// install the host maps them into the shared context, on RavenDB or the File store they round-trip through
-    /// the install's own store (D79/D80).
+    /// the install's own store.
     /// </para>
     /// <para>
     /// <b>Contributors are registered as an ENUMERABLE.</b> That is the whole seam: the framework's own probes
@@ -72,7 +72,7 @@ namespace Stomme.Modules.Health.Startup
 
             // The framework's own probes and metrics, through the same seam a module uses.
             services.TryAddEnumerable(ServiceDescriptor.Scoped<IHealthContributor, StommeDependencyContributor>());
-            // BL-218: the file rows whose file is gone from disk, per site.
+            // The file rows whose file is gone from disk, per site.
             services.TryAddEnumerable(ServiceDescriptor.Scoped<IHealthContributor, MissingFilesContributor>());
 
             // ALERTING IS OFF UNLESS IT IS SWITCHED ON, and the probe job records either way - so the history is
@@ -95,7 +95,7 @@ namespace Stomme.Modules.Health.Startup
             // purged here - it is trimmed on write, so it stays bounded even when PurgeJob IS disabled.
             services.AddScoped<IRetentionPurger, Infrastructure.HealthRetentionPurger>();
 
-            // The gated read surface (D104 item 8). Handlers are registered EXPLICITLY - never AddMediator() here:
+            // The gated read surface. Handlers are registered EXPLICITLY - never AddMediator() here:
             // an earlier module startup already composed the mediator, and a second call would double every
             // pipeline behaviour (BL-78 F13). Nothing on the JOB path carries [Requires]: a job has no HttpContext
             // and would be denied by its own authorization behaviour.
@@ -103,7 +103,7 @@ namespace Stomme.Modules.Health.Startup
             services.AddScoped<IRequestHandler<ListHealthRollupsQuery, IReadOnlyList<HealthRollupView>>, ListHealthRollupsQueryHandler>();
             services.AddScoped<IRequestHandler<AcknowledgeHealthAlertCommand, Unit>, AcknowledgeHealthAlertCommandHandler>();
 
-            // Run-now: the only live probing besides the job, health:manage only, ONE in flight per site (D104). The gate
+            // Run-now: the only live probing besides the job, health:manage only, ONE in flight per site. The gate
             // is a singleton so every request scope of this process shares it.
             services.TryAddSingleton<HealthRunNowGate>();
             services.AddScoped<IRequestHandler<RunHealthProbesNowCommand, HealthRunNowResult>, RunHealthProbesNowCommandHandler>();

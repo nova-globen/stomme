@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Dashboards
 {
     /// <summary>
-    /// BL-96 increment 11 - the dashboards' MCP surface DRIVEN over HTTP on installed hosts on SQLite and PostgreSQL
+    /// The dashboards' MCP surface DRIVEN over HTTP on installed hosts on SQLite and PostgreSQL
     /// with <c>Mcp:Server:Enabled</c> and the <c>dashboards.mcp</c> flag turned on through configuration: the Host
     /// lists the tool and the resources, reads the list and one board, calls <c>get_widget_data</c> for a widget over
     /// an open dataset (rows) and one over a Restricted dataset (refused, the address never in the body); a plain user

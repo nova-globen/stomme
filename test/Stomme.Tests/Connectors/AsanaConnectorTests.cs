@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Asana (n8n's Asana node: a task created, got, listed, updated, moved and deleted, a comment added): a personal
+    /// Asana (n8n's Asana node: a task created, got, listed, updated, moved and deleted, a comment added): a personal
     /// access token as a bearer; a project's open tasks - or every one - read page by page by Asana's offset up to the most asked
     /// for, each a plain record - a person, a project, a tag and a section by name; a task made in a project or a workspace, its
     /// due date a day or a time, read by its address, changed, completed, moved to a section, commented on and deleted; a task, a

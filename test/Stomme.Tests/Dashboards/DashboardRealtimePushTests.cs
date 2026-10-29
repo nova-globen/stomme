@@ -22,7 +22,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Dashboards
 {
     /// <summary>
-    /// The dashboards page's live update (BL-96 increment 10) on an installed host with the SignalR transport on: a real
+    /// The dashboards page's live update on an installed host with the SignalR transport on: a real
     /// hub connection, a real dataset refreshed through the Datasets API, a real push - the dataset's id and the kind of
     /// change, NOTHING else, addressed to the site's group alone; the hub is <c>dashboards:view</c>, so a plain user and
     /// an anonymous caller are refused at negotiate.

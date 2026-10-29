@@ -6,7 +6,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-251 - a partial <c>Caching</c> section still caches. With any key under <c>Caching</c> the host read every value as
+    /// A partial <c>Caching</c> section still caches. With any key under <c>Caching</c> the host read every value as
     /// given, so <c>{"Caching": {"Distributed": true}}</c> meant a memory duration of 0 and fail-safe off: nothing cached.
     /// Each value now defaults on its own, to what an absent section gives.
     /// </summary>

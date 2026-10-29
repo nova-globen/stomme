@@ -102,7 +102,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(System.Text.Json.Nodes.JsonNode.Parse(body)!["id"]!.ToString(), System.Text.Json.Nodes.JsonNode.Parse(again)!["id"]!.ToString());
         }
 
-        // BL-229: how many runs may go at once is kept in the pipeline's designer metadata (the engine reads its options, which
+        // How many runs may go at once is kept in the pipeline's designer metadata (the engine reads its options, which
         // the save sets); a value the editor does not offer is not kept.
         [Fact]
         public void How_many_runs_go_at_once_is_kept_with_the_graph()
@@ -125,7 +125,7 @@ namespace Stomme.Tests.Pipelines
             static PipelineGraph PipelineCodecRoundTrip(string text) => PipelineGraphCodec.ToGraph(text);
         }
 
-        // BL-229: n8n's "save successful executions" - not keeping the runs that finish well is kept in the designer metadata,
+        // n8n's "save successful executions" - not keeping the runs that finish well is kept in the designer metadata,
         // where the task that deletes them reads it from the published body; kept (the default) writes nothing.
         // BL-229, n8n's "save execution progress": kept with the graph, absent while off.
         [Fact]
@@ -169,7 +169,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(PipelineGraphCodec.KeepsSuccessfulRuns("not json"));
         }
 
-        // BL-229: what the runs keep of their steps' data is kept in the designer metadata, where the task that empties the step
+        // What the runs keep of their steps' data is kept in the designer metadata, where the task that empties the step
         // records reads it from the published body; always (the default) writes nothing.
         [Fact]
         public void What_the_runs_keep_of_their_steps_data_is_kept_with_the_graph()
@@ -193,7 +193,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(PipelineGraphCodec.KeepsStepData("not json"));
         }
 
-        // BL-229: n8n's time saved per run - kept in the designer metadata, where Insights reads it from the published body; not
+        // n8n's time saved per run - kept in the designer metadata, where Insights reads it from the published body; not
         // said, nothing is written.
         [Fact]
         public void The_minutes_a_run_saves_are_kept_with_the_graph()

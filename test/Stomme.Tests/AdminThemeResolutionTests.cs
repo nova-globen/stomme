@@ -4,7 +4,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The per-site admin-theme split (D87). <see cref="Utilities.ResolveThemeType"/> is the single decision
+    /// The per-site admin-theme split. <see cref="Utilities.ResolveThemeType"/> is the single decision
     /// function both render call sites use — the client router (<c>SiteRouter.ProcessPage</c>) and the SSR head
     /// resource loader (<c>App.razor.GetPageResources</c>). Pinning it here keeps the two in agreement and
     /// guards the load-bearing FALLBACK: an empty admin theme must leave an admin page rendering the site's

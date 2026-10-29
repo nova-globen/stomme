@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Trello (n8n's Trello node: a card created, got, updated and deleted, a comment added, a list's cards got): the
+    /// Trello (n8n's Trello node: a card created, got, updated and deleted, a comment added, a list's cards got): the
     /// API key and token in Trello's OAuth header, never in an address; a list's or a board's open cards up to the most asked for,
     /// each a plain record - its labels by name; a card made on a list, read by its address, changed, moved, marked done,
     /// archived and deleted; a comment added; a card, a list, a label, a member, a name's line break, a due date, a position and an

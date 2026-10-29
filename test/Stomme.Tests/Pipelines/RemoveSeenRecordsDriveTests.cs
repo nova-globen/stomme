@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Remove records seen before DRIVEN over HTTP on an installed SQLite host: a webhook pipeline called twice with
+    /// Remove records seen before DRIVEN over HTTP on an installed SQLite host: a webhook pipeline called twice with
     /// overlapping records passes on what is new each time - what the first call had is gone from the second's result, through
     /// the host's own key-value store and lock - and a step test of it reads what the pipeline has seen and remembers nothing.
     /// </summary>

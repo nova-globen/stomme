@@ -13,13 +13,13 @@ namespace Stomme.Modules.Guestbook.Domain
     /// assigning a raw string, and it is a small, honest example of the pattern a real domain uses for money,
     /// e-mail addresses, coordinates and so on.
     /// <para>
-    /// It implements <see cref="IStringValueObject"/> (D76) so the RavenDB store round-trips it as a clean
+    /// It implements <see cref="IStringValueObject"/> so the RavenDB store round-trips it as a clean
     /// scalar JSON string through its public <see cref="Create(string)"/> factory, rather than relying on
     /// Newtonsoft matching the private constructor to a <c>{"Value":"..."}</c> object — which happens to work
     /// today but is fragile (a second constructor or a renamed parameter would break it silently). The marker
     /// is the sanctioned, explicit path every value object on the document seam uses (see
     /// <c>ValueObjectJsonConverters</c>). On a relational install the SAME marker drives the convention: the
-    /// host's shared <c>ModuleAggregatesDbContext</c> (D79) applies a string value converter to any
+    /// host's shared <c>ModuleAggregatesDbContext</c> applies a string value converter to any
     /// <see cref="IStringValueObject"/> property automatically, so this module hand-writes NO converter and the
     /// column is a plain string.
     /// </para>

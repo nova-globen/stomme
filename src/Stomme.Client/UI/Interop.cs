@@ -161,7 +161,7 @@ namespace Stomme.UI
 
         /// <summary>
         /// Imports a page script (<c>ResourceLoadBehavior.BlazorPageScript</c>) as an ES module and calls its <c>onLoad</c> (first
-        /// time) and <c>onUpdate</c> - the interactive twin of the static path's <c>&lt;page-script&gt;</c> (BL-202).
+        /// time) and <c>onUpdate</c> - the interactive twin of the static path's <c>&lt;page-script&gt;</c>.
         /// </summary>
         public async Task IncludePageScript(string src)
         {

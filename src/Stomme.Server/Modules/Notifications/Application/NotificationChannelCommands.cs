@@ -19,9 +19,9 @@ using FluentValidation;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    // Lifted from the predecessor platform the predecessor platform.Notifications.Application/NotificationChannelCommands.cs (BL-78 step 5). Every request is
+    // Lifted from the predecessor platform the predecessor platform.Notifications.Application/NotificationChannelCommands.cs. Every request is
     // USER-FACING and carries [Requires(ManageChannels)]; the dispatch job never sends one (F3). Reshaped: the site is the
-    // resolved alias's and a channel of another site is "does not exist"; the credential goes to ISiteSecretStore (D101)
+    // resolved alias's and a channel of another site is "does not exist"; the credential goes to ISiteSecretStore
     // under the channel's DERIVED reference key - a caller can no longer name a reference key (the predecessor platform's VaultSecretRef
     // input would let a channel present another feature's secret to a webhook endpoint); a NAMED provider that is not
     // registered is REJECTED (the predecessor platform skipped validation and the resolver fell back to the first candidate); the secret is

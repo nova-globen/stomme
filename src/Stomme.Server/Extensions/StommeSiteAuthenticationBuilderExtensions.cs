@@ -50,22 +50,22 @@ namespace Stomme.Extensions
                 {
                     // default options
                     options.SignInScheme = Constants.AuthenticationScheme; // identity cookie
-                    // RequireHttpsMetadata defaults true; a loopback/dev authority on http overrides it (D64).
+                    // RequireHttpsMetadata defaults true; a loopback/dev authority on http overrides it.
                     options.RequireHttpsMetadata = bool.Parse(sitesettings.GetValue("ExternalLogin:RequireHttpsMetadata", "true"));
                     options.GetClaimsFromUserInfoEndpoint = true;
                     // MapInboundClaims defaults true (ASP.NET maps sub -> nameidentifier etc.). Set false to keep
-                    // raw OIDC claim types (sub/name/email) so ExternalLogin:IdentifierClaimType can be "sub" (D64).
+                    // raw OIDC claim types (sub/name/email) so ExternalLogin:IdentifierClaimType can be "sub".
                     options.MapInboundClaims = bool.Parse(sitesettings.GetValue("ExternalLogin:MapInboundClaims", "true"));
                     options.CallbackPath = string.IsNullOrEmpty(alias.Path) ? "/signin-" + AuthenticationProviderTypes.OpenIDConnect : "/" + alias.Path + "/signin-" + AuthenticationProviderTypes.OpenIDConnect;
                     // FormPost is the secure default; a headless/loopback drive uses "query" so the code can be
-                    // followed without a browser auto-submitting the form (D64).
+                    // followed without a browser auto-submitting the form.
                     options.ResponseMode = sitesettings.GetValue("ExternalLogin:ResponseMode", OpenIdConnectResponseMode.FormPost);
 
                     // cookie config is required to avoid Correlation Failed errors
                     options.NonceCookie.SameSite = SameSiteMode.Unspecified;
                     options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
 
-                    // site options - an address the handler would refuse is never handed to it (BL-247): the options are
+                    // site options - an address the handler would refuse is never handed to it: the options are
                     // built for every request, so a plain-http authority while https metadata is required threw on every
                     // request and the whole site answered 500, a restart included. Without it only signing in through this
                     // provider fails; the admin form refuses such an address when it is saved.
@@ -323,7 +323,7 @@ namespace Stomme.Extensions
 
         /// <summary>
         /// The authority or metadata address as configured, or empty when the OpenID Connect handler would refuse it - a
-        /// plain-http address while https metadata is required - so the site keeps serving (BL-247).
+        /// plain-http address while https metadata is required - so the site keeps serving.
         /// </summary>
         internal static string UsableMetadataAddress(string address, bool requireHttps) =>
             string.IsNullOrEmpty(address) || !requireHttps || address.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ? address : string.Empty;
@@ -349,14 +349,14 @@ namespace Stomme.Extensions
         }
 
         /// <summary>
-        /// D65 — the SAML2 / Windows-Negotiate provisioning bridge. A successful SAML assertion or Negotiate
+        /// The SAML2 / Windows-Negotiate provisioning bridge. A successful SAML assertion or Negotiate
         /// handshake yields a <see cref="ClaimsPrincipal"/>; this routes it through the SAME link-or-create path
         /// the OIDC/OAuth consumers use (<see cref="ValidateUser"/>), so an external login creates-or-links an
         /// <c>IdentityUser</c> + writes a <c>UserLogin</c> row and produces the Identity-cookie
         /// <see cref="ClaimsIdentity"/>. The scheme is installation-wide, but linkage stays PER-SITE: the
         /// <paramref name="providerType"/> becomes the UserLogin provider prefix and <c>ValidateUser</c> appends
         /// the resolved <c>:{siteId}</c>. Fully async — the callers (the async <c>/signin-saml2</c> callback and
-        /// the Windows-login page) await this, so no sync-over-async is introduced (D33).
+        /// the Windows-login page) await this, so no sync-over-async is introduced.
         /// </summary>
         internal static Task<ClaimsIdentity> ProvisionExternalPrincipalAsync(
             HttpContext httpContext, ClaimsPrincipal principal, string providerType, string providerName,
@@ -394,14 +394,14 @@ namespace Stomme.Extensions
                 return identity;
             }
 
-            // D65: SAML/Negotiate pass the provider type/name explicitly (they are installation-wide schemes,
+            // SAML/Negotiate pass the provider type/name explicitly (they are installation-wide schemes,
             // not per-site ExternalLogin config). OIDC/OAuth pass null and keep reading the site settings.
             var providerType = providerTypeOverride ?? httpContext.GetSiteSettings().GetValue("ExternalLogin:ProviderType", "");
             var providerName = providerNameOverride ?? httpContext.GetSiteSettings().GetValue("ExternalLogin:ProviderName", "");
             var alias = httpContext.GetAlias();
             var _users = httpContext.RequestServices.GetRequiredService<IUserRepository>();
             User user = null;
-            // D65: on the persistence seam, AddUserAsync TRACKS the new UserAggregate in the store's DbContext
+            // On the persistence seam, AddUserAsync TRACKS the new UserAggregate in the store's DbContext
             // (D19). A later UpdateUserAsync in the same request attaches a second instance with the same key,
             // which EF rejects ("cannot be tracked because another instance ... is already being tracked") — the
             // create-then-update path, never exercised before D65 (D64 only drove the LINK path). So a
@@ -677,7 +677,7 @@ namespace Stomme.Extensions
 
                     var host = userRoles.FirstOrDefault(item => item.Role.Name == RoleNames.Host);
                     var registered = userRoles.FirstOrDefault(item => item.Role.Name == RoleNames.Registered);
-                    // BL-224: a locked-out account signs in by no route. The password sign-in checks lockout; an external one
+                    // A locked-out account signs in by no route. The password sign-in checks lockout; an external one
                     // now does too, as ASP.NET Identity's own external sign-in does - and a service account is locked out for good.
                     var lockedOut = await _identityUserManager.FindByNameAsync(user.Username) is { } lockoutCandidate
                         && await _identityUserManager.IsLockedOutAsync(lockoutCandidate);
@@ -685,7 +685,7 @@ namespace Stomme.Extensions
                     {
                         // update user
                         user.LastLoginOn = DateTime.UtcNow;
-                        // D70: RemoteIpAddress is null when a reverse proxy strips the connection IP (an external
+                        // RemoteIpAddress is null when a reverse proxy strips the connection IP (an external
                         // login with no connection endpoint), so guard it — an unguarded .ToString() NREs and
                         // fails the whole login. Matches the empty-IP convention used elsewhere (line ~495,
                         // App.razor, LogManager).

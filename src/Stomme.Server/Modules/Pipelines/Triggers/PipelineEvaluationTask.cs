@@ -20,7 +20,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// BL-229 - n8n's Evaluations, run: each site's running evaluations moved on, per site tenant, on one node at a time, every
+    /// n8n's Evaluations, run: each site's running evaluations moved on, per site tenant, on one node at a time, every
     /// <c>Pipelines:Evaluations:IntervalSeconds</c>. A row whose run has ended is marked by how it ended (finished, failed,
     /// cancelled); one running past <c>RowTimeoutMinutes</c> is cancelled and marked timed out; then waiting rows are started, up
     /// to <c>RowsAtOnce</c>, each a run of the version the evaluation began with, from its "When evaluating" step with the row as

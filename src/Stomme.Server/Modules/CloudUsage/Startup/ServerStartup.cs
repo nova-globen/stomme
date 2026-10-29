@@ -22,7 +22,7 @@ namespace Stomme.Modules.CloudUsage.Startup
 {
     /// <summary>
     /// The CloudUsage module's composition (BL-97 increments 2 to 5): the three storage-blind, tenant-owned aggregates on
-    /// whichever store the install chose (D79/D80), their closed repositories, the cost normaliser, the per-source cost
+    /// whichever store the install chose, their closed repositories, the cost normaliser, the per-source cost
     /// adapters over the connection-backed payload source, the connection resolver over Connectivity, the sync, the
     /// commands and queries, the alert service with its two notification templates, the page's service, CloudUsage's side
     /// of CostOptimization's cloud-cost read port, and the demo board on the demo-content switch. The daily

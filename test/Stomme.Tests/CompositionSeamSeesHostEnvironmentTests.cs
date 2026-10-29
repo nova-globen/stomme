@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Whether COMPOSITION-time code can reach the host's own content root (BL-153, the remaining readers).
+    /// Whether COMPOSITION-time code can reach the host's own content root (the remaining readers).
     /// </summary>
     /// <remarks>
     /// The DI-capable readers of the <c>|DataDirectory|</c> token now ask <c>IConfigManager.GetDataDirectory</c>,

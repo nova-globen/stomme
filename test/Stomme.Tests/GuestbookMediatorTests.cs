@@ -22,7 +22,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// Drives the Guestbook module's CQRS pipeline (D74) with the REAL mediator, the REAL four pipeline
+    /// Drives the Guestbook module's CQRS pipeline with the REAL mediator, the REAL four pipeline
     /// behaviors, the REAL handlers, and the REAL framework unit-of-work / domain-event dispatcher — only
     /// persistence is a fake in-memory repository, so the test is deterministic and needs no database. This
     /// proves the mediator is functional end to end: a validated command round-trips, an invalid command is
@@ -134,7 +134,7 @@ namespace Stomme.Tests
             // The persistence fake: it enrolls the aggregate in the ambient tracker exactly as EfRepository
             // does in the no-serializer (in-process dispatch) mode, so the unit of work has something to drain.
             services.AddScoped<IGuestbookRepository, FakeGuestbookRepository>();
-            services.AddScoped<ITenantContext, FixedTenantContext>(); // BL-111: the handler stamps the ambient tenant
+            services.AddScoped<ITenantContext, FixedTenantContext>(); // The handler stamps the ambient tenant
 
             // The mediator, live, with the four behaviors in the module's deliberate order (registration order
             // == outer-to-inner execution): exception -> logging -> performance -> validation -> handler.

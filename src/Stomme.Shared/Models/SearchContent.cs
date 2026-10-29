@@ -34,7 +34,7 @@ namespace Stomme.Models
         public DateTime CreatedOn { get; set; }
 
         /// <summary>
-        /// The content's name/value metadata. <b>[NotMapped] (D45/D50)</b>: with
+        /// The content's name/value metadata. <b>[NotMapped]</b>: with
         /// SearchContentPropertyAggregate mapped onto the `SearchContentProperty` table, a mapped navigation
         /// here makes EF rediscover the SearchContentProperty contract through it and claim the aggregate's
         /// table. View state the repository populates and writes.

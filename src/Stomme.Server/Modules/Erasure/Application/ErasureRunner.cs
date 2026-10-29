@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Erasure.Application
 {
     /// <summary>
-    /// Queues an erasure (D112): the request row that the job picks up on its next tick, with the ids the participants
+    /// Queues an erasure: the request row that the job picks up on its next tick, with the ids the participants
     /// need. Deleting a user calls this - after the identity subject is captured and before the account row goes.
     /// </summary>
     public sealed class ErasureQueue(IErasureRequestRepository requests, IUnitOfWork unitOfWork, ITenantContext tenantContext, TimeProvider clock) : IErasureQueue
@@ -30,7 +30,7 @@ namespace Stomme.Modules.Erasure.Application
     }
 
     /// <summary>
-    /// Runs one erasure request against every participant (D112). Fail closed: a participant that throws stops the run
+    /// Runs one erasure request against every participant. Fail closed: a participant that throws stops the run
     /// for that subject, the request stays pending with the participant and the exception TYPE on it (never a message,
     /// which could carry data), and the next tick tries again; after the attempt limit it is Failed and visible to the
     /// Host. Idempotent: every participant is re-applied on a retry and finds nothing left for what it already erased.
@@ -109,7 +109,7 @@ namespace Stomme.Modules.Erasure.Application
             return await PersistAsync(request, ct);
         }
 
-        // The ONE write of a run (the per-write-store invariant, D102): every path ends here.
+        // The ONE write of a run (the per-write-store invariant): every path ends here.
         private async Task<ErasureRequestStatus> PersistAsync(ErasureRequestAggregate request, CancellationToken ct)
         {
             await requests.UpdateAsync(request, ct);

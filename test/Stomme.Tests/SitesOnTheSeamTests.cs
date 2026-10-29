@@ -22,7 +22,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The Sites cluster on the persistence seam (D3/D7/D17). Two things here are easy to get wrong and
+    // The Sites cluster on the persistence seam. Two things here are easy to get wrong and
     // invisible at a glance:
     //   1. The aggregate is mapped onto a schema this context does NOT migrate — the tenant migration set
     //      owns those columns. Nothing but a live install tells you the mapping drifted, and by then the
@@ -292,7 +292,7 @@ namespace Stomme.Tests
             Assert.Equal("1.0.0", loaded.SiteVersion); // the string Version column, not the seam's token
         }
 
-        // Reads go through IQuerySession.Query<T> (D7: the aggregate repository has no IQueryable). This is
+        // Reads go through IQuerySession.Query<T> (the aggregate repository has no IQueryable). This is
         // the exact call SiteRepository.GetSites makes, ordering in the database.
         [Fact]
         public async Task Sites_are_read_and_ordered_through_a_query_session()

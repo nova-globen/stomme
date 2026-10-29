@@ -10,7 +10,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Collaboration.Domain
 {
     // ============================================================================================================
-    // The Collaboration domain (BL-97 increment 11, D114), lifted from the predecessor platform's Collaboration at 183f5c52: an advisory
+    // The Collaboration domain, lifted from the predecessor platform's Collaboration at 183f5c52: an advisory
     // ResourceLock living on a lease, and an EditSession of who is present on one resource and what they changed. What
     // CHANGED for both: they belong to a SITE of their tenant (every Stomme page-owned aggregate does), a user is a
     // Stomme user id (an int), a resource id is a string (a pipeline's is the engine's definition id), and times are
@@ -105,7 +105,7 @@ namespace Stomme.Modules.Collaboration.Domain
     public sealed record LockReleasedEvent(Guid LockId, int SiteId, string Resource, LockScope Scope, int HolderUserId) : DomainEvent;
 
     /// <summary>
-    /// An ADVISORY lock on a resource (D114): one holder per resource and scope among the live locks (the lock service's
+    /// An ADVISORY lock on a resource: one holder per resource and scope among the live locks (the lock service's
     /// invariant), living on a lease that lapses without renewal so an abandoned browser never holds a resource forever.
     /// Only the holder renews or releases; a lapsed lease is treated as released and cannot be revived. Holding it is shown
     /// to the other editors - it never blocks their save, which the owning module's optimistic concurrency still decides.
@@ -144,7 +144,7 @@ namespace Stomme.Modules.Collaboration.Domain
 
         public bool Released { get; private set; }
 
-        /// <summary>Who released the lock when it was not its holder - an administrator taking it over (D114); null otherwise.</summary>
+        /// <summary>Who released the lock when it was not its holder - an administrator taking it over; null otherwise.</summary>
         public int? ReleasedByUserId { get; private set; }
 
         public static ResourceLockAggregate Acquire(Guid id, TenantId tenantId, int siteId, ResourceRef resource, LockScope scope, int holderId, string holderName, TimeSpan lease, DateTime nowUtc)
@@ -212,7 +212,7 @@ namespace Stomme.Modules.Collaboration.Domain
         }
 
         /// <summary>
-        /// <b>ADDED (D114):</b> an administrator releases another user's live lock - the take-over the decision allows. It is
+        /// <b>ADDED:</b> an administrator releases another user's live lock - the take-over the decision allows. It is
         /// recorded (<see cref="ReleasedByUserId"/>) and raises <see cref="LockReleasedEvent"/> like any release.
         /// </summary>
         public void ReleaseByAdministrator(int administratorId)
@@ -466,7 +466,7 @@ namespace Stomme.Modules.Collaboration.Domain
         }
 
         /// <summary>
-        /// <b>ADDED (D112):</b> removes a user from the session and from its change stream - the erasure of their presence.
+        /// <b>ADDED:</b> removes a user from the session and from its change stream - the erasure of their presence.
         /// Works on a closed session too; returns whether anything of theirs was there.
         /// </summary>
         public bool Forget(int userId)

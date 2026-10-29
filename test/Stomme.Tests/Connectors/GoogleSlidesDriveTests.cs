@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Slides DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Google Slides DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Google's token endpoint and the Slides API that refuses a call without the token it issued and
     /// serves a slide's thumbnail at the address it answers with: a connection made over the API, its presentation a setting, tested;
     /// a published pipeline creating a presentation, listing the connection's slides, replacing a placeholder on them and saving a

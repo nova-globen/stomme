@@ -12,7 +12,7 @@ namespace NovaGloben.Module.Blogs
     /// host resolves the rendered component: <c>{namespace}.{action}</c> → <c>NovaGloben.Module.Blogs.Index</c>
     /// in the same assembly. Every assembly name contains "Stomme" so the convention loader loads them.
     /// <para>
-    /// WASM-download-safe split (BL-13): this CLIENT assembly carries the UI + the HTTP service; the SHARED
+    /// WASM-download-safe split: this CLIENT assembly carries the UI + the HTTP service; the SHARED
     /// assembly carries the wire model + contract; the SERVER assembly carries the controller, CQRS handlers
     /// and persistence wiring. On a WebAssembly site the framework streams the ModuleDefinition's
     /// <see cref="ModuleDefinition.AssemblyName"/> (this assembly) plus every assembly named in

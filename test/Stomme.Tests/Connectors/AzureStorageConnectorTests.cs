@@ -20,10 +20,10 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Azure Storage connector's live tests' server (BL-229): AZURITE_TEST_HOST / PORT / KEY where set, otherwise this
+    /// The Azure Storage connector's live tests' server: AZURITE_TEST_HOST / PORT / KEY where set, otherwise this
     /// machine's throwaway Azurite that <c>scripts/azurite-test-server.ps1</c> makes on 127.0.0.1:10010, its account <c>kafe</c>
     /// and its key read from the file that script writes under the user's temp folder. No key is a FAILURE that says how to get
-    /// one, never a skip (D46).
+    /// one, never a skip.
     /// </summary>
     internal static class AzureStorageTestEndpoint
     {
@@ -54,7 +54,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Azure Storage (n8n's Azure Storage node) without a server: the account's address - its name from the host, or
+    /// Azure Storage (n8n's Azure Storage node) without a server: the account's address - its name from the host, or
     /// the setting's - no SAS or user in it; every request signed (SharedKey and the account's name, the key never sent) with
     /// x-ms-version and x-ms-date; the containers and a container's blobs listed page by page through Azure's marker, each with
     /// its properties camel-cased and its metadata; a container made public or not with its metadata; a blob's properties got;
@@ -276,13 +276,13 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the Azure Storage connector against a real Azurite (<c>scripts/azurite-test-server.ps1</c>'s throwaway emulator on
+    /// The Azure Storage connector against a real Azurite (<c>scripts/azurite-test-server.ps1</c>'s throwaway emulator on
     /// loopback, Microsoft's own) through the HOST's egress: loopback refused until allowlisted; a test that signs in, a wrong key
     /// refused - Azurite checking every signature; a container made with its metadata, listed by its prefix and got; text, a file
     /// and a blob in a folder uploaded with their types, metadata and tags - an accent and a space in the names - replaced, or
     /// refused with 409 when not to be; the blobs listed by a folder's prefix with their metadata and tags, page by page; a
     /// blob's properties got, downloaded into the run's folder, copied and deleted; the container deleted and gone. Fails, never
-    /// skips, when the server is absent (D46).
+    /// skips, when the server is absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class AzureStorageConnectorLiveTests(ITestOutputHelper output) : IDisposable

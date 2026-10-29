@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.HelpScout
 {
     /// <summary>
-    /// Help Scout (BL-229, n8n's Help Scout node: a shared inbox's conversations and their threads, its customers and inboxes):
+    /// Help Scout (n8n's Help Scout node: a shared inbox's conversations and their threads, its customers and inboxes):
     /// the Mailbox API 2.0 with an app's client credentials at Help Scout's token endpoint through the family's token provider,
     /// over the host's egress. A test counts the inboxes the app can see.
     /// </summary>

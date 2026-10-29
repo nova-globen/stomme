@@ -22,7 +22,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The DRIVEN half of the ModuleDefinition cluster (D52): the ModuleDefinitionRepository exercised end-to-end
+    // The DRIVEN half of the ModuleDefinition cluster: the ModuleDefinitionRepository exercised end-to-end
     // against a real SQLite database whose schema is written by hand to match the MASTER migration set — not
     // EnsureCreated, which would build the schema from the very model under test.
     //
@@ -312,7 +312,7 @@ namespace Stomme.Tests
 
             var store = NewStore(); // ONE store instance for BOTH writes, as ProcessModuleDefinitionsAsync uses.
 
-            // Read the orphan through a SESSION (untracked, D19), then map it to a detached model.
+            // Read the orphan through a SESSION (untracked), then map it to a detached model.
             ModuleDefinition detached;
             await using (var session = new TestMasterSessions(NewContext).OpenQuerySession())
             {

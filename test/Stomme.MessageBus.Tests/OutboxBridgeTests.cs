@@ -158,7 +158,7 @@ public sealed class OutboxBridgeTests : IDisposable
     {
         // SQLite pools connections; release THIS database's so the temp file can be deleted, by the exact string
         // AddDbContext used. ClearAllPools is process-wide and drops the pooled connections of whatever else is
-        // running, mid-request (BL-104).
+        // running, mid-request.
         using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={_dbPath}"))
         {
             Microsoft.Data.Sqlite.SqliteConnection.ClearPool(connection);

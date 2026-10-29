@@ -50,7 +50,7 @@ namespace Stomme.Infrastructure
 
 
         /// <summary>
-        /// Runs the job once per tenant, each in its OWN tenant scope and DI scope, each failure contained (BL-107).
+        /// Runs the job once per tenant, each in its OWN tenant scope and DI scope, each failure contained.
         /// </summary>
         /// <remarks>
         /// <para>

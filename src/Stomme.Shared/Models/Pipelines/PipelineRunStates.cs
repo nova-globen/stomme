@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// The states a list of runs is filtered by (BL-229, n8n's execution filters), as a person names them: each one or more of
+    /// The states a list of runs is filtered by (n8n's execution filters), as a person names them: each one or more of
     /// the engine's sub-statuses. ONE list, offered by the runs page and read by the server's query.
     /// </summary>
     public static class PipelineRunStates
@@ -46,7 +46,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// What a step's pass did, as the editor's canvas and the run's timeline name it (BL-229): completed, handled (it failed and
+    /// What a step's pass did, as the editor's canvas and the run's timeline name it: completed, handled (it failed and
     /// the run went on past it), faulted, canceled, waiting (parked on a bookmark - a Wait, an approval, an event) or running.
     /// A pass that never ended, in a run that has, was ended with the run: canceled. The engine leaves the record of a step its
     /// run abandoned as it was - measured after a Stop: "Running", and waiting, in a cancelled run. A test of the whole pipeline
@@ -71,7 +71,7 @@ namespace Stomme.Models.Pipelines
         public static string StatusOf(PipelineStepRunView pass, PipelineRunView? run) => Of(pass, run) == Canceled ? "Canceled" : pass.Status;
     }
 
-    /// <summary>How long a run took, as the runs list says it (BL-229, n8n's run time): from its start to its finish.</summary>
+    /// <summary>How long a run took, as the runs list says it (n8n's run time): from its start to its finish.</summary>
     public static class PipelineRunDurations
     {
         /// <summary>The run's time - "running" while it is not finished, "queued" while it waits its turn.</summary>

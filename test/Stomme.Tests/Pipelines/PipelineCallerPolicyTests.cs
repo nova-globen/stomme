@@ -33,7 +33,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "This workflow can be called by": a pipeline says which pipelines may call it, and a call it does not allow
+    /// n8n's "This workflow can be called by": a pipeline says which pipelines may call it, and a call it does not allow
     /// fails at the caller's step, saying why, before the called pipeline runs anything - through the engine as the host composes
     /// it (the check inside the retry, so the step's Failed path takes a refusal). A step test's call is the tested pipeline's.
     /// The setting is kept with the graph, merged as a field of its own, travels in an export and comes in from n8n.

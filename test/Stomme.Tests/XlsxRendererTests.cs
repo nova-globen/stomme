@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The XLSX renderer: what it writes, that the result OPENS, and that no cell can execute (BL-85, D108).
+    /// The XLSX renderer: what it writes, that the result OPENS, and that no cell can execute.
     /// </summary>
     /// <remarks>
     /// The renderer bypasses the SDK's document model to keep its package write-only (see

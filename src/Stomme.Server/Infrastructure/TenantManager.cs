@@ -15,12 +15,12 @@ namespace Stomme.Infrastructure
     /// <remarks>
     /// <para>
     /// The resolving members are async because they READ A STORE on a miss —
-    /// <see cref="IAliasRepository"/> and <see cref="ITenantRepository"/> (D32). They are reached from
+    /// <see cref="IAliasRepository"/> and <see cref="ITenantRepository"/>. They are reached from
     /// <c>TenantMiddleware</c> and from Blazor component lifecycle, i.e. from under the
-    /// <c>RendererSynchronizationContext</c>, which is exactly where a blocking wait deadlocks (D29).
+    /// <c>RendererSynchronizationContext</c>, which is exactly where a blocking wait deadlocks.
     /// </para>
     /// <para>
-    /// <b>Every member that establishes a tenant also WARMS <see cref="ITenantStoreBindings"/> (D37)</b>, which
+    /// <b>Every member that establishes a tenant also WARMS <see cref="ITenantStoreBindings"/></b>, which
     /// is what lets <c>DbContext.OnConfiguring</c> — a sync platform virtual — pick a connection string
     /// without reading a store. Two shapes, and the split is deliberate:
     /// </para>
@@ -46,7 +46,7 @@ namespace Stomme.Infrastructure
 
         /// <summary>
         /// The tenant the current <c>SiteState.Alias</c> names, from the bindings warmed in this scope.
-        /// Synchronous and reads NO store — this is what <c>DbContext.OnConfiguring</c> calls (D37).
+        /// Synchronous and reads NO store — this is what <c>DbContext.OnConfiguring</c> calls.
         /// Returns null when there is no alias at all (the uninstalled/installer state). Throws when an alias
         /// names a tenant that was never warmed: see <see cref="ITenantStoreBindings.Require"/>.
         /// </summary>
@@ -124,7 +124,7 @@ namespace Stomme.Infrastructure
             }
 
             // warm the routing table for whatever alias we ended up on, so a DbContext built later in this
-            // scope can route without a store read (D37). This is the request path's warm point: TenantMiddleware
+            // scope can route without a store read. This is the request path's warm point: TenantMiddleware
             // awaits this at the head of every request, before any context exists.
             await WarmAsync(alias);
 

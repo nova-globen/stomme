@@ -31,7 +31,7 @@ namespace Stomme.Services
     }
 
     /// <summary>
-    /// Service for the Host-only licensing surface (<c>api/Licence</c>, D105): read the status of every configured licence
+    /// Service for the Host-only licensing surface (<c>api/Licence</c>): read the status of every configured licence
     /// key, add a pasted key, remove one. Every call is Host-only server-side and answers 404 unless the installation runs
     /// with <c>Deployment:Mode=OnPrem</c>. Keys are never logged by this service.
     /// </summary>

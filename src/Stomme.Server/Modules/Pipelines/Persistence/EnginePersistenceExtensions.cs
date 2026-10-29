@@ -31,7 +31,7 @@ namespace Stomme.Modules.Pipelines.Persistence
     }
 
     /// <summary>
-    /// The engine's nine store contracts on Stomme persistence (BL-95 increment (a), D111). The provider is read
+    /// The engine's nine store contracts on Stomme persistence (BL-95 increment (a)). The provider is read
     /// from <c>Database:DefaultDBType</c> at composition time exactly as the storage-blind modules read it: the three
     /// relational providers get the EF Core stores in the module store's database, RavenDB gets the document
     /// stores, and any other provider fails LOUD here rather than leaving the engine on its in-memory stores - a
@@ -111,7 +111,7 @@ namespace Stomme.Modules.Pipelines.Persistence
             });
             services.AddScoped(sp => sp.GetRequiredService<IDbContextFactory<EngineDbContext>>().CreateDbContext());
 
-            // Created at first boot and caught up additively afterwards by the module store's initializer (BL-52).
+            // Created at first boot and caught up additively afterwards by the module store's initializer.
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IModuleAggregateStoreSchema, EfModuleAggregateStoreSchema<EngineDbContext>>());
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, ModuleAggregateStoreInitializer>());
 
@@ -125,7 +125,7 @@ namespace Stomme.Modules.Pipelines.Persistence
             services.TryAddScoped<EfKeyValueStore>();
         }
 
-        // BL-232: the engine's rows and documents in an installation's backup, on either store family; BL-233: and the site
+        // The engine's rows and documents in an installation's backup, on either store family; BL-233: and the site
         // folders the file steps read and write.
         private static void AddBackup(IServiceCollection services)
         {

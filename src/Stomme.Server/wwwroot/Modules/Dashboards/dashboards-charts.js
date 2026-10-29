@@ -1,8 +1,8 @@
-// The Dashboards module's chart interop (BL-96 increment 9, lifted from the predecessor platform's predecessor-charts.js). The ECharts
+// The Dashboards module's chart interop. The ECharts
 // runtime ships from the Apache-2.0 Vizor.ECharts package's bundled asset (it assigns the global `echarts`); this
 // script renders a widget's theme-free ChartSpec JSON, injects the colour and font palette at render time from the
 // active theme (the --db-* tokens when present, a built-in light or dark palette otherwise), and binds "$Column"
-// string tokens to that column's values from the widget's bounded preview rows. A STATIC board (the landing page, BL-98)
+// string tokens to that column's values from the widget's bounded preview rows. A STATIC board (the landing page)
 // has no interop to call it: its chart elements carry the spec, the columns and the rows, and renderAll draws them.
 window.stommeCharts = (function () {
     const instances = new Map();
@@ -72,7 +72,7 @@ window.stommeCharts = (function () {
     }
 
     // Returns a reason when nothing was drawn, null when the chart rendered: the caller shows the reason instead of
-    // throwing across the interop boundary (the predecessor platform's seeded sample chart threw a JSException here).
+    // throwing across the interop boundary (a chart with no data to draw used to throw a JSException here).
     function render(elementId, specJson, columns, rowsJson) {
         if (typeof echarts === 'undefined') return 'The chart runtime is not loaded.';
         if (!specJson) return 'This chart has no spec.';

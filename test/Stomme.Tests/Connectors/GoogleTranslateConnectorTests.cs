@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Translate (n8n's Google Translate node) without a server: every language, format, model and text held to its
+    /// Google Translate (n8n's Google Translate node) without a server: every language, format, model and text held to its
     /// shape - and a request to Google's 100K bytes - before a token is asked for; a text translated into a language, from one
     /// given or detected, as text or HTML by a model; a text over several lines from the Query box; several texts in one call, a
     /// record each; each text's language detected with Google's confidence; the languages listed, named in one if asked; Google's

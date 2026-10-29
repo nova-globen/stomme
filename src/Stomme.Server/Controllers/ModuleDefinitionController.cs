@@ -470,7 +470,7 @@ namespace Stomme.Controllers
                     if (ModuleTemplateTokens.IsBinary(file.Name))
                     {
                         // A binary file is copied byte for byte: read as text and written back, the package icon came out
-                        // re-encoded and invalid (BL-86 increment 7).
+                        // re-encoded and invalid.
                         System.IO.File.Copy(file.FullName, filePath, overwrite: true);
                         continue;
                     }
@@ -506,11 +506,11 @@ namespace Stomme.Controllers
                 };
             });
 
-            // A generated module references Stomme through ONE package, Stomme.Sdk.Slim (D81): at the chosen release,
+            // A generated module references Stomme through ONE package, Stomme.Sdk.Slim: at the chosen release,
             // restored from the framework's package feed - or, for "local", at this framework's own version from the slim SDK
             // packed out of this source tree (examples/local-feed, examples/pack-sdk-slim.ps1). The old template referenced
-            // the Debug build's DLLs by path instead, which D81 retired (BL-86 increment 7). "Local" is the version this tree's
-            // packages carry, so a preview's label too (BL-192): the release number alone names no package on a preview's feed.
+            // the Debug build's DLLs by path instead, which D81 retired. "Local" is the version this tree's
+            // packages carry, so a preview's label too: the release number alone names no package on a preview's feed.
             var local = moduleDefinition.Version == "local";
             var frameworkVersion = local ? Constants.PackageVersion : moduleDefinition.Version;
             var localFeed = Utilities.PathCombine(Directory.GetParent(rootPath.TrimEnd(Path.DirectorySeparatorChar))?.FullName ?? rootPath, "examples", "local-feed");

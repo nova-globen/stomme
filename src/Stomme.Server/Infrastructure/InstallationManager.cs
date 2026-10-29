@@ -23,7 +23,7 @@ namespace Stomme.Infrastructure
         void InstallPackages();
         bool UninstallPackage(string PackageName);
         /// <summary>
-        /// Hands the upgrade to the Updater. Null when it was started; otherwise why it was not (BL-174: no package, a
+        /// Hands the upgrade to the Updater. Null when it was started; otherwise why it was not (no package, a
         /// package older than this framework, a pre-upgrade snapshot that refused - BL-172 - or no Updater), so a caller
         /// can show it instead of the log alone holding it.
         /// </summary>
@@ -358,7 +358,7 @@ namespace Stomme.Infrastructure
                     // ensure package version is greater than or equal to current framework version
                     if (packageversion != "" && Version.Parse(Constants.Version).CompareTo(Utilities.ParseReleaseNumber(packageversion)) <= 0 && packageurl != "")
                     {
-                        // BL-172: a data snapshot BEFORE anything is touched - a refusal leaves the installation exactly as it was.
+                        // A data snapshot BEFORE anything is touched - a refusal leaves the installation exactly as it was.
                         foreach (var snapshot in _preUpgradeSnapshots)
                         {
                             if (await snapshot.TakeAsync(_hostApplicationLifetime.ApplicationStopping) is { } refusal)

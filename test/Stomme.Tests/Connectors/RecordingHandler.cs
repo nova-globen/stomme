@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The handler the OAuth connector tests hand their <see cref="StubEgress"/> (BL-96 increment 3): every request is
+    /// The handler the OAuth connector tests hand their <see cref="StubEgress"/>: every request is
     /// recorded with its body, and a responder answers by request and body - the shape the predecessor platform's per-file RoutingHandler
     /// classes had, made one. A token endpoint is answered by <see cref="TokenRoute"/> when set (by host or path), and the
     /// forms it received are kept apart from the API calls.

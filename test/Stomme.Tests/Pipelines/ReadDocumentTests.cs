@@ -23,7 +23,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Extract from File, for documents: Read document gives the text of a PDF - every page, chosen pages, or page
+    /// n8n's Extract from File, for documents: Read document gives the text of a PDF - every page, chosen pages, or page
     /// by page as records - or of a Word document; a page with no text (a scan) comes back empty and the log says why; a range that
     /// is none, a file of another kind and a file that is no document fail saying so.
     /// </summary>

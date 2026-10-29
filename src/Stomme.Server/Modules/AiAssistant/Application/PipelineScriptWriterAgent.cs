@@ -9,7 +9,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The Script Writer (BL-229, n8n's "Ask AI" in its Code node): a Run script step's script written as its author asks. The
+    /// The Script Writer (n8n's "Ask AI" in its Code node): a Run script step's script written as its author asks. The
     /// guardrail first - the per-person rate and the instruction screen - so a refused request reaches no model; then ONE call to
     /// the SITE's model (quota-gated and metered like every agent), no tools: it is told the script's world and what the script can
     /// see (<see cref="PipelineScriptPrompt"/>), and answers with a script. It proposes: nothing is stored and nothing runs.

@@ -24,7 +24,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95's residue "XLSX file shapes" (2026-09-28): Write spreadsheet over the export renderer and Read spreadsheet over the
+    /// BL-95's residue "XLSX file shapes": Write spreadsheet over the export renderer and Read spreadsheet over the
     /// Datasets upload parser, run by the real engine on the site's pipeline folder - a round trip keeping each value's type,
     /// the columns in first-seen order, a formula-leading value neutralised, a cap that says it truncated, and the refusals:
     /// another extension, a path out of the folder, records that are not an array of objects, and a compression bomb.

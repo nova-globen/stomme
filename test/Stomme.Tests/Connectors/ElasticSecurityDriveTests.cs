@@ -15,9 +15,9 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Elastic Security DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Elastic Security DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against this machine's throwaway Kibana 9.5 over its own Elasticsearch (scripts/kibana-test-server.ps1) -
-    /// fail-not-skip without it (D46): an Elastic Security connection made over the API, its password vaulted, tested; a published
+    /// fail-not-skip without it: an Elastic Security connection made over the API, its password vaulted, tested; a published
     /// pipeline opening a case, commenting on it over two lines from the Query box and closing it - the case named by an
     /// expression over the first step's result - then deleting it; the password in neither the graph nor the run.
     /// </summary>

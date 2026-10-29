@@ -12,7 +12,7 @@ using Npgsql;
 namespace Stomme.Persistence.Conformance.Tests;
 
 /// <summary>
-/// The framework-store conformance suite against the EF Core provider ON POSTGRESQL (BL-16) — the database
+/// The framework-store conformance suite against the EF Core provider ON POSTGRESQL — the database
 /// the live product runs on, and the one whose answers the SQLite fixture
 /// (<see cref="EfCoreFrameworkStoreConformanceTests"/>) structurally cannot represent: that fixture's own
 /// <c>ProviderPrefixFilterIsOrdinal</c> remarks measured PostgreSQL answering <c>true</c> where SQLite
@@ -22,7 +22,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// shape as the SQLite twin, on the shared infra tier (<c>stomme_conformance_fst_*</c> tenant,
 /// <c>stomme_conformance_fsm_*</c> master), force-dropped in teardown, stale leftovers swept at
 /// initialization (see <see cref="PostgresConformanceEndpoint"/>). FAILS, never skips, when PostgreSQL is
-/// unreachable (D46); <see cref="PostgresParityCoverageTests"/> is the named diagnosis.
+/// unreachable; <see cref="PostgresParityCoverageTests"/> is the named diagnosis.
 /// </para>
 /// </summary>
 /// <remarks>
@@ -59,7 +59,7 @@ public sealed class PostgresFrameworkStoreConformanceTests : FrameworkStoreConfo
     protected override bool ProviderStringEqualityIsOrdinal => true;
 
     /// <summary>
-    /// TRUE — and this single override is the reason this fixture exists (BL-16). EF translates
+    /// TRUE — and this single override is the reason this fixture exists. EF translates
     /// <c>StartsWith</c> to <c>LIKE</c>, and <b>PostgreSQL's <c>LIKE</c> is case-SENSITIVE</b> where SQLite's
     /// and RavenDB's prefix matches are case-INSENSITIVE — the three-way split D50 measured. Both other
     /// fixtures answer <c>false</c> here; the live product's answer is <c>true</c>, and with this fixture the
@@ -110,15 +110,15 @@ public sealed class PostgresFrameworkStoreConformanceTests : FrameworkStoreConfo
 
     protected override ISettingStore NewSettings() => new TestSettingStore(NewTenantContext());
 
-    // Bound to the master database — Setting is the FIRST aggregate the master database holds (D23).
+    // Bound to the master database — Setting is the FIRST aggregate the master database holds.
     protected override IMasterSettingStore NewMasterSettings() => new TestMasterSettingStore(NewMasterContext());
 
-    // The Job/JobLog pair (D52), also master-side: no tenant twin.
+    // The Job/JobLog pair, also master-side: no tenant twin.
     protected override IJobStore NewJobs() => new TestJobStore(NewMasterContext());
 
     protected override IJobLogStore NewJobLogs() => new TestJobLogStore(NewMasterContext());
 
-    // Theme, ModuleDefinition and the Tenant/Alias routing pair (D52): master-side only.
+    // Theme, ModuleDefinition and the Tenant/Alias routing pair: master-side only.
     protected override IThemeStore NewThemes() => new TestThemeStore(NewMasterContext());
 
     protected override IModuleDefinitionStore NewModuleDefinitions() => new TestModuleDefinitionStore(NewMasterContext());
@@ -127,10 +127,10 @@ public sealed class PostgresFrameworkStoreConformanceTests : FrameworkStoreConfo
 
     protected override IAliasStore NewAliases() => new TestAliasStore(NewMasterContext());
 
-    // The Permission cluster (D24): tenant-side only, no master half.
+    // The Permission cluster: tenant-side only, no master half.
     protected override IPermissionStore NewPermissions() => new TestPermissionStore(NewTenantContext());
 
-    // The five leaf clusters (D44) and the SiteGroup pair (D45): tenant-side only.
+    // The five leaf clusters and the SiteGroup pair: tenant-side only.
     protected override ISiteGroupStore NewSiteGroups() => new TestSiteGroupStore(NewTenantContext());
 
     protected override ISiteGroupMemberStore NewSiteGroupMembers() => new TestSiteGroupMemberStore(NewTenantContext());
@@ -145,19 +145,19 @@ public sealed class PostgresFrameworkStoreConformanceTests : FrameworkStoreConfo
 
     protected override INotificationStore NewNotifications() => new TestNotificationStore(NewTenantContext());
 
-    // Visitor, UrlMapping and PageModule (D47): tenant-side only.
+    // Visitor, UrlMapping and PageModule: tenant-side only.
     protected override IVisitorStore NewVisitors() => new TestVisitorStore(NewTenantContext());
 
     protected override IUrlMappingStore NewUrlMappings() => new TestUrlMappingStore(NewTenantContext());
 
     protected override IPageModuleStore NewPageModules() => new TestPageModuleStore(NewTenantContext());
 
-    // Folder/File (D48/D49): tenant-side only.
+    // Folder/File: tenant-side only.
     protected override IFolderStore NewFolders() => new TestFolderStore(NewTenantContext());
 
     protected override IFileStore NewFiles() => new TestFileStore(NewTenantContext());
 
-    // The SearchContent cluster (D50).
+    // The SearchContent cluster.
     protected override ISearchContentStore NewSearchContents() => new TestSearchContentStore(NewTenantContext());
 
     protected override ISearchContentPropertyStore NewSearchContentProperties() => new TestSearchContentPropertyStore(NewTenantContext());
@@ -167,7 +167,7 @@ public sealed class PostgresFrameworkStoreConformanceTests : FrameworkStoreConfo
     protected override ISearchWordStore NewSearchWords() => new TestSearchWordStore(NewTenantContext());
 
     /// <summary>
-    /// The EF search read (D50) — the REAL <c>EfSearchQueryStore</c>, for the SQLite fixture's reason: the
+    /// The EF search read — the REAL <c>EfSearchQueryStore</c>, for the SQLite fixture's reason: the
     /// harvested <c>GROUP BY</c>+<c>SUM</c> lives inside it, and this is its first run against the SQL
     /// dialect the product actually issues it on.
     /// </summary>
@@ -198,7 +198,7 @@ public sealed class PostgresFrameworkStoreConformanceTests : FrameworkStoreConfo
         protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureFrameworkStore(database);
     }
 
-    /// <summary>The master half: exactly as MasterDBContext maps it (D23/D52).</summary>
+    /// <summary>The master half: exactly as MasterDBContext maps it.</summary>
     private sealed class MasterStoreContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
     {
         protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureMasterFrameworkStore(database);

@@ -23,7 +23,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Role cluster on the persistence seam (D3/D7/D22). Role-table access goes through
+    /// The Role cluster on the persistence seam. Role-table access goes through
     /// <see cref="ISecurityRoleStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class
     /// holds no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -35,7 +35,7 @@ namespace Stomme.Repository
     /// D3-safe plan.
     /// </para>
     /// <para>
-    /// The <c>IDbContextFactory</c> IS GONE (D24). It survived the Users/Roles increment for one reason —
+    /// The <c>IDbContextFactory</c> IS GONE. It survived the Users/Roles increment for one reason —
     /// <c>db.Permission</c> in <see cref="DeleteRoleAsync"/> — and the Permission cluster is now on the seam, so
     /// the cleanup goes through <see cref="IPermissionStore"/> and this class holds no <c>DbContext</c> at
     /// all. It takes the STORE, not <see cref="IPermissionRepository"/>: the repository would be a circular DI
@@ -61,7 +61,7 @@ namespace Stomme.Repository
         }
 
         // The read path on the seam: the IQueryable is materialized inside this method, so it never leaves the
-        // repository (D7). ToList/Where/FirstOrDefault are plain LINQ rather than EF Core's async operators,
+        // repository. ToList/Where/FirstOrDefault are plain LINQ rather than EF Core's async operators,
         // which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -142,7 +142,7 @@ namespace Stomme.Repository
             // and RoleMapper projects it onto a fresh wire contract either way.
             //
             // Read through the query session, NOT _roleStore.GetByIdAsync — that is load-bearing, not a style
-            // choice (D19). The store's IRepository.GetByIdAsync TRACKS the aggregate in the store's DbContext,
+            // choice. The store's IRepository.GetByIdAsync TRACKS the aggregate in the store's DbContext,
             // and UpdateAsync then attaches a DIFFERENT instance rebuilt from the wire contract with the same
             // key, which EF rejects. RoleController.Put walks straight into it: GetRole(role.RoleId, false) to
             // authorize, then UpdateRole(role) — both on this same repository instance, hence the same store
@@ -171,7 +171,7 @@ namespace Stomme.Repository
                 await _userRoleStore.DeleteAsync(assignment);
             }
 
-            // remove permissions for role — now on the seam (D24), through IPermissionStore rather than a raw
+            // remove permissions for role — now on the seam, through IPermissionStore rather than a raw
             // db.Permission (see the remarks on this class for why it is the store and not the repository).
             // The RoleId filter stays in the DATABASE, as db.Permission.Where did: the store's only read is
             // GetAllAsync, so reading through it would scan every permission in the tenant. Read filtered

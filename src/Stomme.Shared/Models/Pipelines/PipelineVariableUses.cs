@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - where a variable is used: the steps that SET it (an output saved to it, a Set Variable step's variable) and the
+    /// Where a variable is used: the steps that SET it (an output saved to it, a Set Variable step's variable) and the
     /// steps that READ it (an input bound to it, an expression or a condition naming it, a script naming it - a script is matched
     /// by its words, so it may be a namesake; the editor says so). What the variables panel lists beside each variable, and what
     /// tells a variable nothing reads from one a step does.

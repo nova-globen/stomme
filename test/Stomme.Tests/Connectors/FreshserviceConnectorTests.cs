@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Freshservice (n8n's Freshservice node: an IT service desk's tickets, changes, problems, releases, assets and the
+    /// Freshservice (n8n's Freshservice node: an IT service desk's tickets, changes, problems, releases, assets and the
     /// people and groups around them): the API key as HTTP Basic against the desk's API v2; records of any of its resources read
     /// page by page, no further than asked, tickets, agents and requesters by Freshservice's query too; one got, created,
     /// updated and deleted, the record unwrapped from Freshservice's key for it; roles read only; what could go wrong refused

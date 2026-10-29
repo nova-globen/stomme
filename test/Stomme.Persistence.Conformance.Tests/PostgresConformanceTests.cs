@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Stomme.Persistence.Conformance.Tests;
 
 /// <summary>
-/// The conformance suite against the EF Core provider ON POSTGRESQL (BL-16) — the database the product
+/// The conformance suite against the EF Core provider ON POSTGRESQL — the database the product
 /// actually ships on, which the SQLite fixture (<see cref="EfCoreConformanceTests"/>) structurally cannot
 /// represent (the D46 ADR's own stated limit). Each test creates a scratch database on the infra tier
 /// (<c>stomme_conformance_wgt_*</c>), <c>EnsureCreated</c>s the fixture context — exactly as the SQLite

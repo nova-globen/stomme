@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Okta DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Okta DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for an Okta org that refuses a call without the token: an Okta connection made over the API,
     /// its token vaulted, tested; a published pipeline reads the users over two pages by the cursor Okta's Link header names
     /// though its address names another host - no more than asked - creates a user with an accent, unactivated, adds them to

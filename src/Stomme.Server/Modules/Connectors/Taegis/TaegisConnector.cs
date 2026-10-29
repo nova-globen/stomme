@@ -15,10 +15,10 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Taegis
 {
     /// <summary>
-    /// Secureworks Taegis XDR (BL-96 increment 3, lifted from the predecessor platform's <c>taegis</c>): OAuth2 client credentials through
+    /// Secureworks Taegis XDR (lifted from the predecessor platform's <c>taegis</c>): OAuth2 client credentials through
     /// the family's token provider - Taegis takes a scope-less grant, and when the <c>token-url</c> credential is empty it
     /// is derived from the connection endpoint (<c>{endpoint}/auth/api/v2/auth/token</c>). Everything reads through
-    /// <c>POST /graphql</c> with the legacy queries verbatim; every request through the host's egress (D110).
+    /// <c>POST /graphql</c> with the legacy queries verbatim; every request through the host's egress.
     /// </summary>
     public sealed class TaegisConnector(OAuth2TokenProvider? tokenProvider = null) : IConnector, IConnectorExtractor
     {

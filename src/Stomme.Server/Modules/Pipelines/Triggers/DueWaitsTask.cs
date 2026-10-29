@@ -21,7 +21,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// Resumes the runs whose <see cref="Wait"/> is due (BL-229, n8n's Wait node), the runs whose
+    /// Resumes the runs whose <see cref="Wait"/> is due (n8n's Wait node), the runs whose
     /// <see cref="AskForApproval"/> nobody decided in its time (down Expired), and those whose <see cref="WaitForCall"/> was not
     /// called in its time (down Timed out): a recurring task the ENGINE runs per site
     /// tenant, on one node at a time (<see cref="SingleNodeTaskAttribute"/>), like the schedules. Each tick lists the waiting
@@ -94,7 +94,7 @@ namespace Stomme.Modules.Pipelines.Triggers
                 }
             }
 
-            // BL-229: a wait for a call that timed out goes on down Timed out (its moment is in the bookmark's metadata, as its
+            // A wait for a call that timed out goes on down Timed out (its moment is in the bookmark's metadata, as its
             // stimulus must stay the token's hash alone).
             var calls = stored.Where(bookmark => bookmark.Name == PipelineCalls.WaitStepType).ToList();
             foreach (var bookmark in calls)
@@ -115,7 +115,7 @@ namespace Stomme.Modules.Pipelines.Triggers
                 }
             }
 
-            // BL-229: a wait for a form that nobody filled in in time goes on down Timed out, the same way.
+            // A wait for a form that nobody filled in in time goes on down Timed out, the same way.
             var forms = stored.Where(bookmark => bookmark.Name == WaitForForm.StepTypeName).ToList();
             foreach (var bookmark in forms)
             {
@@ -136,7 +136,7 @@ namespace Stomme.Modules.Pipelines.Triggers
             }
         }
 
-        // BL-229: a run that has ended waits for nothing. A cancel used to leave its waits stored (the engine's client clears them
+        // A run that has ended waits for nothing. A cancel used to leave its waits stored (the engine's client clears them
         // with the run now): an approval listed as waiting, a form page open, and a due wait resumed again at every tick, the
         // engine refusing each time (measured). Each wait whose run is found FINISHED is cleared and left out - never one whose
         // run is not found, as a run's waits may be stored a moment before the run itself.

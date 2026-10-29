@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Rundeck
 {
     /// <summary>
-    /// Rundeck (BL-229, n8n's Rundeck node: a job run, a job's metadata) over Rundeck's API (<c>{address}/api/44</c>) by an API
+    /// Rundeck (n8n's Rundeck node: a job run, a job's metadata) over Rundeck's API (<c>{address}/api/44</c>) by an API
     /// token in the <c>X-Rundeck-Auth-Token</c> header - never in the address. A test reads the token's user's projects.
     /// </summary>
     /// <remarks>

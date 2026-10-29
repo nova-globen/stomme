@@ -46,7 +46,7 @@ public sealed class ExceptionBehavior<TRequest, TResponse>(
         }
         catch (Exception ex) when (IsExpectedRefusal(ex))
         {
-            // BL-251: a refusal the domain or the framework meant - a conflict, a stale write, a denied key - is the answer,
+            // A refusal the domain or the framework meant - a conflict, a stale write, a denied key - is the answer,
             // not a fault. Logged without its stack, at Information, and re-thrown for the transport to map to a 4xx.
             logger.LogInformation(
                 "[Mediator] {RequestName} was refused: {Refusal}: {Message}", typeof(TRequest).Name, ex.GetType().Name, ex.Message);

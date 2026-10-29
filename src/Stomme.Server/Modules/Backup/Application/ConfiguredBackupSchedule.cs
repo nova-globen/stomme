@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Backup.Application
 {
     /// <summary>
-    /// The backup schedule an unattended host is given by configuration (BL-258, infra ruling C30):
+    /// The backup schedule an unattended host is given by configuration (infra ruling C30):
     /// <c>Backup:Schedule:IntervalHours</c>, <c>RetentionDays</c> and <c>KeepLast</c>, settable as environment variables alone
     /// (<c>Backup__Schedule__IntervalHours</c>, ...). Without it a schedule exists only as a row the Host creates at admin/backup,
     /// and the Backup Schedule Job is registered disabled - so a host nobody clicks through took no backup at all.

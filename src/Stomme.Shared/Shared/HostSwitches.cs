@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stomme.Shared
 {
     /// <summary>
-    /// The installation-wide switches a client component reads before it calls the API they guard (BL-212). Off - the
+    /// The installation-wide switches a client component reads before it calls the API they guard. Off - the
     /// default for each - the API answers 404, and a WebAssembly site's browser logged that 404: the help launcher on every
     /// page, a person's data on their profile, the collaboration panel in the pipeline editor and on the dashboards. The
     /// server puts each in the site's settings as <c>{section}:Enabled</c>, the channel D70 made for SAML's and Windows'

@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Elasticsearch (n8n's Elasticsearch node: an index's documents searched, got, created, updated and deleted, its
+    /// Elasticsearch (n8n's Elasticsearch node: an index's documents searched, got, created, updated and deleted, its
     /// indices kept): every call the cluster's REST API with a user's name and password, or an API key when no user is given; a
     /// search page by page by from and size, the size fixed and no bigger than asked, a short page, its total or Elasticsearch's
     /// window of 10,000 the end, with a search body, a sort, the source fields and a routing; a document its id and index, then

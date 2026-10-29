@@ -14,7 +14,7 @@ using Raven.Client.ServerWide.Operations;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The SAME Guestbook conformance suite against a LIVE RavenDB document store (D76), each run in its own
+    /// The SAME Guestbook conformance suite against a LIVE RavenDB document store, each run in its own
     /// database (<c>RAVENDB_TEST_URL</c>, default http://127.0.0.1:7000). Composed the way a RavenDB install
     /// composes the module: <c>AddRavenFrameworkStore</c> supplies the host's Raven singletons in the
     /// composition root, then the D76 helper selects the Raven branch so the closed
@@ -65,7 +65,7 @@ namespace Stomme.Tests
             // vector tracker, aggregate tracker) — registered in the composition root before any module startup.
             services.AddRavenFrameworkStore(_store);
 
-            // The STORAGE-BLIND overload (D79): the Raven branch ignores any relational context/connection and
+            // The STORAGE-BLIND overload: the Raven branch ignores any relational context/connection and
             // binds the generic RavenRepository, so the module authors zero EF code on this provider too.
             services.AddModuleAggregatePersistence<GuestbookEntryAggregate, Guid>();
             services.AddScoped<IGuestbookRepository, GuestbookRepository>();

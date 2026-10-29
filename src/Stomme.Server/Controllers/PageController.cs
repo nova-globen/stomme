@@ -159,7 +159,7 @@ namespace Stomme.Controllers
 
                 if (await _userPermissions.IsAuthorizedAsync(User, PermissionNames.Edit, permissions))
                 {
-                    // BL-102: a row for another entity would be written as a SITE-WIDE row (EntityId -1), so Edit on
+                    // A row for another entity would be written as a SITE-WIDE row (EntityId -1), so Edit on
                     // the parent page would be enough to grant any framework policy. Refused BEFORE the page is written.
                     var foreign = PermissionRowScope.ForeignRows(page.PermissionList, EntityNames.Page);
                     if (foreign.Any())
@@ -326,7 +326,7 @@ namespace Stomme.Controllers
 
             if (ModelState.IsValid && page.SiteId == alias.SiteId && page.PageId == id && currentPage != null && await _userPermissions.IsAuthorizedAsync(User, page.SiteId, EntityNames.Page, page.PageId, PermissionNames.Edit))
             {
-                // BL-102: a row for another entity would be written as a SITE-WIDE row (EntityId -1). Refused here,
+                // A row for another entity would be written as a SITE-WIDE row (EntityId -1). Refused here,
                 // BEFORE UpdatePage below writes the page - a throw at the permission sink would already be a
                 // partial write. This also keeps the module-permission sync below from ever seeing a foreign row.
                 var foreign = PermissionRowScope.ForeignRows(page.PermissionList, EntityNames.Page);

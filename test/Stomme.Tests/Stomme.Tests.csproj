@@ -29,7 +29,7 @@
          with the real C# parser. See AsyncAllTheWayDownTests.cs, DomainEventHandlerContractTests.cs, and
          Directory.Packages.props for why a text scan is not good enough. -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-    <!-- BL-14 (D86): bUnit renders the real Installer wizard and pins its no-Router navigation model —
+    <!-- BUnit renders the real Installer wizard and pins its no-Router navigation model —
          step changes are history.pushState JSInterop, never a NavigationManager navigation (which would
          remount the component and wipe collected wizard state). See InstallerWizardNavigationTests.cs. -->
     <PackageReference Include="bunit" />
@@ -48,7 +48,7 @@
     <ProjectReference Include="..\..\src\Stomme.Shared\Stomme.Shared.csproj" />
   </ItemGroup>
 
-  <!-- W2 (D85): bundle the independent example Blogs module by build-time PackageReference to drive the
+  <!-- W2: bundle the independent example Blogs module by build-time PackageReference to drive the
        end-to-end PackageReference-bundling + discovery + config-gated render path. OFF by default
        (-p:IncludeDemoModules=true turns it on), so the default suite never depends on the demo .nupkg. The
        #if-guarded BlogsBundlingDriveTests compiles only under the same flag. This is the dedicated TEST HOST

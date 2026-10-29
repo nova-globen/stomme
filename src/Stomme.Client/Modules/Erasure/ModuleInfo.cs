@@ -5,7 +5,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Erasure
 {
     /// <summary>
-    /// The erasure module's <see cref="ModuleDefinition"/> (BL-116 increment 4, D112): one Host-only admin page,
+    /// The erasure module's <see cref="ModuleDefinition"/>: one Host-only admin page,
     /// <c>admin/erasure</c>, listing the site's erasure receipts - what an operator shows a supervisory authority - with
     /// a retry for a failed run. Placed through <see cref="ModuleDefinition.PageTemplates"/> and reconciled additively
     /// per site on every boot, so an install that predates the module gets the page.

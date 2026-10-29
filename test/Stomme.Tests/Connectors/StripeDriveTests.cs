@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Stripe DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Stripe DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Stripe's API: a Stripe connection made over the API, its key vaulted, tested (a test key
     /// said); a published pipeline adds a customer with metadata, finds the customers with that address over two pages, reads the
     /// first one's charges and the balance - each call the key as a bearer, each body a form; the key is in neither the graph nor

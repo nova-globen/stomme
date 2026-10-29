@@ -24,7 +24,7 @@ namespace Stomme.Modules.DataExport.Domain
     }
 
     /// <summary>
-    /// A recurring export (BL-95, D108's correction of 2026-10-05): each occurrence of its cron queues an ORDINARY export job
+    /// A recurring export (D108's correction of 2026-10-05): each occurrence of its cron queues an ORDINARY export job
     /// whose requester is the schedule's OWNER, re-authorised from stored rows at every run - so a schedule never carries a
     /// permission of its own, and a run the owner may no longer make PAUSES it instead of running.
     /// </summary>

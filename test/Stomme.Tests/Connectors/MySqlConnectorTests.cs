@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the MySQL connector without a server: the endpoint carries no credential and the scheme's fields are applied;
+    /// The MySQL connector without a server: the endpoint carries no credential and the scheme's fields are applied;
     /// a malformed connection string fails with the connector's message; what could reach past the egress - a Unix socket, a
     /// named pipe, shared memory, the server's redirection, more than one host - and LOCAL INFILE are refused before anything
     /// is dialled, and the safe values are forced whatever the string says; the host is resolved and pinned through the
@@ -108,12 +108,12 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the MySQL connector against a real MySQL 8.4 (this machine's throwaway container on loopback, or a CI job's
+    /// The MySQL connector against a real MySQL 8.4 (this machine's throwaway container on loopback, or a CI job's
     /// service container - <see cref="MySqlTestEndpoint"/>) through the HOST's egress: loopback refused until the site
     /// allowlists it; a test naming the server; a wrong password failing; a table made, rows written with their values bound
     /// - a hostile one stored as the text it is, a leading zero kept - each write answering the rows it changed and the id it
     /// inserted, rows read with their types, LIMIT bound as a number, an upsert by MySQL's ON DUPLICATE KEY UPDATE; and LOAD
-    /// DATA LOCAL INFILE refused by the connector even where the server allows it. Fails, never skips, without a server (D46).
+    /// DATA LOCAL INFILE refused by the connector even where the server allows it. Fails, never skips, without a server.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class MySqlConnectorLiveTests(ITestOutputHelper output)

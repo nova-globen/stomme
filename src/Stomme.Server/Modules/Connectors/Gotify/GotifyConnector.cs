@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Gotify
 {
     /// <summary>
-    /// Gotify (BL-229, n8n's Gotify node: its messages sent, read and deleted): a self-hosted Gotify server's API with an
+    /// Gotify (n8n's Gotify node: its messages sent, read and deleted): a self-hosted Gotify server's API with an
     /// application's token to send and a client's token to read and delete, each in X-Gotify-Key, over the host's egress. A
     /// test names whose the client token is.
     /// </summary>

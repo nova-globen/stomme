@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace Stomme.Models.Notifications
 {
     /// <summary>
-    /// A stored notification's body as a person reads it in the inbox (BL-229, found driving "Ask for approval": the inbox showed
+    /// A stored notification's body as a person reads it in the inbox (found driving "Ask for approval": the inbox showed
     /// the subject alone, so an approver was told a decision waits but not what, nor where). Bodies are stored as the channels
     /// wrote them - the template renderer's HTML-encoded text (<c>&amp;#xA;</c> for a line break), the site's own error notices
     /// with <c>&lt;br /&gt;</c> - so the text is made plain: a break is a line, every other tag goes, entities are decoded, and

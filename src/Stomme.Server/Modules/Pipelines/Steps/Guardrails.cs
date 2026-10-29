@@ -22,7 +22,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// What both guardrail steps look for by pattern (BL-229, n8n's Guardrails node): personal data, secret keys, URLs and custom
+    /// What both guardrail steps look for by pattern (n8n's Guardrails node): personal data, secret keys, URLs and custom
     /// patterns - <see cref="TextGuardrails"/> finding them, each finding its check, its kind and where it is, never what it matched.
     /// </summary>
     public abstract class GuardrailStep : DataStep
@@ -173,7 +173,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Check text (BL-229, n8n's Guardrails "Check Text for Violations"): a text held to the guardrails asked for - keywords,
+    /// Check text (n8n's Guardrails "Check Text for Violations"): a text held to the guardrails asked for - keywords,
     /// personal data, secret keys, URLs and custom patterns by pattern, and by the site's model a jailbreak attempt, unsafe content,
     /// a topic it must keep to and checks in the author's own words, each found when the model is at least Threshold sure - and the
     /// run goes on through Passed or Flagged, the text unchanged, the findings an output. A known jailbreak phrase is found without
@@ -360,7 +360,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Sanitize text (BL-229, n8n's Guardrails "Sanitize Text"): personal data, secret keys, URLs and custom patterns found by pattern
+    /// Sanitize text (n8n's Guardrails "Sanitize Text"): personal data, secret keys, URLs and custom patterns found by pattern
     /// replaced by their kind in brackets - <c>[EMAIL_ADDRESS]</c>, <c>[SECRET_KEY]</c>, <c>[URL]</c>, a custom pattern's name - the
     /// result the cleaned text, the findings an output. No model is asked.
     /// </summary>

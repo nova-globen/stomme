@@ -23,7 +23,7 @@ namespace Stomme.Identity.OpenIddict
     /// </para>
     /// <para>
     /// <b>Per-tenant routing.</b> It resolves the current tenant EXACTLY the way <see cref="DBContextBase"/>
-    /// and <see cref="TenantDBContext"/> do (D37): <c>OnConfiguring</c> is a sync EF platform virtual, so it
+    /// and <see cref="TenantDBContext"/> do: <c>OnConfiguring</c> is a sync EF platform virtual, so it
     /// reads no store — it calls <see cref="ITenantManager.GetResolvedTenant"/>, which reads the alias off
     /// <c>SiteState</c> and looks the tenant up in the scope's warmed <c>ITenantStoreBindings</c>. A different
     /// request host resolves to a different alias -> tenant -> connection string, so tenant A's OpenIddict
@@ -60,7 +60,7 @@ namespace Stomme.Identity.OpenIddict
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // Sync and reads NO store (D37): GetResolvedTenant reads the alias off SiteState and the tenant
+            // Sync and reads NO store: GetResolvedTenant reads the alias off SiteState and the tenant
             // out of the scope's warmed bindings. Null tenant = installer/uninstalled state -> leave the
             // context unconfigured, exactly as DBContextBase does.
             Tenant tenant = _tenantManager.GetResolvedTenant();
@@ -70,11 +70,11 @@ namespace Stomme.Identity.OpenIddict
                 return;
             }
 
-            // BL-55: the explicit {key}_OpenIddict connection string wins; when absent (every install done
+            // The explicit {key}_OpenIddict connection string wins; when absent (every install done
             // outside the test suite — nothing writes it) a DEDICATED sibling store is DERIVED from the
             // tenant's own connection string, so the authority works storage-blind with zero provisioning.
             // D61's per-tenant isolation is preserved: the derived store is never the tenant's own database.
-            // THIS host's data directory replaces the |DataDirectory| token, as the tenant's own context does (BL-153). It
+            // THIS host's data directory replaces the |DataDirectory| token, as the tenant's own context does. It
             // was left in (found driving M2 row 2, 2026-10-29): every install whose tenant string uses the token - every
             // install the installer writes - opened "|DataDirectory|\x_OpenIddict.db" literally, which Windows refuses
             // ("unable to open database file") and Linux creates beside the app, OFF the data volume, so an unattended

@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// BL-97 increment 8 - the predecessor platform's <c>ModelResponseCachingTests</c> by name (9 cases): the key cases unchanged; the cache-aside
+    /// The predecessor platform's <c>ModelResponseCachingTests</c> by name (9 cases): the key cases unchanged; the cache-aside
     /// cases over <see cref="ICacheManager"/> - CHANGED: an entry is the site's (stored under its alias) and its TTL is the
     /// memory and distributed duration; the predecessor platform's <c>AiResponse</c> tag has no equivalent. The port's own: two sites never
     /// share an answer, and with no site the cache is bypassed rather than shared.

@@ -53,7 +53,7 @@ namespace Stomme.Modules.Backup.Application
             public string PassphraseFile { get; set; } = string.Empty;
 
             /// <summary>
-            /// The schedule an unattended host is given by configuration (BL-258): how often, in hours. Set, it seeds the
+            /// The schedule an unattended host is given by configuration: how often, in hours. Set, it seeds the
             /// installation's FIRST schedule at boot and enables the Backup Schedule Job; once any schedule exists the Host's
             /// page owns it (<see cref="ConfiguredBackupSchedule"/>).
             /// </summary>
@@ -86,7 +86,7 @@ namespace Stomme.Modules.Backup.Application
     }
 
     /// <summary>
-    /// The backup engine (BL-81, D106 item 7): takes installation snapshots through every participant, checks a snapshot
+    /// The backup engine: takes installation snapshots through every participant, checks a snapshot
     /// before anything is written (pre-flight), stages a restore with a SAFETY snapshot, and applies it in the boot phase -
     /// before hosted services start and before the first request, because a middleware gate cannot quiesce an open circuit
     /// or a running job (refutation 11).
@@ -203,11 +203,11 @@ namespace Stomme.Modules.Backup.Application
             PreflightAsync(snapshotId, passphrase, null, cancellationToken);
 
         /// <summary>
-        /// The pre-flight of a restore - of the whole installation, or (BL-171) of <paramref name="tenantIds"/> only. A
+        /// The pre-flight of a restore - of the whole installation, or of <paramref name="tenantIds"/> only. A
         /// partial selection must name tenants the snapshot holds and this installation has, and must not split a
         /// shared physical database (the rows of tenants sharing one database live in the same tables, so one of them
         /// cannot be put back without the others); on a RavenDB install the framework seam shares one database for
-        /// every tenant (BL-176), so a partial restore is refused there.
+        /// every tenant, so a partial restore is refused there.
         /// </summary>
         public async Task<BackupPreflightReport> PreflightAsync(Guid snapshotId, string passphrase, IReadOnlyList<int>? tenantIds, CancellationToken cancellationToken = default)
         {
@@ -307,7 +307,7 @@ namespace Stomme.Modules.Backup.Application
         public Task<BackupPreflightReport> StageRestoreAsync(Guid snapshotId, string passphrase, CancellationToken cancellationToken = default) =>
             StageRestoreAsync(snapshotId, passphrase, null, cancellationToken);
 
-        /// <summary>Pre-flight, safety snapshot, stage - of the whole installation, or (BL-171) of <paramref name="tenantIds"/> only. The safety snapshot is always of the whole installation.</summary>
+        /// <summary>Pre-flight, safety snapshot, stage - of the whole installation, or of <paramref name="tenantIds"/> only. The safety snapshot is always of the whole installation.</summary>
         public async Task<BackupPreflightReport> StageRestoreAsync(Guid snapshotId, string passphrase, IReadOnlyList<int>? tenantIds, CancellationToken cancellationToken = default)
         {
             if (System.IO.File.Exists(RequestFile))
@@ -343,7 +343,7 @@ namespace Stomme.Modules.Backup.Application
         }
 
         /// <summary>
-        /// BL-171: the scope a restore runs under, or the problems with the selection. Null/empty means the whole snapshot.
+        /// The scope a restore runs under, or the problems with the selection. Null/empty means the whole snapshot.
         /// A partial selection: every id in the snapshot and on this installation; no shared physical database split
         /// (a tenant sharing its database with others is restored with all of them or not at all); not on RavenDB.
         /// </summary>
@@ -379,7 +379,7 @@ namespace Stomme.Modules.Backup.Application
 
             if (Type.GetType(config.GetDatabaseType()) is { } databaseType && Activator.CreateInstance(databaseType) is not Stomme.Databases.Interfaces.IRelationalDatabase)
             {
-                problems.Add("A tenant-scoped restore is not supported on a RavenDB installation yet: its framework part restores each RavenDB database whole, and tenants created before BL-176 still share the installation's database. Restore the whole installation.");
+                problems.Add("A tenant-scoped restore is not supported on a RavenDB installation yet: its framework part restores each RavenDB database whole, and tenants created by an earlier version may still share the installation's database. Restore the whole installation.");
                 return (null, problems);
             }
 
@@ -590,8 +590,8 @@ namespace Stomme.Modules.Backup.Application
         }
 
         /// <summary>
-        /// Retention (D106 item 8), installation-wide: SCHEDULED snapshots beyond the newest keep-last-N AND older than the
-        /// retention days, <c>pre-restore</c> safety snapshots and <c>pre-upgrade</c> snapshots (BL-172) and failed attempts older than the retention days. Manual,
+        /// Retention, installation-wide: SCHEDULED snapshots beyond the newest keep-last-N AND older than the
+        /// retention days, <c>pre-restore</c> safety snapshots and <c>pre-upgrade</c> snapshots and failed attempts older than the retention days. Manual,
         /// imported and <c>indefinite</c> snapshots are the operator's and are never removed here. With several schedules the
         /// most generous keep-last-N and days apply. Returns how many went.
         /// </summary>
@@ -644,7 +644,7 @@ namespace Stomme.Modules.Backup.Application
         }
 
         /// <summary>
-        /// Brings in an archive taken elsewhere (D106 item 6, refutation 16): streamed into the archive store and hashed, then
+        /// Brings in an archive taken elsewhere (refutation 16): streamed into the archive store and hashed, then
         /// read END TO END under the passphrase - every chunk through GCM - before a catalogue row exists. A row is created
         /// only for an archive that verified; anything else is deleted and the reason thrown. The row keeps the instant the
         /// archive was taken; a restore from it still needs this host's version (the pre-flight says so).

@@ -31,7 +31,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// The Notifications module over the authorization bridge (BL-78 step 5; D100 point 6, D99): the five SPLIT keys, REFLECTIVELY
+    /// The Notifications module over the authorization bridge: the five SPLIT keys, REFLECTIVELY
     /// (declaration, per-key roles, every request's key, every controller action's key, no anonymous bypass) and DRIVEN over real
     /// HTTP on an installed host (the <see cref="LiftedRequiresGateTests"/> recipe).
     /// </summary>
@@ -40,7 +40,7 @@ namespace Stomme.Tests.Notifications
     /// check green. The driven half answers the only questions that matter - does a registered user read ONLY their own data, is
     /// the send log and the preview refused them, is an anonymous caller refused, and does a revocation (an Administrators DENY
     /// row, BL-99 correction 7) take effect on the very next request. SQLite here; step 6 repeats the drive on PostgreSQL and
-    /// RavenDB (<see cref="Stores"/> is the seam). Fail-not-skip (D46) is inherited from <see cref="IGateStore"/>.
+    /// RavenDB (<see cref="Stores"/> is the seam). Fail-not-skip is inherited from <see cref="IGateStore"/>.
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

@@ -18,7 +18,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record WebhookStimulus(string Name);
 
     /// <summary>
-    /// The stimulus of a webhook whose caller waits for the pipeline's answer (BL-229, Respond to webhook) - a record of its own,
+    /// The stimulus of a webhook whose caller waits for the pipeline's answer (Respond to webhook) - a record of its own,
     /// because the engine hashes every property of a stimulus, a null one included: a flag on <see cref="WebhookStimulus"/>
     /// would have moved the hash of every webhook already published (the schedule's time zone met the same). And it has a
     /// property <see cref="WebhookStimulus"/> lacks, because the hash is of the properties ALONE, not the record's type: with
@@ -88,7 +88,7 @@ namespace Stomme.Modules.Pipelines.Steps
         }
 
         /// <summary>
-        /// BL-229 - a form-encoded body (<c>a=1&amp;b=2</c>) as n8n hands it on: a JSON object of its fields, each one's text, a
+        /// A form-encoded body (<c>a=1&amp;b=2</c>) as n8n hands it on: a JSON object of its fields, each one's text, a
         /// field given more than once a list - so <c>{{ request.a }}</c> reads it as it reads a JSON body's field. (Found on UAT
         /// 2026-10-07: 10.18.0 accepted a signed form-encoded call, and the pipeline could read none of its fields.)
         /// </summary>

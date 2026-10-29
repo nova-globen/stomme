@@ -192,7 +192,7 @@ namespace Stomme.Infrastructure.SiteTemplates
 
             // The shipped brand asset is read through the web root's FILE PROVIDER, not a physical path. An app built on the
             // Stomme.Server package serves it under `dotnet run` as a static web asset from the package, with no file under
-            // its web root, so its first site got no logo (BL-186 increment 5, measured 2026-10-01). A host with a physical
+            // its web root, so its first site got no logo (measured 2026-10-01). A host with a physical
             // wwwroot, a published app included, is answered from that file as before.
             var logo = _environment.WebRootFileProvider?.GetFileInfo("images/logo-white.png");
             if (logo is { Exists: true, IsDirectory: false })

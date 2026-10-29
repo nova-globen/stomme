@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-151: two tenants sharing ONE database and ONE site must not share a metering row.
+    /// Two tenants sharing ONE database and ONE site must not share a metering row.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -56,7 +56,7 @@ namespace Stomme.Tests
         public async Task Both_tenants_define_the_same_quota_on_the_same_site_and_get_their_own_row()
         {
             // Through appsettings.override.json - where a deployed install keeps it - and NOT builder.Configuration: the host's
-            // IConfiguration does not include the override, and the jobs read the merged root (HostConfiguration, BL-162).
+            // IConfiguration does not include the override, and the jobs read the merged root (HostConfiguration).
             using var scratch = new ScratchGateInstall(new SqliteGateStore(), Host, new System.Text.Json.Nodes.JsonObject { ["Metering"] = new System.Text.Json.Nodes.JsonObject { ["Enabled"] = true } });
             var app = await GateDrive.InstallAsync(scratch, _output, configure: null, start: false);
 

@@ -19,7 +19,7 @@ namespace Stomme.Infrastructure
     /// the seam's registry is where a duplicate is refused.
     /// </para>
     /// <para>
-    /// <b>The filter is deliberately wide, and that is why no seam may treat a collision as fatal</b> (BL-105): it
+    /// <b>The filter is deliberately wide, and that is why no seam may treat a collision as fatal</b>: it
     /// matches a package <c>InstallationManager</c> unpacked into <c>/bin</c> as readily as an in-tree assembly, so a
     /// fatal check would let a third party stop the host. Each registry REJECTS instead, and a reflective build gate
     /// catches our own collisions before they ship.

@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 10 - the editor's trigger panel: a webhook's address and how a call is signed (never the secret), a
+    /// The editor's trigger panel: a webhook's address and how a call is signed (never the secret), a
     /// schedule's next runs, and listening for one webhook call - which the receiver hands to the listeners of its site and name
     /// only once the call is authentic.
     /// </summary>
@@ -36,7 +36,7 @@ namespace Stomme.Tests.Pipelines
                     secrets ?? new PipelineWebhookSecrets(new Notifications.FakeSiteSecretStore()), new Stomme.Shared.SiteState { Alias = new Stomme.Models.Alias { TenantId = 1, SiteId = siteId } })
                 .Handle(new GetTriggerInfoQuery(type, value, zone), CancellationToken.None);
 
-        // D111a: a webhook's own secret - the receiver's choice (its own when it has one; none when that cannot be read, never the
+        // A webhook's own secret - the receiver's choice (its own when it has one; none when that cannot be read, never the
         // installation's then; the installation's otherwise), per site and case-blind, and the panel saying which - never what.
         [Fact]
         public async Task A_webhook_with_its_own_secret_is_verified_under_it_alone_and_an_unreadable_one_refuses()
@@ -198,7 +198,7 @@ namespace Stomme.Tests.Pipelines
                 ruled.NextRunsUtc.Select(run => run.ToString("yyyy-MM-dd HH:mm")));
             Assert.StartsWith("'61 * * * *' is not a five-field cron expression", (await Info("Stomme.Schedule", "0 6 * * *\n61 * * * *", options)).Error);
 
-            // BL-229: in a time zone, daylight saving followed - six in the morning in Stockholm is 04:00 UTC until the clocks go
+            // In a time zone, daylight saving followed - six in the morning in Stockholm is 04:00 UTC until the clocks go
             // back on 2026-10-25, 05:00 UTC after; each run also as the zone's clock reads it. A zone it does not know is said.
             var stockholm = await Info("Stomme.Schedule", "0 6 * * *", options, new DateTimeOffset(2026, 10, 24, 2, 30, 0, TimeSpan.Zero), "Europe/Stockholm");
             Assert.Null(stockholm.Error);

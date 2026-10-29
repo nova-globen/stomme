@@ -25,7 +25,7 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 9 (D110) - a dataset's id is its ORIGIN's, so two registrations of one origin - concurrent, from
+    /// A dataset's id is its ORIGIN's, so two registrations of one origin - concurrent, from
     /// two scopes, with different names and a case-variant reference - land on ONE row on EF and on RavenDB (and File):
     /// the store either refuses the second insert (EF's key) or writes the same document (RavenDB's id), and the site
     /// lists one dataset for the origin either way. A different origin is a second row.

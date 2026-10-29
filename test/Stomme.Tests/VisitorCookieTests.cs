@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-185: the site's visitor cookie (<c>APP_VISITOR_{siteId}</c>) was the visitor's id in plain text, and three doors
+    /// The site's visitor cookie (<c>APP_VISITOR_{siteId}</c>) was the visitor's id in plain text, and three doors
     /// trusted it - the settings API's Visitor branch, <c>GET api/Visitor/{id}</c> (a visitor's IP address, user agent and
     /// pages) and the visit tracking. A caller with no account who wrote the cookie themselves passed as any visitor, by a
     /// sequential id. The cookie is now protected with the host's Data Protection (<see cref="VisitorCookie"/>).

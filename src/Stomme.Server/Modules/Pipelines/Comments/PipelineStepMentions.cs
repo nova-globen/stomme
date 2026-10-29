@@ -20,7 +20,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Comments
 {
     /// <summary>
-    /// BL-229 - @mentions in a step's discussion: a comment that names someone after an @ tells them, in the app and by e-mail
+    /// @mentions in a step's discussion: a comment that names someone after an @ tells them, in the app and by e-mail
     /// (each as their own notification preferences allow), with the comment and a link to the step. Only someone on the site
     /// who can SEE pipelines is ever told - a name that is anyone else is said back to the author as told nobody, never as
     /// "no such user" - and never the author themself.

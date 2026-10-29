@@ -11,7 +11,7 @@ using Stomme.Shared;
 
 namespace Stomme.Modules.Connectivity.Services
 {
-    /// <summary>The module's server IService (BL-94 increment 7): the client contract dispatched through the mediator. Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).</summary>
+    /// <summary>The module's server IService: the client contract dispatched through the mediator. Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).</summary>
     public sealed class ServerConnectionsService(IMediator mediator) : IConnectionsService, ITransientService
     {
         public async Task<List<ConnectionView>> ListAsync() => (await mediator.Send(new ListConnectionsQuery())).ToList();

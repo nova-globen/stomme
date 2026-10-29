@@ -22,7 +22,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Page cluster on the persistence seam (D3/D7/D19). Page-table access goes through
+    /// The Page cluster on the persistence seam. Page-table access goes through
     /// <see cref="IPageStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class holds
     /// no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -67,7 +67,7 @@ namespace Stomme.Repository
         }
 
         // The read path on the seam: the IQueryable is materialized inside this method, so it never leaves
-        // the repository (D7). ToList/Where/OrderBy are plain LINQ rather than EF Core's async operators,
+        // the repository. ToList/Where/OrderBy are plain LINQ rather than EF Core's async operators,
         // which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -172,14 +172,14 @@ namespace Stomme.Repository
 
         public async Task<Page> GetPageAsync(string path, int siteId)
         {
-            // D58: normalize the ARGUMENT in C# and filter the normalized COLUMN, never the raw Path. A bare
+            // Normalize the ARGUMENT in C# and filter the normalized COLUMN, never the raw Path. A bare
             // `item.Path == path` means two different things behind the seam — case-SENSITIVE on PostgreSQL,
             // case-INSENSITIVE on RavenDB (the D48/D57 mechanism, DRIVEN on both real hosts) — so a mixed-case
             // path silently resolved on one provider and not the other on the render RESOLVE fallback
             // (SiteRouter.razor, reached when the in-memory OrdinalIgnoreCase match at :227 misses) and the
             // admin page lookup (PageController.Get). Both sides lowercased, the providers agree
             // (case-INSENSITIVE, which also matches SiteRouter's own primary OrdinalIgnoreCase match). NEVER
-            // `.ToLower()` inside the query — it THROWS on RavenDB (D48). The STORED Path keeps its case;
+            // `.ToLower()` inside the query — it THROWS on RavenDB. The STORED Path keeps its case;
             // PathNormalized is the lookup key.
             var pathNormalized = NormalizedText.Normalize(path);
 

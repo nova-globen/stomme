@@ -25,7 +25,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Markdown (BL-229, n8n's Markdown node): Markdown into HTML - the help module's pipeline (tables, autolinks, task lists,
+    /// Markdown (n8n's Markdown node): Markdown into HTML - the help module's pipeline (tables, autolinks, task lists,
     /// raw HTML off) and then its allowlist, so what comes out is safe to show or mail - or HTML into plain text (paragraphs,
     /// headings and rows on lines of their own, list items as "- ", scripts and styles dropped), for a message or an AI prompt.
     /// At most a million characters.

@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the file operations FTP and SFTP share, on a server kept in memory: a folder listed in name order - its folders
+    /// The file operations FTP and SFTP share, on a server kept in memory: a folder listed in name order - its folders
     /// only when asked, its subfolders' entries only when recursive, a link never followed, no further than max, a walk past its
     /// limit refused; files stored into a File Manager folder by a pattern, one over the sink's cap refused before it is fetched
     /// and one whose size was not said stopped at the cap; one file downloaded into the run's folder - a missing path, a folder

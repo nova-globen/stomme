@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-87: <c>admin/roles</c> accepted an EMPTY role name. The client marks the input required, but
+    /// <c>admin/roles</c> accepted an EMPTY role name. The client marks the input required, but
     /// <c>RoleController.Post/Put</c> checked only <c>ModelState</c> and <c>Role.Name</c> carries no
     /// annotation, so a blank or whitespace name written through the API created a nameless role row.
     /// </summary>

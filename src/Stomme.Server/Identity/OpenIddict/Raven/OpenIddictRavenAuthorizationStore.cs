@@ -13,7 +13,7 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Stomme.Identity.OpenIddict.Raven
 {
-    /// <summary>RavenDB-backed <see cref="IOpenIddictAuthorizationStore{TAuthorization}"/> (D62).</summary>
+    /// <summary>RavenDB-backed <see cref="IOpenIddictAuthorizationStore{TAuthorization}"/>.</summary>
     internal sealed class OpenIddictRavenAuthorizationStore : IOpenIddictAuthorizationStore<OpenIddictRavenAuthorization>
     {
         private readonly IRavenOpenIddictSessionProvider _sessions;

@@ -23,7 +23,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Snowflake
 {
     /// <summary>
-    /// Snowflake (BL-229, n8n's Snowflake node: a query run, rows inserted, rows updated): the account's SQL API v2 with a
+    /// Snowflake (n8n's Snowflake node: a query run, rows inserted, rows updated): the account's SQL API v2 with a
     /// programmatic access token as a bearer, over the host's egress. A test names who the token signs in as.
     /// </summary>
     /// <remarks>

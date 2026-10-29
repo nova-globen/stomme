@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-57 — an Interactive install's prerender is OVERRIDABLE. It used to be hardcoded
+    /// An Interactive install's prerender is OVERRIDABLE. It used to be hardcoded
     /// <c>Prerender = (rendermode == Interactive)</c>, which makes an Interactive/WebAssembly site dead behind a
     /// reverse proxy whose container cannot resolve its own public host (the SSR prerender pass HTTP-calls the
     /// app's public URL → every page an empty 200). An explicit <c>InstallConfig.Prerender</c> (or appsettings
@@ -53,7 +53,7 @@ namespace Stomme.Tests
             Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, scratch);
 
             // Defensive snapshot, kept although its root cause is fixed: ConfigManager's write target used to
-            // be a STATIC field (BL-59), so a prior in-process host that fell back to the shipped
+            // be a STATIC field, so a prior in-process host that fell back to the shipped
             // BaseDirectory/appsettings.json could make this install's connection-string write land in that
             // SHARED file — polluting it for later tests (e.g. BootDoesNotMutateConfigTests, which copies the
             // shipped file). The target is per-instance now (ConfigManagerWriteTargetTests pins it); the
@@ -91,7 +91,7 @@ namespace Stomme.Tests
 
                 // Let go of the pooled writers for the database the install just wrote, so the read-only open
                 // below sees the file rather than a handle. This database only - ClearAllPools would reach into
-                // whatever sibling class is mid-request (BL-104).
+                // whatever sibling class is mid-request.
                 ScratchSqlite.Release($"Data Source={dbPath};");
                 using var connection = new SqliteConnection($"Data Source={dbPath};Mode=ReadOnly");
                 connection.Open();
@@ -109,7 +109,7 @@ namespace Stomme.Tests
                 // Everything this run opened under the scratch root, by exact connection string: the installed
                 // store named in the post-install settings files, the FeatureManagement sidecar, the write
                 // connection string, and the read-only one opened above (a DIFFERENT pool - the key is the raw
-                // string, measured in ScratchSqliteReleaseTests). Never the process-wide form (BL-104).
+                // string, measured in ScratchSqliteReleaseTests). Never the process-wide form.
                 ScratchSqlite.ReleaseInstall(scratch);
                 ScratchSqlite.Release($"Data Source={dbPath};");
                 ScratchSqlite.Release($"Data Source={dbPath};Mode=ReadOnly");

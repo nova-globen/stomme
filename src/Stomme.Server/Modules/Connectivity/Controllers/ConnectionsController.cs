@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Connectivity.Controllers
 {
     /// <summary>
-    /// The Connectivity API (BL-94 increment 7, D110): <c>api/Connections</c>. Each action is gated on its key by
+    /// The Connectivity API: <c>api/Connections</c>. Each action is gated on its key by
     /// <c>[RequiresPermissionKey]</c> (an authorization POLICY, so it runs before the body); the request is decided again
     /// by the mediator's authorization behavior. The site is the request's - nothing here names one. A credential
     /// travels IN only; no response carries one, and a connector's verdict comes back as a category.
@@ -121,7 +121,7 @@ namespace Stomme.Modules.Connectivity.Controllers
             }
         }
 
-        // GET api/Connections/egress - the private hosts this site may reach (BL-180)
+        // GET api/Connections/egress - the private hosts this site may reach
         [HttpGet("egress")]
         [RequiresPermissionKey(ConnectionPermissions.View)]
         public async Task<IActionResult> Egress(CancellationToken ct) => Ok(await _mediator.Send(new GetConnectionEgressQuery(), ct));

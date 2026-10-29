@@ -5,7 +5,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// The Job aggregate root — the persistence-side model of the framework store's <c>Job</c> table (D52),
+    /// The Job aggregate root — the persistence-side model of the framework store's <c>Job</c> table,
     /// reachable only through <see cref="IJobStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads).
     /// See <c>docs/decisions.md</c> D52 (the master-bookkeeping wave) for the cluster boundary.
     /// (Corrected 2026-07-21: this previously pointed at a per-cluster PHASE3-JOBS plan file "(if present)"
@@ -13,7 +13,7 @@ namespace Stomme.Repository.Stores
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <b>A MASTER-database aggregate, like the master half of Setting (D23).</b> Job is installation-wide, not
+    /// <b>A MASTER-database aggregate, like the master half of Setting.</b> Job is installation-wide, not
     /// per-tenant: <see cref="MasterDBContext"/> mapped it and the master migration set creates the table.
     /// <see cref="IJobStore"/> is bound to <see cref="MasterDBContext"/> and its reads go through
     /// <see cref="IMasterStoreSessionFactory"/>, NOT the tenant <see cref="IFrameworkStoreSessionFactory"/>. The

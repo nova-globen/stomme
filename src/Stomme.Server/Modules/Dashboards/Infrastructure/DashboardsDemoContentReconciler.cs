@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Dashboards.Infrastructure
 {
     /// <summary>
-    /// The Dashboards module's demo content (BL-96 increment 11, D110 Q7): one published board over the demo datasets
+    /// The Dashboards module's demo content (D110 Q7): one published board over the demo datasets
     /// an evaluator can open on <c>admin/dashboards</c> - a chart, a pivot, a grid and a KPI - written per site on the
     /// boot/upgrade path through the framework's <see cref="SiteContentReconciliationRunner"/>, ONLY while
     /// <c>DemoContent:Enabled</c> is true (default off; while it is off this type is not registered), and ADDITIVELY: a

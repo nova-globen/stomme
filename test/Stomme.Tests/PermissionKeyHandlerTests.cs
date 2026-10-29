@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The CONTROLLER/HUB half of the authorization bridge (D99 point 9, BL-99):
+    /// The CONTROLLER/HUB half of the authorization bridge:
     /// <c>[RequiresPermissionKey("resource:operation")]</c> is decided ONLY by the site's
     /// <c>EntityId = -1</c> Permission rows, through the five-argument <see cref="IUserPermissions"/>
     /// overload - no query-string re-scoping (F8), no roles fallback, no Host short-circuit (F1).

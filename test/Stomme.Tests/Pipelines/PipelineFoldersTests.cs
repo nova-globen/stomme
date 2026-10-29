@@ -6,7 +6,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's folders: the one rule for a pipeline's folder on both sides - names separated by '/', each tidy and short, at
+    /// n8n's folders: the one rule for a pipeline's folder on both sides - names separated by '/', each tidy and short, at
     /// most four deep - and how the list reads the folders the pipelines are in: the ones inside the folder shown, counted, one
     /// whatever its case.
     /// </summary>

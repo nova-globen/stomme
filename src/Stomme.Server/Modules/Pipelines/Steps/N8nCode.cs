@@ -2,7 +2,7 @@
 
 namespace Stomme.Modules.Pipelines.Steps
 {
-    /// <summary>What a <see cref="RunScript"/> script is written for (BL-229).</summary>
+    /// <summary>What a <see cref="RunScript"/> script is written for.</summary>
     public enum ScriptStyle
     {
         /// <summary>This site's JavaScript: <c>input</c>, <c>log(...)</c>, the variables; its completion value is the result.</summary>
@@ -16,7 +16,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// BL-229 - n8n's Code node, run here as it was written: the step's input - the previous step's records - as n8n's items
+    /// n8n's Code node, run here as it was written: the step's input - the previous step's records - as n8n's items
     /// (<c>{ json }</c>), with its <c>$input</c> (<c>all()</c>, <c>first()</c>, <c>last()</c>, <c>item</c>), <c>$json</c>, the old
     /// Function node's <c>items</c> and Function Item's <c>item</c>, and <c>console.log</c> as the step's log. Once for all items,
     /// or once for each - <c>$json</c>, <c>$input.item</c>, <c>item</c> and <c>$itemIndex</c> that item's, an item it returns

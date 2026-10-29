@@ -26,7 +26,7 @@ namespace Stomme.Tests
     /// Drives the real installer's stages against a live RavenDB (default 127.0.0.1:7000) up to — but NOT including — the
     /// host-account step, and asserts the master <c>Tenant</c> and <c>Alias</c> documents actually exist in the
     /// live database. That is the proof that the resolve-time factory selected RavenDB, the LAZY
-    /// <c>IDocumentStore</c> was built, the bootstrap created the database, and the de-EF'd write path (D53)
+    /// <c>IDocumentStore</c> was built, the bootstrap created the database, and the de-EF'd write path
     /// persisted to Raven rather than throwing on an unconfigured EF context.
     /// </para>
     /// <para>

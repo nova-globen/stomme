@@ -47,7 +47,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 - the site's data tables (<see cref="PipelineSiteTables"/>) in the engine's key-value store, under the SITE (a
+    /// The site's data tables (<see cref="PipelineSiteTables"/>) in the engine's key-value store, under the SITE (a
     /// key-value key is one row per installation - the schedules' lesson): one key per table, holding its name and columns, and
     /// one key per ROW, so two runs writing different rows - or an author adding a table while a run writes - never overwrite
     /// each other. A row is a JSON object of its id, createdAt, updatedAt and its columns' values; read in full for a table

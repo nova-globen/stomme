@@ -26,7 +26,7 @@ namespace Stomme.Modules.Datasets.Mcp
     }
 
     /// <summary>
-    /// The datasets' MCP surface (BL-94 increment 12, over BL-80's contributor seam): two resources - the site's datasets
+    /// The datasets' MCP surface (over BL-80's contributor seam): two resources - the site's datasets
     /// and one dataset's classification-masked summary - and one tool, <c>query_dataset</c>, which returns the bounded,
     /// classification-gated preview and nothing else. Every gate names BOTH the feature flag (<c>datasets.mcp</c>, off
     /// by default) and a key: the resources <c>datasets:view</c>, the tool <c>datasets:preview</c> (raw rows are the

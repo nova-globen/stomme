@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleDocs
 {
     /// <summary>
-    /// Google Docs (BL-229, n8n's Google Docs node: a document created, got and updated): documents over the Docs API
+    /// Google Docs (n8n's Google Docs node: a document created, got and updated): documents over the Docs API
     /// (<c>https://docs.googleapis.com/v1</c>) - and the Drive API (<c>https://www.googleapis.com/drive/v3</c>, the
     /// <c>drive_endpoint</c> setting) to make one in a folder - and the OAuth2 REFRESH-TOKEN scheme: a Google Cloud OAuth client's
     /// id and secret and a refresh token granted the documents and drive.file scopes, exchanged at Google's token endpoint (the

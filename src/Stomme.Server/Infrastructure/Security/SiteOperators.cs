@@ -8,7 +8,7 @@ namespace Stomme.Infrastructure.Security
 {
     /// <summary>
     /// A site's OPERATORS - the people a site-scoped alert is for: the site's Administrators and the Host Users, who administer
-    /// every site (BL-177).
+    /// every site.
     /// </summary>
     /// <remarks>
     /// <para>

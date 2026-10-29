@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - monday.com DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Monday.com DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for monday's GraphQL API: a monday.com connection made over the API, its token vaulted, tested (the
     /// user named); a published pipeline creates an item with column values, reads a board's items over two pages by cursor, changes
     /// one's status, moves it and posts an update - every call the token in Authorization alone; the token is in neither the graph

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// The installation-wide caps of the file-ingestion guard (BL-100 F1, D109), read from the <c>Files</c>
+    /// The installation-wide caps of the file-ingestion guard (BL-100 F1), read from the <c>Files</c>
     /// configuration section on every use so a changed <c>appsettings</c> takes effect without a restart.
     /// </summary>
     /// <remarks>

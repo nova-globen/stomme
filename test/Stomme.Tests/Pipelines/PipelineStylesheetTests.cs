@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - the Pipelines module's stylesheet is linked only by a page that DECLARES it (a component's <c>Resources</c>), not
+    /// The Pipelines module's stylesheet is linked only by a page that DECLARES it (a component's <c>Resources</c>), not
     /// whenever the module is on the page. Found driving run reviews on a scratch host (2026-10-07): the runs list, the pipelines
     /// list and a run's page used its classes (the tag chips, run data, the reviews) but only the editor declared it, so each of
     /// them opened directly rendered its chips as plain buttons run together - styled only when the editor had been opened first
@@ -43,7 +43,7 @@ namespace Stomme.Tests.Pipelines
                 $"\nDeclare it in the page's Resources: new Resource {{ ResourceType = ResourceType.Stylesheet, Url = \"{Stylesheet}\" }}.");
         }
 
-        // BL-229 - found driving the right-click menu (2026-10-08): the diagram's box, overflow:hidden by the library, was scrolled
+        // Found driving the right-click menu: the diagram's box, overflow:hidden by the library, was scrolled
         // 313px sideways by the browser revealing a focused button at the canvas's edge, and from then on every step and note was
         // drawn 313px from where the pointer put it - a note added by the menu landed far from the click. The module's sheet
         // clips the box instead, which no scrolling gets past.

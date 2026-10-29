@@ -10,7 +10,7 @@ using FluentValidation;
 namespace Stomme.Modules.Datasets.Application
 {
     /// <summary>
-    /// Registers a dataset from a file the framework's file manager holds (BL-94 increment 13, D110): the file is opened
+    /// Registers a dataset from a file the framework's file manager holds: the file is opened
     /// as the CURRENT user through <see cref="IManagedFileReader"/> (another site's file does not exist, a folder the user
     /// may not view is refused, a file over the upload cap is not read), parsed by the hardened
     /// <see cref="UploadedDatasetParser"/> (the format from the signature and the extension, a bounded sample, the FULL row

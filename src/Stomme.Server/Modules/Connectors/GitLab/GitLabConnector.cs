@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GitLab
 {
     /// <summary>
-    /// GitLab (BL-229, n8n's GitLab node: a project's issues got, an issue got, created, edited and commented on, a release created,
+    /// GitLab (n8n's GitLab node: a project's issues got, an issue got, created, edited and commented on, a release created,
     /// a file got and committed - and its merge requests read and a pipeline run): GitLab's REST API (<c>https://gitlab.com/api/v4</c>,
     /// or a self-managed instance's), a personal, project or group access token in GitLab's <c>PRIVATE-TOKEN</c> header. A test asks
     /// GitLab who the token is (<c>user</c>).

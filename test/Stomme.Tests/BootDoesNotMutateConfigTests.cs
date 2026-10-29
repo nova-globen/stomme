@@ -19,7 +19,7 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// THE DEFECT THIS PINS (D32). <c>Program.Main</c> -> <c>Program.Install</c> -> <c>DatabaseManager.Install(null)</c>
+    /// THE DEFECT THIS PINS. <c>Program.Main</c> -> <c>Program.Install</c> -> <c>DatabaseManager.Install(null)</c>
     /// calls <c>ValidateConfiguration()</c> as its FIRST statement — 88 lines before the install-intent guard
     /// that checks there is a connection string to install against. The shipped appsettings.json has
     /// <c>DefaultDBType: ""</c>, so that unguarded branch persisted the default on EVERY boot of a fresh
@@ -104,7 +104,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// BL-20 (a): a config whose <c>AvailableDatabases</c> carries the pre-6.1.5 <c>, Stomme.Database.</c>
+        /// A config whose <c>AvailableDatabases</c> carries the pre-6.1.5 <c>, Stomme.Database.</c>
         /// namespace must NOT be rewritten by boot — the catalog is resolved on READ (the D32 pattern
         /// <c>GetDatabaseType</c> already uses), so the wizard still sees the migrated entries.
         /// </summary>
@@ -134,7 +134,7 @@ namespace Stomme.Tests
                 await app.StartAsync();
                 var databases = await GetCatalogAsync(app);
 
-                // read-time resolution: every entry serves the migrated assembly, RavenDB included (D56)
+                // read-time resolution: every entry serves the migrated assembly, RavenDB included
                 Assert.All(databases, d => Assert.EndsWith(", Stomme.Server", d.DBType));
                 Assert.Contains(databases, d => d.Name == "RavenDB");
             }
@@ -190,7 +190,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// BL-20 (b): <c>GetInstallationId()</c> is a PURE read — no id minted, no version stamped, no bytes
+        /// <c>GetInstallationId()</c> is a PURE read — no id minted, no version stamped, no bytes
         /// written. <c>EnsureInstallationId()</c> is the explicit write, idempotent, and is what the
         /// install/upgrade path calls (<c>DatabaseManager.UpdateInstallation</c>).
         /// </summary>
@@ -244,7 +244,7 @@ namespace Stomme.Tests
             Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
 
             // Release this install's SQLite pools first, or the delete below fails on a file the host still
-            // holds - which is what the catch was quietly absorbing (BL-104).
+            // holds - which is what the catch was quietly absorbing.
             ScratchSqlite.ReleaseInstall(_contentRoot);
 
             try

@@ -14,7 +14,7 @@ namespace Stomme.Infrastructure
 {
     /// <summary>
     /// Drains <see cref="LogQueue"/> and performs the async store writes that
-    /// <see cref="ILogManager.Log(Log)"/> used to perform inline (D34).
+    /// <see cref="ILogManager.Log(Log)"/> used to perform inline.
     /// </summary>
     /// <remarks>
     /// <para>

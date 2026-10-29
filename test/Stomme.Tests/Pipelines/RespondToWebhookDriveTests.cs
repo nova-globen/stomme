@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Respond to Webhook with headers and a binary file, DRIVEN over the real receiver on an installed SQLite host:
+    /// n8n's Respond to Webhook with headers and a binary file, DRIVEN over the real receiver on an installed SQLite host:
     /// a PDF taken into the pipeline folder through the Files API; a pipeline answering its webhook from the pipeline with that
     /// file, a status, a name to save it under and two headers; a signed call gets exactly that - the status, the PDF's type, an
     /// attachment named as said, the headers, the bytes.

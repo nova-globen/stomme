@@ -15,12 +15,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - RabbitMQ DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// RabbitMQ DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a real RabbitMQ 4.1 (<see cref="RabbitMqTestEndpoint"/>): a RabbitMQ connection made over the API - an address
     /// that carries no credential, the password vaulted - refused while loopback is not allowlisted, then tested (the broker
     /// named); a published pipeline publishes two messages to a queue - one with its headers, one over several lines from the
     /// step's Query box - counts the queue, takes the messages and counts it again; the password in neither the graph nor the
-    /// run. Fails, never skips, without a broker (D46).
+    /// run. Fails, never skips, without a broker.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

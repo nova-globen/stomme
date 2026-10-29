@@ -13,7 +13,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record ChatStimulus(string Chat);
 
     /// <summary>
-    /// BL-229 - n8n's Chat Trigger, hosted by the site: a page at <c>api/Pipelines/chats/{name}</c> (behind
+    /// n8n's Chat Trigger, hosted by the site: a page at <c>api/Pipelines/chats/{name}</c> (behind
     /// <c>Pipelines:Chats:Enabled</c>, rate-limited, anonymous - a chat is for the site's visitors) where a visitor talks to the
     /// pipeline. Each message RUNS it - the message this step's result, the visitor's conversation its <see cref="Session"/> - and
     /// the reply shown is the result of the last step the run completes; the conversation is kept per visitor. Give the session

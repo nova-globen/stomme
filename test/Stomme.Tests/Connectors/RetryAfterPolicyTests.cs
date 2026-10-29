@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 3 - the predecessor platform's RetryAfterHandlerTests (6) by name over the port: the policy sends AROUND the egress's
+    /// The predecessor platform's RetryAfterHandlerTests (6) by name over the port: the policy sends AROUND the egress's
     /// client rather than sitting inside it as a handler, rebuilding the request per attempt; the timing and the give-up
     /// rule are the predecessor platform's.
     /// </summary>

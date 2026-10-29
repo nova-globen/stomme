@@ -9,7 +9,7 @@ namespace Stomme.Identity.OpenIddict.Raven
     /// <summary>
     /// Yields a RavenDB async session bound to the current tenant's dedicated OpenIddict database. The four
     /// OpenIddict stores below take this instead of a raw <c>IDocumentStore</c> so every session they open is
-    /// per-tenant (D62). See <see cref="TenantRavenOpenIddictSessionProvider"/>.
+    /// per-tenant. See <see cref="TenantRavenOpenIddictSessionProvider"/>.
     /// </summary>
     internal interface IRavenOpenIddictSessionProvider
     {
@@ -17,7 +17,7 @@ namespace Stomme.Identity.OpenIddict.Raven
     }
 
     /// <summary>
-    /// Wires the Stomme RavenDB OpenIddict stores into the OpenIddict core builder (D62): the four default
+    /// Wires the Stomme RavenDB OpenIddict stores into the OpenIddict core builder: the four default
     /// entity types and the four <c>IOpenIddict*Store</c> implementations, registered as SCOPED — unlike
     /// the predecessor platform's singletons — because each store resolves the PER-REQUEST tenant through
     /// <see cref="IRavenOpenIddictSessionProvider"/>, and the tenant is a property of the request scope.

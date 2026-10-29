@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Zoom
 {
     /// <summary>
-    /// Zoom (BL-229, n8n's Zoom node: its meetings created, got, read, updated and deleted): an account over Zoom's API
+    /// Zoom (n8n's Zoom node: its meetings created, got, read, updated and deleted): an account over Zoom's API
     /// (<c>https://api.zoom.us/v2</c>) through a server-to-server OAuth app - its account id (the <c>account_id</c> setting) and
     /// client, exchanged at Zoom's token endpoint (<c>https://zoom.us/oauth/token</c>, the client as HTTP Basic) through the shared
     /// <see cref="OAuth2TokenProvider"/>, the access token sent as a bearer. A test names the user.

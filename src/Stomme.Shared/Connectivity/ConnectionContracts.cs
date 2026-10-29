@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace Stomme.Connectivity
 {
     // ============================================================================================================
-    // The Connectivity module's Shared contracts (BL-94 increment 6, D110): the permission keys, the shapes a page or
+    // The Connectivity module's Shared contracts: the permission keys, the shapes a page or
     // an API consumer reads (a connection, a connector, a test's verdict), the delete guard's port and the extraction
     // port a pipeline step consumes. BCL-ONLY like the connector contract beside it (SharedConnectivityDependencyTests).
     // ============================================================================================================
 
     /// <summary>
-    /// The Connectivity module's permission KEYS, decided by the authorization bridge (D99): each key is a site
+    /// The Connectivity module's permission KEYS, decided by the authorization bridge: each key is a site
     /// Permission row <c>(EntityName = "connections", EntityId = -1, PermissionName = operation)</c>. <see cref="View"/>
     /// lists the site's connections and the connector catalog; <see cref="Manage"/> creates, edits, tests and deletes
     /// the site's connections. Both default to Administrators; a HostOnly connector needs the Host role on top.
@@ -76,7 +76,7 @@ namespace Stomme.Connectivity
         /// <summary>The operation named is not one the connector declares.</summary>
         OperationUndefined = 10,
 
-        /// <summary>The server offered a host key the connection does not name - or it names none - and nothing was sent to it (BL-229, SFTP).</summary>
+        /// <summary>The server offered a host key the connection does not name - or it names none - and nothing was sent to it (SFTP).</summary>
         HostKeyUntrusted = 11,
     }
 
@@ -124,7 +124,7 @@ namespace Stomme.Connectivity
     public sealed record ConnectionTestView(bool Success, ConnectorOutcome Outcome, string Message, string Status);
 
     /// <summary>
-    /// The site's egress allowlist (BL-180): the private and loopback hosts the site's connections may reach - and the AI
+    /// The site's egress allowlist: the private and loopback hosts the site's connections may reach - and the AI
     /// assistant's model endpoint, which rides the same egress - as exact host names or IP addresses. A holder of
     /// connections:view reads it; only the Host role changes it (<see cref="CanEdit"/>), because widening a site's egress
     /// to private addresses opens the installation's own network to the site.
@@ -177,11 +177,11 @@ namespace Stomme.Connectivity
         string? ApiDocumentationUrl,
         string Icon)
     {
-        /// <summary>An endpoint of the connector's own for the form to show (BL-229: an IMAP server is no database connection string); null: the kind's generic example.</summary>
+        /// <summary>An endpoint of the connector's own for the form to show (an IMAP server is no database connection string); null: the kind's generic example.</summary>
         public string? EndpointExample { get; init; }
     }
 
-    /// <summary>What a create or an update carries (BL-94 increment 7): the connector type is fixed at creation; a credential value given rotates that field, a blank or absent one leaves it. The site is the request's.</summary>
+    /// <summary>What a create or an update carries: the connector type is fixed at creation; a credential value given rotates that field, a blank or absent one leaves it. The site is the request's.</summary>
     public sealed class ConnectionRequest
     {
         public string Name { get; set; } = string.Empty;
@@ -201,7 +201,7 @@ namespace Stomme.Connectivity
     /// A connector's catalog icon: the connector's own inline SVG when it declares one, otherwise a brand-neutral monogram
     /// tile - a rounded square tinted by the primary category carrying the display name's initials. Only letters and
     /// digits reach the initials and the text is escaped besides, so a display name carrying markup renders as text
-    /// (BL-94 increment 7; the predecessor platform's renderer let a leading <c>&lt;</c> through).
+    /// (the predecessor platform's renderer let a leading <c>&lt;</c> through).
     /// </summary>
     public static class ConnectorIcons
     {
@@ -276,7 +276,7 @@ namespace Stomme.Connectivity
 
     /// <summary>
     /// A consumer that references connections by id says whether one is in use, so a connection a pipeline or a
-    /// dataset still points at is not deleted (D110). Connectivity owns the contract; consumers implement it; the
+    /// dataset still points at is not deleted. Connectivity owns the contract; consumers implement it; the
     /// delete command consults every registered provider.
     /// </summary>
     public interface IConnectionUsageProvider
@@ -284,7 +284,7 @@ namespace Stomme.Connectivity
         Task<ConnectionUsage> GetUsageAsync(Guid connectionId, CancellationToken ct = default);
     }
 
-    /// <summary>The record cap an extraction materialises up to (D110): a consumer asks for fewer, never for more than <see cref="MaxMaxRecords"/>.</summary>
+    /// <summary>The record cap an extraction materialises up to: a consumer asks for fewer, never for more than <see cref="MaxMaxRecords"/>.</summary>
     public static class ConnectorExtractionLimits
     {
         public const int DefaultMaxRecords = 10_000;
@@ -307,7 +307,7 @@ namespace Stomme.Connectivity
     }
 
     /// <summary>
-    /// Resolves a connection id to a live extract (D110): the connection, its connector, the operation, the
+    /// Resolves a connection id to a live extract: the connection, its connector, the operation, the
     /// credentials from the per-site secret store and the HOST's egress, then the connector's records up to the cap.
     /// Implemented by the Connectivity module; consumed by a pipeline's extraction step, which never reaches the
     /// aggregate or a secret directly. A failure is a result with a category, never an exception.
@@ -318,7 +318,7 @@ namespace Stomme.Connectivity
             int maxRecords = ConnectorExtractionLimits.DefaultMaxRecords, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// The same extract with the files of the place it runs in - a pipeline run's folder (BL-229) - for an operation that
+        /// The same extract with the files of the place it runs in - a pipeline run's folder - for an operation that
         /// uploads or downloads. An implementation that does not take files hands the connector none, and such an operation
         /// refuses: fail-closed, never a host path.
         /// </summary>

@@ -15,7 +15,7 @@ namespace Stomme.Modules.Pipelines.Application
     public sealed record AgentMemoryMessage(string Role, string Text);
 
     /// <summary>
-    /// BL-229 - n8n's Simple Memory for its AI Agent: the conversation an <see cref="Steps.AiAgent"/> keeps under a key - a customer,
+    /// n8n's Simple Memory for its AI Agent: the conversation an <see cref="Steps.AiAgent"/> keeps under a key - a customer,
     /// a ticket, a chat - so a later run with the same key continues it. Kept in the engine's key-value store under the SITE, the
     /// PIPELINE and the key (two pipelines never share one by accident; the schedules' lesson about keys), the newest
     /// <see cref="MaxKept"/> messages, text only (tool calls are the run's, not the conversation's).

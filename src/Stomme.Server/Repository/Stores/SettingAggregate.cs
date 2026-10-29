@@ -42,7 +42,7 @@ namespace Stomme.Repository.Stores
 
         /// <summary>
         /// The id of the entity this setting describes. A reference to another aggregate BY ID — settings
-        /// never navigate to what they describe (D7/D19), and there is no foreign key here: the pair
+        /// never navigate to what they describe, and there is no foreign key here: the pair
         /// (<see cref="EntityName"/>, <see cref="EntityId"/>) is a loose reference by construction.
         /// </summary>
         public int EntityId { get; set; }

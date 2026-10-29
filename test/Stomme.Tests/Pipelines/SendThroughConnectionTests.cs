@@ -21,7 +21,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-95's last residue of "a Connection with a vaulted secret" (2026-10-03): Send through connection, run by the real
+    /// BL-95's last residue of "a Connection with a vaulted secret": Send through connection, run by the real
     /// engine with the extraction port scripted - the connection, the connector's <c>send</c> operation and the request's
     /// parameters reach the port (the body the previous step's result when none is given, none with GET), the response body is
     /// the result and the status an output; a refusal is the port's category; a connector that does not answer a send with a

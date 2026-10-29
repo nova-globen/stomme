@@ -15,7 +15,7 @@ using Raven.Client.Documents.Session;
 namespace Stomme.Identity.OpenIddict.Raven
 {
     /// <summary>
-    /// Opens a RavenDB async session bound to the CURRENT tenant's dedicated OpenIddict database (D62).
+    /// Opens a RavenDB async session bound to the CURRENT tenant's dedicated OpenIddict database.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -80,7 +80,7 @@ namespace Stomme.Identity.OpenIddict.Raven
                     "installer state.");
             }
 
-            // BL-55: the explicit {key}_OpenIddict connection string wins; when absent, a DEDICATED sibling
+            // The explicit {key}_OpenIddict connection string wins; when absent, a DEDICATED sibling
             // database (Database={tenant-db}_OpenIddict on the same server) is DERIVED from the tenant's own
             // descriptor — storage-blind zero provisioning, isolation preserved (never the tenant's own DB).
             var connectionString = OpenIddictConnectionStrings.Resolve(tenant, _config);

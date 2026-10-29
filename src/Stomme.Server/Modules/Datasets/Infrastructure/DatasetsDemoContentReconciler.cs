@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Datasets.Infrastructure
 {
     /// <summary>
-    /// The Datasets module's demo content (BL-94 increment 14, D110 Q7): three datasets an evaluator can browse, preview
+    /// The Datasets module's demo content (D110 Q7): three datasets an evaluator can browse, preview
     /// and query - written per site on the boot/upgrade path through the framework's
     /// <see cref="SiteContentReconciliationRunner"/>, ONLY while <c>DemoContent:Enabled</c> is true (default off; while
     /// it is off this type is not registered), and ADDITIVELY: a site stamped at <see cref="Version"/> is left alone

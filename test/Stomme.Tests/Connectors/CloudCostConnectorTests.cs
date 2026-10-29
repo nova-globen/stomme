@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 5 - the predecessor platform's AwsCostConnectorTests (4) and GcpCostConnectorTests (5) by name over the port. CHANGED:
+    /// The predecessor platform's AwsCostConnectorTests (4) and GcpCostConnectorTests (5) by name over the port. CHANGED:
     /// the AWS key pair is the ApiKeyPair scheme's two fields (the predecessor platform kept the id as a setting and the secret as its legacy
     /// single credential), and the GCP service-account key is the ApiKey scheme's field; each missing-credential message
     /// names the field.

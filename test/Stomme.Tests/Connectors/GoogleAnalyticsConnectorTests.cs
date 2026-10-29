@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Analytics (n8n's Google Analytics node, its GA4 reports) without a server: every property, range, date,
+    /// Google Analytics (n8n's Google Analytics node, its GA4 reports) without a server: every property, range, date,
     /// name, filter, currency and number held to GA4's shape before a token is asked for; a report over n8n's presets - the
     /// relative ones as GA4's own words, the calendar ones computed from the clock - or a start and an end, by its metrics and
     /// dimensions, ordered and filtered, each row a record of dimension values and metric numbers (whole for an integer metric),

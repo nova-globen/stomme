@@ -42,7 +42,7 @@ namespace Stomme.Services
         Task RestartAsync();
 
         /// <summary>
-        /// Returns the bundled, enabled modules that declare a module-wide config control (D86), for the
+        /// Returns the bundled, enabled modules that declare a module-wide config control, for the
         /// installer's onboarding step. Reflects loaded assemblies server-side, so it works pre-install.
         /// </summary>
         Task<System.Collections.Generic.List<ConfigurableModule>> GetConfigurableModulesAsync();

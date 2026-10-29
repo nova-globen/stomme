@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Metering.Infrastructure
 {
     /// <summary>
-    /// Pseudonymises the site's metering rows when a user is removed from it (D102 item 9).
+    /// Pseudonymises the site's metering rows when a user is removed from it.
     /// </summary>
     /// <remarks>
     /// <para>

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zulip DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Zulip DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for an organization's API that refuses a call without the bot's e-mail and key: a Zulip
     /// connection made over the API, its key vaulted, tested; a published pipeline sends to a stream's topic with an accent,
     /// reads the topic's messages over two pages - no more than asked - gets, updates and deletes the message, and reads the

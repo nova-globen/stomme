@@ -11,7 +11,7 @@ using Stomme.Engine.Pipelines.State;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// What a run was started with, kept on the run (BL-229, n8n's execution data). The engine persists only the inputs a
+    /// What a run was started with, kept on the run (n8n's execution data). The engine persists only the inputs a
     /// pipeline DECLARES, and this editor's pipelines declare none - so a webhook's body, a schedule's fire time, a value given
     /// to Run and the failure a handler is told of were gone once the run was stored (measured: a stored run's state held no
     /// input at all), and neither a run's page nor a retry could have them. When a run starts, its input is copied into the
@@ -61,7 +61,7 @@ namespace Stomme.Modules.Pipelines.Application
         public const string NotKeptKey = "stomme:input-not-kept";
 
         /// <summary>
-        /// BL-229 - a run whose pipeline does not keep its runs' data (<see cref="Stomme.Models.Pipelines.PipelineStepDataKeeping"/>):
+        /// A run whose pipeline does not keep its runs' data (<see cref="Stomme.Models.Pipelines.PipelineStepDataKeeping"/>):
         /// what it was started with and what it returned emptied, and - when it was started with something - marked, so its page
         /// says so and it is not run again without it. The steps' contexts the engine keeps to go on from a failed step stay. False
         /// when there was nothing to empty.

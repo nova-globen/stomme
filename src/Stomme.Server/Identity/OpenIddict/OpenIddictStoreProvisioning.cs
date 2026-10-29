@@ -12,7 +12,7 @@ using Stomme.Models;
 namespace Stomme.Identity.OpenIddict
 {
     /// <summary>
-    /// Resolves the CURRENT tenant's dedicated OpenIddict connection string (BL-55).
+    /// Resolves the CURRENT tenant's dedicated OpenIddict connection string.
     /// </summary>
     /// <remarks>
     /// An explicit <c>ConnectionStrings:{tenant.DBConnectionString}_OpenIddict</c> key always wins. When the
@@ -151,7 +151,7 @@ namespace Stomme.Identity.OpenIddict
     }
 
     /// <summary>
-    /// Ensures the CURRENT tenant's dedicated OpenIddict store EXISTS before anything touches it (BL-55).
+    /// Ensures the CURRENT tenant's dedicated OpenIddict store EXISTS before anything touches it.
     /// </summary>
     /// <remarks>
     /// The RavenDB side has always had this (<see cref="Raven.RavenOpenIddictDocumentStoreCache"/> creates
@@ -180,7 +180,7 @@ namespace Stomme.Identity.OpenIddict
 
     /// <summary>
     /// The relational implementation: <c>EnsureCreated</c> on <see cref="TenantOpenIddictDbContext"/>, once
-    /// per tenant per process. Scoped — the context routes per-alias inside the scope (D37).
+    /// per tenant per process. Scoped — the context routes per-alias inside the scope.
     /// </summary>
     internal sealed class RelationalOpenIddictStoreProvisioner : IOpenIddictStoreProvisioner
     {

@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 2 - the managed file sink on an installed SQLite host: a connector's file lands in a site folder,
+    /// The managed file sink on an installed SQLite host: a connector's file lands in a site folder,
     /// through the ingestion guard, as a File row (and updates the row when the name exists); an extension outside the
     /// site's uploadable set, a missing folder and a file over the cap are refused with the guard's reason and nothing
     /// is written; the extraction service hands the sink to the connector.

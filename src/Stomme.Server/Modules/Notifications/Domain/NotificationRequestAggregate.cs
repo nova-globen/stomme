@@ -15,11 +15,11 @@ namespace Stomme.Modules.Notifications.Domain
     /// <summary>
     /// The dispatch unit a producer creates to "tell someone something": recipients, a template key WITH its
     /// parameters, the channels to reach them over, and the resulting <see cref="DeliveryAttempt"/>s. Lifted from
-    /// the predecessor platform <c>NotificationRequest</c> (BL-78); <see cref="Status"/> is still always derived from the attempts.
+    /// the predecessor platform <c>NotificationRequest</c>; <see cref="Status"/> is still always derived from the attempts.
     /// <para>
     /// <b>Reshaped for Stomme (D100 points 3 and 7).</b> Tenant-owned AND site-scoped (<see cref="SiteId"/>);
     /// every instant a UTC <see cref="DateTime"/>; <see cref="TemplateKeyNormalized"/> maintained here so a key lookup
-    /// normalizes both sides (D49); and the Job-backed pipeline's state is SCALAR so the provider-neutral
+    /// normalizes both sides; and the Job-backed pipeline's state is SCALAR so the provider-neutral
     /// <c>FindAsync</c> can select due work: <see cref="AttemptCount"/> + <see cref="NextAttemptOn"/> (retry), and
     /// <see cref="DigestDeferredUntil"/>, which replaces the predecessor platform's <c>Attempts.Any(a =&gt; a.Status == DigestQueued)</c>
     /// (a collection predicate FindAsync cannot express). The dispatch <see cref="Parameters"/> are persisted - the
@@ -229,7 +229,7 @@ namespace Stomme.Modules.Notifications.Domain
         public void ReleaseFromDigest() => DigestDeferredUntil = null;
 
         /// <summary>
-        /// Erasure (D112): drops every recipient entry naming the user, so the request keeps no link to the person; true
+        /// Erasure: drops every recipient entry naming the user, so the request keeps no link to the person; true
         /// when one was there. A request left with no recipient is the caller's to delete.
         /// </summary>
         public bool RemoveRecipient(int userId)
@@ -244,7 +244,7 @@ namespace Stomme.Modules.Notifications.Domain
             CompletedOn = UtcInstant.Require(completedOnUtc, nameof(completedOnUtc));
 
         /// <summary>
-        /// Re-opens a COMPLETED request that did not fully send (an operator's retry, BL-78 step 5): it becomes due again at
+        /// Re-opens a COMPLETED request that did not fully send (an operator's retry): it becomes due again at
         /// <paramref name="nextAttemptOnUtc"/> with a fresh retry budget and no digest hold. The recorded attempts are KEPT - the
         /// next pass re-attempts only the channels that are not yet resolved. A request that is still in flight, or that was
         /// fully sent, cannot be re-opened.

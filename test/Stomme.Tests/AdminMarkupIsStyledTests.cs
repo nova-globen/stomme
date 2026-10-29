@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-22 — an admin module may not use a CSS class that no ALWAYS-LOADED stylesheet defines.
+    /// An admin module may not use a CSS class that no ALWAYS-LOADED stylesheet defines.
     /// </summary>
     /// <remarks>
     /// <para>

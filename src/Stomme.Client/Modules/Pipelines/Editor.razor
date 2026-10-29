@@ -19,7 +19,7 @@
 @using System.Text.Json
 
 @*
-    The pipeline editor (BL-95 increment (c), D111): the predecessor platform's canvas re-targeted to the ENGINE's model. The palette is the
+    The pipeline editor (BL-95 increment (c)): the predecessor platform's canvas re-targeted to the ENGINE's model. The palette is the
     engine's step registry (the catalog), a node is a step with the literal inputs the catalog describes, a link is a
     connection through an outcome port, and Save sends the graph, which the server turns into the engine's own Flowchart
     document and the engine judges before it is stored. Everything the predecessor platform modelled itself - templates, connectors,
@@ -39,7 +39,7 @@ else if (string.IsNullOrEmpty(_definitionId))
 }
 else
 {
-    @* BL-229 - n8n's "Save changes before leaving?": with changes not saved, the browser asks before a reload, a closed tab or
+    @* n8n's "Save changes before leaving?": with changes not saved, the browser asks before a reload, a closed tab or
        another site, and the editor asks before any other page of this one. *@
     <NavigationLock ConfirmExternalNavigation="@(_dirty && CanManage)" OnBeforeInternalNavigation="OnLeaving" />
     <div class="db-pipeline-editor">
@@ -62,7 +62,7 @@ else
         <header class="db-pipeline-editor__bar">
             <a id="pipelines-editor-back" class="db-btn" href="@NavigateUrl()">Pipelines</a>
             <div class="db-pipeline-editor__title">
-                @* BL-229 - n8n's workflow name, edited where it is shown: the pipeline's name and what it does, saved into its draft
+                @* n8n's workflow name, edited where it is shown: the pipeline's name and what it does, saved into its draft
                    (Enter saves, Escape leaves it as it was). *@
                 @if (_detailsOpen && _pipeline is not null)
                 {
@@ -91,7 +91,7 @@ else
             @if (CanManage)
             {
                 <button id="pipelines-editor-save" type="button" class="db-btn" @onclick="SaveAsync" disabled="@(_busy || _diagram is null)">Save</button>
-                @* BL-229: what changed, in the author's words - kept with the version it publishes, shown in the versions list. *@
+                @* What changed, in the author's words - kept with the version it publishes, shown in the versions list. *@
                 <input id="pipelines-editor-publish-note" type="text" class="db-input" style="max-width:16rem;" maxlength="@PublishPipelineRequest.MaxNoteLength"
                        placeholder="What changed (optional)" aria-label="What changed - kept with the version it publishes" value="@_publishNote"
                        @oninput="e => _publishNote = e.Value?.ToString() ?? string.Empty" disabled="@(_busy || _diagram is null)" />
@@ -101,21 +101,21 @@ else
             {
                 <button id="pipelines-editor-run" type="button" class="db-btn" title="Run the published version (Ctrl+Enter)" @onclick="RunAsync" disabled="@_busy">Run</button>
             }
-            @* BL-229 - n8n's "Test workflow": the pipeline as it stands, saved or not, for real and stored nowhere. *@
+            @* n8n's "Test workflow": the pipeline as it stands, saved or not, for real and stored nowhere. *@
             @if (CanManage && IsAuthorizedPermission(PipelinesPermissions.Run) && _diagram is not null)
             {
                 <button id="pipelines-editor-test-draft" type="button" class="db-btn" title="Run the pipeline as it stands on the canvas, saved or not - for real (an HTTP request is sent, a file written), storing nothing - and show what each step did" @onclick="TestDraftAsync" disabled="@(_testing || _busy)">@(_testingDraft ? "Testing…" : "Test pipeline")</button>
             }
-            @* BL-229 increment 7: every version the engine keeps - compared with the canvas, opened read-only, restored. *@
+            @* Every version the engine keeps - compared with the canvas, opened read-only, restored. *@
             @if (_pipeline is not null)
             {
                 <button id="pipelines-editor-versions-toggle" type="button" class="db-btn" aria-expanded="@(_versionsOpen ? "true" : "false")" @onclick="ToggleVersionsAsync">Versions</button>
-                @* BL-229 increment 10: the canvas as a file another site (or this one) imports - what is shown, saved or not. *@
+                @* The canvas as a file another site (or this one) imports - what is shown, saved or not. *@
                 <button id="pipelines-editor-export" type="button" class="db-btn" title="Download what the canvas shows as a pipeline file" @onclick="ExportAsync" disabled="@(_diagram is null)">Export</button>
-                @* BL-229 - n8n's Evaluations: the published pipeline run over a data table's rows, scored. *@
+                @* n8n's Evaluations: the published pipeline run over a data table's rows, scored. *@
                 <a id="pipelines-editor-evaluations" class="db-btn" href="@NavigateUrl(ModuleState.ModuleId, "Evaluations", "definition=" + Uri.EscapeDataString(_definitionId))" title="Run the published pipeline over a data table's rows as test cases, and score it">Evaluations</a>
             }
-            @* BL-229 increment 2: a run on the canvas - each step's state and time on it, its data in the inspector. Run stays
+            @* A run on the canvas - each step's state and time on it, its data in the inspector. Run stays
                here and follows the run as it goes; any recent run can be chosen. *@
             @if (_runs is { Count: > 0 } || _shownRunId is not null)
             {
@@ -136,7 +136,7 @@ else
                     <span id="pipelines-editor-run-state" class="db-pipeline-editor__meta">@(_shownRun is null ? "starting…" : RunLabel(_shownRun))</span>
                     @if (_shownRunId != DraftTestId)
                     {
-                        @* BL-229 - n8n's "Stop execution": the run followed here stopped where it is - the Run page's Cancel, for whoever
+                        @* n8n's "Stop execution": the run followed here stopped where it is - the Run page's Cancel, for whoever
                            may run the pipeline, while the run goes on or waits, and while it is starting: a run busy in its first
                            burst of work is not stored until the burst ends, and is stopped before its next step all the same. *@
                         @if ((_shownRun is null || _shownRun is { IsFinished: false }) && IsAuthorizedPermission(PipelinesPermissions.Run))
@@ -149,7 +149,7 @@ else
             }
             @if (_pipeline is not null)
             {
-                @* BL-229 - beyond n8n's Insights: how each step has been doing over a window, on the canvas where a run would be. *@
+                @* Beyond n8n's Insights: how each step has been doing over a window, on the canvas where a run would be. *@
                 <button id="pipelines-editor-step-insights" type="button" class="db-btn @(_stepInsights is null ? "" : "is-active")" aria-pressed="@(_stepInsights is null ? "false" : "true")"
                         title="How each step has done over recent runs: how many times it ran, how often it failed, how long it takes" @onclick="ToggleStepInsightsAsync">Step insights</button>
                 @if (_stepInsights is not null)
@@ -167,7 +167,7 @@ else
 
         @if (_pipeline is not null)
         {
-            @* Two editors of one pipeline (BL-97 increment 12, D114): presence, the advisory lock, and a warning when the other saves. *@
+            @* Two editors of one pipeline: presence, the advisory lock, and a warning when the other saves. *@
             <CollaborationPanel @ref="_collaboration" ResourceType="@CollaborativeResourceTypes.Pipeline" ResourceId="@_definitionId" ResourceLabel="pipeline"
                                 Enabled="@CanManage" CurrentUserId="@(PageState?.User?.UserId ?? 0)"
                                 SaveAdvice="Or save: what you changed is merged with theirs, and refused only where you both changed the same thing."
@@ -191,13 +191,13 @@ else
         {
             <p id="pipelines-editor-message" class="db-pipeline-editor__message">@_message</p>
         }
-        @* BL-229 - what goes wrong, what the editor did and the step the arrow keys reached (the canvas says nothing to a screen
+        @* What goes wrong, what the editor did and the step the arrow keys reached (the canvas says nothing to a screen
            reader), spoken as they come. The regions are always there - one made with its text already in it is announced by some
            screen readers and not by others - and out of the layout: absolutely placed, so the editor's column sets no gap by them. *@
         <div id="pipelines-editor-say-error" class="db-visually-hidden" role="alert">@SpokenAgain(_error, _errorAgain)</div>
         <div id="pipelines-editor-say" class="db-visually-hidden" role="status" aria-live="polite">@SpokenAgain(_message, _messageAgain)</div>
         <div id="pipelines-editor-say-step" class="db-visually-hidden" role="status" aria-live="polite">@_announce</div>
-        @* BL-229 - what testing the pipeline as it stands did: how it went, why it stopped, and its log; each step's state is on
+        @* What testing the pipeline as it stands did: how it went, why it stopped, and its log; each step's state is on
            the canvas, its data in the inspector. *@
         @if (_shownRunId == DraftTestId && _draftTest is { } draftTested)
         {
@@ -218,7 +218,7 @@ else
                 }
             </details>
         }
-        @* BL-229 - n8n's logs: what the run shown did, pass by pass in the order the passes began - each one's state, time and records
+        @* n8n's logs: what the run shown did, pass by pass in the order the passes began - each one's state, time and records
            - a press away from its step on the canvas and its data in the inspector. The canvas shows each step's last state; this,
            the order and a loop's every pass. Closed until opened, so the canvas keeps its place. *@
         @if (_shownRunId is not null && _runSteps.Count > 0)
@@ -244,12 +244,12 @@ else
             </details>
         }
 
-        @* BL-229 increment 3: undo and redo, copy and paste, delete, fit - also Ctrl+Z, Ctrl+Y, Ctrl+C, Ctrl+V, Delete and Ctrl+S
+        @* Undo and redo, copy and paste, delete, fit - also Ctrl+Z, Ctrl+Y, Ctrl+C, Ctrl+V, Delete and Ctrl+S
            (pipelines-editor.js); Ctrl+click selects several steps. *@
         @if (CanManage && _diagram is not null)
         {
             <div class="db-pipeline-editor__tools" role="toolbar" aria-label="Edit">
-                @* BL-229 - n8n's AI workflow builder: the site's model changes the canvas as the author asks, the change marked on it. *@
+                @* n8n's AI workflow builder: the site's model changes the canvas as the author asks, the change marked on it. *@
                 @if (AiOffered)
                 {
                     <button id="pipelines-editor-ai-toggle" type="button" class="db-btn @(_aiOpen ? "is-active" : "")" aria-expanded="@(_aiOpen ? "true" : "false")"
@@ -267,7 +267,7 @@ else
                 <InputFile id="pipelines-editor-import" class="db-pipeline-editor__file" accept=".json,application/json" OnChange="ImportIntoCanvasAsync" />
                 <button id="pipelines-editor-shortcuts-toggle" type="button" class="db-btn" title="The keyboard shortcuts (?)" aria-expanded="@(_shortcutsOpen ? "true" : "false")" @onclick="() => _shortcutsOpen = !_shortcutsOpen">Shortcuts</button>
             </div>
-            @* BL-229: every key the editor answers to, in one place (n8n's "?"). The keys themselves are pipelines-editor.js's. *@
+            @* Every key the editor answers to, in one place (n8n's "?"). The keys themselves are pipelines-editor.js's. *@
             @if (_shortcutsOpen)
             {
                 <div id="pipelines-editor-shortcuts" class="db-pipeline-editor__shortcuts" role="region" aria-label="Keyboard shortcuts">
@@ -281,7 +281,7 @@ else
                     <button id="pipelines-editor-shortcuts-close" type="button" class="db-btn" @onclick="() => _shortcutsOpen = false">Close</button>
                 </div>
             }
-            @* BL-229 - n8n's AI workflow builder: what the author asks, the model at work, and what it says it did. The change itself
+            @* n8n's AI workflow builder: what the author asks, the model at work, and what it says it did. The change itself
                is on the canvas, marked, an ordinary change: saved when the author saves, taken back by Undo. *@
             @if (_aiOpen && AiOffered)
             {
@@ -314,7 +314,7 @@ else
                     </div>
                 </section>
             }
-            @* BL-229 - n8n's "Convert to sub-workflow" (Alt+X, or the step menu): the chosen steps moved into a pipeline of their own,
+            @* n8n's "Convert to sub-workflow" (Alt+X, or the step menu): the chosen steps moved into a pipeline of their own,
                which this one then runs where they stood. What it would do - or why it cannot - is said before anything is made. *@
             @if (_subOpen && CanManage)
             {
@@ -345,7 +345,7 @@ else
             }
         }
 
-        @* BL-229: find on the canvas - a step by its name, its type, its comment or what it holds, in any body, however deep;
+        @* Find on the canvas - a step by its name, its type, its comment or what it holds, in any body, however deep;
            Ctrl+F (pipelines-editor.js), Enter for the next, Shift+Enter the one before. A viewer finds too. *@
         @if (_diagram is not null && _graph.Steps.Count > 0)
         {
@@ -389,7 +389,7 @@ else
         }
         else if (_pipeline?.ArchivedOnUtc is { } archivedOn)
         {
-            @* BL-229 - n8n's archive: an archived pipeline is read-only and does not run until it is restored, as a draft. *@
+            @* n8n's archive: an archived pipeline is read-only and does not run until it is restored, as a draft. *@
             <div id="pipelines-editor-archived" class="db-pipeline-editor__viewing" role="status">
                 <span><strong>Archived@(archivedOn > DateTime.MinValue ? " " + archivedOn.ToString("yyyy-MM-dd") : "")@(string.IsNullOrEmpty(_pipeline.ArchivedBy) ? "" : " by " + _pipeline.ArchivedBy).</strong> It does not run, and is read-only until it is restored.</span>
                 @if (IsAuthorizedPermission(PipelinesPermissions.Manage))
@@ -400,7 +400,7 @@ else
         }
         else if (_comparison is not null)
         {
-            @* BL-229: a version compared with the canvas - what is new or changed since it marked on the steps and connections, kept
+            @* A version compared with the canvas - what is new or changed since it marked on the steps and connections, kept
                up with every change, until the author stops comparing; the list is under Versions. The AI's change is marked the
                same way, against the canvas as it was before it. *@
             <div id="pipelines-editor-comparing" class="db-pipeline-editor__comparing" role="status">
@@ -473,7 +473,7 @@ else
             </section>
         }
 
-        @* BL-229 increment 4: what is wrong with the pipeline as it stands, each one a way to its step. Errors keep it from being
+        @* What is wrong with the pipeline as it stands, each one a way to its step. Errors keep it from being
            published (the server refuses by the same rule); warnings say what runs but does nothing meant. *@
         @if (_problems.Count > 0)
         {
@@ -491,7 +491,7 @@ else
                         </li>
                     }
                 </ul>
-                @* BL-229 - n8n's "fix with AI": the builder asked to fix what is listed here, its change marked and one Undo away. *@
+                @* n8n's "fix with AI": the builder asked to fix what is listed here, its change marked and one Undo away. *@
                 @if (AiOffered && _viewingVersion is null)
                 {
                     <button id="pipelines-editor-problems-ai" type="button" class="db-btn" title="Ask the site's AI to fix what is listed here - its change is marked on the canvas, and Undo takes it back" @onclick="FixProblemsWithAiAsync" disabled="@_aiBusy">Fix with AI</button>
@@ -508,7 +508,7 @@ else
                 }
                 else
                 {
-                    @* BL-229 increment 1: find a step by typing (Ctrl+K or / from anywhere), arrows and Enter to add it; a step added
+                    @* Find a step by typing (Ctrl+K or / from anywhere), arrows and Enter to add it; a step added
                        while another is selected lands to its right, connected to it. Every entry can also be dragged onto the canvas. *@
                     <label for="pipelines-editor-step-search" class="db-pipeline-editor__search-label">Find a step <span style="color:var(--db-text-2);">(Ctrl+K)</span></label>
                     <input id="pipelines-editor-step-search" type="search" class="db-input" placeholder="e.g. csv, http, loop" autocomplete="off" @ref="_stepSearch"
@@ -540,7 +540,7 @@ else
                                         </button>
                                     </li>
                                 }
-                                @* BL-229 - n8n's node per service: a connection whose name or connector matches, with the step that uses it,
+                                @* n8n's node per service: a connection whose name or connector matches, with the step that uses it,
                                    added with the connection chosen. *@
                                 @for (var index = 0; index < offers.Count; index++)
                                 {
@@ -553,7 +553,7 @@ else
                                         </button>
                                     </li>
                                 }
-                                @* BL-229 - n8n's command bar: the editor's own actions found by name, each with its keys. *@
+                                @* n8n's command bar: the editor's own actions found by name, each with its keys. *@
                                 @for (var index = 0; index < commands.Count; index++)
                                 {
                                     var command = commands[index];
@@ -589,7 +589,7 @@ else
 
             <div class="db-pipeline-editor__canvas" id="pipelines-editor-canvas" style="position:relative;"
                  @ondragover:preventDefault="true" @ondrop="OnDrop" @oncontextmenu="OnCanvasContextMenu" @oncontextmenu:preventDefault="@CanManage">
-                @* BL-95: inside a step's body the canvas shows that body alone; the trail is the way back out. *@
+                @* Inside a step's body the canvas shows that body alone; the trail is the way back out. *@
                 @if (_scopeParent is not null)
                 {
                     <nav id="pipelines-editor-trail" aria-label="Which body the canvas shows" style="position:absolute;top:0.5rem;left:0.5rem;z-index:2;display:flex;gap:0.35rem;align-items:center;flex-wrap:wrap;background:var(--db-bg-elev);border:1px solid var(--db-border);border-radius:6px;padding:0.25rem 0.5rem;">
@@ -613,17 +613,17 @@ else
                 {
                     <CanvasGrid Diagram="_diagram" />
                     <CascadingValue Value="_diagram" IsFixed="true" @key="_diagram">
-                        @* BL-229 increment 3: Shift+drag on an empty spot draws a box that selects every step it touches. *@
+                        @* Shift+drag on an empty spot draws a box that selects every step it touches. *@
                         <DiagramCanvas>
                             <Widgets>
                                 <SelectionBoxWidget />
-                                @* BL-229 increment 8: a map of the whole body shown and where the view is in it. *@
+                                @* A map of the whole body shown and where the view is in it. *@
                                 <NavigatorWidget Width="180" Height="120" Class="db-pipeline-editor__minimap" NodeColor="currentColor" ViewStrokeColor="currentColor" ViewStrokeWidth="3" />
                             </Widgets>
                         </DiagramCanvas>
                     </CascadingValue>
                     <ZoomControls Diagram="_diagram" ZoomTo="ZoomTo" Fit="FitToView" />
-                    @* BL-229 - n8n's empty canvas: the first step a press away, in the canvas's middle (or Ctrl+K, or the Steps list). *@
+                    @* n8n's empty canvas: the first step a press away, in the canvas's middle (or Ctrl+K, or the Steps list). *@
                     @if (!_diagram.Nodes.OfType<StepNodeModel>().Any())
                     {
                         <div id="pipelines-editor-empty" class="db-pipeline-editor__empty">
@@ -647,7 +647,7 @@ else
                 {
                     <p style="margin:1rem;color:var(--db-text-2);">@(_pipeline is null ? "Loading…" : "The canvas needs an interactive session.")</p>
                 }
-                @* BL-229 - n8n's right-click menu: on a step (or the selected steps it is one of), or on an empty spot - what the keys
+                @* n8n's right-click menu: on a step (or the selected steps it is one of), or on an empty spot - what the keys
                    and the buttons over a step do, each with its key. A click or a right-click anywhere else, or Escape, closes it. *@
                 @if (_menu is { } menu)
                 {
@@ -668,12 +668,12 @@ else
             <aside class="db-pipeline-editor__inspector" aria-label="Step settings">
                 @if (_selected is null && _selectedNote is not null)
                 {
-                    @* BL-229 increment 8: a sticky note's text. *@
+                    @* A sticky note's text. *@
                     <h4>Note</h4>
                     <p style="color:var(--db-text-2);">For whoever reads the pipeline - never run. Delete removes it.</p>
                     <label for="pipelines-editor-note-text">Text</label>
                     <textarea id="pipelines-editor-note-text" class="db-input" rows="6" value="@_selectedNote.Text" @oninput="e => SetNoteText(e.Value?.ToString())" disabled="@(!CanManage)"></textarea>
-                    @* BL-229 - n8n's note colours, each one of the theme's. *@
+                    @* n8n's note colours, each one of the theme's. *@
                     <fieldset id="pipelines-editor-note-colors" class="db-pipeline-editor__note-colors">
                         <legend>Colour</legend>
                         @foreach (var (value, label) in NoteColorChoices)
@@ -692,7 +692,7 @@ else
                     <h4>Nothing selected</h4>
                     <p style="color:var(--db-text-2);">Click a step on the canvas to edit its name and inputs. Drag from an outcome port to another step's input to connect them.</p>
 
-                    @* BL-229: the pipeline's discussion - each comment with the step it is on, a way to the step; one on a step since
+                    @* The pipeline's discussion - each comment with the step it is on, a way to the step; one on a step since
                        removed is said, and can still be resolved or deleted here. *@
                     <div id="pipelines-editor-discussion" class="db-pipeline-editor__discussion">
                         <h4 style="margin-top:1rem;">Discussion</h4>
@@ -733,7 +733,7 @@ else
                                 <li style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
                                     @if (_renamingVariable == id)
                                     {
-                                        @* BL-229: a variable renamed, and every expression and condition that reads it (PipelineVariableRenames). *@
+                                        @* A variable renamed, and every expression and condition that reads it (PipelineVariableRenames). *@
                                         <input id="pipelines-editor-variable-rename-name" class="db-input" style="flex:1 1 8rem;" type="text" aria-label="@("The new name for " + variable.Name)" value="@_renameTo" @oninput="e => _renameTo = e.Value?.ToString() ?? string.Empty" @onkeydown="RenameVariableKey" />
                                         <button id="pipelines-editor-variable-rename-apply" type="button" class="db-btn" @onclick="RenameVariable">Rename</button>
                                         <button id="pipelines-editor-variable-rename-cancel" type="button" class="db-btn" @onclick="() => _renamingVariable = null">Cancel</button>
@@ -741,7 +741,7 @@ else
                                     else
                                     {
                                         <span style="flex:1 1 auto;"><strong>@variable.Name</strong> <span style="color:var(--db-text-2);">(@VariableKind(variable.TypeName))</span></span>
-                                        @* What the variable holds before any step saves to it (BL-95); the server types it as the variable holds. *@
+                                        @* What the variable holds before any step saves to it; the server types it as the variable holds. *@
                                         @if (variable.TypeName == "Boolean")
                                         {
                                             <select id="@("pipelines-editor-variable-value-" + id)" class="db-input" style="width:auto;" aria-label="@(variable.Name + " starts as")" value="@(variable.Value ?? "")" @onchange="e => SetVariableValue(id, e.Value?.ToString())" disabled="@(!CanManage)">
@@ -759,7 +759,7 @@ else
                                             <button id="@("pipelines-editor-variable-rename-" + id)" type="button" class="db-btn" title="Rename it - and every expression and condition that reads it" @onclick="() => StartRenameVariable(id)">Rename</button>
                                             <button type="button" class="db-btn" title="Remove the variable; every step bound to it is unbound" @onclick="() => RemoveVariable(id)">Remove</button>
                                         }
-                                        @* BL-229: where it is used - the steps that set it and those that read it, each a way to the step; one that
+                                        @* Where it is used - the steps that set it and those that read it, each a way to the step; one that
                                            nothing reads is said (better than n8n, whose data has no names to follow). *@
                                         var uses = PipelineVariableUses.Of(usage, id, _catalog);
                                         <div id="@("pipelines-editor-variable-uses-" + id)" class="db-pipeline-editor__variable-uses">
@@ -810,7 +810,7 @@ else
                         <button id="pipelines-editor-variable-add" type="button" class="db-btn" @onclick="AddVariable">Add variable</button>
                     }
 
-                    @* BL-229: how many runs may go at once - a schedule firing while the last run still works, a webhook called twice. *@
+                    @* How many runs may go at once - a schedule firing while the last run still works, a webhook called twice. *@
                     <h4 style="margin-top:1rem;">Runs</h4>
                     <label for="pipelines-editor-runs-at-once">How many at once</label>
                     <select id="pipelines-editor-runs-at-once" class="db-input" value="@(_graph?.RunsAtOnce ?? "")" @onchange="e => SetRunsAtOnce(e.Value?.ToString())" disabled="@(!CanManage)">
@@ -822,19 +822,19 @@ else
                     <p id="pipelines-editor-runs-at-once-help" style="color:var(--db-text-2);">@(_graph?.RunsAtOnce == PipelineRunsAtOnce.OneInTurn
                         ? "A start while a run is going - or waiting - waits its turn: it is a run, listed as Queued, and starts once the runs before it have ended, oldest first. It applies once published."
                         : "A start while a run is going - or waiting - is skipped by a trigger and refused by Run. It applies once published.")</p>
-                    @* BL-229: n8n's "save successful executions" - a pipeline run every minute need not keep every good run. *@
+                    @* n8n's "save successful executions" - a pipeline run every minute need not keep every good run. *@
                     <label style="display:flex;gap:0.4rem;align-items:center;">
                         <input id="pipelines-editor-keep-successful-runs" type="checkbox" checked="@(_graph?.KeepSuccessfulRuns != false)" @onchange="e => SetKeepSuccessfulRuns(e.Value is true)" disabled="@(!CanManage)" />
                         Keep the runs that finish well
                     </label>
                     <p style="color:var(--db-text-2);">Unticked, a run that finishes well is deleted a couple of minutes after it ends, with its log; a run that fails or is cancelled is kept. It applies once published.</p>
-                    @* BL-229: n8n's "save execution progress" - a long run's steps seen as they finish, and kept if the host stops mid-way. *@
+                    @* n8n's "save execution progress" - a long run's steps seen as they finish, and kept if the host stops mid-way. *@
                     <label style="display:flex;gap:0.4rem;align-items:center;">
                         <input id="pipelines-editor-save-progress" type="checkbox" checked="@(_graph?.SaveProgress == true)" @onchange="e => SetSaveProgress(e.Value is true)" disabled="@(!CanManage)" />
                         Save progress after each step
                     </label>
                     <p id="pipelines-editor-save-progress-help" style="color:var(--db-text-2);">Ticked, a run is stored after each step it runs - its steps show as they finish, and a run the host stops mid-way keeps what it had done. More writes per run. It applies once published.</p>
-                    @* BL-229 - n8n Enterprise's execution data redaction: a run kept, without what its steps received and produced. *@
+                    @* n8n Enterprise's execution data redaction: a run kept, without what its steps received and produced. *@
                     <label for="pipelines-editor-keep-step-data">Keep what each step received and produced</label>
                     <select id="pipelines-editor-keep-step-data" class="db-input" value="@(PipelineStepDataKeeping.Normalize(_graph?.KeepStepData))" @onchange="e => SetKeepStepData(e.Value?.ToString())" disabled="@(!CanManage)">
                         @foreach (var choice in PipelineStepDataKeeping.All)
@@ -843,17 +843,17 @@ else
                         }
                     </select>
                     <p style="color:var(--db-text-2);">For data that should not be kept: a run that is not to keep it has its steps' inputs and outputs, and what it was started with, emptied a couple of minutes after it ends - its status, times, errors, log and saved values stay, but a run started with something is then not run again. It applies once published, to the runs already kept too.</p>
-                    @* BL-229: n8n's "time saved per execution" - what the pipeline is worth, added up in Insights. *@
+                    @* n8n's "time saved per execution" - what the pipeline is worth, added up in Insights. *@
                     <label for="pipelines-editor-minutes-saved">Minutes saved by each run</label>
                     <input id="pipelines-editor-minutes-saved" type="number" class="db-input" min="1" max="@PipelineInsights.MaxMinutesSavedPerRun" step="1" placeholder="Not said"
                            value="@(_graph?.MinutesSavedPerRun?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" @onchange="e => SetMinutesSaved(e.Value?.ToString())" disabled="@(!CanManage)" />
                     <p style="color:var(--db-text-2);">The minutes of a person's work one run that finishes well saves. The pipelines list adds them up over a day, a week or a month. It applies once published.</p>
-                    @* BL-229: n8n's "Timeout Workflow" - a run stuck in a loop, or on a step that never ends, does not run for ever. *@
+                    @* n8n's "Timeout Workflow" - a run stuck in a loop, or on a step that never ends, does not run for ever. *@
                     <label for="pipelines-editor-timeout-minutes">Stop a run busy longer than (minutes)</label>
                     <input id="pipelines-editor-timeout-minutes" type="number" class="db-input" min="1" max="@PipelineRunTimeout.MaxMinutes" step="1" placeholder="No limit"
                            value="@(_graph?.TimeoutMinutes?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" @onchange="e => SetTimeoutMinutes(e.Value?.ToString())" disabled="@(!CanManage)" />
                     <p style="color:var(--db-text-2);">A run still working after this long in one go is stopped before its next step; the time it waits - for a time, a decision, a call - does not count. Up to a day. It applies once published.</p>
-                    @* BL-229: n8n's workflow "Timezone" - where $now and $today are read, and a schedule with no zone of its own. *@
+                    @* n8n's workflow "Timezone" - where $now and $today are read, and a schedule with no zone of its own. *@
                     <label for="pipelines-editor-time-zone">Time zone</label>
                     <input id="pipelines-editor-time-zone" type="text" class="db-input" list="pipelines-editor-time-zones" placeholder="UTC"
                            value="@(_graph?.TimeZone ?? "")" @onchange="e => SetTimeZone(e.Value?.ToString())" disabled="@(!CanManage)" />
@@ -864,7 +864,7 @@ else
                         }
                     </datalist>
                     <p style="color:var(--db-text-2);">Where the pipeline reads time: {{ $now }} with this zone's offset, {{ $today }} its date, and a schedule with no zone of its own. An IANA name - Europe/Stockholm - daylight saving followed; empty is UTC. It applies once published.</p>
-                    @* BL-229: n8n's "This workflow can be called by" - which pipelines may run this one with Execute, Dispatch or Bulk dispatch pipeline. *@
+                    @* n8n's "This workflow can be called by" - which pipelines may run this one with Execute, Dispatch or Bulk dispatch pipeline. *@
                     <h4 style="margin-top:1rem;">Calls from other pipelines</h4>
                     <label for="pipelines-editor-called-by">Who may call it</label>
                     <select id="pipelines-editor-called-by" class="db-input" value="@CalledByChoice()" @onchange="e => SetCalledByChoice(e.Value?.ToString())" disabled="@(!CanManage)">
@@ -909,7 +909,7 @@ else
                         }
                     }
                     <p style="color:var(--db-text-2);">A call it does not allow fails at the calling step, saying why, and the calling pipeline's editor warns of it. A person, the Run API, MCP and its own triggers start it whatever this says. It applies once published.</p>
-                    @* BL-229: n8n's "Error workflow" setting - what starts when this pipeline fails, and one made in a click. *@
+                    @* n8n's "Error workflow" setting - what starts when this pipeline fails, and one made in a click. *@
                     <h4 style="margin-top:1rem;">When it fails</h4>
                     @if (FailureHandlers() is { } handlers)
                     {
@@ -943,7 +943,7 @@ else
                         <p id="pipelines-editor-on-failure-made"><a id="pipelines-editor-on-failure-open" href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + Uri.EscapeDataString(handlerMade.DefinitionId))">Open '@handlerMade.Name'</a></p>
                     }
                     <p style="color:var(--db-text-2);">A "Pipeline failed" trigger starts a pipeline when a run of this one fails - or of any - with the failure to read: n8n's error workflow, set from the pipeline that fails.</p>
-                    @* BL-229: what was done to this pipeline, by whom and when - the site's pipeline activity, this pipeline's lines. *@
+                    @* What was done to this pipeline, by whom and when - the site's pipeline activity, this pipeline's lines. *@
                     @if (IsAuthorizedPermission(PipelinesPermissions.Manage) && !string.IsNullOrEmpty(_definitionId))
                     {
                         <h4 style="margin-top:1rem;">Activity</h4>
@@ -980,14 +980,14 @@ else
                     <div class="db-pipeline-editor__settings">
                     <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline;justify-content:space-between;">
                         <h4 style="margin:0;">@(_selected.Entry?.DisplayName ?? _selected.Type)</h4>
-                        @* BL-229 - n8n's node details view: the step's settings between what it received and what it produced. *@
+                        @* n8n's node details view: the step's settings between what it received and what it produced. *@
                         <button id="pipelines-editor-wide" type="button" class="db-btn" aria-pressed="@(_wide ? "true" : "false")" title="@(_wide ? "Back to the canvas" : "The step's settings between what it received and what it produced in the run shown")" @onclick="() => _wide = !_wide">@(_wide ? "Back to the canvas" : "Wide view")</button>
                     </div>
                     @if (!string.IsNullOrEmpty(_selected.Entry?.Description))
                     {
                         <p style="color:var(--db-text-2);">@_selected.Entry.Description</p>
                     }
-                    @* BL-229 increment 4: what is wrong with this step as it stands - the step's own here, each input's under it. *@
+                    @* What is wrong with this step as it stands - the step's own here, each input's under it. *@
                     @{ var selectedProblems = _problems.Where(problem => problem.StepId == _selected.StepId).ToList(); }
                     @if (selectedProblems.Any(problem => problem.Input is null))
                     {
@@ -998,7 +998,7 @@ else
                             }
                         </ul>
                     }
-                    @* BL-225: a text field commits on INPUT. On change, typing in a field and then clicking another step on the
+                    @* A text field commits on INPUT. On change, typing in a field and then clicking another step on the
                        canvas wrote the text to the step clicked: the selection re-renders the inspector before the browser fires
                        change, and an unchanged rendered value leaves the typed text in the box (found on UAT, 2026-10-05). *@
                     <label for="pipelines-editor-step-name">Name</label>
@@ -1008,10 +1008,10 @@ else
                         <input id="pipelines-editor-step-disabled" type="checkbox" checked="@_selected.Disabled" @onchange="e => SetSelectedDisabled(e.Value is true)" disabled="@(!CanManage)" />
                         <label for="pipelines-editor-step-disabled">Switched off - skipped when the pipeline runs</label>
                     </div>
-                    @* BL-229 increment 8: a comment for whoever reads the pipeline, shown on the step. *@
+                    @* A comment for whoever reads the pipeline, shown on the step. *@
                     <label for="pipelines-editor-step-comment">Comment</label>
                     <textarea id="pipelines-editor-step-comment" class="db-input" rows="2" placeholder="What this step is for - shown on it" value="@_selected.Comment" @oninput="e => SetComment(e.Value?.ToString())" disabled="@(!CanManage)"></textarea>
-                    @* BL-229 - a discussion of the step (better than n8n, whose workflows have none): anyone who can see the pipeline
+                    @* A discussion of the step (better than n8n, whose workflows have none): anyone who can see the pipeline
                        asks, answers and resolves; written at once, never part of a save or an undo. *@
                     @{
                         var discussedStep = _selected.StepId;
@@ -1030,7 +1030,7 @@ else
                             <textarea id="pipelines-editor-discussion-text" class="db-input" rows="2" maxlength="@PipelineStepCommentLimits.MaxText" aria-label="@("Say something about " + StepTitle(discussedStep))"
                                       placeholder="Ask or say something about this step - Ctrl+Enter adds it" value="@_commentDrafts.GetValueOrDefault(discussedStep)"
                                       @oninput="e => _commentDrafts[discussedStep] = e.Value?.ToString() ?? string.Empty" @onkeydown="e => CommentKeyAsync(e, discussedStep)"></textarea>
-                            @* BL-229: @ and a name offers the people who can see the pipeline; one chosen is written in for the name begun. *@
+                            @* @ and a name offers the people who can see the pipeline; one chosen is written in for the name begun. *@
                             @if (MentionOffers(_commentDrafts.GetValueOrDefault(discussedStep)) is { Count: > 0 } offers)
                             {
                                 <div id="pipelines-editor-mentions" class="db-pipeline-editor__mentions" role="listbox" aria-label="People to mention">
@@ -1052,7 +1052,7 @@ else
                             <p id="pipelines-editor-discussion-error" class="db-pipeline-editor__error">@commentError.Message</p>
                         }
                     </div>
-                    @* BL-229 - n8n's pinned data: a test hands this on in place of running the step (an API not called again); a run
+                    @* n8n's pinned data: a test hands this on in place of running the step (an API not called again); a run
                        runs it. Edited here as n8n's pinned output is; Unpin lets a test run the step again. *@
                     @if (_selected.PinnedResult is not null)
                     {
@@ -1095,7 +1095,7 @@ else
                         }
                         @if (_selected.Type == PipelineCallContracts.WhenCalledType && Callers() is { } callers)
                         {
-                            @* BL-229: who calls this pipeline - whom a change to what it expects touches. *@
+                            @* Who calls this pipeline - whom a change to what it expects touches. *@
                             <div id="pipelines-editor-callers" style="color:var(--db-text-2);">
                                 @if (callers.Count == 0)
                                 {
@@ -1115,7 +1115,7 @@ else
                         }
                         @if (_selected.Type == CurlStepType && CanManage)
                         {
-                            @* BL-229 - n8n's "Import cURL": a curl command (an API's documentation, a browser's "Copy as cURL") read into this
+                            @* n8n's "Import cURL": a curl command (an API's documentation, a browser's "Copy as cURL") read into this
                                step's inputs, as one change Ctrl+Z takes back; what the step does not do the same way is said. *@
                             @if (_curlOpen)
                             {
@@ -1156,7 +1156,7 @@ else
                             var isBoolean = input.TypeName == "Boolean";
                             @if (_selected.Entry.OutcomesFrom == StepCatalogEntry.CaseOutcomes && name == StepCatalogEntry.CaseOutcomes)
                             {
-                                @* BL-229 increment 10: a Switch's cases - each a label (an outcome port on the step) and a condition. *@
+                                @* A Switch's cases - each a label (an outcome port on the step) and a condition. *@
                                 <h5 style="margin:0.75rem 0 0;">Cases</h5>
                                 <p style="color:var(--db-text-2);margin:0;">It goes out through the first case that holds (or every one, matching any), else through Default.</p>
                                 <div id="pipelines-editor-cases" class="db-pipeline-editor__cases">
@@ -1214,7 +1214,7 @@ else
                                 continue;
                             }
                             <label for="@("pipelines-editor-input-" + name)" title="@input.Description">@input.DisplayName@if (input.IsRequired) {<span class="db-pipeline-editor__required" title="The step needs a value here"> *</span>}@if (kind is not null) {<span style="color:var(--db-text-2);"> (@kind)</span>}</label>
-                            @* An earlier step's result is a value to read too (BL-229), so it offers the choice even before any variable exists. *@
+                            @* An earlier step's result is a value to read too, so it offers the choice even before any variable exists. *@
                             @if (_variables.Count > 0 || expression is not null || condition is not null || isBoolean || scriptsOffered || (CanManage && EarlierSteps(_selected).Count > 0))
                             {
                                 <select id="@("pipelines-editor-source-" + name)" class="db-input" aria-label="@("Where " + input.DisplayName + " comes from")" value="@(condition is not null ? ConditionSource : script is not null ? ScriptSource : expression is not null ? ExpressionSource : readsVariable ?? "")" @onchange="e => SetInputSource(name, e.Value?.ToString())" disabled="@(!CanManage)">
@@ -1240,7 +1240,7 @@ else
                             }
                             else if (script is not null)
                             {
-                                @* BL-229 increment 5b: JavaScript, run in the server's bounded sandbox with the variables in scope by name;
+                                @* JavaScript, run in the server's bounded sandbox with the variables in scope by name;
                                    previewed there, with the values the other previews use. *@
                                 <textarea id="@("pipelines-editor-script-" + name)" class="db-input db-pipeline-editor__expression" rows="3" spellcheck="false" aria-label="@(input.DisplayName + " JavaScript")"
                                           placeholder="e.g. rows.filter(r => r.total > 100).length" value="@script" @oninput="e => SetScript(name, e.Value?.ToString())" disabled="@(!CanManage)"></textarea>
@@ -1251,18 +1251,18 @@ else
                             }
                             else if (condition is not null)
                             {
-                                @* BL-229 increment 10: rules comparing values - n8n's IF - tested when the step runs, previewed here. *@
+                                @* Rules comparing values - n8n's IF - tested when the step runs, previewed here. *@
                                 <ConditionEditor IdPrefix="@("pipelines-editor-condition-" + name)" Label="@input.DisplayName" Condition="condition" Disabled="@(!CanManage)"
                                                  Changed="() => ConditionChanged(name)" Preview="ConditionPreview" />
                             }
                             else if (_selected.Entry.OutcomesFrom == StepCatalogEntry.BranchesOutcomes && name == StepCatalogEntry.BranchesOutcomes)
                             {
-                                @* BL-229 increment 10: a Fork's branches, one per line - each an outcome port on the step, all taken at once. *@
+                                @* A Fork's branches, one per line - each an outcome port on the step, all taken at once. *@
                                 <textarea id="@("pipelines-editor-input-" + name)" class="db-input" rows="3" placeholder="One branch per line, e.g. Mail" value="@BranchLines(_selected)" @oninput="e => SetBranches(e.Value?.ToString())" disabled="@(!CanManage)"></textarea>
                             }
                             else if (expression is not null)
                             {
-                                @* BL-229 increment 5: text with {{ variable.path }} placeholders, filled when the step runs - previewed here
+                                @* Text with {{ variable.path }} placeholders, filled when the step runs - previewed here
                                    with the values of the run shown (to an author) or the variables' starting values. *@
                                 <textarea id="@("pipelines-editor-expression-" + name)" class="db-input db-pipeline-editor__expression" rows="2" spellcheck="false" aria-label="@(input.DisplayName + " expression")"
                                           placeholder="e.g. Hello {{ person.name }}" value="@expression" @oninput="e => SetExpression(name, e.Value?.ToString())" disabled="@(!CanManage)"></textarea>
@@ -1292,7 +1292,7 @@ else
                                         }
                                     </div>
                                 }
-                                @* BL-229 - n8n reads an earlier node's output where it is needed: the results of the steps that lead here,
+                                @* n8n reads an earlier node's output where it is needed: the results of the steps that lead here,
                                    each put in through the variable its Result saves to - made and bound on the spot when it saves to none -
                                    so the value is kept across a pause as any variable's is. *@
                                 var earlier = CanManage ? EarlierSteps(_selected) : new List<StepNodeModel>();
@@ -1323,7 +1323,7 @@ else
                                 @* One of the site's connections by name (its credentials stay in the site's secret store); one no longer
                                    on the site stays named, so a save keeps it. An editor that may not list connections types the id. *@
                                 var chosenConnection = Value(_selected.Inputs, name);
-                                @* BL-229: a step that names the connector types it can use is offered only connections of those; one
+                                @* A step that names the connector types it can use is offered only connections of those; one
                                    chosen that is not one stays named and says so. *@
                                 var offeredConnections = ConnectionChoices.Offered(input, _connections);
                                 <select id="@("pipelines-editor-input-" + name)" class="db-input" value="@chosenConnection" @onchange="e => SetInput(name, e.Value?.ToString())" disabled="@(!CanManage)">
@@ -1342,7 +1342,7 @@ else
                                 {
                                     <p id="@("pipelines-editor-no-connection-" + name)" style="color:var(--db-text-2);margin:0;">@ConnectionChoices.NoneYet(input, _connectors)</p>
                                 }
-                                @* BL-229 - n8n's "Create new credential" from the node: a connection made here, then chosen for the step; and
+                                @* n8n's "Create new credential" from the node: a connection made here, then chosen for the step; and
                                    the one chosen tested. The server decides both (connections:manage) and says why when it refuses. *@
                                 @if (CanManage && _connectors is not null)
                                 {
@@ -1372,7 +1372,7 @@ else
                             }
                             else if (input.UIHint == PipelineInputHints.ConnectorOperation && SelectedConnector() is { } connector)
                             {
-                                @* BL-229 - n8n's operation list: the chosen connection's connector's operations by name, the one chosen saying
+                                @* n8n's operation list: the chosen connection's connector's operations by name, the one chosen saying
                                    what it does and what it takes; one this connector does not have stays named, so a save keeps it. *@
                                 var operations = ConnectionChoices.Operations(connector);
                                 var chosenOperation = Value(_selected.Inputs, name);
@@ -1422,7 +1422,7 @@ else
                             }
                             else if (input.UIHint == PipelineInputHints.SiteTablePicker && _siteTables is not null)
                             {
-                                @* BL-229 - n8n's Data tables: one of the site's tables by name, its columns said beneath; one no longer on
+                                @* n8n's Data tables: one of the site's tables by name, its columns said beneath; one no longer on
                                    the site stays named, so a save keeps it. *@
                                 var chosenTable = Value(_selected.Inputs, name);
                                 var pickedTable = _siteTables.FirstOrDefault(table => string.Equals(table.Name, chosenTable, StringComparison.OrdinalIgnoreCase));
@@ -1464,19 +1464,19 @@ else
                                 </select>
                                 @if (!string.IsNullOrEmpty(chosen) && _otherPipelines.FirstOrDefault(other => other.DefinitionId == chosen) is { } calledPipeline)
                                 {
-                                    @* BL-229 - n8n's "open sub-workflow": the pipeline chosen, in its own editor. *@
+                                    @* n8n's "open sub-workflow": the pipeline chosen, in its own editor. *@
                                     <div><a id="@("pipelines-editor-open-called-" + name)" href="@NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + Uri.EscapeDataString(chosen))">Open '@calledPipeline.Name'</a></div>
                                 }
                                 @if (PipelineCallContracts.IsCall(_selected.Type) && !string.IsNullOrEmpty(chosen) && CalledFields(chosen) is { Count: > 0 } expects)
                                 {
-                                    @* BL-229: what the chosen pipeline's "When called by another pipeline" expects - and its fields as Input's template. *@
+                                    @* What the chosen pipeline's "When called by another pipeline" expects - and its fields as Input's template. *@
                                     <p id="pipelines-editor-called-fields" style="margin:0;color:var(--db-text-2);">It expects: @PipelineFields.Describe(expects)</p>
                                     <div><button id="pipelines-editor-called-template" type="button" class="db-btn" title="Write the fields it expects into Input, each with an empty value of its kind" @onclick="@(() => SetInput("Input", PipelineFields.Template(expects)))" disabled="@(!CanManage)">Fill Input with its fields</button></div>
                                 }
                             }
                             else if (input.UIHint == PipelineInputHints.RecordCondition)
                             {
-                                @* BL-229: rules tested on each record (Filter records, n8n's Filter) - an If's rules, {{ field }} reading the
+                                @* Rules tested on each record (Filter records, n8n's Filter) - an If's rules, {{ field }} reading the
                                    record's field - held as the input's value, and previewed on the records the step had in the run shown. *@
                                 <ConditionEditor IdPrefix="@("pipelines-editor-record-condition-" + name)" Label="@input.DisplayName" Condition="RecordConditionOf(name)" Disabled="@(!CanManage)"
                                                  Changed="() => RecordConditionChanged(name)" Preview="RecordConditionPreview" />
@@ -1511,7 +1511,7 @@ else
                             {
                                 @* Code and SQL as written, line by line, in a fixed-width box - a one-line box cut a script or a statement
                                    to its first line. *@
-                                @* BL-229 - and edited like code (pipelines-editor.js, stommeCodeBox): Tab indents, Shift+Tab takes it back,
+                                @* And edited like code (pipelines-editor.js, stommeCodeBox): Tab indents, Shift+Tab takes it back,
                                    Enter keeps the indentation, Escape then Tab leaves the box; where the caret is shown under it. *@
                                 @* Its code coloured (pipelines-editor.js fills the copy behind the box; until it does, the box shows its text). *@
                                 <div class="db-pipeline-editor__code-wrap" data-code-language="@(input.UIHint == PipelineInputHints.SqlQuery ? "sql" : "javascript")">
@@ -1528,7 +1528,7 @@ else
                                 </div>
                                 @if (input.UIHint == "code-editor" && AiOffered && _capabilities?.Scripts == true)
                                 {
-                                    @* BL-229 - n8n's "Ask AI" in its Code node: the site's model writes the script, or changes it, told what the
+                                    @* n8n's "Ask AI" in its Code node: the site's model writes the script, or changes it, told what the
                                        script can see - what it receives, as field names and kinds, and its variables' names - and never a value;
                                        the script comes back as one change Undo takes back. What it is told is said under the button. *@
                                     var hasScript = !string.IsNullOrWhiteSpace(Value(_selected.Inputs, name));
@@ -1573,7 +1573,7 @@ else
                             @if (input.UIHint == PipelineInputHints.PipelineFile && CanManage && _viewingVersion is null
                                 && readsVariable is null && expression is null && condition is null && script is null)
                             {
-                                @* BL-229: a file step's path chosen from the site's pipeline folder (the Files page's), as a plain value. *@
+                                @* A file step's path chosen from the site's pipeline folder (the Files page's), as a plain value. *@
                                 <PipelineFilePicker IdPrefix="@("pipelines-editor-files-" + name)" Current="@Value(_selected.Inputs, name)" FilesUrl="@NavigateUrl(ModuleState.ModuleId, "Files")"
                                                     Chosen="path => SetInput(name, path)" />
                             }
@@ -1609,7 +1609,7 @@ else
                             <p style="color:var(--db-text-2);margin-top:0.75rem;">This step has outputs (@string.Join(", ", _selected.Entry.Outputs.Select(output => output.DisplayName))). Add a variable - select nothing on the canvas - to save one for a later step.</p>
                         }
 
-                        @* BL-229 increment 10: a trigger's own panel - where a webhook is called and how a call is signed (and an
+                        @* A trigger's own panel - where a webhook is called and how a call is signed (and an
                            author can listen for one), a schedule's next runs. Read off the rules the receiver and the schedules apply. *@
                         @if (_selected.Type == ChatStepType)
                         {
@@ -1731,7 +1731,7 @@ else
                                     {
                                         <button id="pipelines-editor-webhook-listen" type="button" class="db-btn" title="Wait up to a minute for the next signed call, and show what it sent" @onclick="ListenForWebhookAsync" disabled="@_listening">@(_listening ? "Listening… call it now" : "Listen for a call")</button>
                                     }
-                                    @* D111a: a secret of its own - in the site's secret store, shown once when made; its callers then sign with it alone. *@
+                                    @* A secret of its own - in the site's secret store, shown once when made; its callers then sign with it alone. *@
                                     @if (_triggerInfo.Enabled && CanManage)
                                     {
                                         @if (_webhookSecret is not null && _webhookSecret.Name == WebhookSecretName())
@@ -1816,7 +1816,7 @@ else
                         }
                         else if (_selected.Type == PipelineFailure.StepType)
                         {
-                            @* BL-229: n8n's error workflow - which runs start this one, and a failure to test the next steps with. *@
+                            @* n8n's error workflow - which runs start this one, and a failure to test the next steps with. *@
                             var watched = Value(_selected.Inputs, "Pipeline");
                             var watchedName = string.IsNullOrEmpty(watched) ? null : _otherPipelines?.FirstOrDefault(other => other.DefinitionId == watched)?.Name ?? watched;
                             <h5 style="margin:0.75rem 0 0;">When it runs</h5>
@@ -1837,7 +1837,7 @@ else
                         }
                         else if (_selected.Type == PipelineFileEvent.StepType)
                         {
-                            @* BL-229: n8n's Local File Trigger - which files start this one, the folder on the Files page, and a file to test with. *@
+                            @* n8n's Local File Trigger - which files start this one, the folder on the Files page, and a file to test with. *@
                             var watchedFolder = PipelineFilePaths.Normalize(Value(_selected.Inputs, "Folder") ?? "");
                             var patterns = PipelineFileEvent.NormalizePattern(Value(_selected.Inputs, "Pattern"));
                             var deeper = IsTrue(_selected.Inputs, "Subfolders");
@@ -1862,7 +1862,7 @@ else
                         }
                         else if (_selected.Type == PipelineTelegramEvent.StepType)
                         {
-                            @* BL-229: n8n's Telegram Trigger - which messages start this one, how it gets them, and a message to test with. *@
+                            @* n8n's Telegram Trigger - which messages start this one, how it gets them, and a message to test with. *@
                             <h5 style="margin:0.75rem 0 0;">When it runs</h5>
                             <div id="pipelines-editor-trigger" class="db-pipeline-editor__trigger">
                                 <p id="pipelines-editor-telegram-watch">When the bot of the connection chosen gets a message - in a chat with it, in a group it is in, or a post in a channel it runs - one run a message. The bot is asked for its messages every few seconds, so it needs no address the internet can reach; a bot with a webhook set (n8n's trigger sets one) gets none here until the webhook is deleted. Once it is published: messages already waiting start nothing. Every pipeline on one bot gets each message: Telegram hands a message once.</p>
@@ -1879,7 +1879,7 @@ else
                         }
                         else if (_selected.Type == PipelineEmailEvent.StepType)
                         {
-                            @* BL-229: n8n's Email Trigger (IMAP) - which messages start this one, what it does with them, and a message to test with. *@
+                            @* n8n's Email Trigger (IMAP) - which messages start this one, what it does with them, and a message to test with. *@
                             var watchedMailbox = string.IsNullOrWhiteSpace(Value(_selected.Inputs, "Mailbox")) ? PipelineEmailEvent.Inbox : Value(_selected.Inputs, "Mailbox").Trim();
                             var marksRead = IsTrue(_selected.Inputs, "MarkRead");
                             var keepsAttachments = IsTrue(_selected.Inputs, "KeepAttachments");
@@ -1905,7 +1905,7 @@ else
                             </div>
                         }
 
-                        @* BL-95: a step that holds others - a loop's Body, an If's Then and Else. Each body is a flowchart of its own,
+                        @* A step that holds others - a loop's Body, an If's Then and Else. Each body is a flowchart of its own,
                            opened on the canvas; its steps run inside this one. *@
                         @if (_selected.Entry.Bodies is { Count: > 0 })
                         {
@@ -1919,7 +1919,7 @@ else
                             }
                         }
                     }
-                    @* BL-229 increment 2: what the shown run did with this step - n8n's input and output panels (beside the settings
+                    @* What the shown run did with this step - n8n's input and output panels (beside the settings
                        in the wide view). *@
                     @if (_shownRunId is not null && !IsWide)
                     {
@@ -1947,7 +1947,7 @@ else
                             @if (!string.IsNullOrEmpty(shown.Error))
                             {
                                 <p id="pipelines-editor-run-error" class="db-pipeline-editor__error">@shown.Error</p>
-                                @* BL-229 - n8n's "fix with AI" on a node's error: the builder told what the step failed with. *@
+                                @* n8n's "fix with AI" on a node's error: the builder told what the step failed with. *@
                                 @if (AiOffered && _viewingVersion is null)
                                 {
                                     var failedStep = _selected.DisplayName;
@@ -1971,7 +1971,7 @@ else
                                 <DataView Id="pipelines-editor-run-output" Label="Output" Json="@shown.OutputsJson" />
                                 @if (CanManage && FilesOf(shown.InputsJson) is { Count: > 0 } files)
                                 {
-                                    @* BL-229 - n8n's view and download of a node's binary data: the files this pass read or wrote, in the
+                                    @* n8n's view and download of a node's binary data: the files this pass read or wrote, in the
                                        site's pipeline folder - each to download, or to see in its folder on the Files page. *@
                                     <ul id="pipelines-editor-run-files" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0.125rem;">
                                         @for (var fileAt = 0; fileAt < files.Count; fileAt++)
@@ -1993,7 +1993,7 @@ else
                                     <button id="pipelines-editor-pin-run" type="button" class="db-btn" title="A test then hands this result on in place of running the step - n8n's pinned data" @onclick="() => SetPinned(produced)">Pin this result</button>
                                 }
                             }
-                            @* BL-229 - n8n's "Debug in editor": what the steps leading here produced in this run, pinned, so a test up to
+                            @* n8n's "Debug in editor": what the steps leading here produced in this run, pinned, so a test up to
                                here runs this step on the run's own data and calls nothing before it again. *@
                             @if (CanManage && _viewingVersion is null && RunResultsBefore(_selected) is { Count: > 0 } ledHere)
                             {
@@ -2001,7 +2001,7 @@ else
                             }
                         }
                     }
-                    @* BL-229 increment 9: what happens when the step fails - tried again, and whether the run goes on past it. *@
+                    @* What happens when the step fails - tried again, and whether the run goes on past it. *@
                     @if (_selected.Entry is not null)
                     {
                         <h5 style="margin:0.75rem 0 0;">When it fails</h5>
@@ -2035,7 +2035,7 @@ else
                             }
                         }
                     }
-                    @* BL-229 increment 6: test this step on its own (n8n's "execute step") with the values the variables hold - what
+                    @* Test this step on its own (n8n's "execute step") with the values the variables hold - what
                        the author types here (kept for the session), else the values kept with the pipeline, the run shown's, or the
                        starting values. *@
                     @if (CanManage && IsAuthorizedPermission(PipelinesPermissions.Run) && _selected.Entry is not null)
@@ -2052,7 +2052,7 @@ else
                             <button id="pipelines-editor-test-step" type="button" class="db-btn" @onclick="() => TestSelectedStepAsync(false)" disabled="@(_testing || _busy)">@(_testing ? "Testing…" : "Test step")</button>
                             @if (LeadsHere(_selected))
                             {
-                                @* BL-229: n8n tests a step with what leads to it - every step before this one runs first, for real, storing nothing. *@
+                                @* n8n tests a step with what leads to it - every step before this one runs first, for real, storing nothing. *@
                                 <button id="pipelines-editor-test-up-to-here" type="button" class="db-btn" title="Run every step that leads here first, then this one - for real, storing nothing" @onclick="() => TestSelectedStepAsync(true)" disabled="@(_testing || _busy)">Test up to here</button>
                             }
                             @if (_testValues.Count > 0)
@@ -2060,7 +2060,7 @@ else
                                 <button id="pipelines-editor-test-reset" type="button" class="db-btn" title="Back to the values kept with the pipeline, else the run shown's, else the starting values" @onclick="() => _testValues.Clear()">Reset values</button>
                             }
                         </div>
-                        @* BL-229: n8n's pinned data - the values typed here kept WITH the pipeline (saved with it, shown to its authors only,
+                        @* n8n's pinned data - the values typed here kept WITH the pipeline (saved with it, shown to its authors only,
                            never exported), so the next session tests with them too. The run itself never reads them. *@
                         <div style="display:flex;gap:0.35rem;margin-top:0.35rem;">
                             @if (HasUnkeptTestValues())
@@ -2069,7 +2069,7 @@ else
                             }
                             @if (RunValuesToKeep().Count > 0)
                             {
-                                @* BL-229 - n8n's "Debug in editor": the run on the canvas's values kept as the test values, so the next
+                                @* n8n's "Debug in editor": the run on the canvas's values kept as the test values, so the next
                                    session tests with what that run really held. *@
                                 <button id="pipelines-editor-test-keep-run" type="button" class="db-btn" title="Keep what the run on the canvas left in the variables as the test values - saved with the pipeline, for tests only" @onclick="KeepRunValues">Keep the run's values</button>
                             }
@@ -2137,20 +2137,20 @@ else
     private PipelineDetail _pipeline;
     private List<StepCatalogEntry> _catalog;
 
-    // BL-229 increment 4: what is wrong with the graph as it stands - the rule the server's publish applies.
+    // What is wrong with the graph as it stands - the rule the server's publish applies.
     private List<PipelineGraphProblem> _problems = new List<PipelineGraphProblem>();
 
-    // BL-229 increment 6: a step test - the values the author typed for it (by variable name, kept for the session), the
+    // A step test - the values the author typed for it (by variable name, kept for the session), the
     // step it was made for and what it did.
     private readonly Dictionary<string, string> _testValues = new Dictionary<string, string>(StringComparer.Ordinal);
     private bool _testing;
     private string _testedStepId;
     private StepTestResult _testResult;
 
-    // BL-229 increment 8: the sticky note selected on the canvas, edited in the inspector.
+    // The sticky note selected on the canvas, edited in the inspector.
     private NoteNodeModel _selectedNote;
 
-    // BL-229 increment 7: the versions panel, the version open read-only (and the canvas it stands in for), a comparison.
+    // The versions panel, the version open read-only (and the canvas it stands in for), a comparison.
     private bool _versionsOpen;
     private List<PipelineVersionView> _versions;
     private int? _viewingVersion;
@@ -2158,9 +2158,9 @@ else
     private List<PipelineGraphChange> _comparison;
     private int _comparedVersion;
     private PipelineGraph _comparedGraph; // the version compared with the canvas, while it is
-    private bool _comparingAi; // BL-229: what is compared is the canvas before the AI's change, not a version
+    private bool _comparingAi; // What is compared is the canvas before the AI's change, not a version
 
-    // BL-229 - n8n's AI workflow builder: the panel, what the author asks, the site's model at work, and what it said it did.
+    // n8n's AI workflow builder: the panel, what the author asks, the site's model at work, and what it said it did.
     private bool _aiOpen;
     private string _aiInstruction = "";
     private bool _aiBusy;
@@ -2199,7 +2199,7 @@ else
         }
     }
 
-    // BL-229 - n8n's "fix with AI": what the editor marks, as the list says it.
+    // n8n's "fix with AI": what the editor marks, as the list says it.
     private Task FixProblemsWithAiAsync() =>
         AskAiAboutAsync("Fix what the editor marks on this pipeline:",
             _problems.Select(problem => $"- {(problem.Severity == PipelineGraphProblems.Error ? "Problem" : "Warning")} at '{problem.Step}': {problem.Message}"));
@@ -2323,7 +2323,7 @@ else
         }
     }
 
-    // BL-229 - n8n's "Convert to sub-workflow": the plan for the selected steps, the canvas it was made for, the new pipeline's
+    // n8n's "Convert to sub-workflow": the plan for the selected steps, the canvas it was made for, the new pipeline's
     // name, and the pipeline made once they moved.
     private bool _subOpen;
     private bool _subBusy;
@@ -2455,14 +2455,14 @@ else
         }
     }
 
-    // BL-229 increment 10: the selected trigger's panel (read once per step type and value) and a webhook call listened for.
+    // The selected trigger's panel (read once per step type and value) and a webhook call listened for.
     private const string WebhookStepType = "Stomme.Webhook";
 
     private const string AgentToolStepType = "Stomme.AgentTool";
 
     private const string ChatStepType = "Stomme.ChatTrigger";
 
-    // BL-229: a message a visitor of the chat might send, to test the next steps with.
+    // A message a visitor of the chat might send, to test the next steps with.
     private void UseSampleMessage(string variableName)
     {
         _testValues[variableName] = "Hello! What can you do for me?";
@@ -2489,7 +2489,7 @@ else
     private TriggerInfoView _triggerInfo;
     private bool _listening;
     private WebhookCallView _webhookCall;
-    private PipelineWebhookSecretView _webhookSecret; // D111a: a secret just made - shown until Done, or its step is no longer the one selected
+    private PipelineWebhookSecretView _webhookSecret; // A secret just made - shown until Done, or its step is no longer the one selected
     private bool _webhookSecretCopied;
     private bool _webhookSecretBusy;
     private string _webhookSecretError;
@@ -2500,7 +2500,7 @@ else
     private bool _dirty;
     private bool _busy;
 
-    // What went wrong and what the editor did - shown, and spoken by the regions that copy them (BL-229). The same words set again
+    // What went wrong and what the editor did - shown, and spoken by the regions that copy them. The same words set again
     // are spoken again: each setting flips a no-break space (not read) at the end of the copy, since a region whose text did not
     // change says nothing. Properties under the fields' old names, so every place that sets one is unchanged.
     private string _errorText = "";
@@ -2537,16 +2537,16 @@ else
     private PipelineGraph _loaded;
     private readonly List<string> _conflicts = new();
     private List<PipelineGraphVariable> _variables = new();
-    // BL-95: every step of the pipeline and of every body, flat as the graph is; the canvas shows ONE body of it - the
+    // Every step of the pipeline and of every body, flat as the graph is; the canvas shows ONE body of it - the
     // pipeline's own (both null) or the body a step holds - and folds its edits back in before showing another or saving.
     private PipelineGraph _graph = new();
     private string _scopeParent;
     private string _scopePort;
-    // BL-229 increment 1: the step picker's query, its highlighted result, and the palette entry being dragged.
+    // The step picker's query, its highlighted result, and the palette entry being dragged.
     private string _search = "";
     private int _searchIndex;
     private StepCatalogEntry _dragging;
-    // BL-229 increment 2: this pipeline's recent runs, the run shown on the canvas, its step executions, which pass of the
+    // This pipeline's recent runs, the run shown on the canvas, its step executions, which pass of the
     // selected step the inspector shows, and the poll that follows an unfinished run.
     private List<PipelineRunView> _runs;
     private string _shownRunId;
@@ -2554,7 +2554,7 @@ else
     private List<PipelineStepRunView> _runSteps = new();
     private int _executionIndex;
 
-    // BL-229 - n8n's node details view: the selected step's settings over the canvas, between what it received and what it
+    // n8n's node details view: the selected step's settings over the canvas, between what it received and what it
     // produced in the run shown.
     private bool _wide;
 
@@ -2660,7 +2660,7 @@ else
 
     private const string RunStepsUnreadable = "What the run's steps did could not be read.";
 
-    // BL-229 increment 3: undo/redo, the clipboard, and the keyboard bridge.
+    // Undo/redo, the clipboard, and the keyboard bridge.
     private readonly EditHistory _history = new();
     private PipelineGraph _clipboard;
     private List<PipelineGraphVariable> _clipboardVariables;
@@ -2675,12 +2675,12 @@ else
     // The site's pipelines but this one, for the engine's pipeline picker; null when they could not be read (a text box then).
     private List<PipelineView> _otherPipelines;
     private string _newVariableName = "";
-    // BL-229: what the next publish says changed - cleared once it is published.
+    // What the next publish says changed - cleared once it is published.
     private string _publishNote = "";
-    // BL-229: the step a link names (step=): chosen once the canvas exists, centred once it has its size.
+    // The step a link names (step=): chosen once the canvas exists, centred once it has its size.
     private string _pendingStep;
     private bool _pendingStepChosen;
-    // BL-229 - n8n's zoom to fit on open: a load asks for it; the first render with a sized canvas answers it.
+    // n8n's zoom to fit on open: a load asks for it; the first render with a sized canvas answers it.
     private bool _fitOnOpen;
     private string _newVariableType = "Object";
 
@@ -2705,11 +2705,11 @@ else
         new Resource { ResourceType = ResourceType.Stylesheet, Url = "_content/Z.Blazor.Diagrams/default.styles.min.css" },
         new Resource { ResourceType = ResourceType.Stylesheet, Url = "Modules/Pipelines/pipelines-editor.css" },
         new Resource { ResourceType = ResourceType.Script, Url = "_content/Z.Blazor.Diagrams/script.min.js", Location = ResourceLocation.Body },
-        // BL-229: the editor's keyboard shortcuts (Ctrl+K or / to find a step) - plain script, so a Server and a WebAssembly site alike.
+        // The editor's keyboard shortcuts (Ctrl+K or / to find a step) - plain script, so a Server and a WebAssembly site alike.
         new Resource { ResourceType = ResourceType.Script, Url = "Modules/Pipelines/pipelines-editor.js", Location = ResourceLocation.Body },
     };
 
-    // Editing: an author's - and nobody's while a version is open read-only (BL-229 increment 7), which also silences the
+    // Editing: an author's - and nobody's while a version is open read-only, which also silences the
     // editing keys (the keyboard script stands down while the step search is disabled).
     // An author's editor - not while a version is open read-only, nor while the pipeline is archived (n8n's archive: read-only
     // until it is restored).
@@ -2760,7 +2760,7 @@ else
             }
         }
 
-        // BL-229 - n8n's zoom to fit on open: a pipeline whose steps do not all show in the canvas at the view it opens with is
+        // n8n's zoom to fit on open: a pipeline whose steps do not all show in the canvas at the view it opens with is
         // fitted once the canvas has its size - zoomed out, never in past the steps' own size; one that shows whole opens as it
         // is, and a step a link names wins.
         if (FitIfOpening())
@@ -2782,7 +2782,7 @@ else
             }
         }
 
-        // BL-229 increment 10: the selected trigger's panel, read when the step or its name or cron changes.
+        // The selected trigger's panel, read when the step or its name or cron changes.
         var key = _selected is not null && TriggerValue(_selected) is not null ? TriggerKey(_selected) : null;
         if (key != _triggerKey)
         {
@@ -2813,7 +2813,7 @@ else
     private static bool Bound(StepNodeModel step, string input) =>
         step.InputVariables.ContainsKey(input) || step.InputExpressions.ContainsKey(input) || step.InputScripts.ContainsKey(input);
 
-    // A schedule's time zone as typed - or, with none of its own, the pipeline's (BL-229); empty is UTC.
+    // A schedule's time zone as typed - or, with none of its own, the pipeline's; empty is UTC.
     private string ZoneOf(StepNodeModel step) =>
         step.Type != ScheduleStepType ? ""
         : step.Inputs.TryGetValue("TimeZone", out var zone) && !string.IsNullOrWhiteSpace(zone) ? zone
@@ -2879,11 +2879,11 @@ else
         }
     }
 
-    // D111a: the selected webhook's name as its secret is kept under (normalised as the server does); null when it is not one.
+    // The selected webhook's name as its secret is kept under (normalised as the server does); null when it is not one.
     private string WebhookSecretName() =>
         _selected is not null && _selected.Type == WebhookStepType && TriggerValue(_selected) is { Length: > 0 } name ? name.Trim().ToLowerInvariant() : null;
 
-    // D111a: makes the selected webhook a secret of its own (or a new one), shows it this once, and reads the panel again.
+    // Makes the selected webhook a secret of its own (or a new one), shows it this once, and reads the panel again.
     private async Task RenewWebhookSecretAsync()
     {
         var name = WebhookSecretName();
@@ -2917,7 +2917,7 @@ else
         await ReloadTriggerInfoAsync();
     }
 
-    // D111a: removes the selected webhook's own secret - the site's webhook secret opens it again.
+    // Removes the selected webhook's own secret - the site's webhook secret opens it again.
     private async Task RemoveWebhookSecretAsync()
     {
         var name = WebhookSecretName();
@@ -3004,7 +3004,7 @@ else
     }
 
     // A made-up failure of the watched pipeline (or of some pipeline), shaped as a run's, becomes the variable's value for testing.
-    // BL-229: made-up answers to the selected form, as a person might send them.
+    // Made-up answers to the selected form, as a person might send them.
     private void UseSampleSubmission(string variableName)
     {
         _testValues[variableName] = PipelineForms.Sample(FormFieldsOf("Fields"));
@@ -3017,21 +3017,21 @@ else
         _message = $"'{variableName}' holds a sample failure - select a later step and Test step.";
     }
 
-    // BL-229: a made-up message to a Telegram bot - the fields a run gets.
+    // A made-up message to a Telegram bot - the fields a run gets.
     private void UseSampleTelegram(string variableName)
     {
         _testValues[variableName] = PipelineTelegramEvent.Sample(DateTimeOffset.UtcNow);
         _message = $"'{variableName}' holds a sample message - select a later step and Test step.";
     }
 
-    // BL-229: a made-up message in the mailbox watched - the fields a run gets, its attachment's path when they are kept.
+    // A made-up message in the mailbox watched - the fields a run gets, its attachment's path when they are kept.
     private void UseSampleEmail(string variableName, string mailbox, bool keepAttachments)
     {
         _testValues[variableName] = PipelineEmailEvent.Sample(mailbox, keepAttachments, DateTimeOffset.UtcNow);
         _message = $"'{variableName}' holds a sample message - select a later step and Test step.";
     }
 
-    // BL-229 - n8n's "Fetch test event": a real event for a trigger's next steps - the newest message in the mailbox, read through
+    // n8n's "Fetch test event": a real event for a trigger's next steps - the newest message in the mailbox, read through
     // the connection on the server (nothing marked, nothing kept), or the newest file in the folder the trigger's names take.
     private bool _fetchingTestEvent;
 
@@ -3092,7 +3092,7 @@ else
         }
     }
 
-    // BL-229: a made-up file the trigger would take, in its folder - the fields a run gets.
+    // A made-up file the trigger would take, in its folder - the fields a run gets.
     private void UseSampleFile(string variableName, string folder, string patterns)
     {
         _testValues[variableName] = PipelineFileEvent.Sample(folder, patterns, DateTimeOffset.UtcNow);
@@ -3192,7 +3192,7 @@ else
 
             if (_capabilities is null)
             {
-                // BL-229 increment 5b: an editor that cannot ask offers nothing a run might refuse.
+                // An editor that cannot ask offers nothing a run might refuse.
                 try
                 {
                     _capabilities = await PipelinesService.GetCapabilitiesAsync() ?? new PipelineCapabilitiesView();
@@ -3226,7 +3226,7 @@ else
             _loaded = graph; // the base a collaborating save is measured from
             await LoadCommentsAsync(); // before the steps are drawn: each shows its open comments
             WatchDiscussion();
-            // BL-229: steps piled on one spot (a graph made through the API, a file or the assistant without positions) open laid
+            // Steps piled on one spot (a graph made through the API, a file or the assistant without positions) open laid
             // out rather than as a stack - a change to save, measured from the graph as stored.
             var stacked = StepsStacked(graph);
             if (stacked)
@@ -3248,7 +3248,7 @@ else
 
             CheckProblems();
             await LoadRunsAsync();
-            // BL-229: a run opened from its page ("Open in the editor") is shown on the canvas - one of this pipeline's only.
+            // A run opened from its page ("Open in the editor") is shown on the canvas - one of this pipeline's only.
             if (PageState.QueryString.TryGetValue("run", out var requested) && !string.IsNullOrEmpty(requested))
             {
                 await ShowRunAsync(requested);
@@ -3258,7 +3258,7 @@ else
                 }
             }
 
-            // BL-229: a step named by the link (find in every pipeline) is gone to once the canvas has its size.
+            // A step named by the link (find in every pipeline) is gone to once the canvas has its size.
             _pendingStep = PageState.QueryString.TryGetValue("step", out var linked) && !string.IsNullOrEmpty(linked) ? linked : null;
             _pendingStepChosen = false;
         }
@@ -3338,7 +3338,7 @@ else
     {
         var diagram = new BlazorDiagram(new BlazorDiagramOptions
         {
-            AllowMultiSelection = true, // BL-229 increment 3: Ctrl+click adds a step to the selection
+            AllowMultiSelection = true, // Ctrl+click adds a step to the selection
             Zoom = { Enabled = true },
         });
         diagram.RegisterComponent<StepNodeModel, StepNode>();
@@ -3346,7 +3346,7 @@ else
         diagram.RegisterComponent<ConnectionActionsModel, ConnectionActions>();
         diagram.RegisterComponent<RunCountLabelModel, RunCountLabel>();
 
-        // BL-229 increment 8: the body's sticky notes, under its steps.
+        // The body's sticky notes, under its steps.
         foreach (var note in _graph.Notes.Where(InScope))
         {
             diagram.Nodes.Add(MakeNote(note.Id, note.Text, new Point(note.Position?.X ?? 0, note.Position?.Y ?? 0), note.Color));
@@ -3386,7 +3386,7 @@ else
             }
 
             node.Cases.AddRange(PipelineOutcomes.Copy(step.Cases));
-            node.SyncOutcomes(); // BL-229 increment 10: a Fork's branches, a Switch's cases - before its connections find their ports
+            node.SyncOutcomes(); // A Fork's branches, a Switch's cases - before its connections find their ports
 
             foreach (var output in step.OutputVariables ?? new Dictionary<string, string>())
             {
@@ -3498,7 +3498,7 @@ else
             });
         }
 
-        // BL-229 increment 8: the body's notes as the canvas has them; a note in a body of a step that is gone goes with it.
+        // The body's notes as the canvas has them; a note in a body of a step that is gone goes with it.
         _graph.Notes.RemoveAll(note => InScope(note) || (note.Parent is not null && gone.Contains(note.Parent)));
         foreach (var note in _diagram.Nodes.OfType<NoteNodeModel>())
         {
@@ -3575,16 +3575,16 @@ else
         node.Moved += _ => MarkDirty();
         node.Opened = OpenWide;
         node.AddAfter = CanManage ? BeginAddAfter : null;
-        // BL-229 - n8n's buttons over a step: an author's, and the test only where they may run the pipeline too.
+        // n8n's buttons over a step: an author's, and the test only where they may run the pipeline too.
         node.Test = CanManage && IsAuthorizedPermission(PipelinesPermissions.Run) ? TestFromCanvas : null;
         node.Toggle = CanManage ? ToggleFromCanvas : null;
         node.Delete = CanManage ? DeleteFromCanvas : null;
         node.Menu = CanManage ? OpenStepMenu : null;
-        node.SetOpenComments(OpenCommentsOn(id), OpenCommentsInside(id)); // BL-229: its discussion still open, on it and inside it
+        node.SetOpenComments(OpenCommentsOn(id), OpenCommentsInside(id)); // Its discussion still open, on it and inside it
         return node;
     }
 
-    // BL-229 - n8n's right-click menu: where it opened inside the canvas, the step it is for (null for the canvas's own), and,
+    // n8n's right-click menu: where it opened inside the canvas, the step it is for (null for the canvas's own), and,
     // for the canvas's, the spot in the diagram a step or note added from it lands on. With an outcome to connect from, it lists
     // the steps that outcome may go to ("Connect to…"); disconnecting, the step's connections ("Disconnect…").
     private sealed record CanvasMenu(StepNodeModel Step, double X, double Y, Point At, StepPortModel ConnectFrom = null, bool Disconnecting = false);
@@ -3714,7 +3714,7 @@ else
         act();
     }
 
-    // BL-229 - a connection made without the pointer (better than n8n, whose connections are dragged only): the steps on this
+    // A connection made without the pointer (better than n8n, whose connections are dragged only): the steps on this
     // canvas an outcome may go to, the nearest first - not the step itself, nor one the outcome goes to already.
     private List<StepNodeModel> ConnectTargets(StepPortModel from)
     {
@@ -3896,7 +3896,7 @@ else
         DeleteSelection();
     }
 
-    // BL-229 - n8n's + after a node: the step selected, the outcome remembered, the step search focused - the step chosen next
+    // n8n's + after a node: the step selected, the outcome remembered, the step search focused - the step chosen next
     // lands after it, connected from that outcome.
     private ElementReference _stepSearch;
     private StepPortModel _addFrom;
@@ -3933,7 +3933,7 @@ else
         InvokeAsync(StateHasChanged);
     }
 
-    // BL-229: what each called sub-pipeline expects - its "When called by another pipeline"'s fields and required ones - read from
+    // What each called sub-pipeline expects - its "When called by another pipeline"'s fields and required ones - read from
     // its graph once (null when it declares none); nothing while it loads. The calls are held to it in the problems.
     private readonly Dictionary<string, PipelineCallContract> _calledContracts = new(StringComparer.Ordinal);
     private readonly HashSet<string> _calledLoading = new(StringComparer.Ordinal);
@@ -4004,7 +4004,7 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    // BL-229 - n8n's "Error workflow" setting, from the pipeline that fails: the pipelines that start when it fails, read from the
+    // n8n's "Error workflow" setting, from the pipeline that fails: the pipelines that start when it fails, read from the
     // map once the pipeline panel is shown (null while it loads, or when it could not be read), and one made in a click.
     private PipelineMapView _failureMap;
     private bool _failureMapAsked;
@@ -4051,7 +4051,7 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    // BL-229: this pipeline's lines of the site's activity, newest first (null while hidden) - read again each time they are shown.
+    // This pipeline's lines of the site's activity, newest first (null while hidden) - read again each time they are shown.
     private const int ActivityShown = 20;
     private List<PipelineAuditEntryView> _activity;
 
@@ -4074,7 +4074,7 @@ else
         }
     }
 
-    // BL-229 - the discussion of the pipeline's steps, oldest first. Not part of the graph: no save, no undo, no unsaved mark -
+    // The discussion of the pipeline's steps, oldest first. Not part of the graph: no save, no undo, no unsaved mark -
     // each add, resolve and delete is written at once, and the list is read again after it, so what others said since shows too.
     private List<PipelineStepCommentView> _comments = new();
     private bool _commentsUnread;
@@ -4115,7 +4115,7 @@ else
         }
     }
 
-    // BL-229 - @mentions: the people offered while a name is being typed after an @, and what an add told.
+    // @mentions: the people offered while a name is being typed after an @, and what an add told.
     private List<PipelineMentionView> _people;
 
     private sealed record CommentNote(string StepId, string Message);
@@ -4222,7 +4222,7 @@ else
         }
     }
 
-    // BL-229: the discussion read again every half minute while the editor is open, so what others say shows without a reload
+    // The discussion read again every half minute while the editor is open, so what others say shows without a reload
     // - on the clock the run poll uses, which a test fires itself. A pass that changes nothing draws nothing.
     public static readonly TimeSpan DiscussionPollInterval = TimeSpan.FromSeconds(30);
 
@@ -4528,7 +4528,7 @@ else
         return _calledContracts.Where(pair => pair.Value is not null).ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
     }
 
-    // BL-229 increment 8: a connection leaving one of several outcomes (a Decision's True and False, a Fork's branches) says
+    // A connection leaving one of several outcomes (a Decision's True and False, a Fork's branches) says
     // which; a step with one outcome needs no word on its line. And on an author's canvas a connection, once made, carries
     // n8n's + (a step put between its two steps) and bin, under its middle.
     private void LabelLink(BaseLinkModel link)
@@ -4546,7 +4546,7 @@ else
         }
     }
 
-    // BL-229 - n8n's + on a connection: the connection selected and the step search focused; the step chosen next goes between
+    // n8n's + on a connection: the connection selected and the step search focused; the step chosen next goes between
     // its two steps (InsertBetween). Selecting anything else, or Escape, lets it go.
     private BaseLinkModel _insertOn;
 
@@ -4703,7 +4703,7 @@ else
             : "Tidied up: each flowchart left to right by its flow.";
     }
 
-    // BL-229 - n8n's connection dropped on the canvas: a link drawn from an outcome and let go over nothing is removed by the
+    // n8n's connection dropped on the canvas: a link drawn from an outcome and let go over nothing is removed by the
     // canvas (it needs a target) - instead of nothing, the step search opens, and the step chosen lands where it was let go,
     // connected from that outcome. Any other removal is a change.
     private void OnLinkRemoved(BaseLinkModel link)
@@ -4770,7 +4770,7 @@ else
     }
 
     // A step from the palette. With a step selected it lands to that step's right and is connected to it (n8n's "+" after
-    // a node; BL-229 increment 1) - through the first of its outcomes nothing leaves yet - and becomes the selection, so
+    // a node) - through the first of its outcomes nothing leaves yet - and becomes the selection, so
     // steps added one after another form a chain. With nothing selected it takes the next free spot of the grid.
     private void AddStep(StepCatalogEntry entry) => AddStep(entry, at: null);
 
@@ -4888,7 +4888,7 @@ else
         }
     }
 
-    // BL-229 - n8n's command bar: the actions the search names that this person may run here, now.
+    // n8n's command bar: the actions the search names that this person may run here, now.
     private List<EditorCommands.Command> CommandResults() => EditorCommands.Match(_search).Where(command => command.Id switch
     {
         "run" => CanRunNow,
@@ -4993,7 +4993,7 @@ else
 
     private void SetBoolInput(string name, object value) => SetInput(name, value is true ? "true" : "false");
 
-    // BL-229 - n8n's "Ask AI" in its Code node: what is asked of a script, for which step, and how it went.
+    // n8n's "Ask AI" in its Code node: what is asked of a script, for which step, and how it went.
     private string _scriptAsk = string.Empty;
     private string _scriptAiStep;
     private bool _scriptWriting;
@@ -5043,7 +5043,7 @@ else
         return (_described.Receives, _described.Fields.ToList()); // a copy: a request's list is its own
     }
 
-    // BL-229 - n8n's completion in its Code node: what the box's completion offers (pipelines-editor.js reads it) - the script's own
+    // n8n's completion in its Code node: what the box's completion offers (pipelines-editor.js reads it) - the script's own
     // names for what it is written for, the members of the names it knows, its variables' names and the fields of what it
     // receives, the same the AI is told. Each says what it is; a member says what it writes (insert) and where the caret goes
     // (back: between the brackets of one that takes arguments).
@@ -5179,7 +5179,7 @@ else
         }
     }
 
-    // BL-229 - n8n's "Import cURL" on the HTTP request step.
+    // n8n's "Import cURL" on the HTTP request step.
     private const string CurlStepType = "Stomme.SendHttpRequest";
     // An attribute's literal text is encoded again, so entities in it show as written (found driving it) - the example is C#.
     private const string CurlExample = "curl -X POST https://api.example.com/orders -H 'Content-Type: application/json' -d '{\"item\": \"book\"}'";
@@ -5264,7 +5264,7 @@ else
     // The source picker's value for "an expression"; a variable's id is generated hex, so it cannot be this.
     private const string ExpressionSource = "=expression";
 
-    // An input takes a value of its own, an expression (BL-229 increment 5) or a variable - one of them.
+    // An input takes a value of its own, an expression or a variable - one of them.
     private void SetInputSource(string name, string source)
     {
         if (_selected is null)
@@ -5279,7 +5279,7 @@ else
 
         if (source == ScriptSource)
         {
-            // BL-229 increment 5b: JavaScript, starting from nothing - a value or an expression is not a script.
+            // JavaScript, starting from nothing - a value or an expression is not a script.
             if (!_selected.InputScripts.ContainsKey(name))
             {
                 _selected.InputScripts[name] = "";
@@ -5292,7 +5292,7 @@ else
         }
         else if (source == ConditionSource)
         {
-            // BL-229 increment 10: a condition built from rules - one rule to start, whatever the input held before.
+            // A condition built from rules - one rule to start, whatever the input held before.
             if (!_selected.InputConditions.ContainsKey(name))
             {
                 _selected.InputConditions[name] = new PipelineCondition { Rules = { new PipelineConditionRule() } };
@@ -5335,21 +5335,21 @@ else
         MarkDirty();
     }
 
-    // BL-229 increment 10: the source picker's value for "a condition" - a true-or-false input built from rules.
+    // The source picker's value for "a condition" - a true-or-false input built from rules.
     private const string ConditionSource = "=condition";
 
-    // BL-229 increment 5b: the source picker's value for JavaScript, what the site allows, and each script's last preview.
+    // The source picker's value for JavaScript, what the site allows, and each script's last preview.
     private const string ScriptSource = "=script";
     private PipelineCapabilitiesView _capabilities;
 
     // The site's connections, for a step that names one; null when the editor may not list them (it then takes the id typed).
     private List<Stomme.Connectivity.ConnectionView> _connections;
 
-    // BL-229: the installed connectors, with their operations - what a connection step chooses among and which step suits a
+    // The installed connectors, with their operations - what a connection step chooses among and which step suits a
     // connection the palette offers; null when they could not be listed (an operation is then typed, every step offered).
     private List<Stomme.Connectivity.ConnectorView> _connectors;
 
-    // BL-229: the step and input whose "New connection" form is open ("{stepId}/{input}"), the connection last tested here.
+    // The step and input whose "New connection" form is open ("{stepId}/{input}"), the connection last tested here.
     private string _newConnectionFor;
     private bool _connectionTesting;
     private (string Id, string Said, bool Success)? _connectionTested;
@@ -5396,7 +5396,7 @@ else
             ? ConnectionChoices.ConnectorOf(Value(_selected.Inputs, input), _connections, _connectors)
             : null;
 
-    // BL-229: the site's data tables, for the Data table step's picker; null when they could not be listed (typed by name).
+    // The site's data tables, for the Data table step's picker; null when they could not be listed (typed by name).
     private List<PipelineSiteTableView> _siteTables;
     private readonly Dictionary<string, (string Text, bool Failed)> _scriptPreviews = new(StringComparer.Ordinal);
     private CancellationTokenSource _scriptPreviewDelay;
@@ -5755,10 +5755,10 @@ else
         return values;
     }
 
-    // BL-229: the site's variables ($vars), read with the pipeline; none when they could not be read.
+    // The site's variables ($vars), read with the pipeline; none when they could not be read.
     private Dictionary<string, string> _siteVariables = new();
 
-    // BL-229: a typed test value the pipeline does not keep yet - what "Keep with the pipeline" would save.
+    // A typed test value the pipeline does not keep yet - what "Keep with the pipeline" would save.
     private bool HasUnkeptTestValues() =>
         _variables.Any(variable => !string.IsNullOrWhiteSpace(variable.Name)
             && _testValues.TryGetValue(variable.Name, out var typed)
@@ -5785,7 +5785,7 @@ else
         }
     }
 
-    // BL-229: the run shown's values that are not what the pipeline keeps for tests - what "Keep the run's values" would save.
+    // The run shown's values that are not what the pipeline keeps for tests - what "Keep the run's values" would save.
     private Dictionary<string, string> RunValuesToKeep()
     {
         if (_shownRunId is null)
@@ -5831,7 +5831,7 @@ else
         (IReadOnlyDictionary<string, string>)_diagram?.Nodes.OfType<StepNodeModel>().FirstOrDefault(node => node.StepId == stepId)?.OutputVariables
         ?? _graph.Steps.FirstOrDefault(step => step.Id == stepId)?.OutputVariables;
 
-    // BL-229 increment 7: the versions the engine keeps, newest first.
+    // The versions the engine keeps, newest first.
     private async Task ToggleVersionsAsync()
     {
         _versionsOpen = !_versionsOpen;
@@ -5894,7 +5894,7 @@ else
         ApplyComparisonToNodes();
     }
 
-    // BL-229: the comparison follows the canvas - every change, load, undo and merged save says it again (CheckProblems) - while
+    // The comparison follows the canvas - every change, load, undo and merged save says it again (CheckProblems) - while
     // a version open read-only leaves it as it was, for the canvas it stands in for.
     private void RefreshComparison(PipelineGraph graph)
     {
@@ -5914,7 +5914,7 @@ else
         ApplyComparisonToNodes();
     }
 
-    // BL-229: while a version is compared, each step on the canvas says whether it is new since that version or changed - its
+    // While a version is compared, each step on the canvas says whether it is new since that version or changed - its
     // own settings, or the steps (and connections) its bodies hold - with what changed on hover, and each connection added since
     // takes the theme's "ok" colour. A version open read-only shows none of it, and stopping the comparison takes it away.
     private void ApplyComparisonToNodes()
@@ -6037,7 +6037,7 @@ else
         _message = $"Version {version} is on the canvas - save to keep it, or Undo (Ctrl+Z) to take it back.";
     }
 
-    // BL-229 increment 10: what the canvas shows - a version open read-only included - as a pipeline file, downloaded by the
+    // What the canvas shows - a version open read-only included - as a pipeline file, downloaded by the
     // editor's script (a Blob, so nothing goes back to the server).
     private async Task ExportAsync()
     {
@@ -6105,7 +6105,7 @@ else
             + (unknown.Count == 0 ? "" : $" This site has no step {string.Join(", ", unknown)}: the save will refuse it until it is replaced.");
     }
 
-    // BL-229 increment 6: what a variable holds for a step test - what the author typed, else the value kept with the pipeline,
+    // What a variable holds for a step test - what the author typed, else the value kept with the pipeline,
     // the run shown's value or the starting value (the preview's).
     private string TestValue(string name)
     {
@@ -6152,7 +6152,7 @@ else
         .Where(pair => pair.Value is not null)
         .ToDictionary(pair => pair.Name, pair => pair.Value, StringComparer.Ordinal);
 
-    // BL-229 - n8n's "Test workflow": the pipeline as it stands on the canvas, saved or not, run for real and stored nowhere -
+    // n8n's "Test workflow": the pipeline as it stands on the canvas, saved or not, run for real and stored nowhere -
     // what each step did shown on the canvas as a run is (its data in the inspector and the wide view), how it went above it.
     private const string DraftTestId = "draft-test";
     private StepTestResult _draftTest;
@@ -6216,7 +6216,7 @@ else
         step is not null && _diagram is not null && _diagram.Links.Any(link =>
             (link.Target as SinglePortAnchor)?.Port is StepPortModel { IsInput: true, Parent: StepNodeModel target } && target.StepId == step.StepId);
 
-    // BL-229: the steps that lead to this one in its own flowchart, nearest first - those with a Result to read (or every one).
+    // The steps that lead to this one in its own flowchart, nearest first - those with a Result to read (or every one).
     private List<StepNodeModel> EarlierSteps(StepNodeModel step, bool withResult = true)
     {
         var found = new List<StepNodeModel>();
@@ -6412,7 +6412,7 @@ else
 
     // Removing a variable unbinds every step that read it or saved to it, so no save names a variable that is gone - the
     // canvas's steps and every body's.
-    // BL-229 - a variable renamed, and every expression, condition and case that reads it - as ONE change Undo takes back. A
+    // A variable renamed, and every expression, condition and case that reads it - as ONE change Undo takes back. A
     // script or a record's rules holding the old name are said, to be checked (PipelineVariableRenames).
     private string _renamingVariable;
     private string _renameTo = "";
@@ -6540,23 +6540,23 @@ else
             "DateTime" or "DateTimeOffset" => "date and time",
             "Guid" => "identifier",
             "Object" or "ExpandoObject" or "JsonElement" or "JsonNode" => "JSON",
-            // A loop's Items (BL-95): a JSON array, or a variable an earlier step saved its records to.
+            // A loop's Items: a JSON array, or a variable an earlier step saved its records to.
             "ICollection`1" or "IEnumerable`1" or "IList`1" or "List`1" or "IReadOnlyList`1" or "ICollection" or "IEnumerable" => "list, e.g. [\"a\", \"b\"]",
-            // Execute pipeline's Input (BL-229): what the sub-pipeline reads as {{ $input.name }}.
+            // Execute pipeline's Input: what the sub-pipeline reads as {{ $input.name }}.
             "IDictionary`2" or "Dictionary`2" or "IReadOnlyDictionary`2" => "JSON object, e.g. {\"order\": 42}",
             _ => input.TypeName,
         };
 
     private static bool IsTrue(Dictionary<string, string> inputs, string name) => inputs.TryGetValue(name, out var value) && string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
 
-    // A tick as the run reads it (BL-229, found driving Guardrails): the value given, or - none given - the step's own default, so
+    // A tick as the run reads it (found driving Guardrails): the value given, or - none given - the step's own default, so
     // a tick that is on unless switched off (CSV's Has header, Map fields' Keep other fields) shows ticked, as it runs.
     private static bool IsTicked(Dictionary<string, string> inputs, string name, string defaultValue) =>
         inputs.TryGetValue(name, out var value) && !string.IsNullOrEmpty(value)
             ? string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
             : string.Equals(defaultValue, "true", StringComparison.OrdinalIgnoreCase);
 
-    // Every change marks the pipeline unsaved and is one step of undo (BL-229 increment 3); a change with a key - typing in
+    // Every change marks the pipeline unsaved and is one step of undo; a change with a key - typing in
     // one field - joins the step before it while it carries the same key. Nothing is recorded while a snapshot is being
     // restored or a batch (a delete of several steps) is under way.
     private void MarkDirty(string coalesceKey = null)
@@ -6576,7 +6576,7 @@ else
 
     private string Snapshot() => System.Text.Json.JsonSerializer.Serialize(ToGraph());
 
-    // BL-229 increment 4: the graph's problems (PipelineGraphProblems - the server's publish refuses on its errors), on the
+    // The graph's problems (PipelineGraphProblems - the server's publish refuses on its errors), on the
     // steps and in the list above the canvas. Run after every change, a load, an undo and a merged save.
     private void CheckProblems(PipelineGraph graph = null)
     {
@@ -6599,7 +6599,7 @@ else
         RefreshComparison(graph);
     }
 
-    // BL-229 - n8n's Code node linting: every script checked to parse as its step runs it, by the server's parser, a moment after
+    // n8n's Code node linting: every script checked to parse as its step runs it, by the server's parser, a moment after
     // the author stops typing. Kept by its text and style, so a result holds wherever that text is and none is shown for a text
     // that is no longer there.
     private readonly Dictionary<string, string> _scriptChecked = new(StringComparer.Ordinal);
@@ -6795,7 +6795,7 @@ else
 
     private void GoToProblem(PipelineGraphProblem problem) => GoToStep(problem.StepId);
 
-    // BL-229: find on the canvas - the matches for what is typed, none until something is.
+    // Find on the canvas - the matches for what is typed, none until something is.
     private string _findText = "";
     private List<PipelineGraphMatch> _findMatches;
     private int _findIndex = -1;
@@ -7045,7 +7045,7 @@ else
         _variables.AddRange(added);
         _graph.Steps.AddRange(pasted.Steps);
         _graph.Connections.AddRange(pasted.Connections);
-        // BL-229: notes that come with a paste (n8n's, and what is left to finish) land beside the steps, as far off as they are.
+        // Notes that come with a paste (n8n's, and what is left to finish) land beside the steps, as far off as they are.
         foreach (var note in notes ?? Enumerable.Empty<PipelineGraphNote>())
         {
             _graph.Notes.Add(new PipelineGraphNote
@@ -7119,7 +7119,7 @@ else
         MarkDirty();
     }
 
-    // BL-229 increment 8: a sticky note where the author is looking - the middle of the view, or below the steps.
+    // A sticky note where the author is looking - the middle of the view, or below the steps.
     private void AddNote() => AddNoteAt(null);
 
     // ... or where the canvas's right-click menu was opened.
@@ -7173,7 +7173,7 @@ else
         MarkDirty();
     }
 
-    // BL-229 increment 9: a change to one of the step's reliability settings; the others stay as they are.
+    // A change to one of the step's reliability settings; the others stay as they are.
     private void SetReliability(string retries, string delaySeconds, bool? continueOnError)
     {
         if (_selected is null)
@@ -7567,7 +7567,7 @@ else
         _diagram.SetPan(middleX - atX * to, middleY - atY * to);
     }
 
-    // BL-229 - a layout without the pointer: Shift and an arrow move what is chosen - steps and notes - a dot of the canvas's grid
+    // A layout without the pointer: Shift and an arrow move what is chosen - steps and notes - a dot of the canvas's grid
     // that way; a run of presses is one change Undo takes back whole, and a screen reader is told what moved.
     private void Nudge(string direction)
     {
@@ -7784,21 +7784,21 @@ else
         };
     }
 
-    // BL-229: whether the pipeline keeps the runs that finish well - a change like any other: saved, merged, undone.
+    // Whether the pipeline keeps the runs that finish well - a change like any other: saved, merged, undone.
     private void SetKeepSuccessfulRuns(bool keep)
     {
         _graph.KeepSuccessfulRuns = keep ? null : false;
         MarkDirty();
     }
 
-    // BL-229 - n8n's "save execution progress": a change like any other, saved, merged and undone.
+    // n8n's "save execution progress": a change like any other, saved, merged and undone.
     private void SetSaveProgress(bool save)
     {
         _graph.SaveProgress = save ? true : null;
         MarkDirty();
     }
 
-    // BL-229 - what the runs keep of their steps' data: a change like any other, saved, merged and undone.
+    // What the runs keep of their steps' data: a change like any other, saved, merged and undone.
     private void SetKeepStepData(string value)
     {
         _graph.KeepStepData = PipelineStepDataKeeping.Stored(value);
@@ -7808,7 +7808,7 @@ else
     // What the run's step shows in place of its data once the pipeline's setting has emptied it.
     private const string StepDataNotKept = "Not kept: the pipeline is set not to keep what this run's steps received and produced (Runs, with nothing selected).";
 
-    // BL-229: n8n's time saved per run - a change like any other: saved, merged, undone. Empty, nought or less says nothing.
+    // n8n's time saved per run - a change like any other: saved, merged, undone. Empty, nought or less says nothing.
     private void SetMinutesSaved(string value)
     {
         var minutes = int.TryParse(value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var typed) ? PipelineInsights.MinutesSaved(typed) : null;
@@ -7821,7 +7821,7 @@ else
         MarkDirty("minutes-saved");
     }
 
-    // BL-229: n8n's "Timeout Workflow" - how long a run may be busy before it is stopped; a change like any other: saved, merged,
+    // n8n's "Timeout Workflow" - how long a run may be busy before it is stopped; a change like any other: saved, merged,
     // undone. Empty, nought or less is no limit; more than a day is a day.
     private void SetTimeoutMinutes(string value)
     {
@@ -7835,7 +7835,7 @@ else
         MarkDirty("timeout-minutes");
     }
 
-    // BL-229: n8n's "This workflow can be called by" - which pipelines may call this one; a change like any other: saved, merged,
+    // n8n's "This workflow can be called by" - which pipelines may call this one; a change like any other: saved, merged,
     // undone. "Only the pipelines chosen" with none chosen yet admits nobody, as n8n's empty list does.
     private const string OnlyChosenCallers = "only";
 
@@ -7885,7 +7885,7 @@ else
         MarkDirty();
     }
 
-    // BL-229: n8n's workflow "Timezone" - a change like any other: saved, merged, undone; one this machine does not know is said
+    // n8n's workflow "Timezone" - a change like any other: saved, merged, undone; one this machine does not know is said
     // here, and the save refuses it. The preview reads $now and $today in it at once.
     private void SetTimeZone(string value)
     {
@@ -7900,7 +7900,7 @@ else
         MarkDirty();
     }
 
-    // BL-229: how many runs of the pipeline may go at once - a change like any other: saved, merged, undone.
+    // How many runs of the pipeline may go at once - a change like any other: saved, merged, undone.
     private void SetRunsAtOnce(string value)
     {
         var setting = PipelineRunsAtOnce.Normalize(value);
@@ -7920,7 +7920,7 @@ else
 
     private bool InScope(PipelineGraphNote note) => note.Parent == _scopeParent && (_scopeParent is null || note.ParentPort == _scopePort);
 
-    // BL-229 - n8n's "Save changes before leaving?": leaving for another page with changes not saved is held, and the editor asks
+    // n8n's "Save changes before leaving?": leaving for another page with changes not saved is held, and the editor asks
     // - save and leave, leave without saving, or stay. The editor never navigates itself (a step or a run is chosen in place), so
     // any navigation the page makes is leaving this pipeline; a link opening a new tab makes none.
     private string _leaveTo;
@@ -8006,7 +8006,7 @@ else
         }
     }
 
-    // While collaborating (BL-97 increment 12): the graph measured against the one this editor loaded. Merged - the canvas
+    // While collaborating: the graph measured against the one this editor loaded. Merged - the canvas
     // becomes the stored graph, both editors' work in it; rejected - nothing was stored, and each conflict says what the
     // other editor holds now.
     private async Task<bool> SaveMergedAsync()
@@ -8049,7 +8049,7 @@ else
     private static string Shown(string value) =>
         value is null ? "(nothing - removed)" : value == PipelineGraphFields.Present ? "(present)" : "'" + (value.Length > 60 ? value[..60] + "…" : value) + "'";
 
-    // BL-229 - n8n's workflow name, edited in place: the pipeline's name and what it does, saved into its draft (a new draft over
+    // n8n's workflow name, edited in place: the pipeline's name and what it does, saved into its draft (a new draft over
     // a published version - the publisher's rule - which a publish puts live), and nothing of the canvas with them.
     private bool _detailsOpen;
     private string _detailsName = "";
@@ -8127,7 +8127,7 @@ else
         }
     }
 
-    // BL-229 - n8n's archive: back from it, as a draft, and the editor the author's again.
+    // n8n's archive: back from it, as a draft, and the editor the author's again.
     private async Task RestoreFromArchiveAsync()
     {
         if (_pipeline is null || _busy)
@@ -8171,7 +8171,7 @@ else
             return;
         }
 
-        // BL-229 increment 4: saved as a draft, and not published while a problem remains - the server refuses it by the same
+        // Saved as a draft, and not published while a problem remains - the server refuses it by the same
         // rule, so the editor says so without asking.
         var errors = _problems.Count(problem => problem.Severity == PipelineGraphProblems.Error);
         if (errors > 0)
@@ -8213,7 +8213,7 @@ else
         }
     }
 
-    // Start = dispatch (D111 item 3), and STAY: the canvas follows the run as it goes (BL-229 increment 2) - each step's state
+    // Start = dispatch, and STAY: the canvas follows the run as it goes - each step's state
     // and time on it, its data in the inspector - with a link to the run's log page.
     private async Task RunAsync()
     {
@@ -8226,7 +8226,7 @@ else
         catch (Exception ex)
         {
             await logger.LogError(ex, "Error Starting Pipeline {Error}", ex.Message);
-            // The server's reason when it refused (BL-222) - e.g. a pipeline that runs one at a time, with a run still going.
+            // The server's reason when it refused - e.g. a pipeline that runs one at a time, with a run still going.
             _error = RefusalReason(ex) is { } reason ? "The run could not be started: " + reason : "The run could not be started.";
         }
     }
@@ -8261,7 +8261,7 @@ else
         await ShowRunAsync(runId);
     }
 
-    // BL-229 - beyond n8n's Insights: each step's figures over a window, on the canvas where a run would be - so a step that fails
+    // Beyond n8n's Insights: each step's figures over a window, on the canvas where a run would be - so a step that fails
     // often, or takes long, shows where it is. Shown, they take the run's place; choosing a run takes theirs.
     private PipelineStepInsightsView _stepInsights;
 
@@ -8300,7 +8300,7 @@ else
 
     private bool _stopping;
 
-    // BL-229 - n8n's "Stop execution": the run on the canvas cancelled - the Run page's Cancel - and read again at once, then
+    // n8n's "Stop execution": the run on the canvas cancelled - the Run page's Cancel - and read again at once, then
     // followed until the engine has stopped it (afresh, should it have been followed past the poll's limit), so the canvas says
     // where it stopped.
     private async Task StopRunAsync()
@@ -8428,7 +8428,7 @@ else
 
         foreach (var node in _diagram.Nodes.OfType<StepNodeModel>())
         {
-            // BL-229: the steps' figures over a window, where a run would be - amber when some of its passes failed, red when all did.
+            // The steps' figures over a window, where a run would be - amber when some of its passes failed, red when all did.
             if (_stepInsights is not null)
             {
                 var insight = _stepInsights.Steps.FirstOrDefault(step => step.StepId == node.StepId);
@@ -8482,7 +8482,7 @@ else
         ApplyRunToLinks();
     }
 
-    // BL-229 - n8n's "3 items" on a connection: in the run shown, a connection taken - the step it goes to ran after the step it
+    // n8n's "3 items" on a connection: in the run shown, a connection taken - the step it goes to ran after the step it
     // leaves - carries how many records that step's result held (its last pass). A branch not taken carries nothing: the step
     // it goes to never ran.
     private void ApplyRunToLinks()

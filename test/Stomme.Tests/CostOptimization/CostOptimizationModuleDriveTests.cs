@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// BL-97 increment 6 - the CostOptimization module driven over HTTP on an installed host, on SQLite and PostgreSQL: the
+    /// The CostOptimization module driven over HTTP on an installed host, on SQLite and PostgreSQL: the
     /// page served from the module's own template; two recommendations of the site listed with their evidence and filtered
     /// by status; an advisor pass answering over HTTP; one applied (200) and refused a second decision (409 `not-open`); a
     /// zero cooldown refused (400 `invalid-cooldown`) before the other is dismissed for fourteen days; an unknown id 404; a

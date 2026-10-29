@@ -5,10 +5,10 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// The Alias aggregate root — the persistence-side model of the framework store's <c>Alias</c> table (D52),
+    /// The Alias aggregate root — the persistence-side model of the framework store's <c>Alias</c> table,
     /// reachable only through <see cref="IAliasStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads).
     /// A MASTER-database aggregate, like <see cref="TenantAggregate"/>, <see cref="ThemeAggregate"/> and the master
-    /// half of Setting (D23).
+    /// half of Setting.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -22,7 +22,7 @@ namespace Stomme.Repository.Stores
     /// incoming host+path to a Site and a Tenant. The lookup that does this — <c>AliasRepository.GetAliasAsync(url)</c>
     /// — matches the request URL against the cached list ENTIRELY IN MEMORY with
     /// <see cref="StringComparison.OrdinalIgnoreCase"/>, never a translated query, so the EF-vs-RavenDB string-equality
-    /// divergence (D48/D49) does not reach it. The stored <see cref="Name"/> is already lower-cased on write by the
+    /// divergence does not reach it. The stored <see cref="Name"/> is already lower-cased on write by the
     /// repository, exactly as the harvested code did.
     /// </para>
     /// <para>
@@ -45,7 +45,7 @@ namespace Stomme.Repository.Stores
     /// <b>No navigation to sever.</b> <see cref="TenantId"/>/<see cref="SiteId"/> are plain ints — the Alias contract
     /// carries no <c>Tenant</c> or <c>Site</c> navigation property, and Site is tenant-side (a different database)
     /// besides. The relational <c>FK_Alias_Tenant</c> stays in the DB (the migration created it, nothing here drops
-    /// it) but the MODEL references the tenant by id only (D7/D19). So unlike the SiteGroup (D45) or Folder/File
+    /// it) but the MODEL references the tenant by id only. So unlike the SiteGroup or Folder/File
     /// (D48/D49) pairs there was no mapped navigation to break.
     /// </para>
     /// <para>

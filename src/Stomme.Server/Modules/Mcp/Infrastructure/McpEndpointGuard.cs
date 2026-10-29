@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 namespace Stomme.Modules.Mcp.Infrastructure
 {
     /// <summary>
-    /// The guard a refresh dials an EXTERNAL MCP server through (D101 item 5).
+    /// The guard a refresh dials an EXTERNAL MCP server through.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -21,7 +21,7 @@ namespace Stomme.Modules.Mcp.Infrastructure
     /// URL, and not against a DNS answer read earlier. D101 falsified the pre-flight look-up as TOCTOU: the transport
     /// resolves again when it dials, so a name that answered a public address during the check can answer a private one
     /// a moment later. The mechanism is <see cref="OutboundConnectGuard"/>, the framework's ONE outbound guard
-    /// (BL-100 / D109, D100's deny set): loopback, RFC1918, link-local including 169.254.169.254, unique-local
+    /// (D100's deny set): loopback, RFC1918, link-local including 169.254.169.254, unique-local
     /// fc00::/7, the unspecified and multicast ranges, and the IPv4-mapped IPv6 form of each. Redirects are off - a 302
     /// to an internal address would otherwise be followed past the check - and so is the proxy, which would move the
     /// check onto the proxy's address.

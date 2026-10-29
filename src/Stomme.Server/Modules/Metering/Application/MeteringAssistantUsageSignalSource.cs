@@ -13,7 +13,7 @@ using Stomme.Modules.Metering.Domain;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Metering's side of CostOptimization's AI-usage read port (BL-97 increment 7, the predecessor platform's
+    /// Metering's side of CostOptimization's AI-usage read port (the predecessor platform's
     /// <c>AiUsageAssistantUsageSignalSource</c>; D102's marked correction books it): the REQUEST's site's AI ledger for the
     /// current calendar month per provider and model - requests, cache-served requests, raw tokens, cost - and the site's
     /// monthly <c>ai.calls</c> quota position. With no site resolved the signal is empty, never another site's.

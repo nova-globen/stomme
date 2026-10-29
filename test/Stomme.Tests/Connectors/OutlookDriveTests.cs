@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Outlook DRIVEN on an installed SQLite host, with the REAL connector, the Send email step, the host's
+    /// Microsoft Outlook DRIVEN on an installed SQLite host, with the REAL connector, the Send email step, the host's
     /// egress and the extraction port, against a loopback stand-in for the tenant's token endpoint and Microsoft Graph: an Outlook
     /// connection made over the API, its client secret vaulted and its mailbox a setting, tested; a published pipeline reads the
     /// Inbox's unread messages, answers the first with Send email - a reply Outlook makes in its conversation, the body of two

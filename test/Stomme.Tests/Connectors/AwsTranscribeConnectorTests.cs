@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - n8n's AWS Transcribe node over Transcribe's JSON protocol, each call signed with SigV4 for transcribe in the
+    /// n8n's AWS Transcribe node over Transcribe's JSON protocol, each call signed with SigV4 for transcribe in the
     /// connection's region: every parameter held to its shape before anything is signed; a job started with its recording, its
     /// language given or identified and its settings; a job's state while it runs and, once COMPLETED, its transcript fetched from
     /// the presigned address Transcribe answers with - unsigned, and only an https one - as its text or as Transcribe writes it;

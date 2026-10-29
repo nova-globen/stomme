@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Contentful (n8n's Contentful node: a space's entries, assets, content types and locales read): every call
+    /// Contentful (n8n's Contentful node: a space's entries, assets, content types and locales read): every call
     /// Contentful's Delivery API - its Preview API when the connection says so, another address when given - with the token as a
     /// bearer token, never in the address; a list page by page by skip, the limit fixed and no bigger than asked, Contentful's
     /// total the end, with a content type, its search parameters, the fields to select, an order, a full-text search and a

@@ -18,8 +18,8 @@ using FluentValidation;
 
 namespace Stomme.Modules.Notifications.Application
 {
-    // Lifted from the predecessor platform NotificationTemplateCommands.cs (BL-78 step 5), site-scoped: the key is unique per SITE through
-    // KeyNormalized (D49, both sides normalized), a template of another site is "does not exist", and the save runs the
+    // Lifted from the predecessor platform NotificationTemplateCommands.cs, site-scoped: the key is unique per SITE through
+    // KeyNormalized (both sides normalized), a template of another site is "does not exist", and the save runs the
     // hardened renderer's validate-at-save (the step-3 residue: EnsureValidForSave had no caller until now).
 
     /// <summary>

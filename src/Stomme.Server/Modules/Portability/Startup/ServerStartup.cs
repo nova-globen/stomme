@@ -14,9 +14,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Portability.Startup
 {
     /// <summary>
-    /// Wires data portability (BL-82, D107): the package and audit aggregates (storage-blind, tenant-owned), the format,
+    /// Wires data portability: the package and audit aggregates (storage-blind, tenant-owned), the format,
     /// the contributor registry, the validate-first importer and the exporter. Contributors register themselves - scoped,
-    /// explicitly, from their own module's startup (D107 item 16).
+    /// explicitly, from their own module's startup.
     /// </summary>
     public class ServerStartup : IServerStartup
     {
@@ -36,7 +36,7 @@ namespace Stomme.Modules.Portability.Startup
             services.AddModuleAggregatePersistence<PortabilityAuditEntryAggregate, Guid>();
             services.AddScoped<IPortabilityPackageRepository, PortabilityPackageRepository>();
             services.AddScoped<IPortabilityAuditRepository, PortabilityAuditRepository>();
-            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.PortabilityErasureParticipant>(); // D112: the subject's packages go; the accountability rows are retained one year
+            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.PortabilityErasureParticipant>(); // The subject's packages go; the accountability rows are retained one year
 
             services.AddSingleton<PortabilityBundleSerializer>();
             services.AddScoped<PortabilityContributorRegistry>();
@@ -46,7 +46,7 @@ namespace Stomme.Modules.Portability.Startup
             services.TryAddSingleton(provider =>
             {
                 // IConfigurationRoot FIRST (HostConfiguration.Resolve): the plain IConfiguration lacked the override file a
-                // deployed install writes its switches into (BL-162; since BL-251 it has it, but still lacks features.json).
+                // deployed install writes its switches into (since BL-251 it has it, but still lacks features.json).
                 var options = new PortabilityOptions();
                 HostConfiguration.Resolve(provider)?.GetSection(PortabilityOptions.SectionName).Bind(options);
                 return options;
@@ -60,7 +60,7 @@ namespace Stomme.Modules.Portability.Startup
             services.AddScoped<Services.ServerPortabilityService>();
             services.AddScoped<Services.IPortabilityService>(sp => sp.GetRequiredService<Services.ServerPortabilityService>());
 
-            // The shipped contributors (D107 item 8) - scoped, explicit. Other modules register their own the same way.
+            // The shipped contributors - scoped, explicit. Other modules register their own the same way.
             services.AddScoped<Stomme.Portability.IPortableEntityContributor, Contributions.ProfileDefinitionContributor>();
             services.AddScoped<Stomme.Portability.IPortableEntityContributor, Contributions.ModuleContentContributor>();
             services.AddScoped<Stomme.Portability.ISubjectDataContributor, Contributions.UserAccountSubjectContributor>();

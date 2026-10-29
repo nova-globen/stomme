@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Asana DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Asana DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Asana's API: an Asana connection made over the API, its token vaulted, tested (the user
     /// named); a published pipeline adds a task to a project, comments on it, moves it to a section, completes it and reads the
     /// project's open tasks over two pages - each call a bearer; the token is in neither the graph nor the run.

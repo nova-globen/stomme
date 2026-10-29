@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Backup.Application
 {
     /// <summary>
-    /// Scheduled snapshots and retention (BL-81, D106 item 8). Installation-wide work on a per-tenant loop
+    /// Scheduled snapshots and retention. Installation-wide work on a per-tenant loop
     /// (<c>HostedServiceBase</c> calls this once per tenant): it acts ONCE per tick, on the lowest tenant's turn, and never
     /// enumerates tenants itself (refutation 7). Off twice by default: the Job row is created disabled, and
     /// <c>Backup:Enabled</c> must be on.

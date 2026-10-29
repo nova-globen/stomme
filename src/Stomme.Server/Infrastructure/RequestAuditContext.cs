@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// The audit context of the current request (BL-175): the signed-in name, or the empty string when there is no
+    /// The audit context of the current request: the signed-in name, or the empty string when there is no
     /// request or no user - the same answer <c>DbContextUtils</c> gives the relational path - and the same
     /// <see cref="AuditStampSuppression"/> scope, so a write that must land unstamped (a restore, an erasure's
     /// placeholder) lands unstamped on RavenDB as it does on EF. One instance serves the singleton document store;

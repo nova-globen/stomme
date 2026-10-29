@@ -14,7 +14,7 @@ using Raven.Client.ServerWide.Operations;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// Decides, per tenant, which RavenDB database its rows live in (BL-176) and makes it ready. Run by the install and boot
+    /// Decides, per tenant, which RavenDB database its rows live in and makes it ready. Run by the install and boot
     /// path for every tenant, in the loop that migrates a relational tenant's schema.
     /// </summary>
     /// <remarks>

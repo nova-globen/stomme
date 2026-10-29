@@ -12,7 +12,7 @@ using Stomme.Shared;
 namespace Stomme.Pages
 {
     /// <summary>
-    /// D65 — the explicit Windows/Negotiate login (installation-wide, config-gated). Unlike SAML/OIDC there is
+    /// The explicit Windows/Negotiate login (installation-wide, config-gated). Unlike SAML/OIDC there is
     /// no redirect dance: Negotiate authenticates the request in place. When the request carries no negotiated
     /// credential this issues an explicit challenge → HTTP 401 with <c>WWW-Authenticate: Negotiate</c> (the
     /// locally-drivable smoke); a domain browser then resends with a Kerberos/NTLM token and the second pass
@@ -39,7 +39,7 @@ namespace Stomme.Pages
         {
             returnurl = (returnurl == null) ? "/" : returnurl;
             returnurl = (!returnurl.StartsWith("/")) ? "/" + returnurl : returnurl;
-            returnurl = Utilities.LocalReturnUrl(returnurl); // BL-244: "//host" and "/\host" are another site
+            returnurl = Utilities.LocalReturnUrl(returnurl); // "//host" and "/\host" are another site
 
             // Gate: only meaningful when Negotiate is registered (WindowsAuth:Enabled on a supported host).
             if (await _schemes.GetSchemeAsync(StommeExternalSchemesExtensions.NegotiateScheme) == null)

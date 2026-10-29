@@ -11,7 +11,7 @@ namespace Stomme.Modules.Landing.Infrastructure
     /// <summary>
     /// The allowlist a generated landing page passes through before it is stored and again before it is shown (BL-98 increment
     /// 3; the predecessor platform's plan: "sanitized to a page-level allowlist - structural and inline-style tags, no script, no inline event
-    /// handlers, constrained external resource origins"). The Help module's sanitizer is the precedent (BL-84): a real HTML5
+    /// handlers, constrained external resource origins"). The Help module's sanitizer is the precedent: a real HTML5
     /// parser and an edit of the tree, never a regex over markup; an element is ALLOWED (its attributes filtered), DROPPED
     /// WITH ITS CONTENT (code, a second parser, a form, a frame) or UNWRAPPED (its text stays).
     /// </summary>

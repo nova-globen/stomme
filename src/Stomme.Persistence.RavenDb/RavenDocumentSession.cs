@@ -7,7 +7,7 @@ using RavenSession = Raven.Client.Documents.Session.IDocumentSession;
 namespace Stomme.Persistence.RavenDb;
 
 /// <summary>
-/// RavenDB <see cref="IDocumentSession"/> — the seam's read path (D19: every framework-store read goes
+/// RavenDB <see cref="IDocumentSession"/> — the seam's read path (every framework-store read goes
 /// through <see cref="IQuerySession"/>, never through the aggregate repository).
 /// <para>
 /// <b>Why RavenDB's synchronous session backs this.</b> <see cref="IQuerySession.Query{TEntity}"/> hands

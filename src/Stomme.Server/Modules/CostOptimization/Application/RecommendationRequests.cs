@@ -18,7 +18,7 @@ using FluentValidation;
 namespace Stomme.Modules.CostOptimization.Application
 {
     // ============================================================================================================
-    // CostOptimization's commands and queries (BL-97 increment 6, the predecessor platform's by name): one advisor pass, apply, dismiss,
+    // CostOptimization's commands and queries: one advisor pass, apply, dismiss,
     // and the list - every one through the REQUEST's site, so another site's recommendations do not exist for it.
     // ============================================================================================================
 
@@ -42,7 +42,7 @@ namespace Stomme.Modules.CostOptimization.Application
         {
             var siteId = CostOptimizationScope.Site(siteState);
 
-            // CHANGED from the predecessor platform, which fell back to the default tenant: a recommendation is tenant-owned (BL-111), so a
+            // CHANGED from the predecessor platform, which fell back to the default tenant: a recommendation is tenant-owned, so a
             // pass with no resolved tenant is refused rather than written to a guess.
             var tenantId = tenantContext.CurrentTenantId ?? throw new InvalidOperationException("A recommendation belongs to a tenant; none is resolved in this scope.");
             var now = clock.GetUtcNow().UtcDateTime;

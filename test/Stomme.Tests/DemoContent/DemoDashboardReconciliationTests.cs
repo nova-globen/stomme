@@ -45,7 +45,7 @@ namespace Stomme.Tests.DemoContent
                 var boards = await BoardsAsync(app, site);
                 var datasets = await DatasetsAsync(app, site);
                 output.WriteLine($"[on] boards: {string.Join(", ", boards.Select(board => $"{board.Name} ({board.Status}, {board.Widgets.Count} widgets)"))}");
-                var board = Assert.Single(boards, candidate => candidate.Name == DashboardsDemoContentReconciler.BoardName); // beside the cloud cost board (BL-97 increment 5)
+                var board = Assert.Single(boards, candidate => candidate.Name == DashboardsDemoContentReconciler.BoardName); // beside the cloud cost board
                 Assert.Equal((DashboardsDemoContentReconciler.BoardName, DashboardStatus.Published, site.TenantId), (board.Name, board.Status, board.TenantId));
 
                 var byOrigin = datasets.ToDictionary(dataset => dataset.OriginReference!, dataset => dataset.Id);

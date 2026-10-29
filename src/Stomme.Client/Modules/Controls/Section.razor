@@ -1,7 +1,7 @@
 ﻿@namespace Stomme.Modules.Controls
 @inherits LocalizableComponent
 
-@* Migrated to the --db-* design system (D11, Phase 4).
+@* Migrated to the --db-* design system (Phase 4).
    Collapsing used to be pure Bootstrap JS (data-bs-toggle="collapse") with no @onclick handler.
    That JS went away with the CDN in Phase 1 and the compat shim never defined a .collapse rule, so
    every Section rendered permanently OPEN -- even the ones reporting aria-expanded="false" -- and no

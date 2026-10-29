@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.CloudUsage
 {
     /// <summary>
-    /// BL-97 increment 2 - the predecessor platform's <c>CloudCostRecordTests</c> by name on the site-scoped aggregate. CHANGED: the row names
+    /// The predecessor platform's <c>CloudCostRecordTests</c> by name on the site-scoped aggregate. CHANGED: the row names
     /// its site (a site of zero is refused, the port's own case) and its date is the stored UTC midnight.
     /// </summary>
     public sealed class CloudCostRecordTests
@@ -149,7 +149,7 @@ namespace Stomme.Tests.CloudUsage
     }
 
     /// <summary>
-    /// BL-97 increment 2 - the predecessor platform's <c>CloudBudgetTests</c>, the aggregate half by name (the three command-handler cases land
+    /// The predecessor platform's <c>CloudBudgetTests</c>, the aggregate half by name (the three command-handler cases land
     /// with the command in increment 4), plus the marker's once-only identity.
     /// </summary>
     public sealed class CloudBudgetTests

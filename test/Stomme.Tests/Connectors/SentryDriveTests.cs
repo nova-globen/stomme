@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Sentry DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Sentry DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a self-hosted Sentry that refuses a call without the token: a Sentry connection made over
     /// the API, its token vaulted, tested; a published pipeline reads a project's unresolved issues over two pages by Sentry's
     /// cursor - no more than asked, never the host the Link header names - resolves one and assigns it, creates a release with

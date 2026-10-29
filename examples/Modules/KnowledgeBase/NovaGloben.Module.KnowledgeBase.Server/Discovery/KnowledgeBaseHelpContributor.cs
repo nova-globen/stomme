@@ -5,7 +5,7 @@ using Stomme.Help;
 namespace NovaGloben.Module.KnowledgeBase.Discovery
 {
     /// <summary>
-    /// The module's help topics (D103): one per page it places and one per control a reader meets, in English. Discovered by
+    /// The module's help topics: one per page it places and one per control a reader meets, in English. Discovered by
     /// the host's convention - a public parameterless constructor in a <c>*.Stomme</c> assembly - while contextual help is
     /// on (<c>Help:Enabled</c>), and reconciled into every site as an editable row: an operator's edit survives, and the
     /// contributor id is what the row remembers so no other package can overwrite it.

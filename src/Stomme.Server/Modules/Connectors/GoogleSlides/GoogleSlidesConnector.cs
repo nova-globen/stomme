@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleSlides
 {
     /// <summary>
-    /// Google Slides (BL-229, n8n's Google Slides node) over the Slides API (<c>https://slides.googleapis.com/v1</c>) as a person
+    /// Google Slides (n8n's Google Slides node) over the Slides API (<c>https://slides.googleapis.com/v1</c>) as a person
     /// signed in - an OAuth client's refresh token granted the presentations scope, exchanged at Google's token endpoint through
     /// the shared <see cref="OAuth2TokenProvider"/>, as Gmail's is. A test reads a presentation the connection names, or asks for
     /// a token alone.

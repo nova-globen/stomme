@@ -28,7 +28,7 @@ namespace Stomme.Tests.Notifications
     /// shipped channels replaced by <see cref="FakeTransportChannel"/>s, and the two framework-facing ports
     /// (<see cref="INotificationSiteSettings"/>, <see cref="INotificationRecipientDirectory"/>) replaced by in-memory
     /// doubles. Time is a <see cref="ManualTimeProvider"/>. NO <see cref="IEventBus"/> is registered unless asked for -
-    /// messaging OFF is the default posture (D100 point 3: the job is authoritative).
+    /// messaging OFF is the default posture (the job is authoritative).
     /// </summary>
     internal sealed class NotificationPipelineHarness : IAsyncDisposable
     {

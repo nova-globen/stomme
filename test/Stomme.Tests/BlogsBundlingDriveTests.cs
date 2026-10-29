@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// THE W2 END-TO-END DRIVE (D85): the independent example module <c>examples/Modules/Blogs</c>, bundled into this
+    /// THE W2 END-TO-END DRIVE: the independent example module <c>examples/Modules/Blogs</c>, bundled into this
     /// host by a build-time <c>&lt;PackageReference&gt;</c> (NOT installed through InstallationManager, NOT a
     /// project reference), is discovered by the existing <c>/bin</c> convention scan and its render is flipped by
     /// the <c>module.blogs.enabled</c> config knob — driven both directions on a REAL SQLite install + render.
@@ -35,9 +35,9 @@ namespace Stomme.Tests
     /// dotnet test test/Stomme.Tests -p:IncludeDemoModules=true --no-restore --filter FullyQualifiedName~BlogsBundlingDriveTests
     /// </code>
     /// The PackageReference bakes the three split <c>NovaGloben.Module.Blogs.{Client,Server,Shared}.Stomme.dll</c>
-    /// assemblies (BL-13) into the test output <c>/bin</c>; because their names contain "Stomme" the
+    /// assemblies into the test output <c>/bin</c>; because their names contain "Stomme" the
     /// convention loader loads them and discovery reflects the Blogs
-    /// <c>ModuleDefinition</c> — the same convention an InstallationManager-unpacked module rides (D82). What W2
+    /// <c>ModuleDefinition</c> — the same convention an InstallationManager-unpacked module rides. What W2
     /// adds is that a <c>PackageReference</c> is a valid delivery vehicle for that same assembly, and that
     /// <c>module.blogs.enabled</c> gates whether the self-placed "blogs" page is seeded.
     /// </remarks>
@@ -186,7 +186,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { }
             }
         }

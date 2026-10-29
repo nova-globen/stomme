@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.SeaTable
 {
     /// <summary>
-    /// SeaTable (BL-229, n8n's SeaTable node) over SeaTable's API by a base's API token - from the base's own settings - which
+    /// SeaTable (n8n's SeaTable node) over SeaTable's API by a base's API token - from the base's own settings - which
     /// the connector exchanges for a base access token (<c>/api/v2.1/dtable/app-access-token/</c>), each a <c>Token</c>
     /// header, never in the address. A test names the base the token is for.
     /// </summary>

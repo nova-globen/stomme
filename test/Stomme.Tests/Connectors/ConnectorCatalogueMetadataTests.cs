@@ -26,7 +26,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-96 increment 6 - the predecessor platform's ConnectorCatalogueMetadataTests (5) by name over the port, plus the brand rules of the
+    /// The predecessor platform's ConnectorCatalogueMetadataTests (5) by name over the port, plus the brand rules of the
     /// icon and logo licensing review as tests: every catalogue icon is the brand-neutral monogram (no in-tree connector
     /// declares an icon of its own, no image asset sits under the family), and the connections page carries the
     /// third-party trademark notice.
@@ -162,7 +162,7 @@ namespace Stomme.Tests.Connectors
         [Fact]
         public void Every_catalogue_name_is_the_name_the_licensing_review_records()
         {
-            // BL-217: a connector is named as the licensing review names the product - its current owner's spelling, with the
+            // A connector is named as the licensing review names the product - its current owner's spelling, with the
             // former name beside it after a rename (Cylance, Taegis) - so a name is changed in the review first, never here alone.
             var registry = Path.Combine(RepositoryRoot(), "docs", "legal", "connector-icon-licensing-review", "BRAND_ASSET_REGISTRY.json");
             using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText(registry));
@@ -213,9 +213,9 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - a connector names its credential fields in the service's own words (Trello's "Token", Twilio's "Account SID"):
+    /// A connector names its credential fields in the service's own words (Trello's "Token", Twilio's "Account SID"):
     /// each label is for a field its scheme declares, one line, never empty - the field's NAME, and so where its secret is kept,
-    /// stays the scheme's (D110) - and the catalogue the editor reads shows the label beside the unchanged name.
+    /// stays the scheme's - and the catalogue the editor reads shows the label beside the unchanged name.
     /// </summary>
     public sealed class ConnectorCredentialLabelTests
     {

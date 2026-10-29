@@ -41,7 +41,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Data table (BL-229, n8n's Data table node): reads and writes one of the site's data tables
+    /// Data table (n8n's Data table node): reads and writes one of the site's data tables
     /// (<see cref="PipelineSiteTables"/>, kept by <see cref="PipelineSiteTableStore"/>), so a run remembers what an earlier one did.
     /// The table is named (or given by id); a record's fields that are not its columns are passed over, and a value its column
     /// cannot hold fails the step naming both. Get, Update and Delete take the Filter step's rules, tested on each row by the one

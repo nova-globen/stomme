@@ -7,7 +7,7 @@ namespace Stomme.Security
 {
     /// <summary>
     /// Which rows of a submitted <c>PermissionList</c> belong to the entity being written, and which would be
-    /// written as SITE-WIDE rows for some other entity (BL-102).
+    /// written as SITE-WIDE rows for some other entity.
     /// </summary>
     /// <remarks>
     /// <para>

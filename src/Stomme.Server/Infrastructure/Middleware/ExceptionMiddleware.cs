@@ -28,7 +28,7 @@ namespace Stomme.Infrastructure
             {
                 Log(context, provider, exception);
 
-                // BL-56: an unhandled exception must NOT masquerade as an empty HTTP 200. The catch used to log
+                // An unhandled exception must NOT masquerade as an empty HTTP 200. The catch used to log
                 // and return with the status untouched, so Kestrel emitted 200 with zero bytes — every API
                 // consumer saw success on a server failure (an OAuth client got an empty 200 instead of
                 // invalid_client; the OpenIddict store-provisioning throw and the prerender self-call failure both

@@ -15,7 +15,7 @@
 
     /// <summary>
     /// The connection string for the file name the host entered. A file name or a relative path is placed in the host's
-    /// data directory (BL-194): it was relative to the process's working directory, so in a container (WORKDIR /app, the
+    /// data directory: it was relative to the process's working directory, so in a container (WORKDIR /app, the
     /// data mounted at /app/Data) the database was written to the image's layer and lost when the container was recreated.
     /// The token is expanded on the server and the connection string is stored with it; a rooted path is kept as typed.
     /// </summary>

@@ -9,7 +9,7 @@ using Stomme.Formats;
 namespace Stomme.Modules.Formats.Domain
 {
     /// <summary>
-    /// The compiled system presets (BL-94, D110): dates, numbers, currencies and locales every site can render with,
+    /// The compiled system presets: dates, numbers, currencies and locales every site can render with,
     /// each under a DETERMINISTIC id derived from its kind and name so a reference survives every install and every
     /// provider. No two presets share a (kind, pattern, culture) triple - the predecessor platform's "Unix epoch seconds" duplicated the
     /// ISO UTC preset under a name it did not honour, and is dropped.

@@ -41,7 +41,7 @@ public interface IRepository<TAggregate, in TId>
     /// normalized in code, not translated by the provider). Do NOT pass a raw <c>.ToLower()</c>/mixed-case
     /// string comparison and expect agreement; it is measured to diverge (see the D78 conformance suite, which
     /// drives both the divergence and the normalized agreement).
-    /// <b>A string VALUE OBJECT is a string here (BL-150, measured on EF/SQLite, RavenDB and File).</b>
+    /// <b>A string VALUE OBJECT is a string here (measured on EF/SQLite, RavenDB and File).</b>
     /// <c>e =&gt; e.Author == AuthorName.Create("ada lovelace")</c> TRANSLATES on every provider, and diverges exactly
     /// as a raw string does - EF compares the converted string case-sensitively (0 rows for "Ada Lovelace"), RavenDB
     /// insensitively (1), and the File store by the value object's own <c>Equals</c> (1, because <c>AuthorName</c>

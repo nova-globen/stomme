@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    /// <summary>Registers the file-ingestion guard (BL-100 F1, D109).</summary>
+    /// <summary>Registers the file-ingestion guard (BL-100 F1).</summary>
     public static class FileIngestionServiceCollectionExtensions
     {
         /// <summary>

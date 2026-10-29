@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Gotify DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Gotify DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a Gotify server that takes only the application's token to send and the client's to
     /// read and delete: a Gotify connection made over the API, its tokens vaulted, tested; a published pipeline sends a
     /// Markdown message with an accent, reads the messages over two pages by Gotify's since - no more than asked - deletes one

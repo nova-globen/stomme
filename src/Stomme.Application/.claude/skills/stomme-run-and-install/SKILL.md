@@ -81,6 +81,9 @@ and [Configuration](../../../docs/architecture/configuration.md).
   DefaultConnection: an automated installation also needs Installation:HostPassword (or HostPasswordFile)"** (or
   whichever of `Installation:DefaultAlias`, `Installation:HostEmail` and the password are missing). Cause: a connection
   string is set but those are not. Fix: add them (the password may be a file: `Installation:HostPasswordFile`).
+- **The app exits with "Installation:HostPassword (or HostPasswordFile) fails the password policy (it needs ...)".**
+  Cause: the host password misses a rule of the password policy (a digit, an upper-case letter, a symbol, a length). Fix:
+  a stronger password; nothing was installed, so the next start installs.
 - **The home page says "Configured For An Unattended Installation" instead of showing the installer.** Cause: the
   `Installation` section sets `DefaultAlias`, `HostEmail`, `HostPassword` or `HostPasswordFile`, so the browser wizard is
   refused, but the unattended install did not run (no connection string, or a bad password file - the log says which).

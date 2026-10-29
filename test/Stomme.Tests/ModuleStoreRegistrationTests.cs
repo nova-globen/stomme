@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D55 — the MODULE-scoped twin of <see cref="RavenFrameworkStoreRegistrationTests"/> (orchestrator decision 1).
+    /// The MODULE-scoped twin of <see cref="RavenFrameworkStoreRegistrationTests"/> (orchestrator decision 1).
     /// </summary>
     /// <remarks>
     /// <para>

@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.HaloPsa
 {
     /// <summary>
-    /// HaloPSA (BL-229, n8n's HaloPSA node: a service desk's clients, their sites and users, and its tickets): Halo's resource
+    /// HaloPSA (n8n's HaloPSA node: a service desk's clients, their sites and users, and its tickets): Halo's resource
     /// server with an API application's client credentials at Halo's token endpoint through the family's token provider, over
     /// the host's egress. A test counts the desk's tickets.
     /// </summary>

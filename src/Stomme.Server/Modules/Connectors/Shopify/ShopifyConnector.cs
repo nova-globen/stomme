@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Shopify
 {
     /// <summary>
-    /// Shopify (BL-229, n8n's Shopify node: orders and products listed, got, created, updated and deleted): a shop's GraphQL Admin
+    /// Shopify (n8n's Shopify node: orders and products listed, got, created, updated and deleted): a shop's GraphQL Admin
     /// API (<c>https://your-store.myshopify.com/admin/api/{version}/graphql.json</c>) - Shopify's own, its REST Admin API legacy
     /// since 2024 - an app's Admin API access token (<c>shpat_...</c>) in Shopify's <c>X-Shopify-Access-Token</c> header. A test
     /// names the shop.

@@ -11,13 +11,13 @@ using Stomme.Shared;
 namespace Stomme.Modules.Notifications.Application
 {
     /// <summary>
-    /// The Notifications module's per-site settings (BL-78 step 4): plain <see cref="Setting"/> rows on
+    /// The Notifications module's per-site settings: plain <see cref="Setting"/> rows on
     /// <see cref="EntityNames.Site"/>, read through <see cref="ISettingRepository"/>. Deliberately NOT in
     /// <c>SettingKeys.cs</c> (D100's NOT CHANGED list) - they are the module's, not the framework's.
     /// </summary>
     public static class NotificationSiteSettingNames
     {
-        /// <summary>"True" lets a dispatch address a literal e-mail address (D100 point 4). Absent or anything else: refused.</summary>
+        /// <summary>"True" lets a dispatch address a literal e-mail address. Absent or anything else: refused.</summary>
         public const string ExternalRecipients = "NotificationExternalRecipients";
 
         /// <summary>Whole days a COMPLETED request is kept before the hourly pass purges it. Default 30; a non-positive or unparsable value means the default.</summary>

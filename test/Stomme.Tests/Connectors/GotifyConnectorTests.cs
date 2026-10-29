@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Gotify (n8n's Gotify node: its messages sent, read and deleted): every call the server's API with the
+    /// Gotify (n8n's Gotify node: its messages sent, read and deleted): every call the server's API with the
     /// application's token in X-Gotify-Key to send and the client's to read and delete; a message sent with every extra; the
     /// messages read newest first page by page by Gotify's since - never the address it names - no more than asked; one deleted;
     /// the applications listed; what could go wrong refused before anything is sent; Gotify's words on a failure; a test naming

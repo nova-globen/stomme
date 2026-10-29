@@ -10,8 +10,8 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Formats.Domain
 {
     /// <summary>
-    /// A site's own display format (BL-94, D110): a name, a kind, a pattern the kind can render under a culture, and an
-    /// optional time zone for dates. Tenant-owned and site-scoped, named with a normalised twin (D49) so uniqueness is
+    /// A site's own display format: a name, a kind, a pattern the kind can render under a culture, and an
+    /// optional time zone for dates. Tenant-owned and site-scoped, named with a normalised twin so uniqueness is
     /// asked of the store on every provider the same way. The parameterless constructor is materialisation only.
     /// </summary>
     public sealed class FormatDefinitionAggregate : AggregateRoot<Guid>, ITenantOwned

@@ -23,7 +23,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The Permission cluster on the persistence seam (D3/D7/D24) — the sixth framework-store cluster, and the
+    // The Permission cluster on the persistence seam — the sixth framework-store cluster, and the
     // one that gates everything else: permissions decide what renders and what an admin may do.
     //
     // The hazards the five earlier clusters paid for apply here too (the aggregate is mapped onto a schema
@@ -298,7 +298,7 @@ namespace Stomme.Tests
             Assert.Empty(mappedPermissionMembers);
         }
 
-        // Permission is TENANT-ONLY — the finding that distinguishes it from Setting (D23), which is mapped in
+        // Permission is TENANT-ONLY — the finding that distinguishes it from Setting, which is mapped in
         // both databases. MasterDBContext never had a DbSet<Permission> and PermissionEntityBuilder appears
         // only in the TENANT migration set, so mapping it on the master context would invent an entity type
         // over a table the master migration set does not create.

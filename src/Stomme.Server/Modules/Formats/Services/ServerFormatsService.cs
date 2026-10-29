@@ -11,7 +11,7 @@ using Stomme.Shared;
 
 namespace Stomme.Modules.Formats.Services
 {
-    /// <summary>The module's server IService (BL-94 increment 2): the client contract dispatched through the mediator. Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).</summary>
+    /// <summary>The module's server IService: the client contract dispatched through the mediator. Explicit AddTransient so it wins over the client's HTTP implementation on the server (the Guestbook pattern).</summary>
     public sealed class ServerFormatsService(IMediator mediator) : IFormatsService, ITransientService
     {
         public async Task<List<FormatDescriptor>> ListAsync(FormatKind? kind = null, FormatScope? scope = null) =>

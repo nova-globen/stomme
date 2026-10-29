@@ -8,7 +8,7 @@ using System.Text.Json.Nodes;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// What a "Pipeline failed" trigger hands the pipeline it starts (BL-229, n8n's error workflow): the run that failed, as JSON
+    /// What a "Pipeline failed" trigger hands the pipeline it starts (n8n's error workflow): the run that failed, as JSON
     /// text, read with an expression - <c>{{ failure.pipeline }}</c>, <c>{{ failure.error }}</c>. ONE writer, used by the server
     /// when a run fails and by the editor for the sample an author tests the next steps with, so the fields tested against are the
     /// fields a run gets.

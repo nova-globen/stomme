@@ -8,7 +8,7 @@ namespace Stomme.Infrastructure.Tenancy
     /// <summary>
     /// The <see cref="Tenant"/> records that have ALREADY been resolved in this DI scope, <b>keyed by
     /// TenantId</b>, so that <c>DbContext.OnConfiguring</c> can pick a connection string without reading a
-    /// store (D37).
+    /// store.
     /// </summary>
     /// <remarks>
     /// <para>

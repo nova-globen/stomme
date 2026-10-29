@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 7 (D110) - the Connectivity module on an installed host, over real HTTP, on SQLite, PostgreSQL and
+    /// The Connectivity module on an installed host, over real HTTP, on SQLite, PostgreSQL and
     /// RavenDB, with a fixture connector composed into the host: the admin page exists from the module's own template and
     /// renders for the Host; the catalog lists the fixture with its scheme's credential fields (the predecessor platform's
     /// <c>ConnectorPlugins_AreDiscoveredByThePluginHost_AndRegisteredInTheCatalog</c>); a connection is created with a

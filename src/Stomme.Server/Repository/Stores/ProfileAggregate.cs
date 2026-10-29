@@ -12,7 +12,7 @@ namespace Stomme.Repository.Stores
     /// <remarks>
     /// <para>
     /// A Profile is the DEFINITION of one user-profile property (its name, label, validation, display order) —
-    /// not a user's VALUE for it. The values live in the Setting cluster (D23) under
+    /// not a user's VALUE for it. The values live in the Setting cluster under
     /// <c>EntityNames.User</c>. That split is why this cluster is a leaf despite sounding like it belongs to
     /// User: nothing here references a user at all.
     /// </para>
@@ -36,7 +36,7 @@ namespace Stomme.Repository.Stores
     public class ProfileAggregate : AggregateRoot<int>, IAuditable
     {
         /// <summary>
-        /// The <see cref="Site"/> this property belongs to, by id (D7/D19), or null for a GLOBAL property
+        /// The <see cref="Site"/> this property belongs to, by id, or null for a GLOBAL property
         /// visible to every site. The null arm is load-bearing — see the remarks.
         /// </summary>
         public int? SiteId { get; set; }

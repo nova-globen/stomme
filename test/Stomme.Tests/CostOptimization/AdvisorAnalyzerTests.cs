@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// BL-97 increment 7 - the predecessor platform's <c>AdvisorAnalyzerTests</c> by name (17 cases): the fixtures and assertions are
+    /// The predecessor platform's <c>AdvisorAnalyzerTests</c> by name (17 cases): the fixtures and assertions are
     /// unchanged but for the options instance; the binding and registration cases CHANGED as marked.
     /// </summary>
     public sealed class AdvisorAnalyzerTests

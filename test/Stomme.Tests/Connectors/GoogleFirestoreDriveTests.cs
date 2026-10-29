@@ -15,13 +15,13 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Cloud Firestore DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// Google Cloud Firestore DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against Google's Firestore emulator (<see cref="FirestoreTestEndpoint"/>) and a loopback stand-in for
     /// Google's token endpoint: a Firestore connection made over the API - its project a setting, the client's secret and refresh
     /// token vaulted - refused while loopback is not allowlisted, then tested; a published pipeline makes two orders, raises one's
     /// total by its update mask with its other fields kept, queries till 2's with a query written over several lines in the
     /// step's Query box, and deletes them; the secret and the refresh token in neither the graph nor the run. Fails, never skips,
-    /// without the emulator (D46).
+    /// without the emulator.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

@@ -13,12 +13,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Appends usage to the ledger and folds it into the quota counter (D102).
+    /// Appends usage to the ledger and folds it into the quota counter.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>Two commits, admitted.</b> Stomme's unit of work persists nothing of its own - every repository call
-    /// commits eagerly (D67) - so the ledger append and the counter update cannot share a transaction, and
+    /// commits eagerly - so the ledger append and the counter update cannot share a transaction, and
     /// the predecessor platform's single-SaveChanges atomicity does not survive the lift. Rather than pretend otherwise, the pair
     /// is made RECOVERABLE: the ledger row is written Pending, the fold runs under a lock, and the row is flipped
     /// to Applied afterwards. A crash in between leaves a Pending row that the recovery job folds.
@@ -180,7 +180,7 @@ namespace Stomme.Modules.Metering.Application
                     catch (ConcurrencyConflictException)
                     {
                         // Another recorder folded first; re-read in the NEXT scope and re-apply. The LAST attempt's
-                        // conflict is caught too and falls to the exhausted path below (BL-167: a filter used to let it
+                        // conflict is caught too and falls to the exhausted path below (a filter used to let it
                         // escape, failing a recording whose ledger row was already durable - what that path forbids).
                     }
                 }

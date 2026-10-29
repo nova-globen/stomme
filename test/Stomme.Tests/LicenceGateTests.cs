@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-118: the licence gate proves every RESOLVED package permissive, direct and transitive, instead of passing every
+    /// The licence gate proves every RESOLVED package permissive, direct and transitive, instead of passing every
     /// package its denylist does not name. Driven both ways through the real script against a fabricated restore - a
     /// <c>project.assets.json</c> and nuspecs in a package folder of the test's own - so a planted copyleft package fails
     /// without anything being restored from a feed.

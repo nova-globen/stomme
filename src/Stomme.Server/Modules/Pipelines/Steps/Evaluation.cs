@@ -21,7 +21,7 @@ using Stomme.Modules.Pipelines.Application;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// BL-229 - n8n's Evaluation trigger: where an evaluation's test cases enter. An evaluation runs the published pipeline once per
+    /// n8n's Evaluation trigger: where an evaluation's test cases enter. An evaluation runs the published pipeline once per
     /// row of a data table, each run STARTING HERE with the row (a JSON object of its columns) - or the one column a pipeline's usual trigger would give, a message, say - as this step's result, the whole row its Row output. A pipeline
     /// holds it beside its usual trigger; it is never a run's start otherwise (<see cref="IStartsOnlyWhenNamed"/>), so a webhook's,
     /// a schedule's or the Run button's runs are what they were.
@@ -114,7 +114,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// BL-229 - n8n's Evaluation node: records, for the row an evaluation's run is a test case of, metrics (scores the evaluation
+    /// n8n's Evaluation node: records, for the row an evaluation's run is a test case of, metrics (scores the evaluation
     /// averages), an output (shown beside the row), or a metric scored from how an actual value matches the expected one. In a run
     /// that is no evaluation's it records nothing and the previous result passes through, so the step can stay in the pipeline.
     /// </summary>
@@ -339,7 +339,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// BL-229 - n8n's Evaluation "check if evaluating": goes on down Evaluating in an evaluation's run and down Not evaluating
+    /// n8n's Evaluation "check if evaluating": goes on down Evaluating in an evaluation's run and down Not evaluating
     /// otherwise - so a pipeline skips what a test case must not do (send the email, charge the card) and keeps the rest.
     /// </summary>
     [FlowNode(EvaluatingOutcome, NotEvaluatingOutcome)]

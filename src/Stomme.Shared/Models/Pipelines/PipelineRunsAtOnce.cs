@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// How many runs of a pipeline may go at once (BL-229): any number, one at a time, one at a time per correlation id - a
+    /// How many runs of a pipeline may go at once: any number, one at a time, one at a time per correlation id - a
     /// schedule firing again while the last run still works, a webhook called twice for one order - or one at a time with the
     /// rest in turn (n8n's concurrency control). A start "one at a time" refuses is not made: a trigger's start is skipped (the
     /// engine's activation strategy), and the Run button and Retry say why. "In turn" makes it a run that waits - Queued - and

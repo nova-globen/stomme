@@ -21,7 +21,7 @@ namespace Stomme.Modules.CostOptimization.Services
     }
 
     /// <summary>
-    /// The page's client over <c>api/CostOptimization</c> (BL-97 increment 6). A refused decision (404, 409, 400) still carries
+    /// The page's client over <c>api/CostOptimization</c>. A refused decision (404, 409, 400) still carries
     /// its code and reason in the body, so the page reads the body rather than treating the status as an exception.
     /// </summary>
     public class CostOptimizationService : ServiceBase, ICostOptimizationService, IClientService

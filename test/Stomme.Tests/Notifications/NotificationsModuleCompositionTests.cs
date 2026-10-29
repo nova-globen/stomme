@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 - the Notifications module startup, composed ALONE under each provider config, registers the CLOSED
+    /// The Notifications module startup, composed ALONE under each provider config, registers the CLOSED
     /// <c>IRepository&lt;TAggregate, Guid&gt;</c> for all four aggregates plus the four closed module repositories,
     /// and does NOT call <c>AddMediator</c> (F13: Guestbook already did, and it is additive). This closes the
     /// direction <c>ModuleAggregateProviderNeutralityTests</c> cannot see: that gate only compares relational vs

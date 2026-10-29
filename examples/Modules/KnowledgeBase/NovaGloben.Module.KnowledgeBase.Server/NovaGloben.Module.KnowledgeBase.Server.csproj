@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    BL-86: the SERVER layer of the exemplar - the domain, the storage-blind persistence wiring, the commands and queries,
+    The SERVER layer of the exemplar - the domain, the storage-blind persistence wiring, the commands and queries,
     the server-side service and (from increment 2) the API. The host's convention scan loads it from /bin like the other
     two assemblies, but it NEVER streams to a browser: a WebAssembly site is sent only the ModuleDefinition's AssemblyName
     (the Client) and its Dependencies (the Shared).
-    INDEPENDENT (D81/D82): Stomme arrives only through the slim SDK meta-package from examples/local-feed.
+    INDEPENDENT: Stomme arrives only through the slim SDK meta-package from examples/local-feed.
   -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Stomme.Sdk.Slim" Version="10.75.1" />
+    <PackageReference Include="Stomme.Sdk.Slim" Version="10.75.2" />
   </ItemGroup>
 
   <ItemGroup>

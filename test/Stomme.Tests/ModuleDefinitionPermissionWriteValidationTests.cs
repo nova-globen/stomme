@@ -31,7 +31,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// The module-definition PUT must accept only the FOREIGN-entity permission rows that definition itself
-    /// declares, and must not let a save lock the Administrators role out of a declared key (D99 point 4, F10).
+    /// declares, and must not let a save lock the Administrators role out of a declared key (F10).
     /// </summary>
     /// <remarks>
     /// <para>
@@ -695,7 +695,7 @@ namespace Stomme.Tests
                 // connections of every OTHER suite in the run and, hammered while a host served requests,
                 // reproduced empty 500s (3 in 60, measured). This used to name the tenant store alone, which is
                 // the hard-coded-list shape that leaks: an installed host also opens the FeatureManagement and
-                // module-aggregate sidecars, so the tree survived anyway. ReleaseInstall enumerates (BL-104).
+                // module-aggregate sidecars, so the tree survived anyway. ReleaseInstall enumerates.
                 ScratchSqlite.ReleaseInstall(ContentRoot);
 
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }

@@ -15,7 +15,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// A <c>[RequiresPermissionKey("resource:operation")]</c> policy must actually RESOLVE - and must resolve
-    /// to the key requirement, not to the framework's dynamic 3-segment one (D99 point 9, BL-99). Also pins
+    /// to the key requirement, not to the framework's dynamic 3-segment one. Also pins
     /// the hub policies, whose inert <c>RequireClaim("permission", ...)</c> is replaced by the same requirement.
     /// </summary>
     public class PermissionKeyPolicyResolutionTests
@@ -111,7 +111,7 @@ namespace Stomme.Tests
             Assert.Single(policy.Requirements.OfType<DenyAnonymousAuthorizationRequirement>());
 
             // ...which is what the NOTIFICATION hub ships with (it targets the recipient user). The HEALTH hub is its page's
-            // own key since it began carrying that page's live update (BL-83): a connection is opened under the same key the page
+            // own key since it began carrying that page's live update: a connection is opened under the same key the page
             // itself checks.
             Assert.Null(HubPolicies.All.Single(entry => entry.Name == HubPolicies.Notification).Permission);
             Assert.Equal(Stomme.Health.HealthPermissions.View, HubPolicies.All.Single(entry => entry.Name == HubPolicies.Health).Permission);

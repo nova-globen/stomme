@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Matrix DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Matrix DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a homeserver that refuses a call without the token: a Matrix connection made over the
     /// API, its token vaulted, tested; a published pipeline creates a room with an alias and an invitee, sends a message with
     /// an accent and its HTML, invites someone, reads the room's messages over two pages by the homeserver's token - no more

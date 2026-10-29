@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// The CLIENT half's outbound guard (BL-80 increment 5, D101 item 5), driven against a REAL MCP server on loopback.
+    /// The CLIENT half's outbound guard, driven against a REAL MCP server on loopback.
     /// </summary>
     /// <remarks>
     /// <para>

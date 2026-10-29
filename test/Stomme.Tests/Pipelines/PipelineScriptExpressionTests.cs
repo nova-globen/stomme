@@ -20,7 +20,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 5b - an input computed by JavaScript, in the ENGINE: the module's <c>JavaScript</c> expression kind runs the
+    /// An input computed by JavaScript, in the ENGINE: the module's <c>JavaScript</c> expression kind runs the
     /// expression in the one bounded sandbox with the pipeline's variables in scope (records as JavaScript values, never a .NET
     /// object), only where <c>Pipelines:Scripts:Enabled</c>; the sandbox's limits fault the step with their reason; the preview
     /// runs the same sandbox for an author; the graph comes back as written.

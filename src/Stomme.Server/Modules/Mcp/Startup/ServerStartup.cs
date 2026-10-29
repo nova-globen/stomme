@@ -22,13 +22,13 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Mcp.Startup
 {
     /// <summary>
-    /// Wires the MCP module (BL-80, D101). Increment 2: its two storage-blind aggregates and their closed repositories.
+    /// Wires the MCP module. Increment 2: its two storage-blind aggregates and their closed repositories.
     /// </summary>
     /// <remarks>
     /// <para>
     /// Discovered by the framework's assembly scan like every other module startup. Each aggregate takes ONE
-    /// <c>AddModuleAggregatePersistence</c> call and the module authors no persistence code (D79/D80); the registration
-    /// is the NON-tracking one, so a page in a long-lived circuit reads what the database says (BL-160).
+    /// <c>AddModuleAggregatePersistence</c> call and the module authors no persistence code; the registration
+    /// is the NON-tracking one, so a page in a long-lived circuit reads what the database says.
     /// </para>
     /// <para>
     /// <b>What is NOT here yet is not half-registered either.</b> The catalog, the endpoint, the client connector and the
@@ -70,7 +70,7 @@ namespace Stomme.Modules.Mcp.Startup
                 }
             }
 
-            // AFTER UseTenantResolution (D101 item 3): the catalog reads the alias this request resolved, and a route
+            // AFTER UseTenantResolution: the catalog reads the alias this request resolved, and a route
             // mapped before it would see none and deny everything. IServerStartup.Configure runs after the framework's
             // own UseTenantResolution/UseAuthentication/UseAuthorization, which is what makes this the right place.
             //
@@ -114,7 +114,7 @@ namespace Stomme.Modules.Mcp.Startup
 
             services.AddScoped<IMcpServerRegistrationRepository, McpServerRegistrationRepository>();
             services.AddScoped<IMcpAuditRepository, McpAuditRepository>();
-            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.McpAuditErasureParticipant>(); // D112: a security record, retained one year then deleted
+            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.McpAuditErasureParticipant>(); // A security record, retained one year then deleted
 
             // The clock is shared by both halves, so it is registered before either switch is read.
             services.TryAddSingleton<IMcpClock, SystemMcpClock>();
@@ -141,7 +141,7 @@ namespace Stomme.Modules.Mcp.Startup
             }
 
             // The SERVER half is off by default, and off means absent: no contributor is even looked for, no catalog is
-            // registered (D101 item 3, McpDisabledSurfaceTests).
+            // registered (McpDisabledSurfaceTests).
             if (!McpSettings.ServerEnabled(configuration))
             {
                 return;
@@ -194,7 +194,7 @@ namespace Stomme.Modules.Mcp.Startup
         }
     }
 
-    /// <summary>The module's switches, read from the configuration THIS host runs on (BL-162).</summary>
+    /// <summary>The module's switches, read from the configuration THIS host runs on.</summary>
     public static class McpSettings
     {
         /// <summary>The CLIENT half: the external-server registrations, their admin page, and the tool source.</summary>
@@ -222,7 +222,7 @@ namespace Stomme.Modules.Mcp.Startup
             bool.TryParse(configuration?[ServerEnabledKey], out var enabled) && enabled;
 
         /// <summary>
-        /// The client half. <b>Two switches, not one</b> (D101): <see cref="ServerEnabledKey"/> decides whether this
+        /// The client half. <b>Two switches, not one</b>: <see cref="ServerEnabledKey"/> decides whether this
         /// install PUBLISHES over MCP; this one decides whether it may REGISTER external servers. Reading one for the
         /// other is the mistake D101 named - the client-half admin page must not hide behind the endpoint's flag.
         /// </summary>

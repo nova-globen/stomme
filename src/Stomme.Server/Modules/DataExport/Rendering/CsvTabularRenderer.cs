@@ -9,7 +9,7 @@ using Stomme.Export;
 namespace Stomme.Modules.DataExport.Rendering
 {
     /// <summary>
-    /// CSV: one table, streamed, with every cell neutralised (BL-85).
+    /// CSV: one table, streamed, with every cell neutralised.
     /// </summary>
     /// <remarks>
     /// <para>

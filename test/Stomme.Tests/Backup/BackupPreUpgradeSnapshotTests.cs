@@ -23,7 +23,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-172 - a data snapshot before a framework upgrade. The upgrade asks every <see cref="IPreUpgradeSnapshot"/> BEFORE it
+    /// A data snapshot before a framework upgrade. The upgrade asks every <see cref="IPreUpgradeSnapshot"/> BEFORE it
     /// touches anything and stops on a refusal; the backup module's answers: off unless <c>Backup:Enabled</c>, a
     /// <c>pre-upgrade</c> snapshot under the scheduled passphrase when on, and a refusal when that passphrase is missing.
     /// </summary>
@@ -145,7 +145,7 @@ namespace Stomme.Tests.Backup
 
         /// <summary>
         /// A framework package the version check accepts, holding nothing but its nuspec (nothing to extract), whose upgrade
-        /// download points at an address nothing listens on. Also used by <c>UpgradeEndpointTests</c> (BL-174).
+        /// download points at an address nothing listens on. Also used by <c>UpgradeEndpointTests</c>.
         /// </summary>
         internal static string WriteFrameworkPackage(string contentRoot)
         {

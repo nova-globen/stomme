@@ -7,7 +7,7 @@ using Stomme.Export;
 namespace Stomme.Modules.DataExport.Execution
 {
     /// <summary>
-    /// The one spelling of <see cref="ExportRenderOptions"/> a job stores (D108 item 4: bounded, canonical).
+    /// The one spelling of <see cref="ExportRenderOptions"/> a job stores (bounded, canonical).
     /// </summary>
     /// <remarks>
     /// <para>

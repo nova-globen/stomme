@@ -22,7 +22,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The DRIVEN half of the Tenant + Alias cluster (D52) — the routing core, the FINAL master-bookkeeping cluster.
+    // The DRIVEN half of the Tenant + Alias cluster — the routing core, the FINAL master-bookkeeping cluster.
     // AliasRepository and TenantRepository exercised end-to-end against a real SQLite database whose schema is written
     // by hand to match the MASTER migration set (cross-checked column-for-column against live stomme-pg-44357, host
     // 45432) — NOT EnsureCreated, which would build the schema from the very model under test.
@@ -217,7 +217,7 @@ namespace Stomme.Tests
             Assert.Equal("Contoso", byId!.Name);
         }
 
-        // UpdateTenantAsync re-stamps ModifiedOn, persists the mapped columns (D19: the harvested tracked-write becomes
+        // UpdateTenantAsync re-stamps ModifiedOn, persists the mapped columns (the harvested tracked-write becomes
         // a store Update), and preserves CreatedOn.
         [Fact]
         public async Task Updating_a_tenant_restamps_modified_on_and_persists_columns()
@@ -305,7 +305,7 @@ namespace Stomme.Tests
         // THE routing lookup — GetAliasAsync(url) — the reason this is the "last and DRIVEN" cluster. It resolves a
         // request URL to an alias ENTIRELY IN MEMORY with OrdinalIgnoreCase over the cached list, choosing the LONGEST
         // hierarchical match. Because the match never becomes a translated query, a mixed-case request resolves
-        // identically on every provider — the EF-vs-RavenDB string-equality divergence (D48/D49) cannot reach it. THIS
+        // identically on every provider — the EF-vs-RavenDB string-equality divergence cannot reach it. THIS
         // is the brief's "single most important check", answered by mechanism: the comparison is not on the seam.
         [Fact]
         public async Task The_routing_lookup_resolves_the_longest_hierarchical_match_case_insensitively()
@@ -339,7 +339,7 @@ namespace Stomme.Tests
             Assert.Equal(new[] { "stomme.me" }, session.Query<AliasAggregate>().Select(item => item.Name).ToList());
         }
 
-        // UpdateAliasAsync (D19: the harvested _db.Entry(alias).State = Modified becomes a store Update) plus GetById
+        // UpdateAliasAsync (the harvested _db.Entry(alias).State = Modified becomes a store Update) plus GetById
         // and Delete round out the CRUD the AliasController and installer drive.
         [Fact]
         public async Task Updating_and_deleting_an_alias_go_through_the_store()

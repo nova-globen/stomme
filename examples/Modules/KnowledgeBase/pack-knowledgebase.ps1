@@ -1,5 +1,5 @@
 #!/usr/bin/env pwsh
-# BL-86: builds and packs the KnowledgeBase exemplar (Client/Server/Shared) into ONE Stomme module .nupkg, after running
+# Builds and packs the KnowledgeBase exemplar (Client/Server/Shared) into ONE Stomme module .nupkg, after running
 # its unit tests.
 #
 # Prerequisite: examples/pack-sdk-slim.ps1 has produced examples/local-feed (the slim SDK the module restores against -

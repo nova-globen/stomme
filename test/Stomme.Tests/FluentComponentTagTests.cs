@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-192: every <c>&lt;Fluent...&gt;</c> tag in this repository's Razor files names a component FluentUI actually ships.
+    /// Every <c>&lt;Fluent...&gt;</c> tag in this repository's Razor files names a component FluentUI actually ships.
     /// </summary>
     /// <remarks>
     /// A tag whose component no longer exists does not fail the build: Razor reads <c>&lt;FluentTextField&gt;</c> as a plain

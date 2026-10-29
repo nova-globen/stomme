@@ -23,7 +23,7 @@ namespace Stomme.Modules.Pipelines.Tenancy
             EnsureSiteAsync(context.GetService<SiteState>(), context.GetService<ITenantAccessor>(), context.GetService<ITenantManager>());
 
         /// <summary>
-        /// Enters the site of the engine tenant a scope runs under - for a recurring task, which has no step (BL-229, the
+        /// Enters the site of the engine tenant a scope runs under - for a recurring task, which has no step (the
         /// watched mailboxes); false when there is no engine tenant to enter.
         /// </summary>
         public static Task<bool> EnsureSiteAsync(System.IServiceProvider services) =>

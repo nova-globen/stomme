@@ -124,12 +124,12 @@ namespace Stomme.Modules.Health.Application
         /// <remarks>
         /// <para>
         /// <b>This gates the JOB only.</b> Whether the module's admin page is SEEDED is the framework's own
-        /// <c>module.health.enabled</c> knob (<c>ModuleFeatureFlags</c>, D85), which is a different switch
+        /// <c>module.health.enabled</c> knob (<c>ModuleFeatureFlags</c>), which is a different switch
         /// entirely. Conflating the two is a mistake this repository has already made once and corrected, in
         /// metering's equivalent remarks.
         /// </para>
         /// <para>
-        /// <b>ON by default, and shipped ON since BL-83 closed (2026-09-23).</b> D104 decided that probing, the
+        /// <b>ON by default, and shipped ON since BL-83 closed.</b> D104 decided that probing, the
         /// endpoints and the admin page are on for a stock install — stated, not hidden, because a stock install
         /// then gains two Job rows and per-minute rows in the module store. While the row was incomplete
         /// <c>appsettings.json</c> carried <c>Health:Enabled = false</c>, so a half-built monitor did not start itself on

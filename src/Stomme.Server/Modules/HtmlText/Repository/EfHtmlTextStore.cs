@@ -14,7 +14,7 @@ namespace Stomme.Modules.HtmlText.Repository
 {
     /// <summary>
     /// The relational (EF Core) <see cref="IHtmlTextStore"/> — the seam's own
-    /// <see cref="EfRepository{TAggregate, TId}"/> over the module's <see cref="HtmlTextContext"/> (D55). Mirrors
+    /// <see cref="EfRepository{TAggregate, TId}"/> over the module's <see cref="HtmlTextContext"/>. Mirrors
     /// the framework's <c>EfSiteStore</c>: a context is created per store instance from
     /// <see cref="IDbContextFactory{TContext}"/> rather than resolved from the container, because
     /// <see cref="HtmlTextContext"/> resolves its tenant connection lazily in <c>OnConfiguring</c> and a cached

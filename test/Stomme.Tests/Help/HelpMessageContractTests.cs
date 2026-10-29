@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// The help module's mediator surface, reflectively (BL-84, D103 item 8 - the spec's
+    /// The help module's mediator surface, reflectively (D103 item 8 - the spec's
     /// <c>HelpSeedIsNotAMediatorMessageTests</c>).
     /// </summary>
     /// <remarks>

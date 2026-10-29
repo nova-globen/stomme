@@ -13,7 +13,7 @@ using Stomme.Repository;
 namespace Stomme.Modules.DataExport.Sources
 {
     /// <summary>
-    /// The one built-in export source: the site's event log (D108 item 10).
+    /// The one built-in export source: the site's event log.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -31,7 +31,7 @@ namespace Stomme.Modules.DataExport.Sources
     /// </para>
     /// <para>
     /// The level is a closed set mapped to the exact stored spelling before the query: a bare string <c>==</c> is
-    /// case-sensitive on EF and case-insensitive on RavenDB (D49), so a free-text level would return different rows
+    /// case-sensitive on EF and case-insensitive on RavenDB, so a free-text level would return different rows
     /// per provider.
     /// </para>
     /// <para>

@@ -105,7 +105,7 @@ public static class AuditStamp
     }
 
     /// <summary>
-    /// Applies the soft-delete stamp (D59), reproducing <c>DbContextUtils</c>' observable outcome WITHOUT the
+    /// Applies the soft-delete stamp, reproducing <c>DbContextUtils</c>' observable outcome WITHOUT the
     /// database load EF uses to detect the <c>IsDeleted</c> transition.
     /// <list type="bullet">
     /// <item><c>IsDeleted == true &amp;&amp; DeletedOn == null</c> — the first transition to deleted: stamp

@@ -150,7 +150,7 @@ namespace Stomme.Modules.Pipelines.Steps
         internal static long MaxFileBytes(StepExecutionContext context) =>
             context.GetService<IOptions<PipelineStepOptions>>()?.Value.Files.MaxFileBytes ?? new FileStepOptions().MaxFileBytes;
 
-        // The caps every unzip on this host has (the file manager's, BL-100 F1), from THIS host's configuration root (BL-162).
+        // The caps every unzip on this host has (the file manager's, BL-100 F1), from THIS host's configuration root.
         internal static FileIngestionOptions UnzipCaps(StepExecutionContext context) =>
             FileIngestionOptions.FromConfiguration(context.GetService<IConfigurationRoot>());
     }

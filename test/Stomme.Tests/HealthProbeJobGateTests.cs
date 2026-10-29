@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-86 increment 6 - the scheduled health tick and an operator's run-now share ONE pass per (tenant, site). Found by the
+    /// The scheduled health tick and an operator's run-now share ONE pass per (tenant, site). Found by the
     /// exemplar module's drive: a pass reads a subject's alert state and inserts it when there is none, so a "Run now" during a
     /// tick inserted a new subject's row twice and the operator got a 500 (SQLite: UNIQUE constraint failed on the alert
     /// state's id). The run-now suite switches the job off precisely so this cannot happen, which is why no test met it.

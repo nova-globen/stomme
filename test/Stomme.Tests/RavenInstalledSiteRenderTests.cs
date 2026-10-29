@@ -26,7 +26,7 @@ namespace Stomme.Tests
     /// <para>
     /// This is the point of D55a. A RavenDB install COMPLETED at D54, but did not render — HtmlText was pure EF, so
     /// the built-in content module that fills the home page could not construct its context on a document store.
-    /// With HtmlText on the seam (D55), this drives the WHOLE render pipeline on RavenDB for the FIRST time:
+    /// With HtmlText on the seam, this drives the WHOLE render pipeline on RavenDB for the FIRST time:
     /// <c>TenantResolver</c> → <c>RendererSynchronizationContext</c> → the renderer → the HtmlText module's
     /// component → <c>ServerHtmlTextService</c> → <c>HtmlTextRepository</c> → <see cref="Raven"/> session, plus
     /// <c>PermissionRepository</c> on the Raven framework store to authorize the anonymous read.
@@ -37,13 +37,13 @@ namespace Stomme.Tests
     /// which can only appear if the module was discovered, its content row WRITTEN to Raven during install and READ
     /// back through the Raven session at render, and its component rendered. It also races a timeout: the D29
     /// renderer-deadlock class does not throw, it stops responding, and RavenDB's async socket I/O is exactly the
-    /// kind of real-async surface that can reproduce it where SQLite cannot (D30). A hang here is a finding.
+    /// kind of real-async surface that can reproduce it where SQLite cannot. A hang here is a finding.
     /// </para>
     /// <para>
     /// GATED — FAILS rather than skips when RavenDB is unreachable, the doctrine the conformance suite and the D54
     /// tests share. Point it at a reachable server with <c>RAVENDB_TEST_URL</c> (default the local install at
     /// http://127.0.0.1:7000). Driven via automated appsettings config (Raven DBType + Url connection string)
-    /// exactly as D54a/b did — RavenDB IS now an <c>AvailableDatabases</c> wizard entry (D56); this test
+    /// exactly as D54a/b did — RavenDB IS now an <c>AvailableDatabases</c> wizard entry; this test
     /// drives the automated-config path, while the wizard path is covered by <c>RavenWizardInstallRenderTests</c>.
     /// </para>
     /// </remarks>
@@ -124,7 +124,7 @@ namespace Stomme.Tests
                 var install = await installTask;
                 _output.WriteLine($"[install] Success={install.Success} Message={Truncate(install.Message)}");
 
-                // With HtmlText on the seam (D55) the module no longer throws on Raven, so the install should now
+                // With HtmlText on the seam the module no longer throws on Raven, so the install should now
                 // report success end-to-end — the carried D54 debt this increment clears.
                 Assert.True(install.Success,
                     $"RavenDB installer did not report success: {install.Message}");
@@ -139,7 +139,7 @@ namespace Stomme.Tests
                 {
                     // The D29 signature: the request does not fail, it stops responding. RavenDB's real async socket
                     // I/O is the kind of surface that can post a continuation back to a blocked renderer pump where
-                    // SQLite cannot (D30). If this fires, THAT is the finding.
+                    // SQLite cannot. If this fires, THAT is the finding.
                     throw new TimeoutException(
                         $"GET / did not respond within {RenderTimeout.TotalSeconds:0}s on RavenDB. The site did not " +
                         "render — a renderer deadlock (docs/decisions.md D29) looks like exactly this, and RavenDB " +

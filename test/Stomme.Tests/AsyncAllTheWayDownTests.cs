@@ -38,7 +38,7 @@ namespace Stomme.Tests
     /// never an invocation of <c>GetResult</c>, so the discrimination is free and total.
     /// </para>
     /// <para>
-    /// WHY THE SEMANTIC MODEL AND NOT SYNTAX ALONE (2026-09-13, BL-93). The parser tells a call from a
+    /// WHY THE SEMANTIC MODEL AND NOT SYNTAX ALONE. The parser tells a call from a
     /// comment, but it cannot tell <c>Task&lt;T&gt;.Result</c> from a property that merely happens to be
     /// named <c>Result</c>. Vendoring the pipeline engine brought in a whole vocabulary of the latter — a
     /// step's <c>Result</c> OUTPUT, a pipeline run's <c>Result</c> value, a completion signal's
@@ -55,7 +55,7 @@ namespace Stomme.Tests
     {
         // ------------------------------------------------------------------------------------------------
         // THE PERMITTED-BOUNDARY ALLOWLIST. Keep it SMALL and keep every entry justified — a boundary kept
-        // for convenience is a violation (D33). Each entry names a platform contract Stomme does NOT own.
+        // for convenience is a violation. Each entry names a platform contract Stomme does NOT own.
         // Every entry here is also enumerated in docs/decisions.md D33. Do not add one without doing both.
         // ------------------------------------------------------------------------------------------------
 
@@ -116,7 +116,7 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// SeamInterop was the sanctioned home of the framework's blocking waits (D29). D33 retires it. This
+        /// SeamInterop was the sanctioned home of the framework's blocking waits. D33 retires it. This
         /// asserts the file is gone, so the debt cannot be re-parked in a helper that the allowlist above
         /// would then have to name.
         /// </summary>

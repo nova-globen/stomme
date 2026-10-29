@@ -10,7 +10,7 @@ using Stomme.Persistence.Abstractions;
 namespace Stomme.Modules.Collaboration.Application
 {
     /// <summary>
-    /// The bounded conflict resolver (BL-97 increment 12, the predecessor platform's <c>ConflictResolver</c>) - coordination, not CRDT or OT.
+    /// The bounded conflict resolver (the predecessor platform's <c>ConflictResolver</c>) - coordination, not CRDT or OT.
     /// Equal version tokens mean nothing changed concurrently and the proposal applies as it is; otherwise each proposed field
     /// is reconciled against the stored one: a field the concurrent save did not touch applies (both editors' work is kept),
     /// a convergent same-value write is no conflict, a same-field divergence on a <see cref="FieldKind.Text"/> field is

@@ -23,7 +23,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's execution search: the runs list finds a run by its id, or the runs of a correlation id, through the engine's
+    /// n8n's execution search: the runs list finds a run by its id, or the runs of a correlation id, through the engine's
     /// own search filter (held to the memory store on EF and RavenDB by the engine-store conformance suite); a search past its
     /// length is refused rather than cut.
     /// </summary>
@@ -88,7 +88,7 @@ namespace Stomme.Tests.Pipelines
             services.GetRequiredService<IPipelineInstanceStore>(), services.GetRequiredService<IPipelineDefinitionStore>(),
             services.GetRequiredService<IKeyValueStore>(), services.GetRequiredService<ITenantAccessor>());
 
-        // BL-229 - n8n's Execution Data: what a run saved about itself is shown with it and found by the runs search - "key: value"
+        // n8n's Execution Data: what a run saved about itself is shown with it and found by the runs search - "key: value"
         // for that key holding that value, or a value alone - beside the id and correlation id the store searches; newest first.
         [Fact]
         public async Task A_run_is_found_by_the_data_it_saved_and_listed_with_it()

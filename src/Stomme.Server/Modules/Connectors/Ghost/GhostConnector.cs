@@ -20,7 +20,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Ghost
 {
     /// <summary>
-    /// Ghost (BL-229, n8n's Ghost node: a site's posts read, created, updated and deleted): a Ghost site's Admin API
+    /// Ghost (n8n's Ghost node: a site's posts read, created, updated and deleted): a Ghost site's Admin API
     /// (<c>/ghost/api/admin/</c>), an Admin API key - its id and secret - signing a five-minute token for every call, over the
     /// host's egress. A test names how many posts the key sees.
     /// </summary>

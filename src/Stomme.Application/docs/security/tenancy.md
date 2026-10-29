@@ -203,7 +203,9 @@ proxy's public name) as an alias, or requests to it get a 404.
   cookie and the release marker it sets are named `<name>-<folder>` and scoped to `Path=/<folder>`, and a same-named
   cookie another site on the host set at a wider path is never read there - so a sign-in at `example.com` is not a
   sign-in at `example.com/shop`, and the reverse. The culture cookie keeps its name and takes the folder's path
-  (`Utilities.SitePath(alias.Path)`). A module that sets a cookie of its own scopes it the same way.
+  (`Utilities.SitePath(alias.Path)`). A module that sets a cookie of its own scopes it the same way. The calls an
+  interactive page's services make to the site's API from the server carry the folder site's cookies under its own
+  names (since 10.75.2; before, an interactive folder site's sign-in form answered 400 and no server-side call was signed in).
 
 ## Related
 

@@ -15,8 +15,8 @@ namespace Stomme.Tests.Notifications
 {
     /// <summary>
     /// Shared aggregate/value-object builders for the Notifications domain tests - lifted from the predecessor platform's
-    /// <c>NotificationTestData</c> with the types adapted (BL-78): every aggregate is site-scoped (<see cref="SiteId"/>),
-    /// a secret is an <c>ISiteSecretStore</c> REFERENCE KEY (D101) rather than a <c>vault://</c> URI, and a user
+    /// <c>NotificationTestData</c> with the types adapted: every aggregate is site-scoped (<see cref="SiteId"/>),
+    /// a secret is an <c>ISiteSecretStore</c> REFERENCE KEY rather than a <c>vault://</c> URI, and a user
     /// recipient is an int user id.
     /// </summary>
     internal static class NotificationTestData

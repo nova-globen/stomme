@@ -23,7 +23,7 @@ namespace Stomme.Modules.Metering.Infrastructure
     public sealed record DeclaredQuota(string Metric, QuotaPeriod Period, long Limit, int WarnAtPercent);
 
     /// <summary>
-    /// A contributor of quotas a site should carry. The metering module itself ships NONE (D102: a stock install
+    /// A contributor of quotas a site should carry. The metering module itself ships NONE (a stock install
     /// seeds nothing - the predecessor platform's three demo quotas became a catalog an operator adopts, not rows a fresh install
     /// invents), and a later module that meters brings its own source, the way BL-78's template sources work.
     /// </summary>
@@ -36,7 +36,7 @@ namespace Stomme.Modules.Metering.Infrastructure
     }
 
     /// <summary>
-    /// Brings each site's declared quotas up to date on the boot/upgrade path - ADDITIVELY (D102 item 6, with the
+    /// Brings each site's declared quotas up to date on the boot/upgrade path - ADDITIVELY (with the
     /// D103 correction).
     /// </summary>
     /// <remarks>
@@ -45,7 +45,7 @@ namespace Stomme.Modules.Metering.Infrastructure
     /// from a <c>QuotaSeeder : IHostedService</c>, which ran once, for whichever tenant the ambient scope happened
     /// to hold. Here the framework's <see cref="SiteContentReconciliationRunner"/> enters each tenant's scope
     /// EXPLICITLY, creates a fresh DI scope per site, and contains a failure to that one site - the three things
-    /// <c>DatabaseManager.InitializeSitesAsync</c>'s single-scope, single-catch loop did not do until BL-205 (2026-10-02).
+    /// <c>DatabaseManager.InitializeSitesAsync</c>'s single-scope, single-catch loop did not do until BL-205.
     /// </para>
     /// <para>
     /// <b>Additive by construction.</b> Each declaration names a deterministic row id, and an existing row is left

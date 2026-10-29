@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Monday
 {
     /// <summary>
-    /// Monday.com (BL-229, n8n's Monday.com node, its board items: found - a board's or a group's, or by a column's value - got,
+    /// Monday.com (n8n's Monday.com node, its board items: found - a board's or a group's, or by a column's value - got,
     /// created, changed, moved, deleted and updated): monday.com's GraphQL API (<c>https://api.monday.com/v2</c>), a personal API
     /// token as monday takes it, in <c>Authorization</c> alone. A test names the token's user and account.
     /// </summary>

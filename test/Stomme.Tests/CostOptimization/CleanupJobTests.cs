@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// BL-97 increment 8 - the predecessor platform's <c>CleanupJobTests</c> (its seven temp-file cases) and the cleanup cases of
+    /// The predecessor platform's <c>CleanupJobTests</c> (its seven temp-file cases) and the cleanup cases of
     /// <c>CostOptimizationRegistrationTests</c>, by name, over the sweep the daily job runs. CHANGED: the three
     /// recommendation cases - a dry run REPORTS the reclaimable space (the host's job log) and raises no recommendation, since
     /// its evidence would carry the host's directory layout to a site's administrators; and the job is off by default.

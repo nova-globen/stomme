@@ -1,4 +1,4 @@
-@* The Notifications module's own imports (BL-78 step 5). Microsoft.AspNetCore.Components.Web is REQUIRED (BL-54): without it
+@* The Notifications module's own imports. Microsoft.AspNetCore.Components.Web is REQUIRED: without it
    @onclick / @bind:event compile as plain HTML attributes, the module builds GREEN and renders, and every click is silently
    dead with no console error. MEASURED 2026-09-15: for an IN-TREE Client module this line is REDUNDANT - the project-root
    src/Stomme.Client/_Imports.razor already carries it and Razor imports cascade, so deleting it here changes nothing

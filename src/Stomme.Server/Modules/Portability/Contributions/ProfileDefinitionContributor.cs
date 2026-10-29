@@ -13,7 +13,7 @@ using Stomme.Repository;
 namespace Stomme.Modules.Portability.Contributions
 {
     /// <summary>
-    /// The site's profile DEFINITIONS - the fields a user profile has, not anyone's values (BL-82, D107 item 8).
+    /// The site's profile DEFINITIONS - the fields a user profile has, not anyone's values.
     /// </summary>
     /// <remarks>
     /// <para>

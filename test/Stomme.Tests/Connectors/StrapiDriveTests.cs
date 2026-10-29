@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Strapi DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Strapi DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a Strapi 5's REST API that refuses a call without the token: a Strapi connection made over
     /// the API, its token vaulted, tested; a published pipeline creates a draft with an accent, reads the drafts filtered over two
     /// pages - no more than asked - publishes the entry, gets it, deletes it and reads the homepage; the token in neither the graph

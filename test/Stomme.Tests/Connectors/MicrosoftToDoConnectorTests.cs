@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft To Do (n8n's Microsoft To Do node: its lists and tasks created, got, read, updated and deleted): an
+    /// Microsoft To Do (n8n's Microsoft To Do node: its lists and tasks created, got, read, updated and deleted): an
     /// app-only token from the tenant's token endpoint, sent as a bearer, acting as the one user the connection names; a list's tasks
     /// read through Graph's next links - never one that leaves the user's address - up to the most asked for, a filter passed on,
     /// each task a plain record, its times in UTC; the lists, each a list's own record; a list made, got, renamed and deleted; a task

@@ -23,7 +23,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 step 4 - <c>NotificationDispatchJobTests</c> (D100 point 3), messaging OFF (no <c>IEventBus</c>): the Job-backed
+    /// <c>NotificationDispatchJobTests</c>, messaging OFF (no <c>IEventBus</c>): the Job-backed
     /// pipeline is authoritative. Queued -&gt; delivered; a failing channel backs off (30 s, then 60 s) on the scalar retry
     /// state; retries stop at 3 and the request completes Failed; quiet hours re-arm <c>NextAttemptOn</c> without consuming
     /// a retry; a digest hold is flushed by the hourly pass; the retention purge removes only terminal requests older than
@@ -39,7 +39,7 @@ namespace Stomme.Tests.Notifications
         // ---- the pipeline policy --------------------------------------------------------------------------------
 
         /// <summary>
-        /// BL-188: a request another writer changed while the pass held it - the erasure of its recipient, which deletes or
+        /// A request another writer changed while the pass held it - the erasure of its recipient, which deletes or
         /// scrubs the row from its own job - is left to that write, and the site's other requests are still delivered. Found in
         /// the erasure drive's log: the conflict escaped the pass and stopped every delivery of the site for the minute.
         /// </summary>
@@ -621,7 +621,7 @@ namespace Stomme.Tests.Notifications
                 Assert.Equal(NotificationStatus.Sent, requestsAfter[0]!.Status);
                 Assert.NotNull(requestsAfter[0]!.CompletedOn);
                 Assert.Equal(NotificationStatus.Sent, requestsAfter[1]!.Status);
-                // The site had no e-mail channel: its first e-mail creates the default one (BL-251), so the external request
+                // The site had no e-mail channel: its first e-mail creates the default one, so the external request
                 // is handed to the site's mail queue and completes, rather than failing and retrying until an admin made one.
                 Assert.Equal(NotificationStatus.Sent, requestsAfter[2]!.Status);
                 Assert.NotNull(requestsAfter[2]!.CompletedOn);

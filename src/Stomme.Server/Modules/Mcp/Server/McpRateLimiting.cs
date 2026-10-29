@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Mcp.Server
 {
     /// <summary>
-    /// The MCP endpoint's rate limit (D101 item 3): one fixed window per caller, per minute.
+    /// The MCP endpoint's rate limit: one fixed window per caller, per minute.
     /// </summary>
     /// <remarks>
     /// <para>

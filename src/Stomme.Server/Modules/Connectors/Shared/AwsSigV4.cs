@@ -10,7 +10,7 @@ using System.Text;
 namespace Stomme.Modules.Connectors.Shared
 {
     /// <summary>
-    /// AWS Signature Version 4 (BL-229, the AWS connectors): a request signed for a service in a region with an access key and its
+    /// AWS Signature Version 4 (the AWS connectors): a request signed for a service in a region with an access key and its
     /// secret - and a session token when the keys are temporary - over the connection's own egress client, never the AWS SDK's,
     /// so the host's egress policy holds. The canonical request, the string to sign and the derived key as AWS documents them.
     /// </summary>

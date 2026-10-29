@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Linear
 {
     /// <summary>
-    /// Linear (BL-229, n8n's Linear node: issues found, got, created, updated and deleted, a comment and a link added): Linear's
+    /// Linear (n8n's Linear node: issues found, got, created, updated and deleted, a comment and a link added): Linear's
     /// GraphQL API (<c>https://api.linear.app/graphql</c>), a personal API key as Linear takes it (the key alone) or an OAuth
     /// token as a bearer. A test names the key's user.
     /// </summary>

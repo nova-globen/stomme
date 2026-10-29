@@ -7,7 +7,7 @@ using System.Text.Json.Nodes;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - what a Run script step receives, as the editor's AI is told it: n8n's Code node sends its AI the SCHEMA of the
+    /// What a Run script step receives, as the editor's AI is told it: n8n's Code node sends its AI the SCHEMA of the
     /// node's input, not its data, and so does this - records, plain values, one record or text, and the fields of the records
     /// with what their values are (<see cref="PipelineDataTables.Kinds"/>), never a value.
     /// </summary>

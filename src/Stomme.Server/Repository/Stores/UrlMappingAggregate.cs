@@ -14,7 +14,7 @@ namespace Stomme.Repository.Stores
     /// <para>
     /// A UrlMapping is one requested URL within one <see cref="Site"/>, optionally redirected to
     /// <see cref="MappedUrl"/>. A leaf: nothing navigates into it and it navigates nowhere.
-    /// <see cref="SiteId"/> is a reference BY ID (D7/D19) and always was — this cluster had no navigation to
+    /// <see cref="SiteId"/> is a reference BY ID and always was — this cluster had no navigation to
     /// sever.
     /// </para>
     /// <para>
@@ -55,7 +55,7 @@ namespace Stomme.Repository.Stores
     /// </remarks>
     public class UrlMappingAggregate : AggregateRoot<int>
     {
-        /// <summary>The <see cref="Site"/> this mapping belongs to, by id (D7/D19). NOT NULL.</summary>
+        /// <summary>The <see cref="Site"/> this mapping belongs to, by id. NOT NULL.</summary>
         public int SiteId { get; set; }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Stomme.Repository.Stores
         /// <remarks>
         /// Setting it maintains <see cref="UrlNormalized"/>. See the remarks there for why the derivation
         /// lives HERE and not in <see cref="UrlMappingMapper"/> — the same placement as
-        /// <see cref="FolderAggregate.Path"/> / <see cref="FileAggregate.Name"/> (D49).
+        /// <see cref="FolderAggregate.Path"/> / <see cref="FileAggregate.Name"/>.
         /// </remarks>
         public string Url
         {
@@ -81,14 +81,14 @@ namespace Stomme.Repository.Stores
         private string _url;
 
         /// <summary>
-        /// The lowercase lookup key for <see cref="Url"/> (D57) — Identity's <c>NormalizedUserName</c> to
+        /// The lowercase lookup key for <see cref="Url"/> — Identity's <c>NormalizedUserName</c> to
         /// <see cref="Url"/>'s <c>UserName</c>. Column <c>url_normalized</c>, nullable varchar(750), added
         /// and backfilled by <c>10020004_AddUrlMappingNormalizedColumn</c>.
         /// </summary>
         /// <remarks>
         /// <para>
         /// <b>This column is why the two providers agree on the URL lookup at all.</b> DRIVEN on the real
-        /// hosts (D57): a row stored <c>Foo/Bar</c> looked up as <c>foo/bar</c> MISSED on PostgreSQL (whose
+        /// hosts: a row stored <c>Foo/Bar</c> looked up as <c>foo/bar</c> MISSED on PostgreSQL (whose
         /// <c>==</c> is case-SENSITIVE under the column collation) and HIT on RavenDB (whose <c>==</c> is
         /// case-INSENSITIVE). <c>App.razor</c>'s 404 handler runs that lookup on every unresolved request. The
         /// harvested read filtered <see cref="Url"/> raw; <see cref="UrlMappingRepository.GetUrlMappingAsync(int, string, string)"/>

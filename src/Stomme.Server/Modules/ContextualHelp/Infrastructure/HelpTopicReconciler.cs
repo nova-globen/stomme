@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.ContextualHelp.Infrastructure
 {
     /// <summary>
-    /// Brings each site's contributed help topics up to date on the boot/upgrade path (BL-84, D103 item 7), through the
+    /// Brings each site's contributed help topics up to date on the boot/upgrade path, through the
     /// framework's <see cref="SiteContentReconciliationRunner"/>.
     /// </summary>
     /// <remarks>
@@ -21,7 +21,7 @@ namespace Stomme.Modules.ContextualHelp.Infrastructure
     /// <b>Why it is an <see cref="ISiteContentReconciler"/> and nothing else</b> (D103 refutations 1 and 2). The runner
     /// enters the site's TENANT scope before it creates the DI scope this reconciler is resolved in, and contains a
     /// throw to this reconciler on this site. <c>DatabaseManager.InitializeSitesAsync</c>'s own loop did neither until
-    /// BL-205 (2026-10-02): one DI scope for every tenant (tenant 2's rows would land under tenant 1 - its OWN page writes
+    /// BL-205: one DI scope for every tenant (tenant 2's rows would land under tenant 1 - its OWN page writes
     /// did, on UAT) and one catch for the whole loop.
     /// </para>
     /// <para>

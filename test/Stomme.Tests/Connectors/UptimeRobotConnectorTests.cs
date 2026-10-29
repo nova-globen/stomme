@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - UptimeRobot (n8n's UptimeRobot node: its account, monitors, alert contacts, maintenance windows and public status
+    /// UptimeRobot (n8n's UptimeRobot node: its account, monitors, alert contacts, maintenance windows and public status
     /// pages): every call a POST to UptimeRobot's API v2 with the key and format=json in its form; a list read page by page by
     /// offset, its total the end, no more than asked; monitors created, updated, paused, reset and deleted; alert contacts,
     /// maintenance windows and status pages kept; kinds by name or UptimeRobot's number; what could go wrong refused before

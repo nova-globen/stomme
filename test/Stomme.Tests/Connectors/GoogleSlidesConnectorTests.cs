@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Slides (n8n's Google Slides node) without a server: every id, text and size held to its shape before a token
+    /// Google Slides (n8n's Google Slides node) without a server: every id, text and size held to its shape before a token
     /// is asked for; a presentation created, read - the step's or the connection's - and its slides held to the most; texts found
     /// and replaced across it or on the slides named, by case, under a revision, a placeholder by its name alone, each with how many
     /// it changed; a slide read; a

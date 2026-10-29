@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Trello DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Trello DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Trello's API: a Trello connection made over the API, its token vaulted, tested (the member
     /// named); a published pipeline adds a card to a list, comments on it, moves it to Done marked complete and reads the list's
     /// cards - each call with the key and token in Trello's OAuth header and never in an address; the token is in neither the

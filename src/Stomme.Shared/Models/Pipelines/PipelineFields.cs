@@ -11,7 +11,7 @@ namespace Stomme.Models.Pipelines
     public sealed record PipelineField(string Name, PipelineTableColumnType Type, string Description);
 
     /// <summary>
-    /// BL-229 - fields as an author writes them, one per line: a name, then (number), (true or false) or (date) if it is not text,
+    /// Fields as an author writes them, one per line: a name, then (number), (true or false) or (date) if it is not text,
     /// then ': what it is' - 'total (number): the amount to pay'. Extract information asks the model for them, When called by
     /// another pipeline expects them from its caller, and the editor reads them to say what a sub-pipeline expects. One reading.
     /// </summary>

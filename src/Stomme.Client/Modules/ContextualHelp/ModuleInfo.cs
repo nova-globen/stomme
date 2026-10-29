@@ -5,7 +5,7 @@ using Stomme.Security;
 namespace Stomme.Modules.ContextualHelp
 {
     /// <summary>
-    /// Contextual help's <see cref="ModuleDefinition"/> (BL-84, D103 items 8-9) - how the framework discovers it and what
+    /// Contextual help's <see cref="ModuleDefinition"/> (D103 items 8-9) - how the framework discovers it and what
     /// it declares to the authorization bridge.
     /// </summary>
     /// <remarks>

@@ -29,7 +29,7 @@ namespace Stomme.Controllers
     /// </summary>
     /// <remarks>
     /// The managers resolve the CURRENT tenant's OpenIddict store (EF or Raven), which the provisioning
-    /// middleware has already ensured exists (BL-55). Client secrets are hashed at rest and unrecoverable —
+    /// middleware has already ensured exists. Client secrets are hashed at rest and unrecoverable —
     /// the summaries never return a secret; a secret is supplied once on create/rotate and shown to the caller
     /// only in that response.
     /// </remarks>
@@ -68,7 +68,7 @@ namespace Stomme.Controllers
         [Authorize(Roles = RoleNames.Host)]
         public IActionResult GetStatus()
         {
-            // Issuer is INFERRED from the request host (SetIssuer is deliberately never called, D61), so the
+            // Issuer is INFERRED from the request host (SetIssuer is deliberately never called), so the
             // answer is per-alias and must be read off THIS request rather than from configuration.
             var issuer = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
 
@@ -286,7 +286,7 @@ namespace Stomme.Controllers
             return NoContent();
         }
 
-        // BL-224: an application's SERVICE ACCOUNT on this site. 404 unless OpenIddict:ServiceAccounts:Enabled (and the
+        // An application's SERVICE ACCOUNT on this site. 404 unless OpenIddict:ServiceAccounts:Enabled (and the
         // authority) is on. Host-only, like every client act here.
         // GET: api/OpenIddict/applications/{clientId}/service-account
         [HttpGet("applications/{clientId}/service-account")]

@@ -9,7 +9,7 @@ namespace Stomme.Migrations.Tenant
     /// <summary>
     /// Adds the normalized lookup column the UrlMapping cluster needs to AGREE across the persistence seam
     /// (D57): <c>UrlMapping.UrlNormalized</c>, a lowercase copy of <c>Url</c>, and BACKFILLS it for existing
-    /// rows. The same shape as <c>10020003_AddFolderFileNormalizedColumns</c> (D49), one cluster on.
+    /// rows. The same shape as <c>10020003_AddFolderFileNormalizedColumns</c>, one cluster on.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -20,7 +20,7 @@ namespace Stomme.Migrations.Tenant
     /// and HITS on RavenDB (case-INSENSITIVE <c>==</c>) — observed live on stomme-pg-44357 and a local
     /// RavenDB. D57 removes the disagreement from the DATA rather than the QUERY: store a lowercase copy, then
     /// filter it with plain <c>==</c>, which both providers agree on. The chosen semantics are
-    /// case-INSENSITIVE, matching the existing Folder/File precedent (D49).
+    /// case-INSENSITIVE, matching the existing Folder/File precedent.
     /// </para>
     /// <para>
     /// The backfill is the half that matters for upgraders. A fresh install writes every row through

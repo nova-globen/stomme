@@ -23,7 +23,7 @@ namespace Stomme.FeatureManagement;
 /// aggregate, and the seam applies a tenant query filter to those. Seeding at
 /// <see cref="TenantId.Default"/> only was correct while the host had no real tenant context — the module's
 /// own fallback reported <see cref="TenantId.Default"/> for everyone, so the one seeded row was the row
-/// everyone read. The moment the host registers a real tenancy adapter (D16), a tenant reports its OWN id,
+/// everyone read. The moment the host registers a real tenancy adapter, a tenant reports its OWN id,
 /// the filter stops matching those rows, <c>GetAllAsync</c> returns nothing, and every flag evaluates to
 /// <c>false</c> — no error, no log, just capabilities silently switched off. Seeding per tenant is what makes
 /// the adapter safe to register; the two belong in the same change.
@@ -51,7 +51,7 @@ internal sealed class FeatureSeeder(IServiceProvider services, ILogger<FeatureSe
             // feature store is a standalone database; when backlog item 01's phase 3 re-fronts the framework
             // store, these tables join the framework's migration pipeline instead.
             // <para>
-            // GetService, not GetRequiredService (D73): the relational composition registers a
+            // GetService, not GetRequiredService: the relational composition registers a
             // FeatureManagementDbContext and this creates its schema, exactly as before. The RavenDB
             // composition registers NO DbContext — its documents' collections come into being on first write
             // and its database is created by the framework's RavenDB bootstrap — so a null context here means
@@ -90,7 +90,7 @@ internal sealed class FeatureSeeder(IServiceProvider services, ILogger<FeatureSe
     /// missing the host has no real tenancy (a minimal host, a test), the module's fallback context reports
     /// <see cref="TenantId.Default"/>, and that single logical tenant is exactly what to seed.
     /// <para>
-    /// <b>Pre-install is not a failure (D68).</b> On the wizard path the host boots BEFORE any database exists,
+    /// <b>Pre-install is not a failure.</b> On the wizard path the host boots BEFORE any database exists,
     /// this hosted service starts, and enumerating tenants reaches through <see cref="ITenantDirectory"/> to a
     /// master store that is not there yet — which throws. That is the EXPECTED, correct state: no site is served
     /// pre-install, so features being off is right by design, and the install (which every wizard completes with
@@ -166,7 +166,7 @@ internal sealed class FeatureSeeder(IServiceProvider services, ILogger<FeatureSe
             // Drains the tracked aggregates and dispatches their events, writing the audit trail.
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // The seeder is a flag-write path like any other (BL-39): drop the tenant's evaluator-cache
+            // The seeder is a flag-write path like any other: drop the tenant's evaluator-cache
             // entry after the writes committed, so an evaluation that ran before seeding cannot keep
             // answering from a pre-seed (empty) flag list.
             scope.ServiceProvider.GetRequiredService<IFeatureFlagCache>().Invalidate(tenantId);

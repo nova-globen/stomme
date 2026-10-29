@@ -22,7 +22,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // The Settings cluster on the persistence seam (D3/D7/D23) — the fifth and last of Phase 3.
+    // The Settings cluster on the persistence seam — the fifth and last of Phase 3.
     //
     // The hazards Sites/Pages/Modules/Users paid for apply here too (the aggregate is mapped onto a schema
     // this context does not migrate; HasColumnName outranks the snake_case rewriter). What is NEW here, and
@@ -154,7 +154,7 @@ namespace Stomme.Tests
         }
     }
 
-    // The distinguishing feature of this cluster (D23): Setting is mapped in BOTH the tenant and the master
+    // The distinguishing feature of this cluster: Setting is mapped in BOTH the tenant and the master
     // context, because SettingRepository.IsMaster routes Host/Job/ModuleDefinition/Theme/master:* settings to
     // the installation-wide database and everything else to the tenant's.
     //
@@ -225,7 +225,7 @@ namespace Stomme.Tests
 
         // The master database's migration set creates Tenant, Alias, Job, JobLog, ModuleDefinition and Theme
         // — NOT Site, Page, Module, User, Role or UserRole. ConfigureMasterFrameworkStore maps the master-side
-        // framework-store aggregates (Setting, D23; Job/JobLog/Theme/ModuleDefinition/Tenant/Alias, D52) but must
+        // framework-store aggregates (Setting, D23; Job/JobLog/Theme/ModuleDefinition/Tenant/Alias) but must
         // NOT map the per-TENANT ones: mapping those here would invent entity types over tables that do not exist.
         // Mutation check: make ConfigureMasterFrameworkStore delegate to ConfigureFrameworkStore and this fails.
         [Fact]
@@ -241,7 +241,7 @@ namespace Stomme.Tests
             Assert.Null(model.FindEntityType(typeof(UserRoleAggregate)));
         }
 
-        // The master-bookkeeping wave (D52) is on the seam's MASTER half, mapped by ConfigureMasterFrameworkStore
+        // The master-bookkeeping wave is on the seam's MASTER half, mapped by ConfigureMasterFrameworkStore
         // onto the master database's own tables. Mutation check: drop any aggregate from
         // ConfigureMasterFrameworkStore and this fails. Job/Theme/ModuleDefinition/Tenant/Alias ARE IAuditable,
         // JobLog is NOT — see the aggregates.
@@ -258,7 +258,7 @@ namespace Stomme.Tests
             Assert.Equal("alias", model.FindEntityType(typeof(AliasAggregate))!.GetTableName());
         }
 
-        // The Tenant/Alias routing pair (D52) — the FINAL master cluster — maps the `version` column past the
+        // The Tenant/Alias routing pair — the FINAL master cluster — maps the `version` column past the
         // AggregateRoot.Version shadow (Tenant only; Alias has no version column) and carries the builder-omitted
         // db_type/is_default columns. Mutation check on the shadow: leave TenantVersion to convention (tenant_version)
         // or fail to ignore the uint token and this fails.
@@ -287,7 +287,7 @@ namespace Stomme.Tests
         }
     }
 
-    // The rule Pages paid for (D19) and Users generalised (D22 rule 6): sweep for EF navigations INTO the
+    // The rule Pages paid for and Users generalised (D22 rule 6): sweep for EF navigations INTO the
     // cluster's CLR type before trusting that removing the DbSet is enough.
     //
     // The sweep found NONE for Setting — every `Settings` member in the framework is either a [NotMapped]
@@ -305,7 +305,7 @@ namespace Stomme.Tests
             // PermissionAggregate by ConfigureFrameworkStore, so declaring the Permission CONTRACT here would
             // put two entity types on the `permission` table and break the model — which is precisely what
             // these tests exist to catch, and what they did catch when the cluster moved.
-            // PageModule left the same way in D47, and caught the same failure on the way out.
+            // PageModule left the same way, and caught the same failure on the way out.
             // Folder stood here until D48, File until D49, and the SearchContent family until D50 —
             // declaring any of them now would map its table twice and break the model.
             //
@@ -313,7 +313,7 @@ namespace Stomme.Tests
             // DbSet was never what the probe rested on: measured both ways, removing it leaves the assertions
             // green, and re-adding a migrated contract still fails them with EF's "the table '...' cannot be
             // used for entity type" — so the proof comes from ConfigureFrameworkStore plus the assertion,
-            // exactly as PermissionMustNotBeResurrectedTests has shown since D48. MigrationHistory is NOT a
+            // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
             // protection now, and it needed no edit across D47, D48, D49 or D50.

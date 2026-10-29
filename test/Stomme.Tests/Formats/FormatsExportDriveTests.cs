@@ -26,7 +26,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Formats
 {
     /// <summary>
-    /// BL-94 increment 8 (D110) - one export whose columns name formats, driven end to end on an installed host on SQLite,
+    /// One export whose columns name formats, driven end to end on an installed host on SQLite,
     /// PostgreSQL and RavenDB: a preset by id and two site definitions by name (saved through the Formats API), rendered
     /// by the real queue into a CSV the requester downloads. The date column reads as the preset renders it, the amount as
     /// the site's currency definition renders it, a formatted negative number is quoted (a formatter's output is a string,

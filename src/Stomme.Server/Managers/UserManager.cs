@@ -85,7 +85,7 @@ namespace Stomme.Managers
             _erasureQueue = erasureQueue;
         }
 
-        // BL-120: the identity audit ledger. Optional, so a composition without the module (a minimal test) still builds one.
+        // The identity audit ledger. Optional, so a composition without the module (a minimal test) still builds one.
         private readonly Stomme.Modules.IdentityAudit.Application.IIdentityAuditRecorder _identityAudit;
         private readonly Stomme.Modules.Sessions.Application.ISessionRegistry _sessions;
 
@@ -344,10 +344,10 @@ namespace Stomme.Managers
 
         public async Task DeleteUser(int userid, int siteid)
         {
-            // BL-120: the removal is recorded FIRST, while the account still resolves to a name.
+            // The removal is recorded FIRST, while the account still resolves to a name.
             await AuditAsync(Stomme.Models.IdentityAudit.IdentityAuditEvent.UserDeleted, userid, (await _users.GetUserAsync(userid, false))?.Username, siteId: siteid);
 
-            // D112: mark and queue. The identity subject (the authority's Subject claim, the identity user's id) is
+            // Mark and queue. The identity subject (the authority's Subject claim, the identity user's id) is
             // captured NOW - once the identity user is deleted below it cannot be - and the erasure job runs every
             // participant (settings, notifications, visitors, logs, pages, access, tokens, sessions, the audit's
             // retention, the metering pseudonymisation...) on its next tick, idempotently, writing the receipt.
@@ -538,7 +538,7 @@ namespace Stomme.Managers
                 await _identityUserManager.UpdateSecurityStampAsync(identityuser);
                 if (_sessions != null && user.UserId > 0)
                 {
-                    // BL-119: the stamp reaches a cookie on its next validation; the session rows end NOW, so the
+                    // The stamp reaches a cookie on its next validation; the session rows end NOW, so the
                     // owner's list is true at once and no cached check outlives the request.
                     await _sessions.RevokeAllAsync(await _tenantManager.GetAliasAsync(), user.UserId, user.UserId, "signed out everywhere");
                 }
@@ -574,7 +574,7 @@ namespace Stomme.Managers
 
 
         /// <summary>
-        /// Whether this site offers self-service password and username recovery (BL-90).
+        /// Whether this site offers self-service password and username recovery.
         /// </summary>
         /// <remarks>
         /// The two recovery endpoints are anonymous by necessity and were ungated: an operator who did not want
@@ -627,7 +627,7 @@ namespace Stomme.Managers
             // The LOG says what happened; the CALLER is told the same thing either way. These endpoints carry no
             // [Authorize] - neither the controller nor the action - so returning the lookup result made
             // GET api/User/forgotpassword/{username} an anonymous account-existence oracle: `true` meant the
-            // account was there. Driven in RecoveryEndpointDisclosureTests (BL-149). It compounds with BL-121,
+            // account was there. Driven in RecoveryEndpointDisclosureTests. It compounds with BL-121,
             // which records that nothing rate-limits these endpoints: an oracle plus unlimited attempts is
             // enumeration at scale rather than one question.
             _logger.Log(LogLevel.Error, this, LogFunction.Security, "Password Reset Notification Failed For {Username}", username);
@@ -667,7 +667,7 @@ namespace Stomme.Managers
                     }
                 }
 
-                // Same answer whatever the lookup found - see the note in ForgotPassword (BL-149).
+                // Same answer whatever the lookup found - see the note in ForgotPassword.
                 _logger.Log(LogLevel.Error, this, LogFunction.Security, "Forgot Username Notification Failed For {Email}", email);
                 return true;
             }
@@ -706,7 +706,7 @@ namespace Stomme.Managers
             else
             {
                 // The token is NOT logged. It is a live credential for changing this account's password, and the
-                // site Log table is readable by every administrator (BL-149). Whether one was supplied is enough
+                // site Log table is readable by every administrator. Whether one was supplied is enough
                 // to diagnose the failure.
                 _logger.Log(LogLevel.Error, this, LogFunction.Security,
                     "Password Reset Failed For {Username} - Token Supplied: {TokenSupplied}",

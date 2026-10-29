@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Bitwarden DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Bitwarden DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a self-hosted Bitwarden server: its identity endpoint issues a token for the
     /// organization's client credentials alone, its public API answers that token alone. A Bitwarden connection made over the
     /// API, its secret vaulted, tested; a published pipeline reads the members, creates a group with an accent, renames it with

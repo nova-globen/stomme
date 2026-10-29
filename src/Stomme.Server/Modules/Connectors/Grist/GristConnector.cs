@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Grist
 {
     /// <summary>
-    /// Grist (BL-229, n8n's Grist node: a table's rows created, read, updated, created or updated, and deleted): a Grist - its
+    /// Grist (n8n's Grist node: a table's rows created, read, updated, created or updated, and deleted): a Grist - its
     /// cloud, a team site or one of your own - over its REST API (<c>/api/docs/{doc}/tables/{table}/records</c>), an API key as a
     /// bearer token, over the host's egress. A test names how many sites the key sees.
     /// </summary>

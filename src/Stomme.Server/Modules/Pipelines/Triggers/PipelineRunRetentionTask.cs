@@ -19,7 +19,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// BL-229 - n8n's execution pruning: the site's FINISHED runs that last changed more than <c>Pipelines:Runs:KeepDays</c>
+    /// n8n's execution pruning: the site's FINISHED runs that last changed more than <c>Pipelines:Runs:KeepDays</c>
     /// ago are deleted through the engine's instance manager, whose deleting notification takes their log, their steps'
     /// records and their bookmarks with them (the engine's own handlers). Off by default - 0 keeps every run, so an install
     /// loses nothing it did not ask to. A run still going (running, waiting, suspended) is never deleted however old. Per
@@ -63,7 +63,7 @@ namespace Stomme.Modules.Pipelines.Triggers
                 }
 
                 deleted += await manager.BulkDeleteAsync(new PipelineInstanceFilter { Ids = ids }, cancellationToken).ConfigureAwait(false);
-                // BL-229: what the runs saved about themselves goes with them.
+                // What the runs saved about themselves goes with them.
                 await PipelineRunDataStore.DeleteAsync(keyValues, tenantAccessor.TenantId, ids, cancellationToken).ConfigureAwait(false);
                 if (ids.Count < Batch)
                 {

@@ -32,7 +32,7 @@ namespace NovaGloben.Module.KnowledgeBase.Manager
     /// </para>
     /// <para>
     /// <b>The host has resolved the site before it asks</b>: the index job sets its alias per site, and the sitemap is a
-    /// request. The module store filters by the resolved tenant (BL-111), and the repository by the placed module's site, so
+    /// request. The module store filters by the resolved tenant, and the repository by the placed module's site, so
     /// the manager reads through the repository alone and carries no scope of its own.
     /// </para>
     /// <para>
@@ -93,7 +93,7 @@ namespace NovaGloben.Module.KnowledgeBase.Manager
 
         /// <summary>
         /// The module's content for the host's module export (the page's "Export Content") and, through the host's
-        /// <c>module-content</c> contributor, for a site's configuration package (D107): the site's categories and every article,
+        /// <c>module-content</c> contributor, for a site's configuration package: the site's categories and every article,
         /// drafts included - an exporter holds the page's edit permission, so the drafts are theirs to see.
         /// </summary>
         public async Task<string> ExportModuleAsync(ModuleModel module)

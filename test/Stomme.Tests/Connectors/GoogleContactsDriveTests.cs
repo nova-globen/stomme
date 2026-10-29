@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Contacts DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2
+    /// Google Contacts DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2
     /// token provider and the extraction port, against a loopback stand-in for Google's token endpoint and the People API: a Google
     /// Contacts connection made over the API, its secret and refresh token vaulted, tested (the groups named); a published
     /// pipeline makes a contact, reads the contacts over two pages, changes one with its etag and deletes it - the refresh token

@@ -95,7 +95,7 @@ namespace Stomme.Tests
             _output.WriteLine("[asked for] " + string.Join(", ", roles.Asked.Select(a => $"{a.Role}@site {a.SiteId}")));
 
             // The site's operators for the site's fault - its administrators AND the Host Users, since a fresh install's site
-            // has no administrator at all (BL-177) - and the Host Users alone for the shared one.
+            // has no administrator at all - and the Host Users alone for the shared one.
             Assert.Equal(3, roles.Asked.Count);
             Assert.Equal(("Administrators", 7), roles.Asked[0]);
             Assert.Equal(("Host Users", 7), roles.Asked[1]);

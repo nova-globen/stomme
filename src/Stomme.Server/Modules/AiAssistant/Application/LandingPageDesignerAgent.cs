@@ -16,7 +16,7 @@ namespace Stomme.Modules.AiAssistant.Application
     /// there): a site's landing page as static HTML from an administrator's brief, and one section of it rewritten from an
     /// instruction. The model is the SITE's (quota-gated and metered like every agent); it SUBMITS through one tool, and what
     /// the tool accepts is only what the landing sanitizer leaves unchanged - anything it had to take out is reported back
-    /// for the model to put right, within <see cref="MaxAttempts"/> submissions. It PROPOSES: nothing is stored here (D113).
+    /// for the model to put right, within <see cref="MaxAttempts"/> submissions. It PROPOSES: nothing is stored here.
     /// </summary>
     public sealed class LandingPageDesignerAgent(IAssistantModelAccess models, LandingHtmlSanitizer sanitizer) : ILandingPageDesigner
     {

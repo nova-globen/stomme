@@ -35,7 +35,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// TOTP (BL-229, n8n's TOTP node, and past it): the time-based one-time code of an authenticator secret (RFC 6238) - the
+    /// TOTP (n8n's TOTP node, and past it): the time-based one-time code of an authenticator secret (RFC 6238) - the
     /// code an app shows now and the seconds it has left (n8n's <c>token</c> and <c>secondsRemaining</c>), for a pipeline that
     /// signs in to a system guarded by one - or whether a code a person gave is the current one, a period either side allowed
     /// (n8n has no check). The secret is base32 as an app shows it (spaces, dashes and case aside), or the <c>otpauth://</c> link

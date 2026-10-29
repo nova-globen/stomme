@@ -3,7 +3,7 @@
 @inject ISettingService SettingService
 
 @*
-    The health THRESHOLDS (BL-83 / D104 item 12), as the module's "Thresholds" action - NOT "Settings", which SiteRouter
+    The health THRESHOLDS, as the module's "Thresholds" action - NOT "Settings", which SiteRouter
     reserves for the framework's module-settings dialog. They are Host-scope Setting rows - ONE value for the deployment, which every
     site of the tenant runs by (a shared store cannot be Degraded on one site and Healthy on the next) - so this page is
     HOST-ONLY, not health:manage: a site's administrator must not be able to change every other site's alerting. D104 item 12

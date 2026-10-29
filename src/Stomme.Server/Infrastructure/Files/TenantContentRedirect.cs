@@ -8,7 +8,7 @@ using Stomme.Shared;
 namespace Stomme.Infrastructure.Files
 {
     /// <summary>
-    /// BL-246 - a Public-type folder's bytes are never served past their folder's permissions. A Public folder lives under
+    /// A Public-type folder's bytes are never served past their folder's permissions. A Public folder lives under
     /// the web root (<c>wwwroot/Content/Tenants/{tenant}/Sites/{site}/...</c>), and the static-file middleware served it
     /// to anyone: driven, a file in a Public folder whose View was Administrators only answered 403 at <c>/files/...</c>
     /// and 200 with its bytes at its static path, the ids being small integers. The static-file middleware now never

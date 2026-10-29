@@ -58,7 +58,7 @@ public sealed class RavenHiLoIdGenerator(IDocumentStore store) : IRavenIdGenerat
     public bool CanGenerate(Type idType) => idType == typeof(int) || idType == typeof(long);
 
     /// <summary>
-    /// Drops every cached range (BL-81): after a restore wrote documents with their ORIGINAL ids, a range this process
+    /// Drops every cached range: after a restore wrote documents with their ORIGINAL ids, a range this process
     /// reserved earlier may lie below them and hand out an id that overwrites one. The next id reserves afresh from the
     /// server, whose HiLo document the restore has moved past the restored ids.
     /// </summary>

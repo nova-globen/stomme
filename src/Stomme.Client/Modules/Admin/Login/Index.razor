@@ -173,7 +173,7 @@ else
         try
         {
             _allowexternallogin = (SettingService.GetSetting(PageState.Site.Settings, "ExternalLogin:ProviderType", "") != "") ? true : false;
-            // D70: installation-wide SAML2 / Windows-Negotiate schemes, surfaced into site settings server-side
+            // Installation-wide SAML2 / Windows-Negotiate schemes, surfaced into site settings server-side
             // (ServerSiteService). Show each button only when its scheme is enabled.
             _allowsamllogin = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "Saml2:Enabled", "false"));
             _allowwindowslogin = bool.Parse(SettingService.GetSetting(PageState.Site.Settings, "WindowsAuth:Enabled", "false"));
@@ -293,14 +293,14 @@ else
 
     private void SamlLogin()
     {
-        // D70: the installation-wide SAML2 challenge (config-gated). The endpoint itself re-checks the scheme is
+        // The installation-wide SAML2 challenge (config-gated). The endpoint itself re-checks the scheme is
         // registered and 403s otherwise, so this button can never force a challenge on a disabled install.
         NavigationManager.NavigateTo(Utilities.TenantUrl(PageState.Alias, "/pages/saml-login?returnurl=" + WebUtility.UrlEncode(_returnurl)), true);
     }
 
     private void WindowsLogin()
     {
-        // D70: the installation-wide Windows/Negotiate challenge (config-gated, Windows-only). Same endpoint-side
+        // The installation-wide Windows/Negotiate challenge (config-gated, Windows-only). Same endpoint-side
         // gate as SAML above.
         NavigationManager.NavigateTo(Utilities.TenantUrl(PageState.Alias, "/pages/windows-login?returnurl=" + WebUtility.UrlEncode(_returnurl)), true);
     }
@@ -354,7 +354,7 @@ else
                     else
                     {
                         // post back to the Login page so that the cookies are set correctly
-                        // the verified second-factor code goes with the password: the page that sets the cookie checks it again (BL-254)
+                        // the verified second-factor code goes with the password: the page that sets the cookie checks it again
                         var fields = new { __RequestVerificationToken = SiteState.AntiForgeryToken, username = _username, password = _password, remember = _remember, returnurl = WebUtility.UrlEncode(_returnurl), code = (_action == "TwoFactor") ? _code : string.Empty };
                         string url = Utilities.TenantUrl(PageState.Alias, "/pages/login/");
                         await interop.SubmitForm(url, fields);

@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Intercom
 {
     /// <summary>
-    /// Intercom (BL-229, n8n's Intercom node: its users, leads and companies): a workspace over Intercom's API 2.x
+    /// Intercom (n8n's Intercom node: its users, leads and companies): a workspace over Intercom's API 2.x
     /// (<c>https://api.intercom.io</c>, or the EU's and Australia's), an access token as a bearer, Intercom's API version in its
     /// <c>Intercom-Version</c> header. A test names the admin and the workspace.
     /// </summary>

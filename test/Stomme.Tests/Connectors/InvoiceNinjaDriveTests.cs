@@ -18,9 +18,9 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Invoice Ninja DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Invoice Ninja DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against this machine's throwaway Invoice Ninja 5.13 (scripts/invoiceninja-test-server.ps1) - fail-not-skip without
-    /// it (D46): an Invoice Ninja connection made over the API, its token vaulted, tested; a published pipeline making a client,
+    /// it: an Invoice Ninja connection made over the API, its token vaulted, tested; a published pipeline making a client,
     /// an invoice for it marked sent, a payment of the invoice's whole amount - each an expression over the step before - and
     /// finding the invoice paid by its number; the token in neither the graph nor the run. Everything made is deleted again.
     /// </summary>

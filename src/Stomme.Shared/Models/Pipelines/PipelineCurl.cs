@@ -7,7 +7,7 @@ using System.Text;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "Import cURL" on its HTTP Request node: a curl command, as an API's documentation gives one or a browser's
+    /// n8n's "Import cURL" on its HTTP Request node: a curl command, as an API's documentation gives one or a browser's
     /// "Copy as cURL" writes it, read into what the HTTP request step sends - its URL, method, headers, body, content type,
     /// authorization and timeout, a form's file. What the step cannot do the same way is said (<see cref="PipelineCurlRequest.Notes"/>)
     /// rather than dropped without a word: skipping TLS checks, writing the response to a local file, a form's other fields.

@@ -28,7 +28,7 @@ using Microsoft.Extensions.Logging;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// The provider-neutrality GUARANTEE for a clean-arch (DDD/CQRS) module (D76). A module with a
+    /// The provider-neutrality GUARANTEE for a clean-arch (DDD/CQRS) module. A module with a
     /// <c>Guid</c>-keyed <see cref="AggregateRoot{TId}"/> persisted through the clean-arch stack
     /// (<c>IRepository&lt;TAggregate, TId&gt;</c> + <c>IUnitOfWork</c>) calls this ONCE from its
     /// <c>IServerStartup.ConfigureServices</c> and gets a working store on BOTH providers — EF Core on a
@@ -65,7 +65,7 @@ namespace Microsoft.Extensions.DependencyInjection
         ///     tracker, id generator and tenant-database resolver) are <c>TryAdd</c>ed by
         ///     <c>AddRavenFrameworkStore</c> in the composition root BEFORE any module startup runs.</item>
         /// </list>
-        /// <b>Why the CLOSED registration (D17).</b> FeatureManagement owns the OPEN-generic
+        /// <b>Why the CLOSED registration.</b> FeatureManagement owns the OPEN-generic
         /// <c>IRepository&lt;,&gt;</c>; a second open-generic registration is last-wins and would silently
         /// re-point live feature flags. A CLOSED registration for exactly <c>IRepository&lt;TAggregate,
         /// TId&gt;</c> wins over the open generic in MS.DI <b>regardless of module load order</b> (verified), so
@@ -98,7 +98,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<IDomainEventDispatcher, CurrentScopeDomainEventDispatcher>();
             services.TryAddScoped<IUnitOfWork, UnitOfWork>();
 
-            // The N-way provider registry (D80) decides which store persists the aggregate, keyed on
+            // The N-way provider registry decides which store persists the aggregate, keyed on
             // Database:DefaultDBType — no more relational?EF:Raven binary, and an unknown provider FAILS LOUD.
             // The relational provider invokes the EF wiring below (a module's OWN TContext); the document/file
             // providers ignore it and bind their generic repository.
@@ -137,14 +137,14 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// The STORAGE-BLIND overload (D79): a <c>Guid</c>-keyed clean-arch module registers its aggregate for
+        /// The STORAGE-BLIND overload: a <c>Guid</c>-keyed clean-arch module registers its aggregate for
         /// persistence WITHOUT authoring any EF <c>DbContext</c>, value-object converter, store or provider
         /// branch — it names only the aggregate and its id, and the HOST persists it on whichever provider the
         /// install selected. On a relational install the aggregate is mapped into the shared, host-owned
         /// <see cref="ModuleAggregatesDbContext"/> (which reflects value objects onto plain string columns by the
         /// <c>IStringValueObject</c> convention); on a RavenDB install it round-trips through the generic
         /// <see cref="RavenRepository{TAggregate, TId}"/> exactly as the 3-arg overload's Raven branch does. The
-        /// CLOSED <c>IRepository&lt;TAggregate, TId&gt;</c> is registered per aggregate (D17), so any number of
+        /// CLOSED <c>IRepository&lt;TAggregate, TId&gt;</c> is registered per aggregate, so any number of
         /// storage-blind modules coexist without touching the open generic.
         /// <para>
         /// <b>Prefer this overload.</b> The 3-arg overload above (which takes a module <c>TContext</c> + an EF
@@ -162,7 +162,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// store, so the host fully decides storage there.
         /// </para>
         /// <para>
-        /// <b>Marketplace arrivals (BL-52).</b> <c>EnsureCreated</c> alone is a no-op against an EXISTING store
+        /// <b>Marketplace arrivals.</b> <c>EnsureCreated</c> alone is a no-op against an EXISTING store
         /// database, so an aggregate enrolled after the database was first created (a module installed from the
         /// marketplace, then a restart) would silently have no table. The schema initializer therefore catches
         /// the schema up ADDITIVELY at startup: it probes each mapped table and creates only the missing ones
@@ -185,7 +185,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<IDomainEventDispatcher, CurrentScopeDomainEventDispatcher>();
             services.TryAddScoped<IUnitOfWork, UnitOfWork>();
 
-            // The N-way provider registry (D80) decides the store, keyed on Database:DefaultDBType — no more
+            // The N-way provider registry decides the store, keyed on Database:DefaultDBType — no more
             // relational?EF:Raven binary, and an unknown provider FAILS LOUD. The relational provider enrols the
             // aggregate into the shared, host-owned ModuleAggregatesDbContext and binds the closed EfRepository
             // over it; the document/file providers ignore that wiring and bind their own generic repository (both
@@ -199,11 +199,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 GetOrAddModuleAggregateRegistry(services).Add(typeof(TAggregate));
                 EnsureSharedModuleAggregateContext(services, databaseType);
 
-                // TrackReads = false (BL-160): a module page in an Interactive Server circuit holds ONE scope, hence one
+                // TrackReads = false: a module page in an Interactive Server circuit holds ONE scope, hence one
                 // context, for as long as it is open - with tracking on it kept showing the first value it read.
                 services.AddScoped<IRepository<TAggregate, TId>>(sp =>
                 {
-                    // BL-263: the shared model is built (and an unmappable aggregate quarantined) before the first
+                    // The shared model is built (and an unmappable aggregate quarantined) before the first
                     // repository is handed out; a quarantined aggregate gets a repository that refuses by name, and every
                     // other module on the store keeps working.
                     var context = sp.GetRequiredService<ModuleAggregatesDbContext>();
@@ -230,7 +230,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // BL-105 posture: a third party must not be able to brick an install from /bin).
             // The host's OWN aggregates are the build gate's, with its reasoned list (Backup's schedule and snapshot are
             // installation-wide by design): naming them too told every stock install, at every boot, to "make it tenant-owned"
-            // about the framework itself (seen in the BL-86 exemplar drive's host log, 2026-09-28).
+            // about the framework itself (seen in the BL-86 exemplar drive's host log).
             if (!typeof(ITenantOwned).IsAssignableFrom(typeof(TAggregate))
                 && typeof(TAggregate).Assembly != typeof(ModuleAggregatePersistenceExtensions).Assembly)
             {
@@ -239,7 +239,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
-        // BL-81 (D106 item 3): every storage-blind aggregate is in the installation snapshot with ZERO module code, unless it
+        // Every storage-blind aggregate is in the installation snapshot with ZERO module code, unless it
         // says why not with [BackupExcluded]. TryAddEnumerable: registering the same aggregate twice adds one participant.
         private static void AddBackupParticipant<TAggregate, TId, TContext>(IServiceCollection services)
             where TAggregate : AggregateRoot<TId>
@@ -326,7 +326,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             // Expands the |DataDirectory| token (and ensures the directory exists) against THIS host's content
-            // root rather than the process-wide slot the last-composed host wrote (BL-153, HostDataDirectory).
+            // root rather than the process-wide slot the last-composed host wrote (HostDataDirectory).
             return (null, HostDataDirectory.Expand(
                 services, $"Data Source=|{Constants.DataDirectory}|Stomme.ModuleAggregates.db"));
         }
@@ -363,7 +363,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// role FeatureManagement's internal <c>DefaultTenantContext</c> plays. Registered with <c>TryAdd</c> so the
     /// host's adapter, registered first in the composition root, always wins.
     /// </summary>
-    /// <summary>A module aggregate composed without <see cref="ITenantOwned"/> (BL-111): named at startup, never fatal.</summary>
+    /// <summary>A module aggregate composed without <see cref="ITenantOwned"/>: named at startup, never fatal.</summary>
     public sealed record ModuleAggregateTenancyNotice(Type AggregateType);
 
     internal sealed class ModuleFallbackTenantContext : ITenantContext
@@ -399,14 +399,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 return; // fresh database — EnsureCreated built the full current schema
             }
 
-            // BL-52: EnsureCreated is a NO-OP against an existing database, and the store database is created at
+            // EnsureCreated is a NO-OP against an existing database, and the store database is created at
             // FIRST boot with whatever aggregates are registered THEN — so an aggregate arriving later (a module
             // installed from the marketplace, then a restart) found the database present and its table absent:
             // writes threw 'no such table', swallowed into a silent empty read (found by DRIVING the BL-1 loop).
             // Catch the schema up ADDITIVELY: create only the missing tables, never touching existing data.
             await CreateMissingTablesAsync(context, scope, cancellationToken);
 
-            // BL-111: an aggregate that GAINED a property after its table existed (the Guestbook's tenant) found the
+            // An aggregate that GAINED a property after its table existed (the Guestbook's tenant) found the
             // table present and the column absent - every read threw. Catch the columns up the same way: a missing
             // column is ADDED, and added NULLABLE whatever the model says, because the rows already there cannot
             // hold a value for it (a tenant-owned aggregate's legacy rows then hold no tenant, and every tenant's
@@ -575,7 +575,7 @@ namespace Microsoft.Extensions.DependencyInjection
             foreach (var notice in scope.ServiceProvider.GetServices<ModuleAggregateTenancyNotice>())
             {
                 logger.LogWarning(
-                    "Module aggregate {Aggregate} is not tenant-owned (ITenantOwned): on a multi-tenant installation its rows are shared by every tenant of this store (BL-111). Make it tenant-owned, or run this module on a single-tenant installation only.",
+                    "Module aggregate {Aggregate} is not tenant-owned (ITenantOwned): on a multi-tenant installation its rows are shared by every tenant of this store. Make it tenant-owned, or run this module on a single-tenant installation only.",
                     notice.AggregateType.FullName);
             }
 
@@ -592,7 +592,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         internal static async Task EnsureAllAsync(IServiceProvider scoped, ILogger logger, CancellationToken cancellationToken)
         {
-            // BL-263: build the shared model first, isolating what cannot be mapped, and say ONCE which aggregate is off
+            // Build the shared model first, isolating what cannot be mapped, and say ONCE which aggregate is off
             // and why. Before this one unmappable aggregate failed the model every module shares, and the whole store
             // "read as empty" (measured: a healthy module's first write threw on its neighbour's property).
             if (scoped.GetService<ModuleAggregateRegistry>() is { } registry &&

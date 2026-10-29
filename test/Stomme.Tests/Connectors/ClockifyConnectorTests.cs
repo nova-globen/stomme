@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Clockify (n8n's Clockify node: a workspace's clients, projects, tags, tasks and time entries created, got,
+    /// Clockify (n8n's Clockify node: a workspace's clients, projects, tags, tasks and time entries created, got,
     /// updated and deleted, its users and the workspaces read): every call Clockify's API v1 with the key in X-Api-Key, a
     /// region's address too; every list page by page, the page size fixed and no bigger than asked, with its filters; a user's
     /// time entries over a period, the key's own user's when none is named, the moments sent in UTC; each resource got, created,

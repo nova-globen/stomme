@@ -19,7 +19,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - n8n's workflow tags: a pipeline's tags, kept beside its versions in the engine's key-value store (a tag is the
+    /// n8n's workflow tags: a pipeline's tags, kept beside its versions in the engine's key-value store (a tag is the
     /// pipeline's, not a version's: tagging is not an edit, publishes nothing and never conflicts with a collaborator's save).
     /// The key carries the SITE: a key-value key is one row per installation while the store reads per site (the schedules
     /// task's lesson, <see cref="Triggers.ScheduledPipelinesTask.LastFiredKey"/>).

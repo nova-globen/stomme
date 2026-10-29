@@ -4,7 +4,7 @@ using Stomme.Databases.Interfaces;
 namespace Stomme.Database.RavenDb
 {
     /// <summary>
-    /// The RavenDB database provider (D53). Implements the storage-agnostic <see cref="IDatabase"/> core ONLY —
+    /// The RavenDB database provider. Implements the storage-agnostic <see cref="IDatabase"/> core ONLY —
     /// deliberately NOT <c>DatabaseBase</c>/<see cref="IRelationalDatabase"/>, because a document store has no
     /// EF Core provider, no <c>UseDatabase</c> and no SQL to rewrite. Its purpose is to be selectable and
     /// identifiable: the installer resolves it reflectively via <c>Type.GetType(dbtype)</c> +
@@ -14,7 +14,7 @@ namespace Stomme.Database.RavenDb
     /// <para>
     /// <b>Install-selectable since D56</b>: a wizard entry in <c>AvailableDatabases</c> (appsettings.json) and
     /// in <c>DatabaseController.DefaultDatabases</c> — the read-time catalog that replaced the old
-    /// <c>ValidateConfiguration</c> boot rewrite (BL-20); keep those two lists in lockstep or the RavenDB
+    /// <c>ValidateConfiguration</c> boot rewrite; keep those two lists in lockstep or the RavenDB
     /// option silently vanishes from installs without the config section. Store-provider wiring
     /// (<c>AddRavenFrameworkStore</c>) and the hand-written Raven <c>IUserStore</c> are D54; the module
     /// contract is D55.

@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.SendGrid
 {
     /// <summary>
-    /// SendGrid (BL-229, n8n's SendGrid node: its contacts added or changed, got, found and deleted, its lists made, got, read,
+    /// SendGrid (n8n's SendGrid node: its contacts added or changed, got, found and deleted, its lists made, got, read,
     /// renamed and deleted, and a mail sent): SendGrid's v3 API (<c>https://api.sendgrid.com/v3</c>), an API key as the bearer.
     /// A test names the account.
     /// </summary>

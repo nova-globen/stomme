@@ -19,7 +19,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - find in every pipeline: where a text is used - a step's name, comment and inputs as written (values, expressions,
+    /// Find in every pipeline: where a text is used - a step's name, comment and inputs as written (values, expressions,
     /// scripts, conditions, cases), a note, a variable - with a snippet, case ignored; a sensitive input and a kept test value
     /// never read; across the site's pipelines in name order, archived ones left out, each place with its folder and step.
     /// </summary>
@@ -132,7 +132,7 @@ namespace Stomme.Tests.Pipelines
                 .Handle(new FindInPipelinesQuery("o"), CancellationToken.None));
         }
 
-        // BL-229 - the map: Execute pipeline calls, Dispatch starts, a failure starts what watches it (every pipeline: a mark, no
+        // The map: Execute pipeline calls, Dispatch starts, a failure starts what watches it (every pipeline: a mark, no
         // line), an agent uses the tools it names (or every one); a step switched off, a pipeline named by an expression, one
         // the map does not hold and a pipeline calling itself make no line.
         [Fact]
@@ -179,7 +179,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(9, map.Nodes.Count);
         }
 
-        // BL-229 - what stops working when pipelines stop running: a call or a start into one of them, a tool an agent uses, the
+        // What stops working when pipelines stop running: a call or a start into one of them, a tool an agent uses, the
         // failures one handles, a handler of every failure - never a link among the ones leaving, nor one out of them.
         [Fact]
         public void What_stops_working_is_said_before_a_pipeline_stops_running()
@@ -222,7 +222,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(PipelineLinks.LeftBehind(null, new[] { "b" }));
         }
 
-        // BL-229 - the map reads the version that runs too: a call only the published version makes is drawn beside a start only
+        // The map reads the version that runs too: a call only the published version makes is drawn beside a start only
         // the draft makes - so archiving the called pipeline is said to break the call that runs today.
         [Fact]
         public async Task The_map_holds_the_published_versions_links_and_the_drafts()

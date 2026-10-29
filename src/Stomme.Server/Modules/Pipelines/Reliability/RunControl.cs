@@ -13,7 +13,7 @@ using Stomme.Modules.Pipelines.Application;
 namespace Stomme.Modules.Pipelines.Reliability
 {
     /// <summary>
-    /// BL-229 - the runs a person asked to stop. Stop cancels what is stored, but a run in the middle of a burst of work holds
+    /// The runs a person asked to stop. Stop cancels what is stored, but a run in the middle of a burst of work holds
     /// its state in memory: it went on to its end and wrote that state back over the cancel (n8n's Stop stops a busy run). Its id
     /// is kept here a while, and <see cref="RunControlMiddleware"/> cancels the run before its next step. And the runs this
     /// process knows - dispatched from here, or working here - with their site's tenant, so a run in its FIRST burst, which the
@@ -83,7 +83,7 @@ namespace Stomme.Modules.Pipelines.Reliability
     }
 
     /// <summary>
-    /// BL-229 - a run the engine has stored is the store's to answer for from then on: deleted after, it is gone (404), not "not
+    /// A run the engine has stored is the store's to answer for from then on: deleted after, it is gone (404), not "not
     /// yet" (204). The engine says so after every save of a run's state.
     /// </summary>
     public sealed class MarkRunStored(PipelineRunStops stops, Stomme.Engine.Common.ISystemClock clock)
@@ -97,7 +97,7 @@ namespace Stomme.Modules.Pipelines.Reliability
     }
 
     /// <summary>
-    /// BL-229 - before each step of a run: a run a person asked to stop (<see cref="PipelineRunStops"/>), or one busy longer than
+    /// Before each step of a run: a run a person asked to stop (<see cref="PipelineRunStops"/>), or one busy longer than
     /// its pipeline's time limit (n8n's "Timeout Workflow", <see cref="PipelineRunTimeout"/>), is cancelled - the step does not
     /// start, nor does any after it, and the run's log says why. "Busy" is one burst of work: it begins with the first step this
     /// process runs for the run (the engine makes a fresh execution context for each burst), so the time a run waits, stored -

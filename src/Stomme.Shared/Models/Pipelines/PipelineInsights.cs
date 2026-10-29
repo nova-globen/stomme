@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// How the site's pipelines have been running (BL-229, n8n's Insights): over the last day, week or month, how many runs each
+    /// How the site's pipelines have been running (n8n's Insights): over the last day, week or month, how many runs each
     /// pipeline started, how many failed or were cancelled, how many are still going, the failure rate of those that ended, and
     /// how long a run takes - the MEDIAN of the runs that ended, as a run waiting days for an approval would make an average say
     /// nothing. ONE computation (<see cref="PipelineInsights.Of"/>), the server's query only reads the window's runs.
@@ -54,7 +54,7 @@ namespace Stomme.Models.Pipelines
         public DateTime? LastFailedOnUtc { get; set; }
 
         /// <summary>
-        /// BL-229 - n8n's time saved: the minutes a person would have spent, as the pipeline says one run that finishes well saves
+        /// n8n's time saved: the minutes a person would have spent, as the pipeline says one run that finishes well saves
         /// them (<see cref="PipelineGraph.MinutesSavedPerRun"/>), times the window's runs that did. In all, the pipelines' that
         /// say it, added up. Null when none of them says.
         /// </summary>
@@ -65,7 +65,7 @@ namespace Stomme.Models.Pipelines
     }
 
     /// <summary>
-    /// BL-229 - how one step of a pipeline has been doing over the window's runs - better than n8n's Insights, which stop at the
+    /// How one step of a pipeline has been doing over the window's runs - better than n8n's Insights, which stop at the
     /// workflow: how many times it ran (a loop's body counts each pass), how many of those failed - faulted, or failed and gone on
     /// down its Failed path or past it - and the median time of those that ended.
     /// </summary>
@@ -102,7 +102,7 @@ namespace Stomme.Models.Pipelines
         /// <summary>The most runs of one pipeline whose steps one look reads - the newest.</summary>
         public const int MaxRunsForSteps = 500;
 
-        /// <summary>Each step's figures from its passes in the window's runs (BL-229).</summary>
+        /// <summary>Each step's figures from its passes in the window's runs.</summary>
         public static List<PipelineStepInsight> OfSteps(IEnumerable<PipelineStepRunView> passes) =>
             passes.Where(pass => !string.IsNullOrEmpty(pass.StepId))
                 .GroupBy(pass => pass.StepId, StringComparer.Ordinal)

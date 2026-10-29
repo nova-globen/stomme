@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Docs DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2 token
+    /// Google Docs DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2 token
     /// provider and the extraction port, against a loopback stand-in for Google's token endpoint, the Drive API and the Docs API: a
     /// Google Docs connection made over the API, its secret and refresh token vaulted, tested (its document read); a published
     /// pipeline makes a document in a folder, inserts text, replaces a placeholder, sends a page break as a request and reads the

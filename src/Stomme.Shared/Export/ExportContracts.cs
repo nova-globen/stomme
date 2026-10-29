@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Stomme.Export
 {
-    /// <summary>The artifact formats the engine renders (D108, BL-85).</summary>
+    /// <summary>The artifact formats the engine renders.</summary>
     public enum ExportFormat
     {
         Csv = 0,
@@ -145,7 +145,7 @@ namespace Stomme.Export
         /// <c>=</c>, <c>+</c>, <c>-</c>, <c>@</c>, a tab or a carriage return is executed by Excel and similar
         /// when the file is opened, so an untrusted row can become a command on someone else's machine. Any
         /// holder of the create permission could otherwise disable the guard for data they do not own, which is
-        /// why the opt-out requires the manage permission (D108, refutation 11).
+        /// why the opt-out requires the manage permission (refutation 11).
         /// </remarks>
         public bool NeutraliseFormulas { get; init; } = true;
 
@@ -188,7 +188,7 @@ namespace Stomme.Export
     /// <summary>
     /// A formatter that needs a per-site lookup implements this beside <see cref="IExportCellFormatter"/>: the processor
     /// calls it ONCE per export, in the site's scope, before the first row - the per-cell call stays synchronous, and no
-    /// renderer ever awaits a lookup (D108's correction of 2026-09-27, BL-94 increment 8). A renderer used on its own
+    /// renderer ever awaits a lookup (D108's correction of 2026-09-27). A renderer used on its own
     /// gets a formatter that was never prepared, which resolves what needs no site (the presets) and declines the rest.
     /// </summary>
     public interface IExportCellFormatterPreparation

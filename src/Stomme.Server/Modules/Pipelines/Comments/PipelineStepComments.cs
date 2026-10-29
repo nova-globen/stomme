@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Comments
 {
     // ============================================================================================================
-    // BL-229 - comments on a pipeline's steps (better than n8n, whose workflows have no discussion). Who may: anyone who can SEE
+    // Comments on a pipeline's steps (better than n8n, whose workflows have no discussion). Who may: anyone who can SEE
     // the pipeline reads and writes them and resolves or reopens any - a reviewer comments without being able to change the
     // pipeline; a comment is deleted by its author, or by anyone with the manage key. Each add, resolve, reopen and delete is in
     // the pipeline activity ledger (by construction, PipelineAudit), naming the step - never the text.
@@ -48,7 +48,7 @@ namespace Stomme.Modules.Pipelines.Comments
         Task<int> DeleteByPipelineAsync(int siteId, string definitionId, CancellationToken ct = default);
     }
 
-    // Filters on integers only - the provider-neutral part of FindAsync (D78); a pipeline's comments are picked out of the
+    // Filters on integers only - the provider-neutral part of FindAsync; a pipeline's comments are picked out of the
     // site's in memory, so no string comparison is left to a provider to decide.
     public sealed class PipelineStepCommentRepository(IRepository<PipelineStepCommentAggregate, Guid> inner) : IPipelineStepCommentRepository
     {
@@ -266,7 +266,7 @@ namespace Stomme.Modules.Pipelines.Comments
     }
 
     /// <summary>
-    /// Comments under the right to erasure (D112): a comment is its author's own words, so every comment the subject wrote on
+    /// Comments under the right to erasure: a comment is its author's own words, so every comment the subject wrote on
     /// the site is DELETED. Idempotent: a second run finds nothing. A comment someone else wrote and the subject only resolved
     /// keeps its text and loses the resolver's name.
     /// </summary>
@@ -312,7 +312,7 @@ namespace Stomme.Modules.Pipelines.Comments
     }
 
     /// <summary>
-    /// A person's comments on a site's pipeline steps, for their data package (D107): their own words, so carried, not left
+    /// A person's comments on a site's pipeline steps, for their data package: their own words, so carried, not left
     /// out - each with the pipeline and step it is on, when, and whether it was resolved (never who resolved it: that is
     /// someone else's name). The erasure participant deletes the same rows.
     /// </summary>
@@ -356,8 +356,8 @@ namespace Stomme.Modules.Pipelines.Comments
             services.AddScoped<IRequestHandler<AddStepCommentCommand, PipelineStepCommentView?>>(provider => provider.GetRequiredService<PipelineStepCommentHandlers>());
             services.AddScoped<IRequestHandler<SetStepCommentResolvedCommand, PipelineStepCommentView?>>(provider => provider.GetRequiredService<PipelineStepCommentHandlers>());
             services.AddScoped<IRequestHandler<DeleteStepCommentCommand, PipelineStepCommentView?>>(provider => provider.GetRequiredService<PipelineStepCommentHandlers>());
-            services.AddScoped<ISubjectErasureParticipant, PipelineStepCommentErasureParticipant>(); // D112: the author's own words, deleted
-            services.AddScoped<Stomme.Portability.ISubjectDataContributor, PipelineStepCommentSubjectContributor>(); // D107: and carried
+            services.AddScoped<ISubjectErasureParticipant, PipelineStepCommentErasureParticipant>(); // The author's own words, deleted
+            services.AddScoped<Stomme.Portability.ISubjectDataContributor, PipelineStepCommentSubjectContributor>(); // And carried
         }
     }
 }

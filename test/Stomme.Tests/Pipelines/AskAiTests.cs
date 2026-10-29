@@ -21,7 +21,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Ask AI, n8n's AI node on Stomme's model seam, run by the real engine with the seam scripted: the instructions
+    /// Ask AI, n8n's AI node on Stomme's model seam, run by the real engine with the seam scripted: the instructions
     /// and the prompt reach the site's model as the system and user messages, opened as the "pipelines" agent (so its calls are
     /// metered and quota-gated like the assistant's); the answer is the result; an empty prompt asks about the previous result;
     /// JSON is checked (a fenced block unwrapped); a refusal of the seam is <c>AI_&lt;REASON&gt;</c> in its words, a model that fails

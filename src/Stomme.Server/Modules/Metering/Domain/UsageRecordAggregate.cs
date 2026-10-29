@@ -7,7 +7,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Metering.Domain
 {
     /// <summary>
-    /// One appended row of the usage ledger: what was consumed, by whom, under which operation (D102).
+    /// One appended row of the usage ledger: what was consumed, by whom, under which operation.
     /// </summary>
     /// <remarks>
     /// <para>

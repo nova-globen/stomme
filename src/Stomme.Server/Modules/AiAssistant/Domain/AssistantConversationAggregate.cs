@@ -24,7 +24,7 @@ namespace Stomme.Modules.AiAssistant.Domain
         Tool = 3,
     }
 
-    /// <summary>What an agent may propose. Each is applied through the owning module's ordinary gated command (D113).</summary>
+    /// <summary>What an agent may propose. Each is applied through the owning module's ordinary gated command.</summary>
     public enum ArtifactKind
     {
         Pipeline = 0,
@@ -33,7 +33,7 @@ namespace Stomme.Modules.AiAssistant.Domain
         LandingPage = 3,
     }
 
-    /// <summary>A proposed artifact stays Proposed until the user applies or discards it - never auto-applied (D113).</summary>
+    /// <summary>A proposed artifact stays Proposed until the user applies or discards it - never auto-applied.</summary>
     public enum ArtifactState
     {
         Proposed = 0,
@@ -48,7 +48,7 @@ namespace Stomme.Modules.AiAssistant.Domain
     public sealed record ArtifactAppliedEvent(Guid ConversationId, Guid ArtifactId, string Kind) : DomainEvent;
 
     /// <summary>
-    /// A conversation between a user and the assistant (BL-97 increment 9, D113; lifted from the predecessor platform's
+    /// A conversation between a user and the assistant (lifted from the predecessor platform's
     /// <c>AssistantConversation</c>): the transcript, the datasets vetted as model context, and the artifacts agents have
     /// proposed. Its invariants are the predecessor platform's: only dataset SUMMARIES are shared with a model unless raw rows are opted in;
     /// a proposed artifact may reference only datasets already attached (and so already vetted for the user); an artifact
@@ -57,7 +57,7 @@ namespace Stomme.Modules.AiAssistant.Domain
     /// <remarks>
     /// <b>CHANGED:</b> the predecessor platform's conversation belonged to a tenant GUID and a string user id; here it is TENANT-OWNED (BL-111:
     /// the storage-blind store is one per installation) and belongs to a SITE of that tenant and a Stomme user id, as every
-    /// Stomme page-owned aggregate does. It holds the user's own text, so the right-to-erasure seam DELETES it (D112). The
+    /// Stomme page-owned aggregate does. It holds the user's own text, so the right-to-erasure seam DELETES it. The
     /// transcript, the context and the artifacts ride the module store's JSON collection columns.
     /// </remarks>
     public sealed class AssistantConversationAggregate : AggregateRoot<Guid>, ITenantOwned

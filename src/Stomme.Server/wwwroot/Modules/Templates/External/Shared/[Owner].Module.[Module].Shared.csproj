@@ -3,7 +3,7 @@
   <!--
     The SHARED layer: the wire models, the permission keys and the service contract, used by the server AND streamed to a
     WebAssembly browser. It references no server-only assembly.
-    INDEPENDENT (D81/D82): Stomme arrives only through the Stomme.Sdk.Slim package - no source or project reference.
+    INDEPENDENT: Stomme arrives only through the Stomme.Sdk.Slim package - no source or project reference.
   -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -23,7 +23,7 @@
     <PackageReference Include="Stomme.Sdk.Slim" Version="[FrameworkVersion]" />
   </ItemGroup>
 
-  <!-- WASM safety (BL-13): the ASP.NET OpenApi source generator arrives with the shared framework and injects server-only
+  <!-- WASM safety: the ASP.NET OpenApi source generator arrives with the shared framework and injects server-only
        references; a browser-bound assembly must not carry it, or Assembly.GetTypes() throws in the browser. -->
   <Target Name="RemoveOpenApiSourceGenerator" AfterTargets="ResolveReferences" BeforeTargets="CoreCompile">
     <ItemGroup>

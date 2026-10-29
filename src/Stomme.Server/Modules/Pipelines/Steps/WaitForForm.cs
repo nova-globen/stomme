@@ -25,7 +25,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record FormWaitStimulus(string TokenHash);
 
     /// <summary>
-    /// Wait for a form (BL-229, n8n's Wait node resumed "on form submitted", and its resume form URL): the run pauses on a form -
+    /// Wait for a form (n8n's Wait node resumed "on form submitted", and its resume form URL): the run pauses on a form -
     /// its fields edited as the Form trigger's are - which a person fills in at the run's FORM ADDRESS, the run's
     /// <see cref="CallAddress"/> with <c>/form</c> after it (Call address's Form address output: send it to them, then wait). The
     /// answers are the result, down Submitted; down Timed out when "Time out after" was given and passed. The form travels on the

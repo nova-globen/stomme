@@ -30,7 +30,7 @@ namespace NovaGloben.Module.KnowledgeBase.Discovery
     }
 
     /// <summary>
-    /// The module's MCP contribution (BL-80's seam, D101): two resources and one read-only tool over the site's PUBLISHED
+    /// The module's MCP contribution (BL-80's seam): two resources and one read-only tool over the site's PUBLISHED
     /// articles.
     /// </summary>
     /// <remarks>

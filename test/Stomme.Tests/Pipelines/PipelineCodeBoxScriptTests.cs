@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - a code box edits like code (n8n's code editor): the editor's own script (<c>pipelines-editor.js</c>), run as it is in
+    /// A code box edits like code (n8n's code editor): the editor's own script (<c>pipelines-editor.js</c>), run as it is in
     /// a JavaScript engine with a page's globals stubbed, its <c>stommeCodeBox</c> edits called on a text and a selection. Tab indents
     /// the caret or every line a selection touches, Shift+Tab takes it back, Enter keeps the indentation (one more after an opening
     /// bracket, the closing one to a line of its own), and the caret's place is said as a script's problem says it.

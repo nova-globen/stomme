@@ -14,7 +14,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsRekognition
 {
     /// <summary>
-    /// Amazon Rekognition (BL-229, n8n's AWS Rekognition node: an image analysed) over Rekognition's JSON protocol
+    /// Amazon Rekognition (n8n's AWS Rekognition node: an image analysed) over Rekognition's JSON protocol
     /// (<c>https://rekognition.{region}.amazonaws.com</c>, <c>X-Amz-Target: RekognitionService.*</c>), every call signed with AWS
     /// Signature Version 4 by an IAM user's access key and secret, over the host's egress. A test lists the account's face
     /// collections, one.

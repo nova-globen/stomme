@@ -464,7 +464,7 @@ namespace Stomme.Services
         {
             // The VALUE travels in the body, never in the URL: LogManager copies the request URL into Log.Url for
             // every entry raised during the request, so a value in the path put private settings into the site
-            // Log table where every administrator could read them (BL-148, the residue BL-112 left).
+            // Log table where every administrator could read them (the residue BL-112 left).
             await PutJsonAsync($"{Apiurl}/{entityName}/{entityId}/{settingName}",
                 new Setting { EntityName = entityName, EntityId = entityId, SettingName = settingName, SettingValue = settingValue, IsPrivate = isPrivate });
         }

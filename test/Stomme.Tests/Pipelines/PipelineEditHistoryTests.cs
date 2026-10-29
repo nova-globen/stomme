@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 3 - undo and redo, and copy and paste: the rules the editor's keyboard and buttons ride on.
+    /// Undo and redo, and copy and paste: the rules the editor's keyboard and buttons ride on.
     /// </summary>
     public sealed class PipelineEditHistoryTests
     {
@@ -190,7 +190,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(CanvasFit.MinZoom, CanvasFit.Compute(1200, 800, new[] { (0d, 0d, (double?)1d, (double?)1d), (100_000d, 0d, (double?)1d, (double?)1d) })!.Value.Zoom);
         }
 
-        // BL-229 - n8n's zoom to fit on open: whether every step shows whole at the view a pipeline opens with.
+        // n8n's zoom to fit on open: whether every step shows whole at the view a pipeline opens with.
         [Fact]
         public void A_view_shows_its_steps_only_when_each_lies_wholly_inside_the_canvas()
         {

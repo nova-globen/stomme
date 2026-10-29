@@ -28,7 +28,7 @@ namespace Stomme.Persistence.File;
 /// <b>String semantics.</b> <see cref="FindAsync"/> compiles the predicate and filters in memory, so a raw string
 /// <c>==</c> is ordinal/case-SENSITIVE — matching EF/SQLite and diverging from RavenDB, exactly as the D78
 /// <c>FindAsync</c> contract documents (safe for non-string scalars; strings must use the normalized-column
-/// pattern). <b>A VALUE OBJECT is different, and the difference is measured (BL-150):</b> in memory it is the value
+/// pattern). <b>A VALUE OBJECT is different, and the difference is measured:</b> in memory it is the value
 /// object's OWN <c>Equals</c> that decides, so <c>e =&gt; e.Author == AuthorName.Create("ada lovelace")</c> matches
 /// "Ada Lovelace" here (<c>AuthorName</c> compares lower-cased) and on RavenDB, but not on EF/SQLite, which compares the
 /// converted string case-sensitively. Neither shape is in the safe set; this store matches EF only for raw strings.
@@ -72,7 +72,7 @@ public sealed class FileRepository<TAggregate, TId>(
     }
 
     // GetAll + compile + in-memory filter. In-memory string == is ordinal/case-SENSITIVE (matches EF/SQLite;
-    // diverges from RavenDB), and a value object compares by its OWN Equals (BL-150) — safe only for the non-string
+    // diverges from RavenDB), and a value object compares by its OWN Equals — safe only for the non-string
     // predicates the IRepository.FindAsync contract documents. The Guestbook's ModuleId filter is an int equality.
     public async Task<IReadOnlyList<TAggregate>> FindAsync(
         Expression<Func<TAggregate, bool>> predicate, CancellationToken ct = default)

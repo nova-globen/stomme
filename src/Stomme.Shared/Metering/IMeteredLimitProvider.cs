@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Stomme.Metering
 {
     /// <summary>
-    /// Supplies the numeric limit for a metric on a site - the entitlement channel a boolean cannot carry (D102).
+    /// Supplies the numeric limit for a metric on a site - the entitlement channel a boolean cannot carry.
     /// </summary>
     /// <remarks>
     /// <para>

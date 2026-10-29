@@ -8,7 +8,7 @@ using Stomme.Modules.CloudUsage.Domain;
 using Stomme.Modules.CloudUsage.Providers;
 using Xunit;
 
-// the predecessor platform's cases by name (BL-97 increment 3); the fixtures and assertions are unchanged.
+// the predecessor platform's cases by name; the fixtures and assertions are unchanged.
 namespace Stomme.Tests.CloudUsage
 {
     public sealed class AzureCostProviderTests

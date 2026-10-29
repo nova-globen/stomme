@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D56 — THE INTERACTIVE WIZARD INSTALLS RAVENDB (not just the automated appsettings path).
+    /// THE INTERACTIVE WIZARD INSTALLS RAVENDB (not just the automated appsettings path).
     /// </summary>
     /// <remarks>
     /// <para>
@@ -233,7 +233,7 @@ namespace Stomme.Tests
 
                 // A RavenDB install still writes SQLite SIDECARS under its content root - the FeatureManagement
                 // flag store and the shared module-aggregate store are SQLite on EVERY install provider - so the
-                // pools have to be released here too or the tree survives (BL-104).
+                // pools have to be released here too or the tree survives.
                 ScratchSqlite.ReleaseInstall(ContentRoot);
 
                 try

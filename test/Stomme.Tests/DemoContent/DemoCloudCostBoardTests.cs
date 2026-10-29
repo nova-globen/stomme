@@ -23,7 +23,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.DemoContent
 {
     /// <summary>
-    /// BL-97 increment 5 - the predecessor platform's <c>CloudUsageDashboardSeedingTests.Host_SeedsCloudCostAnalyticsDashboard_BoundToCostDatasets</c>
+    /// The predecessor platform's <c>CloudUsageDashboardSeedingTests.Host_SeedsCloudCostAnalyticsDashboard_BoundToCostDatasets</c>
     /// by name on an installed SQLite host with <c>DemoContent:Enabled</c>: the install path writes the published "Cloud Cost
     /// Analytics" board - three KPIs, two charts, one grid - every widget bound to a dataset whose schema has its columns, a
     /// chart spec on the charts alone; a second pass changes nothing. The port's own: a site that already holds the canonical

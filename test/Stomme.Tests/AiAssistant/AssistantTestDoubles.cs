@@ -15,7 +15,7 @@ using Microsoft.Extensions.AI;
 
 namespace Stomme.Tests.AiAssistant
 {
-    /// <summary>A model that answers from a script and counts its calls - no test reaches a live model (D113).</summary>
+    /// <summary>A model that answers from a script and counts its calls - no test reaches a live model.</summary>
     internal sealed class ScriptedChatClient : IChatClient
     {
         public string Reply { get; set; } = "scripted reply";
@@ -53,7 +53,7 @@ namespace Stomme.Tests.AiAssistant
             await Task.Yield();
             if (Throw is not null)
             {
-                throw Throw; // BL-251: a stream that fails at its first step, as a refused or failed send does
+                throw Throw; // A stream that fails at its first step, as a refused or failed send does
             }
 
             yield return new ChatResponseUpdate(ChatRole.Assistant, Reply);

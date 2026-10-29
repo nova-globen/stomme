@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-251 - <c>AddMediator</c> is idempotent. An app whose Server assembly holds two modules, each startup calling
+    /// <c>AddMediator</c> is idempotent. An app whose Server assembly holds two modules, each startup calling
     /// <c>AddMediator&lt;T&gt;()</c> over the same assembly, registered every handler twice, so each notification handler ran
     /// twice (found by the app-guidance writers). Now each handler is registered once however often it is called.
     /// </summary>

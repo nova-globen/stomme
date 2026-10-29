@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Dashboards.Controllers
 {
     /// <summary>
-    /// <c>api/Dashboards</c> (BL-96 increment 9): the site's boards under <c>dashboards:view</c>, every mutation under
+    /// <c>api/Dashboards</c>: the site's boards under <c>dashboards:view</c>, every mutation under
     /// <c>dashboards:manage</c>, the publish under <c>dashboards:publish</c>; a refused command (a rule of the board,
     /// a validation) answers with the reason, a board of another site is not found.
     /// </summary>

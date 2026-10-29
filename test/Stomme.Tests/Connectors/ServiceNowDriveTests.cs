@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - ServiceNow DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// ServiceNow DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for a ServiceNow instance that answers an integration user's name and password alone.
     /// A ServiceNow connection made over the API, its password vaulted, tested; a published pipeline creates an incident by its
     /// own fields and a column of the instance's own, resolves it, gets it with its display values, reads the open incidents

@@ -10,7 +10,7 @@ using Stomme.SharedKernel.Domain;
 
 namespace Stomme.IdentityAudit.Persistence
 {
-    /// <summary>The identity audit ledger's reads (BL-120). Every filter is an int site id or a UTC range - the safe set.</summary>
+    /// <summary>The identity audit ledger's reads. Every filter is an int site id or a UTC range - the safe set.</summary>
     public interface IIdentityAuditRepository : IRepository<IdentityAuditEntryAggregate, Guid>
     {
         /// <summary>A site's entries at or after <paramref name="sinceUtc"/>, newest first, at most <paramref name="take"/>.</summary>
@@ -20,7 +20,7 @@ namespace Stomme.IdentityAudit.Persistence
         Task<IReadOnlyList<IdentityAuditEntryAggregate>> ListOlderThanAsync(int siteId, DateTime cutoffUtc, CancellationToken ct = default);
     }
 
-    /// <summary>The storage-blind implementation over the closed repository (D79/D80) - no provider code.</summary>
+    /// <summary>The storage-blind implementation over the closed repository - no provider code.</summary>
     public sealed class IdentityAuditRepository(IRepository<IdentityAuditEntryAggregate, Guid> inner) : IIdentityAuditRepository
     {
         public Task<IdentityAuditEntryAggregate?> GetByIdAsync(Guid id, CancellationToken ct = default) => inner.GetByIdAsync(id, ct);

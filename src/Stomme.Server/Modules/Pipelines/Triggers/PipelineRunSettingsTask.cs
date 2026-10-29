@@ -27,7 +27,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
-    /// BL-229 - n8n's "save successful executions", per pipeline: a published pipeline whose graph says not to keep the runs that
+    /// n8n's "save successful executions", per pipeline: a published pipeline whose graph says not to keep the runs that
     /// finish well (<see cref="Models.Pipelines.PipelineGraph.KeepSuccessfulRuns"/> false) has each such run deleted - its log, its
     /// steps' records and its run data with it, as the site's retention deletes - once it has been finished for
     /// <see cref="Grace"/>, so its page can still be opened just after it ends. A run that failed, was cancelled or is still going

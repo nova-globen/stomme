@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <remarks>
     /// This is <b>not</b> wired into the base client bootstrap — it is opt-in, so the framework's WASM client
     /// runs unchanged when no module uses gRPC. A downstream app or module calls this from its client startup
-    /// once the server has gRPC enabled (D10). On a server-rendered circuit the equivalent factory (registered
+    /// once the server has gRPC enabled. On a server-rendered circuit the equivalent factory (registered
     /// on the server) makes a plain HTTP/2 loopback channel instead — same abstraction, transport chosen by
     /// runtime.
     /// </remarks>

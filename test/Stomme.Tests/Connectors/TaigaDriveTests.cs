@@ -16,8 +16,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Taiga DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
-    /// this machine's throwaway Taiga 6.10 (scripts/taiga-test-server.ps1) - fail-not-skip without it (D46): a Taiga connection made
+    /// Taiga DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
+    /// this machine's throwaway Taiga 6.10 (scripts/taiga-test-server.ps1) - fail-not-skip without it: a Taiga connection made
     /// over the API, its password vaulted, tested; a published pipeline making an issue in a project of the test's own, closing it
     /// by its status's name - an expression over the first step's result - and finding it among the project's closed issues; the
     /// password in neither the graph nor the run. The project is deleted again afterwards.

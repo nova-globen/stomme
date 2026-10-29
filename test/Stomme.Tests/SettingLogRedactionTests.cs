@@ -30,7 +30,7 @@ using MsLogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-112 - a private setting's VALUE must never reach the event log. <c>SettingController</c> passed the
+    /// A private setting's VALUE must never reach the event log. <c>SettingController</c> passed the
     /// whole <see cref="Setting"/> object to <c>ILogManager.Log</c> (and the settings import passed the whole
     /// CSV), and <c>LogManager</c> serialises arguments into BOTH <c>Log.Properties</c> and the interpolated
     /// <c>Log.Message</c> - so an SMTP password or API key saved through the admin UI landed in the site Log
@@ -167,10 +167,10 @@ namespace Stomme.Tests
                         (l.MessageTemplate ?? "").Contains(marker) ||
                         (l.Properties ?? "").Contains(marker) ||
                         (l.Exception ?? "").Contains(marker) ||
-                        // BL-148: the OTHER door. LogManager copies the request URL into Log.Url for every entry
+                        // The OTHER door. LogManager copies the request URL into Log.Url for every entry
                         // raised during the request, and the old client route carried the value as a PATH
                         // SEGMENT - so the value reached the log even with every argument redacted. Asserting
-                        // only on Message/Properties is what let that stand after BL-112.
+                        // only on Message/Properties is what let that stand.
                         (l.Url ?? "").Contains(marker));
                     Assert.True(leaked == null,
                         $"Private setting value marker '{marker}' found in Log row {leaked?.LogId}: Message='{leaked?.Message}' Properties='{leaked?.Properties}' Url='{leaked?.Url}'");
@@ -182,7 +182,7 @@ namespace Stomme.Tests
 
                 // The Url column is asserted above now, not merely printed. What this test does NOT reach is the
                 // legacy value-in-path route - these routes all carry the value in a body - so that door has its
-                // own test below (BL-148).
+                // own test below.
                 _output.WriteLine($"Log.Url rows carrying a marker: {logs.Count(l => markers.Any(m => (l.Url ?? "").Contains(m)))}");
             }
             finally
@@ -192,13 +192,13 @@ namespace Stomme.Tests
         }
 
         /// <summary>
-        /// The legacy value-in-PATH route must not put the value in <c>Log.Url</c> (BL-148).
+        /// The legacy value-in-PATH route must not put the value in <c>Log.Url</c>.
         /// </summary>
         /// <remarks>
         /// The test above drives the JSON routes, which carry the value in a body — so it could never have seen
         /// this door, and said so in a comment rather than covering it. <c>LogManager</c> copies the request URL
         /// into <c>Log.Url</c> for EVERY entry raised during a request, so a value in the path reached the site
-        /// Log table with every log ARGUMENT correctly redacted by BL-112. The client no longer uses this route;
+        /// Log table with every log ARGUMENT correctly redacted. The client no longer uses this route;
         /// it is kept for compatibility and now declares a redacted URL for its own request.
         /// </remarks>
         [Fact]
@@ -473,7 +473,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                // This install's pools only, never the process-wide ClearAllPools (BL-104). Naming one store was
+                // This install's pools only, never the process-wide ClearAllPools. Naming one store was
                 // not enough - an installed host also opens the FeatureManagement and module-aggregate sidecars -
                 // so ReleaseInstall enumerates what is actually under the content root instead.
                 ScratchSqlite.ReleaseInstall(ContentRoot);

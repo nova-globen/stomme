@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Tasks DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2 token
+    /// Google Tasks DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the shared OAuth2 token
     /// provider and the extraction port, against a loopback stand-in for Google's token endpoint and the Tasks API: a Google Tasks
     /// connection made over the API, its secret and refresh token vaulted, tested (the lists named); a published pipeline makes a
     /// task under a parent, reads the list's open tasks over two pages by Google's token, finishes one, moves it and clears the

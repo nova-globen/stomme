@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// BL-97 increment 12 - presence lives on a heartbeat. Found driving two browsers: a host restart killed one editor's
+    /// Presence lives on a heartbeat. Found driving two browsers: a host restart killed one editor's
     /// circuit, it never said it left, and it stayed a participant - so its session could never close. the predecessor platform released a
     /// dropped editor from its hub's disconnect; here the editor talks through the API, so a participant carries when it was
     /// last heard from, its heartbeat tells nobody, and the sweep forgets one silent past the presence window, closing a

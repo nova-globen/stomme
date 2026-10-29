@@ -13,7 +13,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the SFTP connectors without a server: SFTP by a password and SFTP by a private key, Data &amp; Files, the file
+    /// The SFTP connectors without a server: SFTP by a password and SFTP by a private key, Data &amp; Files, the file
     /// servers' operations; the host key a connection trusts read from its fingerprint (SHA-256 as ssh-keygen -lf prints it,
     /// padded or not, or legacy MD5) or from its public key's line (a .pub file's, a known_hosts entry's - the key's own type
     /// agreeing), several at once, anything else refused; a key's lines made again where a one-line field dropped them or made

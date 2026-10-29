@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The document scrolls: app.css takes <c>body</c> back from FluentUI 5's reset (BL-207).
+    /// The document scrolls: app.css takes <c>body</c> back from FluentUI 5's reset.
     /// </summary>
     /// <remarks>
     /// FluentUI 5 adopts a stylesheet whose <c>body</c> rule is the reset of an app laid out with FluentLayout, which scrolls

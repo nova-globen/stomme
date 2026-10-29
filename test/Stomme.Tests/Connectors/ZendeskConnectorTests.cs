@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zendesk (n8n's Zendesk node: tickets found, got, created, updated and deleted, users and organizations found, got
+    /// Zendesk (n8n's Zendesk node: tickets found, got, created, updated and deleted, users and organizations found, got
     /// and created): the agent's address with /token and the API token by the Basic scheme; the tickets Zendesk's search finds -
     /// its query, a status, a priority, a group and a requester written into its syntax - page by page by its next_page, only
     /// while it stays the account's own search, up to the most asked for; a ticket made with its first comment and a requester,

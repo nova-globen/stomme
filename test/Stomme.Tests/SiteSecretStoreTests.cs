@@ -22,7 +22,7 @@ namespace Stomme.Tests
     /// <para>
     /// This is the ONLY parity cover the store has: it rides the Setting seam and lives outside
     /// <c>Stomme.Repository.Stores</c>, so <c>RavenFrameworkStoreRegistrationTests</c> never discovers it (F14).
-    /// PostgreSQL and RavenDB FAIL rather than skip when unreachable (D46).
+    /// PostgreSQL and RavenDB FAIL rather than skip when unreachable.
     /// </para>
     /// <para>
     /// Pinned: set/get/delete round trip in fresh scopes; per-site isolation; the stored row is PRIVATE and its value

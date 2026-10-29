@@ -14,7 +14,7 @@ using static Stomme.Tests.AiAssistant.TurnScriptChatClient;
 namespace Stomme.Tests.AiAssistant
 {
     /// <summary>
-    /// BL-229 - the Pipeline Designer, the model loop behind the editor's "Build with AI": the site's model changes the canvas only
+    /// The Pipeline Designer, the model loop behind the editor's "Build with AI": the site's model changes the canvas only
     /// through the workbench's tools, its request metered as the designer's own, and Finish ends the turn with no closing call. A
     /// request the guardrail refuses - an attempt to override the instructions, past the rate - and a site whose model is off reach
     /// no model, and say why.

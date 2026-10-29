@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Mautic (n8n's Mautic node: contacts, companies, segments, campaigns and emails): every call an instance's API
+    /// Mautic (n8n's Mautic node: contacts, companies, segments, campaigns and emails): every call an instance's API
     /// with the user's name and password; contacts read searched, ordered and published only, page by page by Mautic's total -
     /// never ended by a short page, which a Mautic capping its pages answers - as their fields or raw; a contact got,
     /// created with its fields, tags, owner, stage, address and last activity, updated, deleted, its points changed, its

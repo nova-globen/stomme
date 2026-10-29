@@ -12,7 +12,7 @@ namespace Stomme.Tests
     /// The stock themes this host bundles (Aurora public, Slate admin - D92) RENDER on it.
     /// </summary>
     /// <remarks>
-    /// Nothing in the gate rendered them before 10.5.0 (BL-192, 2026-10-02). Their 1.1.2 packs render <c>FluentDesignTheme</c>,
+    /// Nothing in the gate rendered them before 10.5.0. Their 1.1.2 packs render <c>FluentDesignTheme</c>,
     /// which FluentUI 5 removed, so a host on FluentUI 5 bundling 1.1.2 offered two themes that could not render - and every
     /// suite would have stayed green, because every suite renders Graphite. This installs a site, gives it Aurora as its theme
     /// and Slate as its admin theme, and asserts each renders its own markup. (The test host serves no package's

@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-246 - a Public-type folder's files are served as their folder's permissions say, at every address. Found by
+    /// A Public-type folder's files are served as their folder's permissions say, at every address. Found by
     /// BL-239's validation, driven: a file in a Public folder whose View was Administrators only answered 403 at
     /// <c>/files/...</c> and 200 WITH ITS BYTES at its static path <c>/Content/Tenants/{t}/Sites/{s}/...</c> - Public
     /// folders live under the web root and the static-file middleware served them to anyone. That path is now sent to the

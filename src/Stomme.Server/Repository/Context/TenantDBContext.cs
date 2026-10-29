@@ -48,7 +48,7 @@ namespace Stomme.Repository
 
             if (string.IsNullOrEmpty(_connectionString))
             {
-                // Sync and reads NO store (D37) — see the note in DBContextBase.OnConfiguring. This context is
+                // Sync and reads NO store — see the note in DBContextBase.OnConfiguring. This context is
                 // the one that matters most: ASP.NET Identity's UserStore constructor-injects it on the live
                 // authentication path, which is sync DI with nowhere to await.
                 Tenant tenant = _tenantManager.GetResolvedTenant();
@@ -57,7 +57,7 @@ namespace Stomme.Repository
                     _connectionString = _config.GetConnectionString(tenant.DBConnectionString);
                     if (_connectionString != null)
                     {
-                        // THIS host's data directory (BL-153) - see IConfigManager.GetDataDirectory.
+                        // THIS host's data directory - see IConfigManager.GetDataDirectory.
                         _connectionString = _connectionString.Replace($"|{Constants.DataDirectory}|", _configManager.GetDataDirectory());
                         _databaseType = tenant.DBType;
                     }
@@ -82,7 +82,7 @@ namespace Stomme.Repository
             });
             optionsBuilder.UseApplicationServiceProvider(services.BuildServiceProvider());
 
-            // Relational-only EF configuration (D53); ActiveDatabase stays IDatabase for IMultiDatabase (D55).
+            // Relational-only EF configuration; ActiveDatabase stays IDatabase for IMultiDatabase.
             if (!string.IsNullOrEmpty(_connectionString) && ActiveDatabase is IRelationalDatabase relationalDatabase)
             {
                 optionsBuilder.UseStommeDatabase(relationalDatabase, _connectionString);
@@ -96,18 +96,18 @@ namespace Stomme.Repository
             base.OnModelCreating(builder);
 
             // EF's own ledger has no key. Said here and not by [Keyless] on the model, which made Stomme.Shared reference
-            // EF Core - and every WebAssembly site's browser download it (BL-206's payload, 2026-10-03).
+            // EF Core - and every WebAssembly site's browser download it (BL-206's payload).
             builder.Entity<MigrationHistory>().HasNoKey();
 
-            // Relational-only (D53): this context IS the ASP.NET Identity EF store and its aggregates map onto
+            // Relational-only: this context IS the ASP.NET Identity EF store and its aggregates map onto
             // relational tables, so both calls need the relational surface. ActiveDatabase stays IDatabase for
-            // IMultiDatabase (D55); on the only path that reaches OnModelCreating today it is a relational
+            // IMultiDatabase; on the only path that reaches OnModelCreating today it is a relational
             // provider. A non-relational provider (RavenDatabase) skips — this context is not its store.
             if (ActiveDatabase is IRelationalDatabase relationalDatabase)
             {
                 relationalDatabase.UpdateIdentityStoreTableNames(builder);
 
-                // Framework-store clusters that have moved onto the persistence seam (D17). They share this
+                // Framework-store clusters that have moved onto the persistence seam. They share this
                 // context with the DbSets below, so a migrated cluster keeps the same per-request connection,
                 // audit hooks and migration set as an unmigrated one.
                 builder.ConfigureFrameworkStore(relationalDatabase);
@@ -131,7 +131,7 @@ namespace Stomme.Repository
         // NOTE: there is deliberately no DbSet<Site>, no DbSet<Page>, no DbSet<Module>, no DbSet<User>, no
         // DbSet<Role>, no DbSet<UserRole>, no DbSet<Setting>, no DbSet<Permission> and — since D44 — no
         // DbSet<Language>, no DbSet<Log>, no DbSet<Profile>, no DbSet<SiteTask> and no DbSet<Notification>.
-        // Those clusters are on the seam (D17/D19/D21/D22/D23/D24/D44): they are mapped by
+        // Those clusters are on the seam: they are mapped by
         // ConfigureFrameworkStore as SiteAggregate/PageAggregate/ModuleAggregate/UserAggregate/RoleAggregate/
         // UserRoleAggregate/SettingAggregate/PermissionAggregate/LanguageAggregate/LogAggregate/
         // ProfileAggregate/SiteTaskAggregate/NotificationAggregate and reached only through ISiteStore /
@@ -147,7 +147,7 @@ namespace Stomme.Repository
         // DbContextUtils decides both by RUNTIME TYPE TEST against the entity this context tracks, so getting
         // either wrong compiles cleanly and silently stops stamping. See the remarks on those aggregates.
         //
-        // Permission (D24) is TENANT-ONLY — unlike Setting it has no master half; MasterDBContext never mapped
+        // Permission is TENANT-ONLY — unlike Setting it has no master half; MasterDBContext never mapped
         // it and the master migration set never created the table. Deleting its DbSet also removed the LAST
         // IDbContextFactory<TenantDBContext> from RoleRepository and UserRepository, which had kept one purely
         // for db.Permission. See src/Stomme.Server/README.md (persistence seam).
@@ -218,10 +218,10 @@ namespace Stomme.Repository
         // .SearchContent — are [NotMapped] (D45's mechanism). See src/Stomme.Server/README.md (persistence seam).
         //
         // What is left below is MigrationHistory ALONE, which is EF's own [Keyless] ledger and stays here
-        // permanently (D43). That is the end state Phase 3 was aiming at: this context maps no Stomme entity.
+        // permanently. That is the end state Phase 3 was aiming at: this context maps no Stomme entity.
         public virtual DbSet<MigrationHistory> MigrationHistory { get; set; }
 
-        // SiteGroup and SiteGroupMember are GONE from this context (D45) — they are on the seam, mapped by
+        // SiteGroup and SiteGroupMember are GONE from this context — they are on the seam, mapped by
         // ConfigureFrameworkStore as SiteGroupAggregate/SiteGroupMemberAggregate. They had to leave TOGETHER:
         // while SiteGroupMember stayed here, its (then mapped) SiteGroup navigation made EF rediscover the
         // SiteGroup contract and claim the table SiteGroupAggregate owns, and the model failed at startup.

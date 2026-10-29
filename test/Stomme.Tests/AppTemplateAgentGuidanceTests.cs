@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-239 - the agent guidance an app made from the template carries (its AGENTS.md, CLAUDE.md, docs/ and
+    /// The agent guidance an app made from the template carries (its AGENTS.md, CLAUDE.md, docs/ and
     /// .claude/skills/) is held to what the packages give it. The reader is an AI agent with no Stomme source, so a
     /// broken link, a namespace no package exports, a skill its tool cannot load or a pointer into this repository sends
     /// it down a dead end - silently, since nothing compiles a markdown file. Each rule here is a check that would

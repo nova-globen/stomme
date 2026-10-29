@@ -16,7 +16,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Yourls
 {
     /// <summary>
-    /// YOURLS (BL-229, n8n's YOURLS node: a URL shortened, a short URL expanded, its stats read) over YOURLS's API
+    /// YOURLS (n8n's YOURLS node: a URL shortened, a short URL expanded, its stats read) over YOURLS's API
     /// (<c>{address}/yourls-api.php</c>) by its signature token, sent in the request's form body - never in the address. A test
     /// asks YOURLS for its version.
     /// </summary>

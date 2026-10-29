@@ -219,7 +219,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "10:30", "11:00", "11:30" }, next.Select(moment => moment.ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture)));
         }
 
-        // BL-229: a schedule read in a time zone fires when the zone's clock reaches it, daylight saving followed - '0 6 * * *' in
+        // A schedule read in a time zone fires when the zone's clock reaches it, daylight saving followed - '0 6 * * *' in
         // Stockholm in October (UTC+2) is 04:00 UTC - and the same cron in UTC does not fire then. A schedule with no zone hashes
         // as the stimulus did before zones existed, so every schedule published before keeps firing without a republish.
         [Fact]
@@ -258,7 +258,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Same(TimeZoneInfo.Utc, Schedule.FindZone("", out _));
         }
 
-        // BL-229 - n8n's workflow timezone: a schedule with no zone of its own is read in its pipeline's - '0 6 * * *' in a
+        // n8n's workflow timezone: a schedule with no zone of its own is read in its pipeline's - '0 6 * * *' in a
         // Stockholm pipeline fires at 04:00 UTC in October - and one with a zone of its own keeps it.
         [Fact]
         public async Task A_schedule_with_no_zone_of_its_own_is_read_in_its_pipelines()
@@ -310,9 +310,9 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(1, await RunsAsync(services, definitionId));
         }
 
-        // BL-229 - n8n's execution pruning: with Pipelines:Runs:KeepDays set, a finished run older than that goes, its log with
+        // n8n's execution pruning: with Pipelines:Runs:KeepDays set, a finished run older than that goes, its log with
         // it; a recent one stays, and a run still waiting stays however old. Off (0, the default), nothing goes.
-        // BL-229: n8n's "save successful executions" - a pipeline set not to keep its good runs has each deleted with its log once
+        // n8n's "save successful executions" - a pipeline set not to keep its good runs has each deleted with its log once
         // finished for the grace; its failed run stays, and so does every run of a pipeline that keeps them.
         [Fact]
         public async Task A_pipeline_that_keeps_only_failed_runs_has_its_good_runs_deleted_after_a_grace()
@@ -358,7 +358,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(await services.GetRequiredService<IPipelineExecutionLogStore>().FindAsync(new PipelineExecutionLogRecordFilter { PipelineInstanceId = goodRun.Id }));
         }
 
-        // BL-229 - n8n Enterprise's execution data redaction: a pipeline that keeps its steps' data only for a run that fails has a
+        // n8n Enterprise's execution data redaction: a pipeline that keeps its steps' data only for a run that fails has a
         // good run's step records emptied once finished for the grace - the run and its log stay, a record says why; its failed run
         // keeps everything; "never" empties a failed run too; a pipeline that keeps it is left alone; and the mark makes the next
         // pass take only the runs finished since (an emptied record is not written again).

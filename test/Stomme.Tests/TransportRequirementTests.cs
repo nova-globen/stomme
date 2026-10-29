@@ -17,7 +17,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // BL-53c: a module can declare a transport requirement (ModuleDefinition.Transports, populated from its
+    // A module can declare a transport requirement (ModuleDefinition.Transports, populated from its
     // IModule exactly like Runtimes), and a declared-but-disabled transport produces a LOUD, attributable
     // error log at startup — deliberately NOT the silent-vanish tone Runtimes enforcement uses. The unit
     // half drives the checker directly; the end-to-end half drives the REAL MapStommeTransport path with a

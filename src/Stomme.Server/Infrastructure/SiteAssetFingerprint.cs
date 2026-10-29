@@ -10,7 +10,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// The <c>?v=</c> on the site's own static assets (BL-228): a hash of the CONTENT of the files it is put on.
+    /// The <c>?v=</c> on the site's own static assets: a hash of the CONTENT of the files it is put on.
     /// </summary>
     /// <remarks>
     /// <para>

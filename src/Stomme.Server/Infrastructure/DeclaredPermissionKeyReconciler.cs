@@ -10,7 +10,7 @@ namespace Stomme.Infrastructure
 {
     /// <summary>
     /// Makes a declared permission key reach every site on the BOOT path, rather than whenever something
-    /// happens to read that site's module definitions (BL-103).
+    /// happens to read that site's module definitions.
     /// </summary>
     /// <remarks>
     /// <para>

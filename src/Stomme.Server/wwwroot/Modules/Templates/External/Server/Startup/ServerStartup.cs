@@ -19,7 +19,7 @@ namespace [Owner].Module.[Module].Startup
     /// The module's server composition, found by the host's convention scan (an <see cref="IServerStartup"/> in a
     /// <c>*.Stomme</c> assembly). It names NO store: <c>AddModuleAggregatePersistence</c> puts the aggregate on whichever
     /// store the installation chose - SQLite, PostgreSQL, SQL Server, RavenDB or the file store - and into the installation's
-    /// backups (D79, D80, D106).
+    /// backups.
     /// </summary>
     public class ServerStartup : IServerStartup
     {

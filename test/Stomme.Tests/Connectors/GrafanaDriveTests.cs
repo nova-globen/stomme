@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Grafana DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Grafana DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a Grafana server that refuses a call without the token: a Grafana connection made over
     /// the API, its token vaulted, tested; a published pipeline reads the dashboards over two pages - no more than asked -
     /// renames one with its panels kept, creates a team with an accent, adds a member and gives a user a role; the token in

@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Okta (n8n's Okta node: its users, and their groups): every call the org's API v1 with the token in Okta's SSWS
+    /// Okta (n8n's Okta node: its users, and their groups): every call the org's API v1 with the token in Okta's SSWS
     /// header; users and groups read page by page by the cursor Okta's Link header names - its after, never the address beside
     /// it - no more than asked; a user got by id or login, created with its profile and custom attributes, activated or not,
     /// updated with the attributes given, activated, deactivated, suspended, unsuspended and deleted; a user's groups; a user

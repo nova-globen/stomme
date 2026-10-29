@@ -27,7 +27,7 @@ namespace Stomme.Repository.Stores
     /// PostgreSQL database (stomme-pg-44357): <c>file</c> has TWELVE columns and not one of them is
     /// is_deleted, deleted_by or deleted_on — the three attnum slots they occupied are dropped stubs. The
     /// contract agrees: <see cref="Models.File.IsDeleted"/> is <c>[NotMapped]</c> + <c>[Obsolete]</c>("Soft
-    /// delete of files is not supported"). Exactly the Folder finding (D48), re-measured rather than
+    /// delete of files is not supported"). Exactly the Folder finding, re-measured rather than
     /// inherited.
     /// </para>
     /// <para>
@@ -58,7 +58,7 @@ namespace Stomme.Repository.Stores
     /// </remarks>
     public class FileAggregate : AggregateRoot<int>, IAuditable
     {
-        /// <summary>The <see cref="FolderAggregate"/> this file belongs to, by id (D7/D19). NOT NULL, FK-cascaded from Folder.</summary>
+        /// <summary>The <see cref="FolderAggregate"/> this file belongs to, by id. NOT NULL, FK-cascaded from Folder.</summary>
         public int FolderId { get; set; }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Stomme.Repository.Stores
         private string _name;
 
         /// <summary>
-        /// The lowercase lookup key for <see cref="Name"/> (D49) — Identity's <c>NormalizedUserName</c> to
+        /// The lowercase lookup key for <see cref="Name"/> — Identity's <c>NormalizedUserName</c> to
         /// <see cref="Name"/>'s <c>UserName</c>. Column <c>name_normalized</c>, nullable varchar(256), added
         /// and backfilled by <c>10020003_AddFolderFileNormalizedColumns</c>.
         /// </summary>
@@ -91,7 +91,7 @@ namespace Stomme.Repository.Stores
         /// <b>This column is why the File cluster could move at all.</b> The render path
         /// (<c>Pages/Files.cshtml.cs</c>) lowercases a requested URL and looks the file up by it, while the
         /// database stores mixed case. The harvested read said <c>item.Name.ToLower() == fileName</c>, which
-        /// RavenDB cannot translate (D48, measured). Filtering this column with plain <c>==</c> says the same
+        /// RavenDB cannot translate (measured). Filtering this column with plain <c>==</c> says the same
         /// thing on both providers — see <see cref="NormalizedText"/> for the equivalence and the test that
         /// asserts it live on each.
         /// </para>

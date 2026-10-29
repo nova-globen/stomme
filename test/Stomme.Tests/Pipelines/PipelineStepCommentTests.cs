@@ -33,7 +33,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - comments on a pipeline's steps: kept per site on the storage-blind module seam (here its FILE store - a real
+    /// Comments on a pipeline's steps: kept per site on the storage-blind module seam (here its FILE store - a real
     /// write and read per scope), written by anyone who can see the pipeline, deleted by their author or a manager, recorded in
     /// the activity ledger by step and never by text, gone with their pipeline, and erased with their author.
     /// </summary>
@@ -266,7 +266,7 @@ namespace Stomme.Tests.Pipelines
                 .OfType<PipelineStepCommentErasureParticipant>().Single().EraseAsync(new ErasureSubject(1, 7, null)))).Affected);
         }
 
-        // BL-229 - @mentions: a comment tells the people it names who can see pipelines, in the app and by e-mail, with the
+        // @mentions: a comment tells the people it names who can see pipelines, in the app and by e-mail, with the
         // comment and its step; anyone else named is said back as told nobody, and the author is never told.
         [Fact]
         public async Task A_comment_tells_the_people_it_mentions_who_can_see_pipelines_and_no_one_else()

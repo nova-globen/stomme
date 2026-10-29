@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Ask AI's answer shape (n8n's Structured Output Parser, and its Auto-fixing one) DRIVEN on an installed SQLite host
+    /// Ask AI's answer shape (n8n's Structured Output Parser, and its Auto-fixing one) DRIVEN on an installed SQLite host
     /// through the site's own model seam: the assistant configured over its API, a stand-in model that first answers the total as
     /// text and corrects itself when told what was wrong; a published pipeline asks with an answer shape - the model told the
     /// shape, asked once more with its answer and the problem, the second answer the result a later step writes.

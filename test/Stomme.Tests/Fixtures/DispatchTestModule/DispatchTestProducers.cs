@@ -10,7 +10,7 @@ using Stomme.Notifications;
 namespace Stomme.Tests.Fixtures.DispatchTestModule
 {
     /// <summary>
-    /// A STUB DEPENDENT of the Notifications module (BL-78 step 4, D100 point 3): it references ONLY the published port in
+    /// A STUB DEPENDENT of the Notifications module: it references ONLY the published port in
     /// <c>Stomme.Shared</c> - <see cref="INotificationDispatcher"/> and its DTOs - and never a Notifications-module type.
     /// <c>NotificationDispatcherContractTests</c> asserts that reflectively (member signatures) and syntactically (this
     /// folder's source), then drives it to a fake channel. Its four methods are the four producer SHAPES the survey found

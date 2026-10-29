@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - HubSpot DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// HubSpot DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for HubSpot's API: a HubSpot connection made over the API, its token vaulted, tested (the
     /// account named); a published pipeline creates or updates a contact by its email, then finds the customers - each call with
     /// the token as the bearer; the token is in neither the graph nor the run.

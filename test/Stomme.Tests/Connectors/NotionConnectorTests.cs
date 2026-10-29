@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Notion (n8n's database pages got, created and updated): the integration's secret as the bearer, the API version
+    /// Notion (n8n's database pages got, created and updated): the integration's secret as the bearer, the API version
     /// named; a database's pages read cursor by cursor, a filter and sorts passed on, each property a plain value; pages created
     /// with their fields typed by the database's properties, and updated typed by the page's own, what no property takes left out
     /// and said, every page typed before the first is sent; a database or page named by its address; a throttled call sent

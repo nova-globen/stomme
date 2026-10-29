@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-102: Edit on ONE module, page or folder must not be enough to write a SITE-WIDE permission row for a
+    /// Edit on ONE module, page or folder must not be enough to write a SITE-WIDE permission row for a
     /// different entity - the privilege escalation the Module/Page/Folder write paths carried.
     /// </summary>
     /// <remarks>
@@ -44,7 +44,7 @@ namespace Stomme.Tests
     /// </para>
     /// <para>
     /// SQLite and PostgreSQL here, RavenDB in <see cref="RavenEntityPermissionWriteValidationTests"/>; each FAILS
-    /// rather than skips when its store is unreachable (D46).
+    /// rather than skips when its store is unreachable.
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]
@@ -625,7 +625,7 @@ namespace Stomme.Tests
         };
     }
 
-    /// <summary>The identical BL-102 scenario on RavenDB - fails, never skips, when the server is unreachable (D46).</summary>
+    /// <summary>The identical BL-102 scenario on RavenDB - fails, never skips, when the server is unreachable.</summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]
     public class RavenEntityPermissionWriteValidationTests

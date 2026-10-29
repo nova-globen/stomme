@@ -15,12 +15,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Home Assistant DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Home Assistant DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a real Home Assistant 2026.9 (<see cref="HomeAssistantTestEndpoint"/>): a Home Assistant connection made over
     /// the API - its address, the access token vaulted - refused while loopback is not allowlisted, then tested; a published
     /// pipeline sets a sensor's state, reads it, switches an input_boolean by a service, fires an event and renders a template
     /// written over several lines in the step's Query box; the token in neither the graph nor the run. Fails, never skips, without
-    /// a server (D46).
+    /// a server.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

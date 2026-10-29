@@ -20,7 +20,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // BL-75: CreatePagesAsync matches an existing module placement by (PageId, ModuleDefinitionName, Title) —
+    // CreatePagesAsync matches an existing module placement by (PageId, ModuleDefinitionName, Title) —
     // and Title is DEFAULTED from ModuleDefinition.Name by ProcessPageTemplatesAsync, so renaming a module
     // between releases changes the matching key and the additive reconciliation creates a SECOND placement of
     // the same module on the same page instead of recognising the first. Observed live during the idiomatic
@@ -225,7 +225,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

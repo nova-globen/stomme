@@ -3,7 +3,7 @@ using System;
 namespace Stomme.Modules.Notifications.Domain
 {
     /// <summary>
-    /// The notifications domain's UTC rule (D100 point 7): every instant is a UTC <see cref="DateTime"/> - never a
+    /// The notifications domain's UTC rule: every instant is a UTC <see cref="DateTime"/> - never a
     /// <c>DateTimeOffset</c> (not in the FindAsync safe set) and never a Local or Unspecified value. Inputs are
     /// REQUIRED to be <see cref="DateTimeKind.Utc"/>; persisted values are re-stamped UTC on read because a relational
     /// provider (SQLite, MEASURED) materializes a scalar DateTime column as <see cref="DateTimeKind.Unspecified"/>.

@@ -6,7 +6,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - what a Run script step receives, as the editor's AI is told it: n8n sends its Code node's AI the input's schema, not
+    /// What a Run script step receives, as the editor's AI is told it: n8n sends its Code node's AI the input's schema, not
     /// its data, and so does this - records with their fields' names and kinds, plain values, one record or text; never a value.
     /// </summary>
     public sealed class PipelineScriptInputTests

@@ -20,7 +20,7 @@ public sealed class EfFeatureFlagStoreConformanceTests : FeatureFlagStoreConform
     {
         // The pooled SQLite connection must let go of the file before it can be removed — THIS database's pool,
         // by the exact string AddStore used. ClearAllPools is process-wide and drops the pooled connections of
-        // whatever else happens to be running, mid-request (BL-104).
+        // whatever else happens to be running, mid-request.
         using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={_databasePath}"))
         {
             Microsoft.Data.Sqlite.SqliteConnection.ClearPool(connection);

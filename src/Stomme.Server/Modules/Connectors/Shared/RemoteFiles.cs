@@ -25,7 +25,7 @@ namespace Stomme.Modules.Connectors.Shared
     }
 
     /// <summary>
-    /// A signed-in session on a file server - FTP's or SFTP's - in the few words the file operations need (BL-229, n8n's FTP
+    /// A signed-in session on a file server - FTP's or SFTP's - in the few words the file operations need (n8n's FTP
     /// node over either protocol). A folder's entries are its direct children, never its own <c>.</c> and <c>..</c>; a missing
     /// path is null from <see cref="StatAsync"/>; an upload makes the folders on its way and replaces a file of its name.
     /// </summary>
@@ -49,7 +49,7 @@ namespace Stomme.Modules.Connectors.Shared
     }
 
     /// <summary>
-    /// The file operations the FTP and SFTP connectors share (BL-229, n8n's FTP node made whole): a folder listed - its folders
+    /// The file operations the FTP and SFTP connectors share (n8n's FTP node made whole): a folder listed - its folders
     /// too, its subfolders' entries too - files downloaded into a File Manager folder by a pattern, one file downloaded into the
     /// pipeline run's folder and one uploaded from it (or text), a file or a folder deleted, an entry renamed or moved. Every
     /// parameter is checked before the server is dialled; a remote path holding a control character is refused, since FTP

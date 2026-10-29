@@ -77,7 +77,7 @@ namespace Stomme.Modules.Pipelines.Controllers
             });
 
         /// <summary>
-        /// The collaborating save (BL-97 increment 12): the graph with the one it was based on. 200 when it applied or merged,
+        /// The collaborating save: the graph with the one it was based on. 200 when it applied or merged,
         /// 409 - carrying the conflicts and the graph stored now - when a field it changed was changed by someone else.
         /// </summary>
         [HttpPut("{definitionId}/graph/merge")]
@@ -256,7 +256,7 @@ namespace Stomme.Modules.Pipelines.Controllers
         private const long FormRoom = 1024 * 1024;
 
         /// <summary>
-        /// BL-229: a file taken into a folder of the site's pipeline folder - a multipart form, the file under <c>file</c>; 400
+        /// A file taken into a folder of the site's pipeline folder - a multipart form, the file under <c>file</c>; 400
         /// saying why when it is refused, 413 when it is larger than a pipeline file may be. The request is bounded HERE, before
         /// its body is read, by the file steps' own limit (<c>Pipelines:Files:MaxFileBytes</c>) and room for the form - Kestrel's
         /// 30 MB default sits below that limit, and no author's upload is ever unbounded.
@@ -312,7 +312,7 @@ namespace Stomme.Modules.Pipelines.Controllers
             RunAsync(async () => await _mediator.Send(new DeletePipelineFileCommand(path), ct) ? NoContent() : NotFound());
 
         /// <summary>
-        /// BL-229: a file of the site's pipeline folder, given back to save - always as an attachment of no particular type, so a
+        /// A file of the site's pipeline folder, given back to save - always as an attachment of no particular type, so a
         /// file a run wrote (an HTML page, an SVG) is never opened as the site's own page.
         /// </summary>
         [HttpGet("files/content")]
@@ -348,7 +348,7 @@ namespace Stomme.Modules.Pipelines.Controllers
             RunAsync(async () => Ok(await _mediator.Send(new PreviewScriptCommand(request.Script ?? string.Empty, ToValues(request.Values)), ct)));
 
         /// <summary>
-        /// BL-229 - n8n's AI workflow builder: the canvas changed by the site's model as the author asks, judged by the save's rule
+        /// n8n's AI workflow builder: the canvas changed by the site's model as the author asks, judged by the save's rule
         /// and stored nowhere - or its answer alone, with no graph; 400 with the reason when the model cannot be asked, or made what
         /// the save refuses.
         /// </summary>
@@ -358,7 +358,7 @@ namespace Stomme.Modules.Pipelines.Controllers
             RunAsync(async () => Ok(await _mediator.Send(new DesignPipelineGraphCommand(request?.Graph!, request?.Instruction ?? string.Empty, request?.Earlier), ct)));
 
         /// <summary>
-        /// BL-229 - n8n's "Ask AI" in its Code node: a Run script step's script written by the site's model as the author asks,
+        /// n8n's "Ask AI" in its Code node: a Run script step's script written by the site's model as the author asks,
         /// told what the script can see and never a value; stored nowhere and run by nothing. 400 with the reason when the model
         /// cannot be asked or scripts are off.
         /// </summary>
@@ -368,7 +368,7 @@ namespace Stomme.Modules.Pipelines.Controllers
             RunAsync(async () => Ok(await _mediator.Send(new WriteScriptCommand(request!), ct)));
 
         /// <summary>
-        /// BL-229 - n8n's Code node linting: each script the editor holds checked to parse as its step runs it - nothing run,
+        /// n8n's Code node linting: each script the editor holds checked to parse as its step runs it - nothing run,
         /// nothing stored; why each does not, in the order asked (null for one that does).
         /// </summary>
         [HttpPost("scripts/check")]
@@ -472,7 +472,7 @@ namespace Stomme.Modules.Pipelines.Controllers
         public Task<IActionResult> Publish(string definitionId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] PublishPipelineRequest? request, CancellationToken ct) =>
             RunAsync(async () =>
             {
-                // BL-229: what changed, in the author's words - optional; a body-less publish is one with no note.
+                // What changed, in the author's words - optional; a body-less publish is one with no note.
                 var result = await _mediator.Send(new PublishPipelineCommand(definitionId, request?.Note), ct);
                 return result is null ? NotFound() : Ok(result);
             });
@@ -529,13 +529,13 @@ namespace Stomme.Modules.Pipelines.Controllers
         public async Task<IReadOnlyList<PipelineRunLogLine>> RunLog(string id, CancellationToken ct) =>
             await _mediator.Send(new GetRunLogQuery(id), ct);
 
-        // BL-229 increment 2: each step execution of a run - states for a viewer, inputs and outputs for an author.
+        // Each step execution of a run - states for a viewer, inputs and outputs for an author.
         [HttpGet("runs/{id}/steps")]
         [RequiresPermissionKey(PipelinesPermissions.View)]
         public async Task<IReadOnlyList<PipelineStepRunView>> RunSteps(string id, CancellationToken ct) =>
             await _mediator.Send(new ListRunStepsQuery(id), ct);
 
-        // BL-229 increment 7: the pipeline's versions, and the graph of one of them.
+        // The pipeline's versions, and the graph of one of them.
         [HttpGet("{definitionId}/versions")]
         [RequiresPermissionKey(PipelinesPermissions.View)]
         public async Task<IReadOnlyList<PipelineVersionView>> Versions(string definitionId, CancellationToken ct) =>
@@ -550,7 +550,7 @@ namespace Stomme.Modules.Pipelines.Controllers
                 return graph is null ? NotFound() : Ok(graph);
             });
 
-        // BL-229 increment 6: test one step of the editor's graph, on its own and for real - or every step leading to it, or the
+        // Test one step of the editor's graph, on its own and for real - or every step leading to it, or the
         // whole pipeline as it stands (n8n's "Test workflow"); nothing is stored.
         [HttpPost("{definitionId}/test-step")]
         [RequiresPermissionKey(PipelinesPermissions.Run)]
@@ -633,7 +633,7 @@ namespace Stomme.Modules.Pipelines.Controllers
             }
 
             var body = buffer.ToArray();
-            // The name's own secret when it has one (D111a); else the installation's - the mounted file's, or the setting's. None
+            // The name's own secret when it has one; else the installation's - the mounted file's, or the setting's. None
             // refuses every call, and an own secret that cannot be read refuses rather than fall back to the installation's.
             var (secret, secretProblem, _) = await ownSecrets.ForCallAsync(siteState.Alias?.SiteId, normalized, settings, ct);
             if (!PipelineWebhooks.VerifySignature(secret, body, Request.Headers[PipelineWebhooks.SignatureHeaderName].ToString()))
@@ -655,7 +655,7 @@ namespace Stomme.Modules.Pipelines.Controllers
                 }
             }
 
-            // BL-229 increment 10: an editor listening to this name sees the call too - an authentic, admitted, first delivery only.
+            // An editor listening to this name sees the call too - an authentic, admitted, first delivery only.
             if (siteState.Alias is { } site)
             {
                 listeners.Offer(PipelineWebhookListeners.Key(site.TenantId, site.SiteId, normalized), DateTime.UtcNow, Request.ContentType, System.Text.Encoding.UTF8.GetString(body));
@@ -687,7 +687,7 @@ namespace Stomme.Modules.Pipelines.Controllers
         }
 
         /// <summary>
-        /// BL-229 - n8n's Form trigger: the form a published pipeline offers under the name, as a standalone page - PUBLIC, like the
+        /// n8n's Form trigger: the form a published pipeline offers under the name, as a standalone page - PUBLIC, like the
         /// webhook receiver, and 404 unless <c>Pipelines:Forms:Enabled</c> and a published pipeline on the site has the form.
         /// Rate-limited per site and caller. <c>?sent=1</c> is the page after a submission (the post redirects there, so a reload
         /// does not send it again).
@@ -713,7 +713,7 @@ namespace Stomme.Modules.Pipelines.Controllers
         }
 
         /// <summary>
-        /// BL-229: a submission of a form - its answers judged by the form's fields (the page again, 400, with what is wrong), then
+        /// A submission of a form - its answers judged by the form's fields (the page again, 400, with what is wrong), then
         /// sent on as the trigger's stimulus, which starts every published pipeline with the form; then a redirect to the form's
         /// thank-you. A submission that fills the field only robots see is thanked and dropped. Only a URL-encoded body, at most
         /// <c>Pipelines:Forms:MaxBodyBytes</c>.
@@ -740,7 +740,7 @@ namespace Stomme.Modules.Pipelines.Controllers
                 return NotFound();
             }
 
-            // URL-encoded, or multipart with a file field's file (BL-229, n8n's File field) - its files held aside until it is accepted.
+            // URL-encoded, or multipart with a file field's file (n8n's File field) - its files held aside until it is accepted.
             var (submission, refusal) = await PipelineFormSubmissions.ReadAsync(Request, settings, form.Fields, PipelineSiteFiles.Incoming(stepOptions.Value), ct);
             if (submission is null)
             {
@@ -813,7 +813,7 @@ namespace Stomme.Modules.Pipelines.Controllers
         }
 
         /// <summary>
-        /// BL-229 - n8n's Chat trigger, hosted: the chat a published pipeline offers under the name, with this visitor's conversation
+        /// n8n's Chat trigger, hosted: the chat a published pipeline offers under the name, with this visitor's conversation
         /// so far - PUBLIC, 404 unless <c>Pipelines:Chats:Enabled</c> and a published pipeline on the site has the chat. The visitor's
         /// conversation is a random session in a cookie of this chat's own (HttpOnly, SameSite=Strict, its path the chat's).
         /// </summary>
@@ -839,7 +839,7 @@ namespace Stomme.Modules.Pipelines.Controllers
         }
 
         /// <summary>
-        /// BL-229: a visitor's message - the chat's pipeline RUN with it (its answer the result of the last step the run completes),
+        /// A visitor's message - the chat's pipeline RUN with it (its answer the result of the last step the run completes),
         /// both kept in the visitor's conversation, then a redirect to the page (303). A URL-encoded body only, at most
         /// <c>Pipelines:Chats:MaxBodyBytes</c>; a message of at most 2,000 characters. "New conversation" forgets this visitor's;
         /// a post that fills the hidden field is dropped.
@@ -953,7 +953,7 @@ namespace Stomme.Modules.Pipelines.Controllers
         }
 
         /// <summary>
-        /// BL-229: a call to a run's call address (Wait for a call) - PUBLIC like the webhook receiver and behind the same switch,
+        /// A call to a run's call address (Wait for a call) - PUBLIC like the webhook receiver and behind the same switch,
         /// rate limit and body limit (<c>Pipelines:Webhooks</c>): the random token in the address is what admits it, and a token
         /// that cannot be one is 404. 202 whether or not a run waits for it - the engine resumes the run, or queues the call for a
         /// minute when the run has not reached its wait yet.
@@ -999,7 +999,7 @@ namespace Stomme.Modules.Pipelines.Controllers
         }
 
         /// <summary>
-        /// BL-229 - a run's form address (Wait for a form): the form the run waits on, as a standalone page - PUBLIC like the Form
+        /// A run's form address (Wait for a form): the form the run waits on, as a standalone page - PUBLIC like the Form
         /// trigger's and behind its switch and rate limit; the random token in the address is what admits a person. A form nobody
         /// waits on any more (answered, timed out) is a page saying it is closed. <c>?sent=1</c> is the page after a submission.
         /// </summary>
@@ -1025,7 +1025,7 @@ namespace Stomme.Modules.Pipelines.Controllers
         }
 
         /// <summary>
-        /// BL-229: a submission of a run's waiting form - judged by the form's fields (the page again, 400, with what is wrong), then
+        /// A submission of a run's waiting form - judged by the form's fields (the page again, 400, with what is wrong), then
         /// the run resumed with the answers; then a redirect to the thank-you. Only a URL-encoded body, at most
         /// <c>Pipelines:Forms:MaxBodyBytes</c>; a submission that fills the field only robots see is thanked and dropped.
         /// </summary>
@@ -1072,7 +1072,7 @@ namespace Stomme.Modules.Pipelines.Controllers
 
                 var answers = PipelineForms.Read(form.Fields, submission.Posted, out _)!;
                 submission.Keep(answers, PipelineSiteFiles.Root(stepOptions.Value, tenants), "answers", DateTimeOffset.UtcNow);
-                // BL-229: a page of a form with more pages - the person taken on to the next one once the run reaches it.
+                // A page of a form with more pages - the person taken on to the next one once the run reaches it.
                 var next = await continuations.SendAsync(form.LeadsOn, NextPageWithin(settings), continueTo => waits.SubmitAsync(token, PipelineForms.ToJson(answers), continueTo, ct), ct);
                 if (next is not null)
                 {

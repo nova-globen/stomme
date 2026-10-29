@@ -20,7 +20,7 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.FeatureManagement.Startup
 {
     /// <summary>
-    /// Wires the feature-flag system into the host (D12). Discovered by the framework's reflection scan the
+    /// Wires the feature-flag system into the host. Discovered by the framework's reflection scan the
     /// same way every other module's startup is, so the flag system plugs in by convention rather than by
     /// editing the composition root.
     /// </summary>
@@ -45,7 +45,7 @@ namespace Stomme.Modules.FeatureManagement.Startup
                 .FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IConfigurationRoot))?
                 .ImplementationInstance as IConfigurationRoot;
 
-            // D73: pick the flag store's provider to MATCH the configured database provider — the module's own
+            // Pick the flag store's provider to MATCH the configured database provider — the module's own
             // SQLite (EF Core) side-car on a relational install, the install's RavenDB document store on a
             // document install, so a Raven site keeps its flags in its document store rather than a stray SQLite
             // file that a document install never provisions. This is a COMPOSITION-time decision (read once here),
@@ -84,9 +84,9 @@ namespace Stomme.Modules.FeatureManagement.Startup
                 {
                     // BL-110 (b), MEASURED: on the File store the branch above composed RavenRepository<,> with no RavenDB
                     // store, so the FIRST flag evaluation threw ("Unable to resolve service for type IDocumentStore").
-                    // The File store is the storage-blind module provider (D80), so the two aggregates take the same
+                    // The File store is the storage-blind module provider, so the two aggregates take the same
                     // path every storage-blind module takes: CLOSED registrations (which win over the open generic
-                    // above, D17) through the registry's File provider, with its store root and tracker.
+                    // above) through the registry's File provider, with its store root and tracker.
                     services.AddModuleAggregatePersistence<FeatureFlag, Guid>();
                     services.AddModuleAggregatePersistence<FeatureFlagAudit, Guid>();
                 }
@@ -97,7 +97,7 @@ namespace Stomme.Modules.FeatureManagement.Startup
             }
         }
 
-        // BL-81 (D106 item 3): the flags and their audit in the installation snapshot. The File branch above gets them from
+        // The flags and their audit in the installation snapshot. The File branch above gets them from
         // AddModuleAggregatePersistence; the EF and RavenDB branches register the same participant explicitly - over the
         // repositories they already bind, with the module's own context for the transaction when there is one.
         private static void AddBackupParticipants(IServiceCollection services)
@@ -147,7 +147,7 @@ namespace Stomme.Modules.FeatureManagement.Startup
             }
 
             // THIS host's {ContentRoot}/Data. It used to come from the process-wide AppDomain slot, which the
-            // last-composed host owned - fine for a deployed app, wrong whenever two hosts coexist (BL-153).
+            // last-composed host owned - fine for a deployed app, wrong whenever two hosts coexist.
             return HostDataDirectory.Expand(services, configured);
         }
     }

@@ -22,7 +22,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// D66 — PERSISTENT OPENIDDICT SIGNING CERTIFICATE, DRIVEN.
+    /// PERSISTENT OPENIDDICT SIGNING CERTIFICATE, DRIVEN.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -251,7 +251,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

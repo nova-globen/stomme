@@ -14,7 +14,7 @@ namespace Stomme.Modules.Datasets.Application
     public sealed record InferenceResult(DatasetSchema Schema, DatasetSummary Summary, string SampleRowsJson);
 
     /// <summary>
-    /// Infers a dataset's schema and metadata-only summary from a JSON array of records (BL-94 increment 9, ported from
+    /// Infers a dataset's schema and metadata-only summary from a JSON array of records (ported from
     /// the predecessor platform): a column's type from its observed values, a few sample values, min and max, unique and null counts, and
     /// the first <see cref="DatasetLimits.MaxSampleRows"/> rows as the preview sample. A sample over
     /// <see cref="DatasetLimits.MaxSampleBytes"/> is REFUSED before anything is parsed.

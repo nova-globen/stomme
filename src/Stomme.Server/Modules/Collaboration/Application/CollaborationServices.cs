@@ -19,9 +19,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Collaboration.Application
 {
     /// <summary>
-    /// <c>Collaboration</c> - the installation switch (D114: off by default; with it off, editing is exactly the
+    /// <c>Collaboration</c> - the installation switch (off by default; with it off, editing is exactly the
     /// single-editor behaviour) and the lease a lock lives on. Read from THIS host's configuration, the override file
-    /// included (BL-162).
+    /// included.
     /// </summary>
     public sealed class CollaborationOptions
     {
@@ -87,7 +87,7 @@ namespace Stomme.Modules.Collaboration.Application
     }
 
     /// <summary>
-    /// May the CURRENT user edit this resource? (D114: collaboration never grants authority over a resource.) The owning
+    /// May the CURRENT user edit this resource? (collaboration never grants authority over a resource.) The owning
     /// module answers: the user must hold its WRITE key - asked of the access guard against the module's own save
     /// request, nothing sent - and the resource must exist for them through its gated read. A type no module owns, or a
     /// module this installation does not compose, answers no.
@@ -134,9 +134,9 @@ namespace Stomme.Modules.Collaboration.Application
     /// <summary>
     /// Serialises the check-then-write of a lock or a session open per resource, IN THIS PROCESS - 64 striped gates, so the
     /// memory is bounded and an unlucky pair of resources at worst waits for each other. <b>CHANGED from the predecessor platform</b>, which
-    /// used a distributed lock: Stomme's <c>IDistributedLock</c> implementations are not composed into the host (BL-154).
+    /// used a distributed lock: Stomme's <c>IDistributedLock</c> implementations are not composed into the host.
     /// Across nodes of a scaled-out installation two editors can therefore both be granted in the same instant - acceptable
-    /// for an ADVISORY lock, whose loser still meets the owning module's optimistic concurrency on save (D114).
+    /// for an ADVISORY lock, whose loser still meets the owning module's optimistic concurrency on save.
     /// </summary>
     public sealed class CollaborationGate
     {
@@ -168,7 +168,7 @@ namespace Stomme.Modules.Collaboration.Application
     /// held by someone else REPORTS them - it never throws; taking your own renews it; lapsed leases met on the way in are
     /// expired first (their release still reaches the other editors). <b>CHANGED:</b> the holder is the request's user
     /// (the predecessor platform took a holder id in the command - anyone could act as anyone); the resource must be one the user may edit;
-    /// an administrator may release another user's live lock (D114).
+    /// an administrator may release another user's live lock.
     /// </summary>
     public sealed class ResourceLockService(
         IResourceLockRepository locks, ICollaborationCaller caller, ICollaborativeResourceAccess access, CollaborationOptions options, CollaborationGate gate, TimeProvider time, IUnitOfWork unitOfWork)
@@ -241,7 +241,7 @@ namespace Stomme.Modules.Collaboration.Application
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        /// <summary>An administrator takes a lock over (D114): whoever holds it, it is released and the release recorded.</summary>
+        /// <summary>An administrator takes a lock over: whoever holds it, it is released and the release recorded.</summary>
         public async Task<bool> ReleaseByAdministratorAsync(ResourceRef resource, LockScope scope, CancellationToken cancellationToken = default)
         {
             var me = await caller.RequireAsync(cancellationToken);

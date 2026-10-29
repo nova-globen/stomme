@@ -15,12 +15,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Azure Cosmos DB DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Azure Cosmos DB DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against Microsoft's Linux emulator (<see cref="CosmosDbTestEndpoint"/>): a Cosmos DB connection made over the API - the
     /// account's address, its database a setting, the key vaulted - refused while loopback is not allowlisted, then tested; a
     /// published pipeline makes a container partitioned by /till, adds two orders in two partitions, raises one's total, queries
     /// the big ones with a query written over several lines in the step's Query box and its parameter bound, and drops the
-    /// container; the key in neither the graph nor the run. Fails, never skips, without the emulator (D46).
+    /// container; the key in neither the graph nor the run. Fails, never skips, without the emulator.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

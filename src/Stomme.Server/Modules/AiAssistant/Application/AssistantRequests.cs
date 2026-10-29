@@ -12,8 +12,8 @@ using FluentValidation;
 namespace Stomme.Modules.AiAssistant.Application
 {
     // ============================================================================================================
-    // The assistant's gated requests (BL-97 increment 10b, D113): every one under assistant:use, decided by the host's
-    // authorization behaviour before a handler runs (D99). The key is to TALK to the assistant; what an agent reads and what
+    // The assistant's gated requests: every one under assistant:use, decided by the host's
+    // authorization behaviour before a handler runs. The key is to TALK to the assistant; what an agent reads and what
     // an apply writes are the owning modules' own requests, gated again for the same user.
     // ============================================================================================================
 

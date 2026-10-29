@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the MongoDB connector without a server: an address that names no server or carries a user, refused as invalid;
+    /// The MongoDB connector without a server: an address that names no server or carries a user, refused as invalid;
     /// a mongodb+srv address, a list of servers, a replica set and a proxy refused as the egress's denial - each before any pin;
     /// the host pinned, its address dialled - or its name kept where TLS needs it - the connection held direct and every
     /// connection the driver opens checked against that one server; the scheme's credentials applied; every parameter held to
@@ -121,7 +121,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the MongoDB connector against a real MongoDB 8.0 (this machine's throwaway container on loopback, or a CI job's
+    /// The MongoDB connector against a real MongoDB 8.0 (this machine's throwaway container on loopback, or a CI job's
     /// service container - <see cref="MongoDbTestEndpoint"/>) through the HOST's egress: loopback refused until allowlisted, a
     /// test naming the server, a wrong password failing, the driver dialling the pinned address and never the name; documents
     /// inserted - each back with its _id - found by a query, sorted, projected, skipped and no further than asked; one updated

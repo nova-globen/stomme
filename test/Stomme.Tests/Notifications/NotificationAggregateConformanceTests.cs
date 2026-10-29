@@ -23,7 +23,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 (D100 point 7) - <c>NotificationAggregateConformanceTests</c>: all four notification aggregates, with EVERY
+    /// <c>NotificationAggregateConformanceTests</c>: all four notification aggregates, with EVERY
     /// value object populated, every collection non-empty and a request carrying two <see cref="DeliveryAttempt"/>s,
     /// round-trip member for member on EVERY module-aggregate provider - EF (SQLite), EF (PostgreSQL), RavenDB and File
     /// - through the module's own <c>ServerStartup</c> and closed repositories, plus the provider-neutral predicates the
@@ -39,7 +39,7 @@ namespace Stomme.Tests.Notifications
     /// in the property getter), so this suite asserts BOTH the instant and <c>Kind == Utc</c> on every provider.
     /// Instants are fixed at millisecond precision (PostgreSQL <c>timestamptz</c> keeps microseconds).
     /// </para>
-    /// PostgreSQL and RavenDB FAIL rather than skip when unreachable (D46).
+    /// PostgreSQL and RavenDB FAIL rather than skip when unreachable.
     /// </summary>
     public abstract class NotificationAggregateConformanceTests : IAsyncLifetime
     {

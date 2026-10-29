@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.FeatureManagement.Tests;
 
 /// <summary>
-/// BL-110 (a): in SYSTEM scope - an explicit <c>BeginScope(null)</c>, the shape of a job that has not entered a tenant -
+/// In SYSTEM scope - an explicit <c>BeginScope(null)</c>, the shape of a job that has not entered a tenant -
 /// the evaluator used to load EVERY tenant's flag rows and take the first one with the key, so the answer was some
 /// tenant's switch, whichever the store returned first. System scope now has a defined answer: there is no tenant, so no
 /// tenant's row applies, and only installation-wide configuration decides.

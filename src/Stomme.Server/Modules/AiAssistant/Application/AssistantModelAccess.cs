@@ -19,7 +19,7 @@ using OpenAI;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// A language-model backend adapted to <see cref="IChatClient"/> (D113). A provider is configuration, not code, for every
+    /// A language-model backend adapted to <see cref="IChatClient"/>. A provider is configuration, not code, for every
     /// backend speaking the OpenAI-compatible API; this port exists so a second protocol could be added without touching an
     /// agent. It is given the site's egress client - it never builds its own transport.
     /// </summary>
@@ -32,7 +32,7 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// THE shipped provider (D113): the OpenAI-compatible chat API through <c>Microsoft.Extensions.AI.OpenAI</c> over the
+    /// THE shipped provider: the OpenAI-compatible chat API through <c>Microsoft.Extensions.AI.OpenAI</c> over the
     /// official OpenAI SDK (both MIT) - OpenAI, Azure OpenAI's compatible endpoint, and local servers speaking the same API
     /// (Ollama, LM Studio). Every request goes through the HTTP client it is handed, which is the site's egress (the one
     /// outbound guard); a local server is reachable only when the site allowlists its host.
@@ -74,9 +74,9 @@ namespace Stomme.Modules.AiAssistant.Application
     }
 
     /// <summary>
-    /// Opens the CURRENT site's model for an agent (D113), or says why it cannot: the installation switch, the site's own
+    /// Opens the CURRENT site's model for an agent, or says why it cannot: the installation switch, the site's own
     /// switch, a model named, a readable key when one is stored, a known provider - and every call through the returned client
-    /// is quota-gated before it is made and metered after it (<see cref="MeteredChatClient"/>, D102).
+    /// is quota-gated before it is made and metered after it (<see cref="MeteredChatClient"/>).
     /// </summary>
     public interface IAssistantModelAccess
     {

@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The FAST TIER (BL-164): <c>--filter "Category!=ExternalDatabase"</c> leaves out every test class that reaches
+    /// The FAST TIER: <c>--filter "Category!=ExternalDatabase"</c> leaves out every test class that reaches
     /// PostgreSQL or RavenDB, for iterating in a few minutes. This gate keeps the trait true.
     /// </summary>
     /// <remarks>
@@ -41,67 +41,67 @@ namespace Stomme.Tests
         {
             "RavenGateStore", "PostgresGateStore", "SqlServerGateStore", "PostgresTestEndpoint", "RAVENDB_TEST_URL", "ResolveStore",
             "RavenTestDatabaseJanitor", "CreateDatabaseOperation", "DocumentStore", "NpgsqlConnection",
-            // BL-117: the SQL Server leg of the module-aggregate conformance suites (infra UAT :1434).
+            // The SQL Server leg of the module-aggregate conformance suites (infra UAT :1434).
             "SqlServerTestEndpoint", "SqlConnection",
-            // BL-229: the MySQL connector's live tests (a throwaway MySQL on this machine's loopback, scripts/mysql-test-server.ps1).
+            // The MySQL connector's live tests (a throwaway MySQL on this machine's loopback, scripts/mysql-test-server.ps1).
             "MySqlTestEndpoint",
-            // BL-229: the Redis connector's live tests (a throwaway Valkey on this machine's loopback, scripts/redis-test-server.ps1).
+            // The Redis connector's live tests (a throwaway Valkey on this machine's loopback, scripts/redis-test-server.ps1).
             "RedisTestEndpoint",
-            // BL-229: the MongoDB connector's live tests (a throwaway MongoDB on this machine's loopback, scripts/mongodb-test-server.ps1).
+            // The MongoDB connector's live tests (a throwaway MongoDB on this machine's loopback, scripts/mongodb-test-server.ps1).
             "MongoDbTestEndpoint",
-            // BL-229: the FTP and SFTP connectors' live tests (a throwaway Pure-FTPd and OpenSSH on this machine's loopback,
+            // The FTP and SFTP connectors' live tests (a throwaway Pure-FTPd and OpenSSH on this machine's loopback,
             // scripts/ftp-test-server.ps1 and scripts/sftp-test-server.ps1).
             "FileServerTestEndpoint",
-            // BL-229: the PostgreSQL connector against QuestDB and CrateDB (a throwaway of each on this machine's loopback,
+            // The PostgreSQL connector against QuestDB and CrateDB (a throwaway of each on this machine's loopback,
             // scripts/questdb-test-server.ps1 and scripts/cratedb-test-server.ps1).
             "PgWireTestEndpoint",
-            // BL-229: the RabbitMQ connector's live tests (a throwaway RabbitMQ on this machine's loopback, scripts/rabbitmq-test-server.ps1).
+            // The RabbitMQ connector's live tests (a throwaway RabbitMQ on this machine's loopback, scripts/rabbitmq-test-server.ps1).
             "RabbitMqTestEndpoint",
-            // BL-229: the MQTT connector's live tests (a throwaway Mosquitto on this machine's loopback, scripts/mqtt-test-server.ps1).
+            // The MQTT connector's live tests (a throwaway Mosquitto on this machine's loopback, scripts/mqtt-test-server.ps1).
             "MqttTestEndpoint",
-            // BL-229: the Nextcloud connector's live tests (a throwaway Nextcloud on this machine's loopback, scripts/nextcloud-test-server.ps1).
+            // The Nextcloud connector's live tests (a throwaway Nextcloud on this machine's loopback, scripts/nextcloud-test-server.ps1).
             "NextcloudTestEndpoint",
-            // BL-229: the Azure Storage connector's live tests (a throwaway Azurite on this machine's loopback, scripts/azurite-test-server.ps1).
+            // The Azure Storage connector's live tests (a throwaway Azurite on this machine's loopback, scripts/azurite-test-server.ps1).
             "AzureStorageTestEndpoint",
-            // BL-229: the Google Cloud Storage connector's live tests (a throwaway fake-gcs-server on this machine's loopback, scripts/gcs-test-server.ps1).
+            // The Google Cloud Storage connector's live tests (a throwaway fake-gcs-server on this machine's loopback, scripts/gcs-test-server.ps1).
             "GcsTestEndpoint",
-            // BL-229: the LDAP connector's live tests (a throwaway OpenLDAP on this machine's loopback, scripts/ldap-test-server.ps1).
+            // The LDAP connector's live tests (a throwaway OpenLDAP on this machine's loopback, scripts/ldap-test-server.ps1).
             "LdapTestEndpoint",
-            // BL-229: the Home Assistant connector's live tests (a throwaway Home Assistant on this machine's loopback, scripts/homeassistant-test-server.ps1).
+            // The Home Assistant connector's live tests (a throwaway Home Assistant on this machine's loopback, scripts/homeassistant-test-server.ps1).
             "HomeAssistantTestEndpoint",
-            // BL-229: the Azure Cosmos DB connector's live tests (Microsoft's emulator on this machine's loopback, scripts/cosmosdb-test-server.ps1).
+            // The Azure Cosmos DB connector's live tests (Microsoft's emulator on this machine's loopback, scripts/cosmosdb-test-server.ps1).
             "CosmosDbTestEndpoint",
-            // BL-229: the Google Cloud Firestore connector's live tests (Google's emulator on this machine's loopback, scripts/firestore-test-server.ps1).
+            // The Google Cloud Firestore connector's live tests (Google's emulator on this machine's loopback, scripts/firestore-test-server.ps1).
             "FirestoreTestEndpoint",
-            // BL-229: the AWS connectors' live tests (moto on this machine's loopback, checking signatures, scripts/moto-test-server.ps1).
+            // The AWS connectors' live tests (moto on this machine's loopback, checking signatures, scripts/moto-test-server.ps1).
             "MotoTestEndpoint",
-            // BL-229: the Metabase connector's live tests (a real Metabase on this machine's loopback, scripts/metabase-test-server.ps1).
+            // The Metabase connector's live tests (a real Metabase on this machine's loopback, scripts/metabase-test-server.ps1).
             "MetabaseTestEndpoint",
-            // BL-229: the MISP connector's live tests (a real MISP on this machine's loopback, scripts/misp-test-server.ps1).
+            // The MISP connector's live tests (a real MISP on this machine's loopback, scripts/misp-test-server.ps1).
             "MispTestEndpoint",
-            // BL-229: the Elastic Security connector's live tests (a real Kibana over its own Elasticsearch on this machine's loopback, scripts/kibana-test-server.ps1).
+            // The Elastic Security connector's live tests (a real Kibana over its own Elasticsearch on this machine's loopback, scripts/kibana-test-server.ps1).
             "KibanaTestEndpoint",
-            // BL-229: the TheHive connector's live tests (a real TheHive 5.5 on this machine's loopback, scripts/thehive-test-server.ps1).
+            // The TheHive connector's live tests (a real TheHive 5.5 on this machine's loopback, scripts/thehive-test-server.ps1).
             "TheHiveTestEndpoint",
-            // BL-229: the YOURLS connector's live tests (a real YOURLS 1.10 over MySQL on this machine's loopback, scripts/yourls-test-server.ps1).
+            // The YOURLS connector's live tests (a real YOURLS 1.10 over MySQL on this machine's loopback, scripts/yourls-test-server.ps1).
             "YourlsTestEndpoint",
-            // BL-229: the Wekan connector's live tests (a real Wekan 12 over MongoDB on this machine's loopback, scripts/wekan-test-server.ps1).
+            // The Wekan connector's live tests (a real Wekan 12 over MongoDB on this machine's loopback, scripts/wekan-test-server.ps1).
             "WekanTestEndpoint",
-            // BL-229: the Rundeck connector's live tests (a real Rundeck 6.2 on this machine's loopback, scripts/rundeck-test-server.ps1).
+            // The Rundeck connector's live tests (a real Rundeck 6.2 on this machine's loopback, scripts/rundeck-test-server.ps1).
             "RundeckTestEndpoint",
-            // BL-229: the Taiga connector's live tests (a real Taiga 6.10 on this machine's loopback, scripts/taiga-test-server.ps1).
+            // The Taiga connector's live tests (a real Taiga 6.10 on this machine's loopback, scripts/taiga-test-server.ps1).
             "TaigaTestEndpoint",
-            // BL-229: the QuickChart connector's live tests (a real QuickChart 1.8 on this machine's loopback, scripts/quickchart-test-server.ps1).
+            // The QuickChart connector's live tests (a real QuickChart 1.8 on this machine's loopback, scripts/quickchart-test-server.ps1).
             "QuickChartTestEndpoint",
-            // BL-229: the Monica CRM connector's live tests (a real Monica 4.1 on this machine's loopback, scripts/monica-test-server.ps1).
+            // The Monica CRM connector's live tests (a real Monica 4.1 on this machine's loopback, scripts/monica-test-server.ps1).
             "MonicaCrmTestEndpoint",
-            // BL-229: the Invoice Ninja connector's live tests (a real Invoice Ninja 5.13 on this machine's loopback, scripts/invoiceninja-test-server.ps1).
+            // The Invoice Ninja connector's live tests (a real Invoice Ninja 5.13 on this machine's loopback, scripts/invoiceninja-test-server.ps1).
             "InvoiceNinjaTestEndpoint",
-            // BL-229: the Mattermost connector's live tests (a real Mattermost Team Edition 10.11 on this machine's loopback, scripts/mattermost-test-server.ps1).
+            // The Mattermost connector's live tests (a real Mattermost Team Edition 10.11 on this machine's loopback, scripts/mattermost-test-server.ps1).
             "MattermostTestEndpoint",
-            // BL-229: the ERPNext connector's live tests (a real ERPNext 16 on this machine's loopback, scripts/erpnext-test-server.ps1).
+            // The ERPNext connector's live tests (a real ERPNext 16 on this machine's loopback, scripts/erpnext-test-server.ps1).
             "ErpNextTestEndpoint",
-            // BL-229: the SeaTable connector's live tests (a real SeaTable 6.2 on this machine's loopback, scripts/seatable-test-server.ps1).
+            // The SeaTable connector's live tests (a real SeaTable 6.2 on this machine's loopback, scripts/seatable-test-server.ps1).
             "SeaTableTestEndpoint",
         };
 

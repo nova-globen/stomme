@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.MicrosoftOneDrive
 {
     /// <summary>
-    /// Microsoft OneDrive (BL-229, n8n's Microsoft OneDrive node: files and folders) over Microsoft Graph with an Entra ID app's
+    /// Microsoft OneDrive (n8n's Microsoft OneDrive node: files and folders) over Microsoft Graph with an Entra ID app's
     /// client credentials - as Microsoft Excel 365's and SharePoint's - in a user's OneDrive (the <c>user</c> setting: an address
     /// or an id) or a drive by its id (the <c>drive</c> setting). A download is written into the pipeline run's folder and an upload
     /// read from it (<see cref="IConnectorFiles"/>, <see cref="GraphDrive"/>). A test reads the drive.

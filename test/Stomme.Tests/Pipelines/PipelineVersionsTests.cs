@@ -21,7 +21,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 7 - versions you can trust: every version the engine keeps is listed, newest first, with who saved it
+    /// Versions you can trust: every version the engine keeps is listed, newest first, with who saved it
     /// (the module stamps it - the engine keeps no author); one version's graph can be read; and the difference between two
     /// graphs is told in words, the fields a merge sees, positions left out.
     /// </summary>
@@ -89,7 +89,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(await new GetVersionGraphQueryHandler(definitions, new Guard(author: true)).Handle(new GetVersionGraphQuery(created.DefinitionId, 9), CancellationToken.None));
         }
 
-        // BL-229: what changed, said with a publish - kept with the version it publishes and listed with it; a draft made over it
+        // What changed, said with a publish - kept with the version it publishes and listed with it; a draft made over it
         // is a copy, its note not its own, so shows none; a publish that says nothing leaves its version none (never the last
         // one's); a note too long is refused and nothing is published.
         [Fact]
@@ -123,7 +123,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { (2, true, (string?)null), (1, false, "Says hello first") }, await VersionsAsync());
         }
 
-        // BL-229 - n8n's workflow name, edited in the editor: a rename and a description go into the draft - a new one over the
+        // n8n's workflow name, edited in the editor: a rename and a description go into the draft - a new one over the
         // published version, which keeps its name until the draft is published - saved by whoever renamed it, the body as it was;
         // a draft is renamed in place, and a name the pipeline cannot have is refused.
         [Fact]
@@ -155,7 +155,7 @@ namespace Stomme.Tests.Pipelines
             await Assert.ThrowsAsync<System.ArgumentException>(() => Update("grace").Handle(new UpdatePipelineCommand(created.DefinitionId, "  ", null, null), CancellationToken.None));
         }
 
-        // BL-229: a version's pinned test values (n8n's pinned data) reach an author; a viewer's graph of the same version, and
+        // A version's pinned test values (n8n's pinned data) reach an author; a viewer's graph of the same version, and
         // of the latest, holds none - and the pipeline's detail body none either.
         [Fact]
         public async Task Pinned_test_values_reach_an_author_and_no_one_else()
@@ -187,7 +187,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("Ada", detail!.Body);
             Assert.Contains("world", detail.Body);
 
-            // BL-229: the pipeline opened says its folder - where what the editor makes from it goes (a failure handler).
+            // The pipeline opened says its folder - where what the editor makes from it goes (a failure handler).
             Assert.Equal("", detail.Folder);
             await PipelineFolderStore.SaveAsync(keyValues, tenants.TenantId, created.DefinitionId, "Finance/Invoices", CancellationToken.None);
             Assert.Equal("Finance/Invoices", (await new GetPipelineQueryHandler(definitions, new Guard(author: false), keyValues, tenants).Handle(new GetPipelineQuery(created.DefinitionId), CancellationToken.None))!.Folder);
@@ -235,7 +235,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "step 'Say', the variable input 'Text' reads: (none) → 'who'" }, PipelineGraphDiff.Lines(unbound, bound));
         }
 
-        // BL-229: each change says what it is about, for the canvas to mark while a version is compared - the step (a connection's:
+        // Each change says what it is about, for the canvas to mark while a version is compared - the step (a connection's:
         // the step it leaves, with the outcome it leaves by and the step it goes to; a variable's: none) - and they are counted.
         [Fact]
         public void Each_change_says_what_it_is_about_and_the_changes_are_counted()

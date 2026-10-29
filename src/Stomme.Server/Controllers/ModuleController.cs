@@ -150,7 +150,7 @@ namespace Stomme.Controllers
 
             if (ModelState.IsValid && module.SiteId == alias.SiteId && await _userPermissions.IsAuthorizedAsync(User, module.SiteId, EntityNames.Page, module.PageId, PermissionNames.Edit))
             {
-                // BL-102: a row for another entity would be written as a SITE-WIDE row (EntityId -1), so Edit on a
+                // A row for another entity would be written as a SITE-WIDE row (EntityId -1), so Edit on a
                 // page would be enough to grant any framework policy. Refused BEFORE the module is written.
                 var foreign = PermissionRowScope.ForeignRows(module.PermissionList, EntityNames.Module);
                 if (foreign.Any())
@@ -186,7 +186,7 @@ namespace Stomme.Controllers
 
             if (ModelState.IsValid && module.SiteId == alias.SiteId && module.ModuleId == id && _module != null && await _userPermissions.IsAuthorizedAsync(User, module.SiteId, EntityNames.Module, module.ModuleId, PermissionNames.Edit))
             {
-                // BL-102: a row for another entity would be written as a SITE-WIDE row (EntityId -1) - driven, Edit on
+                // A row for another entity would be written as a SITE-WIDE row (EntityId -1) - driven, Edit on
                 // this one module wrote (User,-1,Write) for All Users and DELETE api/User/{id} then answered 200
                 // anonymously. Refused BEFORE the module is written, so a refusal is never a partial write.
                 var foreign = PermissionRowScope.ForeignRows(module.PermissionList, EntityNames.Module);

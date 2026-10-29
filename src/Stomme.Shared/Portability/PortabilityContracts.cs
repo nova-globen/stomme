@@ -9,7 +9,7 @@ namespace Stomme.Portability
 {
     /// <summary>
     /// Names one portable entity: its type (a contributor's <see cref="IPortableEntityContributor.EntityType"/>) and its id
-    /// on the SOURCE site (BL-82, D107). Ids are strings so an int, a Guid and a natural key all travel.
+    /// on the SOURCE site. Ids are strings so an int, a Guid and a natural key all travel.
     /// </summary>
     public sealed record PortableEntityRef
     {
@@ -123,11 +123,11 @@ namespace Stomme.Portability
 
     /// <summary>
     /// A module's CONFIGURATION contribution to a package: one entity type it can export from a site and import onto one.
-    /// Registered SCOPED and explicitly by the module's startup (D107 item 16) - it reads tenant data.
+    /// Registered SCOPED and explicitly by the module's startup - it reads tenant data.
     /// </summary>
     /// <remarks>
     /// <b>Validate first.</b> The engine calls <see cref="ValidateImportAsync"/> for EVERY entity of a package before it
-    /// calls <see cref="ImportAsync"/> for ANY: a refusal anywhere leaves no side effect anywhere (D107 item 3).
+    /// calls <see cref="ImportAsync"/> for ANY: a refusal anywhere leaves no side effect anywhere.
     /// </remarks>
     public interface IPortableEntityContributor
     {

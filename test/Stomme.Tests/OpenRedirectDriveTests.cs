@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-244 - a <c>returnurl</c> never sends anyone off the site. Found by BL-239's validation, driven: every place that takes
+    /// A <c>returnurl</c> never sends anyone off the site. Found by BL-239's validation, driven: every place that takes
     /// one checked only that it started with '/', and a browser reads <c>//attacker.example</c> and <c>/\attacker.example</c>
     /// as another host. After an external sign-in <c>/pages/external</c> redirected there with the session cookie; the
     /// router handed it to the login page, which sent a signed-in visitor there at once; the pages that end in

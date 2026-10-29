@@ -21,7 +21,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record CallStimulus(string TokenHash);
 
     /// <summary>
-    /// Wait for a call (BL-229, n8n's Wait node resumed "on webhook call"): the run pauses until another system POSTs to the
+    /// Wait for a call (n8n's Wait node resumed "on webhook call"): the run pauses until another system POSTs to the
     /// run's <see cref="CallAddress"/>, and goes on down Called with the call's body as the result - or down Timed out when
     /// "Time out after" was given and passed (<see cref="DueWaitsTask"/> watches the time). Durable like <see cref="Wait"/>: the
     /// run is stored and holds no worker. The call reaches the run through the engine's own stimulus path, so a call that comes

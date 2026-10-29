@@ -21,7 +21,7 @@ namespace Stomme.Modules.Pipelines.Audit
     }
 
     /// <summary>
-    /// BL-229 - what the pipeline activity ledger calls each of the module's commands. EVERY command of the module is in
+    /// What the pipeline activity ledger calls each of the module's commands. EVERY command of the module is in
     /// <see cref="Actions"/> (recorded) or <see cref="NotRecorded"/> (with why): <c>PipelineAuditCoverageTests</c> fails the
     /// build for a command in neither, so a new change cannot skip the ledger by being forgotten.
     /// </summary>

@@ -198,7 +198,7 @@ namespace Stomme.Tests.Portability
         private protected override IGateStore Store() => new RavenGateStore();
     }
 
-    /// <summary>BL-82 (D107 item 10) - switched off, portability has no surface: every route 404, no admin page.</summary>
+    /// <summary>BL-82 - switched off, portability has no surface: every route 404, no admin page.</summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     public class PortabilityDisabledSurfaceTests(ITestOutputHelper output)
     {

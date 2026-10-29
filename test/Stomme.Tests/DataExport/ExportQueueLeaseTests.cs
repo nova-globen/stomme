@@ -41,7 +41,7 @@ namespace Stomme.Tests.DataExport
     /// <para>
     /// <b>The File store is asserted SINGLE-HOST, not assumed safe:</b> it has no concurrency check, the stale
     /// write succeeds, and that case pins the divergence so nobody later reads "four providers green" as "four
-    /// providers safe across hosts". PostgreSQL and RavenDB FAIL rather than skip (D46).
+    /// providers safe across hosts". PostgreSQL and RavenDB FAIL rather than skip.
     /// </para>
     /// </remarks>
     public abstract class ExportQueueLeaseTests : IAsyncLifetime

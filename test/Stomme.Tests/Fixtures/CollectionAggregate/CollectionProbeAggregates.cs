@@ -49,7 +49,7 @@ namespace Stomme.Tests.Fixtures.CollectionAggregate
 
     /// <summary>
     /// Shape (v): an <see cref="Entity{TId}"/> child with identity, an internal constructor, private setters and a
-    /// UTC <see cref="DateTime"/> (DeliveryAttempt's shape, with DateTimeOffset replaced by UTC DateTime per D100).
+    /// UTC <see cref="DateTime"/> (DeliveryAttempt's shape, with DateTimeOffset replaced by UTC DateTime).
     /// </summary>
     public sealed class CollectionProbeAttempt : Entity<Guid>
     {

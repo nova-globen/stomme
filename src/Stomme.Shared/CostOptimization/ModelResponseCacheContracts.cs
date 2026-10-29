@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-// Lifted from the predecessor platform (BL-97 increment 8): the key and the port are unchanged; BCL-only like every Shared contract.
+// Lifted from the predecessor platform: the key and the port are unchanged; BCL-only like every Shared contract.
 namespace Stomme.CostOptimization
 {
     /// <summary>

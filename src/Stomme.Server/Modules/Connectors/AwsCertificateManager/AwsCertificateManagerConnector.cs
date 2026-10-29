@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsCertificateManager
 {
     /// <summary>
-    /// AWS Certificate Manager (BL-229, n8n's AWS Certificate Manager node: an account's TLS certificates) over ACM's JSON protocol
+    /// AWS Certificate Manager (n8n's AWS Certificate Manager node: an account's TLS certificates) over ACM's JSON protocol
     /// (<c>https://acm.{region}.amazonaws.com</c>, <c>X-Amz-Target: CertificateManager.*</c>) through the shared
     /// <see cref="AwsJsonSession"/>, every call signed with SigV4 by an IAM user's access key and secret, over the host's egress. A
     /// test lists the account's certificates, one.

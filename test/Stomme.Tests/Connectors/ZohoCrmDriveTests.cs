@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Zoho CRM DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, its token provider and the
+    /// Zoho CRM DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, its token provider and the
     /// extraction port, against a loopback stand-in for Zoho's accounts server and CRM API: a Zoho CRM connection made over the API,
     /// its secret and refresh token vaulted, tested (the user named); a published pipeline makes a lead with HTML and an accent,
     /// reads the leads over two pages - no more than asked - upserts a contact by its address, changes the lead and deletes it - the

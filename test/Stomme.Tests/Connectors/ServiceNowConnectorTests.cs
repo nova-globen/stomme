@@ -166,7 +166,7 @@ namespace Stomme.Tests.Connectors
             return (call.Request.Method.Method, call.Request.RequestUri!.AbsoluteUri, call.Body);
         }
 
-        // BL-229 - a table read no further than asked, a step's own display values.
+        // A table read no further than asked, a step's own display values.
         [Fact]
         public async Task Table_IsReadNoFurtherThanAsked_WithAStepsOwnDisplayValues()
         {
@@ -189,7 +189,7 @@ namespace Stomme.Tests.Connectors
             Assert.Contains("sysparm_display_value=false", Sent(handler, 0).Url);
         }
 
-        // BL-229 - a record got, created, updated and deleted in any table, as ServiceNow keeps it now.
+        // A record got, created, updated and deleted in any table, as ServiceNow keeps it now.
         [Fact]
         public async Task A_record_is_got_created_updated_and_deleted_in_any_table()
         {
@@ -216,7 +216,7 @@ namespace Stomme.Tests.Connectors
             Assert.Equal(((object?)IncidentId, (object?)true), (deleted["sys_id"], deleted["deleted"]));
         }
 
-        // BL-229 - an incident created and updated by its own fields, any other column in its values.
+        // An incident created and updated by its own fields, any other column in its values.
         [Fact]
         public async Task An_incident_is_created_and_updated_by_its_own_fields()
         {
@@ -238,7 +238,7 @@ namespace Stomme.Tests.Connectors
                 """{"description":"Hela kvällen","state":"6","subcategory":"cpu","assigned_to":"Bo","business_service":"Kassa","cmdb_ci":"PC-1","hold_reason":"1","close_code":"Solved (Permanently)","close_notes":"Omstartad"}"""), Sent(handler));
         }
 
-        // BL-229 - what could go wrong refused before anything is sent; ServiceNow's message and detail on a failure.
+        // What could go wrong refused before anything is sent; ServiceNow's message and detail on a failure.
         [Fact]
         public async Task What_could_go_wrong_is_refused_before_anything_is_sent_and_servicenows_words_on_a_failure()
         {

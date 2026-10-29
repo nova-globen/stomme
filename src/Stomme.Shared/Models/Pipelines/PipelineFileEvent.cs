@@ -10,7 +10,7 @@ using System.Text.Json.Nodes;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// What a "File added" trigger hands the pipeline it starts (BL-229, n8n's Local File Trigger): the file put in the watched
+    /// What a "File added" trigger hands the pipeline it starts (n8n's Local File Trigger): the file put in the watched
     /// folder, as JSON text, read with an expression - <c>{{ file.path }}</c> for a file step, <c>{{ file.name }}</c>. Its
     /// <c>event</c> is n8n's own word for what happened, <c>add</c> or <c>change</c>, and <c>path</c> is n8n's field too. ONE
     /// writer, used by the server when a file is seen and by the editor for the sample an author tests the next steps with, so

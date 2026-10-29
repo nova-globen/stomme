@@ -22,7 +22,7 @@ namespace Stomme.Tests.Pipelines
     /// had its child slots drawn as outcome ports and could only be saved empty, so such steps were left out.
     /// </para>
     /// <para>
-    /// 2026-10-05 (BL-95): the editor opens each embedded port as a flowchart of its own, so those steps are offered, the
+    /// 2026-10-05: the editor opens each embedded port as a flowchart of its own, so those steps are offered, the
     /// embedded ports listed as <c>Bodies</c> and NEVER as <c>Ports</c> (the outcomes a connection leaves from). Still out:
     /// a container whose children are a list (Sequence, Parallel - the canvas is that list) and Switch, whose cases each
     /// hold a step no body names. Read over the engine as the host composes it, so a step the engine gains is judged by the
@@ -74,7 +74,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains(catalog, item => item.Type == "Stomme.FlowJoin");
         }
 
-        // BL-229 increment 4: an input is REQUIRED when the step leaves it null (no starting value) and its type holds no null -
+        // An input is REQUIRED when the step leaves it null (no starting value) and its type holds no null -
         // read from the steps as the host composes them, the module's own families included.
         [Fact]
         public async Task An_input_the_step_leaves_without_a_value_is_required_and_one_with_a_default_or_a_nullable_type_is_not()

@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Contentful
 {
     /// <summary>
-    /// Contentful (BL-229, n8n's Contentful node: a space's entries, assets, content types and locales read): Contentful's Content
+    /// Contentful (n8n's Contentful node: a space's entries, assets, content types and locales read): Contentful's Content
     /// Delivery API, or its Preview API for drafts, with an access token as a bearer token, over the host's egress. A test names
     /// the space and how many locales its environment has.
     /// </summary>

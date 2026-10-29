@@ -33,7 +33,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Email Trigger (IMAP) as "Email received": a published pipeline watching a mailbox through a connection is
+    /// n8n's Email Trigger (IMAP) as "Email received": a published pipeline watching a mailbox through a connection is
     /// started once for each message that arrives - the message its trigger's result - and never for one already there when it
     /// was published; marked read only when it says, and only what it handed on; its attachments kept in the pipeline folder
     /// when it says; at most so many a look; a mailbox made again watched afresh; a mailbox the publish could not reach recorded

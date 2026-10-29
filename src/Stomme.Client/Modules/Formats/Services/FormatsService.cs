@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Formats.Services
 {
     /// <summary>
-    /// The Formats module's client contract (BL-94 increment 2). No method takes a site: the request is the site, and the
+    /// The Formats module's client contract. No method takes a site: the request is the site, and the
     /// server decides every call again on its key. A refused save comes back as an exception the page shows.
     /// </summary>
     public interface IFormatsService

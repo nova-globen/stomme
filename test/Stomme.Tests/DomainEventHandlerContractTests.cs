@@ -82,7 +82,7 @@ namespace Stomme.Tests
                 .SelectMany(file => HandlerDeclarations(Parse(file)).Select(h => h.Identifier.ValueText))
                 .ToList();
 
-            // The floor and the names below were RE-PINNED on 2026-09-17 (BL-100 / D109), not relaxed to go
+            // The floor and the names below were RE-PINNED on 2026-09-17, not relaxed to go
             // green: five of the six named handlers (UserRegistered, RoleAssigned, UserDeactivated, UserLockedOut
             // and SessionRevoked) lived in the lifted Stomme.Identity.* model, which was DEAD code - nothing
             // composed it - and was retired with that row. They are gone from the tree, so pinning them would

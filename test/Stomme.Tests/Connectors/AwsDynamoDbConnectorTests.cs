@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Amazon DynamoDB (n8n's AWS DynamoDB node: an item written, got, deleted and read many): every call DynamoDB's
+    /// Amazon DynamoDB (n8n's AWS DynamoDB node: an item written, got, deleted and read many): every call DynamoDB's
     /// JSON protocol - its target and content type - signed with AWS Signature Version 4 for DynamoDB in the connection's
     /// region; an item written as plain JSON and typed on the wire - a string S, a number N as written, a flag BOOL, null NULL,
     /// an object M, an array L - on a condition with its names and values; got, updated and deleted by its key, each its values

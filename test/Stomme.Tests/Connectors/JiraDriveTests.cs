@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Jira DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Jira DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a Jira site: a Jira connection made over the API, its API token vaulted, tested (the
     /// account named); a published pipeline creates an issue, comments on it and moves it to Done, then finds the open ones -
     /// each call with the account's email and token by the Basic scheme; the token is in neither the graph nor the run.

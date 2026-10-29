@@ -28,7 +28,7 @@ namespace Stomme.Modules.CloudUsage.Services
         Task<CloudCostSyncView> SyncAsync(SyncCloudCostsRequest request);
     }
 
-    /// <summary>The page's client over <c>api/CloudUsage</c> (BL-97 increment 4).</summary>
+    /// <summary>The page's client over <c>api/CloudUsage</c>.</summary>
     public class CloudUsageService : ServiceBase, ICloudUsageService, IClientService
     {
         /// <summary>BL-222: a refusal throws with the server's reason, which this module's page shows.</summary>

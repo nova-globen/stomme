@@ -22,7 +22,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-249 - with the message bus switched on, the framework's published notices still arrive. They were published on the
+    /// With the message bus switched on, the framework's published notices still arrive. They were published on the
     /// bus and nothing subscribed their topics, so a SignalR client received no collaboration notice, a dashboard no dataset
     /// change, and a pipeline's Event trigger never started - and nothing was logged. Driven on an installed host with
     /// <c>Messaging:Enabled</c> (the in-memory transport): an editor's lock reaches the collaboration hub, a dataset refresh

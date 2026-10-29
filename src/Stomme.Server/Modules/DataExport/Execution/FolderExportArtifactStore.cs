@@ -205,7 +205,7 @@ namespace Stomme.Modules.DataExport.Execution
     }
 
     /// <summary>
-    /// Creates each site's <c>Exports/</c> folder on the boot/upgrade path (D108 item 7).
+    /// Creates each site's <c>Exports/</c> folder on the boot/upgrade path.
     /// </summary>
     /// <remarks>
     /// Run by the framework's <c>SiteContentReconciliationRunner</c>, which enters a tenant scope per tenant and

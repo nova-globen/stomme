@@ -20,7 +20,7 @@ namespace Stomme.Modules.Connectors.Shared
         /// <summary>The timeout of the token call; the connection's timeout, and a conservative default when unset.</summary>
         public TimeSpan? Timeout { get; init; }
 
-        /// <summary>A grant's own fields, sent after the standard ones and part of the grant the cache keys on - Box's names whom the app acts as (BL-229).</summary>
+        /// <summary>A grant's own fields, sent after the standard ones and part of the grant the cache keys on - Box's names whom the app acts as.</summary>
         public IReadOnlyList<KeyValuePair<string, string>>? Extra { get; init; }
     }
 
@@ -50,9 +50,9 @@ namespace Stomme.Modules.Connectors.Shared
     }
 
     /// <summary>
-    /// The one OAuth2 token acquisition every connector of the family shares (BL-96 increment 3, lifted from the predecessor platform's
+    /// The one OAuth2 token acquisition every connector of the family shares (lifted from the predecessor platform's
     /// <c>CachingOAuth2TokenProvider</c>): the grant is posted as a form through the client the HOST's egress hands the
-    /// connector (D110), the response binds <c>access_token</c> by its exact wire name (a legacy bridge never bound it and
+    /// connector, the response binds <c>access_token</c> by its exact wire name (a legacy bridge never bound it and
     /// sent <c>Bearer null</c>), an incomplete request fails loudly before any call (another legacy bridge logged the empty
     /// secret and carried on), and the token is cached until shortly before <c>expires_in</c> elapses.
     /// </summary>

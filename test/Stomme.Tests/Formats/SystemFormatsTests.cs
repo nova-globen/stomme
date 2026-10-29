@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Formats
 {
     /// <summary>
-    /// BL-94 increment 1 (D110) - the compiled presets: at least thirty, all system-scoped, deterministic and unique ids,
+    /// The compiled presets: at least thirty, all system-scoped, deterministic and unique ids,
     /// unique names within a kind, no two rendering the same way (the epoch preset the predecessor platform shipped duplicated the ISO UTC
     /// preset and is dropped), every example rendering, a preset found by id.
     /// </summary>

@@ -181,7 +181,7 @@ namespace Stomme.Tests.Mcp
             Assert.Empty(registration.ExposedTools());
             Assert.Equal(McpGuardrail.Default, registration.Guardrail);
             Assert.Equal(Now, registration.RegisteredOnUtc);
-            Assert.Empty(registration.DomainEvents);     // audit is application code, never a handler (D40)
+            Assert.Empty(registration.DomainEvents);     // audit is application code, never a handler
         }
 
         [Fact]

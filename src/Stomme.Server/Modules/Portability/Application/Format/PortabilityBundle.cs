@@ -10,7 +10,7 @@ using Stomme.Portability;
 namespace Stomme.Modules.Portability.Application.Format
 {
     /// <summary>
-    /// The version of the package interchange format (BL-82, D107 item 4). A reader accepts the same major at a minor
+    /// The version of the package interchange format. A reader accepts the same major at a minor
     /// not newer than its own, and refuses anything else with a reason - never a best-effort partial read.
     /// </summary>
     public sealed record BundleFormatVersion(int Major, int Minor)

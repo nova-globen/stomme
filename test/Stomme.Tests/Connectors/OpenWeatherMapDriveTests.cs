@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - OpenWeatherMap DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// OpenWeatherMap DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a loopback stand-in for OpenWeatherMap's API 2.5 that refuses a call without its key: a connection made over
     /// the API, its key vaulted, tested; a published pipeline reading Göteborg's weather now and a day of its forecast, eight
     /// three-hour records; the key in neither the graph nor the run.

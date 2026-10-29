@@ -24,7 +24,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-71 — an ANONYMOUS browser arriving at <c>/connect/authorize</c> must be taken to the LOGIN PAGE,
+    /// An ANONYMOUS browser arriving at <c>/connect/authorize</c> must be taken to the LOGIN PAGE,
     /// not answered with a bare 403.
     /// </summary>
     /// <remarks>
@@ -290,7 +290,7 @@ namespace Stomme.Tests
                     try { await _app.DisposeAsync(); } catch { /* best effort */ }
                 }
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(_contentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(_contentRoot);   // this install's pools only
                 try { Directory.Delete(_contentRoot, true); } catch { /* best effort */ }
             }
 

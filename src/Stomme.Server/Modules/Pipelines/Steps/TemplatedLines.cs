@@ -14,7 +14,7 @@ namespace Stomme.Modules.Pipelines.Steps
 
     /// <summary>
     /// A line-per-entry input of <c>name = value</c> (or <c>Name: value</c>) pairs, read so that a value from a run stays ONE
-    /// value (BL-229). The engine renders an input's template as a whole before the step reads it, so a value holding a line
+    /// value. The engine renders an input's template as a whole before the step reads it, so a value holding a line
     /// break, or text shaped like another entry, became lines the author never wrote: a second <c>query =</c> replacing the
     /// statement the author fixed, an <c>Authorization:</c> header, another recipient. Here, when the author wrote the input
     /// as a template, its lines are split as the author wrote them and each line's name and value rendered on their own - so

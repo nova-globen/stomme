@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleSheets
 {
     /// <summary>
-    /// Google Sheets (BL-229, n8n's most used node: its Get Rows and Append Row): a spreadsheet read as records and a record
+    /// Google Sheets (n8n's most used node: its Get Rows and Append Row): a spreadsheet read as records and a record
     /// written as a row, over the Sheets API (<c>https://sheets.googleapis.com/v4</c>). The OAuth2 refresh-token scheme - a
     /// Google Cloud OAuth client's id and secret and a refresh token granted the spreadsheets scope - is exchanged at Google's
     /// token endpoint (the <c>token_url</c> setting; it is there to point a test elsewhere) through the shared
@@ -32,7 +32,7 @@ namespace Stomme.Modules.Connectors.GoogleSheets
     /// under the sheet's headers by name (a field no header names is left out, and said); a list of lists written as it is; an
     /// empty sheet gets the first record's fields as its headers first - n8n's Append Row. The spreadsheet's id is written into
     /// the path, so it is held to the characters Google issues; the sheet's name and range are escaped. A failure is thrown, so
-    /// the extraction port answers it in its own words (D110).
+    /// the extraction port answers it in its own words.
     /// </remarks>
     public sealed class GoogleSheetsConnector(OAuth2TokenProvider? tokenProvider = null) : IConnector, IConnectorExtractor
     {

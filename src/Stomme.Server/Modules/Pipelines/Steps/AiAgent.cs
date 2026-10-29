@@ -28,7 +28,7 @@ using Microsoft.Extensions.AI;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// BL-229 - n8n's AI Agent: the site's language model answers the prompt with the site's AI agent TOOLS at hand - the published
+    /// n8n's AI Agent: the site's language model answers the prompt with the site's AI agent TOOLS at hand - the published
     /// pipelines that start with <see cref="AgentTool"/> (all of them, or the ones named). When the model calls a tool, its pipeline
     /// RUNS - the model's argument its trigger's result, the agent's run its parent - and the result of the last step the tool's run
     /// completes goes back to the model; then the model answers. The model is the one Ask AI uses: the site's, through
@@ -111,7 +111,7 @@ namespace Stomme.Modules.Pipelines.Steps
                 return;
             }
 
-            // BL-229: a tool's run is a call from this pipeline, so a tool's pipeline that does not let this one call it is held to
+            // A tool's run is a call from this pipeline, so a tool's pipeline that does not let this one call it is held to
             // that (Reliability/CallerPolicy.cs) - a tool named is refused, and of every tool it is left out, never offered.
             var definitions = context.GetRequiredService<Stomme.Engine.Pipelines.Management.IPipelineDefinitionStore>();
             var caller = Reliability.PipelineCallerPolicy.CallerOf(context.PipelineExecutionContext);

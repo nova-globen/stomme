@@ -24,7 +24,7 @@ using Xunit;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// BL-97 increment 6 - the recommendation on every store the install can choose (D79/D80), composed through the module's
+    /// The recommendation on every store the install can choose, composed through the module's
     /// OWN startup: the predecessor platform's <c>OptimizationRecommendationRepositoryTests</c> by name (every field of an open recommendation
     /// round-trips, its evidence list and its decimal saving exact; the dismissed lifecycle persists with its cooldown), and
     /// the port's own: a site lists its own recommendations newest first and finds another site's id as none.

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - LinkedIn DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// LinkedIn DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for LinkedIn's API: a LinkedIn connection made over the API, its token vaulted, tested; a
     /// published pipeline posts as the member (its URN read first) with an accent and LinkedIn's reserved characters, posts an
     /// organization's article, changes the post's text, reads the organization's posts over two pages and deletes the post -

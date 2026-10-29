@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Wekan (n8n's Wekan node) without a server: every id, title, colour, date and number held to Wekan's shape before
+    /// Wekan (n8n's Wekan node) without a server: every id, title, colour, date and number held to Wekan's shape before
     /// anything is sent - not even the sign-in; signed in with the user's name and password for a token, the token a bearer on
     /// every call and signed out again when the run ends, the password in no address; a card made only in a list and a swimlane
     /// the board has, its author the connection's user; a comment added only to a card first read on its board - Wekan 12 disables
@@ -318,8 +318,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - Wekan LIVE, against this machine's throwaway Wekan 12 over MongoDB (scripts/wekan-test-server.ps1) - fail-not-skip
-    /// without it (D46): a test signing in and a wrong password refused in Wekan's words; a board made, its list, a card in its
+    /// Wekan LIVE, against this machine's throwaway Wekan 12 over MongoDB (scripts/wekan-test-server.ps1) - fail-not-skip
+    /// without it: a test signing in and a wrong password refused in Wekan's words; a board made, its list, a card in its
     /// first swimlane, the card changed and read back, a comment added, read and deleted, a checklist made with its items, an item
     /// finished, everything deleted again; a card made in a swimlane the board does not have refused before Wekan keeps it; a
     /// comment for a card not on the board refused by the read before it - and the account still signs in after, which is the

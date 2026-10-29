@@ -30,7 +30,7 @@ namespace Stomme.Models
         /// </summary>
         /// <remarks>
         /// <para>
-        /// <b>VIEW STATE, NOT A NAVIGATION (D45).</b> This was a mapped EF navigation that
+        /// <b>VIEW STATE, NOT A NAVIGATION.</b> This was a mapped EF navigation that
         /// <c>SiteGroupMemberRepository</c> eager-loaded with <c>.Include</c>. Both SiteGroup and
         /// SiteGroupMember are now on the persistence seam, and while this member stayed mapped EF rediscovered
         /// the <see cref="Models.SiteGroup"/> CLR type THROUGH it and claimed the table

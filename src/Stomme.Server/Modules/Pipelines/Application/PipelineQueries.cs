@@ -41,7 +41,7 @@ namespace Stomme.Modules.Pipelines.Application
                 new PipelineDefinitionFilter { VersionOptions = VersionOptions.Latest },
                 new PipelineDefinitionOrder<DateTimeOffset>(x => x.CreatedAt, OrderDirection.Descending), ct);
             var views = latest.Select(PipelineWire.ToView).OrderBy(view => view.Name, StringComparer.OrdinalIgnoreCase).ToList();
-            // BL-229: each pipeline's tags, one read for the site - and whether it is archived (n8n's archive), one more.
+            // Each pipeline's tags, one read for the site - and whether it is archived (n8n's archive), one more.
             var tags = await PipelineTagStore.ReadAllAsync(keyValues, tenants.TenantId, ct);
             var archived = await PipelineArchiveStore.ReadAllAsync(keyValues, tenants.TenantId, ct);
             var folders = await PipelineFolderStore.ReadAllAsync(keyValues, tenants.TenantId, ct); // n8n's folders, one more
@@ -59,7 +59,7 @@ namespace Stomme.Modules.Pipelines.Application
 
             if (request.WithLastRuns)
             {
-                // BL-229: the runs waiting their turn, one read for the site - stored and not started, the engine's Pending.
+                // The runs waiting their turn, one read for the site - stored and not started, the engine's Pending.
                 var queued = (await instances.SummarizeManyAsync(new PipelineInstanceFilter { PipelineStatus = PipelineStatus.Running, PipelineSubStatus = PipelineSubStatus.Pending }, ct))
                     .GroupBy(run => run.DefinitionId, StringComparer.Ordinal).ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
                 foreach (var view in views)
@@ -99,7 +99,7 @@ namespace Stomme.Modules.Pipelines.Application
                 return null;
             }
 
-            // BL-229: the body's pinned test values are an author's; anyone else's body has none. And whether it is archived - the
+            // The body's pinned test values are an author's; anyone else's body has none. And whether it is archived - the
             // editor opens an archived pipeline read-only.
             var detail = PipelineWire.ToDetail(definition);
             PipelineArchiveStore.Apply(detail, await PipelineArchiveStore.FindAsync(keyValues, tenants.TenantId, request.DefinitionId, ct));
@@ -114,7 +114,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 increment 7: every version of a pipeline the engine keeps, newest first - one per publish, and the draft being
+    /// Every version of a pipeline the engine keeps, newest first - one per publish, and the draft being
     /// worked on (a draft is saved over itself until it is published). Who saved each is recorded from 10.11.0 on.
     /// </summary>
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.View)]
@@ -131,7 +131,7 @@ namespace Stomme.Modules.Pipelines.Application
 
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.View)]
     /// <summary>
-    /// The site's runs, newest first - one pipeline's or every one's, in one state or any (BL-229, n8n's execution filters:
+    /// The site's runs, newest first - one pipeline's or every one's, in one state or any (n8n's execution filters:
     /// <see cref="PipelineRunStates"/>). A state the list does not know is refused rather than read as "any": a filter that
     /// silently shows everything is the wrong answer to a typo. And started on or after <see cref="From"/>, on or before
     /// <see cref="To"/> - whole days in UTC, as the list shows times - n8n's start-date filter.
@@ -149,7 +149,7 @@ namespace Stomme.Modules.Pipelines.Application
         {
             var filter = new PipelineInstanceFilter { DefinitionId = string.IsNullOrWhiteSpace(request.DefinitionId) ? null : request.DefinitionId };
 
-            // BL-229: n8n's execution search - a run by its id, or the runs of a correlation id (an order, a ticket).
+            // n8n's execution search - a run by its id, or the runs of a correlation id (an order, a ticket).
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
                 var search = request.Search.Trim();
@@ -182,10 +182,10 @@ namespace Stomme.Modules.Pipelines.Application
             var page = await instances.SummarizeManyAsync(filter, PageArgs.FromRange(0, take), order, ct);
             var runs = page.Items.ToList();
 
-            // BL-229: what the runs saved about themselves - shown with each, and searched ("order: 42", or "42") beside the store's
+            // What the runs saved about themselves - shown with each, and searched ("order: 42", or "42") beside the store's
             // search of ids and correlation ids. One read for the site.
             var data = await PipelineRunDataStore.ReadAllAsync(keyValues, tenants.TenantId, ct);
-            var reviews = await PipelineRunReviewStore.ReadAllAsync(keyValues, tenants.TenantId, ct); // BL-229: found by its review too
+            var reviews = await PipelineRunReviewStore.ReadAllAsync(keyValues, tenants.TenantId, ct); // Found by its review too
             if (filter.SearchTerm is { } term)
             {
                 var found = data.Where(pair => PipelineRunData.Matches(pair.Value, term)).Select(pair => pair.Key)
@@ -270,7 +270,7 @@ namespace Stomme.Modules.Pipelines.Application
             view.Data = await PipelineRunDataStore.ReadAsync(keyValues, tenants.TenantId, instance.Id, ct);
             view.Review = await PipelineRunReviewStore.ReadAsync(keyValues, tenants.TenantId, instance.Id, ct);
 
-            // BL-229: a sub-pipeline's run says whose run started it, and a run the runs it started (Execute / Dispatch Pipeline).
+            // A sub-pipeline's run says whose run started it, and a run the runs it started (Execute / Dispatch Pipeline).
             if (!string.IsNullOrEmpty(instance.ParentPipelineInstanceId))
             {
                 view.ParentRunId = instance.ParentPipelineInstanceId;
@@ -306,7 +306,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229: whether a run the store does not hold is one this process started, or works on, for the site and the engine has
+    /// Whether a run the store does not hold is one this process started, or works on, for the site and the engine has
     /// not stored yet - a run is stored when its first burst of work ends, and the editor and the Run page read a run as soon as it
     /// is started. Such a run is "not yet" (the API's 204); any other id - a run stored and since deleted too - is none (404).
     /// Until then a WebAssembly page logged the first read of every run it started as a failed request, measured driving the
@@ -323,7 +323,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 - the pipelines that call one (Execute or Dispatch pipeline naming it), in their latest versions, by name: so the
+    /// The pipelines that call one (Execute or Dispatch pipeline naming it), in their latest versions, by name: so the
     /// author of a sub-pipeline sees whom a change to what it expects touches. A body the editor did not draw has no graph to read.
     /// </summary>
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.View)]
@@ -471,7 +471,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 increment 2: a run's step executions, in the order they started - what the editor shows on each step (state,
+    /// A run's step executions, in the order they started - what the editor shows on each step (state,
     /// timing, fault) and, to an AUTHOR only, what the step received and produced. The engine records each execution as the
     /// run commits (its step execution store, EF or RavenDB like the rest of the engine's); the engine's own wrappers - the
     /// pipeline and the flowcharts it and each body run in - are left out.
@@ -512,7 +512,7 @@ namespace Stomme.Modules.Pipelines.Application
 
         /// <summary>
         /// Step execution records as the editor shows them - the engine's wrappers left out, data for an author only, a secret
-        /// input hidden even then. A step test (BL-229 increment 6) shows its records by the same rule.
+        /// input hidden even then. A step test shows its records by the same rule.
         /// </summary>
         internal static IEnumerable<PipelineStepRunView> ToViews(IEnumerable<StepExecutionRecord> records, IStepRegistry registry, bool author) =>
             records.Where(record => !Wrappers.Contains(record.StepType)).Select(record => ToView(record, author, registry));
@@ -528,7 +528,7 @@ namespace Stomme.Modules.Pipelines.Application
                 StartedAtUtc = record.StartedAt.UtcDateTime,
                 CompletedAtUtc = record.CompletedAt?.UtcDateTime,
                 Error = record.Exception?.Message,
-                Waiting = record.HasBookmarks && record.CompletedAt is null, // parked on a bookmark: a Wait, an event (BL-229)
+                Waiting = record.HasBookmarks && record.CompletedAt is null, // parked on a bookmark: a Wait, an event
                 DataNotKept = record.Metadata?.ContainsKey(PipelineStepDataKeeping.NotKeptKey) == true, // emptied by the pipeline's setting
             };
 
@@ -609,7 +609,7 @@ namespace Stomme.Modules.Pipelines.Application
 
         /// <summary>
         /// A connection step's parameter lines that name a secret - a password, a token, a key, an Authorization header - their
-        /// values hidden, every other line shown as it was (BL-229: a password typed into a step's parameters was listed in its
+        /// values hidden, every other line shown as it was (a password typed into a step's parameters was listed in its
         /// run's data, found driving WordPress's user Create). Only the <c>Parameters</c> input of "name = value" lines.
         /// </summary>
         internal static object? SecretLinesHidden(string input, object? value)

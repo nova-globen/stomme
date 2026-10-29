@@ -14,7 +14,7 @@ namespace Stomme.Modules.Datasets.Application
     }
 
     /// <summary>
-    /// The module's classifier (BL-94 increment 9, ported from the predecessor platform's composition-root adapter): a column whose name
+    /// The module's classifier: a column whose name
     /// hints at a secret (password, secret, api key, token, credential, private key) classifies the dataset
     /// Confidential; otherwise PII in the sample (an e-mail address, a US SSN, a Luhn-valid card number) classifies it
     /// Restricted - the top of the ONE order (Q1); otherwise Internal.

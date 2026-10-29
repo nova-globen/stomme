@@ -10,7 +10,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// 2026-10-07 (10.18.0, failing twice on one commit): "An exception occurred while contacting .../admin/databases?name=..." - the
 /// job-local RavenDB container, on a 2 GiB runner creating one database per test, failed to create one. So the creation is tried
 /// a few times with a short pause; an assertion of the suite is never retried, and a server that cannot create a database at all
-/// still fails the test (D46: fail, never skip).
+/// still fails the test (fail, never skip).
 /// </summary>
 internal static class RavenTestDatabases
 {

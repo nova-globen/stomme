@@ -16,7 +16,7 @@ namespace Stomme.Tests
 {
     /// <summary>
     /// The anonymous recovery endpoints must not say whether an account exists, and must never put a reset token
-    /// in the event log (BL-149).
+    /// in the event log.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -38,7 +38,7 @@ namespace Stomme.Tests
     /// the site Log table that every administrator can read. The assertion below checks EVERY string column of
     /// the row, not just the message: the token also rides the query string, and <c>LogManager</c> copies the
     /// request URL into <c>Log.Url</c> for every entry raised during that request — the same second door BL-112's
-    /// fix left open for setting values (BL-148).
+    /// fix left open for setting values.
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]

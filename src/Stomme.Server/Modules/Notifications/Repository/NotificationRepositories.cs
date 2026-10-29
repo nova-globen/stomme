@@ -79,7 +79,7 @@ namespace Stomme.Notifications.Persistence
 
         public async Task<NotificationTemplateAggregate?> GetByKeyAsync(int siteId, string key, CancellationToken ct = default)
         {
-            // D49: the column is normalized by the aggregate; the argument is normalized HERE with the same function.
+            // The column is normalized by the aggregate; the argument is normalized HERE with the same function.
             var normalized = NotificationTemplateAggregate.NormalizeKey(key);
             var matches = await Inner.FindAsync(template => template.SiteId == siteId && template.KeyNormalized == normalized, ct);
             return matches.FirstOrDefault();

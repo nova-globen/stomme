@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Pipelines.Expressions
 {
     /// <summary>
-    /// The run's facts for <see cref="PipelineBuiltIns"/> (BL-229), read from the engine when an expression or a condition is
+    /// The run's facts for <see cref="PipelineBuiltIns"/>, read from the engine when an expression or a condition is
     /// evaluated: the moment from the engine's clock, the run and the pipeline from the run's context, the site's variables from
     /// the store once per scope (<see cref="PipelineSiteVariablesCache"/>).
     /// </summary>
@@ -37,7 +37,7 @@ namespace Stomme.Modules.Pipelines.Expressions
             var pipeline = run.Pipeline;
             return new PipelineRunFacts(now, run.Id, run.CorrelationId, run.CreatedAt, pipeline.Identity.DefinitionId, pipeline.PipelineMetadata.Name, pipeline.Identity.Version, variables,
                 PipelineBuiltIns.InputOf(run.Input?.Select(pair => new KeyValuePair<string, object?>(pair.Key, pair.Value))),
-                PipelineGraphCodec.TimeZone(pipeline.Root.Metadata)); // BL-229: the zone of the version the run runs
+                PipelineGraphCodec.TimeZone(pipeline.Root.Metadata)); // The zone of the version the run runs
         }
 
         /// <summary>The built-ins, then the variables in scope by name.</summary>

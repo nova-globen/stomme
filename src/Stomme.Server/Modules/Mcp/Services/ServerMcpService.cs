@@ -15,7 +15,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Mcp.Services
 {
     /// <summary>
-    /// The SERVER side of <see cref="IMcpService"/> (BL-80 / D101 item 7).
+    /// The SERVER side of <see cref="IMcpService"/>.
     /// </summary>
     /// <remarks>
     /// <para>

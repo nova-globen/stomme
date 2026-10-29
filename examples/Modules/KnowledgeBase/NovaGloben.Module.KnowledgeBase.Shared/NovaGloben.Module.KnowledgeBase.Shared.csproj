@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    BL-86: the SHARED layer of the exemplar module - the wire models, the permission keys and the service contract, and
+    The SHARED layer of the exemplar module - the wire models, the permission keys and the service contract, and
     NOTHING else. Both the Client and the Server reference it, and on a WebAssembly site it STREAMS to the browser (the
     Client's ModuleDefinition.Dependencies names this assembly), so it must stay free of any server-only surface.
-    INDEPENDENT (D81/D82): Stomme arrives only through the slim SDK meta-package from examples/local-feed.
+    INDEPENDENT: Stomme arrives only through the slim SDK meta-package from examples/local-feed.
   -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -22,11 +22,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Stomme.Sdk.Slim" Version="10.75.1" />
+    <PackageReference Include="Stomme.Sdk.Slim" Version="10.75.2" />
   </ItemGroup>
 
   <!--
-    WASM-safety (measured, BL-13): the Microsoft.AspNetCore.OpenApi SOURCE GENERATOR arrives transitively and injects
+    WASM-safety (measured): the Microsoft.AspNetCore.OpenApi SOURCE GENERATOR arrives transitively and injects
     interceptor types that force server-only references, which make Assembly.GetTypes() throw in the browser. A
     browser-bound assembly removes the analyzer from its compilation (ExcludeAssets does not stop a transitive analyzer).
   -->

@@ -20,7 +20,7 @@ namespace Stomme.Repository
         Task<Permission> AddPermissionAsync(Permission permission);
         Task<Permission> UpdatePermissionAsync(Permission permission);
         /// <summary>
-        /// Replaces the permission rows of one entity. A row naming a DIFFERENT entity is refused (BL-102) - the
+        /// Replaces the permission rows of one entity. A row naming a DIFFERENT entity is refused - the
         /// sink would write it as a SITE-WIDE row - unless <paramref name="allowDeclaredKeyRows"/> is set, and
         /// even then only for a lifted permission KEY, never a framework entity.
         /// </summary>
@@ -32,13 +32,13 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The Permission cluster on the persistence seam (D3/D7/D24). Permission-table access goes through
+    /// The Permission cluster on the persistence seam. Permission-table access goes through
     /// <see cref="IPermissionStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class
     /// holds no <c>DbContext</c> and no <c>IQueryable</c> escapes it.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// ONE database, unlike the Setting cluster (D23): Permission is mapped in <see cref="TenantDBContext"/>
+    /// ONE database, unlike the Setting cluster: Permission is mapped in <see cref="TenantDBContext"/>
     /// only, so there is no <c>IsMaster</c> routing here and one store suffices. See src/Stomme.Server/README.md (persistence seam).
     /// </para>
     /// <para>
@@ -73,7 +73,7 @@ namespace Stomme.Repository
             _cache = cache;
         }
 
-        // The read path on the seam (D19): reads NEVER go through the store, because the store TRACKS what it
+        // The read path on the seam: reads NEVER go through the store, because the store TRACKS what it
         // loads and UpdatePermission then attaches a DIFFERENT instance with the same key, which EF rejects:
         //   "The instance of entity type 'PermissionAggregate' cannot be tracked because another instance with
         //    the same key value for {'Id'} is already being tracked."
@@ -82,7 +82,7 @@ namespace Stomme.Repository
         // reads to authorize before writing. A query session opens its own context, so reads leave the store's
         // change tracker clean.
         //
-        // The IQueryable is materialized inside this method, so it never leaves the repository (D7). The LINQ
+        // The IQueryable is materialized inside this method, so it never leaves the repository. The LINQ
         // operators are plain LINQ rather than EF Core's async ones, which would bind these reads to the
         // relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
@@ -174,13 +174,13 @@ namespace Stomme.Repository
 
         public async Task UpdatePermissionsAsync(int siteId, string entityName, int entityId, List<Permission> permissions, bool allowDeclaredKeyRows = false)
         {
-            // BL-102 - BEFORE any read or write. The populate loop below stamps EntityId = -1 on every row whose
+            // BEFORE any read or write. The populate loop below stamps EntityId = -1 on every row whose
             // EntityName differs from entityName, i.e. writes it as a SITE-WIDE row for another entity, so Edit
             // on one module, page or folder was enough to grant the framework's own Host-only User:Write policy
             // to All Users (driven: DELETE api/User/{id} then answered 200 anonymously). The controllers answer
             // 400 before writing the entity; this is the defence in depth for every other caller. Only the
             // module-definition paths opt in, and only for LIFTED keys: a framework entity is refused even then,
-            // because those policies are deliberately row-less (D99) and a row flips them from role-decided to
+            // because those policies are deliberately row-less and a row flips them from role-decided to
             // row-decided. Deliberately inline rather than a helper: PerWriteStoreInvariantTests allowlists THIS
             // method by name.
             var rejected = PermissionRowScope.ForeignRows(permissions, entityName)
@@ -230,7 +230,7 @@ namespace Stomme.Repository
                         // an instance that came from GetPermissions, i.e. from ANOTHER context AND from the
                         // cache. Through the seam this is a plain keyed write of a detached aggregate, which
                         // is what the store's UpdateAsync does; the store's tracker is clean because the read
-                        // above went through a query session (D19).
+                        // above went through a query session.
                         await _store.UpdateAsync(PermissionMapper.ToAggregate(current, assignId: true));
                         modified = true;
                     }
@@ -276,7 +276,7 @@ namespace Stomme.Repository
 
         public async Task DeletePermissionAsync(int permissionId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it
+            // The one read that legitimately goes through the store: it deletes the very instance it
             // loaded, so tracking is what we want and no second instance is ever attached.
             var aggregate = await _store.GetByIdAsync(permissionId);
             if (aggregate == null)

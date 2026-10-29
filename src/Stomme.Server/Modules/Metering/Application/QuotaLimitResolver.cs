@@ -8,7 +8,7 @@ using Stomme.Metering;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Decides the limit in force for a metric on a site, and is the ONLY place -1 is decoded (D102).
+    /// Decides the limit in force for a metric on a site, and is the ONLY place -1 is decoded.
     /// </summary>
     /// <remarks>
     /// Three sources, in order: an <see cref="IMeteredLimitProvider"/> (a licence, when one is registered), then

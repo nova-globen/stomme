@@ -2,7 +2,7 @@
 @inject Microsoft.JSInterop.IJSRuntime JS
 
 @*
-    What a step received or produced (BL-229, n8n's Table, JSON and Schema views): the JSON as it is, and - when it holds a list
+    What a step received or produced (n8n's Table, JSON and Schema views): the JSON as it is, and - when it holds a list
     of records (as JSON, or as the JSON text the data steps pass) - a table of each, the first rows of it, and its schema: each
     field, what its values are and an example. The JSON stays the default and is always one click away; nothing is a table that
     is not a list.
@@ -16,12 +16,12 @@
         <button id="@(Id + "-as-schema")" type="button" class="db-btn @(_mode == SchemaMode ? "is-active" : "")" aria-pressed="@(_mode == SchemaMode ? "true" : "false")" @onclick="() => _mode = SchemaMode">Schema</button>
     </div>
 }
-@* BL-229 - n8n's copy of a step's data: the JSON whole, as the step had it, to the clipboard. *@
+@* n8n's copy of a step's data: the JSON whole, as the step had it, to the clipboard. *@
 @if (Json is not null)
 {
     <button id="@(Id + "-copy")" type="button" class="db-btn db-pipeline-editor__data-copy" title="@("Copy " + (Label ?? "the data") + " as JSON")" @onclick="CopyAsync">@(_copied ? "Copied" : "Copy")</button>
 }
-@* BL-229 - n8n's search in a step's data: a table keeps the rows holding the text, a schema the fields named so, the JSON marks
+@* n8n's search in a step's data: a table keeps the rows holding the text, a schema the fields named so, the JSON marks
    each place it occurs - with how many there are. Shown once there is enough to look through. *@
 @if (Searchable)
 {

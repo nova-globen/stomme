@@ -20,7 +20,7 @@ using MongoDB.Driver.Core.Events;
 namespace Stomme.Modules.Connectors.MongoDb
 {
     /// <summary>
-    /// MongoDB (BL-229, n8n's MongoDB node: a collection's documents) over the official driver (Apache-2.0): the endpoint is a
+    /// MongoDB (n8n's MongoDB node: a collection's documents) over the official driver (Apache-2.0): the endpoint is a
     /// <c>mongodb://</c> address of ONE server - <c>mongodb://db.example.com:27017/kassa?authSource=admin&amp;tls=true</c> -
     /// and never a password: the Basic scheme's <c>username</c> and <c>password</c> come from the per-site secret store. A test
     /// pings the database and names the server's version.
@@ -157,7 +157,7 @@ namespace Stomme.Modules.Connectors.MongoDb
             }
             catch (Exception ex) when (ex is MongoException or TimeoutException or SocketException)
             {
-                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner (D110)
+                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner
             }
         }
 

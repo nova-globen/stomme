@@ -7,7 +7,7 @@ namespace Stomme.Modules.Pipelines.Triggers
 {
     /// <summary>
     /// The triggers' settings (BL-95 increment (e)), bound from the <c>Pipelines</c> section of THIS host's
-    /// configuration root (BL-162). Schedules run by default (a schedule exists only where an author placed one);
+    /// configuration root. Schedules run by default (a schedule exists only where an author placed one);
     /// the webhook receiver is a PUBLIC, unauthenticated endpoint and is therefore OFF by default, and even when on
     /// it answers nothing without a secret to verify against.
     /// </summary>
@@ -45,7 +45,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// <c>Pipelines:EmailTriggers</c> (BL-229, n8n's Email Trigger (IMAP)): how often each site's watched mailboxes are looked at,
+    /// <c>Pipelines:EmailTriggers</c> (n8n's Email Trigger (IMAP)): how often each site's watched mailboxes are looked at,
     /// and the bounds of a look. Nothing to switch on: a trigger reads only a mailbox one of its site's connections names.
     /// </summary>
     public sealed class EmailTriggerOptions
@@ -61,7 +61,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// <c>Pipelines:TelegramTriggers</c> (BL-229, n8n's Telegram Trigger): how often each site's watched bots are asked for their
+    /// <c>Pipelines:TelegramTriggers</c> (n8n's Telegram Trigger): how often each site's watched bots are asked for their
     /// messages, and the most a look starts runs for. Nothing to switch on: a trigger asks only a bot one of its site's connections
     /// names.
     /// </summary>
@@ -75,7 +75,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// <c>Pipelines:FileTriggers</c> (BL-229, n8n's Local File Trigger): how often each site's watched folders are looked at, and
+    /// <c>Pipelines:FileTriggers</c> (n8n's Local File Trigger): how often each site's watched folders are looked at, and
     /// the bounds of a look. Nothing to switch on: a "File added" trigger reads only its own site's pipeline folder.
     /// </summary>
     public sealed class FileTriggerOptions
@@ -93,7 +93,7 @@ namespace Stomme.Modules.Pipelines.Triggers
         public int MaxFiles { get; set; } = 10_000;
     }
 
-    /// <summary><c>Pipelines:Evaluations</c> (BL-229, n8n's Evaluations): how an evaluation's rows are run.</summary>
+    /// <summary><c>Pipelines:Evaluations</c> (n8n's Evaluations): how an evaluation's rows are run.</summary>
     public sealed class EvaluationOptions
     {
         /// <summary>How often each site's running evaluations are moved on: a finished row noticed, the next one started.</summary>
@@ -107,7 +107,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// <c>Pipelines:Chats</c> (BL-229, n8n's Chat trigger): whether the site serves its pipelines' chat pages - public, each message
+    /// <c>Pipelines:Chats</c> (n8n's Chat trigger): whether the site serves its pipelines' chat pages - public, each message
     /// a run (and, behind an AI agent, a model call) - so off unless the install says so, and their bounds.
     /// </summary>
     public sealed class ChatTriggerOptions
@@ -122,7 +122,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     }
 
     /// <summary>
-    /// <c>Pipelines:Forms</c> (BL-229, n8n's Form trigger): whether the site serves its pipelines' forms - public pages anyone can
+    /// <c>Pipelines:Forms</c> (n8n's Form trigger): whether the site serves its pipelines' forms - public pages anyone can
     /// submit, so off unless the install says so - and their bounds.
     /// </summary>
     public sealed class FormTriggerOptions
@@ -145,7 +145,7 @@ namespace Stomme.Modules.Pipelines.Triggers
         public int NextPageWithinSeconds { get; set; } = 15;
     }
 
-    /// <summary><c>Pipelines:Waits</c> (BL-229, n8n's Wait node).</summary>
+    /// <summary><c>Pipelines:Waits</c> (n8n's Wait node).</summary>
     public sealed class WaitOptions
     {
         /// <summary>How often each site's waiting runs are looked at; a due one is resumed within this many seconds.</summary>
@@ -155,7 +155,7 @@ namespace Stomme.Modules.Pipelines.Triggers
         public int MaxDays { get; set; } = 365;
     }
 
-    /// <summary><c>Pipelines:Runs</c> (BL-229, n8n's execution pruning).</summary>
+    /// <summary><c>Pipelines:Runs</c> (n8n's execution pruning).</summary>
     public sealed class RunRetentionOptions
     {
         /// <summary>
@@ -193,7 +193,7 @@ namespace Stomme.Modules.Pipelines.Triggers
 
         /// <summary>
         /// The HMAC-SHA256 secret every webhook request is signed with (<c>X-Signature-256: sha256=&lt;hex&gt;</c> over the raw body). From the broker, never a row or the UI.
-        /// A webhook with a secret of its own (D111a, <see cref="PipelineWebhookSecrets"/>) is verified under that instead.
+        /// A webhook with a secret of its own (<see cref="PipelineWebhookSecrets"/>) is verified under that instead.
         /// </summary>
         public string? Secret { get; set; }
 

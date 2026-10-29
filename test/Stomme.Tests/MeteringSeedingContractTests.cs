@@ -31,7 +31,7 @@ namespace Stomme.Tests
     /// <b>Why a deterministic id is not enough on its own, and why this runs on more than one store.</b> Only
     /// RavenDB's <c>AddAsync</c> is a blind upsert; EF raises a primary-key violation and the File store throws on
     /// an existing path. So "create if absent" has to be a GetById followed by an Add, and a seeder that leaned on
-    /// the id alone would pass on Raven and fail everywhere else. PostgreSQL and RavenDB FAIL rather than skip (D46).
+    /// the id alone would pass on Raven and fail everywhere else. PostgreSQL and RavenDB FAIL rather than skip.
     /// </para>
     /// </remarks>
     [Collection(nameof(InstalledSiteRenderTests))]

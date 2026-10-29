@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Mailchimp (n8n's Mailchimp node: an audience's members and the account's campaigns) over the Marketing API: the
+    /// Mailchimp (n8n's Mailchimp node: an audience's members and the account's campaigns) over the Marketing API: the
     /// key by Mailchimp's Basic pair; an admin page's address taken to its data center's API and a key of another data center
     /// refused; an audience's members by status and change, page by page by offset up to the most asked for, each a plain record;
     /// a member got, added, updated, added-or-updated, archived, deleted for good and tagged - named by the MD5 of the address in

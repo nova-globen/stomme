@@ -46,7 +46,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Crypto (BL-229, n8n's Crypto node): a hash of a value (SHA-256 by default; SHA-512, and SHA-1 and MD5 for the checksums
+    /// Crypto (n8n's Crypto node): a hash of a value (SHA-256 by default; SHA-512, and SHA-1 and MD5 for the checksums
     /// older systems still ask for), an HMAC of it under a key - how a call to another system is signed, as this site's own
     /// webhooks are - a random UUID, or random URL-safe text. The value is UTF-8 text, the previous step's result when empty;
     /// the key is an input that may hold a secret, so a run's data shows it hidden - better still, a variable a Connection's

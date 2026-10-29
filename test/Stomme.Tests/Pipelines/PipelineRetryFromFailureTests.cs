@@ -33,7 +33,7 @@ using PipelineGraph = Stomme.Models.Pipelines.PipelineGraph;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's retry "from the node with the error": a failed run goes on as a new run from the step that failed, on the
+    /// n8n's retry "from the node with the error": a failed run goes on as a new run from the step that failed, on the
     /// published version - what ran before is not run again and what it saved is kept, the failed step runs anew (with a fix the
     /// author published since); refused, saying why, for a run that did not fail or whose failed step is gone. And what a run
     /// saved is kept through a pause, which it was not (found building this).
@@ -275,7 +275,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new object[] { new RetryFromFailedStepCommand("r1"), new RetryRunCommand("r2"), new RetryRunCommand("r4", true) }, mediator.Sent);
         }
 
-        // BL-229 - n8n's "retry with original workflow": a run again on the version it ran, beside the published one - the
+        // n8n's "retry with original workflow": a run again on the version it ran, beside the published one - the
         // version that failed fails again where the fixed one finishes - and refused, saying why, once that version is not kept.
         [Fact]
         public async Task A_run_is_run_again_on_the_version_it_ran_or_on_the_published_one()
@@ -323,7 +323,7 @@ namespace Stomme.Tests.Pipelines
             var gone = await Assert.ThrowsAsync<InvalidOperationException>(() => Retry(services).Handle(new RetryFromFailedStepCommand(failed), CancellationToken.None));
             Assert.Equal("The step that failed is not in the published version any more - retry the run from the start.", gone.Message);
 
-            // BL-229: a run whose input its pipeline's setting emptied is neither gone on with nor run again without it - from here
+            // A run whose input its pipeline's setting emptied is neither gone on with nor run again without it - from here
             // or over MCP; one started with nothing is emptied of nothing and stays retryable.
             var unkept = (await start.Handle(new StartPipelineCommand(order, null, null), CancellationToken.None))!.RunId;
             var instances = services.GetRequiredService<IPipelineInstanceStore>();

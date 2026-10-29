@@ -12,9 +12,9 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 9 (D110) - the predecessor platform's DatasetTests by name where they are the domain's (the inference, the masked
+    /// The predecessor platform's DatasetTests by name where they are the domain's (the inference, the masked
     /// summary, the escalate-only refresh) on the reshaped aggregate, plus the port's own rules: the id is the ORIGIN's,
-    /// the name and the reference are normalised (D49), the sample is bounded and must be a JSON array, the schema and
+    /// the name and the reference are normalised, the sample is bounded and must be a JSON array, the schema and
     /// the summary are one JSON value each and read back typed, the summary must describe the schema, and the ONE
     /// classification order (Q1). the predecessor platform's mediator, registrar and upload cases are increment 10's.
     /// </summary>

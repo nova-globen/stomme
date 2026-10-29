@@ -7,7 +7,7 @@ namespace Stomme.Tests.Mcp
 {
     /// <summary>
     /// <c>ClaimsPrincipal.UserId()</c> answers -1 for a principal that is not a Stomme user, and does not throw
-    /// (BL-80, D101 item 3).
+    /// (D101 item 3).
     /// </summary>
     /// <remarks>
     /// It was <c>int.Parse</c>. Every principal whose NameIdentifier is not an integer therefore produced an unhandled

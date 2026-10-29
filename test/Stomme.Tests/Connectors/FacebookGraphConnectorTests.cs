@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - the Facebook Graph API (n8n's Facebook Graph API node: a node or its edge read, posted to and deleted): every
+    /// The Facebook Graph API (n8n's Facebook Graph API node: a node or its edge read, posted to and deleted): every
     /// call the Graph - at the step's version, the connection's or none, or the address given - with the token as a bearer
     /// token, never in an address; a node read whole with its fields, an edge's list page by page by the Graph's cursor, the
     /// limit fixed and no bigger than asked, an empty page or no next the end, with more of the Graph's parameters; raw, the

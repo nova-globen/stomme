@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.Landing.Controllers
 {
     /// <summary>
-    /// <c>api/Landing</c> (BL-98): the site's landing page. Reading is <c>landing:view</c> - every visitor's - and answers 204
+    /// <c>api/Landing</c>: the site's landing page. Reading is <c>landing:view</c> - every visitor's - and answers 204
     /// for a site with no page, or a draft the caller may not see; everything else is <c>landing:manage</c>. A content the
     /// domain refuses is 400 with its reason, publishing a page never made is 409; a dashboard not on the site is 404, a draft
     /// one 409.
@@ -56,13 +56,13 @@ namespace Stomme.Modules.Landing.Controllers
         public Task<IActionResult> ConfigureDashboard([FromBody] ConfigureDashboardLandingRequest request, CancellationToken ct) =>
             AnswerAsync(async () => Ok(await _mediator.Send(new ConfigureDashboardLandingCommand(request?.DashboardId ?? Guid.Empty), ct)));
 
-        // POST api/Landing/generate - a page from a brief, PROPOSED (BL-98 increment 3); nothing stored
+        // POST api/Landing/generate - a page from a brief, PROPOSED; nothing stored
         [HttpPost("generate")]
         [RequiresPermissionKey(LandingPermissions.Manage)]
         public Task<IActionResult> Generate([FromBody] GenerateLandingRequest request, CancellationToken ct) =>
             AiAsync(async () => Ok(await _mediator.Send(new GenerateLandingDraftCommand(request?.Brief ?? string.Empty), ct)));
 
-        // POST api/Landing/sections/propose - one section revised, PROPOSED (BL-98 increment 4); nothing stored
+        // POST api/Landing/sections/propose - one section revised, PROPOSED; nothing stored
         [HttpPost("sections/propose")]
         [RequiresPermissionKey(LandingPermissions.Manage)]
         public Task<IActionResult> ProposeSection([FromBody] ProposeLandingSectionRequest request, CancellationToken ct) =>

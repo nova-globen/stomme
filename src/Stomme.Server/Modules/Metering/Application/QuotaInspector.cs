@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Answers "may this happen?" before it happens - the pre-consumption entry point the predecessor platform never had (D102).
+    /// Answers "may this happen?" before it happens - the pre-consumption entry point the predecessor platform never had.
     /// </summary>
     /// <remarks>
     /// <para>

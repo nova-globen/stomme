@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Security
 {
     /// <summary>
-    /// Ties the authentication cookie to a server-side session (BL-119): every cookie issued for a Stomme user carries
+    /// Ties the authentication cookie to a server-side session: every cookie issued for a Stomme user carries
     /// the id of a session row opened for it, and a sign-out ends that row.
     /// </summary>
     /// <remarks>

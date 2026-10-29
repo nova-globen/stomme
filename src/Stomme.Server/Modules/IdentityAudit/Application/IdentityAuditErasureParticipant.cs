@@ -13,7 +13,7 @@ namespace Stomme.Modules.IdentityAudit.Application
     /// <summary>
     /// The identity audit ledger (sign-ins, lockouts, password and role changes about the subject) is a SECURITY record:
     /// retained unchanged for one year under Article 17(3) (the Security reason of the closed set), then deleted by the
-    /// same job (D112). The subject appears as the actor or as the subject of an entry; both are theirs.
+    /// same job. The subject appears as the actor or as the subject of an entry; both are theirs.
     /// </summary>
     public sealed class IdentityAuditErasureParticipant(IIdentityAuditRepository audit, IUnitOfWork unitOfWork, TimeProvider clock) : ISubjectErasureParticipant
     {

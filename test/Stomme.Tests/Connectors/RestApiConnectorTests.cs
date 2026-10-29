@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 1 - the predecessor platform's RestApiConnectorTests (7) by name over the port. CHANGED: the connector has no
+    /// The predecessor platform's RestApiConnectorTests (7) by name over the port. CHANGED: the connector has no
     /// handler-factory constructor; the client is the egress's, so a test hands in a <see cref="StubEgress"/> over its
     /// handler. The two Live cases now say what the port means: a real HTTP server on loopback is reached through a
     /// permissive stub egress (the connector's HTTP path is real), and through the HOST's egress the same loopback address
@@ -46,7 +46,7 @@ namespace Stomme.Tests.Connectors
         [Fact]
         public void ConfigSchema_DeclaresTheOptionalConnectionFields()
         {
-            // CHANGED: proxy_url and danger_accept_any_certificate are gone - the host's egress owns the proxy and the certificate policy (D110).
+            // CHANGED: proxy_url and danger_accept_any_certificate are gone - the host's egress owns the proxy and the certificate policy.
             var fields = new RestApiConnector().ConfigSchema.Fields;
             Assert.Equal(new[] { "path", "headers" }, fields.Select(f => f.Name).ToArray());
             Assert.All(fields, f => Assert.False(f.Required));

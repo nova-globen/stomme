@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-68: a cluster operation that timed out waiting for its commit notification is rechecked - done means done, not
+    /// A cluster operation that timed out waiting for its commit notification is rechecked - done means done, not
     /// done means one more attempt - and any other failure propagates untouched.
     /// </summary>
     public sealed class RavenClusterCommitTests

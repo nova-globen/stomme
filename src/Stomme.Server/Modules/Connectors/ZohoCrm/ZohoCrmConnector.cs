@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.ZohoCrm
 {
     /// <summary>
-    /// Zoho CRM (BL-229, n8n's Zoho CRM node: its accounts, contacts, deals, invoices, leads, products, purchase orders, quotes,
+    /// Zoho CRM (n8n's Zoho CRM node: its accounts, contacts, deals, invoices, leads, products, purchase orders, quotes,
     /// sales orders and vendors): any module's records over Zoho CRM's REST API (<c>https://www.zohoapis.com/crm/v2</c>, or the
     /// data centre's), an OAuth client's refresh token exchanged at Zoho's accounts server (the <c>token_url</c> setting, the data
     /// centre's) through the shared <see cref="OAuth2TokenProvider"/>, the access token sent as Zoho's <c>Zoho-oauthtoken</c>. A

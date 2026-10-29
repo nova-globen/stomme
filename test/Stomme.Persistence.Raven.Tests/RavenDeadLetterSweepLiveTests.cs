@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Persistence.Raven.Tests;
 
 /// <summary>
-/// BL-100 O2 (D109) — the ONLY real cover of the dead-letter sweep: <see cref="DeadLetterSweeper"/> over the real
+/// BL-100 O2 — the ONLY real cover of the dead-letter sweep: <see cref="DeadLetterSweeper"/> over the real
 /// <see cref="RavenDbDeadLetterQueue"/> on a live RavenDB server (the host's <c>DeadLetterSweepJob</c> delegates to it;
 /// on every other transport the sweep is a stated no-op). Fail-not-skip per D46: an unreachable server fails
 /// <see cref="InitializeAsync"/>.

@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-6 — the LOCKOUT + TWO-FACTOR facets of the hand-written Raven <c>IUserStore</c> (D54b), driven through
+    /// The LOCKOUT + TWO-FACTOR facets of the hand-written Raven <c>IUserStore</c> (D54b), driven through
     /// <c>UserManager&lt;IdentityUser&gt;</c> against a LIVE RavenDB, exactly as the login page's
     /// <c>CheckPasswordSignInAsync(..., lockoutOnFailure: true)</c> path exercises them.
     /// <para>

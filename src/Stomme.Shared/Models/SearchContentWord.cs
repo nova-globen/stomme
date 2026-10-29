@@ -20,7 +20,7 @@ namespace Stomme.Models
         public DateTime ModifiedOn { get; set; }
 
         /// <summary>
-        /// The word this row counts. <b>[NotMapped] (D45/D50)</b>: with SearchWordAggregate mapped onto the
+        /// The word this row counts. <b>[NotMapped]</b>: with SearchWordAggregate mapped onto the
         /// `SearchWord` table, a mapped navigation here makes EF rediscover the SearchWord contract THROUGH it
         /// and claim the aggregate's table — the model then fails at startup. View state that
         /// SearchContentRepository.GetSearchContentWordsAsync populates from a second query, and it is
@@ -31,7 +31,7 @@ namespace Stomme.Models
         public SearchWord SearchWord { get; set; }
 
         /// <summary>
-        /// The content this row belongs to. <b>[NotMapped] (D45/D50)</b>, for the same reason as
+        /// The content this row belongs to. <b>[NotMapped]</b>, for the same reason as
         /// <see cref="SearchWord"/>. Nothing reads it — the harvested search query reached the SearchContent
         /// columns through it, and that query is now ISearchQueryStore's, which joins in the store (EF) or via
         /// a LoadDocument index (RavenDB).

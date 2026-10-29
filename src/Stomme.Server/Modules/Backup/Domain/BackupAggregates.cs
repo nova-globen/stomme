@@ -21,7 +21,7 @@ namespace Stomme.Modules.Backup.Domain
 
     /// <summary>
     /// Where a snapshot's archive lives in the archive store: a single file NAME, never a path - so nothing a row holds can
-    /// point outside the store's root (D106 item 9).
+    /// point outside the store's root.
     /// </summary>
     public sealed class StorageLocation : ValueObject, IStringValueObject
     {
@@ -47,11 +47,11 @@ namespace Stomme.Modules.Backup.Domain
             return new StorageLocation(trimmed);
         }
 
-        /// <summary>A Stomme backup archive's extension (BL-261; since 10.75.0).</summary>
+        /// <summary>A Stomme backup archive's extension (since 10.75.0).</summary>
         public const string ArchiveExtension = ".stbak";
 
         /// <summary>
-        /// The extension archives had before 10.75.0 (BL-261: it carried the old product name). Still READ: every snapshot row
+        /// The extension archives had before 10.75.0 (it carried the old product name). Still READ: every snapshot row
         /// keeps the name it was stored under, so an archive taken earlier is listed, restored, downloaded and retained as before.
         /// </summary>
         public const string LegacyArchiveExtension = ".dcbak";
@@ -109,7 +109,7 @@ namespace Stomme.Modules.Backup.Domain
 
     /// <summary>
     /// Why a snapshot is kept: <c>manual</c>, <c>scheduled</c>, <c>imported</c>, <c>pre-restore</c> (the automatic safety
-    /// snapshot), <c>pre-upgrade</c> (taken before a framework upgrade, BL-172), or <c>indefinite</c> - which retention never removes. Lower case; letters, digits and '-'.
+    /// snapshot), <c>pre-upgrade</c> (taken before a framework upgrade), or <c>indefinite</c> - which retention never removes. Lower case; letters, digits and '-'.
     /// </summary>
     public sealed class RetentionTag : ValueObject, IStringValueObject
     {
@@ -153,14 +153,14 @@ namespace Stomme.Modules.Backup.Domain
     }
 
     /// <summary>
-    /// One snapshot of the installation (BL-81, D106 item 6) and the life of its archive: created, restored, retired.
+    /// One snapshot of the installation and the life of its archive: created, restored, retired.
     /// INSTALLATION-wide - deliberately NOT tenant-owned: a snapshot holds every tenant. Excluded from the snapshot itself,
     /// so a restore never rewrites the rows that drive it.
     /// </summary>
     /// <remarks>
     /// Creating -&gt; Available | Failed. A restore: Available -&gt; Staged (pre-flight passed, waiting for the restart) -&gt;
     /// Restoring (the boot phase is applying it) -&gt; Available, or RestoreFailed. the predecessor platform returned a failed restore to
-    /// Available; here it is RestoreFailed - a restore that did not finish is a fact the operator must see (D106 item 7).
+    /// Available; here it is RestoreFailed - a restore that did not finish is a fact the operator must see.
     /// The archive is untouched by a restore, so a RestoreFailed snapshot is still restorable.
     /// </remarks>
     [BackupExcluded("the catalogue: a restore must never rewrite the rows that drive it")]
@@ -205,7 +205,7 @@ namespace Stomme.Modules.Backup.Domain
         public string FailureReason { get; private set; }
 
         /// <summary>
-        /// The archive store that holds the archive (BL-169): <c>Local</c> or <c>S3</c>. Null on a row written before the field
+        /// The archive store that holds the archive: <c>Local</c> or <c>S3</c>. Null on a row written before the field
         /// existed, which is Local - the only store there was.
         /// </summary>
         public string? ArchiveStore { get; private set; }
@@ -370,7 +370,7 @@ namespace Stomme.Modules.Backup.Domain
     }
 
     /// <summary>
-    /// A backup schedule (D106 item 8): how often, how long to keep, how many at least. It holds NO secret - the scheduled
+    /// A backup schedule: how often, how long to keep, how many at least. It holds NO secret - the scheduled
     /// run's passphrase is operator configuration (<c>Backup:Schedule:Passphrase</c>), never a row.
     /// </summary>
     [BackupExcluded("the catalogue: schedules drive the job that takes snapshots, and must survive a restore of an older one")]

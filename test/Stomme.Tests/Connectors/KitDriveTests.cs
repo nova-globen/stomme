@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Kit DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Kit DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Kit's API that refuses a call without the key: a Kit connection made over the API, its
     /// key vaulted, tested; a published pipeline creates a subscriber with an accent in a field, adds them to a form and tags
     /// them, reads the subscribers over two pages as long as Kit says there is a next - no more than asked - and the tags,

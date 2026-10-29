@@ -6,7 +6,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// Copy and paste on the canvas (BL-229 increment 3). A copy is the chosen steps, EVERYTHING they hold (a loop's body, an
+    /// Copy and paste on the canvas. A copy is the chosen steps, EVERYTHING they hold (a loop's body, an
     /// If's branches, however deep) and the connections among them; a connection to a step left out is left out. A paste gives
     /// every step a new id, puts the copied steps into the body the canvas shows at an offset, keeps what they held inside them,
     /// and rewires the copied connections to the new ids - so a step pasted twice is two independent steps.

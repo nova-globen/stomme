@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - an n8n workflow brought over: its nodes as this site's steps where one does the same, with what of their
+    /// An n8n workflow brought over: its nodes as this site's steps where one does the same, with what of their
     /// parameters maps plainly; its connections by output, positions, sticky notes and settings; a node with no step here kept
     /// in place switched off; and a note saying what is left to finish. An import reads it as it reads this site's own files.
     /// </summary>
@@ -879,7 +879,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Raw': it changed cursor from page to page by n8n's expressions", todo);
         }
 
-        // BL-229 - n8n's Postgres and Microsoft SQL "Execute query", as Extract from connection: the statement as its Query,
+        // n8n's Postgres and Microsoft SQL "Execute query", as Extract from connection: the statement as its Query,
         // Postgres's $1, $2 with their Query Parameters as bound @p1, @p2 (an expression among them makes the parameters one), its
         // older query params - the item's fields - the same; a value n8n spliced into the statement stays an expression, which the
         // editor warns of; the connection named as left to choose; an insert the SQL it stood for.
@@ -920,7 +920,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Users': choose its connection - n8n's credentials stay in n8n: add a SQL Server connection under Admin > Connections and pick it here.", todo);
         }
 
-        // BL-229 - the rest of n8n's Postgres and Microsoft SQL nodes: an insert, an upsert, an update, a select and a delete come over
+        // The rest of n8n's Postgres and Microsoft SQL nodes: an insert, an upsert, an update, a select and a delete come over
         // as the SQL they stood for, every value bound (@name, a column whose name is no parameter's taking @pN), a write returning
         // what it wrote (RETURNING, OUTPUT); columns mapped from the item by name with none listed are named as left to write, and
         // a truncate stays a placeholder rather than be written for the author. Each says it ran once per item in n8n.
@@ -974,7 +974,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Remove order': choose its connection - n8n's credentials stay in n8n: add a SQL Server connection", todo);
         }
 
-        // BL-229 - n8n's MySQL node (its v2 and its v1) as the SQL each operation stood for, in MySQL's words: its query's $1, $2
+        // n8n's MySQL node (its v2 and its v1) as the SQL each operation stood for, in MySQL's words: its query's $1, $2
         // bound as @p1, @p2; an insert of the columns its Map Each Column Below names - IGNORE and a priority from its options -
         // with no RETURNING (the connector answers a write's changed rows and last id); an upsert ON DUPLICATE KEY UPDATE, its
         // Column to Match On's value among the inserted; an update by that column; a select with DISTINCT, output columns, its
@@ -1041,7 +1041,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Add order': n8n ran it once for each item that reached it - here it runs once", todo);
         }
 
-        // BL-229 - n8n's TimescaleDB, QuestDB and CrateDB nodes, databases that speak PostgreSQL's protocol, as the PostgreSQL
+        // n8n's TimescaleDB, QuestDB and CrateDB nodes, databases that speak PostgreSQL's protocol, as the PostgreSQL
         // connector's SQL: Execute Query with its query parameters bound; Insert (their default) of its columns - a type cast n8n
         // allowed ('temp:float') left to the database - in its schema; Update by its key, n8n's 'id' when the export leaves the
         // default out. QuestDB's in its own words - no schema, no RETURNING - and each connection said as the one it needs:
@@ -1103,7 +1103,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's MongoDB node, each document operation as the MongoDB connector's: Find (its default) with its query
+        // n8n's MongoDB node, each document operation as the MongoDB connector's: Find (its default) with its query
         // over several lines written on one, sort, projection, skip and limit, and with none of them - Return All; Insert,
         // Update, Find And Update and Find And Replace - the item's fields said, the key (n8n's 'id' by default, _id the
         // connector's own), Upsert, date fields said; Delete with a query, and with none - every document, said and not
@@ -1157,7 +1157,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop void': choose its connection - n8n's credentials stay in n8n: add a MongoDB connection under Admin > Connections (one server's address - mongodb://db.example.com:27017/kassa?authSource=admin; for Atlas its primary's host with tls=true - a user and its password) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Redis node, each operation as the Redis connector's: Info (its default); Get by its key type (n8n's
+        // n8n's Redis node, each operation as the Redis connector's: Info (its default); Get by its key type (n8n's
         // 'sets' a set), its output field said; Set's value - a JSON value over several lines written on one - its type and
         // time to live, a hash from 'field value' pairs and a list replaced whole said; Increment with a time to live, Delete;
         // Keys by a pattern without values, one record per key said; List Length; Push and Pop at the tail; Publish - Extract
@@ -1212,7 +1212,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Publish': choose its connection - n8n's credentials stay in n8n: add a Redis connection under Admin > Connections (the server's address - cache.example.com:6379, with ssl=true for TLS - its password, and a user where the server has ACL users) and pick it here.", notes);
         }
 
-        // BL-229 - more of n8n's AI nodes: Sentiment Analysis as Classify text (its categories the outcomes, as its outputs were),
+        // More of n8n's AI nodes: Sentiment Analysis as Classify text (its categories the outcomes, as its outputs were),
         // the Summarization Chain as Ask AI told to summarise, a vector store inserting as Store passages and getting as Find
         // passages (the site's data table, found by words - said when n8n kept vectors elsewhere). A node of the flow no step
         // does is a placeholder with its connections - FOUND doing this: every unmapped AI node was dropped as if it hung off an
@@ -1279,7 +1279,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("'Store' (vectorStoreInMemory), 'Embeddings' (embeddingsOpenAi)", todo);
         }
 
-        // BL-229 - n8n's GraphQL node as the HTTP request it is (its query and variables POSTed as JSON, its headers); its FTP node
+        // n8n's GraphQL node as the HTTP request it is (its query and variables POSTed as JSON, its headers); its FTP node
         // as Extract from connection through the site's FTP or SFTP connection - a folder listed with its folders (its
         // subfolders' when recursive), a file downloaded into the site's pipeline folder (an n8n expression kept one), a file
         // uploaded, and the same over SFTP, its note naming SFTP's connections.
@@ -1324,7 +1324,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("- 'Secure': choose its connection - n8n's credentials stay in n8n: add an FTP connection", todo);
         }
 
-        // BL-229 - every operation of n8n's FTP node, over SFTP too: Download (its default) into the site's pipeline folder at its
+        // Every operation of n8n's FTP node, over SFTP too: Download (its default) into the site's pipeline folder at its
         // path, Upload of text (one line; text over several lines said), Delete of a file, of a folder and of its content too (a
         // recursive without the folder dropped, as n8n reads it), Rename with its folders made, List of the root by default.
         [Fact]
@@ -1372,7 +1372,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("- 'Put': n8n sent", todo);
         }
 
-        // BL-229 - n8n's SSH node: Execute (its default) with its folder ('/' by default, as n8n cds there) - a command on one
+        // n8n's SSH node: Execute (its default) with its folder ('/' by default, as n8n cds there) - a command on one
         // line as 'command', one over several lines in the step's Query box - Download into the site's pipeline folder at its
         // path, Upload to a folder under its file name (or the binary's, said as a guess); its note naming SSH's connections, a
         // key's when n8n signed in by one, and that n8n ran it per item.
@@ -1412,7 +1412,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Dropbox node, every resource and operation as the Dropbox connector's: Upload (its default) of the item's
+        // n8n's Dropbox node, every resource and operation as the Dropbox connector's: Upload (its default) of the item's
         // binary - its name a guess from the path - or of its text; Download into the site's pipeline folder; a folder made (the
         // folder resource's default) and listed with its filters and limit (all of them when Return All); Copy, Move and Delete
         // of a file or a folder; a search's query, folder, categories and extensions. Its note naming the connection, a
@@ -1470,7 +1470,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Baserow node, every row operation as the Baserow connector's: Get Many (its default) with its filters -
+        // n8n's Baserow node, every row operation as the Baserow connector's: Get Many (its default) with its filters -
         // each field by its id, n8n's operator Baserow's own, a date's time zone before its value - match, search, sort and limit
         // (50 when the export leaves it out, every row when Return All); Get, Create and Update with n8n's field ids and values (an
         // expression among them making the line one) or its Auto-Map said; Delete; a batch's rows, ids and rows' ids. Its note
@@ -1522,7 +1522,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's RabbitMQ Send a Message as the RabbitMQ connector's publish: to a queue (its default) or to an exchange -
+        // n8n's RabbitMQ Send a Message as the RabbitMQ connector's publish: to a queue (its default) or to an exchange -
         // its type and routing key - its message on one line or, over several, in the step's Query box; durability off and
         // headers carried; the item's JSON n8n sent by default said to be given; a queue's arguments said not declared here; its
         // Delete From Queue a placeholder, as it answers n8n's trigger alone.
@@ -1562,7 +1562,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Paid': choose its connection - n8n's credentials stay in n8n: add a RabbitMQ connection under Admin > Connections (its broker's address - amqp://rabbit.example.com:5672/vhost, amqps:// for TLS - and a user and password) and pick it here.", todo);
         }
 
-        // BL-229 - n8n's MQTT Send a Message as the MQTT connector's publish: its topic, its message on one line or, over several,
+        // n8n's MQTT Send a Message as the MQTT connector's publish: its topic, its message on one line or, over several,
         // in the step's Query box, its QoS and retain; the item's JSON n8n sent by default said to be given. Its trigger, the MQTT
         // Trigger, stays a placeholder.
         [Fact]
@@ -1596,7 +1596,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Note': choose its connection - n8n's credentials stay in n8n: add an MQTT connection under Admin > Connections (its broker's address - mqtt://broker.example.com:1883, mqtts:// for TLS - and a user and password when it asks for one) and pick it here.", todo);
         }
 
-        // BL-229 - n8n's Nextcloud node as the Nextcloud connector's operations: a file's Upload (its default) of text - over several
+        // n8n's Nextcloud node as the Nextcloud connector's operations: a file's Upload (its default) of text - over several
         // lines in the step's Query box - or of its binary, from the pipeline folder; a Download into it; a Copy and a Move to the
         // new path; a Delete; a Share by n8n's type number, whom with and its permissions, a link's password said; a folder's
         // Create and List; a user's Create (its default), Get, Get Many - search, offset, limit or every one - Update (a password
@@ -1669,7 +1669,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Azure Storage node as the Azure Storage connector's operations: a container's Get Many (its default) by
+        // n8n's Azure Storage node as the Azure Storage connector's operations: a container's Get Many (its default) by
         // its filter, with metadata, its limit or every one; its Get, Create - public or not, its metadata - and Delete, by name or
         // from n8n's list alike; a blob's Get Many with the fields it includes, Get as a download into the pipeline folder, Create
         // from the pipeline folder (n8n's binary said) or a URL with its tier, type, metadata and tags - what has no counterpart
@@ -1727,7 +1727,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Google Cloud Storage node as the Google Cloud Storage connector's operations: a bucket's Get Many (its
+        // n8n's Google Cloud Storage node as the Google Cloud Storage connector's operations: a bucket's Get Many (its
         // default) by its project - n8n's locator or its text - and prefix, every one when n8n returned all; its Get, Create - its
         // location, class, labels and versioning, what has no counterpart said - and Delete; its Update a placeholder; an object's
         // Get Many with its filters and limit, Get as its metadata or - its data - a download, Create from the pipeline folder (n8n's
@@ -1790,7 +1790,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Remove': choose its connection - n8n's credentials stay in n8n: add a Google Cloud Storage connection under Admin > Connections (an OAuth client's id and secret, from the Google Cloud console, and a refresh token granted the devstorage scope) and pick it here.", todo);
         }
 
-        // BL-229 - n8n's Box node as the Box connector's operations: a file's Upload (its default) of text - over several lines in
+        // n8n's Box node as the Box connector's operations: a file's Upload (its default) of text - over several lines in
         // the step's Query box - or of its binary, into its folder; Download into the pipeline folder; Get, Copy with its name,
         // Delete; Search of files or folders with its filters and limit; Share with a user by address or id, or a group, as its
         // role; a folder's Create (its default), Get, Update and Delete with what is in it. What has no counterpart said; n8n's
@@ -1857,7 +1857,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's AWS Textract, AWS Rekognition and AWS Comprehend nodes as their connectors' operations: Textract's Analyze
+        // n8n's AWS Textract, AWS Rekognition and AWS Comprehend nodes as their connectors' operations: Textract's Analyze
         // Receipt or Invoice (the binary said: here a file is named); Rekognition's five analyses by n8n's type (Detect Faces its
         // default) from S3 or the binary, labels' limit and least confidence, faces' attributes, words with the lines; Comprehend's
         // three operations, its text - over several lines in the Query box - and language. What has no counterpart said.
@@ -1912,7 +1912,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's AWS Transcribe node: its four operations as the Amazon Transcribe connector's - Create its default, its
+        // n8n's AWS Transcribe node: its four operations as the Amazon Transcribe connector's - Create its default, its
         // language n8n's en-US when none was picked or detected when asked, its options; a Get's transcript and Simplify; Get
         // Many's filters and n8n's limit.
         [Fact]
@@ -1948,7 +1948,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's AWS Cognito node: every resource and operation as the Amazon Cognito connector's - a user's Get Many its
+        // n8n's AWS Cognito node: every resource and operation as the Amazon Cognito connector's - a user's Get Many its
         // default, its filter n8n's starts-with on the email by default; a user created with their attributes - standard and
         // custom, custom: once - their invitation and alias, its temporary password never carried; groups with their users; a pool.
         [Fact]
@@ -1992,7 +1992,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Google Translate node: its text into its language as the Google Translate connector's translate - a text
+        // n8n's Google Translate node: its text into its language as the Google Translate connector's translate - a text
         // over several lines in the step's Query box, an expression kept one.
         [Fact]
         public void N8ns_Google_Translate_node_is_the_Google_Translate_connectors_translate()
@@ -2021,7 +2021,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's AWS Certificate Manager node: every operation as the AWS Certificate Manager connector's - Renew its
+        // n8n's AWS Certificate Manager node: every operation as the AWS Certificate Manager connector's - Renew its
         // default, Get the PEM and Get Metadata the details; Get Many's statuses and what they include, its limit, and its Return
         // All's filters said.
         [Fact]
@@ -2058,7 +2058,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Google Slides node: every operation as the Google Slides connector's - a presentation's Create and a page's
+        // n8n's Google Slides node: every operation as the Google Slides connector's - a presentation's Create and a page's
         // Get their defaults; Get Slides' limit; Replace Text's texts as one JSON object, their case and slides the first's, said
         // where the others differ, its revision; a thumbnail's download into the run's folder, said.
         [Fact]
@@ -2101,7 +2101,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Metabase node: every operation as the Metabase connector's - a question's Get Many its default; a result as
+        // n8n's Metabase node: every operation as the Metabase connector's - a question's Get Many its default; a result as
         // JSON rows or, n8n's CSV default, a file in the run's folder, said; databases and their fields, metrics and alerts; a
         // database's Add, which carries its password, kept as a placeholder.
         [Fact]
@@ -2145,7 +2145,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Questions': choose its connection - n8n's credentials stay in n8n: add a Metabase connection", graph.Notes[0].Text);
         }
 
-        // BL-229 - n8n's PostHog node: every operation as the PostHog connector's - an event its default, its properties one JSON
+        // n8n's PostHog node: every operation as the PostHog connector's - an event its default, its properties one JSON
         // object; an identity, an alias; a track's page - a $pageview here, said - and screen; a context said.
         [Fact]
         public void N8ns_PostHog_node_is_the_PostHog_connectors_operations()
@@ -2181,7 +2181,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's AWS IAM node: every operation as the AWS IAM connector's - a user's Get Many its default with its path prefix
+        // n8n's AWS IAM node: every operation as the AWS IAM connector's - a user's Get Many its default with its path prefix
         // and limit; a user by its name (n8n's list or by name), created with its path, boundary and tags, renamed and moved, put in a
         // group; groups with their users, made, renamed and deleted.
         [Fact]
@@ -2222,7 +2222,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's AWS ELB node: every operation as the AWS Elastic Load Balancing connector's - a load balancer's Create its
+        // n8n's AWS ELB node: every operation as the AWS Elastic Load Balancing connector's - a load balancer's Create its
         // default, with its type, scheme (n8n's Schema), IP addresses, subnets and security groups (n8n's lists made comma-separated)
         // and tags; Get and Delete by its ARN (n8n's Load Balancer ID); Get Many by names with its limit; a listener's certificates
         // (Add the resource's default) listed, added and removed by their ARNs.
@@ -2267,7 +2267,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Google Analytics node: its GA4 report as the Google Analytics connector's - the property from n8n's list,
+        // n8n's Google Analytics node: its GA4 report as the Google Analytics connector's - the property from n8n's list,
         // its id or its GA4 address; n8n's date range, a custom one's days; its metrics and dimensions, "other" ones by their names;
         // its ordering; its dimension and metric filters as GA4's filter expressions, as n8n builds them; empty rows, currency and
         // limit; a custom metric's expression and the whole answer n8n gave when not simplified said. Universal Analytics - its
@@ -2310,7 +2310,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Default': choose its connection - n8n's credentials stay in n8n: add a Google Analytics connection", notes);
         }
 
-        // BL-229 - n8n's Hunter node: every operation as the Hunter connector's - a domain search (its default) with its filters, its
+        // n8n's Hunter node: every operation as the Hunter connector's - a domain search (its default) with its filters, its
         // lists made comma-separated, every address or its limit, the domain's one record when Only Emails is off; an email finder's
         // domain and names; an email verifier's address, an n8n expression making the parameters one.
         [Fact]
@@ -2343,7 +2343,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's HighLevel node, its second version: every operation as the HighLevel connector's - a contact's Create or
+        // n8n's HighLevel node, its second version: every operation as the HighLevel connector's - a contact's Create or
         // Update its default, with its fields, time zone, tags, custom fields and notes; a contact's update, read and deletion;
         // Get Many's filters and options; an opportunity made and changed, searched by its filters with their days; a task made -
         // its time without an offset said - updated, listed and deleted; a calendar's free slots and an appointment, its location
@@ -2396,7 +2396,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's OpenWeatherMap node: its weather now (its default) and its five-day forecast as the OpenWeatherMap
+        // n8n's OpenWeatherMap node: its weather now (its default) and its five-day forecast as the OpenWeatherMap
         // connector's - a city's name, a city id (n8n's own default when none), coordinates or a postal code; its Format the
         // units; its language; an n8n expression making the parameters one; the forecast's records said.
         [Fact]
@@ -2429,7 +2429,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Google Business Profile node: every operation as the Google Business Profile connector's - a post's Create
+        // n8n's Google Business Profile node: every operation as the Google Business Profile connector's - a post's Create
         // its default, each kind with its title, times or days, call to action and offer, an event's time without its offset said;
         // a post changed from its options, read, listed and deleted; a review's Get its default, listed, replied to and its reply
         // deleted - the account, location, post and review as n8n held them.
@@ -2477,7 +2477,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Vonage node: its SMS as the Vonage connector's send - from, to and the message, one over several lines in
+        // n8n's Vonage node: its SMS as the Vonage connector's send - from, to and the message, one over several lines in
         // the Query box, and every additional field, its time to live in minutes as the connector takes it.
         [Fact]
         public void N8ns_Vonage_node_is_the_Vonage_connectors_send()
@@ -2506,7 +2506,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's CircleCI node: its pipelines as the CircleCI connector's operations - a Get its default, its number n8n's
+        // n8n's CircleCI node: its pipelines as the CircleCI connector's operations - a Get its default, its number n8n's
         // 1 when the export leaves it out; Get Many's branch and limit, Return All every record; a trigger's branch or tag. A
         // provider left unset is said.
         [Fact]
@@ -2543,7 +2543,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's MISP node: its events, attributes, event tags and tags as the MISP connector's operations - each resource's
+        // n8n's MISP node: its events, attributes, event tags and tags as the MISP connector's operations - each resource's
         // Create its default (an event tag's Add), every id, field and option as n8n held them, a search's JSON in the Query box -
         // and its feeds and the rest placeholders. An organisation given to a new event, and a 'searchall' without MISP's %s, said.
         [Fact]
@@ -2590,7 +2590,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Indicator': choose its connection - n8n's credentials stay in n8n: add a MISP connection", notes);
         }
 
-        // BL-229 - n8n's urlscan.io node: its scans as the urlscan.io connector's operations - a Perform its default, its URL and
+        // n8n's urlscan.io node: its scans as the urlscan.io connector's operations - a Perform its default, its URL and
         // additional fields as n8n held them; a Get's scan id; Get Many's query and limit. A visibility left unset said.
         [Fact]
         public void N8ns_urlscan_node_is_the_urlscan_connectors_operations()
@@ -2624,7 +2624,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Elastic Security node: its cases, comments and tags as the Elastic Security connector's operations - each
+        // n8n's Elastic Security node: its cases, comments and tags as the Elastic Security connector's operations - each
         // resource's Create or Add its default, every field as n8n held them, a comment over several lines in the Query box - and
         // its Connector Create a placeholder. A case's external connector and an update's given version said.
         [Fact]
@@ -2667,7 +2667,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Note': choose its connection - n8n's credentials stay in n8n: add an Elastic Security connection", notes);
         }
 
-        // BL-229 - n8n's TheHive 5 node: its alerts, cases, comments, tasks, logs and observables as the TheHive connector's
+        // n8n's TheHive 5 node: its alerts, cases, comments, tasks, logs and observables as the TheHive connector's
         // operations - each resource's Create (a comment's Add) its default, the resource locators' values, a mapper's
         // "define below" fields, an alert's status as its update, a description over several lines in the Query box - and its
         // responders, analyzers and pages placeholders. A search's unsupported filter, an alert raised with observables, a file
@@ -2720,7 +2720,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Note': choose its connection - n8n's credentials stay in n8n: add a TheHive connection", notes);
         }
 
-        // BL-229 - n8n's YOURLS node: its Shorten (the default, with a keyword and a title), Expand and Stats as the YOURLS
+        // n8n's YOURLS node: its Shorten (the default, with a keyword and a title), Expand and Stats as the YOURLS
         // connector's operations; a URL YOURLS already has said.
         [Fact]
         public void N8ns_YOURLS_node_is_the_YOURLS_connectors_operations()
@@ -2750,7 +2750,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Wekan node: a board made with its additional fields, cards read from a swimlane, a card made - its
+        // n8n's Wekan node: a board made with its additional fields, cards read from a swimlane, a card made - its
         // description over several lines in the Query box, its members as ids - and changed, a comment added, a checklist made
         // with its items one a line, an item finished; a card's author said; a checklist item without an operation n8n can run left.
         [Fact]
@@ -2794,7 +2794,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Done': choose its connection - n8n's credentials stay in n8n: add a Wekan connection", notes);
         }
 
-        // BL-229 - n8n's Rundeck node: Execute as a run - its arguments each an option, its node filter - and Get Metadata as a
+        // n8n's Rundeck node: Execute as a run - its arguments each an option, its node filter - and Get Metadata as a
         // job's; an argument whose value holds Rundeck's own dash said.
         [Fact]
         public void N8ns_Rundeck_node_is_the_Rundeck_connectors_operations()
@@ -2823,7 +2823,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Taiga node: an issue made (its default) with its additional fields, a task's list filtered by its user
+        // n8n's Taiga node: an issue made (its default) with its additional fields, a task's list filtered by its user
         // story and an issue's by Is Closed - both said, for Taiga ignored them under n8n - a user story changed, its type left,
         // an epic read and deleted.
         [Fact]
@@ -2864,7 +2864,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's QuickChart node: a line chart's labels by hand - a label with a comma kept whole - its data, dataset and
+        // n8n's QuickChart node: a line chart's labels by hand - a label with a comma kept whole - its data, dataset and
         // chart options as the connector's chart; labels from an array; the binary property become a file, said.
         [Fact]
         public void N8ns_QuickChart_node_is_the_QuickChart_connectors_chart()
@@ -2893,7 +2893,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Monica CRM node: a contact made (its default) with its gender and birthdate, a note with its favourite, a
+        // n8n's Monica CRM node: a contact made (its default) with its gender and birthdate, a note with its favourite, a
         // reminder's date-time cut to its day, a contact's fields listed, tags added, a message updated, a contact updated - its
         // fix said.
         [Fact]
@@ -2935,7 +2935,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Invoice Ninja node: a client made (its default) with a billing address and a contact, an invoice with its
+        // n8n's Invoice Ninja node: a client made (its default) with a billing address and a contact, an invoice with its
         // lines and a date under version 4's name, a payment with its type, a task's time log, a bank transaction without its bank
         // account, invoices listed with n8n's "is deleted" and options, a quote e-mailed - each said where n8n's node failed.
         [Fact]
@@ -2984,7 +2984,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Mattermost node beyond its message posted: a channel made, its members as users, a reaction with n8n's
+        // n8n's Mattermost node beyond its message posted: a channel made, its members as users, a reaction with n8n's
         // user (left out - the token's own), a message to one user, users listed in a team, a user made by e-mail (said to
         // refuse) and one through GitLab, users invited - each the Mattermost connector's operation.
         [Fact]
@@ -3030,7 +3030,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's ERPNext node: a document read (its default), listed with its fields and filters under n8n's operator
+        // n8n's ERPNext node: a document read (its default), listed with its fields and filters under n8n's operator
         // names, made with its properties - an expression kept, a list said - changed and deleted.
         [Fact]
         public void N8ns_ERPNext_node_is_the_ERPNext_connectors_operations()
@@ -3066,7 +3066,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's AMQP Sender: its queue and headers as the AMQP connector's send, the item it sent as the message said, one
+        // n8n's AMQP Sender: its queue and headers as the AMQP connector's send, the item it sent as the message said, one
         // property of it too, its map said, and its sending without the broker's answer said.
         [Fact]
         public void N8ns_AMQP_Sender_is_the_AMQP_connectors_send()
@@ -3094,7 +3094,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's SeaTable node: a row made with its columns (a table kept as name:::id), rows of a view, a search with its
+        // n8n's SeaTable node: a row made with its columns (a table kept as name:::id), rows of a view, a search with its
         // options - its quote fix said - a row changed with an expression, a link added by its column, the base's collaborators,
         // an asset's link and an upload said.
         [Fact]
@@ -3136,7 +3136,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Receipt': choose its connection - n8n's credentials stay in n8n: add a SeaTable connection", notes);
         }
 
-        // BL-229 - n8n's Google Chat node: a text message created as Send chat message through a Google Chat connection (its
+        // n8n's Google Chat node: a text message created as Send chat message through a Google Chat connection (its
         // default); a message's JSON, a message read, edited - its text over several lines in the Query box, or its fields as JSON
         // - and deleted, spaces and members as the connector's operations, a space's and a member's default a Get; its Send and
         // Wait asking a person as every node's does.
@@ -3190,7 +3190,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Google Cloud Firestore node: every resource and operation as the Google Cloud Firestore connector's - a
+        // n8n's Google Cloud Firestore node: every resource and operation as the Google Cloud Firestore connector's - a
         // document's Get its default, a collection's its Get Many; Get Many's limit; a create's and an upsert's columns as fields
         // reading the item, an upsert's id from its update key; a query over several lines in the Query box, its parameters said;
         // the project and database on the node said to be the connection's; Simplify switched off kept.
@@ -3237,7 +3237,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Azure Cosmos DB node: every resource and operation as the Azure Cosmos DB connector's - each resource's
+        // n8n's Azure Cosmos DB node: every resource and operation as the Azure Cosmos DB connector's - each resource's
         // default a Get Many; a container by its id from n8n's list or by id; a container's partition key paths, indexing policy and
         // throughput; an item's contents and an update's fields on one line, its partition key; a query over several lines in the
         // Query box, its parameters by position as @Param1, @Param2; Simplify switched off said.
@@ -3292,7 +3292,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's Home Assistant node: every resource and operation as the Home Assistant connector's - the Configuration's
+        // n8n's Home Assistant node: every resource and operation as the Home Assistant connector's - the Configuration's
         // Get its default and each resource's own default as its node has; a list's limit; a service's attributes as its data; a
         // state's attributes; an event's; the logbook's and history's times and entities (History from an older export); a
         // template over several lines in the Query box; a camera's picture into the pipeline folder.
@@ -3352,7 +3352,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's LDAP node: its six operations as the LDAP connector's (Search its default) - a search's base, its filter
+        // n8n's LDAP node: its six operations as the LDAP connector's (Search its default) - a search's base, its filter
         // as n8n built it from an object class, an attribute and the text searched (a bare parenthesis escaped, an escaped * the
         // character, an expression's value said), or its custom one; its attributes, scope and limit, a page size said; a compare,
         // a create's attributes (a name given twice its values), an update's values added, replaced and removed, a rename, a delete.
@@ -3404,7 +3404,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(graph.Steps, step => step.Type == N8nWorkflowImport.PlaceholderType);
         }
 
-        // BL-229 - n8n's $('Node') and $node["Node"]: an earlier node's output read in an expression or a rule is read here through
+        // n8n's $('Node') and $node["Node"]: an earlier node's output read in an expression or a rule is read here through
         // the variable the node's step saves its result to - one variable per node, named after it, made and bound at the
         // import - and the note says n8n read one item where the variable holds the whole result. A node with no step here is
         // left as written.
@@ -3442,7 +3442,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Big?': it read 'Fetch' with $('...') in n8n", todo);
         }
 
-        // BL-229 - n8n's Slack, Telegram and Discord nodes, their message sent, as Send chat message: where it went, its text and
+        // n8n's Slack, Telegram and Discord nodes, their message sent, as Send chat message: where it went, its text and
         // the message it answered; the connection to choose said (an export never carries n8n's credentials), and what has no
         // counterpart - Slack's blocks, Telegram's formatting, Discord's webhook - said; another operation stays a placeholder.
         [Fact]
@@ -3486,7 +3486,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Discord': its account was n8n's Discord credential, which an export never carries - make a Discord connection (Admin > Connections) with a bot's token and choose it here.", todo);
         }
 
-        // BL-229 - n8n's Mattermost message posted and its Twilio SMS sent as Send chat message: Mattermost's channel, text and the
+        // n8n's Mattermost message posted and its Twilio SMS sent as Send chat message: Mattermost's channel, text and the
         // post a thread starts with, its attachments said; Twilio's To (whatsapp: when n8n sent To WhatsApp, an expression kept one)
         // and text, its From said as the connection's; a Twilio call stays a placeholder, a Mattermost reaction is the Mattermost connection's.
         [Fact]
@@ -3524,7 +3524,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'WhatsApp': its account was n8n's Twilio credential, which an export never carries - make a Twilio connection (Admin > Connections) with the account's SID and auth token, its From the number the messages come from, and choose it here.", todo);
         }
 
-        // BL-229 - n8n's Microsoft Teams channel and chat messages as Send chat message: a channel as its team/channel (an
+        // n8n's Microsoft Teams channel and chat messages as Send chat message: a channel as its team/channel (an
         // expression's too), a reply in its thread, a chat by its id; HTML said; Teams' other operations stay placeholders.
         [Fact]
         public void N8ns_Microsoft_Teams_messages_are_chat_messages()
@@ -3560,7 +3560,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Chat': its account was n8n's Microsoft Teams credential, which an export never carries - make a Microsoft Teams connection (Admin > Connections) with an Entra app's client id and secret and a refresh token granted ChannelMessage.Send and ChatMessage.Send (its token endpoint the tenant's) and choose it here.", todo);
         }
 
-        // BL-229 - n8n's Telegram Trigger as "Telegram message received": the credential to make, its webhook said (here the bot is
+        // n8n's Telegram Trigger as "Telegram message received": the credential to make, its webhook said (here the bot is
         // asked instead), the kinds of update it started on besides messages said, and its files downloaded said.
         [Fact]
         public void N8ns_Telegram_trigger_is_a_telegram_message_received()
@@ -3587,7 +3587,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Telegram Trigger': it downloaded the files sent - here a message's text, or a file's caption, starts it.", todo);
         }
 
-        // BL-229 - n8n's Google Sheets node, its Get Rows and Append Row, as Extract from connection's read and append: the spreadsheet
+        // n8n's Google Sheets node, its Get Rows and Append Row, as Extract from connection's read and append: the spreadsheet
         // and the sheet by name, an append's mapped columns as the record it writes (an n8n expression making the parameters one),
         // its other operations placeholders, the connection to make said.
         [Fact]
@@ -3630,7 +3630,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Append auto': it wrote the item's fields under the headers by name - here give the record to write in Parameters, 'values = {{ record }}'.", todo);
         }
 
-        // BL-229 - n8n's Gmail Trigger as Email received through a Gmail connection: its label, its attachments; its filters, a
+        // n8n's Gmail Trigger as Email received through a Gmail connection: its label, its attachments; its filters, a
         // second label and its credential said.
         [Fact]
         public void N8ns_Gmail_trigger_is_email_received_watching_its_label()
@@ -3661,7 +3661,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("- 'Any mail': it started only", notes);
         }
 
-        // BL-229 - n8n's Jira Software node: issues created, updated, got and listed, and comments added - Extract from connection.
+        // n8n's Jira Software node: issues created, updated, got and listed, and comments added - Extract from connection.
         [Fact]
         public void N8ns_Jira_issues_and_comments_are_extract_from_connection()
         {
@@ -3699,7 +3699,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Say so': choose its connection - n8n's credentials stay in n8n: add a Jira connection under Admin > Connections", notes);
         }
 
-        // BL-229 - n8n's GitHub node: an issue created, commented on, edited and got, a repository's issues, a release, a file got
+        // n8n's GitHub node: an issue created, commented on, edited and got, a repository's issues, a release, a file got
         // and committed, a workflow dispatched - Extract from connection; an owner's address cut to its login, each label and
         // assignee n8n keeps as { label } and { assignee } a list; a file kept as binary, a binary commit and a lock said.
         [Fact]
@@ -3751,7 +3751,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Deploy': choose its connection - n8n's credentials stay in n8n: add a GitHub connection under Admin > Connections (a personal access token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Google Calendar node: an event created (its times, a whole day's dates), got, listed, updated and deleted,
+        // n8n's Google Calendar node: an event created (its times, a whole day's dates), got, listed, updated and deleted,
         // a calendar's availability - Extract from connection; the attendees n8n keeps as a list made one; a time with no offset
         // and no time zone, and availability as booked slots, said; a calendar's own operations stay placeholders.
         [Fact]
@@ -3798,7 +3798,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Cancel it': choose its connection - n8n's credentials stay in n8n: add a Google Calendar connection under Admin > Connections", notes);
         }
 
-        // BL-229 - n8n's Trello node: a card created, got, updated and deleted, a comment added, a list's cards got - Extract from
+        // n8n's Trello node: a card created, got, updated and deleted, a comment added, a list's cards got - Extract from
         // connection; a card's locator by its address; a position by number and a card copied from another said; a board's own
         // operations stay placeholders.
         [Fact]
@@ -3846,7 +3846,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop it': choose its connection - n8n's credentials stay in n8n: add a Trello connection under Admin > Connections (its API key and token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Asana node: a task created (in its first project, the others said), got, listed, updated, moved and
+        // n8n's Asana node: a task created (in its first project, the others said), got, listed, updated, moved and
         // deleted, a comment added - Extract from connection; tasks n8n read with no project, or completed since a time, and an HTML
         // comment said; its search and subtasks stay placeholders.
         [Fact]
@@ -3893,7 +3893,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop it': choose its connection - n8n's credentials stay in n8n: add an Asana connection under Admin > Connections (a personal access token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's ClickUp node: a task created, got, listed, updated and deleted, a comment added - Extract from connection;
+        // n8n's ClickUp node: a task created, got, listed, updated and deleted, a comment added - Extract from connection;
         // its assignee and tag lists made comma-separated; a comment on a list said; its lists and goals stay placeholders.
         [Fact]
         public void N8ns_ClickUp_tasks_and_comments_are_extract_from_connection()
@@ -3931,7 +3931,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop it': choose its connection - n8n's credentials stay in n8n: add a ClickUp connection under Admin > Connections (a personal API token, pk_...) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Stripe node: a customer created (its metadata pairs a JSON object), got, listed, updated and deleted, its
+        // n8n's Stripe node: a customer created (its metadata pairs a JSON object), got, listed, updated and deleted, its
         // charges listed, the balance got (its default) - Extract from connection; an address said; a charge made stays a
         // placeholder.
         [Fact]
@@ -3972,7 +3972,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Balance': choose its connection - n8n's credentials stay in n8n: add a Stripe connection under Admin > Connections (a secret or restricted key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's export leaves a parameter out when it holds its default, so a Get Many with Return All off and no limit
+        // n8n's export leaves a parameter out when it holds its default, so a Get Many with Return All off and no limit
         // read the node's default limit in n8n - each node's own, read from its source: the step reads that many here too, not
         // the connector's 1,000.
         [Theory]
@@ -4030,7 +4030,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("max = " + most, step.Inputs["Parameters"].Split('\n'));
         }
 
-        // BL-229 - n8n's Google Tasks node: a task created (its default) in a list (n8n's 'task' parameter) with notes, a due day and
+        // n8n's Google Tasks node: a task created (its default) in a list (n8n's 'task' parameter) with notes, a due day and
         // a parent; read with times and flags (n8n's limit of 20 when its export leaves it out); got; updated - finished by n8n's
         // status or by a time it was finished, its place among its siblings said; deleted; a task marked deleted said - Extract from
         // connection.
@@ -4069,7 +4069,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a Google Tasks connection under Admin > Connections (an OAuth client's id and secret and a refresh token granted the tasks scope) and pick it here.", graph.Notes[0].Text);
         }
 
-        // BL-229 - n8n's Microsoft To Do node: a task got (its default) from a list; made with its subject, content (HTML, as n8n
+        // n8n's Microsoft To Do node: a task got (its default) from a list; made with its subject, content (HTML, as n8n
         // sent it), due time, reminder, importance and status, a time with no offset said; read (n8n's limit of 50 when its export
         // leaves it out, Return All every record); updated - an update that turned the reminder off in n8n said; deleted; a list
         // got (the list resource's default), made, read, renamed and deleted; a linked resource a placeholder - Extract from
@@ -4126,7 +4126,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop list': choose its connection - n8n's credentials stay in n8n: add a Microsoft To Do connection under Admin > Connections (an Entra ID app's id and secret, the tenant's token endpoint, the user whose To Do it acts on) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Microsoft Excel 365 node: the workbooks read (its default, n8n's limit of 100 when its export leaves it
+        // n8n's Microsoft Excel 365 node: the workbooks read (its default, n8n's limit of 100 when its export leaves it
         // out); a sheet added and deleted, a workbook deleted; a sheet's rows read (a range, a header row that is not the range's
         // first said); rows appended from mapped columns (an expression among them making the parameters one) and from raw rows;
         // rows updated and upserted by a column and its value, every match; a sheet cleared; a table's rows appended (its default;
@@ -4211,7 +4211,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("- 'Paid': it matched", notes);
         }
 
-        // BL-229 - n8n's Google Contacts node: a contact created (its default) with its names, typed e-mail addresses and phone
+        // n8n's Google Contacts node: a contact created (its default) with its names, typed e-mail addresses and phone
         // numbers, a company, notes, a birthday (its day), an address, groups and custom fields (n8n's pairs made a JSON object),
         // what it set that has no parameter here said; got with every field; read with a search or an order (n8n's limit of 100
         // when its export leaves it out); updated; deleted; its raw output said - Extract from connection.
@@ -4260,7 +4260,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a Google Contacts connection under Admin > Connections (an OAuth client's id and secret and a refresh token granted the contacts scope) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Google Docs node: a document created (its default) in a folder of a shared drive, and in My Drive; got,
+        // n8n's Google Docs node: a document created (its default) in a folder of a shared drive, and in My Drive; got,
         // Google's whole document said; an update of one text insert (at an index, in a header) or one replace as Insert text and
         // Replace text; any other list of actions as the Docs requests n8n sent - their defaults written - with a revision
         // targeted; an expression among them making the parameters one - Extract from connection.
@@ -4320,7 +4320,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Rework': choose its connection - n8n's credentials stay in n8n: add a Google Docs connection under Admin > Connections (an OAuth client's id and secret and a refresh token granted the documents and drive.file scopes) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Odoo node: its second version - a contact's records read by default (its JSON-2 API said), any model's read
+        // n8n's Odoo node: its second version - a contact's records read by default (its JSON-2 API said), any model's read
         // with filters made an Odoo domain (an in list a list), n8n's limit of 50 when its export leaves it out, a contact made from
         // its mapped fields, one by the item's fields said, an opportunity got, a record updated and deleted; its first version - a
         // contact made by default from its name, details and address, a custom model's record updated from name and value pairs (an
@@ -4374,7 +4374,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Done': choose its connection - n8n's credentials stay in n8n: add an Odoo connection under Admin > Connections (the instance's address, a login and a password or an API key, and its database) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Brevo node (Sendinblue): an e-mail sent (its default) as HTML with copies and tags, its attachments said, and
+        // n8n's Brevo node (Sendinblue): an e-mail sent (its default) as HTML with copies and tags, its attachments said, and
         // one by a template with its key=value parameters - its first version's misspelt recipients read too; a contact made (the
         // contact resource's default) with its attributes as a JSON object, made or updated, got, read (n8n's limit of 50 when its
         // export leaves it out), updated with an expression among its attributes, deleted; an attribute made with a category's
@@ -4436,7 +4436,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop sender': choose its connection - n8n's credentials stay in n8n: add a Brevo connection under Admin > Connections (an API key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's ActiveCampaign node: a contact made with Update If Exists (its default resource and operation) - made or
+        // n8n's ActiveCampaign node: a contact made with Update If Exists (its default resource and operation) - made or
         // changed - with names, a phone and custom fields (an expression among them), one made plainly; read by n8n's filters (its
         // status a name, its own filters as ActiveCampaign's), updated, got and deleted; a list joined and left; a tag put on and
         // taken off by n8n's contact tag id; the lists read all; a tag made and renamed; a deal made (n8n's euros when its export
@@ -4528,7 +4528,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Disconnect': choose its connection - n8n's credentials stay in n8n: add an ActiveCampaign connection under Admin > Connections (the account's API URL and an API key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Zoho CRM node: an account made (its default resource and operation) with additional fields by API name, a
+        // n8n's Zoho CRM node: an account made (its default resource and operation) with additional fields by API name, a
         // billing address's fields at the top and a custom field; a contact made or updated with its birthday's day; a deal made;
         // leads read with fields, an order and an option (n8n's limit of 5 when its export leaves it out), their fields read; an
         // invoice with product lines (a quantity of 1 where n8n gave none) and an account by id; a sales order's account and contact
@@ -4581,7 +4581,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Product': choose its connection - n8n's credentials stay in n8n: add a Zoho CRM connection under Admin > Connections (an OAuth client's id and secret, a refresh token, and your data centre's token endpoint and API address) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Intercom node, on Intercom's API 2.x: a user made (its default resource and operation) by its address with
+        // n8n's Intercom node, on Intercom's API 2.x: a user made (its default resource and operation) by its address with
         // a name, a phone, its unsubscription and custom attributes (an expression among them) - its companies and UTM source said
         // - and one by its user id; a lead made with custom attributes as JSON; a user updated by its user id, got by its id; a lead
         // got by its phone (a search); users read by an address, a tag and a segment (its company filter said), leads read (n8n's
@@ -4644,7 +4644,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop lead': choose its connection - n8n's credentials stay in n8n: add an Intercom connection under Admin > Connections (an access token, and your region's API address) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Zoom node: a meeting made (its default operation) with its kind by name, a start beside its time zone, a
+        // n8n's Zoom node: a meeting made (its default operation) with its kind by name, a start beside its time zone, a
         // passcode, an agenda, whom it is for and its settings by Zoom's names, and one with a start alone (read in the workflow's
         // time zone there: said); one got with an occurrence; the live meetings read (n8n's defaults when its export leaves them
         // out) and the upcoming ones all; one changed with an expression among its settings; one deleted with the reminder mail -
@@ -4687,7 +4687,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a Zoom connection under Admin > Connections (a server-to-server OAuth app's account id, client id and client secret) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Mailgun node: an e-mail sent with its sender, recipients, copies, a reply-to, a subject, its text and HTML,
+        // n8n's Mailgun node: an e-mail sent with its sender, recipients, copies, a reply-to, a subject, its text and HTML,
         // tags and its own headers (an expression among them) - its attachments said; one plain - Extract from connection.
         [Fact]
         public void N8ns_Mailgun_is_extract_from_connections_send_email()
@@ -4716,7 +4716,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Plain': choose its connection - n8n's credentials stay in n8n: add a Mailgun connection under Admin > Connections (an API key, the sending domain, and the EU endpoint when the domain is there) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Webflow node: an item got (its default); read, all of them; made live with its fields by their slugs (an
+        // n8n's Webflow node: an item got (its default); read, all of them; made live with its fields by their slugs (an
         // expression among them); changed - a pair with no field left out, not live; deleted by the second version's name and by
         // the first's; made with whether live an expression - Extract from connection.
         [Fact]
@@ -4757,7 +4757,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop old': choose its connection - n8n's credentials stay in n8n: add a Webflow connection under Admin > Connections (a site's or a workspace's API token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's YouTube node: the account's channels (its default), channels found by n8n's filters, a channel's branding
+        // n8n's YouTube node: the account's channels (its default), channels found by n8n's filters, a channel's branding
         // changed, a playlist made and changed, a video put in one (a playlist item's default), a search and a time-bounded list of
         // videos, a video changed and rated, a region's categories - what has no input here said; a video's upload stays a
         // placeholder - Extract from connection.
@@ -4813,7 +4813,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Like': choose its connection - n8n's credentials stay in n8n: add a YouTube connection under Admin > Connections (an OAuth client's id and secret and a refresh token granted YouTube's scope) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's LinkedIn node: a post as the person n8n chose with a visibility (its default operation); an organization's
+        // n8n's LinkedIn node: a post as the person n8n chose with a visibility (its default operation); an organization's
         // article with its thumbnail said; an image said; the text an expression; text over lines joined and said - Extract from
         // connection.
         [Fact]
@@ -4851,7 +4851,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Post': choose its connection - n8n's credentials stay in n8n: add a LinkedIn connection under Admin > Connections (a member's access token granted w_member_social - and openid to post as the member) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Reddit node: a text post (its default), a link post, an image post as a link said; a post got, a
+        // n8n's Reddit node: a text post (its default), a link post, an image post as a link said; a post got, a
         // subreddit's posts by a category, a search of all Reddit and of one subreddit; a comment, a reply and their delete, a
         // post's delete, its comments; the profile's identity, its trophies a placeholder; a subreddit's about and rules,
         // subreddits by a keyword, trending ones said; a user's about and submitted - Extract from connection.
@@ -4917,7 +4917,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'User': choose its connection - n8n's credentials stay in n8n: add a Reddit connection under Admin > Connections (a Reddit app's client id and secret and a permanent refresh token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's AWS SES node: an e-mail sent (its default) as HTML to a list of recipients with copies, a reply-to and a
+        // n8n's AWS SES node: an e-mail sent (its default) as HTML to a list of recipients with copies, a reply-to and a
         // configuration set - its return path said; one as text to an expression; one from a template with its data; a template
         // made and changed; the templates read (n8n's limit of 20 when its export leaves it out); a verification e-mail's template
         // made and an address asked to verify - Extract from connection.
@@ -4966,7 +4966,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Verify': choose its connection - n8n's credentials stay in n8n: add an Amazon SES connection under Admin > Connections (an IAM user's access key and secret, and the region SES sends from) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's AWS SQS node: a message sent to a standard queue with a delay and string and number attributes, its body
+        // n8n's AWS SQS node: a message sent to a standard queue with a delay and string and number attributes, its body
         // the Message field; one to a FIFO queue with its group and deduplication ids (one an expression) and no delay, its body
         // the item's data n8n sent by default - said; a binary attribute said - Extract from connection.
         [Fact]
@@ -5002,7 +5002,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Send': choose its connection - n8n's credentials stay in n8n: add an Amazon SQS connection under Admin > Connections (an IAM user's access key and secret, and the queues' region) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's AWS SNS node: a message published (its default) to a topic picked from n8n's list, one to a topic given by
+        // n8n's AWS SNS node: a message published (its default) to a topic picked from n8n's list, one to a topic given by
         // its console address with an expression for its subject; a FIFO topic made with its display name; a topic deleted by an
         // older version's plain ARN - Extract from connection.
         [Fact]
@@ -5034,7 +5034,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop topic': choose its connection - n8n's credentials stay in n8n: add an Amazon SNS connection under Admin > Connections (an IAM user's access key and secret, and the topics' region) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's AWS DynamoDB node: an item written (its default) from its fields on a condition with a name and a value,
+        // n8n's AWS DynamoDB node: an item written (its default) from its fields on a condition with a name and a value,
         // one Auto-Mapped - said; an item got by a string and a number key, consistently, some attributes; one deleted on a
         // condition; Get Many a query on an index with its key condition and values, and a scan with a filter (n8n's limit of 50
         // when its export leaves it out) - Extract from connection.
@@ -5077,7 +5077,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Delete': choose its connection - n8n's credentials stay in n8n: add an Amazon DynamoDB connection under Admin > Connections (an IAM user's access key and secret, and the tables' region) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's AWS Lambda node: a function invoked (its default) by its ARN at $LATEST with a JSON payload over lines; one
+        // n8n's AWS Lambda node: a function invoked (its default) by its ARN at $LATEST with a JSON payload over lines; one
         // invoked as an event at an alias, its payload an expression - Extract from connection.
         [Fact]
         public void N8ns_AWS_Lambda_is_extract_from_connection()
@@ -5103,7 +5103,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Resize': choose its connection - n8n's credentials stay in n8n: add an AWS Lambda connection under Admin > Connections (an IAM user's access key and secret, and the functions' region) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's NocoDB node: its newer version's row got (its default), searched with a formula, a sort, fields and a view
+        // n8n's NocoDB node: its newer version's row got (its default), searched with a formula, a sort, fields and a view
         // (n8n's limit of 50 when the export leaves it out), created from its column mapper (a number a number, a value an
         // expression), upserted, counted and deleted; its older version's row updated from field and value pairs with a binary
         // field and a custom primary key, and created Auto-Mapped - said - Extract from connection.
@@ -5153,7 +5153,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Delete': choose its connection - n8n's credentials stay in n8n: add a NocoDB connection under Admin > Connections (its address and an API token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Clockify node: a project created (its default resource and operation) with its estimate unwrapped and an
+        // n8n's Clockify node: a project created (its default resource and operation) with its estimate unwrapped and an
         // expression among its fields, got, read with its filters (one left out - said) and n8n's limit of 100, updated, deleted;
         // a client, a tag, a task (its 2:30 estimate as Clockify's) and a time entry (its custom fields unwrapped, a time without
         // its zone said) through their operations; the users and the workspaces (their default Get Many) - Extract from connection.
@@ -5217,7 +5217,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Workspaces': choose its connection - n8n's credentials stay in n8n: add a Clockify connection under Admin > Connections (an API key; a region's address if the workspace lives in one) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Coda node: a table's row created (its default) - its own fields said - with key columns and parsing off,
+        // n8n's Coda node: a table's row created (its default) - its own fields said - with key columns and parsing off,
         // its rows read with a query, a sort, visible rows, a value format and column names (ids when n8n left names off, n8n's
         // limit of 50), a row got (names unless n8n turned them off), deleted, a button pushed, the columns and a column; a view's
         // details (its default), the views, a view's rows, columns, row deleted, button pushed and row updated - its changes said;
@@ -5291,7 +5291,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Control': choose its connection - n8n's credentials stay in n8n: add a Coda connection under Admin > Connections (an API token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Ghost node: a post got (its default) by its id through the Content API (its default - said, html its
+        // n8n's Ghost node: a post got (its default) by its id through the Content API (its default - said, html its
         // format) or by its slug through the Admin API, the posts with what to include, fields and formats, n8n's limit; a post
         // created as HTML with its status, tags and an expression among its fields, as Lexical, as Mobiledoc; updated, deleted -
         // Extract from connection.
@@ -5341,7 +5341,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Delete': choose its connection - n8n's credentials stay in n8n: add a Ghost connection under Admin > Connections (the site's address and an Admin API key from a custom integration) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Harvest node: the tasks read (its default resource and operation, n8n's limit of 100), the time entries with
+        // n8n's Harvest node: the tasks read (its default resource and operation, n8n's limit of 100), the time entries with
         // their filters (n8n's starting page said), the token's user (the user's default), the company; a project created with its
         // required fields under Harvest's names and n8n's billing defaults, a user with an expression, a time entry by duration;
         // an update, a get, a delete, a timer restarted and stopped and an external reference removed; the account said - Extract
@@ -5402,7 +5402,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Company': choose its connection - n8n's credentials stay in n8n: add a Harvest connection under Admin > Connections (a personal access token and the account's id) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Strapi node: an entry got (its default) - n8n's e-mail and password said - the entries with a where, a
+        // n8n's Strapi node: an entry got (its default) - n8n's e-mail and password said - the entries with a where, a
         // sort, a publication state and n8n's limit of 50, or all of them; an entry created and updated from the item's columns
         // as the record's, the update's entry its update key's; an entry deleted - Extract from connection.
         [Fact]
@@ -5444,7 +5444,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Get': choose its connection - n8n's credentials stay in n8n: add a Strapi connection under Admin > Connections (its address, an API token from Settings > API Tokens, and its version) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Contentful node: an entry got (its default), raw; its entries with a content type, each of n8n's
+        // n8n's Contentful node: an entry got (its default), raw; its entries with a content type, each of n8n's
         // attribute=value searches - a value with an = kept whole - the fields, order and query, its environment, n8n's limit of
         // 100, or all with a search from the item; an asset got and its assets (its default), a content type, the locales and the
         // space - Extract from connection; its Preview API said.
@@ -5487,7 +5487,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Space': choose its connection - n8n's credentials stay in n8n: add a Contentful connection under Admin > Connections (the space's id, a Content Delivery or Preview API token, and which API) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Elasticsearch node: a document got (its default), raw; its documents searched with a search body (made
+        // n8n's Elasticsearch node: a document got (its default), raw; its documents searched with a search body (made
         // one line), a sort, the source fields, a routing and n8n's limit of 50, or Return All's 10,000 with its query parameters
         // said; created from Fields to Send with an expression among them, its id, routing, pipeline and refresh, its bulk said;
         // updated from the item's own fields, said; deleted; an index created (an index's default) with its settings and mappings,
@@ -5541,7 +5541,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Index': choose its connection - n8n's credentials stay in n8n: add an Elasticsearch connection under Admin > Connections (the cluster's address, a user's name and password - or an API key with no user) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's DeepL node: a text translated into a language, from one (its variant kept for the connector to drop),
+        // n8n's DeepL node: a text translated into a language, from one (its variant kept for the connector to drop),
         // with the sentence splitting, formatting and formality n8n offers and never sends - said; a text from the item; a text
         // holding a line break written as a list of one - Extract from connection.
         [Fact]
@@ -5571,7 +5571,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Body': choose its connection - n8n's credentials stay in n8n: add a DeepL connection under Admin > Connections (its authentication key - a Free API key ends in :fx) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's PagerDuty node: an incident created (its default) with every additional field and a conference bridge,
+        // n8n's PagerDuty node: an incident created (its default) with every additional field and a conference bridge,
         // got, read with every option - its lists, every time, its sort, what to include as PagerDuty names it - or all, and
         // updated; a note added (its default) and read; the log entries read with theirs and one got (its default); a user got -
         // Extract from connection.
@@ -5618,7 +5618,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Who': choose its connection - n8n's credentials stay in n8n: add a PagerDuty connection under Admin > Connections (an API token, and the e-mail of the PagerDuty user its changes come from) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Bitly node: a link created (its default) on its own domain, in a group, with a title, tags and deep
+        // n8n's Bitly node: a link created (its default) on its own domain, in a group, with a title, tags and deep
         // links as Bitly names their fields, or on bit.ly (n8n's default, left out); got; updated - its title, tags, archived and
         // address, its group said - Extract from connection.
         [Fact]
@@ -5651,7 +5651,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Shorten': choose its connection - n8n's credentials stay in n8n: add a Bitly connection under Admin > Connections (an access token from Settings > Developer settings > API) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Facebook Graph API node: a GET (its default) with its fields, its query parameters - the pairs and the
+        // n8n's Facebook Graph API node: a GET (its default) with its fields, its query parameters - the pairs and the
         // JSON merged - and its version; a POST's parameters as what it posts, one from the item; a DELETE; its video host, its
         // file upload and its JSON from the item said - Extract from connection.
         [Fact]
@@ -5691,7 +5691,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Feed': choose its connection - n8n's credentials stay in n8n: add a Facebook Graph API connection under Admin > Connections (a Page's or a user's access token, and the Graph version) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Zulip node: a direct message (its default) to people, one to a stream's topic, a message got, updated
+        // n8n's Zulip node: a direct message (its default) to people, one to a stream's topic, a message got, updated
         // with its move as Zulip names it and deleted; the streams, the subscribed ones with their subscribers (n8n's default),
         // a stream created (a stream's default) from the first of its subscriptions with its privacy, subscribers and
         // announcement, the others said, updated and deleted; the users, a user got, created (a user's default), updated with
@@ -5750,7 +5750,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Direct': choose its connection - n8n's credentials stay in n8n: add a Zulip connection under Admin > Connections (the organization's address, the bot's e-mail and its API key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's MailerLite node, both its versions: a subscriber created (its default) with its custom fields as their
+        // n8n's MailerLite node, both its versions: a subscriber created (its default) with its custom fields as their
         // JSON, its status, times and addresses - the classic API's name, type, sign-up and confirmation ones as MailerLite
         // names them now, an expression among the fields making the parameters one, a resubscribe the status active; got;
         // read with a status and n8n's limit, or every one; updated, a resend of the autoresponders said - Extract from
@@ -5794,7 +5794,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Join': choose its connection - n8n's credentials stay in n8n: add a MailerLite connection under Admin > Connections (an API token from Integrations > MailerLite API) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Mautic node: a contact created (its default) with its own fields, its address, social profiles, custom
+        // n8n's Mautic node: a contact created (its default) with its own fields, its address, social profiles, custom
         // fields and the rest as its other fields by Mautic's aliases, its tags, owner, stage, address and last activity, raw
         // as n8n's default; created from n8n's JSON body; updated, got as its fields, read with a search, an order made
         // Mautic's column and n8n's limit, deleted; points added and taken; a do-not-contact set with its reason and lifted;
@@ -5860,7 +5860,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Join': choose its connection - n8n's credentials stay in n8n: add a Mautic connection under Admin > Connections (the instance's address, and a user's name and password with the API and its basic authentication on) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Netlify node: a site's deploys read (its default) with n8n's limit, or every one; a deploy got by its
+        // n8n's Netlify node: a site's deploys read (its default) with n8n's limit, or every one; a deploy got by its
         // id alone, created with its title and branch, cancelled; the sites, a site got and deleted (a site's default) -
         // Extract from connection.
         [Fact]
@@ -5900,7 +5900,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Ship': choose its connection - n8n's credentials stay in n8n: add a Netlify connection under Admin > Connections (a personal access token from User settings > Applications) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Rocket.Chat node: a message posted (its default) with its alias, emoji, avatar and attachments as the
+        // n8n's Rocket.Chat node: a message posted (its default) with its alias, emoji, avatar and attachments as the
         // API names their fields - its message link too - an expression among them making the parameters one; posted with its
         // attachments' JSON; the subscriptions (a subscription's default), a room marked read; a direct conversation's messages
         // with n8n's limit - Extract from connection.
@@ -5935,7 +5935,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Post': choose its connection - n8n's credentials stay in n8n: add a Rocket.Chat connection under Admin > Connections (the server's address, a user's id and a personal access token from My Account > Personal Access Tokens) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Jenkins node: a job triggered (its default), and with parameters - an expression among them making the
+        // n8n's Jenkins node: a job triggered (its default), and with parameters - an expression among them making the
         // parameters one; copied; created from its config.xml on one line, or said when a CDATA section holds a line break;
         // the instance quieted with a reason, back again, restarted safely (an instance's default) and at once, shut down
         // safely and at once; the builds (a build's default) with n8n's limit - Extract from connection.
@@ -5986,7 +5986,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Build': choose its connection - n8n's credentials stay in n8n: add a Jenkins connection under Admin > Connections (the server's address, a user's name and an API token from the user's Security page) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's ConvertKit node, Kit's API v4: a subscriber added to a form (its default) and to a sequence - one
+        // n8n's ConvertKit node, Kit's API v4: a subscriber added to a form (its default) and to a sequence - one
         // created as it was added said - the forms, a form's and a sequence's subscribers with their state and n8n's limit,
         // the sequences; tags created (a tag's default, the others of a list said), read, a subscriber tagged and untagged,
         // a tag's subscribers; custom fields read (a Get said), created, renamed (a custom field's default) and deleted -
@@ -6054,7 +6054,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Join': choose its connection - n8n's credentials stay in n8n: add a Kit connection under Admin > Connections (a V4 API key from Settings > Developer - Kit's API v4, not ConvertKit's v3 secret) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Matrix node: a message sent (its default) - a notice, HTML with its fallback text, HTML with none said,
+        // n8n's Matrix node: a message sent (its default) - a notice, HTML with its fallback text, HTML with none said,
         // a text with a line break said - a room's messages with a filter and n8n's limit or all of them; who the token is; an
         // event got; rooms created (a room's default, n8n's public preset when it says none), joined by alias, left; people
         // invited and kicked with a reason; members by membership - Extract from connection; a media upload a placeholder.
@@ -6125,7 +6125,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Say': choose its connection - n8n's credentials stay in n8n: add a Matrix connection under Admin > Connections (the homeserver's address and an access token - Element: Settings > Help & About) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Sentry.io node: an event got (its default) and read in full unless n8n says not; issues got, read with
+        // n8n's Sentry.io node: an event got (its default) and read in full unless n8n says not; issues got, read with
         // a query, a stats period and a short id, updated and deleted; organizations got, read as a member and an owner and
         // renamed - one created a placeholder; projects got, read, created for a team, updated (a team move said) and deleted;
         // releases got, read by a version's start, created with projects, a date, commits - a patch set too - and refs (an
@@ -6210,7 +6210,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Event': choose its connection - n8n's credentials stay in n8n: add a Sentry connection under Admin > Connections (sentry.io's address - a region's or a self-hosted server's - and an auth token from User Settings > Personal Tokens) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Discourse node: a topic posted (its default) and a reply, a post got, read with n8n's limit or all, and
+        // n8n's Discourse node: a topic posted (its default) and a reply, a post got, read with n8n's limit or all, and
         // edited with a reason - Cooked said; categories created with n8n's colours when it names none, read and changed; groups
         // created, got, read and renamed; users created - a written password left out and said, an expression kept - got by
         // name or SSO external id and listed by a flag, an order and switches; a group's members added and removed - Extract
@@ -6282,7 +6282,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Topic': choose its connection - n8n's credentials stay in n8n: add a Discourse connection under Admin > Connections (the forum's address, the API username and an API key from Admin > Advanced > API keys) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Zammad node: a user created (its default) with an address and custom fields, updated, got, the token's
+        // n8n's Zammad node: a user created (its default) with an address and custom fields, updated, got, the token's
         // own, read by a search and a sort with n8n's limit and deleted; organizations and groups created, updated, got, read and
         // deleted; a ticket created with its first article - an external e-mail from a customer - updated with a state, a
         // priority, an owner, a pending time and a note, got, read and deleted; a custom field's value an expression - Extract
@@ -6353,7 +6353,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'New user': choose its connection - n8n's credentials stay in n8n: add a Zammad connection under Admin > Connections (the help desk's address and an access token from Profile > Token Access - a user's name and password are not used) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Pushover node: a message pushed with n8n's lowest priority when the export names none, with every
+        // n8n's Pushover node: a message pushed with n8n's lowest priority when the export names none, with every
         // additional field, as an emergency with n8n's retry and expire or its own, an expression for the user; an attachment
         // said - Extract from connection.
         [Fact]
@@ -6386,7 +6386,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Push': choose its connection - n8n's credentials stay in n8n: add a Pushover connection under Admin > Connections (an application's API token from Your Applications) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Gotify node: a message sent (its default) with its title, priority and every option - Markdown kept,
+        // n8n's Gotify node: a message sent (its default) with its title, priority and every option - Markdown kept,
         // plain text its default - the messages read with n8n's limit or all of them, one deleted - Extract from connection.
         [Fact]
         public void N8ns_Gotify_is_extract_from_connection()
@@ -6421,7 +6421,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Send': choose its connection - n8n's credentials stay in n8n: add a Gotify connection under Admin > Connections (the server's address, an application's token to send and a client's token to read and delete) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's UptimeRobot node: the account (its default); monitors read with every filter or all of them, got,
+        // n8n's UptimeRobot node: the account (its default); monitors read with every filter or all of them, got,
         // created, updated - a password left out and said - paused, reset and deleted; alert contacts read, got, created, updated
         // and deleted; maintenance windows - a once one's moment, a weekly one's day and time, a monthly one's day by n8n's
         // default - read, got, created, updated and deleted; status pages read, got, created - a password said - and deleted -
@@ -6502,7 +6502,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Account': choose its connection - n8n's credentials stay in n8n: add an UptimeRobot connection under Admin > Connections (the main API key from Integrations & API > API) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Grafana node: a dashboard created (its default) - a folder by id said - got by address, read with a
+        // n8n's Grafana node: a dashboard created (its default) - a folder by id said - got by address, read with a
         // search and n8n's limit or all, updated - its panels kept, said - and deleted; teams created, got, read by name,
         // updated and deleted; members added (a member's default), read and removed; users read (a user's default), given a role -
         // n8n's Admin when it names none - added and removed - Extract from connection.
@@ -6570,7 +6570,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'New team': choose its connection - n8n's credentials stay in n8n: add a Grafana connection under Admin > Connections (the server's address and a service account's token from Administration > Service accounts) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Okta node: users read (its default) - simplified, said - or searched, every one; a user got by login;
+        // n8n's Okta node: users read (its default) - simplified, said - or searched, every one; a user got by login;
         // created with attributes beside its name, unactivated - a password and a recovery question left out, said - or plain;
         // updated by id, an expression among the fields; deleted with or without an e-mail - Extract from connection.
         [Fact]
@@ -6622,7 +6622,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Update': choose its connection - n8n's credentials stay in n8n: add an Okta connection under Admin > Connections (the org's address and an API token from Security > API > Tokens) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Splunk node: a search created (its default) with its times - one without its offset said - and settings,
+        // n8n's Splunk node: a search created (its default) with its times - one without its offset said - and settings,
         // One Shot said; a job got, its results read by a field's value, jobs read sorted, a job deleted; reports read (a
         // report's default), got, made from a job, deleted; fired alerts (an alert's default) and metric alerts; users read,
         // got, updated - a password left out, said - and deleted; a user's Create a placeholder - Extract from connection.
@@ -6689,7 +6689,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Report': choose its connection - n8n's credentials stay in n8n: add a Splunk connection under Admin > Connections (the server's management address and an authentication token from Settings > Tokens) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Bitwarden node: a collection got (its default), read, updated - the rest kept, said - and deleted; events
+        // n8n's Bitwarden node: a collection got (its default), read, updated - the rest kept, said - and deleted; events
         // read by a member, an item and moments - one without its offset said; groups got (a group's default), read, created
         // with collections, updated, deleted, their members read and set; members got (a member's default), read, invited with
         // n8n's role numbers, updated, deleted, their groups read and set - Extract from connection.
@@ -6762,7 +6762,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Member': choose its connection - n8n's credentials stay in n8n: add a Bitwarden connection under Admin > Connections (the organization API key's client id and secret from Admin Console > Settings > Organization info, and your server's address if it is your own) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's G Suite Admin node: users read with filters and sort - simplified, said - got with a custom projection
+        // n8n's G Suite Admin node: users read with filters and sort - simplified, said - got with a custom projection
         // made full, said; updated - a password and roles left out, said - deleted, added to a group and removed; groups created
         // (a group's default), got, read by a member, updated and deleted; ChromeOS devices got (a device's default), read, updated
         // and disabled; a user's Create (the node's default) a placeholder - Extract from connection.
@@ -6825,7 +6825,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Group': choose its connection - n8n's credentials stay in n8n: add a Google Workspace Admin connection under Admin > Connections (an OAuth client's id and secret and an administrator's refresh token granted the directory scopes) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Mailjet node: an e-mail sent (its default) with its sender's name, copies, tracking and variables as pairs - an
+        // n8n's Mailjet node: an e-mail sent (its default) with its sender's name, copies, tracking and variables as pairs - an
         // expression among them said - or as JSON; a template sent with its language; an SMS sent on a Mailjet SMS connection -
         // Extract from connection.
         [Fact]
@@ -6860,7 +6860,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'SMS': choose its connection - n8n's credentials stay in n8n: add a Mailjet SMS connection under Admin > Connections (the SMS token from Account settings > SMS) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Microsoft Graph Security node: a secure score got (its default), scores read with a filter and their
+        // n8n's Microsoft Graph Security node: a secure score got (its default), scores read with a filter and their
         // control scores; a control profile got (a profile's default), read and updated - its sign-in as a user said - Extract
         // from connection.
         [Fact]
@@ -6895,7 +6895,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Profile': choose its connection - n8n's credentials stay in n8n: add a Microsoft Graph Security connection under Admin > Connections (an app registration's client id and secret with the SecurityEvents application permission, and the tenant's token endpoint) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's ServiceNow node: a user got (its default) by id and by name, created with its password left out and
+        // n8n's ServiceNow node: a user got (its default) by id and by name, created with its password left out and
         // updated; an incident created with n8n's fields (one the connector does not name by itself among the values), updated,
         // read by a filter and deleted; a table record created from n8n's columns, updated from the item's own fields (said) and
         // got with its fields and display values; a group list read whole; an attachment, a file, a placeholder - Extract from
@@ -6954,7 +6954,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a ServiceNow connection under Admin > Connections (the instance's address - https://{instance}.service-now.com - and an integration user's name and password) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Microsoft Entra ID node: users read (its default) by a filter, a user got with n8n's Selected Fields,
+        // n8n's Microsoft Entra ID node: users read (its default) by a filter, a user got with n8n's Selected Fields,
         // updated - its phones a list, its password left out and said - deleted, added to and removed from a group; groups read
         // with n8n's Raw (said), a group got with its members, created - a Microsoft 365 group, dynamic, and a security group with
         // a unique name (said) - updated and deleted; a user's Create, which takes a password, a placeholder - Extract from
@@ -7014,7 +7014,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a Microsoft Entra ID connection under Admin > Connections (an app registration's client id and secret with the User.ReadWrite.All, Group.ReadWrite.All and GroupMember.ReadWrite.All application permissions its steps need, granted by an administrator, and the tenant's token endpoint) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Microsoft Dynamics CRM node: an account created (its default) with its fields and two addresses, read by a
+        // n8n's Microsoft Dynamics CRM node: an account created (its default) with its fields and two addresses, read by a
         // filter with its columns and related records (n8n's limit of 5 when the export leaves it out), got, updated from the item
         // and deleted - Extract from connection on the accounts table.
         [Fact]
@@ -7053,7 +7053,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Close': choose its connection - n8n's credentials stay in n8n: add a Microsoft Dynamics 365 connection under Admin > Connections (the environment's address, an app registration's client id and secret - an application user of the environment with the security role its steps need - and the tenant's token endpoint) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Google BigQuery node (v2): a query (its default) with named parameters, a default dataset, a location and a
+        // n8n's Google BigQuery node (v2): a query (its default) with named parameters, a default dataset, a location and a
         // dry run (said), and one with n8n's {{ }} in its SQL; rows inserted from n8n's columns, invalid rows skipped and unknown
         // columns ignored, and from the item (n8n's Auto-Map, said) - Extract from connection.
         [Fact]
@@ -7090,7 +7090,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Mapped': choose its connection - n8n's credentials stay in n8n: add a Google BigQuery connection under Admin > Connections (an OAuth client's id and secret and a refresh token granted the BigQuery scope) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Freshservice node: an agent created (its default) with its roles; a ticket created with n8n's defaults and
+        // n8n's Freshservice node: an agent created (its default) with its roles; a ticket created with n8n's defaults and
         // its cc e-mails as a list, read by n8n's filters as Freshservice's query (a date among them said), updated from the item and
         // deleted; a change created with the values n8n fixes; a release with n8n's defaults; a location with its address; a role
         // got (a role's default); the requesters read with a filter (said) - Extract from connection.
@@ -7140,7 +7140,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a Freshservice connection under Admin > Connections (the desk's address - https://{domain}.freshservice.com - and an API key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Microsoft SharePoint node: items read (an item's default) by a filter with n8n's Simplify (said), got,
+        // n8n's Microsoft SharePoint node: items read (an item's default) by a filter with n8n's Simplify (said), got,
         // created from its mapper's columns, updated by the id among them, created or updated by its matching column and deleted;
         // the lists read; an item from the item (n8n's Auto-Map, said); a file uploaded into a folder from the pipeline folder by
         // its name (its binary said), downloaded (n8n's default) into downloads/, renamed with new content said - Extract from
@@ -7196,7 +7196,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a Microsoft SharePoint connection under Admin > Connections (an app registration's client id and secret with the Sites.ReadWrite.All application permission - or Sites.Selected granted on the site - and the tenant's token endpoint) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's HaloPSA node: a client created (its default) with its additional fields; a site created under its client;
+        // n8n's HaloPSA node: a client created (its default) with its additional fields; a site created under its client;
         // a ticket created with its type, read by n8n's search and active status (its Simplify said), got, updated from the item
         // and deleted; a user created with a password (left out, said) and updated; the users read whole; a ticket with no
         // operation - n8n's default, its Delete - deleted, said - Extract from connection.
@@ -7253,7 +7253,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a HaloPSA connection under Admin > Connections (Halo's address - https://{tenant}.halopsa.com - its token endpoint, /auth/token there, and an API application's client id and secret) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Snowflake node: rows inserted (its default) into a table's columns, the rows n8n read from each item said; a
+        // n8n's Snowflake node: rows inserted (its default) into a table's columns, the rows n8n read from each item said; a
         // query with its ? marks bound to Query Parameters, every row; a query with a value n8n spliced in kept as an expression the
         // editor warns of, its parameters from an expression said; rows updated by n8n's default key and by one named - Extract
         // from connection.
@@ -7296,7 +7296,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Paid': choose its connection - n8n's credentials stay in n8n: add a Snowflake connection under Admin > Connections (the account's address - https://{account}.snowflakecomputing.com - a programmatic access token, and the warehouse, database, schema and role n8n's credential named) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Help Scout node: a conversation created (its default) with its customer and threads; the conversations
+        // n8n's Help Scout node: a conversation created (its default) with its customer and threads; the conversations
         // read by n8n's options (its tags joined), got and deleted; a customer created with its e-mails and address, updated from
         // the item (n8n's PUT said), its properties read whole; an inbox got (an inbox's default) and all of them read; a note
         // added to a conversation (its attachments said) and its threads read - Extract from connection.
@@ -7346,7 +7346,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a Help Scout connection under Admin > Connections (an app's ID and secret from Your Profile > My Apps) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's AWS S3 node (and its S3 node, an S3-compatible store's): a file downloaded (its default) into the site's
+        // n8n's AWS S3 node (and its S3 node, an S3-compatible store's): a file downloaded (its default) into the site's
         // pipeline folder at its key, uploaded from the folder by its name under its parent folder - its ACL and class as S3's,
         // its tags and encryption said - or as text (one line; several said), copied by its /bucket/key paths (an expression's
         // destination said), deleted (a version said), listed under a folder; a bucket searched, listed, made (its region said)
@@ -7413,7 +7413,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Compat': choose its connection - n8n's credentials stay in n8n: add an Amazon S3 connection under Admin > Connections (an access key and its secret and the region - for MinIO, R2 or another S3-compatible store its address too, buckets by path) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Google Drive node: a file uploaded (its default) from the pipeline folder by its name into a folder - its
+        // n8n's Google Drive node: a file uploaded (its default) from the pipeline folder by its name into a folder - its
         // properties as JSON - created from text (made a Google Doc), downloaded (its own name in downloads/, or n8n's, converted as
         // n8n's options say), updated, copied into another folder, moved, deleted for good; files and folders searched by name or
         // by Drive's query; a file and a folder shared; a folder made (a folder's default) and deleted; shared drives made (their
@@ -7484,7 +7484,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Close': choose its connection - n8n's credentials stay in n8n: add a Google Drive connection under Admin > Connections (an OAuth client's id and secret and a refresh token granted the drive scope) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Microsoft OneDrive node: a file uploaded (its default) from the pipeline folder by its name into a parent
+        // n8n's Microsoft OneDrive node: a file uploaded (its default) from the pipeline folder by its name into a parent
         // folder, or from a text - a text over several lines said; downloaded into downloads/, got, copied with a new name into a
         // folder of another drive (a parent by its path said, and Graph's background copy), moved and renamed, renamed, deleted,
         // searched, shared by a link; a folder's items (its default), a path of folders created under a parent, a folder moved,
@@ -7550,7 +7550,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Rmdir': choose its connection - n8n's credentials stay in n8n: add a Microsoft OneDrive connection under Admin > Connections (an app registration's client id and secret with the Files.ReadWrite.All application permission, the tenant's token endpoint, and whose drive - a user's address or a drive's id) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Grist node: its rows read (its default) with a filter - two values for one column, a number a number,
+        // n8n's Grist node: its rows read (its default) with a filter - two values for one column, a number a number,
         // a filter with no column left out - a sort and n8n's limit of 50 when the export leaves it out, or all of them; created
         // from columns and values (a value an expression), updated, created or updated by a match with what to do on many, or
         // Auto-Mapped - said - and deleted - Extract from connection.
@@ -7597,7 +7597,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Delete': choose its connection - n8n's credentials stay in n8n: add a Grist connection under Admin > Connections (its address and an API key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's SendGrid node: a list made (its default), got with a sample, read (n8n's limit of 100 when its export leaves
+        // n8n's SendGrid node: a list made (its default), got with a sample, read (n8n's limit of 100 when its export leaves
         // it out), renamed and deleted with its contacts; a contact added (the contact resource's default) with its address, lists
         // and custom fields (n8n's pairs made a JSON object), got by its address, found by a query and deleted - all of them; a mail
         // sent as HTML with copies, headers and the sandbox, and one by a dynamic template whose data hold an expression; its
@@ -7652,7 +7652,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Wipe': choose its connection - n8n's credentials stay in n8n: add a SendGrid connection under Admin > Connections (an API key) and pick it here.", graph.Notes[0].Text);
         }
 
-        // BL-229 - n8n's WordPress node: a post created (its default) with its fields, categories and tags (n8n's lists of ids) and
+        // n8n's WordPress node: a post created (its default) with its fields, categories and tags (n8n's lists of ids) and
         // an Elementor template, read with filters (n8n's limit of 5 when its export leaves it out), got, updated and deleted for
         // good; a page created under a parent and read with Return All; a user created, read and updated - a password kept in n8n's
         // export left out and said; a user deleted made a placeholder - Extract from connection.
@@ -7715,7 +7715,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("letmein", string.Join("\n", graph.Steps.SelectMany(step => step.Inputs.Values)), System.StringComparison.Ordinal);
         }
 
-        // BL-229 - n8n's Todoist node: a task created in a project (n8n's list) with its labels and options, quick-added, read by a
+        // n8n's Todoist node: a task created in a project (n8n's list) with its labels and options, quick-added, read by a
         // filter (n8n's limit of 50 when its export leaves it out) and by a project with Return All, got, updated, closed, reopened,
         // moved (to a section, under a parent or to a project, as n8n chooses), deleted and commented on; the projects read; Todoist
         // 1's label ids said; a section made a placeholder - Extract from connection.
@@ -7779,7 +7779,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop': choose its connection - n8n's credentials stay in n8n: add a Todoist connection under Admin > Connections (an API token) and pick it here.", graph.Notes[0].Text);
         }
 
-        // BL-229 - n8n's Monday.com node: a board item created with its column values (n8n's JSON made compact); items read, by a
+        // n8n's Monday.com node: a board item created with its column values (n8n's JSON made compact); items read, by a
         // column's value too; an item got, its columns changed (one column's value made an object of its id, an expression kept),
         // moved, deleted and updated; the boards read (n8n's limit of 50 when its export leaves it out); a board made a placeholder - Extract from connection.
         [Fact]
@@ -7828,7 +7828,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("- 'New item': a value of it spans lines", graph.Notes[0].Text); // n8n's JSON made compact first
         }
 
-        // BL-229 - n8n's Freshdesk node: a ticket created (its default) for a requester by email, n8n's words for its status,
+        // n8n's Freshdesk node: a ticket created (its default) for a requester by email, n8n's words for its status,
         // priority and source, its options; a ticket by a requester's Facebook id said; tickets read, got, updated and deleted;
         // contacts created with their fields, custom fields said, read, got, updated and deleted - Extract from connection.
         [Fact]
@@ -7881,7 +7881,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop Ada': choose its connection - n8n's credentials stay in n8n: add a Freshdesk connection under Admin > Connections (the helpdesk's address and an API key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's GitLab node: an issue created (its default) in a subgroup's project with its labels and assignee ids; an
+        // n8n's GitLab node: an issue created (its default) in a subgroup's project with its labels and assignee ids; an
         // issue got, edited (closed) and commented on; a project's issues read; a release; a file got, created and edited - binary
         // and another start branch said; an issue locked a placeholder - Extract from connection.
         [Fact]
@@ -7927,7 +7927,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Release': choose its connection - n8n's credentials stay in n8n: add a GitLab connection under Admin > Connections (the instance's address and an access token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Linear node: an issue created (its default) with its team, assignee, priority and state by the ids n8n
+        // n8n's Linear node: an issue created (its default) with its team, assignee, priority and state by the ids n8n
         // chose and a description of two lines made one; issues read, got, updated, deleted and linked; a comment added, one
         // answering another said - Extract from connection.
         [Fact]
@@ -7969,7 +7969,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Link order': choose its connection - n8n's credentials stay in n8n: add a Linear connection under Admin > Connections (an API key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's WooCommerce node: a product created (n8n's default resource and operation) with its prices, SKU, categories,
+        // n8n's WooCommerce node: a product created (n8n's default resource and operation) with its prices, SKU, categories,
         // a description of two lines made one and its image's address, its dimensions said; products read, updated and deleted (for
         // good, as n8n did); an order created with its billing (n8n's camelCase made WooCommerce's), line items (an expression among
         // them) and shipping lines (n8n's 'method ID' too); orders read, got, updated and deleted; a customer created with
@@ -8035,7 +8035,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop Ada': choose its connection - n8n's credentials stay in n8n: add a WooCommerce connection under Admin > Connections (the store's address and a REST API key's consumer key and secret) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Mailchimp node: a member created (its default) with its merge fields (n8n's name and value pairs made JSON,
+        // n8n's Mailchimp node: a member created (its default) with its merge fields (n8n's name and value pairs made JSON,
         // an expression among them), tags, language, VIP and email type, a location and its sign-up IP said; members read by status
         // and change; a member got, updated (its merge fields as n8n's JSON, its tags said) and deleted; tags added and removed;
         // campaigns read by status, audience and order, one got, sent, replicated, resent and deleted; an audience's groups a
@@ -8095,7 +8095,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop it': choose its connection - n8n's credentials stay in n8n: add a Mailchimp connection under Admin > Connections (its data center's API address and an API key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Supabase node: a row created (its default) from its field and value pairs, an expression among them; a row
+        // n8n's Supabase node: a row created (its default) from its field and value pairs, an expression among them; a row
         // got; rows read by conditions - any one of them, n8n's default, or all, full text its search function - or by its filter
         // string as PostgREST's own query; rows updated and deleted; each item's own fields said - Extract from connection, one
         // filter a 'filters =' line.
@@ -8140,7 +8140,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop order': choose its connection - n8n's credentials stay in n8n: add a Supabase connection under Admin > Connections (the project's address and a secret key) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Zendesk node: a ticket created (its default) with its custom fields and a recipient said, updated with a
+        // n8n's Zendesk node: a ticket created (its default) with its custom fields and a recipient said, updated with a
         // public reply, read by status and group, got and deleted; a user created and searched; an organization created and read;
         // fields given as JSON said; a ticket recovered stays a placeholder.
         [Fact]
@@ -8188,7 +8188,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop ticket': choose its connection - n8n's credentials stay in n8n: add a Zendesk connection under Admin > Connections (the account's address, an agent's email address and an API token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's WhatsApp Business Cloud node: a text message sent - Send chat message, its sender the connection's number
+        // n8n's WhatsApp Business Cloud node: a text message sent - Send chat message, its sender the connection's number
         // and a link preview said; a template (its default) and an image stay placeholders.
         [Fact]
         public void N8ns_WhatsApp_text_message_is_send_chat_message()
@@ -8217,7 +8217,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Tell them': its account was n8n's WhatsApp Business credential, which an export never carries - make a WhatsApp Business connection (Admin > Connections) with a system user's access token and the sending number's Phone number ID and choose it here.", notes);
         }
 
-        // BL-229 - n8n's Pipedrive node: a deal created (its default) with its organization, an owner made owner_id, a value a
+        // n8n's Pipedrive node: a deal created (its default) with its organization, an owner made owner_id, a value a
         // number and its custom fields said; a person with its emails and phones (v2's lists, v1's text); an activity's person a
         // participant and its due date a date; a deal got, updated and deleted; deals read by a stage and a status (n8n's
         // all-but-deleted no filter); persons searched; a note on a deal - Extract from connection; a lead stays a placeholder.
@@ -8271,7 +8271,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop deal': choose its connection - n8n's credentials stay in n8n: add a Pipedrive connection under Admin > Connections (the account's API token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Shopify node (REST in n8n, GraphQL here): an order created (its default) from a variant and an item of no
+        // n8n's Shopify node (REST in n8n, GraphQL here): an order created (its default) from a variant and an item of no
         // product - its currency asked for - with its email, tags, test flag and receipt, an address it set said; orders read (n8n's
         // open ones by default, its camelCase statuses made Shopify's, a filter with no parameter said); an order got, updated and
         // deleted; a product created, updated and read by vendor - Extract from connection.
@@ -8322,7 +8322,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop order': choose its connection - n8n's credentials stay in n8n: add a Shopify connection under Admin > Connections (the shop's address and an app's Admin API access token, shpat_...) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Salesforce node: a lead created (its default) and upserted, an opportunity's required fields, a contact's
+        // n8n's Salesforce node: a lead created (its default) and upserted, an opportunity's required fields, a contact's
         // misspelt account, a task's type, a custom object's fields as given and an owner chosen from a list, a record got,
         // updated and deleted, a Get Many as the SOQL n8n would have sent (its defaults, its conditions quoted as n8n quotes
         // them), a user read and a search - Extract from connection; an expression makes the parameters one; a lead added to a
@@ -8389,7 +8389,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Drop invoice': choose its connection - n8n's credentials stay in n8n: add a Salesforce connection under Admin > Connections (a connected app's consumer key and secret and the org's token endpoint, by the client credentials flow) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's HubSpot node: a contact created or updated, a company and a deal created, records got - Extract from connection.
+        // n8n's HubSpot node: a contact created or updated, a company and a deal created, records got - Extract from connection.
         [Fact]
         public void N8ns_HubSpot_contacts_companies_and_deals_are_extract_from_connection()
         {
@@ -8425,7 +8425,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Deals': choose its connection - n8n's credentials stay in n8n: add a HubSpot connection under Admin > Connections (a private app's access token) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Microsoft Outlook node: its Send and Reply as Send email, its Get Many as Extract from connection.
+        // n8n's Microsoft Outlook node: its Send and Reply as Send email, its Get Many as Extract from connection.
         [Fact]
         public void N8ns_Outlook_send_and_reply_are_send_email_and_its_get_many_extract_from_connection()
         {
@@ -8460,7 +8460,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Tell Ada': choose its connection - n8n's credentials stay in n8n: add a Microsoft Outlook connection under Admin > Connections", notes);
         }
 
-        // BL-229 - n8n's Gmail node: its Send and Reply as Send email, its Get Many and Mark as Read as Extract from connection.
+        // n8n's Gmail node: its Send and Reply as Send email, its Get Many and Mark as Read as Extract from connection.
         [Fact]
         public void N8ns_Gmail_send_and_reply_are_send_email_and_its_get_many_and_mark_as_read_extract_from_connection()
         {
@@ -8507,7 +8507,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Read it': choose its connection - n8n's credentials stay in n8n: add a Gmail connection under Admin > Connections", notes);
         }
 
-        // BL-229 - n8n's Notion node, its database pages got, created and updated, as Extract from connection.
+        // n8n's Notion node, its database pages got, created and updated, as Extract from connection.
         [Fact]
         public void N8ns_Notion_database_pages_got_created_and_updated_are_extract_from_connection()
         {
@@ -8549,7 +8549,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- 'Open orders': choose its connection - n8n's credentials stay in n8n: add a Notion connection under Admin > Connections (an integration's secret, the database shared with it) and pick it here.", notes);
         }
 
-        // BL-229 - n8n's Airtable node, its search and create (its newer node's and its older one's names), as Extract from connection.
+        // n8n's Airtable node, its search and create (its newer node's and its older one's names), as Extract from connection.
         [Fact]
         public void N8ns_Airtable_search_and_create_are_extract_from_connection()
         {
@@ -8642,7 +8642,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("Nothing is left to finish", Assert.Single(empty.Graph.Notes).Text);
         }
 
-        // BL-229: n8n's Remove Duplicates over earlier executions comes over as Remove records seen before - the value it dedupes on
+        // n8n's Remove Duplicates over earlier executions comes over as Remove records seen before - the value it dedupes on
         // as the field compared, an incremental key or a date as "higher than before", its scope and history size; its clear as
         // Forget, said; a value that is not a field of the item, said.
         [Fact]

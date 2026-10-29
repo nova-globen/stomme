@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// BL-80 (D101), increment 1 - the MCP contribution seam: what a descriptor REFUSES to be.
+    /// BL-80, increment 1 - the MCP contribution seam: what a descriptor REFUSES to be.
     /// </summary>
     /// <remarks>
     /// Every refusal here answers something measured on the predecessor platform: an empty gate list meant "every authenticated principal

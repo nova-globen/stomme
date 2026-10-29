@@ -19,7 +19,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Crypto (n8n's Crypto node), run by the engine as the host composes it: hashes and HMACs against the published
+    /// Crypto (n8n's Crypto node), run by the engine as the host composes it: hashes and HMACs against the published
     /// test vectors, hex and base64, a random UUID and random URL-safe text, the key shown hidden in a run's data, and what it
     /// refuses saying why.
     /// </summary>

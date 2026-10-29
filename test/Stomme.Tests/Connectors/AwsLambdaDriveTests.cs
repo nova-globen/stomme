@@ -21,7 +21,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - AWS Lambda DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// AWS Lambda DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Lambda's API that checks every request's signature as AWS would - re-signed with the key's
     /// secret at the request's own time over the path as it arrived, and refused when it differs: an AWS Lambda connection made
     /// over the API, its key pair vaulted, tested; a published pipeline invokes a function by its ARN with a payload with an

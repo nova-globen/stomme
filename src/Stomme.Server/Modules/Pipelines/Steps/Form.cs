@@ -15,7 +15,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record FormStimulus(string Form);
 
     /// <summary>
-    /// BL-229 - n8n's Form trigger: a page the site serves at <c>api/Pipelines/forms/{name}</c> (behind <c>Pipelines:Forms:Enabled</c>,
+    /// n8n's Form trigger: a page the site serves at <c>api/Pipelines/forms/{name}</c> (behind <c>Pipelines:Forms:Enabled</c>,
     /// rate-limited, anonymous like a webhook - a form is for people outside the site), with this step's title, description and
     /// fields; a submission that answers them starts the pipeline with the answers as its result, one JSON object with a key per
     /// field, and the person is shown <see cref="Answer"/>. The fields are judged where they are saved and published.

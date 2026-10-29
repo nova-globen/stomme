@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Supabase DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Supabase DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a project's REST API: a Supabase connection made over the API, its secret key vaulted,
     /// tested (its tables counted); a published pipeline adds an order, reads the paid orders over two pages by two filters given
     /// as two 'filters =' lines, marks one shipped and deletes another - every call the key in Supabase's apikey header; the key is

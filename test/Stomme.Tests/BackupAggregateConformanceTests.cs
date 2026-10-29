@@ -23,11 +23,11 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-81 (D106 item 6) - the backup catalogue round-trips member for member on EVERY module-aggregate store (EF SQLite,
+    /// The backup catalogue round-trips member for member on EVERY module-aggregate store (EF SQLite,
     /// EF PostgreSQL, EF SQL Server, RavenDB, File) through the module's own startup: the three value objects as scalars, the
     /// nullable instants, UTC <c>Kind</c>; each transition read in one scope and written in the next persists; the status
     /// filter and the orderings answer identically; a delete removes. PostgreSQL, SQL Server and RavenDB FAIL rather than
-    /// skip (D46). the predecessor platform's in-memory repository and query facts land here, on the real stores.
+    /// skip. the predecessor platform's in-memory repository and query facts land here, on the real stores.
     /// </summary>
     public abstract class BackupAggregateConformanceTests : IAsyncLifetime
     {
@@ -262,7 +262,7 @@ namespace Stomme.Tests
 
     /// <summary>
     /// EF Core on a LIVE SQL Server scratch database (infra UAT, <see cref="SqlServerTestEndpoint"/>) - the first module-aggregate
-    /// suite on SQL Server, as every module-aggregate suite since BL-117. Fails, never skips, when SQL Server is down (D46).
+    /// suite on SQL Server, as every module-aggregate suite. Fails, never skips, when SQL Server is down.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class SqlServerBackupAggregateConformanceTests : BackupAggregateConformanceTests

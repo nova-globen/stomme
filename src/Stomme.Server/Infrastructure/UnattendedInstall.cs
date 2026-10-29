@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Stomme.Shared;
 
 namespace Stomme.Infrastructure
@@ -49,6 +51,28 @@ namespace Stomme.Infrastructure
                 return ("", $"Installation:HostPasswordFile names an empty file: {file}");
             }
             return (text, null);
+        }
+
+        /// <summary>The key the host password came from, for a message that names it: the file's when one is set.</summary>
+        public static string HostPasswordSource(IConfigManager config) =>
+            "Installation:" + (string.IsNullOrEmpty(config.GetSetting(SettingKeys.InstallationSection, SettingKeys.HostPasswordFileKey, ""))
+                ? SettingKeys.HostPasswordKey : SettingKeys.HostPasswordFileKey);
+
+        /// <summary>
+        /// What the host password lacks under the password policy, the rules ASP.NET Identity's validator applies - or null
+        /// when it meets them. Checked BEFORE anything is installed: a password the identity store refuses would otherwise
+        /// leave an installation with no host account and so no administrator. Names the rules, never the password.
+        /// </summary>
+        public static string PolicyFailure(string password, PasswordOptions policy)
+        {
+            var unmet = new List<string>();
+            if (password.Length < policy.RequiredLength) unmet.Add($"at least {policy.RequiredLength} characters");
+            if (policy.RequireDigit && !password.Any(char.IsDigit)) unmet.Add("a digit");
+            if (policy.RequireLowercase && !password.Any(char.IsLower)) unmet.Add("a lower-case letter");
+            if (policy.RequireUppercase && !password.Any(char.IsUpper)) unmet.Add("an upper-case letter");
+            if (policy.RequireNonAlphanumeric && password.All(char.IsLetterOrDigit)) unmet.Add("a character that is not a letter or digit");
+            if (password.Distinct().Count() < policy.RequiredUniqueChars) unmet.Add($"at least {policy.RequiredUniqueChars} different characters");
+            return unmet.Count == 0 ? null : "it needs " + string.Join(", ", unmet);
         }
     }
 }

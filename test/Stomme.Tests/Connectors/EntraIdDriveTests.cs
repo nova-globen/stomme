@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Entra ID DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// Microsoft Entra ID DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against a loopback stand-in for the tenant's token endpoint and Microsoft Graph: a token for the app's
     /// client credentials alone, Graph answering that token alone. An Entra ID connection made over the API, its secret
     /// vaulted, tested; a published pipeline reads the users over two pages by Graph's next link no further than asked,

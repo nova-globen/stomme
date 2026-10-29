@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.MicrosoftDynamics
 {
     /// <summary>
-    /// Microsoft Dynamics 365 (BL-229, n8n's Microsoft Dynamics CRM node: an environment's accounts - and here any table): the
+    /// Microsoft Dynamics 365 (n8n's Microsoft Dynamics CRM node: an environment's accounts - and here any table): the
     /// Dataverse Web API v9.2 of an environment with an application user's client credentials - the tenant's token endpoint,
     /// the environment's own scope - through the family's token provider, over the host's egress. A test names the application
     /// user the environment knows.

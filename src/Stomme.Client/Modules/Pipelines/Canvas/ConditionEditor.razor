@@ -1,7 +1,7 @@
 @namespace Stomme.Modules.Pipelines.Canvas
 
 @*
-    A condition built from rules (BL-229 increment 10, n8n's IF and Switch): each rule tests a value - text with {{ variable }}
+    A condition built from rules (n8n's IF and Switch): each rule tests a value - text with {{ variable }}
     placeholders - against another with a comparison, and the condition holds when all of them do, or any. Used for a
     Boolean input (a Decision's, an If's, a While's condition) and for each case of a Switch (flow). The editor owns the
     condition; every change here is made on it and then announced, so the editor records it as one step of undo.

@@ -17,10 +17,10 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The LDAP connector's live tests' directory (BL-229): LDAP_TEST_HOST / PORT / PASSWORD where set, otherwise this machine's
+    /// The LDAP connector's live tests' directory: LDAP_TEST_HOST / PORT / PASSWORD where set, otherwise this machine's
     /// throwaway OpenLDAP that <c>scripts/ldap-test-server.ps1</c> makes on 127.0.0.1:13389 - its tree dc=kafe,dc=example, its
     /// admin cn=admin and its password read from the file that script writes under the user's temp folder. No password is a
-    /// FAILURE that says how to get one, never a skip (D46).
+    /// FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class LdapTestEndpoint
     {
@@ -79,7 +79,7 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the LDAP connector without a directory, through its client seam: an address that is not LDAP's, or carries a
+    /// The LDAP connector without a directory, through its client seam: an address that is not LDAP's, or carries a
     /// user, a path or a query, refused, and LDAPS with StartTLS; the host pinned on its port and LDAP's own 389 and 636, a
     /// refused host the guard's own denial, the session handed the host as named and the address pinned; every parameter held
     /// to its shape - a DN, a filter, a scope, an attribute's name, a JSON object of attributes, objectClass on a create - before
@@ -345,13 +345,13 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - the LDAP connector against a real OpenLDAP 2.4 (<c>scripts/ldap-test-server.ps1</c>'s throwaway directory on
+    /// The LDAP connector against a real OpenLDAP 2.4 (<c>scripts/ldap-test-server.ps1</c>'s throwaway directory on
     /// loopback) through the HOST's egress: loopback refused until allowlisted; a test that binds and names the naming context, a
     /// wrong password refused; the session dialling the pinned address and never the name; an organisational unit and people
     /// created, searched by a filter in each scope with the attributes asked for, compared, updated - values added, replaced and
     /// removed - renamed and moved, and deleted, with the directory's own refusals said (an entry that exists, one that does not, a
     /// unit with people in it); a search paged past the page size and held to its most. Fails, never skips, when the directory is
-    /// absent (D46).
+    /// absent.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class LdapConnectorLiveTests(ITestOutputHelper output)

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - WordPress DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// WordPress DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a site's REST API: a WordPress connection made over the API from an admin page's address,
     /// its application password vaulted, tested (the user named); a published pipeline writes a post with HTML, reads the posts
     /// over two pages as the site says it has, publishes the post and trashes it - every call the username and application

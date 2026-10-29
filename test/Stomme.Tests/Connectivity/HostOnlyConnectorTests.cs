@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 6 (D110) - a connector that reaches the HOST itself (a process, the file system) is created or
+    /// A connector that reaches the HOST itself (a process, the file system) is created or
     /// edited by the Host role alone: an Administrator holding <c>connections:manage</c> is refused, the Host is admitted,
     /// and the catalog says which connectors are host-only so an editor can say so before the refusal.
     /// </summary>

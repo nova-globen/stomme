@@ -6,7 +6,7 @@ using Markdig;
 namespace Stomme.Modules.ContextualHelp.Infrastructure
 {
     /// <summary>
-    /// Turns a help topic's Markdown into the <c>SafeHtml</c> a reader receives (BL-84, D103 item 5): Markdig, then the
+    /// Turns a help topic's Markdown into the <c>SafeHtml</c> a reader receives: Markdig, then the
     /// allowlist. Server-side only, at READ - HTML is never stored, and no Markdig type is referenced from the client.
     /// </summary>
     /// <remarks>

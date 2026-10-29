@@ -8,7 +8,7 @@ using Stomme.Persistence.Abstractions;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Serialises the read-modify-write of one quota counter (D102).
+    /// Serialises the read-modify-write of one quota counter.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -18,7 +18,7 @@ namespace Stomme.Modules.Metering.Application
     /// beside it is exactly the "parallel, never extend" failure this absorption keeps guarding against.
     /// </para>
     /// <para>
-    /// <b>What the lock is, per install (BL-154).</b> The host registers ONE <see cref="IDistributedLock"/> that
+    /// <b>What the lock is, per install.</b> The host registers ONE <see cref="IDistributedLock"/> that
     /// picks the install's primitive - PostgreSQL advisory, SQL Server app lock, RavenDB compare-exchange - and, on
     /// SQLite and the File store, the explicit single-node in-process lock. Before BL-154 NOTHING was registered on
     /// any provider, so this ran on its in-process fallback everywhere. <see cref="IsCrossNode"/> says which is in
@@ -51,7 +51,7 @@ namespace Stomme.Modules.Metering.Application
 
         /// <summary>Runs <paramref name="fold"/> holding the gate for (site, metric).</summary>
         /// <remarks>
-        /// <b>The in-process gate is taken FIRST, always, and the cross-node lock inside it (BL-167).</b> The fallback
+        /// <b>The in-process gate is taken FIRST, always, and the cross-node lock inside it.</b> The fallback
         /// used to be an ALTERNATIVE: a recorder that found the distributed lock held took the in-process gate instead
         /// and folded - while the recorder holding the distributed lock folded too, because the two paths excluded
         /// nothing from each other. Measured: a RavenDB gate run failed with a quota conflict out of this. Now every

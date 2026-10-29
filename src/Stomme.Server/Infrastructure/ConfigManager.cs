@@ -61,7 +61,7 @@ namespace Stomme.Infrastructure
 
         // Per-instance, captured at construction: several hosts run in one process (the integration suites),
         // and a static target would let the last-constructed host redirect every host's config writes into
-        // its own file (BL-59, observed 2026-07-23).
+        // its own file (observed 2026-07-23).
         private readonly string _appsettingsPath = "";
         private readonly string _appsettingsFilename = "";
 
@@ -296,7 +296,7 @@ namespace Stomme.Infrastructure
             return !string.IsNullOrEmpty(GetConnectionString());
         }
 
-        // BL-20: a PURE read. The id (and the version/date stamp) are minted only by EnsureInstallationId(),
+        // A PURE read. The id (and the version/date stamp) are minted only by EnsureInstallationId(),
         // which the install/upgrade path calls deliberately (DatabaseManager.UpdateInstallation) — a getter
         // that writes made every runtime read site (SystemController, PackageController) a config mutation.
         public string GetInstallationId()

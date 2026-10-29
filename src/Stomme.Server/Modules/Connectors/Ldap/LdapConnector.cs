@@ -18,7 +18,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Ldap
 {
     /// <summary>
-    /// LDAP (BL-229, n8n's LDAP node: a directory's entries searched, compared, created, updated, renamed and deleted) over
+    /// LDAP (n8n's LDAP node: a directory's entries searched, compared, created, updated, renamed and deleted) over
     /// System.DirectoryServices.Protocols - any LDAPv3 directory, OpenLDAP, 389 Directory Server, Active Directory - bound by a
     /// DN and its password (the Basic scheme; anonymous without a user), over the host's egress. A test binds and names the
     /// directory's naming contexts. (The Active Directory connector reads AD's own shapes; this one is the directory's own.)

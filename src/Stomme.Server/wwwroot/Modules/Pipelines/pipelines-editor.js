@@ -1,4 +1,4 @@
-// The pipeline editor's keyboard (BL-229). Plain script, loaded as a module resource of the editor, so it works the same on
+// The pipeline editor's keyboard. Plain script, loaded as a module resource of the editor, so it works the same on
 // a Server and a WebAssembly site. The listener is attached once per page, whatever re-renders; the editor registers itself
 // (stommePipelineEditorAttach) to receive the editing shortcuts and unregisters when it goes.
 (function () {
@@ -76,7 +76,7 @@
         setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     };
 
-    // BL-229 - the diagram library re-measures its box when the WINDOW scrolls (Z.Blazor.Diagrams 3.0.4.1's script.js), but the
+    // The diagram library re-measures its box when the WINDOW scrolls (Z.Blazor.Diagrams 3.0.4.1's script.js), but the
     // editor sits in the admin dialog, which scrolls itself, and an element's scroll never reaches the window: the box stayed
     // where it was measured, and every pointer the canvas turned into a spot was off by the dialog's scroll (measured: a note
     // added from the right-click menu landed 85px above the click; a dropped step, a connection let go on empty canvas and a box
@@ -133,7 +133,7 @@
         return !!document.querySelector('.db-step-node.is-selected');
     }
 
-    // BL-229 - a code box edits like code (n8n's code editor): Tab indents - the lines a selection touches, or two spaces at the
+    // A code box edits like code (n8n's code editor): Tab indents - the lines a selection touches, or two spaces at the
     // caret - and Shift+Tab takes the indent back; Enter keeps the line's indentation, one more after an opening bracket, and a
     // closing bracket right after the caret goes to a line of its own. Escape, then Tab, leaves the box, so the keyboard is never
     // trapped in it. Where the caret is, as a line and a column - the way a script's problem is said - is shown under the box.
@@ -222,7 +222,7 @@
         },
     };
 
-    // BL-229 - a code box's code coloured as n8n's code editor colours it: keywords, strings, numbers, comments, and the names a
+    // A code box's code coloured as n8n's code editor colours it: keywords, strings, numbers, comments, and the names a
     // script reads that are not its own (n8n's $json, $input; a statement's @name). The box stays the plain text field it is -
     // its text drawn again, coloured, behind it (the box's own text made clear) - so typing, undo and the page's binding are as
     // they were; until the colours are drawn the box shows its text itself.
@@ -295,7 +295,7 @@
         return found;
     }
 
-    // BL-229 - n8n's completion in its Code node: what may be written where the caret is. NAMES are what the editor knows of the
+    // n8n's completion in its Code node: what may be written where the caret is. NAMES are what the editor knows of the
     // script's world - { name, kind, detail, of, args }: its own names (kind 'global'), its variables' ('variable'), the fields of
     // what it receives ('field'), and the members of a name it knows ('member', of that name; args: it takes arguments). After a
     // '.', a known name's members, or else the fields; elsewhere the names and the words the script already holds, once the
@@ -732,7 +732,7 @@
         var ctrl = e.ctrlKey || e.metaKey;
         var key = (e.key || '').toLowerCase();
 
-        // Ctrl+K (Cmd+K) from anywhere, or "/" when not typing in a field: find a step (increment 1).
+        // Ctrl+K (Cmd+K) from anywhere, or "/" when not typing in a field: find a step.
         if ((ctrl && key === 'k') || (e.key === '/' && !typing(e.target))) {
             e.preventDefault();
             search.focus();
@@ -841,7 +841,7 @@
         }
     });
 
-    // BL-229, n8n's mapping: a variable or a field dragged from the inspector carries its placeholder; dropped on an input's
+    // n8n's mapping: a variable or a field dragged from the inspector carries its placeholder; dropped on an input's
     // VALUE (a text, number or multi-line field the step reads as typed) the editor makes the value an expression ending in it.
     // Dropped on an expression it is the browser's own insert, at the caret.
     document.addEventListener('dragstart', function (e) {

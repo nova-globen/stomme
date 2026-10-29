@@ -21,7 +21,7 @@ namespace Stomme.Tests
     /// BL-154's gate: the property neither lock abstraction had a test for - N acquires of ONE key raced against ONE store,
     /// and EXACTLY one wins; the key is free again once the winner releases; another key is independent. One subclass per
     /// primitive the host now registers (<see cref="ConfiguredDistributedLock"/>). The store-backed ones FAIL rather than
-    /// skip when their server is unreachable (D46).
+    /// skip when their server is unreachable.
     /// </summary>
     public abstract class DistributedLockConcurrencyTests : IAsyncLifetime
     {

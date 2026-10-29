@@ -10,7 +10,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-163 - the AI price list, read from the JSON a deployed install would actually write.
+    /// The AI price list, read from the JSON a deployed install would actually write.
     /// </summary>
     /// <remarks>
     /// The calculator had no test at all, and its documented key - <c>provider:model</c> - could not be written: in

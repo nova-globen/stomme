@@ -19,7 +19,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 4 - the server holds the publish to the editor's rule: a graph with an ERROR (an input its step cannot do
+    /// The server holds the publish to the editor's rule: a graph with an ERROR (an input its step cannot do
     /// without, left empty) is not published, by the module's own command, whoever sends it; a WARNING (a step nothing leads to)
     /// holds nothing back. Read against the engine as the host composes it, the module's step families included.
     /// </summary>
@@ -99,7 +99,7 @@ namespace Stomme.Tests.Pipelines
             Assert.True(published!.Succeeded, string.Join("; ", published.Errors));
             Assert.True(await PublishedAsync());
 
-            // BL-229 - n8n's archive: set aside, the pipeline is unpublished and marked - listed as archived, who did it kept; publishing
+            // n8n's archive: set aside, the pipeline is unpublished and marked - listed as archived, who did it kept; publishing
             // it is refused until it is restored, a draft, after which it publishes as before.
             var keyValues = services.GetRequiredService<Stomme.Engine.KeyValues.Contracts.IKeyValueStore>();
             var tenants = services.GetRequiredService<Stomme.Engine.Common.Multitenancy.ITenantAccessor>();

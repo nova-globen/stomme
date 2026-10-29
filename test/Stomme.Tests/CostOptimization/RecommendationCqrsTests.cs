@@ -15,7 +15,7 @@ using static Stomme.Tests.CostOptimization.CostOptimizationApplicationHarness;
 namespace Stomme.Tests.CostOptimization
 {
     /// <summary>
-    /// BL-97 increment 6 - the predecessor platform's <c>RecommendationCqrsTests</c> by name, through the mediator over the module's own startup
+    /// The predecessor platform's <c>RecommendationCqrsTests</c> by name, through the mediator over the module's own startup
     /// on the File store. CHANGED throughout: the predecessor platform's <c>Result&lt;RecommendationView&gt;</c> is the decision view's
     /// <c>Success</c>/<c>Code</c>/<c>Recommendation</c>, with the predecessor platform's codes; the instants are UTC <c>DateTime</c> values.
     /// The port's own: another site's recommendation is not found, and another site's open key suppresses nothing here.
@@ -235,7 +235,7 @@ namespace Stomme.Tests.CostOptimization
     }
 
     /// <summary>
-    /// BL-97 increment 6 - the predecessor platform's <c>CostOptimizationRegistrationTests.AddCostOptimization_BuildsAndResolvesTheRecommendationRepository</c>
+    /// The predecessor platform's <c>CostOptimizationRegistrationTests.AddCostOptimization_BuildsAndResolvesTheRecommendationRepository</c>
     /// by name over the module's own startup, and the port's own: the four requests and the advisor's options from the HOST's
     /// configuration. the predecessor platform's job, cleanup-option and navigation cases are booked for increments 7 and 8, where their
     /// subjects land.

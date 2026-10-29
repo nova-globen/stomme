@@ -18,7 +18,7 @@ namespace Stomme.Modules.Notifications.Application
         int Delivered, int Deferred, int DigestHeld, int Retried, int Failed, int Flushed, int Purged, bool HourlyPassRan);
 
     /// <summary>
-    /// The Job-backed delivery pipeline for ONE site (BL-78 step 4, D100 point 3) - the policy the predecessor platform spread over
+    /// The Job-backed delivery pipeline for ONE site - the policy the predecessor platform spread over
     /// <c>NotificationDelivery</c>, the send/retry commands, the bus consumers and <c>NotificationDigestJob</c>, made scalar
     /// and pull-based: <c>NotificationDispatchJob</c> calls <see cref="RunSiteAsync"/> per site per minute.
     /// </summary>
@@ -105,7 +105,7 @@ namespace Stomme.Modules.Notifications.Application
 
         /// <summary>
         /// The site's enabled channels, after creating a default for e-mail and in-app where the site has NO channel of that
-        /// kind (BL-251: a new site had none, so every notification failed and was retried until an administrator created
+        /// kind (a new site had none, so every notification failed and was retried until an administrator created
         /// them). Neither kind needs settings of its own - e-mail goes through the site's notification queue and SMTP settings,
         /// in-app into the inbox - so a default is complete. A channel an administrator disabled or renamed is left alone;
         /// webhook and SMS still need configuring.
@@ -252,9 +252,9 @@ namespace Stomme.Modules.Notifications.Application
             {
                 // Another writer changed the request since this pass loaded it. The erasure of its recipient deletes or scrubs
                 // the row from its own job, and a second pass is the other candidate. That write wins; this pass leaves the
-                // request to it and goes on with the site's other requests. Before BL-188 (2026-10-01) the conflict escaped
+                // request to it and goes on with the site's other requests. Before BL-188 the conflict escaped
                 // the pass, so one erased request stopped every other delivery of the site for the minute, logged as an
-                // Error. A failed write leaves nothing to poison the next one: EfRepository discards it (BL-152) and the RavenDB
+                // Error. A failed write leaves nothing to poison the next one: EfRepository discards it and the RavenDB
                 // repository writes through a session of its own. The File store checks no concurrency and never raises this.
                 _logger.LogInformation("Notification request {RequestId} on site {SiteId} was changed by another writer during the pass; it is left to that write.",
                     request.Id, request.SiteId);

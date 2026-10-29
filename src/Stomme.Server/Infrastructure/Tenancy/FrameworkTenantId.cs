@@ -23,7 +23,7 @@ namespace Stomme.Infrastructure.Tenancy
     /// written at <see cref="TenantId.Default"/>. Registering a real tenant context that reports the tenant's
     /// *own* id would otherwise make the tenant query filter hide all of it — every flag silently reading
     /// <c>false</c>. Under this encoding the existing rows are already under the right key, so the adapter
-    /// goes live with no data migration and no behaviour change for the single-tenant case (D3: never a
+    /// goes live with no data migration and no behaviour change for the single-tenant case (never a
     /// non-working window). <see cref="MapsDefaultTenantToSeamDefault"/> pins the property, and a test asserts
     /// it — if anyone changes the encoding, that test fails rather than the flags silently going dark.
     /// </para>

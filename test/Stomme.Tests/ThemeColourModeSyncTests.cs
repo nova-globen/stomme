@@ -6,12 +6,12 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-49 — the dark/light toggle must move EVERY colour system on the page, not just Stomme's own.
+    /// The dark/light toggle must move EVERY colour system on the page, not just Stomme's own.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <c>App.razor</c>'s <c>stommeTheme.apply()</c> is the single source of truth for the colour mode. It
-    /// sets <c>data-theme</c> (the <c>--db-*</c> layer) and hands the mode to FluentUI 5 (BL-192). It must ALSO set
+    /// sets <c>data-theme</c> (the <c>--db-*</c> layer) and hands the mode to FluentUI 5. It must ALSO set
     /// Bootstrap 5.3's own <c>data-bs-theme</c>, because <c>BlazorTheme</c> loads Bootstrap from the CDN and
     /// Bootstrap owns its chrome independently.
     /// </para>
@@ -60,7 +60,7 @@ namespace Stomme.Tests
         [Fact]
         public void The_theme_apply_function_hands_the_mode_to_FluentUI_5()
         {
-            // BL-192: FluentUI 5 has no <fluent-design-theme> element to set; its own script keeps the mode. Without this
+            // FluentUI 5 has no <fluent-design-theme> element to set; its own script keeps the mode. Without this
             // line the --db-* surfaces turn dark while every FluentUI control stays light - the same split BL-49 measured
             // for Bootstrap.
             var apply = ExtractApplyFunction(ReadAppRazor());
@@ -71,7 +71,7 @@ namespace Stomme.Tests
         [Fact]
         public void With_no_stored_choice_the_mode_is_the_VISITORS_system_preference_not_dark()
         {
-            // BL-89: the bootstrap fell back to a hardcoded 'dark' - a light-preferring visitor got a dark site - and the
+            // The bootstrap fell back to a hardcoded 'dark' - a light-preferring visitor got a dark site - and the
             // FluentUI theme state defaulted to Dark the same way. Both now start at "system". Since BL-198 the visitor's
             // choice is read by stored(), which answers "system" when nothing is stored AND when the browser refuses storage
             // (the bootstrap used to give such a browser no mode at all); a theme's fixed mode is the only thing above it.

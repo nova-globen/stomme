@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-81 (D106 item 3) - the OpenIddict authority's registrations, on an installed host with <c>OpenIddict:Enabled</c>,
+    /// The OpenIddict authority's registrations, on an installed host with <c>OpenIddict:Enabled</c>,
     /// SQLite and RavenDB, through OpenIddict's own managers: a client is registered and the part taken; afterwards a second
     /// client is registered and a token issued to the first; the restore brings back exactly the first client (its hashed
     /// secret intact) and NO token - a restored installation honours no token issued after the snapshot.

@@ -18,7 +18,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-263 (infra, 2026-10-29): every module aggregate on a relational install shares ONE EF Core model
+    /// BL-263 (infra): every module aggregate on a relational install shares ONE EF Core model
     /// (<c>ModuleAggregatesDbContext</c>), so an aggregate that cannot be mapped must fail ONLY its own module - named in the
     /// log, its repository refusing with that name - while every other module on the store keeps reading and writing. A
     /// mappable aggregate is registered beside an unmappable one (a value object the convention does not support).

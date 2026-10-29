@@ -15,11 +15,11 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Redis DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Redis DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a real server (<see cref="RedisTestEndpoint"/>): a Redis connection made over the API - an address without a
     /// password, the password vaulted - refused while loopback is not allowlisted, then tested (the server named); a published
     /// pipeline sets an order's hash with a time to live, counts it, queues it and takes it off the queue, reads the hash back
-    /// and deletes the keys; the password in neither the graph nor the run. Fails, never skips, without a server (D46).
+    /// and deletes the keys; the password in neither the graph nor the run. Fails, never skips, without a server.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

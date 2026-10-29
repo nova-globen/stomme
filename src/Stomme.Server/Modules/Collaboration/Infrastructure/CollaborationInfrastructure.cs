@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Collaboration.Infrastructure
 {
     /// <summary>
-    /// The lock sweep (BL-97 increment 11, the predecessor platform's <c>CollaborationLockSweepJob</c>): every minute, per SITE of the job's
+    /// The lock sweep (the predecessor platform's <c>CollaborationLockSweepJob</c>): every minute, per SITE of the job's
     /// tenant, the lapsed leases are expired so their release reaches the other editors. Switched off with the feature
     /// (<c>Collaboration:Enabled</c>, read from this host's configuration each run - BL-162); one site's failure is logged
     /// and contained. <b>CHANGED:</b> the framework's job scheduler and a pass per site, the advisor job's shape, instead
@@ -153,7 +153,7 @@ namespace Stomme.Modules.Collaboration.Infrastructure
     }
 
     /// <summary>
-    /// A person's collaboration record for their data package (D107): the locks they took and the sessions they were present
+    /// A person's collaboration record for their data package: the locks they took and the sessions they were present
     /// in on the site, with the changes they announced there. Coordination state, carried because it names them.
     /// </summary>
     public sealed class CollaborationSubjectContributor(IResourceLockRepository locks, IEditSessionRepository sessions) : ISubjectDataContributor

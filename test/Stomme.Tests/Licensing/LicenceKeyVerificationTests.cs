@@ -15,7 +15,7 @@ namespace Stomme.Tests.Licensing
     /// Adapted from the predecessor platform <c>tests/Licensing.Tests/LicenseKeyTests.cs</c> (by name):
     /// <c>SignedKey_RoundTrips_AndRejectsTamperingOrGarbage</c> (whole fact) and the VERIFICATION half of
     /// <c>ImportLicenseKey_ActivatesFromAValidKey_AndRejectsInvalidOrExpired</c> (its activation half is dropped with
-    /// the predecessor platform's key-less Activate/Import feature, D105 item 12).
+    /// the predecessor platform's key-less Activate/Import feature).
     /// </remarks>
     public sealed class LicenceKeyVerificationTests : IDisposable
     {
@@ -296,7 +296,7 @@ namespace Stomme.Tests.Licensing
         {
             // Adapted by name from the predecessor platform LicenseKeyTests: issue → verify round-trips the signed fields; an appended
             // character and a garbage string are both rejected. the predecessor platform's '*' entitlement is NOT carried: '*' is
-            // Malformed under D105.
+            // Malformed.
             var payload = _issuer.Payload(Installation, new[] { "novagloben.enterprise" }, nbf: Now.AddDays(-1), exp: Now.AddYears(1));
             var signed = _issuer.Issue(payload);
 
@@ -314,7 +314,7 @@ namespace Stomme.Tests.Licensing
         public void ImportLicenseKey_ActivatesFromAValidKey_AndRejectsInvalidOrExpired()
         {
             // Adapted by name from the predecessor platform LicenseKeyTests — the VERIFICATION half only (the predecessor platform's Import/Activate
-            // mediator path is not absorbed, D105 item 12).
+            // mediator path is not absorbed).
             var valid = ValidKey(exp: Now.AddYears(1), ent: new[] { "reports:export" });
             var result = Verify(valid);
             Assert.Equal(LicenceKeyReason.Valid, result.Reason);

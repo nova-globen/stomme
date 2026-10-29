@@ -7,7 +7,7 @@ namespace Stomme.Connectivity
 {
     /// <summary>
     /// Serialises canonical <see cref="ConnectorRecord"/>s to the JSON-array wire shape the Datasets registrar and the
-    /// pipeline steps consume (BL-96 increment 1, lifted from the predecessor platform's building block): each field boxed as its
+    /// pipeline steps consume: each field boxed as its
     /// JSON-native value - a long stays a number, a bool a bool, null null - and anything else as its text.
     /// </summary>
     public static class ConnectorRecordJson

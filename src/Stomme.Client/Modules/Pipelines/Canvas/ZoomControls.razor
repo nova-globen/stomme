@@ -2,7 +2,7 @@
 @using Blazor.Diagrams
 @implements IDisposable
 
-@* BL-229 - n8n's zoom buttons, in the canvas's corner: out, the zoom (pressed, back to 100 %), in, fit. The zoom shown follows the
+@* n8n's zoom buttons, in the canvas's corner: out, the zoom (pressed, back to 100 %), in, fit. The zoom shown follows the
    wheel too - this component redraws itself on the diagram's zoom, never the whole editor. *@
 <div class="db-pipeline-editor__zoom" role="toolbar" aria-label="Zoom">
     <button id="pipelines-editor-zoom-out" type="button" class="db-pipeline-editor__zoom-button" title="Zoom out (-)" aria-label="Zoom out" @onclick="() => ZoomTo(Diagram.Zoom / 1.2)">−</button>

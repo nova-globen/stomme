@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's workflow "Timezone": the zone a pipeline reads time in (<see cref="PipelineGraph.TimeZone"/>) - its
+    /// n8n's workflow "Timezone": the zone a pipeline reads time in (<see cref="PipelineGraph.TimeZone"/>) - its
     /// <c>{{ $now }}</c> and <c>{{ $run.startedAt }}</c> with that zone's offset, its <c>{{ $today }}</c> that zone's date, and
     /// a Schedule with no zone of its own read there. Empty is UTC, as before. An IANA name - Europe/Stockholm - followed through
     /// daylight saving; a name the server does not know is refused when the pipeline is saved.

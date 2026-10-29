@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The container's HEALTHCHECK is LIVENESS (<c>/healthz</c>) and never readiness (BL-83 / D104 item 4).
+    /// The container's HEALTHCHECK is LIVENESS (<c>/healthz</c>) and never readiness.
     /// </summary>
     /// <remarks>
     /// Measured 2026-09-23 on a genuinely uninstalled host in Production: <c>/healthz</c> = 200 "alive", <c>/readyz</c> = 503.

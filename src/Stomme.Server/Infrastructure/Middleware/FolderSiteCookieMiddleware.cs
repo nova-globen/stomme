@@ -13,9 +13,8 @@ using Microsoft.Extensions.Primitives;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// Keeps a FOLDER site's framework cookies to itself (M2 row 8, rulings C33 and C34): a site at <c>host/didin</c> shares
-    /// the host with the root site and every other folder site, and a cookie the root sets with <c>Path=/</c> reaches
-    /// <c>/didin</c> too, under the same name - so without this one sign-in, one antiforgery token and one release marker
+    /// Keeps a FOLDER site's framework cookies to itself: a site at <c>host/shop</c> shares the host with the root site and
+    /// every other folder site, and a cookie the root sets with <c>Path=/</c> reaches <c>/shop</c> too, under the same name - so without this one sign-in, one antiforgery token and one release marker
     /// served every site on the host.
     /// </summary>
     /// <remarks>
@@ -139,6 +138,32 @@ namespace Stomme.Infrastructure
                 .Select(pair => pair.name[..^suffix.Length] + pair.raw[pair.name.Length..].TrimStart());
             var others = pairs.Where(pair => !IsFramework(pair.name, names)).Select(pair => pair.raw);
             return string.Join("; ", own.Concat(others));
+        }
+
+        /// <summary>
+        /// The cookies a call the host makes to its own API on behalf of <paramref name="context"/> carries, as
+        /// <c>name=value</c> pairs: the request's cookies as the browser sent them. On a folder site the framework's cookies
+        /// reached the framework under their usual names (<see cref="TranslateHeader"/>); they go back under the site's names,
+        /// or the self-call - translated again on its way in - would drop them as another site's and arrive with no sign-in
+        /// and no antiforgery cookie.
+        /// </summary>
+        public static IEnumerable<string> SelfCallCookies(HttpContext context)
+        {
+            string? key = null;
+            IReadOnlyList<string> names = Array.Empty<string>();
+            if (context.Items[Constants.HttpContextAliasKey] is Alias { Path: { Length: > 0 } aliasPath } && !string.IsNullOrWhiteSpace(aliasPath))
+            {
+                key = SiteKey(aliasPath);
+                names = FrameworkCookieNames(context.Items[Constants.HttpContextSiteSettingsKey] as Dictionary<string, string>);
+            }
+
+            foreach (var cookie in context.Request.Cookies)
+            {
+                var name = key is not null && IsFramework(cookie.Key, names) && !cookie.Key.EndsWith("-" + key, StringComparison.Ordinal)
+                    ? cookie.Key + "-" + key
+                    : cookie.Key;
+                yield return name + "=" + System.Net.WebUtility.UrlEncode(cookie.Value);
+            }
         }
 
         private static bool IsFramework(string name, IReadOnlyList<string> names) =>

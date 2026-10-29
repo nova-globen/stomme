@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Mcp
 {
     /// <summary>
-    /// A REAL MCP client, from the SDK, talking to Stomme's endpoint (BL-80, D101's handshake gate).
+    /// A REAL MCP client, from the SDK, talking to Stomme's endpoint (D101's handshake gate).
     /// </summary>
     /// <remarks>
     /// <para>

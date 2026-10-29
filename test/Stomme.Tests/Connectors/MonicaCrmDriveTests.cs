@@ -18,8 +18,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Monica DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
-    /// this machine's throwaway Monica 4.1 (scripts/monica-test-server.ps1) - fail-not-skip without it (D46): a Monica connection made
+    /// Monica DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port, against
+    /// this machine's throwaway Monica 4.1 (scripts/monica-test-server.ps1) - fail-not-skip without it: a Monica connection made
     /// over the API, its token vaulted, tested; a published pipeline making a contact, a note on it and a task for it - each an
     /// expression over the first step's result - and finding the contact by name; the token in neither the graph nor the run. The
     /// contact is deleted again afterwards.

@@ -7,7 +7,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Sessions.Domain
 {
     /// <summary>
-    /// One server-side session (BL-119): the row an authentication cookie points at, so that ONE sign-in can be listed and
+    /// One server-side session: the row an authentication cookie points at, so that ONE sign-in can be listed and
     /// revoked, and a cookie whose row is revoked or gone is refused on its next request.
     /// </summary>
     /// <remarks>

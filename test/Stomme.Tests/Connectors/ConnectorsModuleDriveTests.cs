@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 1 - the family on installed hosts on SQLite and PostgreSQL, over HTTP, with the demo content on:
+    /// The family on installed hosts on SQLite and PostgreSQL, over HTTP, with the demo content on:
     /// the catalog lists <c>rest</c> and <c>postgresql</c>, the two demo connections say their connector IS installed now,
     /// the REST demo connection repointed at a private address is refused BY POLICY through the real egress without a
     /// socket, and the PostgreSQL demo connection - which declares a password it never received - is refused for its

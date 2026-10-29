@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-251 - the language switcher changes the language. It writes the visitor's choice into the culture cookie, and every
+    /// The language switcher changes the language. It writes the visitor's choice into the culture cookie, and every
     /// server render rewrote that cookie to the profile's language or the site's default, so the next page came back in the
     /// old language (found driving the app guidance's UI wave). Driven: on a site offering English and French, a page request
     /// carrying the switcher's French cookie keeps it (no rewrite to English) and the page says it is French; a cookie naming

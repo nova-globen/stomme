@@ -21,7 +21,7 @@ using static Stomme.Tests.Collaboration.CollaborationRig;
 namespace Stomme.Tests.Collaboration
 {
     /// <summary>
-    /// BL-97 increment 11 - the predecessor platform's <c>LockCqrsTests</c>, <c>SessionCqrsTests</c>, <c>CollaborationLockSweepJobTests</c> and
+    /// The predecessor platform's <c>LockCqrsTests</c>, <c>SessionCqrsTests</c>, <c>CollaborationLockSweepJobTests</c> and
     /// <c>CollaborationRegistrationTests</c>, by name: each handler does what its service does, each request carries its key
     /// (view for an editor's act, manage for closing a session and taking a lock over), the sweep expires only lapsed leases,
     /// and the module composes. <b>CHANGED:</b> the sweep job's switch is <c>Collaboration:Enabled</c> (the predecessor platform: a tenant
@@ -74,7 +74,7 @@ namespace Stomme.Tests.Collaboration
             Assert.Equal(CollaborationPermissions.View, Key<ReleaseLockCommand>());
             Assert.Equal(CollaborationPermissions.View, Key<GetLockQuery>());
 
-            // ADDED: taking another user's lock over is the administrator's (D114).
+            // ADDED: taking another user's lock over is the administrator's.
             Assert.Equal(CollaborationPermissions.Manage, Key<ForceReleaseLockCommand>());
             Assert.Equal(CollaborationPermissions.Manage, Key<GetCollaborationOverviewQuery>());
         }

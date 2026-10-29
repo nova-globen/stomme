@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-251 - an API enum may be sent by name. The API read enums as numbers only, so <c>"scope": "Resource"</c> answered
+    /// An API enum may be sent by name. The API read enums as numbers only, so <c>"scope": "Resource"</c> answered
     /// 400. A name (any case) or a number is read; the number is still what is written, so a client reading responses is
     /// unchanged; anything else is refused with the names it could have used.
     /// </summary>

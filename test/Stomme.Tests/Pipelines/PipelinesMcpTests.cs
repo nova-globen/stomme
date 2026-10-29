@@ -87,7 +87,7 @@ namespace Stomme.Tests.Pipelines
                 var listedText = listed?["result"]?["content"]?.AsArray()[0]?["text"]?.GetValue<string>() ?? "[]";
                 Assert.Contains(JsonNode.Parse(listedText)!.AsArray(), p => p?["definitionId"]?.GetValue<string>() == definitionId && p?["isPublished"]?.GetValue<bool>() == true);
 
-                // BL-229: the runs waiting for a decision, read-only - none here, answered as an empty list.
+                // The runs waiting for a decision, read-only - none here, answered as an empty list.
                 var approvals = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.ListPipelineApprovals, ["arguments"] = new JsonObject() }, output, "list_pipeline_approvals");
                 Assert.NotEqual(true, approvals?["result"]?["isError"]?.GetValue<bool>());
                 Assert.Empty(JsonNode.Parse(approvals?["result"]?["content"]?.AsArray()[0]?["text"]?.GetValue<string>() ?? "null")!.AsArray());
@@ -104,7 +104,7 @@ namespace Stomme.Tests.Pipelines
                 Assert.Equal(("Finished", "mcp-read"), (runJson["run"]?["status"]?.GetValue<string>(), runJson["run"]?["correlationId"]?.GetValue<string>()));
                 Assert.True(runJson["log"]?.AsArray().Count > 0, "the run's log came back empty over MCP");
 
-                // BL-229: n8n's Insights over MCP - the finished run counted in the day's figures, its pipeline named; "days" optional.
+                // n8n's Insights over MCP - the finished run counted in the day's figures, its pipeline named; "days" optional.
                 var insights = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.GetPipelineInsights, ["arguments"] = new JsonObject { ["days"] = 1 } }, output, "get_pipeline_insights");
                 Assert.NotEqual(true, insights?["result"]?["isError"]?.GetValue<bool>());
                 var insightsJson = JsonNode.Parse(insights?["result"]?["content"]?.AsArray()[0]?["text"]?.GetValue<string>() ?? "{}")!;
@@ -113,7 +113,7 @@ namespace Stomme.Tests.Pipelines
                 var weekly = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.GetPipelineInsights, ["arguments"] = new JsonObject() }, output, "get_pipeline_insights (no days)");
                 Assert.Equal(7, JsonNode.Parse(weekly?["result"]?["content"]?.AsArray()[0]?["text"]?.GetValue<string>() ?? "{}")!["days"]?.GetValue<int>());
 
-                // BL-229: each step's figures over MCP - the run read (its pipeline is empty: no step of its own); without a
+                // Each step's figures over MCP - the run read (its pipeline is empty: no step of its own); without a
                 // pipeline, refused saying so.
                 var stepInsights = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.GetPipelineStepInsights, ["arguments"] = new JsonObject { ["definitionId"] = definitionId, ["days"] = 1 } }, output, "get_pipeline_step_insights");
                 Assert.NotEqual(true, stepInsights?["result"]?["isError"]?.GetValue<bool>());
@@ -122,14 +122,14 @@ namespace Stomme.Tests.Pipelines
                 var noPipeline = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.GetPipelineStepInsights, ["arguments"] = new JsonObject() }, output, "get_pipeline_step_insights (no pipeline)");
                 Assert.Equal(true, noPipeline?["result"]?["isError"]?.GetValue<bool>());
 
-                // BL-229: what runs next over MCP - the published pipeline has no schedule; the window as asked, a day when not.
+                // What runs next over MCP - the published pipeline has no schedule; the window as asked, a day when not.
                 var upcoming = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.ListUpcomingPipelineRuns, ["arguments"] = new JsonObject { ["hours"] = 168 } }, output, "list_upcoming_pipeline_runs");
                 Assert.NotEqual(true, upcoming?["result"]?["isError"]?.GetValue<bool>());
                 var upcomingJson = JsonNode.Parse(upcoming?["result"]?["content"]?.AsArray()[0]?["text"]?.GetValue<string>() ?? "{}")!;
                 Assert.Equal(168, upcomingJson["hours"]?.GetValue<int>());
                 Assert.Empty(upcomingJson["schedules"]!.AsArray());
 
-                // BL-229: the site's data tables over MCP, read-only - made and filled over the API (its tables/... routes beside
+                // The site's data tables over MCP, read-only - made and filled over the API (its tables/... routes beside
                 // {definitionId}/...), a CSV imported, then listed and read by name.
                 var table = await GateDrive.SendJsonAsync(app, hostClient, hostCookies, Host, hostId, System.Net.Http.HttpMethod.Post, "/api/Pipelines/tables",
                     new PipelineSiteTableRequest { Name = "Subscribers", Columns = { new PipelineTableColumn { Name = "email" }, new PipelineTableColumn { Name = "visits", Type = PipelineTableColumnType.Number } } }, output, "create a table");
@@ -153,7 +153,7 @@ namespace Stomme.Tests.Pipelines
                 var noTable = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.ReadDataTable, ["arguments"] = new JsonObject { ["table"] = "nope" } }, output, "read_data_table (none)");
                 Assert.True(noTable?["result"]?["isError"]?.GetValue<bool>());
 
-                // BL-229 - n8n's Evaluations over MCP: none yet, listed as none; one not on the site an error; starting one is Confirm,
+                // n8n's Evaluations over MCP: none yet, listed as none; one not on the site an error; starting one is Confirm,
                 // denied here like run_pipeline, so none is started.
                 var evaluations = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.ListEvaluations, ["arguments"] = new JsonObject { ["definitionId"] = definitionId } }, output, "list_pipeline_evaluations");
                 Assert.NotEqual(true, evaluations?["result"]?["isError"]?.GetValue<bool>());
@@ -176,16 +176,16 @@ namespace Stomme.Tests.Pipelines
                 // A mutating tool is Confirm, and the MCP server denies a Confirm call (no approval pipeline): no run started.
                 var denied = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.RunPipeline, ["arguments"] = new JsonObject { ["definitionId"] = definitionId } }, output, "run_pipeline (confirm)");
                 Assert.True(denied?["result"]?["isError"]?.GetValue<bool>());
-                // BL-229: running a run again - from its failed step, or from the start - is Confirm too.
+                // Running a run again - from its failed step, or from the start - is Confirm too.
                 var againDenied = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.RunPipelineAgain, ["arguments"] = new JsonObject { ["runId"] = runId, ["from"] = "start" } }, output, "run_pipeline_again (confirm)");
                 Assert.True(againDenied?["result"]?["isError"]?.GetValue<bool>());
-                // BL-229: stopping a run is Confirm as well.
+                // Stopping a run is Confirm as well.
                 var stopDenied = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.StopPipelineRun, ["arguments"] = new JsonObject { ["runId"] = runId } }, output, "stop_pipeline_run (confirm)");
                 Assert.True(stopDenied?["result"]?["isError"]?.GetValue<bool>());
                 var runs = await GateDrive.GetAsync(hostClient, hostCookies, Host, $"/api/Pipelines/runs?definitionId={definitionId}", output, "runs after the denied call");
                 Assert.Single(JsonNode.Parse(runs.Body)!.AsArray());
 
-                // BL-229: the pipeline activity over MCP - what was done over the API, by whom, newest first; the denied calls did
+                // The pipeline activity over MCP - what was done over the API, by whom, newest first; the denied calls did
                 // nothing and are not in it.
                 var activity = await McpRpc.CallAsync(hostClient, hostCookies, Host, "tools/call", new JsonObject { ["name"] = PipelinesMcpContributor.ListPipelineActivity, ["arguments"] = new JsonObject { ["definitionId"] = definitionId } }, output, "list_pipeline_activity");
                 Assert.NotEqual(true, activity?["result"]?["isError"]?.GetValue<bool>());
@@ -195,7 +195,7 @@ namespace Stomme.Tests.Pipelines
                 Assert.Equal(runId, lines[0]?["runId"]?.GetValue<string>());
 
                 // A registered-only user sees none of it.
-                // Unknown and denied are one answer - a JSON-RPC error, never the catalog (D101 item 2).
+                // Unknown and denied are one answer - a JSON-RPC error, never the catalog.
                 var plainSteps = await McpRpc.PostAsync(plainClient, plainCookies, Host, McpRpc.Body("resources/read", new JsonObject { ["uri"] = PipelinesMcpContributor.StepsUri }), output, "plain step catalog");
                 Assert.Contains("\"error\"", plainSteps.Body, System.StringComparison.Ordinal);
                 Assert.DoesNotContain("SendHttpRequest", plainSteps.Body, System.StringComparison.Ordinal);

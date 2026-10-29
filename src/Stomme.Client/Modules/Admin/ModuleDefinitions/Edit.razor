@@ -263,7 +263,7 @@
     private List<Language> _languages;
     private Package _package;
 
-    // D86: the module-wide "Configure" tab, rendered only when the module declares a ConfigSettingsType.
+    // The module-wide "Configure" tab, rendered only when the module declares a ConfigSettingsType.
     private Type _configSettingsType;
     private object _configSettings;
     private RenderFragment _configSettingsComponent;
@@ -313,7 +313,7 @@
                 _modifiedby = moduleDefinition.ModifiedBy;
                 _modifiedon = moduleDefinition.ModifiedOn;
 
-                // D86: resolve the module-wide config control. A definition-scoped ISettingsControl has no
+                // Resolve the module-wide config control. A definition-scoped ISettingsControl has no
                 // ModuleState placement context, so the id is passed in as a component Parameter — the control
                 // self-persists through the master-DB-routed EntityNames.ModuleDefinition settings channel.
                 if (!string.IsNullOrEmpty(moduleDefinition.ConfigSettingsType))

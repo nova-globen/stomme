@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft SharePoint DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// Microsoft SharePoint DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against a loopback stand-in for the tenant's token endpoint and Graph's sites API: a token for the app's
     /// client credentials alone, Graph answering that token alone. A Microsoft SharePoint connection made over the API, its secret
     /// vaulted, tested; a published pipeline reads a site's lists, creates an item, updates it, creates or updates one by its

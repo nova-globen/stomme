@@ -18,7 +18,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.ContextualHelp.Application
 {
     /// <summary>
-    /// The gated surface (BL-84, D103 item 8). Every request carries <c>[Requires]</c>, and none of them names a site, a
+    /// The gated surface. Every request carries <c>[Requires]</c>, and none of them names a site, a
     /// tenant or a user - all three are resolved server-side, so there is no parameter to forge.
     /// </summary>
     /// <remarks>
@@ -161,7 +161,7 @@ namespace Stomme.Modules.ContextualHelp.Application
 
     /// <summary>
     /// Renders UNSAVED Markdown through the reader's pipeline and allowlist. Server-side, so the client never references
-    /// Markdig (D103 item 5), and author-gated, so it is not an anonymous rendering service.
+    /// Markdig, and author-gated, so it is not an anonymous rendering service.
     /// </summary>
     [Requires(HelpPermissions.Author)]
     public sealed record PreviewHelpMarkdownQuery(string? Markdown) : IQuery<string>;

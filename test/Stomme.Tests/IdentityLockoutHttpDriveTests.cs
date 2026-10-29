@@ -29,7 +29,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-6 — LOCKOUT DRIVEN OVER HTTP on a REAL install: the proof that the lockout <c>IdentityOptions</c>
+    /// LOCKOUT DRIVEN OVER HTTP on a REAL install: the proof that the lockout <c>IdentityOptions</c>
     /// actually BITE through the login page, not merely that store methods round-trip.
     /// <para>
     /// Stands up the real host (<see cref="Program.BuildAppAsync"/>, transport swapped for TestServer), runs the
@@ -292,7 +292,7 @@ namespace Stomme.Tests
 
             public void Dispose()
             {
-                // This provider's own database, never the process-wide ClearAllPools (BL-104).
+                // This provider's own database, never the process-wide ClearAllPools.
                 ScratchSqlite.Release(_tenant);
             }
         }
@@ -394,7 +394,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { /* best effort */ }
             }
         }

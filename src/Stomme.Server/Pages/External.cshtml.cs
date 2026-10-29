@@ -16,7 +16,7 @@ namespace Stomme.Pages
         {
             returnurl = (returnurl == null) ? "/" : returnurl;
             returnurl = (!returnurl.StartsWith("/")) ? "/" + returnurl : returnurl;
-            returnurl = Utilities.LocalReturnUrl(returnurl); // BL-244: "//host" and "/\host" are another site
+            returnurl = Utilities.LocalReturnUrl(returnurl); // "//host" and "/\host" are another site
 
             var providertype = HttpContext.GetSiteSettings().GetValue("ExternalLogin:ProviderType", "");
             if (providertype != "")
@@ -40,7 +40,7 @@ namespace Stomme.Pages
             {
                 returnurl = "/" + returnurl;
             }
-            returnurl = Utilities.LocalReturnUrl(returnurl); // BL-244: "//host" and "/\host" are another site
+            returnurl = Utilities.LocalReturnUrl(returnurl); // "//host" and "/\host" are another site
 
             // remove reload parameter
             returnurl = returnurl.ReplaceMultiple(new string[] { "?reload=post", "&reload=post" }, "");

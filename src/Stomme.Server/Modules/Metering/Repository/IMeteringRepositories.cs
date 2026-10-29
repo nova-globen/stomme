@@ -10,10 +10,10 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Metering.Persistence
 {
     /// <summary>
-    /// The module's closed read surface (D102). Every filter uses only the <c>FindAsync</c> SAFE SET - <c>int</c>
+    /// The module's closed read surface. Every filter uses only the <c>FindAsync</c> SAFE SET - <c>int</c>
     /// site ids, <c>long</c> quantities, enums, nullable <c>int</c> user ids, UTC <see cref="DateTime"/> ranges, and
     /// NORMALIZED strings compared on both sides - because bare string equality is case-sensitive on EF and
-    /// case-insensitive on RavenDB (D49). <see cref="decimal"/> appears in no predicate anywhere: it round-trips,
+    /// case-insensitive on RavenDB. <see cref="decimal"/> appears in no predicate anywhere: it round-trips,
     /// but it sits outside the contract's safe set.
     /// </summary>
     /// <remarks>

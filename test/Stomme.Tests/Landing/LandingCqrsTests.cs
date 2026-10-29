@@ -28,7 +28,7 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace Stomme.Tests.Landing
 {
     /// <summary>
-    /// BL-98 increment 1 - the Landing requests through the module's real startup and the mediator's authorization behaviour,
+    /// The Landing requests through the module's real startup and the mediator's authorization behaviour,
     /// on the file store: a visitor sees nothing until a manager makes AND publishes the page, a draft is the managers', a visitor
     /// cannot write, a site's page is its own. Increment 2: a dashboard page shows only a published dashboard of the site the
     /// manager may read, and only to a viewer who may read dashboards - the Dashboards module's own request is scripted here

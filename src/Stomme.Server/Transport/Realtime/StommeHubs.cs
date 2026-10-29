@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace Stomme.Transport.Realtime
 {
     // HubRoutes moved to Stomme.Shared (src/Stomme.Shared/Transport/HubRoutes.cs, same namespace) so the Client's
-    // live notification feed can name the route (BL-78 / D100 point 8); AssemblyInfo.cs forwards the type.
+    // live notification feed can name the route; AssemblyInfo.cs forwards the type.
 
     /// <summary>
     /// In-app realtime notifications (brief 04 / D10). The server pushes a rendered notification to the
@@ -24,7 +24,7 @@ namespace Stomme.Transport.Realtime
     }
 
     /// <summary>
-    /// Realtime health (brief 04 / D10, BL-83): the health page's live update, and the live connection count
+    /// Realtime health (brief 04 / D10): the health page's live update, and the live connection count
     /// <see cref="RealtimeConnectionCounter"/> reports. Adopted from the predecessor platform's <c>HealthHub</c>.
     /// </summary>
     /// <remarks>

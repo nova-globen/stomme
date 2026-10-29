@@ -17,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Stomme.Infrastructure.Backup.Participants
 {
     /// <summary>
-    /// The participant every storage-blind module aggregate gets with ZERO module code (BL-81, D106 item 3): registered by
+    /// The participant every storage-blind module aggregate gets with ZERO module code: registered by
     /// <c>AddModuleAggregatePersistence</c> unless the aggregate is <see cref="BackupExcludedAttribute"/>. It works through
     /// the aggregate's own <see cref="IRepository{TAggregate,TId}"/>, so it is as storage-blind as the module.
     /// </summary>
@@ -43,7 +43,7 @@ namespace Stomme.Infrastructure.Backup.Participants
     {
         public string Name => "module-aggregate:" + typeof(TAggregate).FullName;
 
-        /// <summary>The aggregate as the serializer writes it (BL-170): a module that adds a property refuses its older parts.</summary>
+        /// <summary>The aggregate as the serializer writes it: a module that adds a property refuses its older parts.</summary>
         public string SchemaVersion => Shape;
 
         private static readonly string Shape = FileStoreSerializer.Shape(new[] { typeof(TAggregate) });
@@ -62,7 +62,7 @@ namespace Stomme.Infrastructure.Backup.Participants
 
         public async Task<BackupPartValidation> ValidateAsync(IBackupPartReader reader, BackupScope scope, CancellationToken cancellationToken)
         {
-            // A record may live in any tenant the SNAPSHOT holds; a partial restore (BL-171) skips the ones outside its scope.
+            // A record may live in any tenant the SNAPSHOT holds; a partial restore skips the ones outside its scope.
             var allowed = TenantScopes(scope.SnapshotTenantIds).ToHashSet();
             var seen = new HashSet<TId>();
             var problems = new List<string>();
@@ -133,7 +133,7 @@ namespace Stomme.Infrastructure.Backup.Participants
             var context = repository is EfRepository<TAggregate, TId> ? provider.GetService<TContext>() : null;
             await using var transaction = context is null ? null : await context.Database.BeginTransactionAsync(cancellationToken);
 
-            // BL-171: a partial restore touches the selected tenants' rows only - an installation-wide row (no home) and
+            // A partial restore touches the selected tenants' rows only - an installation-wide row (no home) and
             // another tenant's row stay exactly as they are, on both sides of the replace.
             var restoring = TenantScopes(scope.TenantIds).ToHashSet();
             bool InScope(Guid? home) => !scope.IsPartial || (home is { } tenant && restoring.Contains(tenant));

@@ -19,7 +19,7 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 11 (D110 Q3, D104) - the Connectivity health contribution over the module's real startup on the
+    /// BL-94 increment 11 (D110 Q3) - the Connectivity health contribution over the module's real startup on the
     /// File store: with the switch OFF the contributor offers no probe and the fixture records ZERO calls; with it on,
     /// the one Site-scope probe tests every connection of the site it is asked about and no other site's, writes each
     /// verdict on its row, answers the worst with each connection's outcome in its data, and one connection's failure

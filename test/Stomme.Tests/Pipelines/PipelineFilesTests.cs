@@ -16,7 +16,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - the site's pipeline folder as the Files page sees it: the folder the file steps read and write, listed a folder
+    /// The site's pipeline folder as the Files page sees it: the folder the file steps read and write, listed a folder
     /// at a time, a file taken in whole or not at all, a folder made, a file or a folder deleted, a file given back - each site in
     /// a folder of its own, every path that leaves it refused by the steps' own rule.
     /// </summary>

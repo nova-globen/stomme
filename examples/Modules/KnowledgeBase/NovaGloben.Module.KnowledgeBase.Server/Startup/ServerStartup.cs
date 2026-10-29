@@ -20,7 +20,7 @@ namespace NovaGloben.Module.KnowledgeBase.Startup
     /// <summary>
     /// The module's server composition, found by the host's convention scan (an <see cref="IServerStartup"/> in a
     /// <c>*.Stomme</c> assembly). It names NO store: <c>AddModuleAggregatePersistence</c> puts each aggregate on whichever
-    /// provider the installation chose - SQLite, PostgreSQL, SQL Server, RavenDB or the file store (D79/D80).
+    /// provider the installation chose - SQLite, PostgreSQL, SQL Server, RavenDB or the file store.
     /// </summary>
     public class ServerStartup : IServerStartup
     {
@@ -36,7 +36,7 @@ namespace NovaGloben.Module.KnowledgeBase.Startup
         {
             services.TryAddSingleton(TimeProvider.System);
 
-            // The two aggregates, storage-blind and tenant-owned (BL-111).
+            // The two aggregates, storage-blind and tenant-owned.
             services.AddModuleAggregatePersistence<Article, Guid>();
             services.AddModuleAggregatePersistence<Category, Guid>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
@@ -45,7 +45,7 @@ namespace NovaGloben.Module.KnowledgeBase.Startup
             // The commands and queries in this assembly.
             services.AddMediator<ServerStartup>();
 
-            // The in-process reaction to a publish (D40), and the notification template every site receives (D100).
+            // The in-process reaction to a publish, and the notification template every site receives.
             services.AddScoped<Stomme.SharedKernel.Domain.IDomainEventHandler<ArticlePublishedEvent>, ArticlePublishedDomainEventHandler>();
             services.TryAddEnumerable(ServiceDescriptor.Singleton<Stomme.Modules.Notifications.Application.Templates.INotificationTemplateSource, KnowledgeBaseTemplateSource>());
 
@@ -58,15 +58,15 @@ namespace NovaGloben.Module.KnowledgeBase.Startup
                 services.AddScoped<Stomme.Mcp.IMcpContributor, KnowledgeBaseMcpContributor>();
             }
 
-            // The data duties (increment 5): the author's articles in their data package (D107) and in an erasure (D112), and the
-            // published articles as an export source (D108). Module content export/import is the server manager's IPortable,
+            // The data duties (increment 5): the author's articles in their data package and in an erasure, and the
+            // published articles as an export source. Module content export/import is the server manager's IPortable,
             // and a backup carries both aggregates with no code here at all - AddModuleAggregatePersistence registered them.
             services.AddScoped<Stomme.Portability.ISubjectDataContributor, KnowledgeBaseSubjectDataContributor>();
             services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, KnowledgeBaseErasureParticipant>();
             services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Export.IExportSource, KnowledgeBaseArticlesExportSource>());
 
             // The operations (increment 6): the stale-drafts probe on the host's health monitor, its threshold read per scope from
-            // the host's configuration (the override file a deployed install writes, BL-162); and the demo articles, composed
+            // the host's configuration (the override file a deployed install writes); and the demo articles, composed
             // only while the host's demo switch is on at composition - off, nothing is seeded and nothing is registered.
             services.AddScoped<Stomme.Health.IHealthContributor>(sp => new KnowledgeBaseHealthContributor(
                 sp.GetRequiredService<IArticleRepository>(),

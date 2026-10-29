@@ -24,11 +24,11 @@ using Xunit;
 namespace Stomme.Tests.Formats
 {
     /// <summary>
-    /// BL-94 increment 1 (D110) - the Formats store's observable contract, once, driven on EF (SQLite and PostgreSQL),
+    /// The Formats store's observable contract, once, driven on EF (SQLite and PostgreSQL),
     /// RavenDB and File through the module's own startup: a definition round-trips with its three string value objects
     /// intact and its instants read back as UTC; a site's definitions are found by normalised name whatever the case
-    /// the caller used (D49) and listed in name order; another site's are not; an update and a delete land. Fail-not-skip
-    /// on the external stores (D46).
+    /// the caller used and listed in name order; another site's are not; an update and a delete land. Fail-not-skip
+    /// on the external stores.
     /// </summary>
     public abstract class FormatDefinitionStoreConformanceTests : IAsyncLifetime
     {

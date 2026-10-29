@@ -20,7 +20,7 @@ namespace Stomme.Modules.Datasets.Application
     }
 
     /// <summary>
-    /// Opens a file the framework's file manager holds, for a caller acting as the CURRENT user (BL-94 increment 13, D110):
+    /// Opens a file the framework's file manager holds, for a caller acting as the CURRENT user:
     /// the file must belong to the request's site (another site's id is simply not found), its folder must grant the
     /// current user View (the same check the file controller's download makes, from the same permission list, with no
     /// HttpContext - a headless caller has no user and is refused), and it must be within the server's upload cap

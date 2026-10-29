@@ -78,7 +78,7 @@ namespace Stomme.Models
         public bool IsAutoEnabled { get; set; } = true; // added in 4.0.0
 
         /// <summary>
-        /// The colour mode the theme is designed for (BL-198): empty follows the visitor, <c>"dark"</c> or <c>"light"</c> fixes
+        /// The colour mode the theme is designed for: empty follows the visitor, <c>"dark"</c> or <c>"light"</c> fixes
         /// every page it renders to that mode. See <see cref="Stomme.Shared.ThemeColorModes"/>.
         /// </summary>
         [NotMapped]

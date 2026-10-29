@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.GoogleBusinessProfile
 {
     /// <summary>
-    /// Google Business Profile (BL-229, n8n's Google Business Profile node: a location's posts and its reviews) over Google's
+    /// Google Business Profile (n8n's Google Business Profile node: a location's posts and its reviews) over Google's
     /// Business Profile APIs - the My Business API v4 (<c>https://mybusiness.googleapis.com/v4</c>) for posts and reviews, and
     /// its Account Management and Business Information APIs for the accounts and locations to name them by - as a person signed
     /// in: an OAuth client's refresh token granted business.manage, exchanged at Google's token endpoint through the shared

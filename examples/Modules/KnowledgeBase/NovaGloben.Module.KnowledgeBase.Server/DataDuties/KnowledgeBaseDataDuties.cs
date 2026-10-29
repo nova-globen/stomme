@@ -18,7 +18,7 @@ using NovaGloben.Module.KnowledgeBase.Persistence;
 namespace NovaGloben.Module.KnowledgeBase.DataDuties
 {
     /// <summary>
-    /// The author's articles in their personal data package (D107, <c>api/Portability/subject</c> and <c>mine</c>): every
+    /// The author's articles in their personal data package (<c>api/Portability/subject</c> and <c>mine</c>): every
     /// article the subject drafted on the site, drafts included - it is their data, whoever else may read it.
     /// </summary>
     public sealed class KnowledgeBaseSubjectDataContributor(IArticleRepository articles) : ISubjectDataContributor
@@ -54,7 +54,7 @@ namespace NovaGloben.Module.KnowledgeBase.DataDuties
     }
 
     /// <summary>
-    /// The author's articles when their personal data is erased (D112), declared per store so the host's receipt says what
+    /// The author's articles when their personal data is erased, declared per store so the host's receipt says what
     /// happened to each: a DRAFT is the author's unpublished work and is deleted; a PUBLISHED article is the site's content
     /// and stays, anonymised - attributed to nobody. Idempotent: a second run finds nothing left of the author's.
     /// </summary>
@@ -115,7 +115,7 @@ namespace NovaGloben.Module.KnowledgeBase.DataDuties
     }
 
     /// <summary>
-    /// The site's published articles as a table for the host's data export (D108): CSV, JSON, XLSX or PDF, rendered by the
+    /// The site's published articles as a table for the host's data export: CSV, JSON, XLSX or PDF, rendered by the
     /// export queue job, never in a request. A requester needs <c>knowledge-base:view</c> on top of the export key. A draft is
     /// not exported - an export is the site's knowledge base as its visitors read it. The source takes no arguments.
     /// </summary>

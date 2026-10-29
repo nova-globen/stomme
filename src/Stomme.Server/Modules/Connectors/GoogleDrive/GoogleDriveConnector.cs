@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.StaticFiles;
 namespace Stomme.Modules.Connectors.GoogleDrive
 {
     /// <summary>
-    /// Google Drive (BL-229, n8n's Google Drive node: files, folders and shared drives) over the Drive API v3
+    /// Google Drive (n8n's Google Drive node: files, folders and shared drives) over the Drive API v3
     /// (<c>https://www.googleapis.com/drive/v3</c>, uploads at its <c>/upload</c> twin) and the OAuth2 REFRESH-TOKEN scheme - a
     /// Google Cloud OAuth client's id and secret and a refresh token granted the drive scope, exchanged at Google's token endpoint
     /// through the shared <see cref="OAuth2TokenProvider"/>, as Google Docs' is. A download is written into the pipeline run's

@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Discourse (n8n's Discourse node: its posts, categories, groups, group members and users): every call the forum's
+    /// Discourse (n8n's Discourse node: its posts, categories, groups, group members and users): every call the forum's
     /// API with the key and the user it acts as in Api-Key and Api-Username; the latest posts read page by page by the last
     /// one's id, no more than asked; a topic and a reply posted, a post got and edited with a reason; categories read, created
     /// and changed with their colours; groups read page by page, got, created and renamed, users added and removed; users

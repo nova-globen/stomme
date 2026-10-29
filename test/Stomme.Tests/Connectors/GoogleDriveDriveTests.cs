@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Drive DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the extraction port
+    /// Google Drive DRIVEN on an installed SQLite host, with the REAL connector, the host's egress, the extraction port
     /// and the run's pipeline folder, against a loopback stand-in for Google's token endpoint and the Drive API: a token for the
     /// OAuth client's refresh token alone, the API answering that token alone. A connection made over the API, tested (whom it
     /// signs in as); a published pipeline searches two pages of files, downloads one INTO the run's folder under its own name,

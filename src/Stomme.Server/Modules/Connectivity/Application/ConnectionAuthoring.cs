@@ -11,10 +11,10 @@ using FluentValidation.Results;
 
 namespace Stomme.Modules.Connectivity.Application
 {
-    /// <summary>The checks a create and an update share (BL-94 increment 6, D110): the HostOnly gate, the schema, and the domain's own refusals BEFORE a secret is written.</summary>
+    /// <summary>The checks a create and an update share: the HostOnly gate, the schema, and the domain's own refusals BEFORE a secret is written.</summary>
     internal static class ConnectionAuthoring
     {
-        /// <summary>A connector that reaches the host itself (a process, the file system) is created or edited by the Host role alone (D110).</summary>
+        /// <summary>A connector that reaches the host itself (a process, the file system) is created or edited by the Host role alone.</summary>
         public static void RequireHostIfHostOnly(IConnector connector, ICurrentUser user)
         {
             if (connector.HostOnly && !user.Roles.Contains(RoleNames.Host))

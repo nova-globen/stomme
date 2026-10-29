@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.AwsCognito
 {
     /// <summary>
-    /// Amazon Cognito user pools (BL-229, n8n's AWS Cognito node: a pool's users and groups administered) over the Cognito Identity
+    /// Amazon Cognito user pools (n8n's AWS Cognito node: a pool's users and groups administered) over the Cognito Identity
     /// Provider's JSON protocol (<c>https://cognito-idp.{region}.amazonaws.com</c>,
     /// <c>X-Amz-Target: AWSCognitoIdentityProviderService.*</c>) through the shared <see cref="AwsJsonSession"/>, every call signed
     /// with SigV4 by an IAM user's access key and secret, over the host's egress. A test describes the connection's user pool, or

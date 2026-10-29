@@ -5,7 +5,7 @@ using Stomme.Providers;
 using Stomme.Services;
 using Stomme.Shared;
 using Microsoft.FluentUI.AspNetCore.Components;
-using IThemeService = Stomme.Services.IThemeService; // FluentUI 5 brings its own two of these names (BL-192)
+using IThemeService = Stomme.Services.IThemeService; // FluentUI 5 brings its own two of these names
 using INotificationService = Stomme.Services.INotificationService;
 
 namespace Microsoft.Extensions.DependencyInjection

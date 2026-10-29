@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    BL-44 — the production-slim module SDK: the SERVER compile surface.
+    The production-slim module SDK: the SERVER compile surface.
 
     A packaging SHIM: it compiles nothing and ships no assembly of its own (IncludeBuildOutput=false).
     It packs the ALREADY-BUILT src/Stomme.Server/bin/Release Stomme.Server.dll into lib/net10.0 so a
@@ -58,7 +58,7 @@
   </ItemGroup>
 
 
-  <!-- D98: LICENSE and THIRD-PARTY-NOTICES.md at the package root, as the framework's own packages carry them (BL-186). -->
+  <!-- LICENSE and THIRD-PARTY-NOTICES.md at the package root, as the framework's own packages carry them. -->
   <ItemGroup>
     <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" Visible="false" />
     <None Include="..\..\..\THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" Visible="false" />

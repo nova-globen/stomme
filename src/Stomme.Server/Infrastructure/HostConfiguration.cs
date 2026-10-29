@@ -16,7 +16,7 @@ namespace Stomme.Infrastructure
     /// and, last, the override file named by <c>STOMME_APPSETTINGS_PATH</c> - and <c>AddStomme</c> registers THAT
     /// as <see cref="IConfigurationRoot"/>. The <see cref="IConfiguration"/> in the container is the web builder's
     /// default: the same <c>appsettings.json</c> WITHOUT the override, which is where a deployed install keeps
-    /// every setting it writes. <b>CORRECTION (BL-251):</b> <c>Program</c> now adds the override file to the builder's
+    /// every setting it writes. <b>CORRECTION:</b> <c>Program</c> now adds the override file to the builder's
     /// configuration as well, so the container's <see cref="IConfiguration"/> has it; it still lacks <c>features.json</c>,
     /// and the root remains the one answer.
     /// </para>
@@ -45,7 +45,7 @@ namespace Stomme.Infrastructure
         /// The same answer at COMPOSITION, before a container exists - for an <c>IServerStartup.ConfigureServices</c> that
         /// decides what to register from a switch (a module's demo content, its MCP contribution). <c>AddStomme</c>
         /// registers the layered root as an instance before any module startup runs, so it can be read off the collection;
-        /// the last registration wins, as it would in the container (BL-86 increment 6: the exemplar module needed it, and
+        /// the last registration wins, as it would in the container (the exemplar module needed it, and
         /// each in-tree module had written its own copy).
         /// </summary>
         public static IConfiguration? Resolve(IServiceCollection services)

@@ -159,7 +159,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'self'; base-uri 'none'", PipelineFormPage.ContentSecurityPolicy);
         }
 
-        // BL-229 - n8n's File field: the kinds of file a field takes, refused when not one; at most five file fields; a submission
+        // n8n's File field: the kinds of file a field takes, refused when not one; at most five file fields; a submission
         // answers a file field with its file's name (the receiver makes the rest), refusing one missing or of another kind; a
         // sample answers with a path; the page sends multipart and asks for the kinds it takes.
         [Fact]

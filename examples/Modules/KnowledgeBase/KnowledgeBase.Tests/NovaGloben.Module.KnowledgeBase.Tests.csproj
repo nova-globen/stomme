@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    BL-86: the exemplar's UNIT tests - its domain and application logic with no host, against the same SDK packages the
+    The exemplar's UNIT tests - its domain and application logic with no host, against the same SDK packages the
     module builds with (through the Server project). An external developer's module tests look like this; the
     installed-host behaviour is the drive's (KnowledgeBase.Drive). Run by pack-knowledgebase.ps1 before it packs.
   -->
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- BL-260: a plain-SDK test project over a module built on Stomme.Server restores what the host runs on - the ASP.NET
+    <!-- A plain-SDK test project over a module built on Stomme.Server restores what the host runs on - the ASP.NET
          Core shared framework - instead of packages the server never loads (10.74.1's consumers inherited the
          System.Drawing.Common 4.7.0 advisory that way). -->
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

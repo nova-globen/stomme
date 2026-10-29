@@ -7,16 +7,16 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-189: what every new install shows its visitors states the licence the product has (D115: PolyForm Noncommercial
+    /// What every new install shows its visitors states the licence the product has (PolyForm Noncommercial
     /// OR PolyForm Small Business, a commercial licence for everyone else; D98's "all rights reserved" until 2026-10-26). Found on 2026-10-01 on a fresh install's home page: the default site template still seeded "an open source
-    /// multi-tenant CMS", the full MIT licence text under the title "MIT License", MySQL among the stores (removed by D2) and a
+    /// multi-tenant CMS", the full MIT licence text under the title "MIT License", MySQL among the stores (removed) and a
     /// <c>git clone</c> of a GitHub repository that does not exist - on every install and every app made from the template,
-    /// while every package declares the proprietary licence (BL-187). The 22 module definitions named that repository as
+    /// while every package declares the proprietary licence. The 22 module definitions named that repository as
     /// their contact too. The text is the product's statement to the public, so it is pinned here, read from the source.
     /// </summary>
     public sealed class SeededContentLicenceTests
     {
-        // D115 (2026-10-26) replaced D98's "all rights reserved" for everything published, so its wording is forbidden too.
+        // D115 replaced D98's "all rights reserved" for everything published, so its wording is forbidden too.
         private static readonly string[] Forbidden =
         {
             "MIT License", "Permission is hereby granted", "open source", "github.com/nova-globen", "MySQL",

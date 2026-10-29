@@ -31,6 +31,7 @@ namespace Stomme.Tests
     {
         private static readonly TimeSpan InstallTimeout = TimeSpan.FromMinutes(5);
         private const string FilePassword = "F1le!Secret$2026";
+        private const string WeakPassword = "weakpassword";
         private const string InstallerMarker = "db-installer";
 
         private readonly ITestOutputHelper _output;
@@ -72,6 +73,7 @@ namespace Stomme.Tests
         [InlineData("missing", "names a file that does not exist")]
         [InlineData("empty", "names an empty file")]
         [InlineData("both", "are both set")]
+        [InlineData("weak", "Installation:HostPasswordFile fails the password policy")]
         public async Task A_bad_HostPasswordFile_refuses_the_install_by_name(string fault, string expected)
         {
             using var scratch = new Scratch();
@@ -83,6 +85,7 @@ namespace Stomme.Tests
                 {
                     "missing" => Path.Combine(scratch.ContentRoot, "no-such-file"),
                     "empty" => scratch.WriteSecret("empty", "\n"),
+                    "weak" => scratch.WriteSecret("host-password", WeakPassword + "\n"), // no digit, no symbol, no capital
                     _ => scratch.WriteSecret("host-password", FilePassword)
                 }
             };
@@ -102,6 +105,12 @@ namespace Stomme.Tests
                 Assert.Contains(expected, install.Message);
                 Assert.DoesNotContain(FilePassword, install.Message);
                 Assert.DoesNotContain("Inl1ne", install.Message);
+                Assert.DoesNotContain(WeakPassword, install.Message);
+                if (fault == "weak")
+                {
+                    // Nothing was installed: the next boot still refuses, rather than coming up with no host account.
+                    Assert.False((await InstallAsync(app)).Success);
+                }
             }
             finally
             {

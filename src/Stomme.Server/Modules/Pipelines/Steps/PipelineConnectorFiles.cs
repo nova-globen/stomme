@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// A pipeline run's folder as a connector's files (BL-229, n8n's binary data on its file nodes): <see cref="IConnectorFiles"/>
+    /// A pipeline run's folder as a connector's files (n8n's binary data on its file nodes): <see cref="IConnectorFiles"/>
     /// over <see cref="PipelineFileSandbox"/> - the site's folder the file steps read and write, each path held to the sandbox's
     /// rules (no rooted path, no UNC path, nothing outside the folder), at most <c>Pipelines:Files:MaxFileBytes</c>, a write
     /// streamed beside its target and moved over it only when complete. The folder is found on first use, so a host with no

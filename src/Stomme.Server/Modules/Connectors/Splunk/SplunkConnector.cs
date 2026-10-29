@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Splunk
 {
     /// <summary>
-    /// Splunk (BL-229, n8n's Splunk node: its searches, reports, fired alerts and users): a Splunk server's REST API on its
+    /// Splunk (n8n's Splunk node: its searches, reports, fired alerts and users): a Splunk server's REST API on its
     /// management port with an authentication token as a bearer token, over the host's egress. A test names whose the token is.
     /// </summary>
     /// <remarks>

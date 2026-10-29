@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - what runs next: each published pipeline's schedules with their next runs within a window, the soonest first -
+    /// What runs next: each published pipeline's schedules with their next runs within a window, the soonest first -
     /// beyond n8n, which shows a schedule only inside its workflow. Read off the published bodies as the schedules task reads
     /// them: a schedule that starts its pipeline (nothing leads to it, not in a body, not switched off), its cron in its time zone.
     /// </summary>

@@ -31,7 +31,7 @@ namespace NovaGloben.Module.KnowledgeBase.Operations
     }
 
     /// <summary>
-    /// The module's contribution to the host's health monitor (D104): one SITE-scope probe - the site's stale drafts - and
+    /// The module's contribution to the host's health monitor: one SITE-scope probe - the site's stale drafts - and
     /// one metric, its draft count. The host runs the probe per site on its schedule (<c>Health:Enabled</c>, on by
     /// default) or on demand (<c>api/Health/run</c>), stores each verdict and shows it on its health page.
     /// </summary>

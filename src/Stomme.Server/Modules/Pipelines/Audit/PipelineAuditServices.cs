@@ -88,7 +88,7 @@ namespace Stomme.Modules.Pipelines.Audit
     }
 
     /// <summary>
-    /// The pipeline activity ledger under the right to erasure (D112): a SECURITY record of what was changed and run on the
+    /// The pipeline activity ledger under the right to erasure: a SECURITY record of what was changed and run on the
     /// site and by whom, so a subject's lines are retained one year under Article 17(3) and then deleted by the same job - as
     /// the MCP ledger's. They hold the user id and user name, an action and what it concerned - never a value.
     /// </summary>
@@ -134,7 +134,7 @@ namespace Stomme.Modules.Pipelines.Audit
             AddBehaviors(services);
             services.AddScoped<IRequestHandler<ListPipelineAuditQuery, IReadOnlyList<PipelineAuditEntryView>>, ListPipelineAuditQueryHandler>();
             services.AddScoped<IRetentionPurger, PipelineAuditRetentionPurger>();
-            services.AddScoped<ISubjectErasureParticipant, PipelineAuditErasureParticipant>(); // D112: a security record, retained one year then deleted
+            services.AddScoped<ISubjectErasureParticipant, PipelineAuditErasureParticipant>(); // A security record, retained one year then deleted
         }
 
         /// <summary>The recording behaviour, closed per command: it wraps the module's own commands and nobody else's requests.</summary>

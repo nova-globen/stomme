@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Identity;
 namespace Stomme.Modules.Portability.Contributions
 {
     /// <summary>
-    /// The shipped subject-data contributors (BL-82, D107 item 8): what the framework holds about ONE person on ONE site,
+    /// The shipped subject-data contributors: what the framework holds about ONE person on ONE site,
     /// as explicit field ALLOWLISTS - a new column on a model never reaches a package by accident.
     /// </summary>
     /// <remarks>

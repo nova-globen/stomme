@@ -30,7 +30,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 5 - an input's expression runs in the ENGINE: the codec writes the module's <c>Template</c> kind, the engine
+    /// An input's expression runs in the ENGINE: the codec writes the module's <c>Template</c> kind, the engine
     /// renders it from the variables in scope when the step runs (the same renderer the editor previews with), a name no
     /// variable has faults the step saying which, and the graph comes back as it was written. A finished run's variables are
     /// what the editor previews with - an author's only.

@@ -24,7 +24,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The User cluster on the persistence seam (D3/D7/D22). User-table access goes through
+    /// The User cluster on the persistence seam. User-table access goes through
     /// <see cref="IUserAccountStore"/> (writes) and <see cref="IQuerySession.Query{T}"/> (reads); this class
     /// holds no <c>DbContext</c> for its own table and no <c>IQueryable</c> escapes it.
     /// </summary>
@@ -66,7 +66,7 @@ namespace Stomme.Repository
         }
 
         // The read path on the seam: the IQueryable is materialized inside this method, so it never leaves the
-        // repository (D7). ToList/Where/FirstOrDefault are plain LINQ rather than EF Core's async operators,
+        // repository. ToList/Where/FirstOrDefault are plain LINQ rather than EF Core's async operators,
         // which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -127,7 +127,7 @@ namespace Stomme.Repository
                     {
                         new Permission(PermissionNames.Browse, user.UserId, true),
                         new Permission(PermissionNames.View, user.UserId, true),
-                        // BL-115: a user's My Folder is PRIVATE. It used to grant View to Everyone, and an anonymous caller
+                        // A user's My Folder is PRIVATE. It used to grant View to Everyone, and an anonymous caller
                         // matches Everyone, so every file under Users/{id}/ was downloadable by anyone who guessed the
                         // sequential file id. The owner and site administrators see it; nobody else does.
                         new Permission(PermissionNames.View, RoleNames.Admin, true),
@@ -171,7 +171,7 @@ namespace Stomme.Repository
             // and UserMapper projects it onto a fresh wire contract either way.
             //
             // Read through the query session, NOT _userStore.GetByIdAsync — that is load-bearing, not a style
-            // choice (D19). The store's IRepository.GetByIdAsync TRACKS the aggregate in the store's DbContext,
+            // choice. The store's IRepository.GetByIdAsync TRACKS the aggregate in the store's DbContext,
             // and UpdateAsync then attaches a DIFFERENT instance rebuilt from the wire contract with the same
             // key, which EF rejects. UserController.Put walks straight into it: GetUser(user.UserId, false) to
             // authorize, then UpdateUser(user) — both on this same repository instance, hence the same store
@@ -211,7 +211,7 @@ namespace Stomme.Repository
                 return;
             }
 
-            // remove permissions for user — now on the seam (D24), through IPermissionStore rather than a raw
+            // remove permissions for user — now on the seam, through IPermissionStore rather than a raw
             // db.Permission (see the remarks on this class for why it is the store and not the repository).
             // The UserId filter stays in the DATABASE, as db.Permission.Where did: the store's only read is
             // GetAllAsync, so reading through it would scan every permission in the tenant. Read filtered

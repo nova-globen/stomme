@@ -29,10 +29,10 @@
     <BlazorEnableCompression>false</BlazorEnableCompression>
   </PropertyGroup>
 
-  <!-- BL-201: the PACKAGE carries no WebAssembly boot script. Packed, this project's static web assets were one file,
+  <!-- The PACKAGE carries no WebAssembly boot script. Packed, this project's static web assets were one file,
        _framework/blazor.webassembly.js - not the runtime - so an app on the packages could not serve one (dotnet.js 404),
        and an app whose own client is a WebAssembly app (as it must be, to have a runtime at all) collided with it on that
-       path (BL-186). The app's client builds the runtime and its own boot script; this host's ProjectReference is
+       path. The app's client builds the runtime and its own boot script; this host's ProjectReference is
        unaffected, the exclusion is from the pack only. -->
   <Target Name="KeepTheBootScriptOutOfThePackage" BeforeTargets="GenerateStaticWebAssetsPackFiles">
     <ItemGroup>

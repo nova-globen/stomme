@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Stomme.Infrastructure
 {
     /// <summary>
-    /// Where the file-ingestion guard stages bytes before they may reach a folder (BL-100 F1, D109).
+    /// Where the file-ingestion guard stages bytes before they may reach a folder (BL-100 F1).
     /// </summary>
     /// <remarks>
     /// The staging tree is <c>{ContentRoot}/Content/Staging/Tenants/{tenantId}/Sites/{siteId}</c> - OUTSIDE every

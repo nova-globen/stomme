@@ -10,7 +10,7 @@ using Stomme.Engine.Pipelines.State;
 namespace Stomme.Modules.Pipelines.Persistence
 {
     /// <summary>
-    /// The one place the engine's non-scalar members become text and come back (BL-95 increment (a), D111). Both
+    /// The one place the engine's non-scalar members become text and come back (BL-95 increment (a)). Both
     /// the relational and the RavenDB stores hold the SAME strings, produced by the engine's OWN serializers - the
     /// pipeline state serializer for an instance's state, the payload serializer for anything polymorphic (bookmark
     /// and trigger payloads, exceptions, properties) and the safe serializer for step state and outputs, which may

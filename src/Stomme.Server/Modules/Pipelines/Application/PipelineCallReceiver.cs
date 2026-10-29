@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// A call to a run's call address (BL-229, <see cref="WaitForCall"/>): the token hashed into the stimulus the run's bookmark
-    /// was keyed by, and DISPATCHED through the engine's stimulus path - never awaited, as a webhook's run is not (D111 item 3).
+    /// A call to a run's call address (<see cref="WaitForCall"/>): the token hashed into the stimulus the run's bookmark
+    /// was keyed by, and DISPATCHED through the engine's stimulus path - never awaited, as a webhook's run is not.
     /// The engine resumes the run waiting for it, or queues the call for a minute when the run has not reached its wait yet. What
     /// a caller is told does not depend on whether a run waits: the token is the only secret, and it is never logged.
     /// </summary>

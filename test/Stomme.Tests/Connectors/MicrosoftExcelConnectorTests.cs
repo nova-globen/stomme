@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Excel 365 (n8n's Microsoft Excel 365 node: its workbooks, sheets and tables): an app-only token from the
+    /// Microsoft Excel 365 (n8n's Microsoft Excel 365 node: its workbooks, sheets and tables): an app-only token from the
     /// tenant's token endpoint, sent as a bearer, on a user's OneDrive or a library's drive; a workbook by its id or its path, a
     /// sheet by its name, escaped; a sheet's rows read under its headers with their row numbers; records appended under the headers
     /// after the last used row (an empty sheet given headers first); rows found by a column and changed - only the record's fields,

@@ -29,7 +29,7 @@ namespace Stomme.Repository
     }
 
     /// <summary>
-    /// The ModuleDefinition cluster on the persistence seam (D52) — the MASTER half of the master-bookkeeping
+    /// The ModuleDefinition cluster on the persistence seam — the MASTER half of the master-bookkeeping
     /// wave. ModuleDefinition-table access goes through <see cref="IModuleDefinitionStore"/> (writes) and the
     /// MASTER read path <see cref="IMasterStoreSessionFactory"/> (reads); this class holds no <c>DbContext</c>
     /// and no <c>IQueryable</c> escapes it.
@@ -45,7 +45,7 @@ namespace Stomme.Repository
     /// Settings/Permissions.
     /// </para>
     /// <para>
-    /// Reads NEVER go through the store (D19): a query session opens its own context, so the store's change
+    /// Reads NEVER go through the store: a query session opens its own context, so the store's change
     /// tracker stays clean for the read-then-write module-discovery sync pass in
     /// <see cref="ProcessModuleDefinitionsAsync"/> (read the DB definitions through a session, then Add/Delete
     /// through the store). The one read through the store is <see cref="DeleteModuleDefinitionAsync"/>, which
@@ -86,9 +86,9 @@ namespace Stomme.Repository
             _logger = logger;
         }
 
-        // The read path on the seam (D19): reads go through a MASTER query session, never the store, so the
+        // The read path on the seam: reads go through a MASTER query session, never the store, so the
         // store's tracker stays clean for the read-then-write module-discovery sync pass. The IQueryable is
-        // materialized inside this method, so it never leaves the repository (D7). Plain LINQ rather than EF's
+        // materialized inside this method, so it never leaves the repository. Plain LINQ rather than EF's
         // async operators, which would bind these reads to the relational provider.
         private async Task<T> QueryAsync<T>(Func<IQuerySession, T> read)
         {
@@ -127,7 +127,7 @@ namespace Stomme.Repository
             // preserves the CreatedBy/On the definition round-tripped.
             await _store.UpdateAsync(ModuleDefinitionMapper.ToAggregate(moduleDefinition, assignId: true));
             // allowDeclaredKeyRows: the definition's PermissionList carries its LIFTED keys as foreign rows, and
-            // ModuleDefinitionController.Put has already refused any row that is not a declared, non-framework key (BL-102).
+            // ModuleDefinitionController.Put has already refused any row that is not a declared, non-framework key.
             await _permissions.UpdatePermissionsAsync(moduleDefinition.SiteId, EntityNames.ModuleDefinition, moduleDefinition.ModuleDefinitionId, moduleDefinition.PermissionList, allowDeclaredKeyRows: true);
 
             var settingname = $"{settingprefix}{(await _tenants.GetAliasAsync()).SiteKey}";
@@ -147,7 +147,7 @@ namespace Stomme.Repository
 
         public async Task DeleteModuleDefinitionAsync(int moduleDefinitionId)
         {
-            // The one read that legitimately goes through the store (D19): it deletes the very instance it loaded,
+            // The one read that legitimately goes through the store: it deletes the very instance it loaded,
             // so tracking is what we want and no second instance is ever attached. The harvested code threw a
             // NullReferenceException for an unknown id (Remove(null)); returning silently matches DeleteTheme/
             // DeleteJob's strictly-safer shape.
@@ -211,7 +211,7 @@ namespace Stomme.Repository
             // get module assemblies 
             List<ModuleDefinition> ModuleDefinitions = LoadModuleDefinitionsFromAssemblies();
 
-            // get module definitions in database — read through a MASTER query session (untracked, D19), mapped
+            // get module definitions in database — read through a MASTER query session (untracked), mapped
             // to the ModuleDefinition contract so the sync algorithm below is unchanged from the harvested code.
             List<ModuleDefinition> moduledefinitions = (await QueryAsync(session => session.Query<ModuleDefinitionAggregate>().ToList())).ConvertAll(ModuleDefinitionMapper.ToModel);
 
@@ -264,7 +264,7 @@ namespace Stomme.Repository
             // any remaining module definitions are orphans
             foreach (ModuleDefinition moduledefinition in moduledefinitions)
             {
-                // delete through the store (D19: attach a fresh aggregate, since the row was read via session).
+                // delete through the store (attach a fresh aggregate, since the row was read via session).
                 await _store.DeleteAsync(ModuleDefinitionMapper.ToAggregate(moduledefinition, assignId: true));
             }
 
@@ -314,7 +314,7 @@ namespace Stomme.Repository
                     {
                         // no module definition permissions exist for this site
                         moduledefinition.PermissionList = ClonePermissions(siteId, moduledefinition.PermissionList);
-                        // allowDeclaredKeyRows: the seed carries the lifted-key rows AppendDeclaredKeyPermissions added (BL-102).
+                        // allowDeclaredKeyRows: the seed carries the lifted-key rows AppendDeclaredKeyPermissions added.
                         await _permissions.UpdatePermissionsAsync(siteId, EntityNames.ModuleDefinition, moduledefinition.ModuleDefinitionId, moduledefinition.PermissionList, allowDeclaredKeyRows: true);
                     }
                     else
@@ -327,13 +327,13 @@ namespace Stomme.Repository
                         {
                             // permissions for module definition do not exist for this site
                             moduledefinition.PermissionList = ClonePermissions(siteId, moduledefinition.PermissionList);
-                            // allowDeclaredKeyRows: as above - the seed carries the definition's lifted-key rows (BL-102).
+                            // allowDeclaredKeyRows: as above - the seed carries the definition's lifted-key rows.
                             await _permissions.UpdatePermissionsAsync(siteId, EntityNames.ModuleDefinition, moduledefinition.ModuleDefinitionId, moduledefinition.PermissionList, allowDeclaredKeyRows: true);
                         }
                     }
                 }
 
-                // The permission-KEY half of the per-site permissions (D99, BL-99). Order matters: reconcile
+                // The permission-KEY half of the per-site permissions. Order matters: reconcile
                 // first so a key added by a newer release HAS rows, then merge, so what the grid renders is
                 // what the guard will decide from.
                 await ReconcileDeclaredKeyPermissionsAsync(siteId, ModuleDefinitions);
@@ -358,7 +358,7 @@ namespace Stomme.Repository
         }
 
         /// <summary>
-        /// The DB-free half of module discovery (D86): reflects the loaded module assemblies into their
+        /// The DB-free half of module discovery: reflects the loaded module assemblies into their
         /// <see cref="ModuleDefinition"/>s (IModule properties incl. <see cref="ModuleDefinition.ConfigSettingsType"/>
         /// and the derived <see cref="ModuleDefinition.ModuleDefinitionName"/>) WITHOUT touching the master DB, so the
         /// installer can enumerate bundled modules while the app is still in the uninstalled state. The
@@ -396,7 +396,7 @@ namespace Stomme.Repository
         {
             ModuleDefinition moduledefinition;
 
-            // BL-74: a Name declared through IModule is authoritative — the module.<id>.enabled config knob
+            // A Name declared through IModule is authoritative — the module.<id>.enabled config knob
             // (ModuleFeatureFlags) derives from it, so letting the Index control's Title overwrite it silently
             // re-keys the flag under a name the author never wrote. The Title remains the name source for
             // convention-only modules (no IModule), which have no declared name. Creation and title
@@ -519,7 +519,7 @@ namespace Stomme.Repository
                         moduledefinition.ControlTypeRoutes += (action + "=" + modulecontroltype.FullName + ", " + modulecontroltype.Assembly.GetName().Name + ";");
                     }
                 }
-                // module title — names a convention-only module; never overrides an IModule-declared Name (BL-74)
+                // module title — names a convention-only module; never overrides an IModule-declared Name
                 if (modulecontroltype.Name == Constants.DefaultAction && !string.IsNullOrEmpty(modulecontrolobject.Title) && !declaredNames.Contains(qualifiedModuleType))
                 {
                     moduledefinition.Name = modulecontrolobject.Title;
@@ -646,7 +646,7 @@ namespace Stomme.Repository
 
         /// <summary>
         /// Appends the Permission rows a module's declared permission KEYS imply to the definition's default
-        /// permission list, at SCAN time (D99, BL-99): one row per (key, default role), carrying the key's
+        /// permission list, at SCAN time: one row per (key, default role), carrying the key's
         /// resource as the EntityName and <see cref="PermissionKeys.KeyEntityId"/> as the EntityId - the key
         /// names a resource, not an instance of one.
         /// </summary>
@@ -682,7 +682,7 @@ namespace Stomme.Repository
         }
 
         /// <summary>
-        /// The ADDITIVE per-site reconciliation of declared permission keys (D99 point 3, F7): a key that has
+        /// The ADDITIVE per-site reconciliation of declared permission keys (F7): a key that has
         /// NO rows on this site gets its declared default rows; a key that already has rows is not touched.
         /// </summary>
         /// <remarks>

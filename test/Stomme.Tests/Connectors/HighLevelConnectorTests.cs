@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - HighLevel (n8n's HighLevel node, its second version) without a server: every id, address, number, time and choice
+    /// HighLevel (n8n's HighLevel node, its second version) without a server: every id, address, number, time and choice
     /// held to its shape before anything is sent; the token as a bearer with HighLevel's Version header; contacts and opportunities
     /// page by page by HighLevel's startAfter, the location the connection's; a contact upserted by its email or phone with its
     /// tags and custom fields as HighLevel takes them and a note added after, updated and deleted; an opportunity made in its

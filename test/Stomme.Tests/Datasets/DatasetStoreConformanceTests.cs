@@ -25,11 +25,11 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 9 (D110) - the Dataset store's observable contract once, driven on EF (SQLite and PostgreSQL),
+    /// The Dataset store's observable contract once, driven on EF (SQLite and PostgreSQL),
     /// RavenDB and File through the module's own startup: a dataset round-trips with its columns and its summary as
     /// VALUES, its sample, its enums and UTC instants; found by site and normalised name whatever the case; found by
-    /// origin with a case-variant reference resolving to the SAME row on every provider (D49, both sides normalised);
-    /// listed in name order; a refresh and a delete land. Fail-not-skip on the external stores (D46).
+    /// origin with a case-variant reference resolving to the SAME row on every provider (both sides normalised);
+    /// listed in name order; a refresh and a delete land. Fail-not-skip on the external stores.
     /// </summary>
     public abstract class DatasetStoreConformanceTests : IAsyncLifetime
     {

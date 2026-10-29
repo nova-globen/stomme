@@ -17,7 +17,7 @@ using Xunit;
 namespace Stomme.Tests.Formats
 {
     /// <summary>
-    /// BL-94 increment 8 (D110) - the D108 cell formatter over Formats: a key resolves for the prepared site (a definition
+    /// The D108 cell formatter over Formats: a key resolves for the prepared site (a definition
     /// by id or name, a preset by id or name); an unknown key declines, so the renderer writes invariant text; a key
     /// naming ANOTHER site's definition is not this site's and declines the same way - refused without a cross-site read;
     /// a column without a key declines; a value the format cannot take renders through the descriptor's never-throw path.

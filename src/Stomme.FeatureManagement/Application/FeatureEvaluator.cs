@@ -16,7 +16,7 @@ namespace Stomme.FeatureManagement.Application;
 /// force-includes them — without bypassing the enabled, entitlement, or required-flag gates.
 /// </summary>
 /// <remarks>
-/// <b>Configuration precedence (D84): config -&gt; DB -&gt; catalog default.</b> An
+/// <b>Configuration precedence: config -&gt; DB -&gt; catalog default.</b> An
 /// <see cref="IFeatureConfigurationSource"/> (a <c>features.json</c> / <c>appsettings</c> section / env var /
 /// Azure App Configuration) is consulted first: when it declares a definite state for the key, that value
 /// overrides the admin toggle and the catalog default. Config sets the <em>enabled switch</em> only -- it does
@@ -26,7 +26,7 @@ namespace Stomme.FeatureManagement.Application;
 /// stock install that declares no feature configuration is byte-for-byte unchanged. A config value with no
 /// backing DB row turns the flag on with nothing else to gate it -- the M5 <c>module.&lt;id&gt;.enabled</c> knob.
 /// <para>
-/// <b>The DB leg reads through the singleton <see cref="IFeatureFlagCache"/> (BL-39)</b>, keyed by the SAME
+/// <b>The DB leg reads through the singleton <see cref="IFeatureFlagCache"/></b>, keyed by the SAME
 /// tenant identity the store's tenant query filter reads by, so N evaluations cost one store round trip.
 /// Config and entitlements are still consulted LIVE on every evaluation — the cache fronts only the flag
 /// rows, so no answer changes (see the cache's own remarks for the full argument). System-scope and
@@ -34,7 +34,7 @@ namespace Stomme.FeatureManagement.Application;
 /// the cross-tenant-leak shape.
 /// </para>
 /// <para>
-/// <b>The code-declared descriptor is authoritative for the required entitlement (D105).</b> When the
+/// <b>The code-declared descriptor is authoritative for the required entitlement.</b> When the
 /// <see cref="IFeatureRegistry"/> holds a <see cref="FeatureDescriptor"/> for the key, ITS
 /// <see cref="FeatureDescriptor.RequiredEntitlement"/> is the only entitlement consulted -- on the row path AND on
 /// the row-less config path. The row's stored value applies only when no descriptor is registered. This closes
@@ -69,7 +69,7 @@ internal sealed class FeatureEvaluator(
             return false; // dependency cycle — treat as off
         }
 
-        // Precedence step 1 (D84): the config source is asked first. A non-null answer overrides the admin
+        // Precedence step 1: the config source is asked first. A non-null answer overrides the admin
         // toggle and the catalog default; null means "no opinion — use the DB flag / default", so the paths
         // below collapse to the historical behaviour and a stock install is byte-for-byte unchanged.
         var configState = configuration.GetConfiguredState(key);
@@ -79,7 +79,7 @@ internal sealed class FeatureEvaluator(
         {
             // No per-tenant flag exists: config is the only possible source of truth. Present-and-true turns
             // the flag on (the M5 module.<id>.enabled knob) -- but a registered descriptor's required entitlement
-            // still gates it (D105: config sets the enabled switch, it never grants a licence). Config-false or an
+            // still gates it (config sets the enabled switch, it never grants a licence). Config-false or an
             // absent config leaves it off — exactly the historical "unknown flag is off".
             return configState == true && await IsEntitledAsync(EffectiveRequiredEntitlement(key, null), ct);
         }
@@ -104,7 +104,7 @@ internal sealed class FeatureEvaluator(
             return false;
         }
 
-        // D105: the registered descriptor, when present, is authoritative over the row's stored entitlement.
+        // The registered descriptor, when present, is authoritative over the row's stored entitlement.
         if (!await IsEntitledAsync(EffectiveRequiredEntitlement(flag.Key, flag.RequiredEntitlement), ct))
         {
             return false;
@@ -120,7 +120,7 @@ internal sealed class FeatureEvaluator(
 
     /// <summary>
     /// The entitlement that gates <paramref name="key"/>: the registered descriptor's value when a descriptor
-    /// exists (even when it declares none), otherwise the stored row value (D105).
+    /// exists (even when it declares none), otherwise the stored row value.
     /// </summary>
     private string? EffectiveRequiredEntitlement(string key, string? rowValue) =>
         registry.Find(key) is { } descriptor ? descriptor.RequiredEntitlement : rowValue;
@@ -136,12 +136,12 @@ internal sealed class FeatureEvaluator(
 
     /// <summary>
     /// The tenant's flag snapshots — through the cache when the read is a per-tenant one. The cache key is
-    /// the ambient tenant the store's tenant query filter reads by; system scope reads NO rows (BL-110), and a
+    /// the ambient tenant the store's tenant query filter reads by; system scope reads NO rows, and a
     /// null tenant (matches nothing) goes straight to the store, exactly the pre-cache behaviour.
     /// </summary>
     private Task<IReadOnlyList<FeatureFlagSnapshot>> GetTenantFlagsAsync(CancellationToken ct)
     {
-        // BL-110: SYSTEM scope has no tenant, so NO tenant's row applies - only installation-wide configuration decides
+        // SYSTEM scope has no tenant, so NO tenant's row applies - only installation-wide configuration decides
         // (the row-less path above). It used to load every tenant's rows (the store's filter admits all of them in system
         // scope) and take the first with the key: a job that had not entered a tenant got some tenant's switch, whichever
         // the store happened to list first (measured, FeatureEvaluatorSystemScopeTests).

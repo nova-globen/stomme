@@ -11,7 +11,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-96 increment 4 - the predecessor platform's six cost connector suites (47 cases) by name over the port, one class per connector as
+    /// The predecessor platform's six cost connector suites (47 cases) by name over the port, one class per connector as
     /// the predecessor platform had them. CHANGED: the token is the Bearer scheme's <c>token</c> field (the predecessor platform read its legacy single
     /// credential), so the missing-credential message names the field; the schema still declares no secret.
     /// </summary>

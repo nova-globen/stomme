@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Stomme.Modules.ContextualHelp.Controllers
 {
     /// <summary>
-    /// The contextual-help Web API (<c>api/Help</c>, BL-84 / D103 item 8). Every action dispatches through
+    /// The contextual-help Web API (<c>api/Help</c>). Every action dispatches through
     /// <see cref="IMediator"/>.
     /// </summary>
     /// <remarks>
@@ -153,7 +153,7 @@ namespace Stomme.Modules.ContextualHelp.Controllers
 
     /// <summary>
     /// Makes the controller's actions unmatchable while <c>Help:Enabled</c> is off, so the ROUTER answers 404 before
-    /// authorization is ever consulted - read from the configuration THIS host runs on (BL-162).
+    /// authorization is ever consulted - read from the configuration THIS host runs on.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public sealed class HelpEnabledAttribute : Microsoft.AspNetCore.Mvc.ActionConstraints.ActionMethodSelectorAttribute

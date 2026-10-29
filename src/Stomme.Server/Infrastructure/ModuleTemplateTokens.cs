@@ -9,7 +9,7 @@ namespace Stomme.Infrastructure
     /// <summary>
     /// What the module generator (the host's "Create Module", <c>POST api/ModuleDefinition</c>) needs beyond the plain
     /// tokens: a permission-key resource made from the module's name, the package feed a generated module restores the SDK
-    /// from, and which template files are copied byte for byte (BL-86 increment 7).
+    /// from, and which template files are copied byte for byte.
     /// </summary>
     public static class ModuleTemplateTokens
     {
@@ -27,13 +27,13 @@ namespace Stomme.Infrastructure
         /// <summary>
         /// The release number of the framework version a module is generated for - <c>10.5.0-preview.1</c> is <c>10.5.0</c> -
         /// for its <c>Stomme.Framework</c> package type, whose version NuGet refuses with a label (NU5000, measured on the
-        /// preview's gate, BL-192). The SDK reference keeps the label: that is the package on the feed.
+        /// preview's gate). The SDK reference keeps the label: that is the package on the feed.
         /// </summary>
         public static string ReleaseNumber(string? version) => (version ?? string.Empty).Split('-', '+')[0];
 
         /// <summary>
         /// The module's name as a permission-key resource: lower-case, words joined by hyphens - <c>KnowledgeBase</c> is
-        /// <c>knowledge-base</c>, <c>My Notes</c> is <c>my-notes</c>. A key segment must be lower-case (D99).
+        /// <c>knowledge-base</c>, <c>My Notes</c> is <c>my-notes</c>. A key segment must be lower-case.
         /// </summary>
         public static string ModuleKey(string? name)
         {

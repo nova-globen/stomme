@@ -17,7 +17,7 @@ using FluentValidation;
 namespace Stomme.Modules.AiAssistant.Application
 {
     /// <summary>
-    /// The site's assistant configuration (BL-97 increment 10b, D113: configured PER SITE) under <c>assistant:configure</c>:
+    /// The site's assistant configuration (configured PER SITE) under <c>assistant:configure</c>:
     /// the switch, the provider, the endpoint, the model and temperature as Site settings, and whether an API key is stored -
     /// never the key itself.
     /// </summary>

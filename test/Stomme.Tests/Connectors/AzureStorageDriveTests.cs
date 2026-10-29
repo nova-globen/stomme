@@ -15,12 +15,12 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Azure Storage DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
+    /// Azure Storage DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction
     /// port, against a real Azurite (<see cref="AzureStorageTestEndpoint"/>): an Azure Storage connection made over the API - the
     /// account's address and name, its key vaulted - refused while loopback is not allowlisted, then tested; a published pipeline
     /// makes a container, uploads a note over several lines from the step's Query box, lists the container, downloads the note
     /// into the site's pipeline folder and deletes the container; the key in neither the graph nor the run. Fails, never skips,
-    /// without a server (D46).
+    /// without a server.
     /// </summary>
     [Collection(nameof(InstalledSiteRenderTests))]
     [Trait("Category", "ExternalDatabase")]

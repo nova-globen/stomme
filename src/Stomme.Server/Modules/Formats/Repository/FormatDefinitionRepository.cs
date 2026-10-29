@@ -11,14 +11,14 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Formats.Persistence
 {
     /// <summary>
-    /// The Formats module's repository (BL-94, D110) - storage-blind (D79): a thin, module-owned contract over the closed
+    /// The Formats module's repository - storage-blind: a thin, module-owned contract over the closed
     /// <c>IRepository&lt;FormatDefinitionAggregate, Guid&gt;</c> the host binds to the install's provider. Lives in the
     /// <c>Stomme.Formats.Persistence</c> namespace because <c>ModuleStoreRegistrationTests</c> reads every
     /// <c>Stomme.Modules.*</c> interface closing <c>IRepository</c> as a seam store that needs a RavenDB twin.
     /// </summary>
     public interface IFormatDefinitionRepository : IRepository<FormatDefinitionAggregate, Guid>
     {
-        /// <summary>A site's definitions, by normalised name (D49): the same answer on every provider.</summary>
+        /// <summary>A site's definitions, by normalised name: the same answer on every provider.</summary>
         Task<FormatDefinitionAggregate?> FindByNameAsync(int siteId, string name, CancellationToken ct = default);
 
         /// <summary>A site's definitions, name order.</summary>
@@ -42,7 +42,7 @@ namespace Stomme.Formats.Persistence
 
         public async Task<FormatDefinitionAggregate?> FindByNameAsync(int siteId, string name, CancellationToken ct = default)
         {
-            // Both sides normalised inside the repository (D49): a bare string equality diverges by provider.
+            // Both sides normalised inside the repository: a bare string equality diverges by provider.
             var normalized = FormatDefinitionAggregate.NormalizeName(name);
             var matches = await inner.FindAsync(definition => definition.SiteId == siteId && definition.NameNormalized == normalized, ct);
             return matches.FirstOrDefault();

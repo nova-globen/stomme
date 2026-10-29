@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Workspace Admin DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// Google Workspace Admin DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against a loopback stand-in for Google's token endpoint and Directory API: the refresh token exchanged
     /// for an access token, the API answering that token alone. A connection made over the API, its secrets vaulted, tested; a
     /// published pipeline reads the users over two pages by Google's token - no more than asked - suspends one by a PATCH, adds

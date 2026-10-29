@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-85 (D108) - the streaming promise MEASURED for the three renderers the XLSX measurement did not cover.
+    /// The streaming promise MEASURED for the three renderers the XLSX measurement did not cover.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -71,7 +71,7 @@ namespace Stomme.Tests
         [Fact]
         public async Task A_renderer_that_BUFFERS_the_artifact_is_seen_to()
         {
-            // BL-213: the instrument is the PROCESS heap, and this collection running alone does not stop memory an earlier
+            // The instrument is the PROCESS heap, and this collection running alone does not stop memory an earlier
             // test left for the collector from being freed inside the window, netted against the buffer - measured once in the
             // full rest-a part, "+15.4 MB", green alone. A renderer that buffers does it on EVERY render, while such leftovers
             // are chance, so up to three windows are measured and one clear reading shows the instrument can see a buffer; the

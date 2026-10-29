@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 6 (D110) - the predecessor platform's ConnectionApplicationTests (17) by name on the port's application layer, over
+    /// The predecessor platform's ConnectionApplicationTests (17) by name on the port's application layer, over
     /// the module's real startup on the File store. CHANGED, each on purpose: the vault is the per-site secret store and a
     /// credential is a NAMED field the connector's scheme declares (the single free-form <c>Credential</c> is gone, so the
     /// fixture declares Basic and the predecessor platform's <c>client_id</c> names are the scheme's <c>client-id</c>); a connector's message

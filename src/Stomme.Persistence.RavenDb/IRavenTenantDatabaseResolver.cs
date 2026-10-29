@@ -21,7 +21,7 @@ public interface IRavenTenantDatabaseResolver
     bool RoutesPerTenant => false;
 
     /// <summary>
-    /// The per-tenant databases this resolver routes to, when it can name them (BL-176) - what the outbox drains besides the
+    /// The per-tenant databases this resolver routes to, when it can name them - what the outbox drains besides the
     /// default database. Empty for a resolver that cannot enumerate its databases.
     /// </summary>
     IReadOnlyCollection<string> RoutedDatabases => Array.Empty<string>();

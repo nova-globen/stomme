@@ -340,7 +340,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The relational (EF Core) <see cref="IPermissionStore"/> — the seam's own
-    /// <see cref="EfRepository{TAggregate, TId}"/> over a <see cref="TenantDBContext"/> (D24). Transient,
+    /// <see cref="EfRepository{TAggregate, TId}"/> over a <see cref="TenantDBContext"/>. Transient,
     /// owning a per-instance context, for the tenant-correctness reason documented on
     /// <see cref="EfSiteStore"/>.
     /// </summary>
@@ -434,7 +434,7 @@ namespace Stomme.Repository.Stores
         public void Dispose() => _context.Dispose();
     }
 
-    /// <summary>The relational <see cref="ILanguageStore"/> (D44). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="ILanguageStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfLanguageStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -442,7 +442,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<LanguageAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), ILanguageStore;
 
-    /// <summary>The relational <see cref="ILogStore"/> (D44). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="ILogStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfLogStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -450,7 +450,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<LogAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), ILogStore;
 
-    /// <summary>The relational <see cref="IProfileStore"/> (D44). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IProfileStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfProfileStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -458,7 +458,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<ProfileAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IProfileStore;
 
-    /// <summary>The relational <see cref="ISiteTaskStore"/> (D44). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="ISiteTaskStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfSiteTaskStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -466,7 +466,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<SiteTaskAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), ISiteTaskStore;
 
-    /// <summary>The relational <see cref="INotificationStore"/> (D44). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="INotificationStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfNotificationStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -474,7 +474,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<NotificationAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), INotificationStore;
 
-    /// <summary>The relational <see cref="ISiteGroupStore"/> (D45). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="ISiteGroupStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfSiteGroupStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -482,7 +482,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<SiteGroupAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), ISiteGroupStore;
 
-    /// <summary>The relational <see cref="ISiteGroupMemberStore"/> (D45). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="ISiteGroupMemberStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfSiteGroupMemberStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -490,7 +490,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<SiteGroupMemberAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), ISiteGroupMemberStore;
 
-    /// <summary>The relational <see cref="IVisitorStore"/> (D47). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IVisitorStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfVisitorStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -498,7 +498,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<VisitorAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IVisitorStore;
 
-    /// <summary>The relational <see cref="IUrlMappingStore"/> (D47). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IUrlMappingStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfUrlMappingStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -506,7 +506,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<UrlMappingAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IUrlMappingStore;
 
-    /// <summary>The relational <see cref="IPageModuleStore"/> (D47). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IPageModuleStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfPageModuleStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -514,7 +514,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<PageModuleAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IPageModuleStore;
 
-    /// <summary>The relational <see cref="IFolderStore"/> (D48). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IFolderStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfFolderStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -522,7 +522,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<FolderAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IFolderStore;
 
-    /// <summary>The relational <see cref="IFileStore"/> (D49). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IFileStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfFileStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -530,9 +530,9 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<FileAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IFileStore;
 
-    // The SearchContent cluster (D50). Four tables, tenant-side only, no master half.
+    // The SearchContent cluster. Four tables, tenant-side only, no master half.
 
-    /// <summary>The relational <see cref="ISearchContentStore"/> (D50). See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="ISearchContentStore"/>. See <see cref="EfFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfSearchContentStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -540,7 +540,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<SearchContentAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), ISearchContentStore;
 
-    /// <summary>The relational <see cref="ISearchContentPropertyStore"/> (D50).</summary>
+    /// <summary>The relational <see cref="ISearchContentPropertyStore"/>.</summary>
     internal sealed class EfSearchContentPropertyStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -548,7 +548,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<SearchContentPropertyAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), ISearchContentPropertyStore;
 
-    /// <summary>The relational <see cref="ISearchContentWordStore"/> (D50).</summary>
+    /// <summary>The relational <see cref="ISearchContentWordStore"/>.</summary>
     internal sealed class EfSearchContentWordStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -556,7 +556,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfFrameworkStore<SearchContentWordAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), ISearchContentWordStore;
 
-    /// <summary>The relational <see cref="ISearchWordStore"/> (D50).</summary>
+    /// <summary>The relational <see cref="ISearchWordStore"/>.</summary>
     internal sealed class EfSearchWordStore(
         IDbContextFactory<TenantDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -610,7 +610,7 @@ namespace Stomme.Repository.Stores
         public void Dispose() => _context.Dispose();
     }
 
-    /// <summary>The relational <see cref="IJobStore"/> (D52) — MASTER side. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IJobStore"/> — MASTER side. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfJobStore(
         IDbContextFactory<MasterDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -618,7 +618,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfMasterFrameworkStore<JobAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IJobStore;
 
-    /// <summary>The relational <see cref="IJobLogStore"/> (D52) — MASTER side. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IJobLogStore"/> — MASTER side. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfJobLogStore(
         IDbContextFactory<MasterDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -626,7 +626,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfMasterFrameworkStore<JobLogAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IJobLogStore;
 
-    /// <summary>The relational <see cref="IThemeStore"/> (D52) — MASTER side. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IThemeStore"/> — MASTER side. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfThemeStore(
         IDbContextFactory<MasterDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -634,7 +634,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfMasterFrameworkStore<ThemeAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IThemeStore;
 
-    /// <summary>The relational <see cref="IModuleDefinitionStore"/> (D52) — MASTER side. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IModuleDefinitionStore"/> — MASTER side. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfModuleDefinitionStore(
         IDbContextFactory<MasterDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -642,7 +642,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfMasterFrameworkStore<ModuleDefinitionAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IModuleDefinitionStore;
 
-    /// <summary>The relational <see cref="ITenantStore"/> (D52) — MASTER side, the routing core. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="ITenantStore"/> — MASTER side, the routing core. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfTenantStore(
         IDbContextFactory<MasterDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -650,7 +650,7 @@ namespace Stomme.Repository.Stores
         IEnumerable<IDomainEventSerializer> serializers)
         : EfMasterFrameworkStore<TenantAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), ITenantStore;
 
-    /// <summary>The relational <see cref="IAliasStore"/> (D52) — MASTER side, the routing core. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
+    /// <summary>The relational <see cref="IAliasStore"/> — MASTER side, the routing core. See <see cref="EfMasterFrameworkStore{TAggregate}"/>.</summary>
     internal sealed class EfAliasStore(
         IDbContextFactory<MasterDBContext> contextFactory,
         IAggregateTracker aggregateTracker,
@@ -659,7 +659,7 @@ namespace Stomme.Repository.Stores
         : EfMasterFrameworkStore<AliasAggregate>(contextFactory, aggregateTracker, tenantContext, serializers), IAliasStore;
 
     /// <summary>
-    /// The relational <see cref="ISearchQueryStore"/> (D50) — <b>today's query, kept in SQL</b>.
+    /// The relational <see cref="ISearchQueryStore"/> — <b>today's query, kept in SQL</b>.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -680,7 +680,7 @@ namespace Stomme.Repository.Stores
     /// <c>The_properties_arm_filters_and_no_longer_throws</c>.
     /// </para>
     /// <para>
-    /// Reads open their own session rather than going through a store (D19).
+    /// Reads open their own session rather than going through a store.
     /// </para>
     /// </remarks>
     internal sealed class EfSearchQueryStore(IFrameworkStoreSessionFactory sessions) : ISearchQueryStore
@@ -752,7 +752,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The filter arms both <see cref="ISearchQueryStore"/> implementations share (D50).
+    /// The filter arms both <see cref="ISearchQueryStore"/> implementations share.
     /// </summary>
     /// <remarks>
     /// These are provider-neutral by construction: entity include/exclude and the date bounds are plain
@@ -786,7 +786,7 @@ namespace Stomme.Repository.Stores
                 query = query.Where(item => item.ContentModifiedOn >= searchQuery.FromDate);
             }
 
-            // BL-251: ToDate defaults to DateTime.MinValue, so a query without one found NOTHING; the default means "no end".
+            // ToDate defaults to DateTime.MinValue, so a query without one found NOTHING; the default means "no end".
             if (searchQuery.ToDate.Date != DateTime.MaxValue.Date && searchQuery.ToDate.Date != DateTime.MinValue.Date)
             {
                 query = query.Where(item => item.ContentModifiedOn <= searchQuery.ToDate);
@@ -867,7 +867,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The relational <see cref="IMasterStoreSessionFactory"/>: EF Core query sessions over a fresh
-    /// per-session <see cref="MasterDBContext"/>. The read half of the Setting cluster's master store (D23).
+    /// per-session <see cref="MasterDBContext"/>. The read half of the Setting cluster's master store.
     /// </summary>
     internal sealed class MasterStoreSessionFactory : IMasterStoreSessionFactory
     {

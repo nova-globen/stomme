@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Mailjet
 {
     /// <summary>
-    /// Mailjet (BL-229, n8n's Mailjet node: an e-mail sent, with a body or a template): Mailjet's Send API v3.1 with the account's
+    /// Mailjet (n8n's Mailjet node: an e-mail sent, with a body or a template): Mailjet's Send API v3.1 with the account's
     /// API key and secret key as HTTP Basic, over the host's egress. A test names the account's sender addresses. Mailjet's SMS
     /// takes a token of its own: the <c>mailjetsms</c> connector.
     /// </summary>

@@ -61,7 +61,7 @@ namespace Stomme.Modules.Guestbook.Application
     {
         public async Task<WireModel> Handle(SignGuestbookCommand request, CancellationToken ct)
         {
-            // BL-111: the signature is stamped with the AMBIENT tenant (the request's alias resolves it; a job's scope
+            // The signature is stamped with the AMBIENT tenant (the request's alias resolves it; a job's scope
             // sets it). No tenant - an unresolved alias, a system scope - is refused rather than written under a
             // default that every real tenant's filter would then hide.
             var tenantId = tenantContext.CurrentTenantId

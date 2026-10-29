@@ -1,5 +1,5 @@
 #!/usr/bin/env pwsh
-# BL-44 — the PRODUCTION-SLIM module SDK.
+# The PRODUCTION-SLIM module SDK.
 #
 # Packs the slim Stomme module-facing SDK to the LOCAL NuGet feed (examples/local-feed), then restores +
 # builds the INDEPENDENT split Blogs module (examples/Modules/Blogs) against PACKAGES ONLY — proving a
@@ -49,7 +49,7 @@ dotnet build (Join-Path $root 'src/Stomme.Server/Stomme.Server.csproj') -c Relea
 if ($LASTEXITCODE -ne 0) { throw 'build failed: Stomme.Server' }
 
 # 2. The clean framework libs the slim surface exposes (packed at the props version — they are the app's).
-# BL-86: plus the tenancy contracts a tenant-owned aggregate (BL-111) compiles against.
+# Plus the tenancy contracts a tenant-owned aggregate compiles against.
 foreach ($p in @('Stomme.Shared', 'Stomme.SharedKernel', 'Stomme.Mediator', 'Stomme.Security.Abstractions',
                  'Stomme.Tenancy.Domain', 'Stomme.Tenancy.Abstractions', 'Stomme.Persistence.Abstractions', 'Stomme.EventBus')) {
     dotnet pack (Join-Path $root "src/$p/$p.csproj") -c Release --output $feed

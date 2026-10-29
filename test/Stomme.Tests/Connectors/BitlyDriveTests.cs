@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Bitly DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Bitly DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Bitly's API v4 that refuses a call without the token: a Bitly connection made over the
     /// API, its token vaulted, tested; a published pipeline shortens an address with an accent, gets and updates the link,
     /// reads its clicks' total and the default group's links over two pages - no more than asked; the token in neither the

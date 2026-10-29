@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Supabase (n8n's Supabase node: a table's rows read, got, created, updated and deleted) over a project's REST API:
+    /// Supabase (n8n's Supabase node: a table's rows read, got, created, updated and deleted) over a project's REST API:
     /// the secret key in Supabase's apikey header, and as a bearer only when it is a JWT; a table's rows the filters keep -
     /// every filter, or any one inside or=(...), PostgREST's own query beside them - the columns and order asked, page by page by
     /// offset up to the most asked for; a row got, rows created, updated and deleted - each answering the rows it touched; a table,

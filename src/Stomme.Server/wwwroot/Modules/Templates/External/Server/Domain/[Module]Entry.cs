@@ -5,12 +5,12 @@ using Stomme.Tenancy.Domain;
 
 namespace [Owner].Module.[Module].Domain
 {
-    /// <summary>Raised when an entry is added - a handler reacts in the same unit of work (D40).</summary>
+    /// <summary>Raised when an entry is added - a handler reacts in the same unit of work.</summary>
     public sealed record [Module]EntryAddedEvent(Guid EntryId, int SiteId, int AuthorUserId) : DomainEvent;
 
     /// <summary>
-    /// The module's aggregate: STORAGE-BLIND (D79) - the module writes no DbContext, no store and no provider branch; the
-    /// host persists it on whichever store the installation chose - and TENANT-OWNED (BL-111): the host's module store is one
+    /// The module's aggregate: STORAGE-BLIND - the module writes no DbContext, no store and no provider branch; the
+    /// host persists it on whichever store the installation chose - and TENANT-OWNED: the host's module store is one
     /// per installation, so every row carries its tenant and the store filters by it. It belongs to one SITE of that tenant.
     /// </summary>
     public sealed class [Module]Entry : AggregateRoot<Guid>, ITenantOwned

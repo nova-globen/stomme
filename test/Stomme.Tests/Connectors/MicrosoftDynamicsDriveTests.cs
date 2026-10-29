@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Dynamics 365 DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
+    /// Microsoft Dynamics 365 DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the
     /// extraction port, against a loopback stand-in for the tenant's token endpoint and an environment's Dataverse Web API: a
     /// token for the application user's client credentials and the environment's own scope alone, the environment answering
     /// that token alone. A Microsoft Dynamics 365 connection made over the API, its secret vaulted, tested; a published pipeline

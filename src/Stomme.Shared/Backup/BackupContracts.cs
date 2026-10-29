@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Stomme.Backup
 {
     /// <summary>
-    /// One PART of an installation snapshot (BL-81, D106): a store, a module's aggregate, a content tree. It writes its data
+    /// One PART of an installation snapshot: a store, a module's aggregate, a content tree. It writes its data
     /// out, checks a part it is handed before anything is replaced, and replaces EVERYTHING it owns with that part - a
     /// whole-collection replace, never a merge, so no row from before the restore survives it.
     /// </summary>
@@ -72,7 +72,7 @@ namespace Stomme.Backup
         }
 
         /// <summary>
-        /// A scope narrower than the snapshot (BL-171): <paramref name="tenantIds"/> are the tenants this restore puts
+        /// A scope narrower than the snapshot: <paramref name="tenantIds"/> are the tenants this restore puts
         /// back, <paramref name="snapshotTenantIds"/> every tenant the snapshot holds. A participant leaves what is
         /// outside <see cref="TenantIds"/> - other tenants' rows, installation-wide rows - exactly as it is.
         /// </summary>
@@ -103,7 +103,7 @@ namespace Stomme.Backup
         /// <summary>Every tenant the snapshot holds. Equal to <see cref="TenantIds"/> unless the restore is partial.</summary>
         public IReadOnlyList<int> SnapshotTenantIds { get; }
 
-        /// <summary>True for a tenant-scoped restore (BL-171): a participant then touches only <see cref="TenantIds"/>' rows and files, never installation-wide ones.</summary>
+        /// <summary>True for a tenant-scoped restore: a participant then touches only <see cref="TenantIds"/>' rows and files, never installation-wide ones.</summary>
         public bool IsPartial => TenantIds.Count != SnapshotTenantIds.Count || TenantIds.Any(id => !SnapshotTenantIds.Contains(id));
     }
 

@@ -9,7 +9,7 @@
     <LanguageSwitcher ButtonClass="@ButtonClass" DropdownAlignment="@LanguageDropdownAlignment" />
 }
 
-@* Contextual help (BL-84, D103 item 6): its OWN switch, outside the language switcher's @if and outside the admin/editor
+@* Contextual help: its OWN switch, outside the language switcher's @if and outside the admin/editor
    gate below - help is for the reader of the page. It renders nothing unless a topic resolves, and it carries no
    @rendermode, so a Static page view opens no circuit for it. *@
 @if (ShowHelp)
@@ -21,7 +21,7 @@
 {
     <form method="post" class="app-form-inline" @formname="EditModeForm" @onsubmit="@(async () => await ToggleEditMode(PageState.EditMode))" data-enhance>
         <input type="hidden" name="@Constants.RequestVerificationToken" value="@SiteState.AntiForgeryToken" />
-        @* Migrated to the --db-* header icon button (D11); `active` is a state class, not Bootstrap. *@
+        @* Migrated to the --db-* header icon button; `active` is a state class, not Bootstrap. *@
         @if (PageState.EditMode)
         {
             <button type="submit" class="app-editmode db-icon-btn @ButtonClass active" aria-pressed="true" autocomplete="off">
@@ -53,7 +53,7 @@
     [Parameter]
     public string ButtonClass { get; set; } = "";
 
-    // The drawer chrome is Stomme's own now (D11/D18): these used to default to Bootstrap's
+    // The drawer chrome is Stomme's own now: these used to default to Bootstrap's
     // .offcanvas classes, which the supersede layer had to re-implement.
     [Parameter]
     public string ContainerClass { get; set; } = "db-drawer db-drawer-end";

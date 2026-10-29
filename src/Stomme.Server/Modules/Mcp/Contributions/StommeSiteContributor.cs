@@ -11,13 +11,13 @@ using Stomme.Shared;
 namespace Stomme.Modules.Mcp.Contributions
 {
     /// <summary>
-    /// The framework's own MCP contribution (D101 item 8): <c>stomme://site</c>, what the CURRENT SITE is.
+    /// The framework's own MCP contribution: <c>stomme://site</c>, what the CURRENT SITE is.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>It is the proof the seam works from inside the framework</b>, and it is deliberately the smallest useful
     /// thing: the site's name, its render mode and its runtime. No <c>search_site</c> in Wave 1 - a search tool is a
-    /// read of everything a site holds, and it wants the egress story (BL-97) before it wants an implementation.
+    /// read of everything a site holds, and it wants the egress story before it wants an implementation.
     /// </para>
     /// <para>
     /// <b>It is gated on <see cref="McpPermissions.View"/>, and that gate is why it could not be built earlier.</b>

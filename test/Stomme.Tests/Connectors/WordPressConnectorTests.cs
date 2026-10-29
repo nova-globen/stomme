@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - WordPress: the username and application password by Basic; an admin page's or the API's address cut back to the
+    /// WordPress: the username and application password by Basic; an admin page's or the API's address cut back to the
     /// site, a site in a folder kept; the posts page by page as many as WordPress says it has, up to the most asked for, a page no
     /// bigger than what is left, by status, words, authors, categories, tags (and those left out), times, an order and sticky; each
     /// post a plain record, its title as read and its content as HTML; the pages by a parent and menu order; the users by words and

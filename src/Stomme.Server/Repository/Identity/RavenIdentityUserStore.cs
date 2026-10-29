@@ -41,7 +41,7 @@ namespace Stomme.Repository.Identity
     /// has always persisted.
     /// </para>
     /// <para>
-    /// <b>Provider divergence (D48/D49).</b> <see cref="FindByNameAsync"/>/<see cref="FindByEmailAsync"/> filter
+    /// <b>Provider divergence.</b> <see cref="FindByNameAsync"/>/<see cref="FindByEmailAsync"/> filter
     /// on the NORMALIZED (upper-cased) columns, exactly as EF does, so RavenDB's case-INSENSITIVE <c>==</c> and
     /// EF's case-SENSITIVE <c>==</c> agree on already-upper-cased input — the data is normalized, the query is
     /// never translated with <c>.ToLower()</c> (which throws on Raven). Verified by DRIVING a mixed-case login
@@ -84,7 +84,7 @@ namespace Stomme.Repository.Identity
         {
         }
 
-        /// <summary>The users of the current tenant, in its database (BL-176) - where its user rows and role assignments are.</summary>
+        /// <summary>The users of the current tenant, in its database - where its user rows and role assignments are.</summary>
         public RavenIdentityUserStore(IDocumentStore store, RavenFrameworkStoreOptions options, ITenantContext tenantContext, IRavenTenantDatabaseResolver databaseResolver)
         {
             _store = store ?? throw new ArgumentNullException(nameof(store));
@@ -296,7 +296,7 @@ namespace Stomme.Repository.Identity
             return Task.FromResult(user.SecurityStamp);
         }
 
-        // ---- IUserLockoutStore (BL-6) ------------------------------------------------------------------
+        // ---- IUserLockoutStore ------------------------------------------------------------------
         // Every member below is an IN-MEMORY mutation persisted by UpdateAsync, byte-for-byte the EF
         // UserStoreBase semantics: UserManager.AccessFailedAsync increments through the store, trips
         // SetLockoutEndDateAsync + ResetAccessFailedCountAsync at MaxFailedAccessAttempts, then persists the
@@ -349,7 +349,7 @@ namespace Stomme.Repository.Identity
             return Task.CompletedTask;
         }
 
-        // ---- IUserTwoFactorStore (BL-6) ----------------------------------------------------------------
+        // ---- IUserTwoFactorStore ----------------------------------------------------------------
 
         public Task SetTwoFactorEnabledAsync(IdentityUser user, bool enabled, CancellationToken cancellationToken)
         {
@@ -425,7 +425,7 @@ namespace Stomme.Repository.Identity
 
             // RavenDB rejects a multi-field predicate inside Any() on an auto-index ("A static fanout index
             // should be used instead"), so filter on the SINGLE selective field (ProviderKey) at the store and
-            // complete the (provider, key) match in memory. The external-login path (D64) is the first caller to
+            // complete the (provider, key) match in memory. The external-login path is the first caller to
             // drive this, and a login is uniquely keyed by its provider key, so the candidate set is tiny.
             var candidates = await Query(session)
                 .Where(item => item.Logins.Any(login => login.ProviderKey == providerKey))

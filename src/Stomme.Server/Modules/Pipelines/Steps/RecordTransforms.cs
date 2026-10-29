@@ -44,7 +44,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// What the record transformations share (BL-229, n8n's Sort, Remove Duplicates, Summarize): a list of field paths, and
+    /// What the record transformations share (n8n's Sort, Remove Duplicates, Summarize): a list of field paths, and
     /// a column's values compared by what they all hold - as numbers, as dates (ISO 8601, as the conditions read them), or
     /// as text.
     /// </summary>
@@ -108,7 +108,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Filter records (BL-229, n8n's Filter): keeps the records that meet a condition - the editor's rules, as an If's are,
+    /// Filter records (n8n's Filter): keeps the records that meet a condition - the editor's rules, as an If's are,
     /// tested on each record by the one evaluator (<see cref="PipelineConditions.HoldsFor"/>): <c>{{ status }}</c> reads the
     /// record's field, a name the record lacks reads a built-in (<c>{{ $today }}</c>, <see cref="PipelineBuiltIns"/>) or the
     /// pipeline's variable of that name, and anything else is empty. The
@@ -180,7 +180,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Sort records (BL-229, n8n's Sort): by one field or several, each ascending or descending (<c>field desc</c>). A column
+    /// Sort records (n8n's Sort): by one field or several, each ascending or descending (<c>field desc</c>). A column
     /// sorts as numbers when every value in it is a number, as dates when every one is a date, otherwise as text; a record
     /// without the field goes last either way, and records that tie keep their order.
     /// </summary>
@@ -261,7 +261,7 @@ namespace Stomme.Modules.Pipelines.Steps
         }
     }
 
-    /// <summary>Limit records (BL-229, n8n's Limit): the first (or last) so many records.</summary>
+    /// <summary>Limit records (n8n's Limit): the first (or last) so many records.</summary>
     [FlowNode(DoneOutcome, FailedOutcome)]
     [Step("Stomme", "Transformations", "Keep the first or last so many records.", DisplayName = "Limit records")]
     public class LimitRecords : DataStep
@@ -296,7 +296,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Split into batches (BL-229, n8n's Loop Over Items): the records in batches of so many - a list of lists, in order, the last
+    /// Split into batches (n8n's Loop Over Items): the records in batches of so many - a list of lists, in order, the last
     /// one shorter when they do not divide - for a For each to take a batch at a time (a rate-limited API, a bulk insert).
     /// </summary>
     [FlowNode(DoneOutcome, FailedOutcome)]
@@ -335,7 +335,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Remove duplicates (BL-229, n8n's Remove Duplicates): keeps the first record of each set that agree on the compared
+    /// Remove duplicates (n8n's Remove Duplicates): keeps the first record of each set that agree on the compared
     /// fields - every field when none is named, whatever their order in the record.
     /// </summary>
     [FlowNode(DoneOutcome, FailedOutcome)]
@@ -373,7 +373,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Summarize records (BL-229, n8n's Summarize - a pivot): one record per group of records that agree on the Group by
+    /// Summarize records (n8n's Summarize - a pivot): one record per group of records that agree on the Group by
     /// fields (one record for all when none is named), holding those fields and an aggregation per line: <c>count</c>,
     /// <c>count field</c> (its non-empty values), <c>count distinct field</c>, <c>sum field</c>, <c>average field</c>,
     /// <c>min field</c>, <c>max field</c>, <c>concatenate field</c>, <c>list field</c>, <c>list distinct field</c>, each optionally <c>as name</c> (else
@@ -580,7 +580,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Split out (BL-229, n8n's Split Out): one record per element of a list field - an element that is an object gives its
+    /// Split out (n8n's Split Out): one record per element of a list field - an element that is an object gives its
     /// fields, any other its value under the field's name (or the name given) - with the record's other fields kept unless
     /// that is switched off. A record whose field is empty or absent gives none; a field holding one value gives one.
     /// </summary>
@@ -655,7 +655,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// Merge records (BL-229, n8n's Merge): two record sets as one - appended, or joined on match fields (<c>field</c> when
+    /// Merge records (n8n's Merge): two record sets as one - appended, or joined on match fields (<c>field</c> when
     /// both sides call it the same, <c>field = other field</c> when not; every line must agree, and an absent value matches
     /// nothing). A combined record holds the first record's fields and the other record's fields the first lacks.
     /// </summary>

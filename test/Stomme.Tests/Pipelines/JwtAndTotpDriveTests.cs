@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - JWT and TOTP (n8n's JWT and TOTP nodes) DRIVEN on an installed SQLite host: a pipeline authored over the API as the
+    /// JWT and TOTP (n8n's JWT and TOTP nodes) DRIVEN on an installed SQLite host: a pipeline authored over the API as the
     /// editor saves it - a webhook, JWT signing claims, JWT verifying the token it made, TOTP making a code, a file written of what
     /// they gave - published and called; the file says the verified subject and issuer and a six-digit code; and neither the
     /// signing key nor the TOTP secret is in what the run's page reads of its steps.

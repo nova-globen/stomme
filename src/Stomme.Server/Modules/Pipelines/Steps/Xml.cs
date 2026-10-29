@@ -25,7 +25,7 @@ namespace Stomme.Modules.Pipelines.Steps
     }
 
     /// <summary>
-    /// XML (BL-229, n8n's XML node): XML into JSON - the root element a record under its name, an attribute <c>@name</c>, an
+    /// XML (n8n's XML node): XML into JSON - the root element a record under its name, an attribute <c>@name</c>, an
     /// element repeated under one parent a list, an element with only text its text, mixed text <c>#text</c> - or JSON into XML
     /// the same way back, under a root (a list's items as elements named so). A document with a DTD is refused, so no entity
     /// can reach a file or the network (XXE), and a document is read to at most ten million characters.

@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The ERPNext connector's live tests' server (BL-229): ERPNEXT_TEST_URL / ERPNEXT_TEST_KEY / ERPNEXT_TEST_SECRET where set,
+    /// The ERPNext connector's live tests' server: ERPNEXT_TEST_URL / ERPNEXT_TEST_KEY / ERPNEXT_TEST_SECRET where set,
     /// otherwise this machine's throwaway ERPNext 16 that <c>scripts/erpnext-test-server.ps1</c> makes on 127.0.0.1:18097 - its
     /// Administrator's API key and secret, made by Frappe's own code, in the files that script writes under the user's temp
-    /// folder. Neither is a FAILURE that says how to get one, never a skip (D46).
+    /// folder. Neither is a FAILURE that says how to get one, never a skip.
     /// </summary>
     internal static class ErpNextTestEndpoint
     {

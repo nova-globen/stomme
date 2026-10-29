@@ -6,7 +6,7 @@ using System.Linq;
 namespace Stomme.Modules.Connectors.Shared
 {
     /// <summary>
-    /// A SQL connector's bound values (BL-229): the operation's parameters named <c>@name</c>, each the value of <c>@name</c> in
+    /// A SQL connector's bound values: the operation's parameters named <c>@name</c>, each the value of <c>@name</c> in
     /// the statement - sent to the server as a parameter, never written into the SQL, so a value from a pipeline run (a form
     /// field, a webhook's body) cannot change the statement it fills. n8n's "Query Parameters", by name. Every other
     /// parameter is the operation's own (<c>query</c>).

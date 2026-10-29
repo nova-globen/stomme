@@ -12,8 +12,8 @@ using Stomme.SharedKernel.Domain;
 
 namespace Stomme.Modules.Notifications.Domain
 {
-    // The eight notification value objects, lifted from the predecessor platform NotificationValueObjects.cs (BL-78) and reshaped per
-    // D100 point 7: each is an IStringValueObject with a canonical Value and a public static Create(string), so EF
+    // The eight notification value objects, lifted from the predecessor platform NotificationValueObjects.cs and reshaped per
+    // Each is an IStringValueObject with a canonical Value and a public static Create(string), so EF
     // (a plain string column, the D79 convention), RavenDB and the File store all persist the SAME scalar and
     // rebuild through the SAME factory - no per-provider converter, no fragile private-constructor binding. The
     // public constructors the predecessor platform exposed are kept (the domain API is unchanged); Create(string) parses the
@@ -133,7 +133,7 @@ namespace Stomme.Modules.Notifications.Domain
     /// or a <c>vault://</c> URI in that slot is rejected too.
     /// </para>
     /// <para>
-    /// <b>Relaxed (D100 point 7).</b> the predecessor platform REQUIRED a vault reference for Email and SMS, which a credential-free
+    /// <b>Relaxed.</b> the predecessor platform REQUIRED a vault reference for Email and SMS, which a credential-free
     /// e-mail channel (the existing SMTP queue) cannot supply. The requirement now belongs to the channel PROVIDER
     /// that declares it (webhook optional, e-mail none); the domain requires a reference for no kind. Webhook still
     /// requires an absolute http(s) endpoint.

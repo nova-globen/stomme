@@ -14,7 +14,7 @@ namespace Stomme.Repository
 
             changeTracker.DetectChanges();
 
-            // BL-81: a restore writes rows back WITH their audit trail - see AuditStampSuppression.
+            // A restore writes rows back WITH their audit trail - see AuditStampSuppression.
             if (Stomme.Infrastructure.Backup.AuditStampSuppression.IsActive)
             {
                 return;

@@ -21,7 +21,7 @@ using Xunit;
 namespace Stomme.Tests.Notifications
 {
     /// <summary>
-    /// BL-78 step 4 - <c>NotificationDispatcherContractTests</c> (D100 points 3 and 4): a dependent referencing ONLY the
+    /// <c>NotificationDispatcherContractTests</c> (D100 points 3 and 4): a dependent referencing ONLY the
     /// Shared port dispatches and reaches a fake channel; the four producer shapes dispatch; parameters survive
     /// persistence to render time; recipients - not callers - are constrained (an external e-mail only with the site's
     /// opt-in, an Endpoint never (F9), a user only of THIS site). Also carries the 8 facts ported from the predecessor platform
@@ -179,7 +179,7 @@ namespace Stomme.Tests.Notifications
             Assert.Equal("Run r-981 failed.", sent.Payload.Body);
         }
 
-        // ---- recipients are constrained (D100 point 4, F9) ------------------------------------------------------
+        // ---- recipients are constrained (F9) ------------------------------------------------------
 
         [Fact]
         public async Task An_external_email_recipient_is_refused_unless_the_site_opts_in_and_nothing_is_persisted()
@@ -293,7 +293,7 @@ namespace Stomme.Tests.Notifications
         public async Task Dispatch_PersistsQueuedRequest_AndEnqueuesDispatchMessage()
         {
             // Harness swap: the bus is opt-in in Stomme, so it is registered here; the recipient is an external address,
-            // so the site opts in (D100 point 4).
+            // so the site opts in.
             await using var harness = await StartAsync(withEventBus: true);
             harness.Settings.ExternalRecipients[NotificationPipelineHarness.SiteId] = true;
 
@@ -360,7 +360,7 @@ namespace Stomme.Tests.Notifications
             var (harness, _, _) = await BuildHostAsync();
             await using var _disp = harness;
             await SeedAsync(harness, Template(), WebhookChannel());
-            // BL-251: a site with NO e-mail channel now gets a default one, so "without an enabled channel" is an e-mail
+            // A site with NO e-mail channel now gets a default one, so "without an enabled channel" is an e-mail
             // channel an administrator turned off.
             var disabledEmail = NotificationPipelineHarness.Channel(ChannelKind.Email, NotificationProviderKeys.Email, "E-mail (off)");
             disabledEmail.Disable();

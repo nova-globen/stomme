@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - ERPNext (n8n's ERPNext node) without a server: every doctype, name, field, type, choice, child row, filter and
+    /// ERPNext (n8n's ERPNext node) without a server: every doctype, name, field, type, choice, child row, filter and
     /// order held to the doctype's own definition before anything is sent - read once a run; the key and secret in Frappe's
     /// token header and in no address; a document made with its child rows as JSON (n8n's text was a 500), changed and
     /// submitted by its docstatus, read and deleted, its name escaped; a list page by page with its fields, its filters in Frappe's
@@ -179,8 +179,8 @@ namespace Stomme.Tests.Connectors
     }
 
     /// <summary>
-    /// BL-229 - ERPNext LIVE, against this machine's throwaway ERPNext 16 (scripts/erpnext-test-server.ps1) - fail-not-skip without
-    /// it (D46): a test naming the key's user and a wrong key refused; a contact made with its e-mail rows as JSON - n8n's text a
+    /// ERPNext LIVE, against this machine's throwaway ERPNext 16 (scripts/erpnext-test-server.ps1) - fail-not-skip without
+    /// it: a test naming the key's user and a wrong key refused; a contact made with its e-mail rows as JSON - n8n's text a
     /// 500 - read back with them; a ToDo made, found by a filter n8n's operators name, changed, a field ToDo has not got refused
     /// where ERPNext would drop it; both deleted, the second delete Frappe's own 404.
     /// </summary>

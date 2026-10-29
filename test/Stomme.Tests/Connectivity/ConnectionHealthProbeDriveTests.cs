@@ -26,7 +26,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// BL-94 increment 11 (D110 Q3, D104) - the connection health probe on an installed host, on PostgreSQL and RavenDB:
+    /// BL-94 increment 11 (D110 Q3) - the connection health probe on an installed host, on PostgreSQL and RavenDB:
     /// with <c>Health:Enabled</c> and <c>Connectivity:HealthProbes:Enabled</c> in the override file and a fixture connector
     /// composed into the host, two connections are created through the API, the real Site-scope pass runs, and Healthy
     /// and Failing appear on the connections (the API) and in the Health admin's subjects (the alert ledger and the

@@ -13,7 +13,7 @@ namespace Stomme.Modules.Backup.Application.Archive
 {
     /// <summary>
     /// Writes a <c>DCBAK1</c> archive FORWARD ONLY - the output needs not seek, and memory stays at one chunk however large a
-    /// part is (D106: no ~2 GB whole-archive buffer, which the predecessor platform's protector had). Parts are written one at a time through
+    /// part is (no ~2 GB whole-archive buffer, which the predecessor platform's protector had). Parts are written one at a time through
     /// <see cref="OpenPart"/>; <see cref="CompleteAsync"/> seals the manifest and the footer. An archive never completed has
     /// no footer and does not open.
     /// </summary>

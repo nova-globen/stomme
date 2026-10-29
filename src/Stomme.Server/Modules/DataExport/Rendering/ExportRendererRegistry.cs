@@ -6,7 +6,7 @@ using Stomme.Export;
 namespace Stomme.Modules.DataExport.Rendering
 {
     /// <summary>
-    /// The one place a format is turned into its renderer (D108 item 3).
+    /// The one place a format is turned into its renderer.
     /// </summary>
     /// <remarks>
     /// Two renderers claiming one format THROWS at construction rather than letting the last registration win:

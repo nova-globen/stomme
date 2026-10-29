@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Shopify DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Shopify DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a shop's GraphQL Admin API: a Shopify connection made over the API, its token vaulted,
     /// tested (the shop named); a published pipeline adds an order from a variant, finds the paid orders over two pages, adds a
     /// product and reads the active products - every query the token in Shopify's header; the token is in neither the graph nor

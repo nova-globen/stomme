@@ -20,7 +20,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Stomme.Modules.Connectivity.Startup
 {
     /// <summary>
-    /// The Connectivity module's server composition (BL-94 increments 5 and 6, D110): the tenant-owned
+    /// The Connectivity module's server composition (BL-94 increments 5 and 6): the tenant-owned
     /// <see cref="ConnectionAggregate"/> on the storage-blind seam, the module's repository, the connection secrets
     /// over the per-site secret store, the test runner, the extraction port's implementation, and the CQRS handlers
     /// (registered EXPLICITLY - never AddMediator() here, the host composed the mediator once). The connector catalog
@@ -49,7 +49,7 @@ namespace Stomme.Modules.Connectivity.Startup
             services.AddScoped<ConnectionSecrets>();
             services.AddScoped<ConnectionTestRunner>();
             // The health contribution (increment 11): one Site-scope probe over the site's connections, gated by
-            // Connectivity:HealthProbes:Enabled (default OFF) read from THIS host's configuration - never IConfiguration (BL-162).
+            // Connectivity:HealthProbes:Enabled (default OFF) read from THIS host's configuration - never IConfiguration.
             services.AddScoped<Stomme.Health.IHealthContributor>(sp => new ConnectionHealthContributor(
                 ConnectivityHealthProbes.Enabled(HostConfiguration.Resolve(sp)),
                 sp.GetRequiredService<IConnectionRepository>(),
@@ -58,7 +58,7 @@ namespace Stomme.Modules.Connectivity.Startup
                 sp.GetRequiredService<TimeProvider>(),
                 sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<ConnectionHealthContributor>>()));
             services.AddScoped<IConnectorExtractionService, ConnectorExtractionService>();
-            services.AddScoped<IConnectorFileSink, SiteFolderConnectorFileSink>(); // BL-96 increment 2: a connector's files land in a site folder through the ingestion guard
+            services.AddScoped<IConnectorFileSink, SiteFolderConnectorFileSink>(); // A connector's files land in a site folder through the ingestion guard
 
             services.AddScoped<IRequestHandler<CreateConnectionCommand, Guid>, CreateConnectionCommandHandler>();
             services.AddScoped<IRequestHandler<UpdateConnectionCommand, Unit>, UpdateConnectionCommandHandler>();
@@ -67,7 +67,7 @@ namespace Stomme.Modules.Connectivity.Startup
             services.AddScoped<IRequestHandler<ListConnectionsQuery, IReadOnlyList<ConnectionView>>, ListConnectionsQueryHandler>();
             services.AddScoped<IRequestHandler<GetConnectionQuery, ConnectionView>, GetConnectionQueryHandler>();
             services.AddScoped<IRequestHandler<ListConnectorsQuery, IReadOnlyList<ConnectorView>>, ListConnectorsQueryHandler>();
-            // The site's egress allowlist (BL-180): read by a holder of connections:view, saved by the Host role alone.
+            // The site's egress allowlist: read by a holder of connections:view, saved by the Host role alone.
             services.TryAddScoped<IConnectivityEgressSettings, SettingRepositoryConnectivityEgressSettings>();
             services.AddScoped<IRequestHandler<GetConnectionEgressQuery, ConnectionEgressView>, GetConnectionEgressQueryHandler>();
             services.AddScoped<IRequestHandler<SaveConnectionEgressCommand, ConnectionEgressView>, SaveConnectionEgressCommandHandler>();

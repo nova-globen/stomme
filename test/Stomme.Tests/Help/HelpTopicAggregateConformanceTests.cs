@@ -27,7 +27,7 @@ using Xunit;
 namespace Stomme.Tests.Help
 {
     /// <summary>
-    /// BL-84 (D103 item 3) — the help topic round-trips member for member on EVERY module-aggregate provider — EF
+    /// The help topic round-trips member for member on EVERY module-aggregate provider — EF
     /// (SQLite), EF (PostgreSQL), RavenDB and File — through the module's own <c>ServerStartup</c> and its closed
     /// repository, and every method that repository exposes answers identically.
     /// </summary>
@@ -41,7 +41,7 @@ namespace Stomme.Tests.Help
     /// <para>
     /// <see cref="DateTime.Kind"/> is asserted EXPLICITLY: equality ignores it, so a suite that only compared instants
     /// would be green on exactly the divergence the aggregate re-stamps to hide. PostgreSQL and RavenDB FAIL rather
-    /// than skip (D46).
+    /// than skip.
     /// </para>
     /// </remarks>
     public abstract class HelpTopicAggregateConformanceTests : IAsyncLifetime
@@ -309,7 +309,7 @@ namespace Stomme.Tests.Help
         }
     }
 
-    /// <summary>EF Core on a LIVE PostgreSQL scratch database. Fails, never skips, when PostgreSQL is down (D46).</summary>
+    /// <summary>EF Core on a LIVE PostgreSQL scratch database. Fails, never skips, when PostgreSQL is down.</summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class PostgresHelpTopicAggregateConformanceTests : HelpTopicAggregateConformanceTests
     {

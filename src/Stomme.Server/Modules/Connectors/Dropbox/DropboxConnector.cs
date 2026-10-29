@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Dropbox
 {
     /// <summary>
-    /// Dropbox (BL-229, n8n's Dropbox node: files, folders and search) over Dropbox's API v2 - its RPC calls at
+    /// Dropbox (n8n's Dropbox node: files, folders and search) over Dropbox's API v2 - its RPC calls at
     /// <c>https://api.dropboxapi.com/2</c>, a file's bytes at <c>https://content.dropboxapi.com/2</c> - and the OAuth2
     /// REFRESH-TOKEN scheme: the app's key and secret and a refresh token of an offline grant, exchanged at Dropbox's token
     /// endpoint through the shared <see cref="OAuth2TokenProvider"/>, as Google Drive's is (Dropbox issues no long-lived access

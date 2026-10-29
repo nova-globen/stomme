@@ -19,7 +19,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Netlify
 {
     /// <summary>
-    /// Netlify (BL-229, n8n's Netlify node: sites and deploys): Netlify's API with a personal access token as a bearer token,
+    /// Netlify (n8n's Netlify node: sites and deploys): Netlify's API with a personal access token as a bearer token,
     /// over the host's egress. A test names whose the token is.
     /// </summary>
     /// <remarks>

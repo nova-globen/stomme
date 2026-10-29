@@ -75,7 +75,7 @@ namespace Stomme.Modules.CostOptimization.Domain
     }
 
     /// <summary>
-    /// A concrete, evidence-cited savings opportunity the advisor raised (BL-97 increment 6, the predecessor platform's
+    /// A concrete, evidence-cited savings opportunity the advisor raised (the predecessor platform's
     /// <c>OptimizationRecommendation</c>): it cites the observations it derives from (never none), carries a non-negative
     /// currency-qualified saving, and moves one way - Open, then Applied (the action taken recorded) or Dismissed (a reason
     /// and a cooldown, so the advisor does not nag). <see cref="RecommendationKey"/> is the finding's deterministic identity:

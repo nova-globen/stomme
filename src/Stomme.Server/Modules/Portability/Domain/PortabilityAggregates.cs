@@ -22,7 +22,7 @@ namespace Stomme.Modules.Portability.Domain
     }
 
     /// <summary>
-    /// One package (BL-82, D107 item 5): a configuration export or a person's data export being built, ready, failed or
+    /// One package: a configuration export or a person's data export being built, ready, failed or
     /// expired, or an imported configuration package's record. The payload lives ONLY in the artifact file; the row holds
     /// what a list shows and what retention needs.
     /// </summary>
@@ -179,7 +179,7 @@ namespace Stomme.Modules.Portability.Domain
         Expired = 6,
     }
 
-    /// <summary>One line of the portability audit (D107 item 5): who did what with which package, when. Immutable.</summary>
+    /// <summary>One line of the portability audit: who did what with which package, when. Immutable.</summary>
     public sealed class PortabilityAuditEntryAggregate : AggregateRoot<Guid>, ITenantOwned
     {
         private PortabilityAuditEntryAggregate()

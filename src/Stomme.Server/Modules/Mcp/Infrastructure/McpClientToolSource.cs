@@ -9,12 +9,12 @@ using Stomme.Shared;
 namespace Stomme.Modules.Mcp.Infrastructure
 {
     /// <summary>
-    /// What the EXTERNAL servers this SITE has registered offer, as the site last discovered it (D101 item 5).
+    /// What the EXTERNAL servers this SITE has registered offer, as the site last discovered it.
     /// </summary>
     /// <remarks>
     /// <para>
     /// <b>List-only in Wave 1</b>, and list-only means it: there is no way through this type to CALL an external tool.
-    /// Calling one is an egress with a guard of its own (BL-97), and a source that could both list and invoke would be
+    /// Calling one is an egress with a guard of its own, and a source that could both list and invoke would be
     /// the place that guard was forgotten.
     /// </para>
     /// <para>

@@ -15,7 +15,7 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     /// <summary>
-    /// BL-229 - the site's variables (<see cref="PipelineSiteVariables"/>), one JSON object in the engine's key-value store under the
+    /// The site's variables (<see cref="PipelineSiteVariables"/>), one JSON object in the engine's key-value store under the
     /// SITE (a key-value key is one row per installation - the schedules' lesson).
     /// </summary>
     public static class PipelineSiteVariableStore

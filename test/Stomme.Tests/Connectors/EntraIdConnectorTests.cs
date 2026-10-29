@@ -73,7 +73,7 @@ namespace Stomme.Tests.Connectors
             Assert.Contains("$skiptoken=u2", graph[1].RequestUri!.AbsoluteUri);
         }
 
-        // BL-229 - Graph's next link followed only while it stays on the collection: one to another host refused, nothing sent there.
+        // Graph's next link followed only while it stays on the collection: one to another host refused, nothing sent there.
         [Fact]
         public async Task Extract_NextLinkToAnotherHost_IsRefusedWithNothingSentThere()
         {
@@ -167,7 +167,7 @@ namespace Stomme.Tests.Connectors
             return (call.Request.Method.Method, call.Request.RequestUri!.AbsoluteUri, call.Body);
         }
 
-        // BL-229 - users and groups read no further than asked, the page no larger than it.
+        // Users and groups read no further than asked, the page no larger than it.
         [Fact]
         public async Task Users_and_groups_are_read_no_further_than_asked()
         {
@@ -181,7 +181,7 @@ namespace Stomme.Tests.Connectors
             Assert.Equal(("Kassan", "[\"Unified\"]"), ((string?)group["displayName"], (string?)group["groupTypes"]));
         }
 
-        // BL-229 - a user got, updated - the properties Graph keeps apart in a PATCH of their own - and deleted, added to and
+        // A user got, updated - the properties Graph keeps apart in a PATCH of their own - and deleted, added to and
         // removed from a group.
         [Fact]
         public async Task A_user_is_got_updated_deleted_and_kept_in_groups()
@@ -222,7 +222,7 @@ namespace Stomme.Tests.Connectors
             Assert.Equal((object?)true, removed["removed"]);
         }
 
-        // BL-229 - a group got with its members, created as a security or a Microsoft 365 group, assigned or dynamic, updated and
+        // A group got with its members, created as a security or a Microsoft 365 group, assigned or dynamic, updated and
         // deleted.
         [Fact]
         public async Task A_group_is_got_created_updated_and_deleted()
@@ -255,7 +255,7 @@ namespace Stomme.Tests.Connectors
             Assert.Equal(("DELETE", $"{Api}/groups/{GroupId}", ""), Sent(handler));
         }
 
-        // BL-229 - what could go wrong refused before a token is asked for; Graph's code and message on a failure.
+        // What could go wrong refused before a token is asked for; Graph's code and message on a failure.
         [Fact]
         public async Task What_could_go_wrong_is_refused_before_a_token_is_asked_for_and_graphs_words_on_a_failure()
         {

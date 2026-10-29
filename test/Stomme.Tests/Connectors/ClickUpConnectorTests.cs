@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - ClickUp (n8n's ClickUp node: a task created, got, listed, updated and deleted, a comment added): the API token as
+    /// ClickUp (n8n's ClickUp node: a task created, got, listed, updated and deleted, a comment added): the API token as
     /// the Authorization header's whole value; a list's open tasks - or every one, by status and tag - read page by page up to the
     /// most asked for, each a plain record - a status, a priority, a person and a tag by name, its times in UTC; a task made on a
     /// list (its priority by name, its due date a day or a time), read by its address, changed with assignees added and removed,

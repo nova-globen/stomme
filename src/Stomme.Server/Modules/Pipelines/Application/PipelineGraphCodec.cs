@@ -117,7 +117,7 @@ namespace Stomme.Modules.Pipelines.Application
                 }
             }
 
-            // BL-229: the pinned test values, back onto their variables (a value for a variable no longer there is dropped).
+            // The pinned test values, back onto their variables (a value for a variable no longer there is dropped).
             if (flowchart["metadata"]?["designer"]?["testValues"] is JsonObject pinned)
             {
                 foreach (var variable in graph.Variables)
@@ -129,7 +129,7 @@ namespace Stomme.Modules.Pipelines.Application
                 }
             }
 
-            // BL-229: the steps' pinned results, back onto their steps (one for a step no longer there is dropped).
+            // The steps' pinned results, back onto their steps (one for a step no longer there is dropped).
             if (flowchart["metadata"]?["designer"]?["pinnedResults"] is JsonObject pins)
             {
                 foreach (var step in graph.Steps)
@@ -162,7 +162,7 @@ namespace Stomme.Modules.Pipelines.Application
         }
 
         /// <summary>
-        /// BL-229: the time zone a RUNNING pipeline reads time in, from its root step's designer metadata (as <see cref="TimeoutMinutes"/>
+        /// The time zone a RUNNING pipeline reads time in, from its root step's designer metadata (as <see cref="TimeoutMinutes"/>
         /// reads its limit) - null for UTC.
         /// </summary>
         public static string? TimeZone(IDictionary<string, object>? rootMetadata)
@@ -204,7 +204,7 @@ namespace Stomme.Modules.Pipelines.Application
         };
 
         /// <summary>
-        /// BL-229: the time limit a RUNNING pipeline keeps on its root step's designer metadata - as the engine materialised it from
+        /// The time limit a RUNNING pipeline keeps on its root step's designer metadata - as the engine materialised it from
         /// the body (a JSON element), or as a pipeline built in code holds it (a JSON node or a dictionary); null for none.
         /// </summary>
         public static int? TimeoutMinutes(IDictionary<string, object>? rootMetadata)
@@ -284,7 +284,7 @@ namespace Stomme.Modules.Pipelines.Application
         // step and port it sits in. A body's steps follow the step that holds them.
         private static void ReadScope(JsonObject flowchart, string? parent, string? port, PipelineGraph graph)
         {
-            // BL-229 increment 8: the flowchart's sticky notes, kept in its designer metadata - read before its steps, so a
+            // The flowchart's sticky notes, kept in its designer metadata - read before its steps, so a
             // flowchart's notes come before those of the bodies its steps hold.
             foreach (var node in flowchart["metadata"]?["designer"]?["notes"] as JsonArray ?? new JsonArray())
             {
@@ -353,7 +353,7 @@ namespace Stomme.Modules.Pipelines.Application
             var bodies = new List<(string Port, JsonObject Body)>();
             foreach (var property in step)
             {
-                // BL-229 increment 10: a Switch (flow)'s cases - a list the step holds directly, each a label and a condition.
+                // A Switch (flow)'s cases - a list the step holds directly, each a label and a condition.
                 if (property.Key == "cases" && property.Value is JsonArray cases && view.Type == FlowSwitchType)
                 {
                     view.Cases = cases.OfType<JsonObject>().Select(ReadCase).ToList();
@@ -420,7 +420,7 @@ namespace Stomme.Modules.Pipelines.Application
             }
         }
 
-        /// <summary>The engine's Switch (flow): its cases are a list it holds directly (BL-229 increment 10).</summary>
+        /// <summary>The engine's Switch (flow): its cases are a list it holds directly.</summary>
         public const string FlowSwitchType = "Stomme.FlowSwitch";
 
         // A case as the engine holds it: {"label", "condition": {"type", "value"}}. A condition of a kind the editor does not author
@@ -563,7 +563,7 @@ namespace Stomme.Modules.Pipelines.Application
                     });
                 }
 
-                // BL-229 increment 8: the sticky notes on this flowchart, in its designer metadata (the engine runs none of it).
+                // The sticky notes on this flowchart, in its designer metadata (the engine runs none of it).
                 var metadata = new JsonObject();
                 var notes = NotesIn(parent, port).Select(note =>
                 {
@@ -575,7 +575,7 @@ namespace Stomme.Modules.Pipelines.Application
                     };
                     if (PipelineNoteColors.Normalize(note.Color) is { } color)
                     {
-                        written["color"] = color; // BL-229: n8n's note colours; none for the accent
+                        written["color"] = color; // n8n's note colours; none for the accent
                     }
 
                     return (JsonNode?)written;
@@ -617,7 +617,7 @@ namespace Stomme.Modules.Pipelines.Application
                         metadata["designer"] = designer;
                     }
 
-                    // BL-229: how many runs may go at once - kept with the graph, and set on the definition's engine options at
+                    // How many runs may go at once - kept with the graph, and set on the definition's engine options at
                     // each save (PipelineRunPolicy), which is where the engine's trigger starts read it.
                     if (PipelineRunsAtOnce.Normalize(graph.RunsAtOnce) is { Length: > 0 } runsAtOnce)
                     {
@@ -626,7 +626,7 @@ namespace Stomme.Modules.Pipelines.Application
                         metadata["designer"] = designer;
                     }
 
-                    // BL-229: not keeping the runs that finish well - read from the published body by PipelineRunSettingsTask.
+                    // Not keeping the runs that finish well - read from the published body by PipelineRunSettingsTask.
                     if (graph.KeepSuccessfulRuns == false)
                     {
                         var designer = metadata["designer"] as JsonObject ?? new JsonObject();
@@ -634,7 +634,7 @@ namespace Stomme.Modules.Pipelines.Application
                         metadata["designer"] = designer;
                     }
 
-                    // BL-229: storing a run after each step - kept with the graph, and set on the definition's engine options at each
+                    // Storing a run after each step - kept with the graph, and set on the definition's engine options at each
                     // save (PipelineRunPolicy), which is where the engine's step scheduler reads it.
                     if (graph.SaveProgress == true)
                     {
@@ -643,7 +643,7 @@ namespace Stomme.Modules.Pipelines.Application
                         metadata["designer"] = designer;
                     }
 
-                    // BL-229: what the runs keep of their steps' data - read from the published body by PipelineRunSettingsTask.
+                    // What the runs keep of their steps' data - read from the published body by PipelineRunSettingsTask.
                     if (PipelineStepDataKeeping.Stored(graph.KeepStepData) is { } keepStepData)
                     {
                         var designer = metadata["designer"] as JsonObject ?? new JsonObject();
@@ -651,7 +651,7 @@ namespace Stomme.Modules.Pipelines.Application
                         metadata["designer"] = designer;
                     }
 
-                    // BL-229: the minutes a run that finishes well saves - read from the published body by the Insights query.
+                    // The minutes a run that finishes well saves - read from the published body by the Insights query.
                     if (PipelineInsights.MinutesSaved(graph.MinutesSavedPerRun) is { } minutesSaved)
                     {
                         var designer = metadata["designer"] as JsonObject ?? new JsonObject();
@@ -659,7 +659,7 @@ namespace Stomme.Modules.Pipelines.Application
                         metadata["designer"] = designer;
                     }
 
-                    // BL-229: how long a run may be busy in one go - read from the RUN's own pipeline by the run-control step
+                    // How long a run may be busy in one go - read from the RUN's own pipeline by the run-control step
                     // middleware (Reliability/RunControl.cs), so a run keeps the limit of the version it runs.
                     if (PipelineRunTimeout.Minutes(graph.TimeoutMinutes) is { } timeout)
                     {
@@ -668,7 +668,7 @@ namespace Stomme.Modules.Pipelines.Application
                         metadata["designer"] = designer;
                     }
 
-                    // BL-229: which pipelines may call this one - read from the CALLED pipeline's published body when a call
+                    // Which pipelines may call this one - read from the CALLED pipeline's published body when a call
                     // starts (Reliability/CallerPolicy.cs).
                     if (PipelineCallers.Normalize(graph.CalledBy) is { } calledBy)
                     {
@@ -677,7 +677,7 @@ namespace Stomme.Modules.Pipelines.Application
                         metadata["designer"] = designer;
                     }
 
-                    // BL-229: the zone the pipeline reads time in - read from the RUN's own pipeline for its built-ins, and at
+                    // The zone the pipeline reads time in - read from the RUN's own pipeline for its built-ins, and at
                     // publish for a Schedule with no zone of its own. One this server does not know is refused here.
                     if (PipelineTimeZone.Normalize(graph.TimeZone) is { } zone)
                     {
@@ -731,10 +731,10 @@ namespace Stomme.Modules.Pipelines.Application
                 };
                 if (!string.IsNullOrWhiteSpace(step.Comment))
                 {
-                    ((JsonObject)node["metadata"]!["designer"]!)["comment"] = step.Comment; // BL-229 increment 8: for the reader, never run
+                    ((JsonObject)node["metadata"]!["designer"]!)["comment"] = step.Comment; // For the reader, never run
                 }
 
-                // BL-229 increment 9: the step's retry and continue-on-error, which the module's step middleware reads.
+                // The step's retry and continue-on-error, which the module's step middleware reads.
                 var custom = (JsonObject)node["customProperties"]!;
                 if (step.Retries > 0)
                 {
@@ -778,7 +778,7 @@ namespace Stomme.Modules.Pipelines.Application
                     var key = Camel(input.Name);
                     if (IsVariablePicker(input))
                     {
-                        // BL-229: a step's VARIABLE - Set Variable's which-variable - is a property holding the variable itself, not
+                        // A step's VARIABLE - Set Variable's which-variable - is a property holding the variable itself, not
                         // an input holding an expression: written as the input form, the engine read a variable of its own making
                         // and every run failed "Variable '...' not found" (measured through the engine). None chosen, none written.
                         if (step.InputVariables is not null && step.InputVariables.TryGetValue(input.Name, out var picked) && !string.IsNullOrWhiteSpace(picked))
@@ -791,7 +791,7 @@ namespace Stomme.Modules.Pipelines.Application
 
                     if (ListStepsQueryHandler.OutcomesFrom(descriptor) == StepCatalogEntry.CaseOutcomes && input.Name == StepCatalogEntry.CaseOutcomes)
                     {
-                        // BL-229 increment 10: a Switch (flow)'s cases, a list the step holds directly - the engine's own shape,
+                        // A Switch (flow)'s cases, a list the step holds directly - the engine's own shape,
                         // {"label", "condition": {"type": "Condition", "value"}} each.
                         node[key] = Cases(step);
                         continue;
@@ -799,7 +799,7 @@ namespace Stomme.Modules.Pipelines.Application
 
                     if (step.InputScripts is not null && step.InputScripts.TryGetValue(input.Name, out var script) && script is not null)
                     {
-                        // BL-229 increment 5b: a JavaScript expression, run in the bounded sandbox when the step runs (ScriptExpressionHandler).
+                        // A JavaScript expression, run in the bounded sandbox when the step runs (ScriptExpressionHandler).
                         node[key] = new JsonObject
                         {
                             ["typeName"] = (Nullable.GetUnderlyingType(input.Type) ?? input.Type).Name,
@@ -808,7 +808,7 @@ namespace Stomme.Modules.Pipelines.Application
                     }
                     else if (step.InputConditions is not null && step.InputConditions.TryGetValue(input.Name, out var condition) && condition is not null)
                     {
-                        // BL-229 increment 10: a condition built from rules, evaluated when the step runs (ConditionExpressionHandler).
+                        // A condition built from rules, evaluated when the step runs (ConditionExpressionHandler).
                         node[key] = new JsonObject
                         {
                             ["typeName"] = (Nullable.GetUnderlyingType(input.Type) ?? input.Type).Name,
@@ -817,7 +817,7 @@ namespace Stomme.Modules.Pipelines.Application
                     }
                     else if (step.InputExpressions is not null && step.InputExpressions.TryGetValue(input.Name, out var template) && template is not null)
                     {
-                        // BL-229 increment 5: the input's template, rendered when the step runs (TemplateExpressionHandler).
+                        // The input's template, rendered when the step runs (TemplateExpressionHandler).
                         node[key] = new JsonObject
                         {
                             ["typeName"] = (Nullable.GetUnderlyingType(input.Type) ?? input.Type).Name,
@@ -1007,19 +1007,19 @@ namespace Stomme.Modules.Pipelines.Application
                 throw new ArgumentException(zoneError);
             }
 
-            // BL-229: an "Email received" trigger's connection is a connection's id.
+            // An "Email received" trigger's connection is a connection's id.
             if (!string.IsNullOrWhiteSpace(text) && stepType == PipelineEmailEvent.StepType && input.Name == nameof(Steps.EmailReceived.Connection) && Steps.EmailReceived.ConnectionProblem(text) is { } connectionProblem)
             {
                 throw new ArgumentException(connectionProblem);
             }
 
-            // BL-229: so is a "Telegram message received" trigger's.
+            // So is a "Telegram message received" trigger's.
             if (!string.IsNullOrWhiteSpace(text) && stepType == PipelineTelegramEvent.StepType && input.Name == nameof(Steps.TelegramMessageReceived.Connection) && Steps.TelegramMessageReceived.ConnectionProblem(text) is { } botProblem)
             {
                 throw new ArgumentException(botProblem);
             }
 
-            // BL-229: a "File added" trigger's folder is one of the site's pipeline folder, its names to match names.
+            // A "File added" trigger's folder is one of the site's pipeline folder, its names to match names.
             if (!string.IsNullOrWhiteSpace(text) && stepType == PipelineFileEvent.StepType && input.Name == nameof(Steps.FileAdded.Folder) && PipelineFileEvent.FolderProblem(text) is { } folderProblem)
             {
                 throw new ArgumentException(folderProblem);

@@ -28,7 +28,7 @@ namespace Stomme.Modules.Mcp.Application
     }
 
     /// <summary>
-    /// What this install publishes over MCP, as the CURRENT caller may see and use it (D101 item 2).
+    /// What this install publishes over MCP, as the CURRENT caller may see and use it.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -260,7 +260,7 @@ namespace Stomme.Modules.Mcp.Application
         }
 
         /// <summary>
-        /// Whether this install publishes over MCP at all right now - the <c>mcp.server</c> feature (D101 item 9).
+        /// Whether this install publishes over MCP at all right now - the <c>mcp.server</c> feature.
         /// </summary>
         /// <remarks>
         /// <b>It is the RUNTIME half of the switch, not a second copy of it.</b> <c>Mcp:Server:Enabled</c> is read

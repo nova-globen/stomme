@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - ClickUp DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// ClickUp DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for ClickUp's API: a ClickUp connection made over the API, its token vaulted, tested (the user
     /// named); a published pipeline adds a task to a list, comments on it, completes it and reads the list's open tasks over two
     /// pages - each call with the token as the whole Authorization header; the token is in neither the graph nor the run.

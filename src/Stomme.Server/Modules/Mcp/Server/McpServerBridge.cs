@@ -15,7 +15,7 @@ using ModelContextProtocol.Server;
 namespace Stomme.Modules.Mcp.Server
 {
     /// <summary>
-    /// The five MCP verbs, bridged to <see cref="IMcpServerCatalog"/> (D101 item 3).
+    /// The five MCP verbs, bridged to <see cref="IMcpServerCatalog"/>.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -29,7 +29,7 @@ namespace Stomme.Modules.Mcp.Server
     /// nothing today - the mutant survived - because the transport is STATELESS, so the SDK builds a server per
     /// request out of that request's scope and the two providers are the same object. The line is written this way
     /// because it stays correct if statelessness is ever turned off; it is not, today, what stops a cross-request
-    /// leak. What would stop one is the per-site drive (D101 item 4, <c>McpSiteIsolationTests</c>) - two sites in one
+    /// leak. What would stop one is the per-site drive (<c>McpSiteIsolationTests</c>) - two sites in one
     /// tenant, asserting the endpoint answers for the site the REQUEST resolved - and that is the next increment.
     /// </para>
     /// <para>
@@ -40,7 +40,7 @@ namespace Stomme.Modules.Mcp.Server
     /// </remarks>
     /// <summary>
     /// Endpoint metadata marking the MCP route, so the Identity cookie's challenge can answer it 401 instead of this
-    /// host''s usual bare 403 (BL-80, increment 4 follow-up).
+    /// host''s usual bare 403 (increment 4 follow-up).
     /// </summary>
     /// <remarks>
     /// <b>Metadata, not a path match.</b> The route is configurable (<c>Mcp:Server:Path</c>), so a string comparison in
@@ -82,7 +82,7 @@ namespace Stomme.Modules.Mcp.Server
                 var result = await catalog.InvokeToolAsync(name!, arguments, ct);
                 if (result is null)
                 {
-                    // Unknown and denied are ONE answer (D101 item 2). The ledger tells them apart; the caller cannot.
+                    // Unknown and denied are ONE answer. The ledger tells them apart; the caller cannot.
                     return Refused(RefusedMessage);
                 }
 

@@ -7,7 +7,7 @@ using Xunit;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-79 - the quota's own rules, asserted on the aggregate.
+    /// The quota's own rules, asserted on the aggregate.
     /// </summary>
     /// <remarks>
     /// Written while reconciling the predecessor platform's <c>UsageMeteringTests</c> and <c>AiUsageRecorderTests</c> BY NAME: the drives

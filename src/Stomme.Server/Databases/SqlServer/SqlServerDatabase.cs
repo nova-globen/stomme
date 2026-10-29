@@ -47,7 +47,7 @@ namespace Stomme.Database.SqlServer
             }
         }
 
-        // BL-173: a restore inserts ORIGINAL keys, which SQL Server accepts only with IDENTITY_INSERT ON for that table - and
+        // A restore inserts ORIGINAL keys, which SQL Server accepts only with IDENTITY_INSERT ON for that table - and
         // only one table per session at a time, so each batch is bracketed. No reseed follows (ResetIdentityAsync stays the
         // base no-op): an explicit identity value above the table's current one BECOMES the current one, so after the restore
         // the next insert already follows the highest restored key - measured on infra :1434 with the identity rewound first.

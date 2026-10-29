@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 namespace Stomme.Modules.Pipelines.Persistence
 {
     /// <summary>
-    /// BL-233 - the site's pipeline folders in an installation's backup: what the file steps read and write
+    /// The site's pipeline folders in an installation's backup: what the file steps read and write
     /// (<c>Pipelines:Files:Root</c>, a folder per site), which no part carried - a restore kept the live folders' files, and a
     /// restore onto a new host had none, a CSV an author put in for a pipeline to read and a report a run wrote alike.
     /// </summary>
@@ -27,7 +27,7 @@ namespace Stomme.Modules.Pipelines.Persistence
     /// </para>
     /// <para>
     /// <b>Replace.</b> As the content part: written into a staging folder beside the live root, swapped in only once every file
-    /// is on disk; a part that fails half-way leaves the live folders as they were. A tenant-scoped restore (BL-171) swaps
+    /// is on disk; a part that fails half-way leaves the live folders as they were. A tenant-scoped restore swaps
     /// the restored tenants' site folders only (<c>{tenant}-{site}</c>); another tenant's, and the engine's default folder,
     /// stay as they are.
     /// </para>
@@ -40,7 +40,7 @@ namespace Stomme.Modules.Pipelines.Persistence
 
         public string Name => PartName;
 
-        /// <summary>The record layout, bumped by hand when it changes - files have no type shape (BL-170).</summary>
+        /// <summary>The record layout, bumped by hand when it changes - files have no type shape.</summary>
         public string SchemaVersion => "1";
 
         /// <summary>After the engine's rows (600): a file is named by a pipeline, never the other way round.</summary>

@@ -17,7 +17,7 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Hunter
 {
     /// <summary>
-    /// Hunter (BL-229, n8n's Hunter node: a domain's email addresses, a person's address found, an address verified) over Hunter's
+    /// Hunter (n8n's Hunter node: a domain's email addresses, a person's address found, an address verified) over Hunter's
     /// API v2 (<c>https://api.hunter.io/v2</c>) by an API key in its <c>X-API-KEY</c> header - never in the address, where a proxy
     /// would log it. A test reads the account: its plan and the searches and verifications left.
     /// </summary>

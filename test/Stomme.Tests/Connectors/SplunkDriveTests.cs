@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Splunk DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Splunk DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for a Splunk server's management port that refuses a call without the token: a Splunk
     /// connection made over the API, its token vaulted, tested; a published pipeline runs a search blocking, reads its results
     /// over two pages matched by a quoted value - no more than asked - makes a report with an accent from the job, gives a

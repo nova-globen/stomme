@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Microsoft Dynamics 365 (n8n's Microsoft Dynamics CRM node: an environment's accounts - here any table): an
+    /// Microsoft Dynamics 365 (n8n's Microsoft Dynamics CRM node: an environment's accounts - here any table): an
     /// application user's client credentials at the tenant's token endpoint for the environment's own scope, the Dataverse Web
     /// API with the token as a bearer; records read page by page by the environment's next link - followed only while it stays
     /// on the table - no further than asked, with a filter, columns, related records and an order; one got, created, updated

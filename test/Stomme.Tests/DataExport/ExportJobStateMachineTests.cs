@@ -9,7 +9,7 @@ using Xunit;
 namespace Stomme.Tests.DataExport
 {
     /// <summary>
-    /// The export job's life as a state machine, and the audit entry's invariants (BL-85, D108 items 2, 4 and 9).
+    /// The export job's life as a state machine, and the audit entry's invariants (D108 items 2, 4 and 9).
     /// </summary>
     /// <remarks>
     /// What matters most here is the LEASE: a claim is a transition, a live render renews it, and only a lease

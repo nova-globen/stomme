@@ -102,7 +102,7 @@ namespace Stomme.Controllers
             var alias = await _aliases.GetAliasAsync(id);
             if (alias != null)
             {
-                // BL-100 T1 (D109): the Master tenant's LAST alias is never deleted. TenantRepository already refuses
+                // BL-100 T1: the Master tenant's LAST alias is never deleted. TenantRepository already refuses
                 // to delete the Master tenant row, but deleting its only alias left the installation with no alias at
                 // all - the host name then answered "Site Not Configured Correctly - No Matching Alias Exists" and the
                 // alias auto-registration cannot fire with zero aliases (measured, MasterTenantAliasGuardTests).

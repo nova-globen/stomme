@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Backup.Application
 {
     /// <summary>
-    /// BL-172: before a framework upgrade, a snapshot of the whole installation tagged <c>pre-upgrade</c>, under the SCHEDULED
+    /// Before a framework upgrade, a snapshot of the whole installation tagged <c>pre-upgrade</c>, under the SCHEDULED
     /// passphrase (<c>Backup:Schedule:Passphrase</c>) - the upgrade runs unattended, so no operator is there to type one.
     /// </summary>
     /// <remarks>

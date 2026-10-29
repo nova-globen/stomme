@@ -55,7 +55,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
     /// FALSE — and it is the fixture's answer, not EF Core's. EF translates <c>StartsWith</c> to <c>LIKE</c>,
     /// and <b>SQLite's <c>LIKE</c> is case-INSENSITIVE for ASCII</b>. PostgreSQL's is case-SENSITIVE, so the
     /// live product would answer <c>true</c> here — measured directly on stomme-pg-44357
-    /// (<c>SELECT 'running' LIKE 'RUN%'</c> returns <c>f</c>). This fixture is SQLite (D46), so that case is
+    /// (<c>SELECT 'running' LIKE 'RUN%'</c> returns <c>f</c>). This fixture is SQLite, so that case is
     /// not represented in this suite at all. See D50.
     /// </summary>
     protected override bool ProviderPrefixFilterIsOrdinal => false;
@@ -97,28 +97,28 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
     // Bound to the master connection — Setting is the FIRST aggregate the master database holds.
     protected override IMasterSettingStore NewMasterSettings() => new TestMasterSettingStore(NewMasterContext());
 
-    // The Job/JobLog pair (D52), also bound to the master connection: master-side only, no tenant twin.
+    // The Job/JobLog pair, also bound to the master connection: master-side only, no tenant twin.
     protected override IJobStore NewJobs() => new TestJobStore(NewMasterContext());
 
     protected override IJobLogStore NewJobLogs() => new TestJobLogStore(NewMasterContext());
 
-    // The Theme cluster (D52), also bound to the master connection: master-side only, no tenant twin.
+    // The Theme cluster, also bound to the master connection: master-side only, no tenant twin.
     protected override IThemeStore NewThemes() => new TestThemeStore(NewMasterContext());
 
-    // The ModuleDefinition cluster (D52), also bound to the master connection: master-side only, no tenant twin.
+    // The ModuleDefinition cluster, also bound to the master connection: master-side only, no tenant twin.
     protected override IModuleDefinitionStore NewModuleDefinitions() => new TestModuleDefinitionStore(NewMasterContext());
 
-    // The Tenant/Alias routing pair (D52) — master-side, over the master connection like Theme/ModuleDefinition.
+    // The Tenant/Alias routing pair — master-side, over the master connection like Theme/ModuleDefinition.
     protected override ITenantStore NewTenants() => new TestTenantStore(NewMasterContext());
 
     protected override IAliasStore NewAliases() => new TestAliasStore(NewMasterContext());
 
-    // The Permission cluster (D24). Tenant connection only: MasterDBContext never mapped Permission and the
+    // The Permission cluster. Tenant connection only: MasterDBContext never mapped Permission and the
     // master migration set never created the table.
     protected override IPermissionStore NewPermissions() => new TestPermissionStore(NewTenantContext());
 
-    // The five leaf clusters (D44). Tenant connection only: none of them has a master half.
-    // The SiteGroup pair (D45). Tenant connection only: neither has a master half.
+    // The five leaf clusters. Tenant connection only: none of them has a master half.
+    // The SiteGroup pair. Tenant connection only: neither has a master half.
     protected override ISiteGroupStore NewSiteGroups() => new TestSiteGroupStore(NewTenantContext());
 
     protected override ISiteGroupMemberStore NewSiteGroupMembers() => new TestSiteGroupMemberStore(NewTenantContext());
@@ -133,14 +133,14 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
 
     protected override INotificationStore NewNotifications() => new TestNotificationStore(NewTenantContext());
 
-    // Visitor, UrlMapping and PageModule (D47). Tenant connection only: none of the three has a master half.
+    // Visitor, UrlMapping and PageModule. Tenant connection only: none of the three has a master half.
     protected override IVisitorStore NewVisitors() => new TestVisitorStore(NewTenantContext());
 
     protected override IUrlMappingStore NewUrlMappings() => new TestUrlMappingStore(NewTenantContext());
 
     protected override IPageModuleStore NewPageModules() => new TestPageModuleStore(NewTenantContext());
 
-    // Folder (D48). Tenant connection only: no master half. NOTE (corrected 2026-07-20): this previously read
+    // Folder. Tenant connection only: no master half. NOTE (corrected 2026-07-20): this previously read
     // "there is no File store — the File cluster is NOT on the seam". That was true at D48 (escalated under
     // rule 9) but D49 lifted the blocker via the normalized-column pattern: IFileStore exists (ISiteStore.cs)
     // and is exercised by NewFiles() immediately below.
@@ -148,7 +148,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
 
     protected override IFileStore NewFiles() => new TestFileStore(NewTenantContext());
 
-    // The SearchContent cluster (D50). Four CRUD stores over EfRepository, as above.
+    // The SearchContent cluster. Four CRUD stores over EfRepository, as above.
     protected override ISearchContentStore NewSearchContents() => new TestSearchContentStore(NewTenantContext());
 
     protected override ISearchContentPropertyStore NewSearchContentProperties() => new TestSearchContentPropertyStore(NewTenantContext());
@@ -158,7 +158,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
     protected override ISearchWordStore NewSearchWords() => new TestSearchWordStore(NewTenantContext());
 
     /// <summary>
-    /// The EF search read (D50) — <b>the REAL <c>EfSearchQueryStore</c>, not a fixture copy</b>.
+    /// The EF search read — <b>the REAL <c>EfSearchQueryStore</c>, not a fixture copy</b>.
     /// </summary>
     /// <remarks>
     /// Every other store here is hand-built over <c>EfRepository</c>, because their behaviour IS
@@ -197,7 +197,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
         protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureFrameworkStore(database);
     }
 
-    /// <summary>The master half: SettingAggregate and nothing else, exactly as MasterDBContext maps it (D23).</summary>
+    /// <summary>The master half: SettingAggregate and nothing else, exactly as MasterDBContext maps it.</summary>
     private sealed class MasterStoreContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
     {
         protected override void OnModelCreating(ModelBuilder builder) => builder.ConfigureMasterFrameworkStore(database);
@@ -242,7 +242,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
 
     private sealed class TestMasterSettingStore(DbContext context) : TestStore<SettingAggregate>(context), IMasterSettingStore;
 
-    // The Job/JobLog pair (D52), over the master connection.
+    // The Job/JobLog pair, over the master connection.
     private sealed class TestJobStore(DbContext context) : TestStore<JobAggregate>(context), IJobStore;
 
     private sealed class TestJobLogStore(DbContext context) : TestStore<JobLogAggregate>(context), IJobLogStore;
@@ -251,7 +251,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
 
     private sealed class TestModuleDefinitionStore(DbContext context) : TestStore<ModuleDefinitionAggregate>(context), IModuleDefinitionStore;
 
-    // The Tenant/Alias routing pair (D52), over the master connection.
+    // The Tenant/Alias routing pair, over the master connection.
     private sealed class TestTenantStore(DbContext context) : TestStore<TenantAggregate>(context), ITenantStore;
 
     private sealed class TestAliasStore(DbContext context) : TestStore<AliasAggregate>(context), IAliasStore;
@@ -282,7 +282,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
 
     private sealed class TestFileStore(DbContext context) : TestStore<FileAggregate>(context), IFileStore;
 
-    // The SearchContent cluster (D50).
+    // The SearchContent cluster.
     private sealed class TestSearchContentStore(DbContext context) : TestStore<SearchContentAggregate>(context), ISearchContentStore;
 
     private sealed class TestSearchContentPropertyStore(DbContext context) : TestStore<SearchContentPropertyAggregate>(context), ISearchContentPropertyStore;
@@ -341,7 +341,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
         );
         """;
 
-    // The MASTER schema (D23/D52): Setting, plus the Job/JobLog pair, Theme, ModuleDefinition, and the Tenant/Alias
+    // The MASTER schema: Setting, plus the Job/JobLog pair, Theme, ModuleDefinition, and the Tenant/Alias
     // routing pair that completed the D52 wave. These SEVEN are the only framework-store aggregates the master
     // database holds — everything else is a per-tenant table. tenant has EXACTLY 9 columns — tenant_id, name (NOT
     // NULL, UNIQUE), db_connection_string (NOT NULL), NULLABLE version + db_type (db_type is absent from
@@ -574,7 +574,7 @@ public sealed class EfCoreFrameworkStoreConformanceTests : FrameworkStoreConform
         );
         """ + LeafClusterDdl;
 
-    // The five leaf clusters (D44), each derived from its EntityBuilder plus every migration that altered it,
+    // The five leaf clusters, each derived from its EntityBuilder plus every migration that altered it,
     // and then CROSS-CHECKED column-for-column against a real migrated PostgreSQL database (the
     // stomme-pg-44357 container the render guard uses). That second step is not ceremony — reading the
     // builders alone would have produced three wrong tables:

@@ -8,7 +8,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.DataExport.Domain
 {
     /// <summary>
-    /// One requested export, from the moment it is queued to the moment its artifact expires (BL-85, D108).
+    /// One requested export, from the moment it is queued to the moment its artifact expires.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -123,7 +123,7 @@ namespace Stomme.Modules.DataExport.Domain
         /// <summary>A CODE, never text: the exception message goes to the log, not to the requester.</summary>
         public ExportFailureCode? FailureCode { get; private set; }
 
-        /// <summary>The schedule whose run queued this export (BL-95); null for one a person requested.</summary>
+        /// <summary>The schedule whose run queued this export; null for one a person requested.</summary>
         public Guid? ScheduleId { get; private set; }
 
         public static ExportJobAggregate Request(

@@ -13,9 +13,9 @@ using Stomme.Modules.Connectors.Shared;
 namespace Stomme.Modules.Connectors.Rapid7
 {
     /// <summary>
-    /// Rapid7 InsightVM (BL-96 increment 4, lifted from the predecessor platform's <c>rapid7</c>): the /api/3 collections paged by the API's
+    /// Rapid7 InsightVM (lifted from the predecessor platform's <c>rapid7</c>): the /api/3 collections paged by the API's
     /// own <c>totalPages</c>, assets scoped to at most one of site, asset group or scan, a versioned custom path, the
-    /// hypermedia <c>links</c> dropped from every row. Basic credentials; every request through the host's egress (D110).
+    /// hypermedia <c>links</c> dropped from every row. Basic credentials; every request through the host's egress.
     /// </summary>
     public sealed class Rapid7Connector : IConnector, IConnectorExtractor
     {

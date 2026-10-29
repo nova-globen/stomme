@@ -81,7 +81,7 @@ namespace Stomme.Modules.Pipelines.Application
     }
 
     /// <summary>
-    /// BL-229 - n8n's Evaluations, kept in the engine's key-value store under the SITE: an evaluation one key, what each row's run
+    /// n8n's Evaluations, kept in the engine's key-value store under the SITE: an evaluation one key, what each row's run
     /// recorded one key per row (the run writes its own, the task the evaluation - never the same key). Deleted together.
     /// </summary>
     public static class PipelineEvaluationStore
@@ -416,7 +416,7 @@ namespace Stomme.Modules.Pipelines.Application
 
         /// <summary>
         /// Stops a row's run where it is: asked to stop before its next step - a row's run is busy in its first burst of work, which
-        /// the engine stores only when the burst ends, so a timed-out or cancelled row's run went on to its end (BL-229, found with
+        /// the engine stores only when the burst ends, so a timed-out or cancelled row's run went on to its end (found with
         /// Stop that stops) - and cancelled where the engine has it stored.
         /// </summary>
         public static async Task CancelAsync(IPipelineRuntime runtime, Reliability.PipelineRunStops stops, DateTimeOffset now, string runId, CancellationToken ct)

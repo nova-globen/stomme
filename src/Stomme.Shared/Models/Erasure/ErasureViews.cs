@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Stomme.Models.Erasure
 {
     /// <summary>
-    /// A subject's erasure receipt (D112): what an operator shows a supervisory authority. It holds NO personal data -
+    /// A subject's erasure receipt: what an operator shows a supervisory authority. It holds NO personal data -
     /// the subject is an opaque erasure id, the outcomes name stores and counts, a retention names its reason and due
     /// date. The identity behind it is gone once the run completes.
     /// </summary>

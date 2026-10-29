@@ -10,7 +10,7 @@ using Stomme.Collaboration;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// A pipeline graph as FIELDS for the conflict resolver (BL-97 increment 12, D114): every step, its name, its position and
+    /// A pipeline graph as FIELDS for the conflict resolver: every step, its name, its position and
     /// each literal input, and every connection, is one path with one value - so two editors changing different steps, or
     /// different inputs of one step, never collide, and a concurrent change to the same field is found. BCL-only, so the
     /// editor describes a conflict's path with the same rules the server merged it by.
@@ -20,7 +20,7 @@ namespace Stomme.Models.Pipelines
     /// <item><c>step/{id}/input/{name}</c> - the literal (text for a multi-line input, a script or an expression; structured otherwise)</item>
     /// <item><c>connection/{source}/{port}/{target}</c> - <c>1</c> (structured); an empty port is the step's one outcome</item>
     /// <item><c>variable/{id}</c> - its name (structured), <c>variable/{id}/type</c>, <c>variable/{id}/value</c> (structured),
-    /// <c>variable/{id}/test-value</c> - its pinned test value (text, BL-229)</item>
+    /// <c>variable/{id}/test-value</c> - its pinned test value (text)</item>
     /// <item><c>step/{id}/input-variable/{name}</c> and <c>step/{id}/output/{name}</c> - the variable's id (structured)</item>
     /// <item><c>step/{id}/input-expression/{name}</c> - the input's template (text: BL-229 increment 5)</item>
     /// <item><c>step/{id}/input-script/{name}</c> - the input's JavaScript (text: BL-229 increment 5b)</item>
@@ -33,12 +33,12 @@ namespace Stomme.Models.Pipelines
     /// <c>note/{id}/position</c> (text), <c>note/{id}/parent</c> (structured) - BL-229 increment 8</item>
     /// <item><c>step/{id}/parent</c> - <c>{parent}/{port}</c>, the body the step sits in (structured); absent for a step of the
     /// pipeline itself, so a graph with no bodies has exactly the fields it always had</item>
-    /// <item><c>pipeline/runs-at-once</c> - how many runs may go at once (structured, BL-229); absent for any number</item>
-    /// <item><c>pipeline/keep-successful-runs</c> - <c>false</c> when the runs that finish well are not kept (structured, BL-229);
-    /// <item><c>pipeline/save-progress</c> - <c>true</c> when a run is stored after each step (structured, BL-229);
+    /// <item><c>pipeline/runs-at-once</c> - how many runs may go at once (structured); absent for any number</item>
+    /// <item><c>pipeline/keep-successful-runs</c> - <c>false</c> when the runs that finish well are not kept (structured);
+    /// <item><c>pipeline/save-progress</c> - <c>true</c> when a run is stored after each step (structured);
     /// absent when they are</item>
-    /// <item><c>pipeline/minutes-saved</c> - the minutes one run that finishes well saves (structured, BL-229); absent when not said</item>
-    /// <item><c>pipeline/timeout-minutes</c> - how long a run may be busy in one go before it is stopped (structured, BL-229);
+    /// <item><c>pipeline/minutes-saved</c> - the minutes one run that finishes well saves (structured); absent when not said</item>
+    /// <item><c>pipeline/timeout-minutes</c> - how long a run may be busy in one go before it is stopped (structured);
     /// absent for no limit</item>
     /// </list>
     /// Every id and name inside a path is escaped, so a slash in one cannot fake a path.
@@ -74,7 +74,7 @@ namespace Stomme.Models.Pipelines
 
                 if (step.PinnedResult is not null)
                 {
-                    fields[root + "/pinned"] = step.PinnedResult; // BL-229: the result pinned for its tests (text)
+                    fields[root + "/pinned"] = step.PinnedResult; // The result pinned for its tests (text)
                 }
 
                 if (step.Retries > 0)
@@ -155,7 +155,7 @@ namespace Stomme.Models.Pipelines
                 fields[root + "/value"] = variable.Value;
                 if (variable.TestValue is not null)
                 {
-                    fields[root + "/test-value"] = variable.TestValue; // BL-229: its pinned test value (text)
+                    fields[root + "/test-value"] = variable.TestValue; // Its pinned test value (text)
                 }
             }
 
@@ -185,7 +185,7 @@ namespace Stomme.Models.Pipelines
 
                 if (PipelineNoteColors.Normalize(note.Color) is { } color)
                 {
-                    fields[root + "/color"] = color; // BL-229: a field of its own, so one editor's colour and another's text both stay
+                    fields[root + "/color"] = color; // A field of its own, so one editor's colour and another's text both stay
                 }
             }
 
@@ -626,7 +626,7 @@ namespace Stomme.Models.Pipelines
         }
     }
 
-    /// <summary>The editor's save while it collaborates (BL-97 increment 12): the graph it saves, and the graph it loaded - the base its changes are measured from.</summary>
+    /// <summary>The editor's save while it collaborates: the graph it saves, and the graph it loaded - the base its changes are measured from.</summary>
     public class GraphSaveRequest
     {
         public PipelineGraph Graph { get; set; } = new PipelineGraph();

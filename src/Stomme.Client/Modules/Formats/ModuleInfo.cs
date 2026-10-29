@@ -7,7 +7,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Formats
 {
     /// <summary>
-    /// The Formats module's <see cref="ModuleDefinition"/> (BL-94, D110): one admin page, <c>admin/formats</c>, placed
+    /// The Formats module's <see cref="ModuleDefinition"/>: one admin page, <c>admin/formats</c>, placed
     /// through <see cref="ModuleDefinition.PageTemplates"/> (reconciled additively per site on every boot) for
     /// Administrators, and the two keys <c>formats:view</c> / <c>formats:manage</c> declared as site Permission rows
     /// through <see cref="PermissionKeys.Declare"/> - both default to Administrators.

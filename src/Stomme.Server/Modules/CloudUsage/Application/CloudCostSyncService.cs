@@ -62,7 +62,7 @@ namespace Stomme.Modules.CloudUsage.Application
     }
 
     /// <summary>
-    /// The one fetch-normalise-persist-materialise path (BL-97 increment 4, the predecessor platform's <c>CloudCostSyncService</c>): the
+    /// The one fetch-normalise-persist-materialise path (the predecessor platform's <c>CloudCostSyncService</c>): the
     /// request's site and tenant, the source's adapter, a daily (yesterday) or monthly (last month) window, the connection
     /// through the site, the host egress for that site, the rows recorded, and - when asked - a dataset registered or
     /// refreshed through D110's registrar (the classifier may escalate it, never lower it). A refusal is a code, a reason

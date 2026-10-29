@@ -29,7 +29,7 @@ namespace Stomme.Modules.Pipelines.Triggers
     public sealed record PipelineChatLine(string Role, string Text);
 
     /// <summary>
-    /// BL-229 - the site's chats (n8n's Chat Trigger), the site's side: the chat a published pipeline offers under a name (from its
+    /// The site's chats (n8n's Chat Trigger), the site's side: the chat a published pipeline offers under a name (from its
     /// trigger step, as the engine indexed it); a visitor's message sent as the trigger's stimulus, which RUNS the pipeline at once
     /// (the stimulus sender is in-process) and whose answer is the result of the last step its run completes; and each visitor's
     /// conversation, kept in the engine's key-value store under the site, the chat and the visitor's session (the newest

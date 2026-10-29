@@ -21,7 +21,7 @@ namespace Stomme.Modules.Pipelines.Steps
     public sealed record ExtractedField(string Name, PipelineTableColumnType Type, string Description);
 
     /// <summary>
-    /// Extract information (BL-229, n8n's Information Extractor): the site's language model reads a text and answers the fields
+    /// Extract information (n8n's Information Extractor): the site's language model reads a text and answers the fields
     /// the author named - each a name, what it holds (text, a number, true or false, a date) and what it is - as one record, a field
     /// the text does not give null. The answer is held to the fields: keys it was not asked for are dropped, a value converted to
     /// what its field holds (a value that will not convert is null, and the log says so - "$12.50" is no number to a table). The

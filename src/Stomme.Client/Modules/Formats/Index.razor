@@ -3,7 +3,7 @@
 @inject IFormatsService FormatsService
 
 @*
-    The Formats page (BL-94 increment 2, D110): the system presets and this site's own definitions, with a live example
+    The Formats page: the system presets and this site's own definitions, with a live example
     per row. A holder of formats:view reads; a holder of formats:manage adds, edits and deletes the site's own - never a
     preset. Every button that appears is decided again by the server when it is pressed.
 *@
@@ -173,7 +173,7 @@ else
         _culture = format.Culture;
         _timeZone = format.TimeZone;
         _message = string.Empty;
-        BringIntoView("formats-editor"); // below the list, which holds every preset (BL-22)
+        BringIntoView("formats-editor"); // below the list, which holds every preset
     }
 
     private void CancelEdit()
@@ -235,6 +235,6 @@ else
         }
 
         await LoadAsync();
-        StateHasChanged(); // called back from the confirmation dialog, not from an event of this page (BL-22)
+        StateHasChanged(); // called back from the confirmation dialog, not from an event of this page
     }
 }

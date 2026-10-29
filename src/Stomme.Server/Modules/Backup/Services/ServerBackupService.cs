@@ -30,7 +30,7 @@ namespace Stomme.Modules.Backup.Services
     }
 
     /// <summary>
-    /// The SERVER side of the backup surface (BL-81, D106 item 9). Everything is the HOST's: every call re-asserts the Host role
+    /// The SERVER side of the backup surface. Everything is the HOST's: every call re-asserts the Host role
     /// (refutation 8 - no permission key exists, because <c>PermissionKeys.Declare</c> always adds Administrators, and an archive
     /// holds every site's users and password hashes under a passphrase its creator chooses). Long work - a snapshot, staging a
     /// restore - is queued to the worker with the passphrase held only in memory; never run inside the request.
@@ -83,7 +83,7 @@ namespace Stomme.Modules.Backup.Services
             }
 
             var passphrase = request!.Passphrase;
-            var tenantIds = request.TenantIds is { Count: > 0 } ? request.TenantIds.ToList() : null; // BL-171: null is the whole installation
+            var tenantIds = request.TenantIds is { Count: > 0 } ? request.TenantIds.ToList() : null; // Null is the whole installation
             operations.Record(snapshotId, new BackupOperationResult { Accepted = true, SnapshotId = snapshotId, Completed = false });
             var queued = queue.TryEnqueue(async (provider, token) =>
             {

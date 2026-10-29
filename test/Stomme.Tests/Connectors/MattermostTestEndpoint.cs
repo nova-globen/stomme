@@ -5,10 +5,10 @@ using System.IO;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// The Mattermost connector's live tests' server (BL-229): MATTERMOST_TEST_URL / MATTERMOST_TEST_TOKEN where set, otherwise this
+    /// The Mattermost connector's live tests' server: MATTERMOST_TEST_URL / MATTERMOST_TEST_TOKEN where set, otherwise this
     /// machine's throwaway Mattermost Team Edition 10.11 that <c>scripts/mattermost-test-server.ps1</c> makes on 127.0.0.1:18096 -
     /// its first user's personal access token in the file that script writes under the user's temp folder. Neither is a FAILURE
-    /// that says how to get one, never a skip (D46).
+    /// that says how to get one, never a skip.
     /// </summary>
     internal static class MattermostTestEndpoint
     {

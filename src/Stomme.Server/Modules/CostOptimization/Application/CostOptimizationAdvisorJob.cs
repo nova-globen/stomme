@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.CostOptimization.Application
 {
     /// <summary>
-    /// The weekly FinOps advisor (BL-97 increment 7, the predecessor platform's <c>CostOptimizationAdvisorJob</c>): one
+    /// The weekly FinOps advisor (the predecessor platform's <c>CostOptimizationAdvisorJob</c>): one
     /// <see cref="RaiseRecommendationsCommand"/> pass per SITE of the job's tenant, each in its own scope under the site's
     /// alias so the read ports and the repository see that site. The handler is resolved directly rather than sent
     /// through the mediator - a system-initiated pass with no interactive user (the predecessor platform's own reasoning, the backup job's

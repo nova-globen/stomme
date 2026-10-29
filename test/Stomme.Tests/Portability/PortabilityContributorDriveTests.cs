@@ -25,7 +25,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Portability
 {
     /// <summary>
-    /// BL-82 (D107 item 8, refutations 9, 11, 13) - the SHIPPED contributors on a really installed site: profile
+    /// BL-82 (refutations 9, 11, 13) - the SHIPPED contributors on a really installed site: profile
     /// definitions travel to a second site and back by name, private never becomes public; a person's data package holds
     /// their account, settings, site roles, notifications' metadata, sessions and audit lines - and none of their secrets:
     /// no password hash, no security stamp, no private setting, no notification body (the framework writes live reset

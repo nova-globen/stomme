@@ -12,7 +12,7 @@ using Xunit;
 namespace Stomme.Tests.Datasets
 {
     /// <summary>
-    /// BL-94 increment 10 (D110) - the registrar's identity rules over the module's real startup on the File store: a
+    /// The registrar's identity rules over the module's real startup on the File store: a
     /// registration for a NEW origin under a name another dataset holds is rejected, not overwritten; the same origin
     /// registered again refreshes the one row and may rename it; an over-cap sample is rejected before inference and
     /// writes nothing; the command classifies, so a PII sample registered as Public comes back Restricted and a secret

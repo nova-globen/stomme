@@ -17,9 +17,9 @@ using FluentValidation;
 namespace Stomme.Modules.Formats.Application
 {
     /// <summary>
-    /// The Formats module's CQRS surface (BL-94 increment 2, D110). Every request carries <c>[Requires]</c> and is decided
+    /// The Formats module's CQRS surface. Every request carries <c>[Requires]</c> and is decided
     /// by the authorization bridge; the site is the request's, never a parameter. A system preset is read-only: it can
-    /// be neither saved over nor deleted. A name is unique per site through the store's normalised column (D49).
+    /// be neither saved over nor deleted. A name is unique per site through the store's normalised column.
     /// </summary>
     [Requires(FormatPermissions.Manage)]
     public sealed record SaveFormatDefinitionCommand(Guid? Id, string Name, FormatKind Kind, string? Pattern, string? Culture, string? TimeZone = null) : ICommand<Guid>;

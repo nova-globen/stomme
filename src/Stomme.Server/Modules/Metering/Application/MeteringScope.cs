@@ -8,7 +8,7 @@ using Stomme.Tenancy.Domain;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Resolves WHO and WHERE for a recording, server-side (D102).
+    /// Resolves WHO and WHERE for a recording, server-side.
     /// </summary>
     /// <remarks>
     /// <para>

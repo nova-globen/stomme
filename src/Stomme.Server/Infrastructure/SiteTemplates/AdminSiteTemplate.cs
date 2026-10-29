@@ -899,7 +899,7 @@ namespace Stomme.Infrastructure.SiteTemplates
                 }
             });
 
-            // BL-38: the feature-flag admin surface. Reads are Admin (matching FeatureController.Get);
+            // The feature-flag admin surface. Reads are Admin (matching FeatureController.Get);
             // writes are Host-gated server-side and the UI hides them below Host. Seeded unconditionally —
             // the flag subsystem always ships — and reaches existing installs through the boot-path
             // admin-page reconciliation (ProcessAdminPageTemplatesAsync).
@@ -932,7 +932,7 @@ namespace Stomme.Infrastructure.SiteTemplates
                 }
             });
 
-            // BL-36(b): the dead-letter queue admin page — same opt-in posture as OpenIddict below: the bus
+            // The dead-letter queue admin page — same opt-in posture as OpenIddict below: the bus
             // is opt-in (Messaging:Enabled), and a "Message Queue" page that can only ever say "disabled" is
             // noise in a stock admin menu. Reaches existing bus-enabled installs via boot reconciliation.
             if (_configuration.GetValue<bool>("Messaging:Enabled"))
@@ -1073,7 +1073,7 @@ namespace Stomme.Infrastructure.SiteTemplates
                     }
                 });
             }
-            // Pipelines is OPT-IN (Pipelines:Enabled), and so is its admin page (BL-95 increment (b), D111). Administrators,
+            // Pipelines is OPT-IN (Pipelines:Enabled), and so is its admin page (BL-95 increment (b)). Administrators,
             // because every pipelines key defaults there; each action is decided per key by the server, on the request's site.
             if (_configuration.GetValue<bool>("Pipelines:Enabled"))
             {
@@ -1106,7 +1106,7 @@ namespace Stomme.Infrastructure.SiteTemplates
                     }
                 });
             }
-            // Backup is OPT-IN (Backup:Enabled), and so is its admin page (BL-81, D106 item 9). HOST ONLY - the page and the module,
+            // Backup is OPT-IN (Backup:Enabled), and so is its admin page. HOST ONLY - the page and the module,
             // like the API behind them: an archive holds every site's users and password hashes (refutation 8).
             if (_configuration.GetValue<bool>("Backup:Enabled"))
             {
@@ -1215,7 +1215,7 @@ namespace Stomme.Infrastructure.SiteTemplates
                 });
             }
 
-            // D105: the Host-only licensing page exists only under Deployment:Mode=OnPrem, like the licence ring itself - a
+            // The Host-only licensing page exists only under Deployment:Mode=OnPrem, like the licence ring itself - a
             // Hosted install composes nothing licensing-related. Reaches an existing site switched to OnPrem through the
             // boot-path reconciliation; switching back never removes it (reconciliation is additive), and the page and
             // api/Licence then answer "licensing is not enabled".

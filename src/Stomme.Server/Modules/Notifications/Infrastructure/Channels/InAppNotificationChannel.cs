@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Stomme.Modules.Notifications.Infrastructure.Channels
 {
     /// <summary>
-    /// The in-app channel (D100 point 2): writes the inherited <c>Notification</c> row ALREADY DELIVERED
+    /// The in-app channel: writes the inherited <c>Notification</c> row ALREADY DELIVERED
     /// (<c>IsDelivered = true</c>, <c>DeliveredOn = UtcNow</c>) - so the SMTP queue predicate never returns it - and then
     /// pushes it live through <see cref="INotificationRealtimePush"/> when the host has one. The push port is resolved
     /// OPTIONALLY: it is registered only when the SignalR transport is enabled, so its absence is not a failure (the

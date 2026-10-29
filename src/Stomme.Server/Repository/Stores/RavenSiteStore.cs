@@ -13,10 +13,10 @@ using Raven.Client.Documents;
 namespace Stomme.Repository.Stores
 {
     /// <summary>
-    /// The RavenDB half of the framework store (D3/D7/D17): the same closed store interfaces the EF Core half
+    /// The RavenDB half of the framework store: the same closed store interfaces the EF Core half
     /// implements, over <see cref="RavenRepository{TAggregate, TId}"/>.
     /// <para>
-    /// <b>No count is stated here on purpose (D42).</b> This comment used to say "the same eight closed store
+    /// <b>No count is stated here on purpose.</b> This comment used to say "the same eight closed store
     /// interfaces" and was wrong for as long as D24's Permission cluster went un-twinned — a hand-counted
     /// comment drifts exactly when the code does, and reassures while it drifts. The set is whatever
     /// <c>ISiteStore.cs</c> declares; <c>RavenFrameworkStoreRegistrationTests</c> discovers it reflectively
@@ -53,7 +53,7 @@ namespace Stomme.Repository.Stores
         }
     }
 
-    /// <summary>The RavenDB <see cref="IPageStore"/> (D19). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="IPageStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenPageStore : RavenFrameworkStore<PageAggregate>, IPageStore
     {
         public RavenPageStore(
@@ -69,7 +69,7 @@ namespace Stomme.Repository.Stores
         }
     }
 
-    /// <summary>The RavenDB <see cref="IModuleStore"/> (D21). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="IModuleStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenModuleStore : RavenFrameworkStore<ModuleAggregate>, IModuleStore
     {
         public RavenModuleStore(
@@ -85,7 +85,7 @@ namespace Stomme.Repository.Stores
         }
     }
 
-    /// <summary>The RavenDB <see cref="IUserAccountStore"/> (D22). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="IUserAccountStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenUserAccountStore : RavenFrameworkStore<UserAggregate>, IUserAccountStore
     {
         public RavenUserAccountStore(
@@ -101,7 +101,7 @@ namespace Stomme.Repository.Stores
         }
     }
 
-    /// <summary>The RavenDB <see cref="ISecurityRoleStore"/> (D22). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="ISecurityRoleStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenSecurityRoleStore : RavenFrameworkStore<RoleAggregate>, ISecurityRoleStore
     {
         public RavenSecurityRoleStore(
@@ -117,7 +117,7 @@ namespace Stomme.Repository.Stores
         }
     }
 
-    /// <summary>The RavenDB <see cref="IUserRoleAssignmentStore"/> (D22). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="IUserRoleAssignmentStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenUserRoleAssignmentStore : RavenFrameworkStore<UserRoleAggregate>, IUserRoleAssignmentStore
     {
         public RavenUserRoleAssignmentStore(
@@ -134,7 +134,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="ISettingStore"/> — the TENANT half of the Setting cluster (D23). Bound to the
+    /// The RavenDB <see cref="ISettingStore"/> — the TENANT half of the Setting cluster. Bound to the
     /// framework database, exactly as <see cref="EfSettingStore"/> is bound to <see cref="TenantDBContext"/>.
     /// </summary>
     internal sealed class RavenSettingStore : RavenFrameworkStore<SettingAggregate>, ISettingStore
@@ -153,7 +153,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="IMasterSettingStore"/> — the MASTER half of the Setting cluster (D23).
+    /// The RavenDB <see cref="IMasterSettingStore"/> — the MASTER half of the Setting cluster.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -190,12 +190,12 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="IPermissionStore"/> (D24/D42). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="IPermissionStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
     /// <b>Bound to the framework database, with no master twin</b> — Permission is tenant-side only, so
     /// unlike <see cref="RavenMasterSettingStore"/> there is no <see cref="FixedRavenDatabaseResolver"/> here
-    /// and tenant routing applies normally. Added by D42: the cluster was migrated (D24) after the RavenDB
+    /// and tenant routing applies normally. Added by D42: the cluster was migrated after the RavenDB
     /// provider was written, and the twin was never added — <c>AddRavenFrameworkStore</c> registered eight
     /// stores against the EF provider's nine, so any host on the RavenDB path threw on the first
     /// <c>PermissionRepository</c> construction. The registration gate is reflective now precisely so the
@@ -217,7 +217,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="ILanguageStore"/> (D44). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="ILanguageStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
     /// Bound to the framework database with no master twin — one of D44's five tenant-side leaf clusters, so
@@ -235,12 +235,12 @@ namespace Stomme.Repository.Stores
           ILanguageStore;
 
     /// <summary>
-    /// The RavenDB <see cref="ILogStore"/> (D44). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="ILogStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
     /// <see cref="LogAggregate"/> is the one framework-store aggregate with no audit columns, which this
     /// provider handles for free: <see cref="AuditStamp.IsAuditable"/> requires all four members and finds
-    /// none, so the store-level audit listener (D26) correctly declines to stamp it — the same answer
+    /// none, so the store-level audit listener correctly declines to stamp it — the same answer
     /// <c>DbContextUtils</c>' <c>is IAuditable</c> test gives on the relational side.
     /// </remarks>
     internal sealed class RavenLogStore(
@@ -255,7 +255,7 @@ namespace Stomme.Repository.Stores
           ILogStore;
 
     /// <summary>
-    /// The RavenDB <see cref="IProfileStore"/> (D44). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="IProfileStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     internal sealed class RavenProfileStore(
         IDocumentStore store,
@@ -269,7 +269,7 @@ namespace Stomme.Repository.Stores
           IProfileStore;
 
     /// <summary>
-    /// The RavenDB <see cref="ISiteTaskStore"/> (D44). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="ISiteTaskStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     internal sealed class RavenSiteTaskStore(
         IDocumentStore store,
@@ -283,7 +283,7 @@ namespace Stomme.Repository.Stores
           ISiteTaskStore;
 
     /// <summary>
-    /// The RavenDB <see cref="INotificationStore"/> (D44). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="INotificationStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
     /// <b>RESOLVED in D59 — this comment previously described a divergence that no longer exists.</b>
@@ -307,7 +307,7 @@ namespace Stomme.Repository.Stores
           INotificationStore;
 
     /// <summary>
-    /// The RavenDB <see cref="ISiteGroupStore"/> (D45). See <see cref="RavenFrameworkStore{TAggregate}"/>.
+    /// The RavenDB <see cref="ISiteGroupStore"/>. See <see cref="RavenFrameworkStore{TAggregate}"/>.
     /// </summary>
     /// <remarks>
     /// The severed navigation costs this provider nothing and arguably suits it: the aggregate references the
@@ -328,7 +328,7 @@ namespace Stomme.Repository.Stores
           ISiteGroupStore;
 
     /// <summary>
-    /// The RavenDB <see cref="ISiteGroupMemberStore"/> (D45). See <see cref="RavenFrameworkStore{TAggregate}"/>
+    /// The RavenDB <see cref="ISiteGroupMemberStore"/>. See <see cref="RavenFrameworkStore{TAggregate}"/>
     /// and the remarks on <see cref="RavenSiteGroupStore"/> for the unique-index divergence.
     /// </summary>
     internal sealed class RavenSiteGroupMemberStore(
@@ -342,7 +342,7 @@ namespace Stomme.Repository.Stores
         : RavenFrameworkStore<SiteGroupMemberAggregate>(store, tenantContext, aggregateTracker, serializers, changeVectors, databaseResolver, idGenerator),
           ISiteGroupMemberStore;
 
-    /// <summary>The RavenDB <see cref="IVisitorStore"/> (D47). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="IVisitorStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenVisitorStore(
         IDocumentStore store,
         ITenantContext tenantContext,
@@ -355,7 +355,7 @@ namespace Stomme.Repository.Stores
           IVisitorStore;
 
     /// <summary>
-    /// The RavenDB <see cref="IUrlMappingStore"/> (D47). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="IUrlMappingStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
     /// Note what does NOT carry over: the relational UNIQUE index on (site_id, url). On the relational
@@ -376,7 +376,7 @@ namespace Stomme.Repository.Stores
           IUrlMappingStore;
 
     /// <summary>
-    /// The RavenDB <see cref="IPageModuleStore"/> (D47). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="IPageModuleStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
     /// <b>RESOLVED in D59</b> — as for <see cref="RavenNotificationStore"/>, the IDeletable stamp no longer
@@ -396,7 +396,7 @@ namespace Stomme.Repository.Stores
           IPageModuleStore;
 
     /// <summary>
-    /// The RavenDB <see cref="IFolderStore"/> (D48). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="IFolderStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -426,7 +426,7 @@ namespace Stomme.Repository.Stores
           IFolderStore;
 
     /// <summary>
-    /// The RavenDB <see cref="IFileStore"/> (D49). See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="IFileStore"/>. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -468,9 +468,9 @@ namespace Stomme.Repository.Stores
         : RavenFrameworkStore<FileAggregate>(store, tenantContext, aggregateTracker, serializers, changeVectors, databaseResolver, idGenerator),
           IFileStore;
 
-    // The SearchContent cluster (D50). Four stores; the search READ is ISearchQueryStore, not one of these.
+    // The SearchContent cluster. Four stores; the search READ is ISearchQueryStore, not one of these.
 
-    /// <summary>The RavenDB <see cref="ISearchContentStore"/> (D50). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="ISearchContentStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenSearchContentStore(
         IDocumentStore store,
         ITenantContext tenantContext,
@@ -482,7 +482,7 @@ namespace Stomme.Repository.Stores
         : RavenFrameworkStore<SearchContentAggregate>(store, tenantContext, aggregateTracker, serializers, changeVectors, databaseResolver, idGenerator),
           ISearchContentStore;
 
-    /// <summary>The RavenDB <see cref="ISearchContentPropertyStore"/> (D50). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="ISearchContentPropertyStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenSearchContentPropertyStore(
         IDocumentStore store,
         ITenantContext tenantContext,
@@ -494,7 +494,7 @@ namespace Stomme.Repository.Stores
         : RavenFrameworkStore<SearchContentPropertyAggregate>(store, tenantContext, aggregateTracker, serializers, changeVectors, databaseResolver, idGenerator),
           ISearchContentPropertyStore;
 
-    /// <summary>The RavenDB <see cref="ISearchContentWordStore"/> (D50). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="ISearchContentWordStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenSearchContentWordStore(
         IDocumentStore store,
         ITenantContext tenantContext,
@@ -506,7 +506,7 @@ namespace Stomme.Repository.Stores
         : RavenFrameworkStore<SearchContentWordAggregate>(store, tenantContext, aggregateTracker, serializers, changeVectors, databaseResolver, idGenerator),
           ISearchContentWordStore;
 
-    /// <summary>The RavenDB <see cref="ISearchWordStore"/> (D50). See <see cref="RavenSiteStore"/>.</summary>
+    /// <summary>The RavenDB <see cref="ISearchWordStore"/>. See <see cref="RavenSiteStore"/>.</summary>
     internal sealed class RavenSearchWordStore(
         IDocumentStore store,
         ITenantContext tenantContext,
@@ -519,7 +519,7 @@ namespace Stomme.Repository.Stores
           ISearchWordStore;
 
     /// <summary>
-    /// The RavenDB <see cref="IJobStore"/> (D52) — the MASTER side. See <see cref="RavenSiteStore"/>.
+    /// The RavenDB <see cref="IJobStore"/> — the MASTER side. See <see cref="RavenSiteStore"/>.
     /// </summary>
     /// <remarks>
     /// Pinned to the master database with <see cref="FixedRavenDatabaseResolver"/>, exactly as
@@ -550,7 +550,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="IJobLogStore"/> (D52) — the MASTER side. See <see cref="RavenJobStore"/>.
+    /// The RavenDB <see cref="IJobLogStore"/> — the MASTER side. See <see cref="RavenJobStore"/>.
     /// </summary>
     internal sealed class RavenJobLogStore : RavenFrameworkStore<JobLogAggregate>, IJobLogStore
     {
@@ -575,7 +575,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="IThemeStore"/> (D52) — the MASTER side. See <see cref="RavenJobStore"/>.
+    /// The RavenDB <see cref="IThemeStore"/> — the MASTER side. See <see cref="RavenJobStore"/>.
     /// </summary>
     /// <remarks>
     /// Pinned to the master database with <see cref="FixedRavenDatabaseResolver"/>, exactly as
@@ -606,7 +606,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="IModuleDefinitionStore"/> (D52) — the MASTER side. See <see cref="RavenThemeStore"/>.
+    /// The RavenDB <see cref="IModuleDefinitionStore"/> — the MASTER side. See <see cref="RavenThemeStore"/>.
     /// </summary>
     /// <remarks>
     /// Pinned to the master database with <see cref="FixedRavenDatabaseResolver"/>, exactly as
@@ -638,7 +638,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="ITenantStore"/> (D52) — the MASTER side, half of the routing core. See
+    /// The RavenDB <see cref="ITenantStore"/> — the MASTER side, half of the routing core. See
     /// <see cref="RavenThemeStore"/>.
     /// </summary>
     /// <remarks>
@@ -671,7 +671,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="IAliasStore"/> (D52) — the MASTER side, the other half of the routing core. See
+    /// The RavenDB <see cref="IAliasStore"/> — the MASTER side, the other half of the routing core. See
     /// <see cref="RavenTenantStore"/>.
     /// </summary>
     /// <remarks>
@@ -748,7 +748,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The database a tenant-side session opens on (BL-176): the one the resolver names for the current tenant, else the
+    /// The database a tenant-side session opens on: the one the resolver names for the current tenant, else the
     /// framework database (the installation's own). Every tenant-side Raven read that is not a <see cref="RavenRepository{TAggregate, TId}"/>
     /// asks here - the session factories, the search facet, the Identity user store.
     /// </summary>
@@ -771,8 +771,8 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The RavenDB <see cref="IFrameworkStoreSessionFactory"/>: the seam's read path (D19) over the database of the tenant a
-    /// session is opened for (BL-176) - the same database <see cref="RavenFrameworkStore{TAggregate}"/> writes to, so a read
+    /// The RavenDB <see cref="IFrameworkStoreSessionFactory"/>: the seam's read path over the database of the tenant a
+    /// session is opened for - the same database <see cref="RavenFrameworkStore{TAggregate}"/> writes to, so a read
     /// and a write can never address two databases.
     /// </summary>
     internal sealed class RavenFrameworkStoreSessionFactory : IFrameworkStoreSessionFactory
@@ -802,7 +802,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The RavenDB <see cref="IMasterStoreSessionFactory"/>: the read half of the Setting cluster's master
-    /// store (D23), bound to the MASTER database.
+    /// store, bound to the MASTER database.
     /// </summary>
     /// <remarks>
     /// The SECOND factory D23 requires, and the reason <see cref="RavenDocumentSessionFactory"/> takes a

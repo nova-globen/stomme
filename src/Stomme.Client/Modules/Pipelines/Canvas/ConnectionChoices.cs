@@ -7,7 +7,7 @@ using Stomme.Models.Pipelines;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// BL-229 - n8n's palette has a node per service (Postgres, ServiceNow, a REST API); here a service is reached through one of
+    /// n8n's palette has a node per service (Postgres, ServiceNow, a REST API); here a service is reached through one of
     /// the site's connections, which holds its credentials. So a query naming a connection - or its connector ("postgres") -
     /// offers that connection with each step that can use it, the step added with it chosen; and a step's operation is chosen
     /// among its connection's connector's own, with what each takes said.

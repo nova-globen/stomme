@@ -9,7 +9,7 @@ using Stomme.SharedKernel.Domain;
 
 namespace Stomme.Erasure.Persistence
 {
-    /// <summary>The erasure requests and receipts of the installation, storage-blind (D79): the closed repository plus the reads the job and the Host need.</summary>
+    /// <summary>The erasure requests and receipts of the installation, storage-blind: the closed repository plus the reads the job and the Host need.</summary>
     public interface IErasureRequestRepository : IRepository<ErasureRequestAggregate, Guid>
     {
         /// <summary>The runs a site still owes: pending, and retaining ones whose earliest retention fell due.</summary>

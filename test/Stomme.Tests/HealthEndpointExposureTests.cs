@@ -67,8 +67,8 @@ namespace Stomme.Tests
         /// <summary>
         /// The probe job OFF, through the override file the host reads. Probing ships ON (<c>Health:Enabled</c> in the
         /// shipped appsettings.json since BL-83 closed), so on a host left at its defaults the job's first tick races the
-        /// first request: it ran the counting probe once (BL-181, 2026-09-30) and made readiness 200 before the test asked
-        /// (BL-186's gate, 2026-09-30). These cases are about what a REQUEST may do, and what the host says before any tick,
+        /// first request: it ran the counting probe once and made readiness 200 before the test asked
+        /// (BL-186's gate). These cases are about what a REQUEST may do, and what the host says before any tick,
         /// so no tick may happen - the job itself is driven by <c>HealthProbeJobGateTests</c> and <c>OverrideFileSwitchTests</c>.
         /// </summary>
         private static Task<ScratchGateInstall> CloneWithProbingOffAsync(ITestOutputHelper output) =>

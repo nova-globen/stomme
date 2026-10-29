@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Stomme.Infrastructure.Backup
 {
     /// <summary>
-    /// The record form the framework's participants write a part in (BL-81): a sequence of <c>[scope][length][UTF-8 JSON]</c>
+    /// The record form the framework's participants write a part in: a sequence of <c>[scope][length][UTF-8 JSON]</c>
     /// records - the scope a row lives in (a tenant id, or none) and the row's document. Length-prefixed rather than JSON
     /// Lines because the stores' document form is indented. Read forward, one record in memory at a time.
     /// </summary>

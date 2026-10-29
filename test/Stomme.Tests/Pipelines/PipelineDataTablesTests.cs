@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Table view of a step's data: each input or output holding a list of records - as JSON, or as the JSON text
+    /// n8n's Table view of a step's data: each input or output holding a list of records - as JSON, or as the JSON text
     /// the data steps pass - is a table, one column per field in the order fields first appear; a list of plain values is one
     /// column; anything else is no table, and the JSON stays the default view.
     /// </summary>
@@ -116,7 +116,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("(nothing)", nothing.Find("pre#none").TextContent);
         }
 
-        // BL-229 - n8n's copy of a step's data: the JSON whole to the clipboard (the editor's script), then "Copied" - until the
+        // n8n's copy of a step's data: the JSON whole to the clipboard (the editor's script), then "Copied" - until the
         // data shown changes; nothing to copy, no button.
         [Fact]
         public void Copy_puts_the_json_on_the_clipboard_and_says_so()
@@ -135,7 +135,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(nothing.FindAll("#none-copy"));
         }
 
-        // BL-229 - n8n's search in a step's data: a table keeps the rows holding the text (any cell, any case), a schema the fields
+        // n8n's search in a step's data: a table keeps the rows holding the text (any cell, any case), a schema the fields
         // named so, the JSON marks each place it occurs - each with how many; short data that is not a list has no search.
         [Fact]
         public void The_search_keeps_the_rows_and_fields_holding_the_text_and_marks_it_in_the_json()

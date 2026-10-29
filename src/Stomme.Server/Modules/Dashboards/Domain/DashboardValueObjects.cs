@@ -11,9 +11,9 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.Dashboards.Domain
 {
     // ============================================================================================================
-    // The Dashboard's value objects (BL-96 increment 8, lifted from the predecessor platform's DashboardValueObjects). Every one is an
+    // The Dashboard's value objects. Every one is an
     // IStringValueObject with a public static Create(string): the module store persists a value object as ONE scalar
-    // through that pair (D79) - a plain ValueObject property is refused at model build - and the widget list rides the
+    // through that pair - a plain ValueObject property is refused at model build - and the widget list rides the
     // JSON collection column, where the same pair reconstructs each nested value object. The scalar is the value
     // object's canonical text; a value that fails its own rule on the way back in fails loudly, never as an empty row.
     // ============================================================================================================

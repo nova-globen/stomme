@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's Form trigger DRIVEN over the real receiver on an installed SQLite host: a published pipeline's form is a
+    /// n8n's Form trigger DRIVEN over the real receiver on an installed SQLite host: a published pipeline's form is a
     /// page anyone can open (its own policy, every text encoded); a submission judged by the fields is the page again with what is
     /// wrong (400), and an accepted one starts the pipeline with the answers and redirects to the thank-you (303); a robot's is
     /// thanked and dropped; a draft's form, an unknown name and a non-form body are not served. With Pipelines:Forms:Enabled off

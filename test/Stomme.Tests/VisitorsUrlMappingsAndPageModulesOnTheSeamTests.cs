@@ -23,7 +23,7 @@ using Xunit;
 
 namespace Stomme.Tests
 {
-    // Visitor, UrlMapping and PageModule on the persistence seam (D3/D7/D47).
+    // Visitor, UrlMapping and PageModule on the persistence seam.
     //
     // WHAT MAKES THESE THREE A GROUP: not one of them needed a navigation severed FOR it. D22 had already cut
     // Visitor.User; D19 and D21 had already cut PageModule.Page and PageModule.Module while deliberately
@@ -338,7 +338,7 @@ namespace Stomme.Tests
             Assert.Equal(2, round.Visits);
         }
 
-        // PageModule.Page and PageModule.Module are [NotMapped] view state severed by D19 and D21.
+        // PageModule.Page and PageModule.Module are [NotMapped] view state severed.
         [Fact]
         public void The_mapper_does_not_round_trip_the_unmapped_navigations()
         {
@@ -473,7 +473,7 @@ namespace Stomme.Tests
     // contract quietly re-mapped anywhere fails here.
     public class VisitorUrlMappingAndPageModuleMustNotBeResurrectedTests
     {
-        // The neighbours that are STILL genuinely unmigrated — the shape of TenantDBContext after D47.
+        // The neighbours that are STILL genuinely unmigrated — the shape of TenantDBContext.
         private sealed class TenantLikeContext(DbContextOptions options, IRelationalDatabase database) : DbContext(options)
         {
             // Folder stood here until D48, File until D49, and the SearchContent family until D50 —
@@ -483,7 +483,7 @@ namespace Stomme.Tests
             // DbSet was never what the probe rested on: measured both ways, removing it leaves the assertions
             // green, and re-adding a migrated contract still fails them with EF's "the table '...' cannot be
             // used for entity type" — so the proof comes from ConfigureFrameworkStore plus the assertion,
-            // exactly as PermissionMustNotBeResurrectedTests has shown since D48. MigrationHistory is NOT a
+            // exactly as PermissionMustNotBeResurrectedTests has shown. MigrationHistory is NOT a
             // substitute: it is [Keyless] on its own __EFMigrationsHistory table, which no aggregate maps, so
             // it could never collide and would prove nothing. The reflective sweep below is what carries the
             // protection now, and it needed no edit across D47, D48, D49 or D50.
@@ -532,7 +532,7 @@ namespace Stomme.Tests
             Assert.Null(BuildModel().FindEntityType(contract));
         }
 
-        // The master context must NOT map any of these three. Unlike Setting (D23) they are tenant-side only:
+        // The master context must NOT map any of these three. Unlike Setting they are tenant-side only:
         // MasterDBContext never held a DbSet for any of them and the master migration set never created the
         // tables.
         [Theory]

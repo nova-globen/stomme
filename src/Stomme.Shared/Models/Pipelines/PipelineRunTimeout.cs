@@ -5,7 +5,7 @@ using System.Globalization;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - n8n's "Timeout Workflow": how long a run may be busy in one go before it is stopped
+    /// n8n's "Timeout Workflow": how long a run may be busy in one go before it is stopped
     /// (<see cref="PipelineGraph.TimeoutMinutes"/>). Busy is what runs without a pause: the time a run waits - for a time, a
     /// decision, a call - does not count, and each stretch after a wait has the whole of it again, as n8n's does. The step that
     /// is running when the time is up finishes; the steps after it do not start, and the run ends cancelled, saying why.

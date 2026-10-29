@@ -15,7 +15,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Tasks (n8n's Google Tasks node: a task created, got, listed, updated and deleted - and moved, the lists read,
+    /// Google Tasks (n8n's Google Tasks node: a task created, got, listed, updated and deleted - and moved, the lists read,
     /// a list's finished ones cleared): the refresh token exchanged at the token endpoint, the access token sent as a bearer; a
     /// list's tasks page by page by Google's token up to the most asked for, a page no bigger than what is left, the finished ones
     /// too by default and n8n's other defaults, times in UTC; each task a plain record; the lists; a task made under a parent after

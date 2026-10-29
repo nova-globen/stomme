@@ -20,7 +20,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// The Health admin control, RENDERED and CLICKED (BL-83). Until 2026-09-23 it had never rendered anywhere observable,
+    /// The Health admin control, RENDERED and CLICKED. Until 2026-09-23 it had never rendered anywhere observable,
     /// so the BL-54 dead-click class was not excluded for it; a browser drive has now clicked it, and this pins what it
     /// showed.
     /// </summary>
@@ -88,7 +88,7 @@ namespace Stomme.Tests
         [Fact]
         public void The_sparkline_column_draws_a_subjects_hourly_availability_and_nothing_under_two_periods()
         {
-            // BL-96 increment 10 (re-booked from D104): a "Last hours" column, one inline SVG per subject with two or more
+            // BL-96 increment 10 (re-booked): a "Last hours" column, one inline SVG per subject with two or more
             // hourly rollups; a subject with fewer draws nothing and the column stays.
             var tick = new DateTime(2026, 9, 27, 14, 0, 0, DateTimeKind.Utc);
             _service.Next = new HealthDashboard(HealthState.Healthy, tick,

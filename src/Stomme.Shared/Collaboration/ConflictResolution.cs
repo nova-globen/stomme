@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Stomme.Collaboration
 {
     // ============================================================================================================
-    // The conflict-resolution seam (BL-97 increment 12, D114), lifted from the predecessor platform's Collaboration.Abstractions at 183f5c52:
+    // The conflict-resolution seam, lifted from the predecessor platform's Collaboration.Abstractions at 183f5c52:
     // bounded coordination, not CRDT or OT. The owning module presents its resource as field paths and values; the
     // resolver reconciles an editor's proposed changes against what is stored now. BCL-ONLY like the other Shared contracts,
     // so a page can show a rejection's conflicts and a merge's warnings. CHANGED for all of it: a user is a Stomme user

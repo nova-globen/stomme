@@ -8,7 +8,7 @@
 @inject NavigationManager NavigationManager
 
 @*
-    The notification center (BL-78 step 5). The inbox is the EXISTING INotificationService (the framework's Notification rows -
+    The notification center. The inbox is the EXISTING INotificationService (the framework's Notification rows -
     what the e-mail and in-app channels write; the UserProfile inbox tab reads the same rows and is unchanged). "Sent to me" is the
     module's own view-own query. A live feed connects to the notification hub (HubRoutes.Notification, Stomme.Shared) only in the
     browser and degrades silently when the transport is off or the connection is refused. Operator links appear only for a user
@@ -72,7 +72,7 @@ else
                     @foreach (var item in _inbox)
                     {
                         <li class="db-card db-notification-item" style="padding:0.5rem 1rem;">
-                            @* BL-229: what the notice says, opened in place - as text, with the site's own addresses as links. *@
+                            @* What the notice says, opened in place - as text, with the site's own addresses as links. *@
                             <details class="db-notification-item__entry">
                                 <summary style="font-weight:@(item.IsRead ? "400" : "600");cursor:pointer;">@item.Subject</summary>
                                 <div class="db-notification-item__body" style="white-space:pre-wrap;margin:0.25rem 0;">@BodyOf(item)</div>

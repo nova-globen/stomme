@@ -19,7 +19,7 @@ using StackExchange.Redis.Configuration;
 namespace Stomme.Modules.Connectors.Redis
 {
     /// <summary>
-    /// Redis (BL-229, n8n's Redis node; Valkey and the other servers that speak its protocol too) over StackExchange.Redis:
+    /// Redis (n8n's Redis node; Valkey and the other servers that speak its protocol too) over StackExchange.Redis:
     /// the endpoint is ONE server, <c>cache.example.com:6379</c> with the client's options (<c>ssl=true</c>), and never a
     /// password - the Basic scheme's <c>username</c> (an ACL user; empty, the default user) and <c>password</c> come from the
     /// per-site secret store; the database by the connection's setting. A test pings and names the server's version.
@@ -169,7 +169,7 @@ namespace Stomme.Modules.Connectors.Redis
             }
             catch (Exception ex) when (ex is RedisException or TimeoutException or SocketException)
             {
-                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner (D110)
+                return ConnectionTestResult.Fail(ex.Message); // the server's or the network's failure; the message stays inside the runner
             }
         }
 

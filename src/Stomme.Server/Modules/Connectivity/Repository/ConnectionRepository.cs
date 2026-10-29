@@ -10,10 +10,10 @@ using Stomme.SharedKernel.Domain;
 
 namespace Stomme.Connectivity.Persistence
 {
-    /// <summary>The Connectivity module's repository (BL-94 increment 5, D110) - storage-blind (D79) over the closed <c>IRepository&lt;ConnectionAggregate, Guid&gt;</c>; in the <c>Persistence</c> namespace the store-registration gate expects of a clean-arch module.</summary>
+    /// <summary>The Connectivity module's repository - storage-blind over the closed <c>IRepository&lt;ConnectionAggregate, Guid&gt;</c>; in the <c>Persistence</c> namespace the store-registration gate expects of a clean-arch module.</summary>
     public interface IConnectionRepository : IRepository<ConnectionAggregate, Guid>
     {
-        /// <summary>A site's connection by normalised name (D49): the same answer on every provider.</summary>
+        /// <summary>A site's connection by normalised name: the same answer on every provider.</summary>
         Task<ConnectionAggregate?> FindByNameAsync(int siteId, string name, CancellationToken ct = default);
 
         /// <summary>A site's connections, name order.</summary>

@@ -14,7 +14,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - Markdown (n8n's Markdown node), run by the engine as the host composes it: Markdown into HTML through the help
+    /// Markdown (n8n's Markdown node), run by the engine as the host composes it: Markdown into HTML through the help
     /// module's pipeline and allowlist - formatting kept, a script and an event handler gone - and HTML into plain text with its
     /// blocks on lines of their own.
     /// </summary>

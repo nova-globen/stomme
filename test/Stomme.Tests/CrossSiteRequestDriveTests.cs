@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-250 - what a request made by ANOTHER page in the signed-in user's browser can do. The sign-in cookie is SameSite=Lax,
+    /// What a request made by ANOTHER page in the signed-in user's browser can do. The sign-in cookie is SameSite=Lax,
     /// so a different site never sends it - but a page on a sibling host of the same site does (another tenant's subdomain
     /// under the same domain), and a browser lets such a page send, without a CORS preflight, a POST whose content type is
     /// <c>text/plain</c>, <c>application/x-www-form-urlencoded</c> or <c>multipart/form-data</c> and whose only other headers

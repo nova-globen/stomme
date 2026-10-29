@@ -9,7 +9,7 @@ namespace Stomme.Repository.Stores
 {
     /// <summary>
     /// The per-aggregate store for <see cref="SiteAggregate"/> — the framework store's Site cluster on the
-    /// persistence seam (D3/D7). Provider-selected: <see cref="EfSiteStore"/> today, a RavenDB
+    /// persistence seam. Provider-selected: <see cref="EfSiteStore"/> today, a RavenDB
     /// implementation of the same contract later.
     /// </summary>
     /// <remarks>
@@ -28,7 +28,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="PageAggregate"/> — the framework store's Page cluster on the
-    /// persistence seam (D3/D7/D19). Closed, not the open-generic <see cref="IRepository{TAggregate, TId}"/>,
+    /// persistence seam. Closed, not the open-generic <see cref="IRepository{TAggregate, TId}"/>,
     /// for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     public interface IPageStore : IRepository<PageAggregate, int>
@@ -37,7 +37,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="ModuleAggregate"/> — the framework store's Module cluster on
-    /// the persistence seam (D3/D7/D21). Closed, not the open-generic
+    /// the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -47,7 +47,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="UserAggregate"/> — the framework store's User cluster on the
-    /// persistence seam (D3/D7/D22). Closed, not the open-generic <see cref="IRepository{TAggregate, TId}"/>,
+    /// persistence seam. Closed, not the open-generic <see cref="IRepository{TAggregate, TId}"/>,
     /// for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
@@ -63,7 +63,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="RoleAggregate"/> — the framework store's Role cluster on the
-    /// persistence seam (D3/D7/D22). Closed, not the open-generic <see cref="IRepository{TAggregate, TId}"/>,
+    /// persistence seam. Closed, not the open-generic <see cref="IRepository{TAggregate, TId}"/>,
     /// for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
@@ -76,7 +76,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="UserRoleAggregate"/> — the framework store's UserRole cluster on
-    /// the persistence seam (D3/D7/D22). Closed, not the open-generic
+    /// the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -86,7 +86,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="SettingAggregate"/> in the TENANT database — the framework
-    /// store's Setting cluster on the persistence seam (D3/D7/D23). Closed, not the open-generic
+    /// store's Setting cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -102,7 +102,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="SettingAggregate"/> in the MASTER database — the installation-
-    /// wide half of the Setting cluster (D3/D7/D23).
+    /// wide half of the Setting cluster.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -125,7 +125,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="PermissionAggregate"/> — the framework store's Permission
-    /// cluster on the persistence seam (D3/D7/D24). Closed, not the open-generic
+    /// cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -151,7 +151,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="LanguageAggregate"/> — the framework store's Language cluster on
-    /// the persistence seam (D3/D7/D44). Closed, not the open-generic
+    /// the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -166,7 +166,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="LogAggregate"/> — the framework store's Log cluster on the
-    /// persistence seam (D3/D7/D44). Closed, not the open-generic
+    /// persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -181,12 +181,12 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="ProfileAggregate"/> — the framework store's Profile cluster on
-    /// the persistence seam (D3/D7/D44). Closed, not the open-generic
+    /// the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
-    /// The Profile PROPERTY DEFINITIONS, not a user's values for them — the values are Settings (D23) under
+    /// The Profile PROPERTY DEFINITIONS, not a user's values for them — the values are Settings under
     /// <c>EntityNames.User</c>. Note <see cref="SiteRepository"/> takes <see cref="IProfileRepository"/> to
     /// seed a new site's defaults; that edge is inbound only and this cluster takes no repository, so it
     /// cannot close a cycle (D22 rule 8). See <see cref="ProfileAggregate"/>.
@@ -197,7 +197,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="SiteTaskAggregate"/> — the framework store's SiteTask cluster on
-    /// the persistence seam (D3/D7/D44). Closed, not the open-generic
+    /// the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -207,7 +207,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="NotificationAggregate"/> — the framework store's Notification
-    /// cluster on the persistence seam (D3/D7/D44). Closed, not the open-generic
+    /// cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -221,7 +221,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="SiteGroupAggregate"/> — the framework store's SiteGroup cluster
-    /// on the persistence seam (D3/D7/D45). Closed, not the open-generic
+    /// on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -238,7 +238,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="SiteGroupMemberAggregate"/> — the framework store's
-    /// SiteGroupMember cluster on the persistence seam (D3/D7/D45). Closed, not the open-generic
+    /// SiteGroupMember cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -255,13 +255,13 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="VisitorAggregate"/> — the framework store's Visitor cluster on
-    /// the persistence seam (D3/D7/D47). Closed, not the open-generic
+    /// the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
     /// Tenant-side only, like <see cref="IPermissionStore"/> and unlike <see cref="ISettingStore"/>. Its
-    /// reference into the User aggregate was already severed by D22, so unlike the SiteGroup pair (D45) this
+    /// reference into the User aggregate was already severed, so unlike the SiteGroup pair this
     /// cluster had no navigation left to break. It IS on the render path — <c>App.razor</c>'s
     /// <c>TrackVisitorAsync</c> reads and writes a visitor on every request of a site with VisitorTracking on.
     /// </remarks>
@@ -271,7 +271,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="UrlMappingAggregate"/> — the framework store's UrlMapping
-    /// cluster on the persistence seam (D3/D7/D47). Closed, not the open-generic
+    /// cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -289,7 +289,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="PageModuleAggregate"/> — the framework store's PageModule
-    /// cluster on the persistence seam (D3/D7/D47). Closed, not the open-generic
+    /// cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on
     /// <see cref="ISiteStore"/>.
     /// </summary>
@@ -311,7 +311,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="FolderAggregate"/> — the framework store's Folder cluster on the
-    /// persistence seam (D3/D7/D48). Closed, not the open-generic <see cref="IRepository{TAggregate, TId}"/>,
+    /// persistence seam. Closed, not the open-generic <see cref="IRepository{TAggregate, TId}"/>,
     /// for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
@@ -320,7 +320,7 @@ namespace Stomme.Repository.Stores
     /// render path: <c>Pages/Files.cshtml.cs</c> resolves a folder to serve every static file a site publishes.
     /// </para>
     /// <para>
-    /// <b>Landed WITHOUT its File half, and that asymmetry is the whole story of D48.</b> The two were meant to
+    /// <b>Landed WITHOUT its File half, and that asymmetry is the whole story.</b> The two were meant to
     /// land together, because <c>File.Folder</c> was a mapped navigation into this aggregate's contract and
     /// while it stayed mapped EF rediscovered <c>Folder</c> through it and broke the model at startup — the
     /// D45 mechanism, OBSERVED here. So the navigation IS severed and <see cref="FileRepository"/> stitches the
@@ -342,7 +342,7 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The File cluster (D49) — the last framework cluster to cross the seam, and the one D48 escalated.
+    /// The File cluster — the last framework cluster to cross the seam, and the one D48 escalated.
     /// Tenant-side only, so there is no master twin.
     /// </summary>
     /// <remarks>
@@ -365,7 +365,7 @@ namespace Stomme.Repository.Stores
     /// convention the seam cannot see or enforce.
     /// </para>
     /// <para>
-    /// Note <see cref="Models.File.Folder"/> was already severed to <c>[NotMapped]</c> by D48, so this
+    /// Note <see cref="Models.File.Folder"/> was already severed to <c>[NotMapped]</c>, so this
     /// interface's arrival needed no further model surgery.
     /// </para>
     /// </remarks>
@@ -373,7 +373,7 @@ namespace Stomme.Repository.Stores
     {
     }
 
-    // --- The SearchContent cluster (D50). Four tables, tenant-side only, no master half. ---
+    // --- The SearchContent cluster. Four tables, tenant-side only, no master half. ---
 
     /// <summary>
     /// The per-aggregate store for <see cref="SearchContentAggregate"/> — the head of the search cluster
@@ -385,35 +385,35 @@ namespace Stomme.Repository.Stores
     }
 
     /// <summary>
-    /// The per-aggregate store for <see cref="SearchContentPropertyAggregate"/> (D50) — name/value metadata
-    /// hung off one SearchContent. Its navigation from <c>SearchContent</c> is <c>[NotMapped]</c> (D45).
+    /// The per-aggregate store for <see cref="SearchContentPropertyAggregate"/> — name/value metadata
+    /// hung off one SearchContent. Its navigation from <c>SearchContent</c> is <c>[NotMapped]</c>.
     /// </summary>
     public interface ISearchContentPropertyStore : IRepository<SearchContentPropertyAggregate, int>
     {
     }
 
     /// <summary>
-    /// The per-aggregate store for <see cref="SearchContentWordAggregate"/> (D50) — the term-frequency half of
-    /// the inverted index. Both of its contract navigations are <c>[NotMapped]</c> (D45).
+    /// The per-aggregate store for <see cref="SearchContentWordAggregate"/> — the term-frequency half of
+    /// the inverted index. Both of its contract navigations are <c>[NotMapped]</c>.
     /// </summary>
     public interface ISearchContentWordStore : IRepository<SearchContentWordAggregate, int>
     {
     }
 
     /// <summary>
-    /// The per-aggregate store for <see cref="SearchWordAggregate"/> (D50) — the distinct-word dictionary.
+    /// The per-aggregate store for <see cref="SearchWordAggregate"/> — the distinct-word dictionary.
     /// </summary>
     public interface ISearchWordStore : IRepository<SearchWordAggregate, int>
     {
     }
 
     /// <summary>
-    /// <b>The SEARCH READ (D50) — the seam's one closed contract that is NOT a repository, because the read it
+    /// <b>The SEARCH READ — the seam's one closed contract that is NOT a repository, because the read it
     /// serves is not expressible as a portable LINQ query.</b>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Every other cluster reads through <c>IQuerySession.Query&lt;T&gt;()</c> (D19), which hands back a bare
+    /// Every other cluster reads through <c>IQuerySession.Query&lt;T&gt;()</c>, which hands back a bare
     /// <see cref="IQueryable{T}"/> that both providers translate. This read cannot: it filters
     /// <c>SearchWord.Word</c> by PREFIX and sums <c>SearchContentWord.Count</c> per content — an aggregation
     /// over a subset chosen at RUNTIME by the caller's keywords. RavenDB serves a dynamic
@@ -457,7 +457,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="JobAggregate"/> in the MASTER database — the framework store's Job
-    /// cluster on the persistence seam (D52). Closed, not the open-generic
+    /// cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
@@ -473,7 +473,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="JobLogAggregate"/> in the MASTER database — the framework store's
-    /// JobLog cluster on the persistence seam (D52). Closed, not the open-generic
+    /// JobLog cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
@@ -488,7 +488,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="ThemeAggregate"/> in the MASTER database — the framework store's
-    /// Theme cluster on the persistence seam (D52). Closed, not the open-generic
+    /// Theme cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
@@ -506,7 +506,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="ModuleDefinitionAggregate"/> in the MASTER database — the
-    /// framework store's ModuleDefinition cluster on the persistence seam (D52). Closed, not the open-generic
+    /// framework store's ModuleDefinition cluster on the persistence seam. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
@@ -520,7 +520,7 @@ namespace Stomme.Repository.Stores
     /// rebuilds from the loaded module assemblies and from Settings/Permissions. See
     /// <see cref="ModuleDefinitionAggregate"/>. Note there is no mapped navigation into this aggregate anywhere:
     /// <c>Module.ModuleDefinition</c> is <c>[NotMapped]</c> and, being tenant-side, could not carry a cross-database
-    /// foreign key even in principle — so unlike the SiteGroup (D45) and Folder/File (D48/D49) pairs there was no
+    /// foreign key even in principle — so unlike the SiteGroup and Folder/File pairs there was no
     /// navigation to sever.
     /// </remarks>
     public interface IModuleDefinitionStore : IRepository<ModuleDefinitionAggregate, int>
@@ -529,7 +529,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="TenantAggregate"/> in the MASTER database — the framework store's Tenant
-    /// cluster on the persistence seam (D52), and half of the routing core. Closed, not the open-generic
+    /// cluster on the persistence seam, and half of the routing core. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>
@@ -543,7 +543,7 @@ namespace Stomme.Repository.Stores
     /// absent from the builder but present in the live table (D52 survey, MEASURED). This is a landed-TOGETHER pair
     /// with <see cref="IAliasStore"/>: the installer creates the Tenant then its Aliases, and the resolver maps
     /// Alias -> Site -> Tenant on every request. There is no mapped navigation between them — Alias references the
-    /// tenant by id only, so unlike the SiteGroup (D45) or Folder/File (D48/D49) pairs there was no navigation to sever.
+    /// tenant by id only, so unlike the SiteGroup or Folder/File pairs there was no navigation to sever.
     /// </remarks>
     public interface ITenantStore : IRepository<TenantAggregate, int>
     {
@@ -551,7 +551,7 @@ namespace Stomme.Repository.Stores
 
     /// <summary>
     /// The per-aggregate store for <see cref="AliasAggregate"/> in the MASTER database — the framework store's Alias
-    /// cluster on the persistence seam (D52), and the other half of the routing core. Closed, not the open-generic
+    /// cluster on the persistence seam, and the other half of the routing core. Closed, not the open-generic
     /// <see cref="IRepository{TAggregate, TId}"/>, for exactly the reasons documented on <see cref="ISiteStore"/>.
     /// </summary>
     /// <remarks>

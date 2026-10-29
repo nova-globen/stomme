@@ -8,7 +8,7 @@ using Xunit;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 - filters in an expression (n8n's expression functions, written as Liquid writes them): each turns a placeholder's
+    /// Filters in an expression (n8n's expression functions, written as Liquid writes them): each turns a placeholder's
     /// value into another, in a chain, with literal arguments; one renderer for the engine and the editor, so the preview is what
     /// the step gets. A name that is not a filter, and a number filter given no number, are errors saying which - before the run
     /// in the problems panel, and when it renders.

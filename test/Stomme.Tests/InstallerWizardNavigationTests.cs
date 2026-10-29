@@ -18,7 +18,7 @@ using InstallerComponent = Stomme.Installer.Installer;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// BL-14 (D86): pins the installer wizard's deliberate no-Router navigation model. The Installer runs
+    /// Pins the installer wizard's deliberate no-Router navigation model. The Installer runs
     /// WITHOUT an interactive &lt;Router&gt; — step changes set the internal <c>_step</c> field and update the
     /// URL cosmetically via <c>history.pushState</c> through JSInterop, because a
     /// <c>NavigationManager.NavigateTo</c> would REMOUNT the component and WIPE every collected wizard value
@@ -146,7 +146,7 @@ namespace Stomme.Tests
 
             // (b) THE load-bearing invariant: no step change may go through NavigationManager. A regression
             // that swaps GoToStep's pushState for NavigateTo records history entries here (and, in the real
-            // product, remounts the Installer and wipes all collected state — measured in D86).
+            // product, remounts the Installer and wipes all collected state — measured).
             Assert.Empty(nav.History);
             Assert.Equal(initialUri, nav.Uri);
 
@@ -175,7 +175,7 @@ namespace Stomme.Tests
             cut.Find("input[maxlength='50']").Change(HostFullName); // full name (the sole 50-char field)
         }
 
-        // The email input carries the id its label names since BL-22's label sweep (2026-10-03); before it, this found the
+        // The email input carries the id its label names since BL-22's label sweep; before it, this found the
         // one maxlength-256 account input without an id.
         private static AngleSharp.Dom.IElement FindEmailInput(IRenderedComponent<InstallerComponent> cut)
         {

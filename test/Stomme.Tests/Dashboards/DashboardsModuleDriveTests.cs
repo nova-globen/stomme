@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Dashboards
 {
     /// <summary>
-    /// BL-96 increment 9 - the Dashboards module on installed hosts on SQLite and PostgreSQL, over HTTP: the admin page is
+    /// The Dashboards module on installed hosts on SQLite and PostgreSQL, over HTTP: the admin page is
     /// served from the module's own template; a board is created, a dataset registered through the Datasets API and a
     /// chart widget bound to it whose data comes back with its rows; a grid bound to a Restricted dataset has its rows
     /// refused; an overlapping widget is refused with the board's own reason; the dataset a widget binds cannot be

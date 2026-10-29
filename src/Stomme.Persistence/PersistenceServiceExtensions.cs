@@ -23,7 +23,7 @@ public static class PersistenceServiceExtensions
         // child scope per dispatch, while Stomme.FeatureManagement TryAdd'd a current-scope one. Both are
         // TryAdd, i.e. first-caller-wins, so which SEMANTICS the port got depended on the order the host
         // happened to call AddFeatureManagement / AddDomainEvents in — an ordering accident with no compile
-        // error to announce it (src/Stomme.Persistence/README.md defect #4; D16).
+        // error to announce it (src/Stomme.Persistence/README.md defect #4).
         //
         // D40 settled it: current scope. Both rivals are gone and every caller now registers the one
         // CurrentScopeDomainEventDispatcher, which takes IServiceProvider — it has no scope factory to create a
@@ -34,7 +34,7 @@ public static class PersistenceServiceExtensions
         // handlers are scoped.
         services.TryAddScoped<IDomainEventDispatcher, CurrentScopeDomainEventDispatcher>();
 
-        // The framework's single UnitOfWork lives in Stomme.Persistence.Abstractions (D67): both this path
+        // The framework's single UnitOfWork lives in Stomme.Persistence.Abstractions: both this path
         // and AddFeatureManagement register the SAME type, so the old clear-vs-dispatch order accident between
         // the two rival impls is gone and registration order is inert, like the dispatcher line above.
         services.TryAddScoped<IUnitOfWork, UnitOfWork>();

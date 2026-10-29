@@ -9,7 +9,7 @@ using Stomme.Shared;
 namespace Stomme.Modules.Metering.Services
 {
     /// <summary>
-    /// The client/server contract of the Metering module's UI (D102 item 11). The controls depend on this
+    /// The client/server contract of the Metering module's UI. The controls depend on this
     /// interface, never on a repository: the server binds it to <c>ServerMeteringService</c> (a mediator dispatch,
     /// so every call is decided by the request's <c>[Requires]</c>), the browser to <see cref="MeteringService"/>
     /// (HTTP to <c>api/Metering</c>, decided by the action's <c>[RequiresPermissionKey]</c> AND the request's

@@ -20,7 +20,7 @@ using File = System.IO.File;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - n8n's AWS Textract, AWS Rekognition and AWS Comprehend nodes over their JSON protocols, each call signed with
+    /// n8n's AWS Textract, AWS Rekognition and AWS Comprehend nodes over their JSON protocols, each call signed with
     /// SigV4 for its service in the connection's region: Textract's expenses as each document's fields and line items, a
     /// document's lines, a form's keys and values and the answers to questions asked of it; Rekognition's labels, lines and words,
     /// faces, unsafe content and celebrities; Comprehend's languages, sentiment, entities, key phrases and personal data; a

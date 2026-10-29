@@ -5,7 +5,7 @@ using System.Linq;
 namespace Stomme.Modules.Pipelines.Canvas
 {
     /// <summary>
-    /// BL-229 increment 3 - "Fit": the zoom and pan that show every step, centred. The canvas library's own ZoomToFit throws
+    /// "Fit": the zoom and pan that show every step, centred. The canvas library's own ZoomToFit throws
     /// when the canvas has no size yet (a tab not drawn - it took the whole editor down when driven), and it zooms a
     /// one-step pipeline in to fill the window; this never does either.
     /// </summary>

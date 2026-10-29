@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 namespace Stomme.Modules.Metering.Application
 {
     /// <summary>
-    /// Prices an AI call from a configured price list - server-side, never from the caller (D102).
+    /// Prices an AI call from a configured price list - server-side, never from the caller.
     /// </summary>
     /// <remarks>
     /// The cost is the one field a producer must not supply: a caller that names its own price can under-report a
@@ -36,7 +36,7 @@ namespace Stomme.Modules.Metering.Application
 
                     // A PROVIDER: "openai": { "gpt-x": { ... } }. Configuration uses ':' as its path separator, so the
                     // documented "provider:model" key, written in JSON as "openai:gpt-x", ARRIVES as exactly this nested
-                    // shape - and used to be read as a model called "openai" with no numbers in it. MEASURED (BL-163): the
+                    // shape - and used to be read as a model called "openai" with no numbers in it. MEASURED: the
                     // call was priced 0 USD, silently - an under-reported bill. Both spellings now mean the same thing.
                     foreach (var model in entry.GetChildren())
                     {

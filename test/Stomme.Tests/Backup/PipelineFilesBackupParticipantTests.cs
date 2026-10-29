@@ -17,7 +17,7 @@ using Xunit;
 namespace Stomme.Tests.Backup
 {
     /// <summary>
-    /// BL-233 - the site's pipeline folders in a backup: a restore puts every site's folder back exactly (a file added later is
+    /// The site's pipeline folders in a backup: a restore puts every site's folder back exactly (a file added later is
     /// gone, a changed one reverted, a deleted one back), the upload staging is never carried; a tenant-scoped restore replaces
     /// the restored tenants' site folders only; a path that escapes, one outside a site's folder, a repeated path and a
     /// truncated part are refused - and a refused replace leaves the live folders untouched, with nothing left behind.

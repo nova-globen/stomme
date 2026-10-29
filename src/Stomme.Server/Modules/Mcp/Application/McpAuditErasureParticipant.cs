@@ -10,8 +10,8 @@ using Stomme.SharedKernel.Domain;
 namespace Stomme.Modules.Mcp.Application
 {
     /// <summary>
-    /// The MCP tool-call ledger (D101): a SECURITY record of what was done through tools on the subject's account, so
-    /// it is retained one year under Article 17(3) (the Security reason) and then deleted by the same job (D112). Its
+    /// The MCP tool-call ledger: a SECURITY record of what was done through tools on the subject's account, so
+    /// it is retained one year under Article 17(3) (the Security reason) and then deleted by the same job. Its
     /// rows hold the user id, the verb, the tool or resource name and an argument hash - never the arguments.
     /// </summary>
     public sealed class McpAuditErasureParticipant(IMcpAuditRepository audit, IUnitOfWork unitOfWork, TimeProvider clock) : ISubjectErasureParticipant

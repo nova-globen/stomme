@@ -22,7 +22,7 @@ using MimeKit;
 namespace Stomme.Modules.Connectors.Gmail
 {
     /// <summary>
-    /// Gmail (BL-229, n8n's Gmail node: messages got, sent, replied to and marked as read): the Gmail API
+    /// Gmail (n8n's Gmail node: messages got, sent, replied to and marked as read): the Gmail API
     /// (<c>https://gmail.googleapis.com/gmail/v1</c>) over the OAuth2 REFRESH-TOKEN scheme - a Google Cloud OAuth client's id and
     /// secret and a refresh token granted the Gmail scopes - exchanged at Google's token endpoint (the <c>token_url</c> setting)
     /// through the shared <see cref="OAuth2TokenProvider"/>, as the Google Sheets connector's is. A test reads the mailbox's address.
@@ -36,7 +36,7 @@ namespace Stomme.Modules.Connectors.Gmail
     /// thread, In-Reply-To and References set, to its sender when no <c>to</c> is given, "Re:" its subject when none is. A subject
     /// with a line break is refused. A send answers ONE record, as the chat connectors' message does: its <c>id</c>, or
     /// <c>refused</c> with why - a recipient that is not an address, Google's own reason - because the extraction port answers a
-    /// thrown failure with its fixed words alone (D110). <c>mark_read</c>: the messages with the ids given marked read. A message
+    /// thrown failure with its fixed words alone. <c>mark_read</c>: the messages with the ids given marked read. A message
     /// id is held to the letters, digits, '-' and '_' Gmail's are made of before it reaches the path. A throttled call waits as
     /// Google says; a failure of a search or a mark is thrown with its status and Google's own short status word
     /// (<c>HTTP 404 NOT_FOUND.</c>), the port answering it in its words.
@@ -367,7 +367,7 @@ namespace Stomme.Modules.Connectors.Gmail
         private sealed record Outgoing(InternetAddressList To, InternetAddressList Cc, InternetAddressList Bcc, string? Subject, string? Text, string? Html, string? ReplyTo);
 
         // The message to send, or why not - in words an author can act on, answered as a record (a thrown failure reaches the
-        // author as the port's fixed words alone, D110).
+        // author as the port's fixed words alone).
         private static (Outgoing? Draft, string? Problem) Draft(IReadOnlyDictionary<string, string> parameters)
         {
             try

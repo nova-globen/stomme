@@ -110,7 +110,7 @@ namespace Stomme.Tests
                 Assert.Equal(HttpStatusCode.OK, token.Status);
                 Assert.False(string.IsNullOrEmpty(token.AccessToken), $"no access_token: {token.Body}");
 
-                // A wrong secret for the SAME client is rejected (invalid_client), not a swallowed 200 (BL-56).
+                // A wrong secret for the SAME client is rejected (invalid_client), not a swallowed 200.
                 var bad = await ClientCredentialsTokenAsync(client, secret: "wrong");
                 Assert.NotEqual(HttpStatusCode.OK, bad.Status);
             }
@@ -283,7 +283,7 @@ namespace Stomme.Tests
             public string TenantConnectionString => _tenant;
             public string DatabaseTypePreseed => null;
             public void BindToScratch(string scratch) => _tenant = $"Data Source={Path.Combine(scratch, "tenant.db")};";
-            // This provider's own database, never the process-wide ClearAllPools (BL-104).
+            // This provider's own database, never the process-wide ClearAllPools.
             public void Dispose() => ScratchSqlite.Release(_tenant);
         }
 
@@ -372,7 +372,7 @@ namespace Stomme.Tests
             public void Dispose()
             {
                 Environment.SetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable, _previousOverridePath);
-                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only - BL-104
+                ScratchSqlite.ReleaseInstall(ContentRoot);   // this install's pools only
                 try { Directory.Delete(ContentRoot, true); } catch { }
             }
         }

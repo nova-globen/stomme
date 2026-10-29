@@ -57,7 +57,7 @@ public static class RavenDatabaseBootstrap
 
         try
         {
-            // BL-68: a create whose commit notification is lost is rechecked, not waited on longer.
+            // A create whose commit notification is lost is rechecked, not waited on longer.
             await RavenClusterCommit.RunAsync(
                 () => store.Maintenance.Server.SendAsync(new CreateDatabaseOperation(new DatabaseRecord(name)), ct),
                 async () => await store.Maintenance.Server

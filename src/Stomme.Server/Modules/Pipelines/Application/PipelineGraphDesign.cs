@@ -13,8 +13,8 @@ using Stomme.Security.Abstractions;
 namespace Stomme.Modules.Pipelines.Application
 {
     // ============================================================================================================
-    // BL-229 - n8n's AI workflow builder, in the editor: the author says what the pipeline should do, or what should change, and
-    // the site's model changes the canvas through the workbench's tools (PipelineGraphWorkbench). It PROPOSES (D113): nothing is
+    // n8n's AI workflow builder, in the editor: the author says what the pipeline should do, or what should change, and
+    // the site's model changes the canvas through the workbench's tools (PipelineGraphWorkbench). It PROPOSES: nothing is
     // stored here - the change comes back judged by the save's own rule, the editor puts it on the canvas marked as the AI's, and
     // the author saves it or undoes it. It needs pipelines:manage AND the assistant's own key, as the Landing designer does: the
     // model is the site's, quota-gated and metered, and assistant:use is who may spend it.

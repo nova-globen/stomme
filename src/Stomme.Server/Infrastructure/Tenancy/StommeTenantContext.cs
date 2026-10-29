@@ -35,7 +35,7 @@ namespace Stomme.Infrastructure.Tenancy
     /// capability was "disabled by feature flag".
     /// </para>
     /// <para>
-    /// <b>Both sources are synchronous and read no store (D32).</b> That is what keeps
+    /// <b>Both sources are synchronous and read no store.</b> That is what keeps
     /// <see cref="ITenantContext"/> — a hot, sync property read on every query the seam's tenant filter touches
     /// — sync <i>legitimately</i>. The fallback used to be <c>ITenantManager.GetAlias()</c>, which resolves the
     /// alias from the request's host+path via <c>IAliasRepository</c>; that is now

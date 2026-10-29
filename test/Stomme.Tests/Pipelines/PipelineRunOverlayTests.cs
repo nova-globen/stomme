@@ -22,7 +22,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 2 - a run on the canvas: Run stays in the editor and follows the run, each step marked with what the run
+    /// A run on the canvas: Run stays in the editor and follows the run, each step marked with what the run
     /// did with it as the reads come in, and the poll ends with the run. Each poll is fired by the test on a manual clock.
     /// </summary>
     public sealed class PipelineRunOverlayTests : BunitContext
@@ -83,7 +83,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Null(RunMark(cut, "Read")));
         }
 
-        // BL-229 - beyond n8n's Insights: each step's figures over a window, on the canvas where a run would be - amber with some
+        // Beyond n8n's Insights: each step's figures over a window, on the canvas where a run would be - amber with some
         // passes failed, "did not run" for a step no run reached - the window chosen, and gone again; a run chosen takes their place.
         [Fact]
         public void Step_insights_show_each_steps_figures_where_a_run_would_be()
@@ -122,7 +122,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-editor-step-insights-runs"));
         }
 
-        // BL-229 - n8n's "Stop execution": the run followed on the canvas stopped from the editor (the Run page's Cancel) - offered
+        // n8n's "Stop execution": the run followed on the canvas stopped from the editor (the Run page's Cancel) - offered
         // while it goes on, while it is starting too (a run busy in its first burst is stored only when the burst ends, and is
         // stopped before its next step all the same), and only to whoever may run the pipeline; read again at once, so the canvas
         // says where it stopped, and gone with the run.
@@ -157,7 +157,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(viewer.FindAll("#pipelines-editor-run-stop"));
         }
 
-        // BL-229 - n8n's logs: the run shown, pass by pass in the order the passes began - each one's state, time and records, the
+        // n8n's logs: the run shown, pass by pass in the order the passes began - each one's state, time and records, the
         // step that failed named - and a pass pressed is its step on the canvas, with that very pass in the inspector.
         [Fact]
         public void The_runs_passes_are_listed_in_order_and_each_leads_to_its_step()
@@ -194,7 +194,7 @@ namespace Stomme.Tests.Pipelines
             changed.WaitForAssertion(() => Assert.Equal("Write Line is not in the pipeline any more - it was in the version that ran.", changed.Find("#pipelines-editor-message").TextContent.Trim()));
         }
 
-        // BL-229 - n8n's view and download of a node's binary data: a pass of a file step links the file it was given, to download or
+        // n8n's view and download of a node's binary data: a pass of a file step links the file it was given, to download or
         // to see in its folder on the Files page; a step with no such input links nothing.
         [Fact]
         public void A_file_steps_pass_links_the_file_it_was_given()
@@ -214,7 +214,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-editor-run-files"));
         }
 
-        // BL-229 - n8n Enterprise's execution data redaction: a step whose data the pipeline's setting emptied says so where its input
+        // n8n Enterprise's execution data redaction: a step whose data the pipeline's setting emptied says so where its input
         // and output would be, and offers no empty data to read or pin.
         [Fact]
         public void A_step_whose_data_was_not_kept_says_so_in_place_of_its_data()
@@ -239,7 +239,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(kept.FindAll("#pipelines-editor-run-not-kept"));
         }
 
-        // BL-229 - n8n's "fix with AI" on a node's error: a step a run failed asks the builder what it failed with - the error the
+        // n8n's "fix with AI" on a node's error: a step a run failed asks the builder what it failed with - the error the
         // inspector shows and nothing else of the run's data - and the change comes back marked on the canvas.
         [Fact]
         public void A_failed_step_asks_the_builder_to_fix_what_it_failed_with()
@@ -261,7 +261,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("The AI says: Say is tried twice more now.", cut.Find("#pipelines-editor-ai-summary").TextContent.Trim());
         }
 
-        // BL-229 increment 3: Ctrl+Enter is the Run button - the keyboard script hands the editor "run".
+        // Ctrl+Enter is the Run button - the keyboard script hands the editor "run".
         [Fact]
         public async Task Ctrl_Enter_runs_the_published_pipeline_like_the_Run_button()
         {
@@ -276,7 +276,7 @@ namespace Stomme.Tests.Pipelines
 
         private static Alias Alias() => new() { AliasId = 1, SiteId = 1, TenantId = 1, Name = "localhost" };
 
-        // BL-229: a run opened from its page ("Open in the editor", ?run=) is on the canvas as the editor opens - and a run of
+        // A run opened from its page ("Open in the editor", ?run=) is on the canvas as the editor opens - and a run of
         // another pipeline is not.
         [Fact]
         public void A_run_named_in_the_address_is_shown_as_the_editor_opens()
@@ -292,7 +292,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(RunMark(other, "Say"));
         }
 
-        // BL-229 - n8n's "Debug in editor": what the run on the canvas left in the variables is kept as the test values on request,
+        // n8n's "Debug in editor": what the run on the canvas left in the variables is kept as the test values on request,
         // marked kept and used by the next test; with nothing new to keep, the button is gone.
         [Fact]
         public void The_run_on_the_canvas_has_its_values_kept_as_the_test_values_on_request()
@@ -313,7 +313,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-editor-test-keep-run"));
         }
 
-        // BL-229 - n8n's "Debug in editor" with pinned data: at a step of the run on the canvas, what each step leading to it
+        // n8n's "Debug in editor" with pinned data: at a step of the run on the canvas, what each step leading to it
         // produced in that run is pinned in one click - so a test up to here runs the step on the run's own data and calls
         // nothing before it again. A first step has nothing before it to pin.
         [Fact]
@@ -344,7 +344,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("[{\"name\":\"Ada\"}]", cut.Find("#pipelines-editor-pinned-result").GetAttribute("value"));
         }
 
-        // BL-229 - n8n's node details view: Wide view puts the step's settings over the canvas, between what it received and what it
+        // n8n's node details view: Wide view puts the step's settings over the canvas, between what it received and what it
         // produced in the run shown - the narrow panel's data moved beside them, not shown twice; Back to the canvas undoes it.
         [Fact]
         public void The_wide_view_shows_a_steps_settings_between_what_it_received_and_produced()

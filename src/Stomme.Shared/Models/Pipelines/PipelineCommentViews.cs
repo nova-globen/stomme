@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Stomme.Models.Pipelines
 {
     /// <summary>
-    /// BL-229 - a comment on a step of a pipeline: what someone said about it, and whether it was dealt with (resolved). Kept
+    /// A comment on a step of a pipeline: what someone said about it, and whether it was dealt with (resolved). Kept
     /// apart from the pipeline - not a change to it, in no version and no file - so a reviewer who cannot change the pipeline
     /// can still say something about it.
     /// </summary>

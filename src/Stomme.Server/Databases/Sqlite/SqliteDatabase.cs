@@ -156,7 +156,7 @@ namespace Stomme.Database.Sqlite
         }
 
         /// <summary>
-        /// Puts a file-backed SQLite install into WAL, once per database file per process (BL-104).
+        /// Puts a file-backed SQLite install into WAL, once per database file per process.
         /// </summary>
         /// <remarks>
         /// <para>

@@ -18,7 +18,7 @@ using Xunit;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Google Calendar (n8n's Google Calendar node: an event got, listed, created, updated and deleted, a calendar's
+    /// Google Calendar (n8n's Google Calendar node: an event got, listed, created, updated and deleted, a calendar's
     /// availability): the refresh token exchanged at the token endpoint, the access token sent as a bearer; the events between
     /// two times read page by page by Google's token up to the most asked for, each occurrence in the order they start, each a
     /// plain record; an event made at a time with its offset, in a time zone or for a whole day - an hour long, or to the next

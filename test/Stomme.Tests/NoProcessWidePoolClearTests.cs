@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests
 {
     /// <summary>
-    /// <c>ClearAllPools()</c> is banned in the test tree, because it is PROCESS-WIDE (BL-104).
+    /// <c>ClearAllPools()</c> is banned in the test tree, because it is PROCESS-WIDE.
     /// </summary>
     /// <remarks>
     /// <para>

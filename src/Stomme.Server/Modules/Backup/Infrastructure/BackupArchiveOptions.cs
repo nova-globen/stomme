@@ -5,9 +5,9 @@ using System.IO;
 namespace Stomme.Modules.Backup.Infrastructure
 {
     /// <summary>
-    /// <c>Backup:Archive</c> (BL-169): which store takes NEW snapshots - <c>Local</c> (the default, <c>|DataDirectory|backups</c>) or
+    /// <c>Backup:Archive</c>: which store takes NEW snapshots - <c>Local</c> (the default, <c>|DataDirectory|backups</c>) or
     /// <c>S3</c> (an S3-compatible object store) - and the object store's settings. Read from THIS host's configuration, the
-    /// override file included (BL-162). A snapshot records the store that holds it, so switching the provider leaves the
+    /// override file included. A snapshot records the store that holds it, so switching the provider leaves the
     /// earlier snapshots restorable from where they are.
     /// </summary>
     public sealed class BackupArchiveOptions

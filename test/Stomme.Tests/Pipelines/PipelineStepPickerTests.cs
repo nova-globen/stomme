@@ -24,7 +24,7 @@ using ModuleModel = Stomme.Models.Module;
 namespace Stomme.Tests.Pipelines
 {
     /// <summary>
-    /// BL-229 increment 1 - find and place steps fast: a search over the catalog that ranks names first, arrows and Enter to
+    /// Find and place steps fast: a search over the catalog that ranks names first, arrows and Enter to
     /// add, and a step added while another is selected lands to its right CONNECTED to it, so steps typed one after another
     /// form a chain.
     /// </summary>
@@ -42,13 +42,13 @@ namespace Stomme.Tests.Pipelines
                 Inputs = { new() { Name = "Condition", DisplayName = "Condition", TypeName = "Boolean", UIHint = "singleline" } },
             },
             new() { Type = "Stomme.SendHttpRequest", Version = 1, DisplayName = "HTTP request", Category = "Actions", Description = "Call a URL and keep the answer." },
-            // BL-229 increment 4: a step that cannot do without one of its inputs.
+            // A step that cannot do without one of its inputs.
             new()
             {
                 Type = "Stomme.WriteLine", Version = 1, DisplayName = "Write Line", Category = "Console", Description = "Write a line of text.",
                 Inputs = { new() { Name = "Text", DisplayName = "Text", TypeName = "String", IsRequired = true } },
             },
-            // BL-229 increment 10: two steps that name their own outcomes - a Switch's cases beside Default, a Fork's branches.
+            // Two steps that name their own outcomes - a Switch's cases beside Default, a Fork's branches.
             new()
             {
                 Type = "Stomme.FlowSwitch", Version = 1, DisplayName = "Switch (flow)", Category = "Flow control", Description = "Go out through the case that matches.",
@@ -76,7 +76,7 @@ namespace Stomme.Tests.Pipelines
                     new() { Name = "Query", DisplayName = "Query", TypeName = "String", UIHint = PipelineInputHints.SqlQuery },
                 },
             },
-            // BL-229 increment 10: the two triggers with a panel of their own.
+            // The two triggers with a panel of their own.
             new()
             {
                 Type = "Stomme.Webhook", Version = 1, DisplayName = "Webhook", Category = "Triggers", Description = "Start the pipeline when the site's webhook receiver is called with this name.", Kind = "Trigger",
@@ -88,14 +88,14 @@ namespace Stomme.Tests.Pipelines
                 Type = "Stomme.Schedule", Version = 1, DisplayName = "Schedule", Category = "Triggers", Description = "Start the pipeline on a cron schedule (UTC).", Kind = "Trigger",
                 Inputs = { new() { Name = "Cron", DisplayName = "Cron", TypeName = "String", IsRequired = true }, new() { Name = "TimeZone", DisplayName = "Time zone", TypeName = "String" } },
             },
-            // BL-229: n8n's error workflow - a trigger watching one of the site's other pipelines, or every one.
+            // n8n's error workflow - a trigger watching one of the site's other pipelines, or every one.
             new()
             {
                 Type = PipelineFailure.StepType, Version = 1, DisplayName = "Pipeline failed", Category = "Triggers", Description = "Start the pipeline when a run of another pipeline on the site fails.", Kind = "Trigger",
                 Inputs = { new() { Name = "Pipeline", DisplayName = "Pipeline", TypeName = "String", UIHint = "pipeline-definition-picker" } },
                 Outputs = { new() { Name = "Result", DisplayName = "Result", TypeName = "String" } },
             },
-            // BL-229: n8n's Form trigger - its fields edited as a list, its page's address in its panel.
+            // n8n's Form trigger - its fields edited as a list, its page's address in its panel.
             new()
             {
                 Type = PipelineForms.StepType, Version = 1, DisplayName = "Form submitted", Category = "Triggers", Description = "Start the pipeline when a person submits the form the site shows for it.", Kind = "Trigger",
@@ -106,7 +106,7 @@ namespace Stomme.Tests.Pipelines
                 },
                 Outputs = { new() { Name = "Result", DisplayName = "Result", TypeName = "String" } },
             },
-            // BL-229: n8n's AI Agent - its tools offered from the site's published ones; and the trigger that makes a pipeline one.
+            // n8n's AI Agent - its tools offered from the site's published ones; and the trigger that makes a pipeline one.
             new()
             {
                 Type = "Stomme.AiAgent", Version = 1, DisplayName = "AI agent", Category = "AI", Description = "Let the site's language model answer with tools.", Kind = "Action",
@@ -119,7 +119,7 @@ namespace Stomme.Tests.Pipelines
                 Inputs = { new() { Name = "ToolName", DisplayName = "Name", TypeName = "String", IsRequired = true } },
                 Outputs = { new() { Name = "Result", DisplayName = "Result", TypeName = "String" } },
             },
-            // BL-229: the step that sets one of the pipeline's variables - the engine's own picker for it.
+            // The step that sets one of the pipeline's variables - the engine's own picker for it.
             new()
             {
                 Type = "Stomme.SetVariable", Version = 1, DisplayName = "Set Variable", Category = "Primitives", Description = "Assign a value to a pipeline variable.",
@@ -157,7 +157,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal((290d, 180d), StepPlacement.After((30, 40), new[] { (30d, 40d), (290d, 40d) }));
         }
 
-        // BL-229: how many runs may go at once, chosen with nothing selected - a change like any other: saved with the graph, undone.
+        // How many runs may go at once, chosen with nothing selected - a change like any other: saved with the graph, undone.
         [Fact]
         public void How_many_runs_go_at_once_is_chosen_saved_and_undone_like_any_change()
         {
@@ -189,7 +189,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.StartsWith("A start while a run is going - or waiting - waits its turn", cut.Find("#pipelines-editor-runs-at-once-help").TextContent.Trim()));
         }
 
-        // BL-229 - what the runs keep of their steps' data, chosen beside them: saved with the graph, undone; always is saved as nothing.
+        // What the runs keep of their steps' data, chosen beside them: saved with the graph, undone; always is saved as nothing.
         [Fact]
         public void What_the_runs_keep_of_their_steps_data_is_chosen_saved_and_undone_like_any_change()
         {
@@ -231,7 +231,7 @@ namespace Stomme.Tests.Pipelines
             Assert.True(cut.Find("#pipelines-editor-save-progress").HasAttribute("checked"));
         }
 
-        // BL-229 - n8n's zoom to fit on open: a pipeline whose steps do not all show at the view it opens with is fitted once the
+        // n8n's zoom to fit on open: a pipeline whose steps do not all show at the view it opens with is fitted once the
         // canvas has its size - zoomed out, every step whole on the canvas; one that shows whole opens as it is.
         [Fact]
         public void A_pipeline_too_wide_for_the_canvas_opens_fitted()
@@ -282,7 +282,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal((1d, 0d, 0d), (Diagram().Zoom, Diagram().Pan.X, Diagram().Pan.Y));
         }
 
-        // BL-229 - a pipeline that already saves its progress opens ticked, and a save of another change keeps it.
+        // A pipeline that already saves its progress opens ticked, and a save of another change keeps it.
         [Fact]
         public void A_pipeline_that_saves_its_progress_opens_ticked_and_keeps_it_through_a_save()
         {
@@ -302,7 +302,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal((PipelineStepDataKeeping.Never, (bool?)true), (service.Saved!.KeepStepData, service.Saved.SaveProgress));
         }
 
-        // BL-229: n8n's time saved per run, typed beside them - saved with the graph, undone; nought or less says nothing.
+        // n8n's time saved per run, typed beside them - saved with the graph, undone; nought or less says nothing.
         [Fact]
         public void The_minutes_a_run_saves_are_typed_saved_and_undone_like_any_change()
         {
@@ -330,7 +330,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("", cut.Find("#pipelines-editor-minutes-saved").GetAttribute("value"));
         }
 
-        // BL-229: n8n's "Timeout Workflow", typed beside them - saved with the graph, undone; nought is no limit, past a day a day.
+        // n8n's "Timeout Workflow", typed beside them - saved with the graph, undone; nought is no limit, past a day a day.
         [Fact]
         public void A_runs_time_limit_is_typed_saved_and_undone_like_any_change()
         {
@@ -360,7 +360,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal("1440", cut.Find("#pipelines-editor-timeout-minutes").GetAttribute("value")));
         }
 
-        // BL-229: beside each variable, where it is used - the steps that set it and those that read it, each a way to the step - and
+        // Beside each variable, where it is used - the steps that set it and those that read it, each a way to the step - and
         // one used by nothing said so.
         [Fact]
         public void Each_variable_says_which_steps_set_and_read_it_each_a_way_to_the_step()
@@ -406,7 +406,7 @@ namespace Stomme.Tests.Pipelines
             Outputs = { new() { Name = "Result", DisplayName = "Result", TypeName = "String" } },
         };
 
-        // BL-229 - n8n's "Ask AI" in its Code node: under a Run script step's script the AI is asked to write it, told what the script
+        // n8n's "Ask AI" in its Code node: under a Run script step's script the AI is asked to write it, told what the script
         // can see - the fields of what the step before it last produced, its variables' names - and never a value, which the editor
         // says under the button; the script comes back as ONE change Undo takes back, one that does not parse said so, a refusal said.
         [Fact]
@@ -485,7 +485,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("input", cut.Find("#pipelines-editor-input-Script").GetAttribute("value"));
         }
 
-        // BL-229 - n8n's Code node linting: a moment after the author stops typing, each script the pipeline holds - a Run script
+        // n8n's Code node linting: a moment after the author stops typing, each script the pipeline holds - a Run script
         // step's code in the style it is written for, an input given as JavaScript - is checked by the server's parser; one that does
         // not parse is a warning on its input and in the list, gone once the script parses; a text checked once is not asked again.
         [Fact]
@@ -551,7 +551,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(asked, service.ScriptChecks.Count);
         }
 
-        // BL-229 - a step's discussion (better than n8n, whose workflows have none): read and added in the step's inspector, its
+        // A step's discussion (better than n8n, whose workflows have none): read and added in the step's inspector, its
         // open comments counted on the step, resolved and reopened, what is being said kept per step - and none of it a change
         // to save or to undo.
         [Fact]
@@ -643,7 +643,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(4, service.Comments.Count);
         }
 
-        // BL-229: the discussion follows others - read again on the editor's clock, so a comment someone else adds shows without a
+        // The discussion follows others - read again on the editor's clock, so a comment someone else adds shows without a
         // reload - and a step holding a body counts the open comments on the steps inside it, apart from its own.
         [Fact]
         public async Task The_discussion_follows_others_and_a_loop_counts_what_is_open_inside_it()
@@ -686,7 +686,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("Batch these?", cut.Find("#pipelines-editor-discussion").TextContent);
         }
 
-        // BL-229 - @mentions: an @ and the start of a name offers the people who can see the pipeline (never oneself); one chosen
+        // @mentions: an @ and the start of a name offers the people who can see the pipeline (never oneself); one chosen
         // is written in for the name begun; an add says whom it told and which names told nobody.
         [Fact]
         public void An_at_offers_the_people_who_can_see_the_pipeline_and_an_add_says_who_was_told()
@@ -733,7 +733,7 @@ namespace Stomme.Tests.Pipelines
                 cut.Find("#pipelines-editor-discussion-told").TextContent.Trim()));
         }
 
-        // BL-229: with nothing selected, the pipeline's whole discussion - each comment a way to its step, one on a step since
+        // With nothing selected, the pipeline's whole discussion - each comment a way to its step, one on a step since
         // removed said so and still resolved or deleted there - and anyone who can see the pipeline takes part, an author or not.
         [Fact]
         public void The_pipelines_discussion_is_listed_with_its_steps_and_a_reader_takes_part_too()
@@ -794,7 +794,7 @@ namespace Stomme.Tests.Pipelines
 
         }
 
-        // BL-229 - n8n's "Save changes before leaving?": with nothing to save, leaving goes; with changes not saved it is held and
+        // n8n's "Save changes before leaving?": with nothing to save, leaving goes; with changes not saved it is held and
         // asked about - Stay keeps the page, Save and leave saves first (a refused save keeps the question and says why, nothing
         // lost), Leave without saving goes and saves nothing.
         [Fact]
@@ -884,7 +884,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(service.Saved);
         }
 
-        // BL-229 - n8n's completion in its Code node: a script box says what its script can see - its own names for the style it is
+        // n8n's completion in its Code node: a script box says what its script can see - its own names for the style it is
         // written for, the members of those it knows, its variables' names, the fields of what it receives - and a SQL box says none.
         [Fact]
         public void A_script_box_says_what_its_script_can_see_for_completion()
@@ -944,7 +944,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Tab indents · Esc then Tab leaves the box", sql.Find("#pipelines-editor-input-Query-keys").TextContent);
         }
 
-        // BL-229 - n8n's command bar: the step search finds the editor's own actions too, each with its keys; Enter does the one
+        // n8n's command bar: the step search finds the editor's own actions too, each with its keys; Enter does the one
         // marked, as its button or its keys do, and empties the search; an action the person cannot do here is not offered.
         [Fact]
         public async Task The_step_search_finds_the_editors_actions_and_does_them()
@@ -1013,7 +1013,7 @@ namespace Stomme.Tests.Pipelines
             }
         }
 
-        // BL-229: a link naming a step (find in every pipeline) opens the editor with that step chosen - inside the body it sits in.
+        // A link naming a step (find in every pipeline) opens the editor with that step chosen - inside the body it sits in.
         [Fact]
         public void A_link_to_a_step_opens_the_editor_with_it_chosen()
         {
@@ -1041,7 +1041,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "Note the order" }, cut.FindAll(".db-step-node__title").Select(title => title.TextContent.Trim()).ToArray()); // in the loop's body
         }
 
-        // BL-229: what changed, said beside Save and publish - sent with the publish, cleared after, and a version's note shown in
+        // What changed, said beside Save and publish - sent with the publish, cleared after, and a version's note shown in
         // the versions list.
         [Fact]
         public void What_changed_is_said_with_a_publish_and_shown_in_the_versions_list()
@@ -1070,7 +1070,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal("Says hello first", cut.Find("#pipelines-editor-version-note-1").TextContent.Trim()));
         }
 
-        // BL-229: n8n's workflow "Timezone", typed beside the time limit - saved with the graph, undone; "UTC" is none; one this
+        // n8n's workflow "Timezone", typed beside the time limit - saved with the graph, undone; "UTC" is none; one this
         // machine does not know is said at once.
         [Fact]
         public void A_pipelines_time_zone_is_typed_saved_and_undone_like_any_change()
@@ -1102,7 +1102,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.StartsWith("'Mars/Olympus_Mons' is not a time zone this server knows", cut.Find("#pipelines-editor-error").TextContent.Trim()));
         }
 
-        // BL-229: n8n's "This workflow can be called by" - any pipeline, none, or the ones chosen among the site's, saved with the
+        // n8n's "This workflow can be called by" - any pipeline, none, or the ones chosen among the site's, saved with the
         // graph and undone; "only the ones chosen" with none chosen yet admits nobody.
         [Fact]
         public void Who_may_call_a_pipeline_is_chosen_saved_and_undone_like_any_change()
@@ -1151,7 +1151,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Null(service.Saved!.CalledBy));
         }
 
-        // BL-229: the caller's editor warns of a call the called pipeline would refuse, on the step and in the problems - and not
+        // The caller's editor warns of a call the called pipeline would refuse, on the step and in the problems - and not
         // of one it lets through.
         [Fact]
         public void A_call_the_called_pipeline_would_refuse_is_warned_of_in_the_callers_editor()
@@ -1230,7 +1230,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(log.Position.Y, toCsv.Position.Y);
         }
 
-        // BL-229 - n8n's "Import cURL": an HTTP request step filled from a curl command as one change - what curl does that the
+        // n8n's "Import cURL": an HTTP request step filled from a curl command as one change - what curl does that the
         // step does not said under it, a command that is none refused saying why, and the whole import taken back by one undo.
         [Fact]
         public void An_http_request_step_is_filled_from_a_curl_command_as_one_change()
@@ -1293,7 +1293,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(2, service.Saved!.Steps.Count));
         }
 
-        // BL-229 - a sub-pipeline's contract: a call whose Input leaves out what the called pipeline requires, or sends what a field
+        // A sub-pipeline's contract: a call whose Input leaves out what the called pipeline requires, or sends what a field
         // cannot hold, is warned about in the caller's editor; a call from an expression is the run's to decide. And the called
         // pipeline's "When called" step says who calls it.
         [Fact]
@@ -1336,7 +1336,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("its step 'Run the child' - waits for the run", cut.Find("#pipelines-editor-callers").TextContent);
         }
 
-        // BL-229 - n8n's + after a node: each outcome nothing follows has one; pressed, the next step chosen lands after the step,
+        // n8n's + after a node: each outcome nothing follows has one; pressed, the next step chosen lands after the step,
         // connected from THAT outcome - and the + is gone from it.
         [Fact]
         public void The_plus_on_an_outcome_adds_the_next_step_from_that_outcome()
@@ -1389,7 +1389,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains(service.Saved!.Connections, link => link.SourcePort == "True" && link.TargetId == placed.Id);
         }
 
-        // BL-229 - a step put on a connection: halfway, on the row of the step it goes to; with no room, that step and the ones
+        // A step put on a connection: halfway, on the row of the step it goes to; with no room, that step and the ones
         // after it move right by what is missing; a connection going back moves nothing.
         [Fact]
         public void A_step_put_on_a_connection_lands_between_and_the_steps_after_it_make_room()
@@ -1406,7 +1406,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "b", "c", "d" }, after.OrderBy(id => id, StringComparer.Ordinal));
         }
 
-        // BL-229 - n8n's + and bin on a connection: the + puts the step chosen next between the two - from the same outcome, on
+        // n8n's + and bin on a connection: the + puts the step chosen next between the two - from the same outcome, on
         // through its first - the steps after it moved right to make room, all one change Undo takes back; the bin removes the
         // connection. A version open read-only has neither.
         [Fact]
@@ -1482,7 +1482,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-editor-menu"));
         }
 
-        // BL-229 increment 3: undo and redo, a typed field undone as one step, copy, paste and delete - through the toolbar the
+        // Undo and redo, a typed field undone as one step, copy, paste and delete - through the toolbar the
         // keyboard drives too.
         [Fact]
         public void Undo_redo_copy_paste_and_delete_edit_the_canvas_and_what_is_saved()
@@ -1586,7 +1586,7 @@ namespace Stomme.Tests.Pipelines
             cut.Find("#pipelines-editor-copy").Click();
             Assert.StartsWith("Select the steps to copy first", cut.Find("#pipelines-editor-message").TextContent.Trim());
 
-            // The same words again are spoken again (BL-229): the spoken copy's text changes - by a no-break space, not read -
+            // The same words again are spoken again: the spoken copy's text changes - by a no-break space, not read -
             // since a region whose text did not change says nothing.
             var once = cut.Find("#pipelines-editor-say").TextContent;
             cut.Find("#pipelines-editor-copy").Click();
@@ -1599,7 +1599,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll(".db-pipeline-editor__error"));
         }
 
-        // BL-229 increment 4: problems before publish - on the step, in the list above the canvas, under the input - as the graph
+        // Problems before publish - on the step, in the list above the canvas, under the input - as the graph
         // changes; Save and publish saves a draft and publishes nothing while one remains; the list leads to the step.
         [Fact]
         public void Problems_show_as_the_graph_changes_and_hold_back_the_publish_until_fixed()
@@ -1650,7 +1650,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Published version 1.", cut.Find("#pipelines-editor-message").TextContent.Trim());
         }
 
-        // BL-229 increment 5: an input as an expression - switched to from its value, the variables (and a record's fields)
+        // An input as an expression - switched to from its value, the variables (and a record's fields)
         // offered to insert, a preview of what the step gets, a name no variable has flagged, and the template saved.
         [Fact]
         public void An_input_becomes_an_expression_with_suggestions_a_preview_and_its_problems()
@@ -1712,7 +1712,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("", cut.Find("#pipelines-editor-input-Text").GetAttribute("value") ?? "");
         }
 
-        // BL-229: Set Variable's Variable is the variable the step sets - chosen among the pipeline's, never a value, an expression
+        // Set Variable's Variable is the variable the step sets - chosen among the pipeline's, never a value, an expression
         // or a script - and the step is marked until one is chosen.
         [Fact]
         public void The_variable_a_step_sets_is_chosen_among_the_pipelines_and_marked_until_it_is()
@@ -1748,7 +1748,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain("Variable", saved.Inputs.Keys);
         }
 
-        // BL-229 - n8n reads an earlier node's output where it is needed: under an expression, the results of the steps that lead
+        // n8n reads an earlier node's output where it is needed: under an expression, the results of the steps that lead
         // to the step are offered; choosing one puts it in through the variable its Result saves to - made, named after the step
         // and bound on the spot when there is none, so it is kept across a pause as any variable is - and the next use of the same
         // step reuses that variable. One change to undo.
@@ -1801,7 +1801,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal("Fetch orders", cut.Find("#pipelines-editor-earlier-Text button").TextContent.Trim()));
         }
 
-        // BL-229 - n8n's pinned data: what a step produced in a test is pinned with a click - marked on the step, shown in its
+        // n8n's pinned data: what a step produced in a test is pinned with a click - marked on the step, shown in its
         // inspector to edit, saved with the pipeline and sent with a test of it (the server hands it on in place of running the
         // step); Unpin lets the step run again, and Undo takes either back.
         [Fact]
@@ -1847,7 +1847,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.NotNull(cut.Find(".db-step-node__pinned")));
         }
 
-        // BL-229 increment 6: test the selected step - the graph as it stands, the step and the variables' values (the starting
+        // Test the selected step - the graph as it stands, the step and the variables' values (the starting
         // ones, or what the author types: kept, and reset on request) go to the server; what it did comes back beside it.
         [Fact]
         public void Test_step_sends_the_step_and_the_values_and_shows_what_it_did()
@@ -1888,7 +1888,7 @@ namespace Stomme.Tests.Pipelines
             cut.Find("#pipelines-editor-test-reset").Click();
             cut.WaitForAssertion(() => Assert.Equal("Grace", cut.Find("[id^=pipelines-editor-test-value-]").GetAttribute("value")));
 
-            // BL-229: a first step has nothing before it, so no "up to here"; a step placed after it does, and asks for the steps
+            // A first step has nothing before it, so no "up to here"; a step placed after it does, and asks for the steps
             // leading to it to run first - the result lists each one beside its own.
             Assert.Empty(cut.FindAll("#pipelines-editor-test-up-to-here"));
             cut.Find("#pipelines-editor-step-search").Input("log");
@@ -1966,7 +1966,7 @@ namespace Stomme.Tests.Pipelines
             Assert.All(cut.FindAll("#pipelines-editor-wide-available [data-drag-text]"), chip => Assert.Equal("true", chip.GetAttribute("draggable")));
         }
 
-        // BL-229: find on the canvas - what is typed lists the steps that hold it, each with what matched; one chosen is
+        // Find on the canvas - what is typed lists the steps that hold it, each with what matched; one chosen is
         // selected, and Enter goes to the next (round to the first); nothing found is said.
         [Fact]
         public void A_step_is_found_on_the_canvas_and_gone_to()
@@ -2088,7 +2088,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Null(service.Saved!.Variables.Single().TestValue));
         }
 
-        // BL-229 increment 7: the versions - listed with who and when, compared with the canvas in words, opened read-only (nothing
+        // The versions - listed with who and when, compared with the canvas in words, opened read-only (nothing
         // can be changed or saved until back), and restored onto the canvas as an ordinary change Undo takes back.
         [Fact]
         public void Versions_are_compared_opened_read_only_and_restored_as_a_change_undo_takes_back()
@@ -2136,7 +2136,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(new[] { "Log" }, Titles()));
         }
 
-        // BL-229: a version compared is marked on the canvas - a step new since it ("new"), one changed ("changed", what changed on
+        // A version compared is marked on the canvas - a step new since it ("new"), one changed ("changed", what changed on
         // hover), one whose body changed ("changed inside"), a new connection in the theme's "ok" colour - kept up with every change
         // and undo, hidden while a version is open read-only, each line a way to its step, and gone when the author stops comparing.
         [Fact]
@@ -2222,7 +2222,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(0, NewConnections());
         }
 
-        // BL-229 - n8n's AI workflow builder: what the author asks goes with the canvas as it stands, and what comes back is ONE
+        // n8n's AI workflow builder: what the author asks goes with the canvas as it stands, and what comes back is ONE
         // change - marked on the canvas as the AI's, with what the AI said - saved as any change is and taken back by Undo. A refusal
         // says why and changes nothing; a canvas the author changed while the model worked is left as the author left it.
         [Fact]
@@ -2384,7 +2384,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(service.Designs);
         }
 
-        // BL-229 - n8n's "fix with AI": the problems list asks the builder to fix what it lists - the request written out, as the
+        // n8n's "fix with AI": the problems list asks the builder to fix what it lists - the request written out, as the
         // list words it - and the change comes back marked, the problem gone.
         [Fact]
         public void Fix_with_ai_asks_the_builder_to_fix_what_the_editor_marks()
@@ -2444,7 +2444,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("- Problem at 'Say number 0': Text needs a value.", asked);
         }
 
-        // BL-229: another pipeline opened in this editor - a caller's link does it - starts clean of the last one's versions. A
+        // Another pipeline opened in this editor - a caller's link does it - starts clean of the last one's versions. A
         // version left open read-only would have put the LAST pipeline's canvas onto this one with "Back to the canvas".
         [Fact]
         public void Another_pipeline_opened_in_the_editor_leaves_the_last_ones_versions_behind()
@@ -2484,7 +2484,7 @@ namespace Stomme.Tests.Pipelines
             Assert.False(cut.Find("#pipelines-editor-step-search").HasAttribute("disabled"));
         }
 
-        // BL-229 - what was done to the pipeline open, from the site's activity: its own lines only, newest first, read when asked and
+        // What was done to the pipeline open, from the site's activity: its own lines only, newest first, read when asked and
         // read again each time; hidden; another pipeline opened here starts with them hidden.
         [Fact]
         public void What_was_done_to_the_pipeline_is_shown_in_its_settings_when_asked()
@@ -2526,7 +2526,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.NotNull(cut.Find("#pipelines-editor-activity-none")));
         }
 
-        // BL-229 - n8n's "Error workflow" setting, from the pipeline that fails: the pipelines that start when it fails (its own
+        // n8n's "Error workflow" setting, from the pipeline that fails: the pipelines that start when it fails (its own
         // handlers, a draft said to start nothing yet, and the ones watching every pipeline - never another's), and a handler made
         // in a click - watching it, beside it in its folder, published, linked. And another pipeline opened here says its OWN
         // callers and handlers, not the last one's.
@@ -2608,7 +2608,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-editor-on-failure-open"));
         }
 
-        // BL-229 - n8n's archive: an archived pipeline opens read-only - said, by whom, with no Save, no step search, its name not
+        // n8n's archive: an archived pipeline opens read-only - said, by whom, with no Save, no step search, its name not
         // editable - and Restore makes it the author's again, a draft.
         [Fact]
         public void An_archived_pipeline_opens_read_only_until_it_is_restored()
@@ -2635,7 +2635,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Restored as a draft - publish it to run it again.", cut.Find("#pipelines-editor-message").TextContent.Trim());
         }
 
-        // BL-229 - n8n's workflow name, edited where it is shown: the author clicks the pipeline's name, types a new one and what
+        // n8n's workflow name, edited where it is shown: the author clicks the pipeline's name, types a new one and what
         // it does, and Enter saves both into the draft - a published pipeline takes them when the draft is published. Escape
         // leaves them as they were, and nothing changed saves nothing.
         [Fact]
@@ -2685,7 +2685,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Mails the day's orders (click to rename it or change this)", cut.Find("#pipelines-editor-name").GetAttribute("title"));
         }
 
-        // BL-229 increment 8: Tidy up lays the steps out by their flow, as one change Undo takes back; a connection leaving one of
+        // Tidy up lays the steps out by their flow, as one change Undo takes back; a connection leaving one of
         // several outcomes carries the outcome's name; each step carries its category's shade.
         [Fact]
         public void Tidy_up_lays_the_flow_out_and_a_named_outcome_labels_its_connection()
@@ -2724,7 +2724,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal((AutoLayout.Left, AutoLayout.Top + StepPlacement.RowHeight), laid["Stomme.Delay"]);
         }
 
-        // BL-229 increment 8: a sticky note added, written and saved; a comment on a step shown on it and saved; Delete removes
+        // A sticky note added, written and saved; a comment on a step shown on it and saved; Delete removes
         // the note and Undo brings it back.
         [Fact]
         public void A_note_and_a_comment_are_written_shown_and_saved()
@@ -2764,7 +2764,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal("Ask finance before changing the delimiter", cut.Find(".db-note").TextContent.Trim()));
         }
 
-        // BL-229 increment 9: what happens when a step fails - set in the inspector, said on the step, saved with it.
+        // What happens when a step fails - set in the inspector, said on the step, saved with it.
         [Fact]
         public void When_it_fails_is_set_shown_on_the_step_and_saved()
         {
@@ -2819,7 +2819,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(service.Saved!.Steps.Single().FailureVariable);
         }
 
-        // BL-229 increment 10: Export hands the browser what the canvas shows as a pipeline file; Import puts a file on the canvas as
+        // Export hands the browser what the canvas shows as a pipeline file; Import puts a file on the canvas as
         // a change Undo takes back, says which steps this site lacks, and refuses a file that is not a pipeline with the reason.
         [Fact]
         public void Export_downloads_the_canvas_and_import_puts_a_file_on_it_as_a_change_undo_takes_back()
@@ -2879,7 +2879,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "Log" }, Titles());
         }
 
-        // BL-229 increment 10: the trigger panel - a webhook's address and a call listened for, used as a variable's value for
+        // The trigger panel - a webhook's address and a call listened for, used as a variable's value for
         // testing; a schedule's next runs, read again as its cron changes.
         [Fact]
         public void A_webhook_shows_its_address_and_a_call_listened_for_and_a_schedule_its_next_runs()
@@ -2935,7 +2935,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Europe/Stockholm", service.TriggerZones[^1]);
         }
 
-        // D111a: a webhook's own secret from its panel - made and shown once with a copy, renewed and removed behind the house's
+        // A webhook's own secret from its panel - made and shown once with a copy, renewed and removed behind the house's
         // dialog, and the panel saying which secret its calls are signed under; an own secret that cannot be read is said.
         [Fact]
         public void A_webhook_gets_its_own_secret_shown_once_and_renews_and_removes_it_behind_a_question()
@@ -2999,7 +2999,7 @@ namespace Stomme.Tests.Pipelines
             Assert.NotNull(cut.Find(".pipelines-editor-webhook-secret-renew"));
         }
 
-        // BL-229: the keyboard shortcuts in one list (n8n's "?") - from the toolbar or the key, closed by Close or Escape.
+        // The keyboard shortcuts in one list (n8n's "?") - from the toolbar or the key, closed by Close or Escape.
         [Fact]
         public async Task The_shortcuts_list_opens_from_the_toolbar_or_the_question_mark_and_closes_on_escape()
         {
@@ -3029,7 +3029,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Empty(cut.FindAll("#pipelines-editor-shortcuts")));
         }
 
-        // BL-229 - n8n's arrow keys: Right along the connections (the step on the row first), Left back, Up and Down in a column.
+        // n8n's arrow keys: Right along the connections (the step on the row first), Left back, Up and Down in a column.
         [Fact]
         public void The_arrows_go_along_the_connections_and_up_and_down_a_column()
         {
@@ -3044,7 +3044,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Null(StepNavigation.Next("right", "gone", steps, links));
         }
 
-        // BL-229 - n8n's canvas keys: the arrows move the selection (nothing selected, nothing moves), Enter opens the selected
+        // n8n's canvas keys: the arrows move the selection (nothing selected, nothing moves), Enter opens the selected
         // step in the wide view, Ctrl+D duplicates (the clipboard left alone), Ctrl+X cuts to it, Shift+S adds a note, and +, -
         // and 0 zoom about the middle; every one of them in the shortcuts list.
         [Fact]
@@ -3075,7 +3075,7 @@ namespace Stomme.Tests.Pipelines
             string Selected() => string.Join(",", Diagram().GetSelectedModels().OfType<StepNodeModel>().Select(node => node.Name));
             Task Key(string command) => cut.InvokeAsync(() => cut.Instance.OnShortcut(command));
 
-            // What is spoken (BL-229): regions there before anything is said - a region made with its text in it is not announced
+            // What is spoken: regions there before anything is said - a region made with its text in it is not announced
             // by every screen reader - and out of sight.
             string Said(string id) => cut.Find("#" + id).TextContent.Trim();
             Assert.Equal(("status", "polite", ""), (cut.Find("#pipelines-editor-say").GetAttribute("role"), cut.Find("#pipelines-editor-say").GetAttribute("aria-live"), Said("pipelines-editor-say")));
@@ -3143,7 +3143,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("0, + and -", listed);
         }
 
-        // BL-229 - a step as a screen reader says it: the note on the step with its signs in words, its problems, switched off.
+        // A step as a screen reader says it: the note on the step with its signs in words, its problems, switched off.
         [Fact]
         public void A_step_is_spoken_with_its_run_its_problems_and_whether_it_is_off()
         {
@@ -3159,7 +3159,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Log", EditorPage.Spoken(named)); // unnamed: its type, once
         }
 
-        // BL-229 - n8n's buttons over a step: switch it off and back on, open it in the wide view, test it on its own (its result
+        // n8n's buttons over a step: switch it off and back on, open it in the wide view, test it on its own (its result
         // in the inspector), delete it - each one change Undo takes back.
         [Fact]
         public void The_buttons_over_a_step_switch_it_open_it_test_it_and_delete_it()
@@ -3212,7 +3212,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(new[] { "a>b" }, service.Saved!.Connections.Select(link => link.SourceId + ">" + link.TargetId)));
         }
 
-        // BL-229 - n8n's "Convert to sub-workflow": the chosen steps moved from their menu (or Alt+X) into a new pipeline - what it
+        // n8n's "Convert to sub-workflow": the chosen steps moved from their menu (or Alt+X) into a new pipeline - what it
         // does said first - made, saved and published; on the canvas the call stands where they stood, one change Undo takes back.
         // Steps that cannot move say why, and nothing is made.
         [Fact]
@@ -3322,7 +3322,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(new[] { "After", "Orders", "Say", "Shout" }, Titles()));
         }
 
-        // BL-229: a variable renamed from the variables list - every expression and condition reading it follows, one change Undo
+        // A variable renamed from the variables list - every expression and condition reading it follows, one change Undo
         // takes back; a name taken is refused, saying so.
         [Fact]
         public void A_variable_renamed_is_renamed_where_it_is_read()
@@ -3378,7 +3378,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal("Hi {{ who | upper }}", service.Saved!.Steps.Single(step => step.Id == "say").InputExpressions["Text"]));
         }
 
-        // BL-229 - n8n's right-click menu: on a step, what the keys and the buttons over it do; on the canvas, a step or a note added
+        // n8n's right-click menu: on a step, what the keys and the buttons over it do; on the canvas, a step or a note added
         // where it was opened, Paste once something is copied, select all, tidy up, fit. Escape closes it.
         [Fact]
         public async Task The_right_click_menu_offers_on_a_step_and_on_the_canvas_what_the_keys_do()
@@ -3460,7 +3460,7 @@ namespace Stomme.Tests.Pipelines
             Assert.DoesNotContain(cut.FindAll(".db-step-node__title"), title => title.TextContent.Trim() == "First");
         }
 
-        // BL-229 - n8n's "Test workflow": Test pipeline sends the pipeline as it stands, unsaved changes and all, as one whole test;
+        // n8n's "Test workflow": Test pipeline sends the pipeline as it stands, unsaved changes and all, as one whole test;
         // what each step did is on the canvas as a run's is, chosen in the run picker as the pipeline tested, with no run page to
         // link to, and how it went above the canvas with its log; a step's data is in the inspector.
         [Fact]
@@ -3512,7 +3512,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Empty(cut.FindAll(".db-connection-count")));
         }
 
-        // BL-229 - n8n's "3 items" on a connection only where the run went: a Decision's branch not taken carries no count, the
+        // n8n's "3 items" on a connection only where the run went: a Decision's branch not taken carries no count, the
         // step it goes to never having run.
         [Fact]
         public void A_branch_not_taken_carries_no_count()
@@ -3550,7 +3550,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("3 records", counted.Labels.OfType<RunCountLabelModel>().Single().Content);
         }
 
-        // BL-229 - n8n's note colours: picked in a note's inspector, shown on the note, saved with it - one change Undo takes back.
+        // n8n's note colours: picked in a note's inspector, shown on the note, saved with it - one change Undo takes back.
         [Fact]
         public void A_notes_colour_is_picked_shown_saved_and_undone()
         {
@@ -3581,7 +3581,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Null(service.Saved!.Notes.Single().Color));
         }
 
-        // BL-229 - the right-click menu from the keyboard (Shift+F10, the menu key): with nothing selected the canvas's, a note from
+        // The right-click menu from the keyboard (Shift+F10, the menu key): with nothing selected the canvas's, a note from
         // it landing in the canvas's middle; with a step selected, that step's - each with its first entry given the focus.
         [Fact]
         public async Task Shift_F10_opens_the_menu_of_the_canvas_or_of_the_selected_step()
@@ -3614,7 +3614,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("Shift+F10 or the menu key", EditorPage.Shortcuts.Select(shortcut => shortcut.Keys));
         }
 
-        // BL-229 - a connection without the pointer: "Connect to…" in a step's menu (Shift+F10 opens it) lists the steps on the
+        // A connection without the pointer: "Connect to…" in a step's menu (Shift+F10 opens it) lists the steps on the
         // canvas its outcome may go to, the nearest first - not itself, nor one it goes to already; the one chosen is connected
         // as a drawn connection is, said, and taken back by Undo. A step with several outcomes has an entry for each.
         [Fact]
@@ -3674,7 +3674,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Connected Decide (False) to First.", cut.Find("#pipelines-editor-message").TextContent.Trim());
         }
 
-        // BL-229 - n8n's empty canvas: the first step a press away - the step chosen next centred in the canvas's middle - and the
+        // n8n's empty canvas: the first step a press away - the step chosen next centred in the canvas's middle - and the
         // prompt gone once there is a step.
         [Fact]
         public void An_empty_canvas_offers_the_first_step_in_its_middle()
@@ -3702,7 +3702,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-editor-empty"));
         }
 
-        // BL-229 - n8n's dotted canvas: a dot every 20 of the diagram's pixels, spaced by the zoom (thinned out while that is under 8
+        // n8n's dotted canvas: a dot every 20 of the diagram's pixels, spaced by the zoom (thinned out while that is under 8
         // pixels) and moved with the pan - the component following the diagram's pan and zoom itself.
         [Fact]
         public void The_canvas_grid_follows_the_pan_and_the_zoom()
@@ -3720,7 +3720,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(CanvasGrid.StyleFor(1.5, 30, 50), cut.Find(".db-pipeline-editor__grid").GetAttribute("style")));
         }
 
-        // BL-229 - and a connection taken away without the pointer: "Disconnect…" in a step's menu lists its connections, where
+        // And a connection taken away without the pointer: "Disconnect…" in a step's menu lists its connections, where
         // its outcomes go and what comes into it (the outcome named on a step with several); the one chosen goes, as with its own
         // ✕, said and brought back by Undo. A step with no connection has no such entry.
         [Fact]
@@ -3779,7 +3779,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(new[] { "a>b", "d>a" }, Connections()));
         }
 
-        // BL-229 - n8n's Tidy up of the steps chosen (Shift+Alt+T, as the button and the canvas's menu): only they are laid out,
+        // n8n's Tidy up of the steps chosen (Shift+Alt+T, as the button and the canvas's menu): only they are laid out,
         // by the connections among them, kept where they were and still chosen after; the step not chosen stays put.
         [Fact]
         public async Task Tidy_up_with_steps_chosen_lays_out_only_them()
@@ -3830,7 +3830,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal((AutoLayout.Left + StepPlacement.ColumnWidth, AutoLayout.Top), At("b"));
         }
 
-        // BL-229 - a layout without the pointer: Shift and an arrow move what is chosen - steps and notes - a dot of the grid that way,
+        // A layout without the pointer: Shift and an arrow move what is chosen - steps and notes - a dot of the grid that way,
         // a run of presses one change Undo takes back whole, and a screen reader told what moved; nothing chosen, nothing moves.
         [Fact]
         public async Task Shift_and_an_arrow_move_what_is_chosen_a_dot_of_the_grid()
@@ -3881,7 +3881,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("Shift+arrow keys", EditorPage.Shortcuts.Select(shortcut => shortcut.Keys));
         }
 
-        // BL-229 - n8n's zoom buttons: in and out about the middle, the zoom shown - following a zoom from elsewhere (the wheel) -
+        // n8n's zoom buttons: in and out about the middle, the zoom shown - following a zoom from elsewhere (the wheel) -
         // and pressed back to 100 %.
         [Fact]
         public async Task The_zoom_buttons_zoom_and_show_the_zoom_the_wheel_set_too()
@@ -3948,7 +3948,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal(expected, cut.Find("#pipelines-editor-error").TextContent.Trim()));
         }
 
-        // BL-229: the "Pipeline failed" trigger - the runs that start it, read off the pipeline chosen (every pipeline when none, the
+        // The "Pipeline failed" trigger - the runs that start it, read off the pipeline chosen (every pipeline when none, the
         // pipeline being edited not offered), and a sample failure shaped as a run's, as a variable's value for testing.
         [Fact]
         public void A_pipeline_failed_trigger_says_which_runs_start_it_and_offers_a_sample_failure()
@@ -3998,7 +3998,7 @@ namespace Stomme.Tests.Pipelines
                 cut.Find("#pipelines-editor-preview-Text").TextContent.Trim()));
         }
 
-        // BL-229: the "File added" trigger (n8n's Local File Trigger) - which files start it, read off its inputs as the author sets
+        // The "File added" trigger (n8n's Local File Trigger) - which files start it, read off its inputs as the author sets
         // them, its folder opened on the Files page, and a sample file in that folder as a variable's value for testing.
         [Fact]
         public void A_file_added_trigger_says_which_files_start_it_and_offers_a_sample_file()
@@ -4064,7 +4064,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(("inbox/orders.csv", 3L), (newest.RootElement.GetProperty("path").GetString(), newest.RootElement.GetProperty("size").GetInt64()));
         }
 
-        // BL-229: the "Telegram message received" trigger (n8n's Telegram Trigger) - which messages start it, how it gets them, and a
+        // The "Telegram message received" trigger (n8n's Telegram Trigger) - which messages start it, how it gets them, and a
         // sample message to test the next steps with.
         [Fact]
         public void A_telegram_message_received_trigger_says_which_messages_start_it_and_offers_a_sample_message()
@@ -4107,7 +4107,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(("Where is order 1001?", 123456789L), (sample.RootElement.GetProperty("text").GetString(), sample.RootElement.GetProperty("chat").GetProperty("id").GetInt64()));
         }
 
-        // BL-229: the "Email received" trigger (n8n's Email Trigger (IMAP)) - which messages start it and what it does with them,
+        // The "Email received" trigger (n8n's Email Trigger (IMAP)) - which messages start it and what it does with them,
         // read off its inputs as the author sets them, and a sample message - its attachment's path when they are kept.
         [Fact]
         public void An_email_received_trigger_says_which_messages_start_it_and_offers_a_sample_message()
@@ -4182,7 +4182,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(("6f9b7d1e-2c4a-4b8e-9f1d-3a5c7e9b1d2f", "Invoices"), service.EmailFetches[^1]);
         }
 
-        // BL-229 - n8n's Form trigger: its fields edited as a list (undone and redone; a dropdown with no choices a problem before
+        // n8n's Form trigger: its fields edited as a list (undone and redone; a dropdown with no choices a problem before
         // publish), the page's address in its panel (and said when the site serves no forms), a sample submission shaped by the fields
         // as a variable's value for testing, and the fields saved as the input's value.
         [Fact]
@@ -4269,7 +4269,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(("source", "web"), (saved[3].Name, saved[3].Value));
         }
 
-        // BL-229 - a file step's path chosen from the site's pipeline folder (the Files page's): Browse opens the folder, a folder is
+        // A file step's path chosen from the site's pipeline folder (the Files page's): Browse opens the folder, a folder is
         // gone into, a file chosen sets the path; for a path to write, "Use this folder" keeps the name it has, and Browse starts
         // where the path is; an input a variable feeds offers nothing to browse.
         [Fact]
@@ -4332,7 +4332,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Empty(cut.FindAll("#pipelines-editor-files-Path-browse")));
         }
 
-        // BL-229 - n8n's AI Agent: an agent's Tools offer the site's published tools - one click adds a name, a listed one is ticked -
+        // n8n's AI Agent: an agent's Tools offer the site's published tools - one click adds a name, a listed one is ticked -
         // and a tool trigger's panel says who calls it and what goes back.
         [Fact]
         public void An_ai_agent_offers_the_sites_tools_and_a_tool_trigger_says_who_calls_it()
@@ -4391,7 +4391,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal("The site does not serve forms: Pipelines:Forms:Enabled is off.", cut.Find("#pipelines-editor-form-off").TextContent.Trim()));
         }
 
-        // BL-229 increment 10: a Decision's condition built from rules and previewed; a Switch's cases and a Fork's branches as the
+        // A Decision's condition built from rules and previewed; a Switch's cases and a Fork's branches as the
         // step's outcome ports - a renamed case keeps its connection, a removed one takes it away - all saved as written.
         [Fact]
         public void A_condition_is_built_from_rules_and_a_switch_and_a_fork_name_their_outcomes()
@@ -4480,7 +4480,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(("Gold", logId), service.Saved.Connections.Where(connection => connection.SourceId == switchId).Select(connection => (connection.SourcePort, connection.TargetId)).Single());
         }
 
-        // BL-229 increment 5b: JavaScript is offered only where the site runs scripts; what it gives is previewed by the server's
+        // JavaScript is offered only where the site runs scripts; what it gives is previewed by the server's
         // sandbox with the values the other previews use, and the script is saved as written.
         [Theory]
         [InlineData(false)]
@@ -4612,7 +4612,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Single(service.Saved.Connections);
         }
 
-        // BL-229 - nodes copied in n8n (its Ctrl+C puts the workflow's JSON on the clipboard) pasted here: brought over as steps,
+        // Nodes copied in n8n (its Ctrl+C puts the workflow's JSON on the clipboard) pasted here: brought over as steps,
         // connected as they were, with the note of what is left to finish beside them - and said.
         [Fact]
         public async Task Nodes_copied_in_n8n_paste_as_steps_with_what_is_left_to_finish()
@@ -4682,7 +4682,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(crm.ToString(), service.Saved!.Steps.Single().Inputs["Connection"]);
         }
 
-        // BL-229 - n8n's node per service: a connection is offered in the palette by its name or its connector, with each step
+        // n8n's node per service: a connection is offered in the palette by its name or its connector, with each step
         // that suits its connector - one that reads, the step that extracts; one that sends, the step that sends - and added with
         // the connection chosen; the step's operation is then chosen among that connector's own (send left to its own step), the
         // one chosen saying what it does and what it takes.
@@ -4741,7 +4741,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Empty(cut.FindAll("#pipelines-editor-operation-parameters li"));
         }
 
-        // BL-229 - n8n's "Create new credential" from the node: a connection made under the step's picker (the Connections page's
+        // n8n's "Create new credential" from the node: a connection made under the step's picker (the Connections page's
         // own form), then listed and chosen for the step; one the server refuses says why and chooses nothing; and the connection
         // chosen is tested from there, the server's verdict said beside it.
         [Fact]
@@ -4797,7 +4797,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(made.Id.ToString(), service.Saved!.Steps.Single().Inputs["Connection"]);
         }
 
-        // BL-229 - a step that names the connections it takes (Send chat message: Slack, Telegram, Discord) is offered only those - in
+        // A step that names the connections it takes (Send chat message: Slack, Telegram, Discord) is offered only those - in
         // its picker, in a connection made from it, in the step search - with nothing to offer saying which kinds it wants; one of
         // another kind chosen before stays named and says it is not one the step can use.
         [Fact]
@@ -4928,7 +4928,7 @@ namespace Stomme.Tests.Pipelines
             public Task<Stomme.Connectivity.ConnectionEgressView> SaveEgressAsync(string allowedHosts) => throw new NotSupportedException();
         }
 
-        // BL-229: the pipelines list says where a discussion is still open - "2 open comments" under the pipeline's name, a way to
+        // The pipelines list says where a discussion is still open - "2 open comments" under the pipeline's name, a way to
         // its editor - and nothing where none is.
         [Fact]
         public void The_pipelines_list_says_where_a_discussion_is_open()
@@ -4953,7 +4953,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Contains("Nightly report", link.Closest("td")!.TextContent);
         }
 
-        // BL-229 - found looking at UAT with fresh eyes: below a list of 32 pipelines, New pipeline was out of sight, and six buttons
+        // Found looking at UAT with fresh eyes: below a list of 32 pipelines, New pipeline was out of sight, and six buttons
         // alike to a row made Delete look like Edit. New pipeline opens the form at the top (open by itself on a site with none);
         // a row's other actions sit behind More.
         [Fact]
@@ -4995,7 +4995,7 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal(new[] { "Edit", "Runs", "Run" }, more.ParentElement!.Children.Where(child => !child.ClassList.Contains("db-pipelines-more")).Select(child => child.TextContent.Trim()));
         }
 
-        // BL-229 - a graph whose steps are piled on one spot (made through the API, a file or the assistant without positions) opens
+        // A graph whose steps are piled on one spot (made through the API, a file or the assistant without positions) opens
         // laid out, said so, and a save keeps the layout.
         [Fact]
         public void A_graph_whose_steps_are_piled_on_one_spot_opens_laid_out()
@@ -5029,7 +5029,7 @@ namespace Stomme.Tests.Pipelines
             Assert.True(spots[0].X < spots[1].X && spots[1].X < spots[2].X, "left to right by its flow");
         }
 
-        // BL-229 increment 10: a new pipeline from a starter or from a file - sent to the server whole, then opened in the editor.
+        // A new pipeline from a starter or from a file - sent to the server whole, then opened in the editor.
         [Fact]
         public void A_new_pipeline_starts_from_a_starter_or_a_file_and_opens_in_the_editor()
         {
@@ -5067,7 +5067,7 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Contains("'list.json' was not imported", cut.Find("#pipelines-error").TextContent));
             Assert.Equal(2, service.Imported.Count);
 
-            // BL-229: n8n's export of many workflows - each a draft of its own, the list saying how many came over.
+            // n8n's export of many workflows - each a draft of its own, the list saying how many came over.
             var many = "[" + N8nWorkflowImportTests.Workflow + ",{\"name\":\"Second\",\"nodes\":[],\"connections\":{}}]";
             cut.FindComponent<Microsoft.AspNetCore.Components.Forms.InputFile>().UploadFiles(InputFileContent.CreateFromText(many, "workflows.json"));
             cut.WaitForAssertion(() => Assert.Equal(4, service.Imported.Count));

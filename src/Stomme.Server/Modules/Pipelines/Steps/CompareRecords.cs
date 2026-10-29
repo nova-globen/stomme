@@ -16,7 +16,7 @@ using Stomme.Engine.Pipelines.UIHints;
 namespace Stomme.Modules.Pipelines.Steps
 {
     /// <summary>
-    /// Compare records (BL-229, n8n's Compare Datasets): two record sets matched on key fields (<c>field</c>, or
+    /// Compare records (n8n's Compare Datasets): two record sets matched on key fields (<c>field</c>, or
     /// <c>field = other field</c>, a line each, as Merge records takes them) and sorted into four outputs - the records only in
     /// the first set, only in the other, in both and the same, in both and different - with, for the different, each field
     /// that differs and its two values. The fields compared are every field either side has, or those named; a key that

@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectors
 {
     /// <summary>
-    /// BL-229 - Linear DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
+    /// Linear DRIVEN on an installed SQLite host, with the REAL connector, the host's egress and the extraction port,
     /// against a loopback stand-in for Linear's GraphQL API: a Linear connection made over the API, its key vaulted, tested (the
     /// user named); a published pipeline creates an issue by its team's key and a state's name - each looked up - reads the
     /// team's open issues over two pages by cursor, comments on one and links an order to it - every call the key in Linear's own
