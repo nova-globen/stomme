@@ -118,8 +118,8 @@ foreach ($p in $packages) {
 # read as bytes - as Latin-1 and as UTF-16, so a string in a DLL is found too. A package carries none of the old product
 # names, no forge or registry host, no host of the infrastructure and no broker command.
 $forbidden = @(
-    @{ Name = 'an old product name'; Pattern = 'dida[ ._-]?(core|bit|deck|bin)' }
-    @{ Name = 'a forge or registry host'; Pattern = 'forgejo|(git|store)\.dida|dl-internal' }
+    @{ Name = 'an old product name'; Pattern = 'd[i]da[ ._-]?(core|bit|deck|bin)' }
+    @{ Name = 'a forge or registry host'; Pattern = 'forgejo|(git|store)\.d[i]da|dl-internal' }
     @{ Name = 'an infrastructure host'; Pattern = '(runner|docker|store)0\d|ros[t]am|192\.168\.0\.11' }
     @{ Name = 'a broker command'; Pattern = '(^|[^a-z0-9])ng (exec|api|run|ops|actions|put-profile) ' }
 )

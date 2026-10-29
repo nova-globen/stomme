@@ -19,8 +19,8 @@ namespace Stomme.Tests
         /// <summary>The same rules as the release dry run's names guard (scripts/release-dry-run.ps1).</summary>
         internal static readonly (string Name, Regex Pattern)[] Forbidden =
         {
-            ("an old product name", new Regex("dida[ ._-]?(core|bit|deck|bin)", RegexOptions.IgnoreCase)),
-            ("a forge or registry host", new Regex(@"forgejo|(git|store)\.dida|dl-internal", RegexOptions.IgnoreCase)),
+            ("an old product name", new Regex("d[i]da[ ._-]?(core|bit|deck|bin)", RegexOptions.IgnoreCase)),
+            ("a forge or registry host", new Regex(@"forgejo|(git|store)\.d[i]da|dl-internal", RegexOptions.IgnoreCase)),
             ("an infrastructure host", new Regex(@"(runner|docker|store)0\d|ros[t]am|192\.168\.0\.11", RegexOptions.IgnoreCase)),
             ("a broker command", new Regex(@"(^|[^a-z0-9])ng (exec|api|run|ops|actions|put-profile) ", RegexOptions.IgnoreCase | RegexOptions.Multiline))
         };
@@ -48,8 +48,8 @@ namespace Stomme.Tests
         }
 
         [Theory]
-        [InlineData("Restore from https://git.dida" + "bit.com/api/packages/x/index.json", 2)]
-        [InlineData("using Dida" + "Core.Shared;", 1)]
+        [InlineData("Restore from https://git.di" + "dabit.com/api/packages/x/index.json", 2)]
+        [InlineData("using Di" + "daCore.Shared;", 1)]
         [InlineData("run ng ex" + "ec a-profile -- dotnet test", 1)]
         [InlineData("a host at 192.168.10.20:5433", 1)]
         [InlineData("built on run" + "ner01, then " + "ROS" + "TAM", 1)]
