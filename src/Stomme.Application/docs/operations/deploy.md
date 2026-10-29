@@ -178,6 +178,67 @@ arise.
 If `dotnet publish` reports that the `wasm-tools` workload is required, add `RUN dotnet workload install wasm-tools`
 before the publish in the build stage.
 
+### One host, several sites
+
+One container can serve a host's root site and sites in folders (`example.com/shop`), installed unattended on first
+start, with SQLite (one file per tenant in the data volume), its secrets as files and every switch in the environment:
+
+```yaml
+services:
+  app:
+    image: myapp:1.0.0
+    restart: unless-stopped
+    ports: [ "127.0.0.1:8080:8080" ]
+    volumes:
+      - app-data:/app/Data
+      - app-content:/app/Content
+      - app-public:/app/wwwroot/Content
+      - app-keys:/app/keys
+    secrets: [ host-password, backup-passphrase ]
+    environment:
+      Database__DefaultDBType: "Stomme.Database.Sqlite.SqliteDatabase, Stomme.Server"
+      ConnectionStrings__DefaultConnection: "Data Source=|DataDirectory|/root.db;"
+      Installation__DefaultAlias: "example.com"
+      Installation__HostEmail: "admin@example.com"
+      Installation__HostPasswordFile: "/run/secrets/host-password"
+      # a site in a folder on the same tenant, and one with a tenant (and SQLite file) of its own
+      Installation__Sites__0__Name: "Shop"
+      Installation__Sites__0__Aliases: "example.com/shop"
+      Installation__Sites__1__Name: "Games"
+      Installation__Sites__1__Aliases: "example.com/games"
+      Installation__Sites__1__Tenant: "Games"
+      Installation__Sites__1__ConnectionString: "Data Source=|DataDirectory|/games.db;"
+      # a bundled module this host does not run: none of its jobs, hubs or endpoints, and it is placed on no new page
+      FeatureManagement__module.reviews.enabled: "false"
+      # sign-in for apps: each site is its own issuer (https://example.com, https://example.com/shop); give it a
+      # signing certificate (OpenIddict__SigningCertificatePemPath and ...KeyPath), or every restart ends every token
+      OpenIddict__Enabled: "true"
+      # scheduled backups to Data/backups, kept 30 days
+      Backup__Enabled: "true"
+      Backup__Schedule__IntervalHours: "24"
+      Backup__Schedule__PassphraseFile: "/run/secrets/backup-passphrase"
+      # a mail relay that counts connections: probe it every 30 minutes, not every minute
+      Health__MailServerProbeIntervalMinutes: "30"
+secrets:
+  host-password: { file: ./secrets/host-password }
+  backup-passphrase: { file: ./secrets/backup-passphrase }
+volumes: { app-data: {}, app-content: {}, app-public: {}, app-keys: {} }
+```
+
+- Every site keeps its own sign-in, cookies and users; the folder sites' requests reach the same container, so the proxy
+  in front sends `example.com/*` to it (see [nginx in front](#nginx-in-front)). Each name in `Installation:Sites`
+  is created on the first start that finds it missing; nothing is created twice.
+- The **mail server** is a setting of each site, not of configuration: set it in **Admin > Site Settings > SMTP Settings** on each
+  site (a relay on the host's network is the usual shape), or have a module of yours write the site's SMTP settings at
+  start-up. See [Notifications](../services/notifications.md).
+- A **module switched off** with `FeatureManagement__module.<id>.enabled=false` is still in the image and loaded; the
+  host runs none of its jobs, hubs or endpoints and places it on no new page (a page it is already on keeps it). See
+  [Configuration](../architecture/configuration.md).
+- The **AI assistant** stays dormant until `AiAssistant:Enabled` is on and a site's administrator names a model for that
+  site ([AI assistant](../ai/ai-assistant.md)).
+- Keep the image's version and the compose file's settings in one place per host; upgrade by changing the image tag
+  ([install, run, upgrade](install-run-upgrade.md)).
+
 ### Keep the data-protection keys
 
 Nothing to add: name the folder in `DataProtection:KeysPath` (the container above sets it), or let Stomme keep the keys

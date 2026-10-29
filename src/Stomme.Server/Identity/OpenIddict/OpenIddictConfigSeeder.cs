@@ -209,8 +209,19 @@ namespace Stomme.Identity.OpenIddict
                 descriptor.ClientSecret = secret;
             }
 
-            // Every authority client can reach the token endpoint.
+            // Every authority client can reach the token endpoint, and revoke its own tokens (a native app on sign-out).
             descriptor.Permissions.Add(Permissions.Endpoints.Token);
+            descriptor.Permissions.Add(Permissions.Endpoints.Revocation);
+
+            var sites = (seed.Sites ?? new List<string>())
+                .Select(SiteScopedClientHandlers.Normalize)
+                .Where(site => site.Length > 0)
+                .Distinct()
+                .ToList();
+            if (sites.Count > 0)
+            {
+                descriptor.Properties[SiteScopedClientHandlers.SitesProperty] = System.Text.Json.JsonSerializer.SerializeToElement(sites);
+            }
 
             var grants = (seed.GrantTypes ?? new List<string>())
                 .Where(g => !string.IsNullOrWhiteSpace(g))

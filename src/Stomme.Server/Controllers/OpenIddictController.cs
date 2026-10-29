@@ -432,6 +432,7 @@ namespace Stomme.Controllers
                 Scopes = Unprefix(permissions, Permissions.Prefixes.Scope),
                 RedirectUris = (await Applications.GetRedirectUrisAsync(application, cancellationToken)).ToList(),
                 PostLogoutRedirectUris = (await Applications.GetPostLogoutRedirectUrisAsync(application, cancellationToken)).ToList(),
+                Sites = SiteScopedClientHandlers.ReadSites(await Applications.GetPropertiesAsync(application, cancellationToken)).ToList(),
                 RequirePkce = requirements.Contains(Requirements.Features.ProofKeyForCodeExchange)
             };
         }

@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using OpenIddict.Validation.AspNetCore;
+using Stomme.Extensions;
 using Stomme.Identity.OpenIddict.Raven;
 using Stomme.Models;
 using Stomme.Repository.Stores;
@@ -48,6 +49,12 @@ namespace Stomme.Identity.OpenIddict
 
         /// <summary>The audience/resource stamped on every access token this authority issues (spike).</summary>
         public const string ApiResource = "stomme-api";
+
+        /// <summary>
+        /// The claim naming the site that issued a token: its alias (<c>example.com/shop</c>), in the access token and the
+        /// id_token, so a module can assert the site as well as relying on the issuer check.
+        /// </summary>
+        public const string SiteClaim = "site";
 
         public static bool IsOpenIddictEnabled(this IConfiguration configuration)
             => configuration.GetValue<bool>(EnabledConfigKey);
@@ -145,6 +152,9 @@ namespace Stomme.Identity.OpenIddict
                         // exists: a missing/broken Raven token store would silently down the token endpoint.
                         options.UseStommeRavenOpenIddictStores();
                     }
+
+                    // A native app's loopback redirect on any port (RFC 8252 7.3).
+                    options.ReplaceApplicationManager(typeof(LoopbackRedirectApplicationManager<>));
                 })
                 .AddServer(options =>
                 {
@@ -153,14 +163,24 @@ namespace Stomme.Identity.OpenIddict
                     // (/.well-known/openid-configuration) and JWKS (/.well-known/jwks) endpoints, which
                     // OpenIddict serves itself by default (no passthrough needed) so the consumer can fetch
                     // metadata and validate the id_token's signature.
-                    options.SetAuthorizationEndpointUris("/connect/authorize");
-                    options.SetTokenEndpointUris("/connect/token");
-                    options.SetUserInfoEndpointUris("/connect/userinfo");
+                    // The URIs are RELATIVE (no leading slash): OpenIddict resolves them against the request's base URI,
+                    // PathBase included, so a folder site's discovery document names its own /<folder>/connect/* endpoints.
+                    // With a leading slash they resolve against the host root.
+                    options.SetAuthorizationEndpointUris("connect/authorize");
+                    options.SetTokenEndpointUris("connect/token");
+                    options.SetUserInfoEndpointUris("connect/userinfo");
                     // Client/scope work (c): RP-initiated logout. Most OIDC client libraries call the
                     // end_session_endpoint on sign-out; without it the RP "logs out" while the Stomme cookie
                     // stays live and immediately re-authenticates. OpenIddict validates post_logout_redirect_uri
                     // against the client's registered set.
-                    options.SetEndSessionEndpointUris("/connect/endsession");
+                    options.SetEndSessionEndpointUris("connect/endsession");
+
+                    // RFC 7009 revocation: a native app revokes its refresh token on sign-out. OpenIddict answers it itself.
+                    options.SetRevocationEndpointUris("connect/revoke");
+
+                    // A client registered for named sites (OpenIddict:Applications:n:Sites) is refused at any other site,
+                    // even one sharing its tenant's store.
+                    SiteScopedClientHandlers.Register(options);
 
                     options.AllowClientCredentialsFlow();
 
@@ -211,7 +231,8 @@ namespace Stomme.Identity.OpenIddict
                     options.DisableAccessTokenEncryption();
 
                     // NOTE: SetIssuer is deliberately NOT called — OpenIddict infers the issuer from the
-                    // request host, which is what makes the issuer per-tenant. The
+                    // request host and PathBase (a folder site's connect/* and .well-known/* requests carry the folder as their
+                    // PathBase, TenantMiddleware), which is what makes the issuer per-site. The
                     // discovery document's issuer and the id_token's iss are therefore the tenant host, and
                     // match the consumer's Authority.
 
@@ -342,6 +363,7 @@ namespace Stomme.Identity.OpenIddict
                 {
                     identity.SetClaim(Claims.Email, email);
                 }
+                identity.SetClaim(SiteClaim, context.GetAlias()?.Name);
 
                 var principal = new ClaimsPrincipal(identity);
                 principal.SetScopes(request.GetScopes());
@@ -369,6 +391,7 @@ namespace Stomme.Identity.OpenIddict
                         OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, Claims.Name, Claims.Role);
                     identity.SetClaim(Claims.Subject, request.ClientId);
                     identity.SetClaim(Claims.Name, request.ClientId);
+                    identity.SetClaim(SiteClaim, context.GetAlias()?.Name);
 
                     var principal = new ClaimsPrincipal(identity);
                     principal.SetScopes(request.GetScopes());
@@ -498,6 +521,7 @@ namespace Stomme.Identity.OpenIddict
                 case Claims.Name:
                 case Claims.PreferredUsername:
                 case Claims.Email:
+                case SiteClaim:
                     return new[] { Destinations.AccessToken, Destinations.IdentityToken };
                 default:
                     return new[] { Destinations.AccessToken };

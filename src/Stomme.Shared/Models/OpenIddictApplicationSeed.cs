@@ -52,6 +52,12 @@ namespace Stomme.Models
 
         public List<string> PostLogoutRedirectUris { get; set; } = new List<string>();
 
+        /// <summary>
+        /// The sites this client may be used at, by alias (<c>example.com/shop</c>). Empty: every site of the tenant. A
+        /// client that names sites is refused (<c>unauthorized_client</c>) at any other, even one sharing its tenant.
+        /// </summary>
+        public List<string> Sites { get; set; } = new List<string>();
+
         /// <summary>Require PKCE on the authorization-code flow. Defaults true (the secure default).</summary>
         public bool RequirePkce { get; set; } = true;
 

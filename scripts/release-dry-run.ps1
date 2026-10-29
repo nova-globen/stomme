@@ -8,8 +8,10 @@
 #   pwsh scripts/release-dry-run.ps1 -Check D:\feed       # runs the guards on packages already packed, packs nothing
 #
 # The first three guards mirror release.yml's three "Guard -" steps one for one; a change to one changes the other. The
-# fourth, the consumer audit, is this script's own: a plain-SDK project over every package, failing on a high or critical
-# NuGet advisory a consumer would inherit. Every guard runs even when an earlier one fails, so one run reports everything.
+# rest are this script's own: no package names an old product, a forge or an infrastructure host; the shipped agent assets
+# changed with the code (or the release notes say why not); and the consumer audit, a plain-SDK project over every package,
+# failing on a high or critical NuGet advisory a consumer would inherit. Every guard runs even when an earlier one fails,
+# so one run reports everything.
 # Nothing is pushed, nothing is signed in.
 param(
     [string]$Out = '',
@@ -110,6 +112,59 @@ foreach ($p in $packages) {
     }
 }
 'guard: dependencies - checked'
+
+# ---- Guard - no package names an old product or the infrastructure (2026-10-29, the owner) ----------------------------
+# Every file of every package, the app template's agent assets (AGENTS.md, CLAUDE.md, docs/, .claude/skills/) included,
+# read as bytes - as Latin-1 and as UTF-16, so a string in a DLL is found too. A package carries none of the old product
+# names, no forge or registry host, no host of the infrastructure and no broker command.
+$forbidden = @(
+    @{ Name = 'an old product name'; Pattern = 'dida[ ._-]?(core|bit|deck|bin)' }
+    @{ Name = 'a forge or registry host'; Pattern = 'forgejo|(git|store)\.dida|dl-internal' }
+    @{ Name = 'an infrastructure host'; Pattern = '(runner|docker|store)0\d|ros[t]am|192\.168\.0\.11' }
+    @{ Name = 'a broker command'; Pattern = '(^|[^a-z0-9])ng (exec|api|run|ops|actions|put-profile) ' }
+)
+foreach ($file in Get-ChildItem $push -Filter '*.nupkg' | Sort-Object Name) {
+    $zip = [IO.Compression.ZipFile]::OpenRead($file.FullName)
+    try {
+        foreach ($entry in $zip.Entries | Where-Object { $_.Length -gt 0 }) {
+            $stream = $entry.Open()
+            $buffer = [IO.MemoryStream]::new()
+            try { $stream.CopyTo($buffer) } finally { $stream.Dispose() }
+            $bytes = $buffer.ToArray()
+            $text = ([Text.Encoding]::Latin1.GetString($bytes) + "`n" + [Text.Encoding]::Unicode.GetString($bytes)).ToLowerInvariant()
+            foreach ($rule in $forbidden) {
+                $hit = [regex]::Match($text, $rule.Pattern)
+                if ($hit.Success) { $failures.Add("names: $($file.Name)/$($entry.FullName) carries $($rule.Name) ('$($hit.Value.Trim())')") }
+            }
+        }
+    }
+    finally { $zip.Dispose() }
+}
+'guard: names - checked'
+
+# ---- Guard - the shipped agent assets move with the code (2026-10-29, the owner) --------------------------------------
+# What an agent building on Stomme knows is the app template's AGENTS.md, CLAUDE.md, README.md, docs/ and .claude/skills/.
+# A release whose product code changed since the previous release changes them too, or its release notes say why not
+# with a line starting "No agent-asset change needed:".
+$releases = @(git log --format='%H %s' --grep='^release: ' -n 20 HEAD | Where-Object { $_ -notmatch "^\S+ release: $([regex]::Escape($version))( |$)" })
+if (-not $releases) {
+    $failures.Add('agent assets: no previous release commit found to compare with')
+}
+else {
+    $base = $releases[0].Split(' ')[0]
+    $changed = @(git diff --name-only $base HEAD)
+    $product = @($changed | Where-Object { $_ -like 'src/Stomme.*' -and $_ -notlike 'src/Stomme.Application/*' -and $_ -notlike 'src/Stomme.Package/*' -and $_ -match '\.(cs|razor|resx|json|css|js|csproj|props|targets|nuspec)$' })
+    $assets = @($changed | Where-Object { $_ -like 'src/Stomme.Application/docs/*' -or $_ -like 'src/Stomme.Application/.claude/*' -or $_ -in 'src/Stomme.Application/AGENTS.md', 'src/Stomme.Application/CLAUDE.md', 'src/Stomme.Application/README.md' })
+    "  since $($releases[0].Substring(0, 9)): $($product.Count) product file(s) changed, $($assets.Count) agent-asset file(s) changed"
+    if ($product.Count -and -not $assets.Count) {
+        $notes = Get-Content -Raw -LiteralPath 'docs/releasing.md'
+        $section = [regex]::Match($notes, "(?ms)^## Release notes for $([regex]::Escape($version))\b.*?(?=^## )").Value
+        if ($section -notmatch '(?m)^\s*-?\s*No agent-asset change needed:') {
+            $failures.Add("agent assets: $($product.Count) product file(s) changed since the previous release and no shipped agent asset did; update docs/ or the skills, or say 'No agent-asset change needed: <why>' in the $version release notes")
+        }
+    }
+}
+'guard: agent assets - checked'
 
 # ---- Guard - no consumer inherits a high or critical advisory (2026-10-29) --------------------------------------------
 # A PLAIN SDK project referencing every package, restored with NuGet's audit over the whole graph: what a class library

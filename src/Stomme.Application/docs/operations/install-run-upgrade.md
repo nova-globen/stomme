@@ -27,7 +27,8 @@ A staged backup restore, if one is waiting, is applied right after (only when `B
 The installer is a four-step wizard: **Database**, **Account**, **Configure**, **Finish**.
 
 - **Database** lists the entries of `AvailableDatabases` in `appsettings.json` in alphabetical order: Azure SQL,
-  LocalDB, PostgreSQL, RavenDB, SQL Server, SQLite. The one preselected is not SQLite; pick the one you want. Each has
+  LocalDB, PostgreSQL, RavenDB, SQL Server, SQLite. The one preselected is not SQLite; pick the one you want - SQLite
+  is the one to choose unless you will run more than one instance of the app (it needs no server). Each has
   its own form (SQLite asks only for a file name), or **Enter Connection String**. Default database names have the form
   `Stomme-yyyyMMddHHmm` (SQLite's file `Stomme-yyyyMMddHHmm.db`); Azure SQL's fields hold placeholders such as
   `{SQL Database Name}` to replace.

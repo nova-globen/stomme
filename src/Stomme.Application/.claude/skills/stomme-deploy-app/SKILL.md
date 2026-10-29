@@ -35,9 +35,12 @@ How it works, and what each path holds: [Deploy](../../../docs/operations/deploy
    that is redeployed by replacing `/opt/myapp`, point `STOMME_APPSETTINGS_PATH` at a persistent directory holding an
    `appsettings.override.json` (create it with `{}`), and keep `Data`, `Content` and `wwwroot/Content` with symbolic
    links or by deploying over the folder without deleting them.
-5. **Database.** For one instance SQLite works (its file lives in `Data`). For anything else use PostgreSQL or SQL
-   Server, and also set `ConnectionStrings:ModuleAggregates` and `ConnectionStrings:FeatureManagement` to server
-   databases if the instance may be replaced without its `Data` volume, or if you will run more than one instance.
+5. **Database.** SQLite is the default and needs no server: each tenant's database is a file in `Data` (a site with a
+   tenant of its own in `Installation:Sites` gets its own file), and so are the module and feature stores. Keep `Data`
+   on a persistent volume; the backups go to `Data/backups` by default. Use PostgreSQL or SQL Server only when you will
+   run more than one instance of the app; then also set `ConnectionStrings:ModuleAggregates` and
+   `ConnectionStrings:FeatureManagement` to server databases. A compose file for one host with several sites:
+   [Deploy > One host, several sites](../../../docs/operations/deploy.md#one-host-several-sites).
 6. **Secrets.** Pass them as environment variables (`ConnectionStrings__DefaultConnection`,
    `Installation__HostPassword`) or write them into the override file on the persistent `Data` volume. Never bake them
    into the image or commit them. A connection string given as an environment variable is not written into the

@@ -76,10 +76,10 @@
     project reference, no framework edit. Discovery is UNCONDITIONAL; WHICH bundled modules are enabled/seeded
     by default is driven by the feature-flag config knob `module.<id>.enabled` in features.json (see below).
 
-    Example (uncomment + point at the feed that hosts the module package):
+    Example (uncomment, with the id and version of a module package on nuget.org or on a feed of your own):
 
     <ItemGroup>
-      <PackageReference Include="NovaGloben.Module.Blogs" Version="1.0.0" />
+      <PackageReference Include="Contoso.Module.Reviews" Version="1.0.0" />
     </ItemGroup>
 
     Under central package management (Directory.Packages.props) put the Version on a <PackageVersion> there and

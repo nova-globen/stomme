@@ -197,7 +197,8 @@ proxy's public name) as an alias, or requests to it get a 404.
   [security-posture.md](security-posture.md)). A request whose host name matches no alias gets a plain 404 and writes
   nothing (since 10.74.0; it used to become a new alias of a one-site installation); `/healthz` and `/readyz` answer for
   any host.
-- **A virtual-folder alias (`example.com/shop`) has no OpenID Connect authority of its own.** See
+- **A site in a folder is its own OpenID Connect authority, at its folder** (since 10.76.0; before, it had none): issuer
+  `https://example.com/shop`, endpoints `/shop/connect/*`, its own users, and its API accepts only its own tokens. See
   [authentication-options.md](authentication-options.md).
 - **A site in a folder keeps the framework's cookies to itself** (since 10.75.0). The sign-in cookies, the antiforgery
   cookie and the release marker it sets are named `<name>-<folder>` and scoped to `Path=/<folder>`, and a same-named

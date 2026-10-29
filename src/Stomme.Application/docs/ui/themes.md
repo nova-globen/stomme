@@ -52,6 +52,9 @@ A new theme is enabled on every site by default (`Theme.IsAutoEnabled` is `true`
 - Everything else renders the site's **Default Theme** (`Site.DefaultThemeType`, Admin > Site Settings > Theme).
 - The rule is `Stomme.Shared.Utilities.ResolveThemeType(pageThemeType, pagePath, defaultThemeType, adminThemeType)`; the
   host calls it on the server render and in the interactive router, so both agree.
+- Five themes ship with Stomme and can be chosen per site: **Graphite** (the default), **Stomme Theme** and **Blazor
+  Theme** in `Stomme.Client`, and **Aurora (Public)** and **Slate (Admin)**, the `Stomme.Theme.Aurora.Stomme` and
+  `Stomme.Theme.Slate.Stomme` packages that `Stomme.Server` brings at its own version.
 - The stock default is the Graphite theme (`Stomme.Shared.Constants.DefaultTheme`); containers default to Graphite's
   container (`Constants.DefaultContainer`), and admin action pages use `Stomme.Themes.AdminContainer`
   (`Constants.DefaultAdminContainer`).

@@ -35,6 +35,9 @@ namespace Stomme.Models
 
         public List<string> PostLogoutRedirectUris { get; set; } = new List<string>();
 
+        /// <summary>The sites the client is limited to, by alias; empty for every site of the tenant.</summary>
+        public List<string> Sites { get; set; } = new List<string>();
+
         /// <summary>Whether the stored application carries the PKCE requirement.</summary>
         public bool RequirePkce { get; set; }
 
@@ -52,6 +55,7 @@ namespace Stomme.Models
                 Scopes = new List<string>(Scopes ?? new List<string>()),
                 RedirectUris = new List<string>(RedirectUris ?? new List<string>()),
                 PostLogoutRedirectUris = new List<string>(PostLogoutRedirectUris ?? new List<string>()),
+                Sites = new List<string>(Sites ?? new List<string>()),
                 RequirePkce = RequirePkce
             };
         }

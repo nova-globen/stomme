@@ -20,7 +20,8 @@ namespace Stomme.Identity.OpenIddict
     /// <c>api/*</c> accepts an access token issued by THIS host's
     /// authority. Registered only while <c>OpenIddict:Enabled</c> is on, so a stock install is unchanged. A request to
     /// <c>/api/</c> carrying <c>Authorization: Bearer</c> is validated by OpenIddict's own validation handler (signature,
-    /// lifetime, the host-inferred issuer - another tenant's token is ID2088 - and the token's entry, so a revoked token
+    /// lifetime, the issuer of the request's site (its host, and its folder for a folder site) - another site's token is
+    /// ID2088, and a token whose <c>site</c> claim names another site is refused too - and the token's entry, so a revoked token
     /// fails); it must be meant for Stomme's API (the <see cref="StommeOpenIddictExtensions.ApiResource"/> audience
     /// and the <c>api</c> scope) and carry a PERSON - or, for a client-credentials token, whose subject is its client, the
     /// application's SERVICE ACCOUNT while <c>OpenIddict:ServiceAccounts:Enabled</c> is on (<see cref="ServiceAccounts"/>);
@@ -76,11 +77,22 @@ namespace Stomme.Identity.OpenIddict
                 return null;
             }
 
+            // The issuer expected is the request's site's: a folder site's API call with a token carries the folder as its
+            // PathBase (TenantMiddleware), so a root site's or another folder site's token fails the issuer check here.
+            // Setting the PathBase at this point instead does not work: OpenIddict fixes the request's base URI when the
+            // authentication stage starts.
             var result = await context.AuthenticateAsync(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
             var token = result?.Succeeded == true ? result.Principal : null;
             if (token == null
                 || !token.HasAudience(StommeOpenIddictExtensions.ApiResource)
                 || !token.HasScope(ApiScope))
+            {
+                return null;
+            }
+
+            // A token naming another site is not this site's, whatever else holds (a token from before the claim has none).
+            var site = token.GetClaim(StommeOpenIddictExtensions.SiteClaim);
+            if (!string.IsNullOrEmpty(site) && !string.Equals(site.TrimEnd('/'), alias.Name?.TrimEnd('/'), StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }

@@ -82,7 +82,8 @@ override file's value was ignored).
 
 With `OpenIddict:Enabled` the installation is an OpenID Connect provider - an authority - for other applications:
 
-- Endpoints: `/connect/authorize`, `/connect/token`, `/connect/userinfo`, `/connect/endsession`, plus
+- Endpoints: `/connect/authorize`, `/connect/token`, `/connect/userinfo`, `/connect/endsession`, `/connect/revoke` (RFC
+  7009, since 10.76.0; every client may revoke its own tokens), plus
   `/.well-known/openid-configuration` and `/.well-known/jwks`; and `/connect/whoami`, which answers an access token
   issued here with its subject and scopes.
 - Grants: authorization code with PKCE (PKCE is required server-wide), client credentials, refresh token. Scopes:
@@ -96,13 +97,29 @@ With `OpenIddict:Enabled` the installation is an OpenID Connect provider - an au
   gets `_OpenIddict`). Before 10.75.0 an install whose connection string used `|DataDirectory|` - every install the
   installer writes - put that file under a folder literally named `|DataDirectory|` beside the app on Linux, off the
   data volume, and failed on Windows.
-- **Per tenant, per host name.** No issuer is configured; it is inferred from the request's host name, and clients,
+- **Per tenant, per site.** No issuer is configured; it is inferred from the request's host name (and folder, below), and clients,
   authorizations and tokens live in a store of their own per tenant (never the tenant's main database). A token issued at
   one host name is rejected at another. The host name is the one the request carries after forwarded headers - an
   `X-Forwarded-Host` from the site's proxy changes the issuer, one from anyone else is ignored (see
   [security-posture.md](security-posture.md)).
-- The endpoints are mapped at the root of the host. **A site reachable only at a virtual-folder alias
-  (`example.com/shop`) has no authority of its own**; give it a host name if it must issue tokens.
+- **A site in a folder is its own authority, at its folder** (since 10.76.0): `example.com/shop` publishes
+  `https://example.com/shop/.well-known/openid-configuration`, its issuer is `https://example.com/shop` and its endpoints
+  are `/shop/connect/*`. Its sign-in page is the folder site's (`/shop/login`), so its users sign in, with the folder
+  site's own cookie. Its API accepts only its own tokens: a root site's or another folder site's token fails the issuer
+  check, even when the sites share a tenant. `connect` and `.well-known` are reserved names for a folder and for a
+  site's top-level pages. A site reachable at both a host name and a folder has two issuers, and a token is valid at the
+  one that issued it. Before 10.76.0 a folder site had no authority, and its API expected the host's issuer.
+- **Every token names its site**: a `site` claim with the issuing site's alias (`example.com/shop`), in the access token
+  and the id_token (since 10.76.0). `/api/...` refuses a token whose `site` names another site; a module may assert it.
+- **Native apps** (Android, iOS, MAUI, desktop): a `public` client with `authorization_code` (PKCE is required) and
+  `refresh_token` plus the `offline_access` scope, configured with the site's issuer in a standard OIDC client (AppAuth,
+  IdentityModel.OidcClient). Its redirect is a private-use scheme (`com.example.app:/oauth2redirect`) or a loopback IP
+  address, `http://127.0.0.1:<port>/path` or `http://[::1]:<port>/path`: a loopback redirect matches the registered one
+  on any port (RFC 8252 7.3, since 10.76.0; never `localhost`). On sign-out the app revokes its refresh token at
+  `/connect/revoke` and may call `/connect/endsession`. A site never offers a password-for-token endpoint.
+- **A client limited to sites**: `Sites` on a client (`OpenIddict:Applications:n:Sites`, or Sites on its admin page) lists
+  the aliases it may be used at; anywhere else its requests answer `unauthorized_client`, even at a site sharing its
+  tenant (since 10.76.0). Without `Sites` a client is usable at every site of its tenant.
 - **Calling Stomme's API with a token.** A request to `/api/...` with `Authorization: Bearer {access token}` is signed
   in as the Stomme user the token's subject names on the REQUEST's site, when the token carries the `api` scope and
   the `stomme-api` audience. Roles and permissions are read per request, not from the token. A revoked token stops

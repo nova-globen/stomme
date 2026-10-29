@@ -148,6 +148,8 @@
   <data name="PostLogoutRedirectUris.Text" xml:space="preserve"><value>Post Logout Uris:</value></data>
   <data name="RedirectUris.HelpText" xml:space="preserve"><value>Absolute callback URLs for the authorization-code flow, one per line. Required for authorization_code.</value></data>
   <data name="RedirectUris.Text" xml:space="preserve"><value>Redirect Uris:</value></data>
+  <data name="Sites.HelpText" xml:space="preserve"><value>The sites this client may be used at, by alias (example.com/shop), one per line. Empty: every site of this tenant.</value></data>
+  <data name="Sites.Text" xml:space="preserve"><value>Sites:</value></data>
   <data name="RequirePkce.HelpText" xml:space="preserve"><value>Require Proof Key for Code Exchange on the authorization-code flow. Always on for a public client.</value></data>
   <data name="RequirePkce.Text" xml:space="preserve"><value>Require PKCE?</value></data>
   <data name="Scopes.HelpText" xml:space="preserve"><value>The scopes this client may request, one per line (openid, profile, email, offline_access, or a custom scope).</value></data>

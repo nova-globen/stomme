@@ -53,9 +53,24 @@ namespace Stomme.Infrastructure
                     // rewrite path by removing alias path prefix from reserved route (api,pages,files) requests for consistent routes
                     if (!string.IsNullOrEmpty(alias.Path))
                     {
-                        if (path.StartsWith("/" + alias.Path) && (Constants.ReservedRoutes.Any(item => path.Contains("/" + item + "/"))))
+                        // A folder site is its own authority at /<folder>/: its connect/* and .well-known/* requests keep the
+                        // folder as their PathBase, from which OpenIddict derives the issuer (https://host/<folder>/).
+                        if (IsAuthorityRequest(path, alias.Path, out var authorityPath))
+                        {
+                            context.Request.PathBase = context.Request.PathBase.Add("/" + alias.Path.Trim('/'));
+                            context.Request.Path = authorityPath;
+                        }
+                        else if (path.StartsWith("/" + alias.Path) && (Constants.ReservedRoutes.Any(item => path.Contains("/" + item + "/"))))
                         {
                             context.Request.Path = path.Substring(alias.Path.Length + 1);
+
+                            // An API call with an access token keeps the folder as its PathBase too: the issuer OpenIddict
+                            // expects of the token is derived from it, before any endpoint runs, so only this site's token passes.
+                            if (context.Request.Path.StartsWithSegments("/api", System.StringComparison.OrdinalIgnoreCase) &&
+                                context.Request.Headers.Authorization.ToString().StartsWith("Bearer ", System.StringComparison.OrdinalIgnoreCase))
+                            {
+                                context.Request.PathBase = context.Request.PathBase.Add("/" + alias.Path.Trim('/'));
+                            }
                         }
                         // A folder site's interactive circuit connects under the folder (Stomme.Server.lib.module.js), so the
                         // circuit request resolves this site and carries this site's cookies; the hub itself is the host's.
@@ -99,6 +114,30 @@ namespace Stomme.Infrastructure
 
             // continue processing
             if (_next != null) await _next(context);
+        }
+
+        /// <summary>
+        /// Whether <paramref name="path"/> is a request to the folder site's own authority (<c>/folder/connect/...</c> or
+        /// <c>/folder/.well-known/...</c>), and the path that remains below the folder.
+        /// </summary>
+        internal static bool IsAuthorityRequest(string path, string aliasPath, out string authorityPath)
+        {
+            authorityPath = null;
+            var prefix = "/" + aliasPath.Trim('/');
+            if (!path.StartsWith(prefix + "/", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            var rest = path.Substring(prefix.Length);
+            if (rest.StartsWith("/connect/", System.StringComparison.OrdinalIgnoreCase) ||
+                rest.StartsWith("/.well-known/", System.StringComparison.OrdinalIgnoreCase))
+            {
+                authorityPath = rest;
+                return true;
+            }
+
+            return false;
         }
     }
 }

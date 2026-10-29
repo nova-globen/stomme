@@ -82,6 +82,12 @@ else
                 </div>
             </div>
             <div class="db-field">
+                <Label For="sites" HelpText="The sites this client may be used at, by alias (example.com/shop), one per line. Empty: every site of this tenant." ResourceKey="Sites">Sites:</Label>
+                <div class="db-field-control">
+                    <textarea id="sites" class="db-input" rows="2" @bind="@_sites"></textarea>
+                </div>
+            </div>
+            <div class="db-field">
                 <Label For="pkce" HelpText="Require Proof Key for Code Exchange on the authorization-code flow. Always on for a public client." ResourceKey="RequirePkce">Require PKCE?</Label>
                 <div class="db-field-control">
                     <FluentSwitch id="pkce" @bind-Value="_requirePkce" />
@@ -138,6 +144,7 @@ else
     private string _scopes = string.Empty;
     private string _redirectUris = string.Empty;
     private string _postLogoutRedirectUris = string.Empty;
+    private string _sites = string.Empty;
     private bool _requirePkce = true;
     private OpenIddictServiceAccount _serviceAccount;
     private string _serviceAccountMessage = string.Empty;
@@ -171,6 +178,7 @@ else
             _scopes = OpenIddictFormValues.JoinLines(seed.Scopes);
             _redirectUris = OpenIddictFormValues.JoinLines(seed.RedirectUris);
             _postLogoutRedirectUris = OpenIddictFormValues.JoinLines(seed.PostLogoutRedirectUris);
+            _sites = OpenIddictFormValues.JoinLines(seed.Sites);
             _requirePkce = seed.RequirePkce;
 
             if ((await OpenIddictService.GetStatusAsync())?.ServiceAccountsEnabled == true)
@@ -247,6 +255,7 @@ else
             Scopes = OpenIddictFormValues.SplitLines(_scopes),
             RedirectUris = OpenIddictFormValues.SplitLines(_redirectUris),
             PostLogoutRedirectUris = OpenIddictFormValues.SplitLines(_postLogoutRedirectUris),
+            Sites = OpenIddictFormValues.SplitLines(_sites),
             RequirePkce = _requirePkce
         };
 

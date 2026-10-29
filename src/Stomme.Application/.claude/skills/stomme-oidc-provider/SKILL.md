@@ -8,12 +8,13 @@ description: Use when a Nova Globen Stomme installation must act as an OpenID Co
 You will have an installation that issues OpenID Connect tokens per tenant host name: other applications sign people in
 with their Stomme account (authorization code with PKCE), and a script or service calls the site's `/api/...` with an
 access token. Read [authentication-options.md](../../../docs/security/authentication-options.md) first - it explains the
-per-host issuer, the endpoints and every key.
+per-site issuer, the endpoints and every key.
 
 ## Steps
 
-1. **Give each tenant that must issue tokens its own host name.** The endpoints live at the root of the host; a site
-   reachable only at `example.com/folder` has no provider. Add the alias in **Admin > Site Management**.
+1. **Know each site's issuer.** A site at a host name issues at `https://{host}`; a site in a folder issues at
+   `https://{host}/{folder}` (since 10.76.0), with its endpoints under `/{folder}/connect/` and its own users. A site
+   reachable at both has two issuers; a token works at the one that issued it.
 
 2. **Make a signing certificate and an encryption certificate** (a self-signed RSA certificate is enough; the public
    key is published in the JWKS). Example with OpenSSL, run where the app's data lives:
@@ -74,9 +75,29 @@ per-host issuer, the endpoints and every key.
    and scopes listed. Include `api` in `Scopes` for a client that calls the site's API. A changed item (a new redirect
    URI, for example) is applied at the next start.
 
-6. **Point the other application at the authority** `https://{tenant host}`: it reads
-   `https://{tenant host}/.well-known/openid-configuration`. Use authorization code with PKCE. The ID token carries
-   `sub`, `name`, `preferred_username` and `email`; roles are not in the token.
+   A **native app** (Android, iOS, MAUI, desktop) is a public client with a private-use-scheme or loopback redirect, limited
+   to the site it belongs to with `Sites`:
+
+   ```json
+   {
+     "ClientId": "shop-app",
+     "Type": "public",
+     "GrantTypes": [ "authorization_code", "refresh_token" ],
+     "Scopes": [ "openid", "profile", "offline_access", "api" ],
+     "RedirectUris": [ "com.example.shop:/oauth2redirect", "http://127.0.0.1/callback" ],
+     "Sites": [ "example.com/shop" ]
+   }
+   ```
+
+   The app uses a standard OIDC client (AppAuth, IdentityModel.OidcClient) with the issuer `https://example.com/shop`. A
+   loopback redirect matches on any port (`http://127.0.0.1:53917/callback`); `localhost` does not. On sign-out the app
+   revokes its refresh token (`POST /shop/connect/revoke` with `token`, `token_type_hint=refresh_token`, `client_id`).
+   With `Sites` the client is refused (`unauthorized_client`) at every other site, even one sharing its tenant. Never
+   give an app a password-for-token endpoint of a module's own.
+
+6. **Point the other application at the site's issuer** (`https://{host}` or `https://{host}/{folder}`): it reads
+   `{issuer}/.well-known/openid-configuration`. Use authorization code with PKCE. The ID token carries `sub`, `name`,
+   `preferred_username`, `email` and `site` (the issuing site's alias); roles are not in the token.
 
 7. **Call the site's API with a token** (for a person, from step 6; the token must carry the `api` scope):
 
@@ -130,8 +151,8 @@ production use `https://`.
    [stomme-add-external-login](../stomme-add-external-login/SKILL.md) skill): the Stomme login page appears, then
    the application receives the user.
 5. `GET /api/...` with the person's access token answers what that person may see; with no token the same call is
-   anonymous; with a token from another host name it is anonymous (the token is rejected; a call that needs a
-   permission answers 403).
+   anonymous; with a token from another site - another host name, the root of a folder site's host, or another folder -
+   it is anonymous (the token is rejected; a call that needs a permission answers 403).
 6. Restart the app: the token from step 2 still works and the JWKS `kid` is unchanged (a certificate is configured).
    Delete the client in **Admin > Identity Provider** (or `DELETE api/OpenIddict/applications/{clientId}`) and call
    `/api/...` with its old token: it is anonymous at once (`/connect/whoami` answers 401). A client declared in
@@ -141,8 +162,12 @@ production use `https://`.
 
 - **Every restart invalidates every token, and the JWKS changes.** No signing certificate is configured: the provider
   fell back to an ephemeral key. Step 2 and 3.
-- **Discovery answers 404.** `OpenIddict:Enabled` is not `true` in the configuration the host runs on, the app was not
-  restarted, or the site is reachable only at a virtual-folder alias.
+- **Discovery answers 404.** `OpenIddict:Enabled` is not `true` in the configuration the host runs on, or the app was not
+  restarted. On 10.75 and earlier a site reachable only at a folder had no provider.
+- **A folder site's app gets `unauthorized_client`.** The client lists `Sites` and the request went to another site - most
+  often the host's root issuer instead of `https://{host}/{folder}`.
+- **The authorize request answers `invalid_request` for the redirect URI.** A loopback redirect must be an IP literal
+  (`127.0.0.1` or `[::1]`), with the registered path and query; only the port may differ.
 - **The provider refuses plain HTTP outside Development** - every endpoint, discovery included, answers 400
   "This server only accepts HTTPS requests.". Serve HTTPS, or have the reverse proxy send `X-Forwarded-Proto: https`.
   The host believes that header only from a proxy on loopback or a private network, or one named in

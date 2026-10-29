@@ -183,6 +183,13 @@ dispatcher: server code may always dispatch.
 
 ## Rules and pitfalls
 
+- **The mail server is a site setting, never configuration.** No configuration key sets SMTP: on an unattended host
+  (a container, a compose file) set it per site in **Admin > Site Settings > SMTP Settings**, or have a module of yours
+  write the site's settings at start-up through `ISettingRepository` (entity `EntityNames.Site`, the site's id):
+  `SMTPEnabled`, `SMTPHost`, `SMTPPort`, `SMTPSSL`, `SMTPSender`, and `SMTPAuthentication` with `SMTPUsername` and
+  `SMTPPassword` (a private setting, as the admin page saves it) when the relay needs a sign-in. A relay on the host's network that accepts the host is the usual shape. The health job
+  connects to each site's mail server to probe it; for a relay that counts connections, set
+  `Health:MailServerProbeIntervalMinutes` ([logging, health and metering](logging-health-metering.md)).
 - **E-mail and in-app channels are created on first use; webhook and SMS are not.** Since 10.73.2 a site that has no
   channel of the kind a notification asks for gets a default one, "E-mail" or "In-app", at its first notification (neither
   needs settings: e-mail goes through the site's mail queue and SMTP settings). A channel an administrator disabled stays
