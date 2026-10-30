@@ -28,7 +28,7 @@
     </div>
     <div class="db-field">
         <Label For="minimumwordlength" HelpText="Minimum length of a word to be indexed" ResourceKey="MinimumWordLength">Word Length: </Label>
-        <FluentNumberInput id="minimumwordlength" @bind-Value="_minimumWordLengthValue" Min="0" Step="1" class="db-field-control" />
+        <div class="db-field-control"><input id="minimumwordlength" type="number" min="0" step="1" class="db-input" @bind="@_minimumWordLengthValue" /></div>
     </div>
     <div class="db-field">
         <Label For="ignorewords" HelpText="Comma delimited list of words which should be ignored" ResourceKey="IgnoreWords">Ignore Words: </Label>

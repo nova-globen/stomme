@@ -229,10 +229,13 @@ namespace NovaGloben.Module.Blogs.Drive
 
         private sealed class PostgresProvider : IProvider
         {
-            private const string Host = "127.0.0.1";
-            private const int Port = 5432;
-            private const string User = "postgres";
-            private static readonly string Password = Environment.GetEnvironmentVariable("POSTGRES_TEST_PASSWORD") ?? Environment.GetEnvironmentVariable("DEFAULT_PASSWORD") ?? string.Empty;
+            // This machine's throwaway PostgreSQL (scripts/postgres-test-server.ps1), or POSTGRES_TEST_* where set.
+            private static readonly string Host = Environment.GetEnvironmentVariable("POSTGRES_TEST_HOST") is { Length: > 0 } host ? host : "127.0.0.1";
+            private static readonly int Port = int.TryParse(Environment.GetEnvironmentVariable("POSTGRES_TEST_PORT"), out var port) ? port : 15433;
+            private static readonly string User = Environment.GetEnvironmentVariable("POSTGRES_TEST_USER") is { Length: > 0 } user ? user : "postgres";
+            private static readonly string PasswordFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "stomme-postgres-test", "password");
+            private static readonly string Password = Environment.GetEnvironmentVariable("POSTGRES_TEST_PASSWORD") is { Length: > 0 } given ? given
+                : System.IO.File.Exists(PasswordFile) ? System.IO.File.ReadAllText(PasswordFile).Trim() : string.Empty;
             private readonly string _suffix = Guid.NewGuid().ToString("N").Substring(0, 12);
             private string SiteDb => "stomme_blogs_drive_" + _suffix;
             private string ModuleDb => "stomme_blogs_modstore_" + _suffix;

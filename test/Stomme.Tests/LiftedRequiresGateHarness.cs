@@ -756,7 +756,7 @@ namespace Stomme.Tests
             $"PostgreSQL is not reachable at {PostgresTestEndpoint.Host}:{PostgresTestEndpoint.Port}, so nothing here " +
             "proves the authorization bridge decides against a REAL relational store. This gate FAILS rather than " +
             "skips: a suite that quietly shrinks reports green while proving nothing. Point " +
-            "POSTGRES_TEST_HOST/POSTGRES_TEST_PORT at a reachable instance - the shared test server is the default.";
+            "POSTGRES_TEST_HOST/POSTGRES_TEST_PORT at a reachable instance - the default is the local one scripts/postgres-test-server.ps1 makes.";
 
         public string CreateConnectionString(string scratchDirectory) => PostgresTestEndpoint.ConnectionString(_database);
 
@@ -769,7 +769,7 @@ namespace Stomme.Tests
     }
 
     /// <summary>
-    /// A full install on the shared SQL Server test instance (<c>:1434</c>, <see cref="SqlServerTestEndpoint"/>). It has
+    /// A full install on the SQL Server test instance (<see cref="SqlServerTestEndpoint"/>). It has
     /// no template clone - copying a SQL Server database needs a BACKUP file on the server's own disk - so
     /// <see cref="GateInstallTemplates.CloneAsync(IGateStore, string, Xunit.Abstractions.ITestOutputHelper)"/> installs it
     /// afresh; only the few suites that must see SQL Server use it.
@@ -799,7 +799,7 @@ namespace Stomme.Tests
         public string UnreachableMessage =>
             $"SQL Server is not reachable at {SqlServerTestEndpoint.Host}:{SqlServerTestEndpoint.Port}, so nothing here proves the " +
             "behaviour on a real SQL Server. This gate FAILS rather than skips. Point SQLSERVER_TEST_HOST/" +
-            "SQLSERVER_TEST_PORT at a reachable instance - the shared test server is the default.";
+            "SQLSERVER_TEST_PORT at a reachable instance - the default is the local one scripts/sqlserver-test-server.ps1 makes.";
 
         public string CreateConnectionString(string scratchDirectory) => SqlServerTestEndpoint.ConnectionString(_database);
 

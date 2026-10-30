@@ -152,8 +152,8 @@ the framework's common words (`Save`, `Cancel`, `Delete`, `Edit`, `Add`, `Loadin
 ### FluentUI
 
 The admin pages use FluentUI for a small set of inputs (`FluentTextInput`, `FluentSelect`/`FluentOption`, `FluentSwitch`,
-`FluentCheckbox`, `FluentTextArea`, `FluentNumberInput`, `FluentButton`) and plain `db-input`/`db-select` elements for the
-rest. Either is acceptable; keep one style per form. To use FluentUI in a component, import it and keep Stomme's
+`FluentCheckbox`, `FluentTextArea`, `FluentButton`) and plain `db-input`/`db-select` elements for the rest; a number
+is a plain `<input type="number" class="db-input">`. Either is acceptable; keep one style per form. To use FluentUI in a component, import it and keep Stomme's
 `MessageType` unambiguous:
 
 ```razor
@@ -175,10 +175,17 @@ rest. Either is acceptable; keep one style per form. To use FluentUI in a compon
 }
 ```
 
-FluentUI 5 names: `FluentTextInput` (not `FluentTextField`), `FluentNumberInput<TValue>`, `FluentSelect<TOption, TValue>`
+FluentUI 5 names: `FluentTextInput` (not `FluentTextField`), `FluentSelect<TOption, TValue>`
 with `FluentOption<TValue>`, `ButtonAppearance.Primary`/`Default`. FluentUI's icon package is not referenced by Stomme;
 reference `Microsoft.FluentUI.AspNetCore.Components.Icons` yourself if you need its icons, or use Stomme's icon names in
 `Stomme.Shared.Icons` (Open Iconic CSS classes, for example `Icons.Pencil`, `Icons.Trash`).
+
+**Two FluentUI 5 components load a script from a public CDN.** `FluentNumberInput<TValue>` loads imask and the sortable
+list loads SortableJS from `unpkg.com` (`imask@7.6.1`, `sortablejs@1.15.6`) the first time one renders: a request to a
+third party carrying the visitor's address, refused by a strict Content-Security-Policy and failing offline. Stomme uses
+neither. Prefer `<input type="number" class="db-input">`. If an app needs one of them, serve the script yourself: FluentUI
+uses `window.IMask` or `window.Sortable` when it is already defined, so add the pinned file (with its MIT licence) under
+the app's `wwwroot` and a `<script>` for it on the pages that render the component, before the component renders.
 
 ## Configuration
 

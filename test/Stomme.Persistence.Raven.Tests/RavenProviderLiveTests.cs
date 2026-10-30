@@ -14,11 +14,11 @@ namespace Stomme.Persistence.Raven.Tests;
 // Live smoke test proving the RavenDB provider satisfies the persistence seam end-to-end against a
 // real server (aggregate round-trip, query session, optimistic concurrency, transactional outbox).
 // GATED in Stomme.slnx, fail-not-skip: an unreachable server fails
-// InitializeAsync loudly. Defaults to the shared test server (env-overridable via RAVENDB_TEST_URL — the
+// InitializeAsync loudly. Defaults to this machine's RavenDB, http://127.0.0.1:7000 (env-overridable via RAVENDB_TEST_URL — the
 // PostgresTestEndpoint convention); the older default :8091 never existed here.
 public sealed class RavenProviderLiveTests : IAsyncLifetime
 {
-    private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") ?? "http://localhost:8080";
+    private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") is { Length: > 0 } url ? url : "http://127.0.0.1:7000";
 
     private readonly string _database = "stomme-live-" + Guid.NewGuid().ToString("N");
     private DocumentStore _store = default!;

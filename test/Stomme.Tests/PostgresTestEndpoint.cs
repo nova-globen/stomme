@@ -9,15 +9,14 @@ namespace Stomme.Tests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Env-overridable, defaulting to the <b>shared</b> instance
-    /// (<c>192.168.10.20:5433</c>, password from <c>DEFAULT_PASSWORD</c>). The local <c>postgresql-x64-18</c>
-    /// Windows service was retired.
+    /// Env-overridable, defaulting to this machine's throwaway PostgreSQL that <c>scripts/postgres-test-server.ps1</c> makes
+    /// on <c>127.0.0.1:15433</c> (<c>scripts/gate.ps1 -Full</c> starts it), its password read from the file that script
+    /// writes under the user's temp folder. The shared test servers are gone (2026-10-29); a run never leaves this machine.
     /// </para>
     /// <para>
     /// Overrides (each optional): <c>POSTGRES_TEST_HOST</c>, <c>POSTGRES_TEST_PORT</c>,
-    /// <c>POSTGRES_TEST_USER</c>, <c>POSTGRES_TEST_PASSWORD</c>. The password falls back to <c>DEFAULT_PASSWORD</c>
-    /// (a credential kept out of source) and finally to the retired local default, so a machine still
-    /// running local PG keeps working with a single <c>POSTGRES_TEST_HOST=127.0.0.1</c> / <c>PORT=5432</c>.
+    /// <c>POSTGRES_TEST_USER</c>, <c>POSTGRES_TEST_PASSWORD</c> (a CI job's service container). No password is a FAILURE
+    /// that says how to get one, never a skip.
     /// </para>
     /// <para>
     /// The account must be able to <c>CREATE DATABASE</c> — the render guard and several drives create a fresh
@@ -27,19 +26,29 @@ namespace Stomme.Tests
     internal static class PostgresTestEndpoint
     {
         public static string Host =>
-            Environment.GetEnvironmentVariable("POSTGRES_TEST_HOST") ?? "localhost";
+            Environment.GetEnvironmentVariable("POSTGRES_TEST_HOST") is { Length: > 0 } host ? host : "127.0.0.1";
 
         public static int Port =>
-            int.TryParse(Environment.GetEnvironmentVariable("POSTGRES_TEST_PORT"), out var port) ? port : 5433;
+            int.TryParse(Environment.GetEnvironmentVariable("POSTGRES_TEST_PORT"), out var port) ? port : 15433;
 
         public static string User =>
-            Environment.GetEnvironmentVariable("POSTGRES_TEST_USER") ?? "postgres";
+            Environment.GetEnvironmentVariable("POSTGRES_TEST_USER") is { Length: > 0 } user ? user : "postgres";
 
-        public static string Password =>
-            Environment.GetEnvironmentVariable("POSTGRES_TEST_PASSWORD")
-            ?? Environment.GetEnvironmentVariable("DEFAULT_PASSWORD")
-            ?? string.Empty; // no password literal: without one the server refuses the sign-in (28P01), naming the cause
+        public static string Password
+        {
+            get
+            {
+                if (Environment.GetEnvironmentVariable("POSTGRES_TEST_PASSWORD") is { Length: > 0 } given)
+                {
+                    return given;
+                }
 
+                var file = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "stomme-postgres-test", "password");
+                return System.IO.File.Exists(file)
+                    ? System.IO.File.ReadAllText(file).Trim()
+                    : throw new InvalidOperationException($"No PostgreSQL test server: run 'pwsh scripts/postgres-test-server.ps1' (a throwaway PostgreSQL on 127.0.0.1:15433, its password in {file}) or set POSTGRES_TEST_HOST, POSTGRES_TEST_PORT, POSTGRES_TEST_USER and POSTGRES_TEST_PASSWORD.");
+            }
+        }
         /// <summary>A connection string to the given database on the resolved endpoint.</summary>
         public static string ConnectionString(string database) =>
             $"Server={Host};Port={Port};Database={database};User Id={User};Password={Password};";
@@ -62,8 +71,8 @@ namespace Stomme.Tests
         /// Best-effort force-drop of a throwaway database created by a test. Connects to the maintenance
         /// <c>postgres</c> database (you cannot drop the database you are connected to) and issues
         /// <c>DROP DATABASE ... WITH (FORCE)</c> (terminates lingering sessions; PostgreSQL 13+). A leftover
-        /// database is harmless, so any failure here is swallowed — never fail a test on cleanup. Against a
-        /// shared instance this matters more: a missed drop leaves a scratch DB others can see.
+        /// database is harmless, so any failure here is swallowed — never fail a test on cleanup (the gate removes
+        /// the whole container after a full run).
         /// </summary>
         public static void DropDatabase(string database)
         {

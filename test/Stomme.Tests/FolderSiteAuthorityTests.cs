@@ -43,6 +43,7 @@ namespace Stomme.Tests
         private const string AppRedirect = "se.novaglobenab.delato:/oauth2redirect";
         private const string RootClient = "root-app";
         private const string RootRedirect = "http://127.0.0.1:7171/callback";
+        private const string TvClient = "delato-tv";
 
         protected readonly ITestOutputHelper _output;
 
@@ -87,6 +88,9 @@ namespace Stomme.Tests
                 var idToken = new JwtSecurityTokenHandler().ReadJwtToken(delatoTokens["id_token"]!.GetValue<string>());
                 Assert.Equal(Delato, idToken.Claims.First(claim => claim.Type == StommeOpenIddictExtensions.SiteClaim).Value);
 
+                // A plain PKCE challenge is refused, signed in or not (BL-271): no code comes back.
+                await AssertPlainRefusedAsync(client, delatoJar, "/delato", AppClient, AppRedirect);
+
                 // The folder site's API accepts it; the root's and the other folder site's do not.
                 Assert.True(await AuthenticatedAsync(client, "/delato", delatoAccess), "the folder site's own token was refused at its API");
                 Assert.False(await AuthenticatedAsync(client, "", delatoAccess), "the folder site's token signed the caller in at the root");
@@ -96,6 +100,7 @@ namespace Stomme.Tests
                 var rootJar = await GateDrive.LoginAsync(app, client, Root, UserNames.Host, FolderSiteCookieTests.Password, _output);
                 var (rootVerifier, rootChallenge) = Pkce();
                 var rootCode = await CodeAsync(client, rootJar, "", RootClient, RootRedirect, rootChallenge);
+                await AssertPlainRefusedAsync(client, rootJar, "", RootClient, RootRedirect);
                 var rootAccess = (await ExchangeAsync(client, "", RootClient, RootRedirect, rootCode, rootVerifier))["access_token"]!.GetValue<string>();
                 Assert.True(await AuthenticatedAsync(client, "", rootAccess), "the root's own token was refused at its API");
                 Assert.False(await AuthenticatedAsync(client, "/delato", rootAccess), "a root token signed the caller in at the folder site");
@@ -105,6 +110,8 @@ namespace Stomme.Tests
                 const string AnyPort = "http://127.0.0.1:53917/callback";
                 var loopbackCode = await CodeAsync(client, rootJar, "", RootClient, AnyPort, loopbackChallenge);
                 Assert.NotNull((await ExchangeAsync(client, "", RootClient, AnyPort, loopbackCode, loopbackVerifier))["access_token"]);
+
+                await DriveDeviceFlowAsync(app, client, delatoJar, rootJar);
 
                 // The folder client is limited to its site: the root (same tenant, same store) refuses it.
                 var elsewhere = await client.SendAsync(AuthorizeWithCookies(rootJar, "", AppClient, AppRedirect, Pkce().Challenge));
@@ -140,6 +147,7 @@ namespace Stomme.Tests
         private static Dictionary<string, string> Settings(string didinConnectionString) => new()
         {
             ["OpenIddict__Enabled"] = "true",
+            ["OpenIddict__DevicePollingIntervalSeconds"] = "1",
             ["Installation__Sites__0__Name"] = "Delato",
             ["Installation__Sites__0__Aliases"] = Delato,
             ["Installation__Sites__1__Name"] = "Didin",
@@ -165,7 +173,19 @@ namespace Stomme.Tests
             ["OpenIddict__Applications__1__GrantTypes__0"] = "authorization_code",
             ["OpenIddict__Applications__1__Scopes__0"] = "openid",
             ["OpenIddict__Applications__1__Scopes__1"] = "api",
-            ["OpenIddict__Applications__1__RedirectUris__0"] = RootRedirect
+            ["OpenIddict__Applications__1__RedirectUris__0"] = RootRedirect,
+
+            // A TV app: public, the device authorization grant (D117) and refresh tokens, limited to its site.
+            ["OpenIddict__Applications__2__ClientId"] = TvClient,
+            ["OpenIddict__Applications__2__DisplayName"] = "Delato for TV",
+            ["OpenIddict__Applications__2__Type"] = "public",
+            ["OpenIddict__Applications__2__GrantTypes__0"] = "device_code",
+            ["OpenIddict__Applications__2__GrantTypes__1"] = "refresh_token",
+            ["OpenIddict__Applications__2__Scopes__0"] = "openid",
+            ["OpenIddict__Applications__2__Scopes__1"] = "profile",
+            ["OpenIddict__Applications__2__Scopes__2"] = "offline_access",
+            ["OpenIddict__Applications__2__Scopes__3"] = "api",
+            ["OpenIddict__Applications__2__Sites__0"] = Delato
         };
 
         private async Task<string> IssuerAsync(HttpClient client, string site)
@@ -177,10 +197,12 @@ namespace Stomme.Tests
             _output.WriteLine($"discovery '{site}': issuer {document["issuer"]}, token {document["token_endpoint"]}, revocation {document["revocation_endpoint"]}");
             Assert.Equal($"http://localhost{site}/connect/token", document["token_endpoint"]!.GetValue<string>());
             Assert.Equal($"http://localhost{site}/connect/revoke", document["revocation_endpoint"]!.GetValue<string>());
+            // PKCE with S256 only (BL-271): the plain method is neither advertised nor, below, accepted.
+            Assert.Equal(new[] { "S256" }, document["code_challenge_methods_supported"]!.AsArray().Select(method => method!.GetValue<string>()).ToArray());
             return document["issuer"]!.GetValue<string>();
         }
 
-        private static string AuthorizeUrl(string site, string clientId, string redirect, string challenge) =>
+        private static string AuthorizeUrl(string site, string clientId, string redirect, string challenge, string method = "S256") =>
             QueryHelpers.AddQueryString($"http://localhost{site}/connect/authorize", new Dictionary<string, string?>
             {
                 ["client_id"] = clientId,
@@ -188,13 +210,13 @@ namespace Stomme.Tests
                 ["scope"] = clientId == AppClient ? "openid profile offline_access api" : "openid api",
                 ["redirect_uri"] = redirect,
                 ["code_challenge"] = challenge,
-                ["code_challenge_method"] = "S256",
+                ["code_challenge_method"] = method,
                 ["state"] = "drive"
             });
 
-        private static HttpRequestMessage AuthorizeWithCookies(CookieContainer jar, string site, string clientId, string redirect, string challenge)
+        private static HttpRequestMessage AuthorizeWithCookies(CookieContainer jar, string site, string clientId, string redirect, string challenge, string method = "S256")
         {
-            var url = AuthorizeUrl(site, clientId, redirect, challenge);
+            var url = AuthorizeUrl(site, clientId, redirect, challenge, method);
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var header = jar.GetCookieHeader(new Uri(url));
             if (!string.IsNullOrEmpty(header))
@@ -214,6 +236,151 @@ namespace Stomme.Tests
             var code = QueryHelpers.ParseQuery(new Uri(location).Query)["code"].ToString();
             Assert.False(string.IsNullOrEmpty(code), "no authorization code");
             return code;
+        }
+
+        // The device authorization grant (D117) at the folder site: a TV asks for a code, the person approves it on the
+        // folder site's verify page, the TV's poll gets tokens; a code is refused at the root (same tenant, same store), a
+        // client without the grant cannot ask, and a denied code ends in access_denied.
+        private async Task DriveDeviceFlowAsync(WebApplication app, HttpClient client, CookieContainer delatoJar, CookieContainer rootJar)
+        {
+            // Discovery names the folder site's own device endpoint.
+            var discovery = JsonNode.Parse(await client.GetStringAsync("http://localhost/delato/.well-known/openid-configuration"))!;
+            Assert.Equal("http://localhost/delato/connect/device", discovery["device_authorization_endpoint"]!.GetValue<string>());
+
+            // A client without the grant is refused at the device endpoint.
+            var refused = await DeviceAsync(client, "/delato", AppClient);
+            _output.WriteLine($"device for {AppClient} -> {(int)refused.StatusCode} {await refused.Content.ReadAsStringAsync()}");
+            Assert.False(refused.IsSuccessStatusCode, "a client without the device grant got a device code");
+
+            var device = await DeviceCodeAsync(client, "/delato");
+            Assert.Equal("http://localhost/delato/connect/verify", device["verification_uri"]!.GetValue<string>());
+            Assert.Equal(1, device["interval"]!.GetValue<int>());
+            var deviceCode = device["device_code"]!.GetValue<string>();
+            var userCode = device["user_code"]!.GetValue<string>();
+
+            // Before approval the TV is told to keep waiting.
+            var pending = await PollAsync(client, "/delato", deviceCode);
+            Assert.Contains("authorization_pending", pending.Body);
+            // Polling again sooner than the interval is answered slow_down (OpenIddict alone would say pending again).
+            var again = await PollAsync(client, "/delato", deviceCode);
+            Assert.Contains("slow_down", again.Body);
+
+            // Not signed in, verify sends the person to the folder site's login.
+            var anonymous = await client.GetAsync($"http://localhost/delato/connect/verify?user_code={Uri.EscapeDataString(userCode)}");
+            var anonymousBody = await anonymous.Content.ReadAsStringAsync();
+            Assert.True(anonymous.StatusCode == HttpStatusCode.Redirect, $"anonymous verify: {(int)anonymous.StatusCode} {anonymous.Headers.Location} {anonymousBody}");
+            Assert.StartsWith("/delato/login?returnurl=", anonymous.Headers.Location?.ToString() ?? "");
+
+            // The root shares the folder site's tenant store, and still refuses the folder site's code.
+            var elsewhere = await SendWithCookiesAsync(client, rootJar, HttpMethod.Get, $"http://localhost/connect/verify?user_code={Uri.EscapeDataString(userCode)}");
+            _output.WriteLine($"verify at the root -> {(int)elsewhere.Status} {elsewhere.Body}");
+            Assert.Equal(HttpStatusCode.BadRequest, elsewhere.Status);
+            Assert.Contains("belongs to another site", elsewhere.Body);
+
+            // At the folder site the person sees who asks, approves, and the TV's next poll gets its tokens.
+            Assert.Equal("approved", await DecideAsync(client, delatoJar, userCode, "approve"));
+            await Task.Delay(TimeSpan.FromSeconds(1.2));
+            var granted = await PollAsync(client, "/delato", deviceCode);
+            Assert.True(granted.Status == HttpStatusCode.OK, $"device token: {(int)granted.Status} {granted.Body}");
+            var tokens = JsonNode.Parse(granted.Body)!;
+            var access = tokens["access_token"]!.GetValue<string>();
+            Assert.Equal(Delato, new JwtSecurityTokenHandler().ReadJwtToken(access).Claims.First(claim => claim.Type == StommeOpenIddictExtensions.SiteClaim).Value);
+            Assert.True(await AuthenticatedAsync(client, "/delato", access), "the device's token was refused at its site's API");
+            Assert.False(await AuthenticatedAsync(client, "", access), "the device's token signed the caller in at the root");
+
+            // It refreshes like any other session; a used device code is not redeemed twice.
+            var renewed = await client.PostAsync("http://localhost/delato/connect/token", new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["grant_type"] = "refresh_token",
+                ["refresh_token"] = tokens["refresh_token"]!.GetValue<string>(),
+                ["client_id"] = TvClient
+            }));
+            Assert.True(renewed.IsSuccessStatusCode, $"device refresh: {(int)renewed.StatusCode} {await renewed.Content.ReadAsStringAsync()}");
+            await Task.Delay(TimeSpan.FromSeconds(1.2));
+            Assert.False((await PollAsync(client, "/delato", deviceCode)).Status == HttpStatusCode.OK, "a device code was redeemed twice");
+
+            // A denied code ends in access_denied.
+            var denied = await DeviceCodeAsync(client, "/delato");
+            Assert.Equal("denied", await DecideAsync(client, delatoJar, denied["user_code"]!.GetValue<string>(), "deny"));
+            var refusal = await PollAsync(client, "/delato", denied["device_code"]!.GetValue<string>());
+            _output.WriteLine($"poll after deny -> {(int)refusal.Status} {refusal.Body}");
+            Assert.Contains("access_denied", refusal.Body);
+        }
+
+        private static Task<HttpResponseMessage> DeviceAsync(HttpClient client, string site, string clientId) =>
+            client.PostAsync($"http://localhost{site}/connect/device", new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["client_id"] = clientId,
+                ["scope"] = "openid profile offline_access api"
+            }));
+
+        private async Task<JsonNode> DeviceCodeAsync(HttpClient client, string site)
+        {
+            var response = await DeviceAsync(client, site, TvClient);
+            var body = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"device at '{site}' -> {(int)response.StatusCode} {body}");
+            Assert.True(response.IsSuccessStatusCode, $"device authorization: {(int)response.StatusCode} {body}");
+            return JsonNode.Parse(body)!;
+        }
+
+        private async Task<(HttpStatusCode Status, string Body)> PollAsync(HttpClient client, string site, string deviceCode)
+        {
+            var response = await client.PostAsync($"http://localhost{site}/connect/token", new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["grant_type"] = "urn:ietf:params:oauth:grant-type:device_code",
+                ["device_code"] = deviceCode,
+                ["client_id"] = TvClient
+            }));
+            return (response.StatusCode, await response.Content.ReadAsStringAsync());
+        }
+
+        private static async Task<(HttpStatusCode Status, string Body, HttpResponseMessage Response)> SendWithCookiesAsync(HttpClient client, CookieContainer jar, HttpMethod method, string url, HttpContent? content = null)
+        {
+            var request = new HttpRequestMessage(method, url) { Content = content };
+            var header = jar.GetCookieHeader(new Uri(url));
+            if (!string.IsNullOrEmpty(header))
+            {
+                request.Headers.TryAddWithoutValidation("Cookie", header);
+            }
+
+            var response = await client.SendAsync(request);
+            GateDrive.CaptureCookies(jar, new Uri(url), response);
+            return (response.StatusCode, await response.Content.ReadAsStringAsync(), response);
+        }
+
+        // Opens the folder site's verify page for a code, checks it names the client and the code, then submits the decision.
+        private async Task<string> DecideAsync(HttpClient client, CookieContainer jar, string userCode, string decision)
+        {
+            var url = $"http://localhost/delato/connect/verify?user_code={Uri.EscapeDataString(userCode)}";
+            var page = await SendWithCookiesAsync(client, jar, HttpMethod.Get, url);
+            Assert.True(page.Status == HttpStatusCode.OK, $"verify page: {(int)page.Status} {page.Body}");
+            Assert.Contains("Delato for TV", page.Body);
+            Assert.Contains(System.Net.WebUtility.HtmlEncode(userCode), page.Body);
+            var antiforgery = System.Text.RegularExpressions.Regex.Match(page.Body, "<input type=\"hidden\" name=\"([^\"]+)\" value=\"([^\"]+)\" />");
+            Assert.True(antiforgery.Success, "the verify page carries no antiforgery field");
+
+            var form = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                [System.Net.WebUtility.HtmlDecode(antiforgery.Groups[1].Value)] = System.Net.WebUtility.HtmlDecode(antiforgery.Groups[2].Value),
+                ["user_code"] = userCode,
+                ["decision"] = decision
+            });
+            var answer = await SendWithCookiesAsync(client, jar, HttpMethod.Post, "http://localhost/delato/connect/verify", form);
+            var location = answer.Response.Headers.Location?.ToString() ?? "";
+            _output.WriteLine($"verify {decision} -> {(int)answer.Status} {location} {answer.Body}");
+            Assert.Equal(HttpStatusCode.Redirect, answer.Status);
+            Assert.StartsWith("/delato/connect/verify?done=", location);
+            return location.Substring(location.IndexOf("done=", StringComparison.Ordinal) + 5);
+        }
+
+        private async Task AssertPlainRefusedAsync(HttpClient client, CookieContainer jar, string site, string clientId, string redirect)
+        {
+            var verifier = Base64Url(RandomNumberGenerator.GetBytes(32));
+            var response = await client.SendAsync(AuthorizeWithCookies(jar, site, clientId, redirect, verifier, "plain"));
+            var answer = (response.Headers.Location?.ToString() ?? "") + " " + await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"plain PKCE at '{site}' -> {(int)response.StatusCode} {answer}");
+            Assert.Contains("invalid_request", answer);
+            Assert.DoesNotContain("code=", answer);
         }
 
         private async Task<JsonObject> ExchangeAsync(HttpClient client, string site, string clientId, string redirect, string code, string verifier)

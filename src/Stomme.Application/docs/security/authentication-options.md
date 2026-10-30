@@ -83,10 +83,12 @@ override file's value was ignored).
 With `OpenIddict:Enabled` the installation is an OpenID Connect provider - an authority - for other applications:
 
 - Endpoints: `/connect/authorize`, `/connect/token`, `/connect/userinfo`, `/connect/endsession`, `/connect/revoke` (RFC
-  7009, since 10.76.0; every client may revoke its own tokens), plus
+  7009, since 10.76.0; every client may revoke its own tokens), `/connect/device` and `/connect/verify` (the device
+  authorization grant, since 10.77.0), plus
   `/.well-known/openid-configuration` and `/.well-known/jwks`; and `/connect/whoami`, which answers an access token
   issued here with its subject and scopes.
-- Grants: authorization code with PKCE (PKCE is required server-wide), client credentials, refresh token. Scopes:
+- Grants: authorization code with PKCE (PKCE is required server-wide, method `S256` only - `plain` is neither advertised
+  nor accepted), client credentials, refresh token, and the device authorization grant (below). Scopes:
   `openid`, `email`, `profile`, `offline_access`, `api`.
 - **Userinfo** (`/connect/userinfo`) answers `sub`; with `profile` also `name`, `preferred_username` and `role` - the
   user's role names on the issuer's site, an array, unexpired ones only, `Host` implying `Administrators` and
@@ -111,12 +113,23 @@ With `OpenIddict:Enabled` the installation is an OpenID Connect provider - an au
   one that issued it. Before 10.76.0 a folder site had no authority, and its API expected the host's issuer.
 - **Every token names its site**: a `site` claim with the issuing site's alias (`example.com/shop`), in the access token
   and the id_token (since 10.76.0). `/api/...` refuses a token whose `site` names another site; a module may assert it.
-- **Native apps** (Android, iOS, MAUI, desktop): a `public` client with `authorization_code` (PKCE is required) and
+- **Native apps** (Android, iOS, MAUI, desktop): a `public` client with `authorization_code` (PKCE with `S256` is required) and
   `refresh_token` plus the `offline_access` scope, configured with the site's issuer in a standard OIDC client (AppAuth,
   IdentityModel.OidcClient). Its redirect is a private-use scheme (`com.example.app:/oauth2redirect`) or a loopback IP
   address, `http://127.0.0.1:<port>/path` or `http://[::1]:<port>/path`: a loopback redirect matches the registered one
   on any port (RFC 8252 7.3, since 10.76.0; never `localhost`). On sign-out the app revokes its refresh token at
   `/connect/revoke` and may call `/connect/endsession`. A site never offers a password-for-token endpoint.
+- **Devices without a browser** (a TV, since 10.77.0; RFC 8628): a `public` client with the `device_code` grant (plus
+  `refresh_token` and `offline_access` for a lasting session). The device POSTs `client_id` and `scope` to
+  `/connect/device` and gets a `device_code`, a `user_code` (digits, shown as `1234-5678-9012`), `verification_uri`
+  (the site's `/connect/verify`), `verification_uri_complete` (with the code, for a QR code), `expires_in` (10 minutes)
+  and `interval`. The person opens the verify page on a phone or computer, signs in with the site's normal login, sees
+  which app asks on which site and approves or denies. Meanwhile the device POSTs `grant_type=urn:ietf:params:oauth:grant-type:device_code`,
+  `device_code` and `client_id` to `/connect/token` every `interval` seconds: `authorization_pending` until the person
+  decides, `slow_down` when it polls sooner, `access_denied` after a denial, then the same tokens an authorization-code
+  sign-in gives (the `site` claim included). A code belongs to the site that issued it: the verify page and the token
+  endpoint of any other site refuse it, even one sharing its tenant. A client without the `device_code` grant is
+  refused at `/connect/device`. The verify page is rate-limited like sign-in.
 - **A client limited to sites**: `Sites` on a client (`OpenIddict:Applications:n:Sites`, or Sites on its admin page) lists
   the aliases it may be used at; anywhere else its requests answer `unauthorized_client`, even at a site sharing its
   tenant (since 10.76.0). Without `Sites` a client is usable at every site of its tenant.
@@ -171,6 +184,7 @@ environment's file, `features.json`, environment variables, then `appsettings.ov
 | `OpenIddict:EncryptionCertificatePath` / `...Password` / `...PemPath` / `...KeyPath` | none | The certificate that protects authorization codes; ephemeral without one |
 | `OpenIddict:Applications` | empty | Client applications to create or update (shape below) |
 | `OpenIddict:Scopes` | empty | Custom scopes: `Name`, `DisplayName`, `Description`, `Resources` |
+| `OpenIddict:DevicePollingIntervalSeconds` | `5` | The seconds a device waits between polls of `/connect/token` (the device authorization grant); a sooner poll is answered `slow_down` |
 | `Saml2:Enabled` | `false` | SAML 2.0 sign-in (also needs the two keys below) |
 | `Saml2:IdpEntityId` | none | The identity provider's entity id |
 | `Saml2:IdpMetadataLocation` | none | Its metadata URL or file |
@@ -187,7 +201,7 @@ environment's file, `features.json`, environment variables, then `appsettings.ov
 An `OpenIddict:Applications` item (`Stomme.Models.OpenIddictApplicationSeed`): `ClientId` (required), `ClientSecret`
 or `ClientSecretEnv` (the name of an environment variable holding it; wins over the literal), `DisplayName`, `Type`
 (`confidential`, the default, or `public`), `ConsentType`, `GrantTypes` (`authorization_code`, `client_credentials`,
-`refresh_token`), `Scopes`, `RedirectUris`, `PostLogoutRedirectUris`, `RequirePkce` (default `true`).
+`refresh_token`, `device_code`), `Scopes`, `RedirectUris`, `PostLogoutRedirectUris`, `RequirePkce` (default `true`).
 
 Per-site external login (site settings, **Admin > User Management > Settings**, Host only), the main ones:
 

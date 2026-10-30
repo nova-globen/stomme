@@ -132,7 +132,7 @@ namespace Stomme.Tests.Connectors
     /// <summary>
     /// The SQL Server connector against a shared SQL Server through the HOST's egress (fails, never
     /// skips): refused until the site allowlists the private address; then connected with the scheme's credentials
-    /// and the certificate accepted through the connection's own setting (the shared server's certificate is self-signed);
+    /// and the certificate accepted through the connection's own setting (the test server's certificate is self-signed);
     /// the query operation streams real rows.
     /// </summary>
     [Trait("Category", "ExternalDatabase")]

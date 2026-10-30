@@ -41,7 +41,7 @@ namespace Stomme.Tests
         {
             "RavenGateStore", "PostgresGateStore", "SqlServerGateStore", "PostgresTestEndpoint", "RAVENDB_TEST_URL", "ResolveStore",
             "RavenTestDatabaseJanitor", "CreateDatabaseOperation", "DocumentStore", "NpgsqlConnection",
-            // The SQL Server leg of the module-aggregate conformance suites (the shared test server).
+            // The SQL Server leg of the module-aggregate conformance suites (the test server).
             "SqlServerTestEndpoint", "SqlConnection",
             // The MySQL connector's live tests (a throwaway MySQL on this machine's loopback, scripts/mysql-test-server.ps1).
             "MySqlTestEndpoint",

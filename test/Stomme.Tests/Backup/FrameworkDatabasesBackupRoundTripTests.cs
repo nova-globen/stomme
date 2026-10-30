@@ -291,7 +291,7 @@ namespace Stomme.Tests.Backup
     }
 
     /// <summary>
-    /// SQL Server on a shared test server <c>:1434</c> - original keys through IDENTITY_INSERT, one table at a time, and no reseed:
+    /// SQL Server on the test server (<see cref="SqlServerTestEndpoint"/>) - original keys through IDENTITY_INSERT, one table at a time, and no reseed:
     /// the Setting identity is rewound to where a fresh database would start, and the restore's explicit keys carry it past
     /// every restored row by themselves.
     /// </summary>

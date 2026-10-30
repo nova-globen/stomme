@@ -1,6 +1,6 @@
 ---
 name: stomme-oidc-provider
-description: Use when a Nova Globen Stomme installation must act as an OpenID Connect / OAuth 2.0 provider - single sign-on for other applications, access tokens for calling the site's API from a script, a service or a mobile app, client-credentials service accounts, registering client applications, or setting the signing certificate - or when tokens stop working after a restart, are rejected as ID2088, or a discovery document answers 404.
+description: Use when a Nova Globen Stomme installation must act as an OpenID Connect / OAuth 2.0 provider - single sign-on for other applications, access tokens for calling the site's API from a script, a service, a mobile app or a TV (the device authorization grant), client-credentials service accounts, registering client applications, or setting the signing certificate - or when tokens stop working after a restart, are rejected as ID2088, or a discovery document answers 404.
 ---
 
 # Run the OpenID Connect provider
@@ -71,7 +71,8 @@ per-site issuer, the endpoints and every key.
    `ClientSecretEnv` names an environment variable holding the secret, so the secret never enters a file; the variable
    must be set in the app's own environment. A browser or mobile app is `"Type": "public"` with no secret. PKCE is
    required for every authorization-code request, confidential clients included (a request without `code_challenge`
-   is refused with "The mandatory 'code_challenge' parameter is missing."). A client gets only the endpoints, grants
+   is refused with "The mandatory 'code_challenge' parameter is missing."), and the method is `S256` only: discovery
+   lists `code_challenge_methods_supported: ["S256"]` and `code_challenge_method=plain` is refused with `invalid_request`. A client gets only the endpoints, grants
    and scopes listed. Include `api` in `Scopes` for a client that calls the site's API. A changed item (a new redirect
    URI, for example) is applied at the next start.
 
@@ -115,6 +116,13 @@ per-site issuer, the endpoints and every key.
    `POST api/OpenIddict/applications/{clientId}/service-account` as the Host). The account is created on the site you
    are on, already in `Registered Users`; grant it further roles in **Admin > User Management** as for a person.
    Without a service account a client-credentials token signs nobody in on `/api/...`.
+9. **A device without a browser** (a TV app, since 10.77.0): register a `public` client with
+   `"GrantTypes": [ "device_code", "refresh_token" ]` and `"Scopes": [ "openid", "profile", "offline_access", "api" ]`
+   (add `"Sites"` to keep it to one site). The device POSTs `client_id` and `scope` to `{issuer}/connect/device`, shows
+   the `user_code` and `verification_uri` (or a QR code of `verification_uri_complete`), and polls `{issuer}/connect/token`
+   with `grant_type=urn:ietf:params:oauth:grant-type:device_code`, `device_code` and `client_id` every `interval` seconds
+   until it gets tokens or `access_denied`; `slow_down` means poll less often. The person approves on the site's
+   `/connect/verify` after signing in. `OpenIddict:DevicePollingIntervalSeconds` sets the interval (default 5).
 
 ## Verify
 
@@ -157,6 +165,10 @@ production use `https://`.
    Delete the client in **Admin > Identity Provider** (or `DELETE api/OpenIddict/applications/{clientId}`) and call
    `/api/...` with its old token: it is anonymous at once (`/connect/whoami` answers 401). A client declared in
    `OpenIddict:Applications` comes back at the next start.
+7. A device client (step 9): `POST {issuer}/connect/device` answers `device_code`, `user_code`, `verification_uri` and
+   `interval`; polling `/connect/token` answers `authorization_pending`; after approving on `{issuer}/connect/verify` the
+   next poll answers tokens whose `site` claim is the issuing site. The same code entered on another site's verify page
+   is refused ("belongs to another site"), and a client without the `device_code` grant is refused at `/connect/device`.
 
 ## Common mistakes
 
@@ -175,6 +187,8 @@ production use `https://`.
   elsewhere must be named, or the provider sees plain HTTP.
 - **"The mandatory 'code_challenge' parameter is missing."** The client does not send PKCE; every authorization-code
   request needs it, a confidential client's too.
+- **`invalid_request` on authorize with `code_challenge_method=plain`.** Only `S256` is accepted (RFC 7636, RFC 8252); send
+  the SHA-256 of the verifier, base64url-encoded, with `code_challenge_method=S256`.
 - **A token works on one host name and not on another.** By design: the issuer is the host name. Use the host name the
   token was issued at.
 - **The API ignores the token.** It lacks the `api` scope (the client was not registered with it, or did not request

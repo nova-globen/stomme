@@ -369,7 +369,7 @@ namespace Stomme.Tests
         {
             public const string ProviderName = "PostgreSQL";
 
-            // Endpoint + credentials are resolved centrally (PostgresTestEndpoint): the shared test server
+            // Endpoint + credentials are resolved centrally (PostgresTestEndpoint): this machine's test
             // instance by default, env-overridable. The account must be able to CREATE DATABASE — the guard
             // CREATEs a fresh database per run and drops it in Cleanup.
             private static readonly string DatabaseName =

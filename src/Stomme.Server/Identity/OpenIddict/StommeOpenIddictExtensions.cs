@@ -188,11 +188,20 @@ namespace Stomme.Identity.OpenIddict
                     options.AllowAuthorizationCodeFlow()
                         .RequireProofKeyForCodeExchange();
 
+                    // PKCE with S256 only (BL-271; RFC 7636 4.2, RFC 8252 8.1): an authority that serves native apps neither
+                    // advertises nor accepts the plain method. OpenIddict's default set holds both; discovery lists this set and
+                    // the authorization endpoint refuses a method outside it.
+                    options.Configure(server => server.CodeChallengeMethods.Remove(CodeChallengeMethods.Plain));
+
                     // Client/scope work (b): refresh tokens, so an interactive session survives access-token
                     // expiry without a full re-authorization. Opt-in PER CLIENT — a client gets refresh tokens
                     // only if it has the refresh_token grant permission AND requests offline_access, so a stock
                     // client-credentials client is unaffected.
                     options.AllowRefreshTokenFlow();
+
+                    // The device authorization grant (RFC 8628, D117) - a TV signs in through the person's phone. Opt-in per
+                    // client: only a client holding the device_code grant reaches connect/device or redeems a device code.
+                    DeviceAuthorizationEndpoints.Configure(options, configuration);
 
                     options.RegisterScopes(Scopes.OpenId, Scopes.Email, Scopes.Profile, Scopes.OfflineAccess, "api");
 
@@ -240,7 +249,8 @@ namespace Stomme.Identity.OpenIddict
                         .EnableTokenEndpointPassthrough()
                         .EnableAuthorizationEndpointPassthrough()
                         .EnableUserInfoEndpointPassthrough()
-                        .EnableEndSessionEndpointPassthrough();
+                        .EnableEndSessionEndpointPassthrough()
+                        .EnableEndUserVerificationEndpointPassthrough();
 
                     // Local dev/integration tests run over plain HTTP.
                     if (environment.IsDevelopment())
@@ -407,12 +417,25 @@ namespace Stomme.Identity.OpenIddict
                 // principal it originally stored. Re-issue by signing that principal back in — destinations are
                 // preserved, so the id_token keeps sub/name/email and a new refresh token is rotated in when the
                 // client holds offline_access.
-                if (request.IsAuthorizationCodeGrantType() || request.IsRefreshTokenGrantType())
+                // The device code grant (D117) redeems the principal the person approved at connect/verify the same way.
+                if (request.IsAuthorizationCodeGrantType() || request.IsRefreshTokenGrantType() || request.IsDeviceCodeGrantType())
                 {
                     var result = await context.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
                     if (result?.Succeeded != true || result.Principal == null)
                     {
                         return UnsupportedGrant();
+                    }
+
+                    // A device code is redeemed only at the site that issued it, even where sites share a tenant's store.
+                    if (request.IsDeviceCodeGrantType() && !DeviceAuthorizationEndpoints.IsThisSite(context, result.Principal))
+                    {
+                        return Results.Forbid(
+                            authenticationSchemes: new[] { OpenIddictServerAspNetCoreDefaults.AuthenticationScheme },
+                            properties: new AuthenticationProperties(new Dictionary<string, string>
+                            {
+                                [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
+                                [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "This device code was issued at another site."
+                            }));
                     }
 
                     return Results.SignIn(result.Principal, new AuthenticationProperties(),
@@ -421,6 +444,9 @@ namespace Stomme.Identity.OpenIddict
 
                 return UnsupportedGrant();
             });
+
+            // connect/verify - where a person approves a device's sign-in (D117).
+            DeviceAuthorizationEndpoints.Map(endpoints);
 
             // UserInfo endpoint — returns the standard OIDC claims for the access token's subject. The
             // consumer calls this because ExternalLogin sets GetClaimsFromUserInfoEndpoint = true, so a broken
@@ -513,7 +539,7 @@ namespace Stomme.Identity.OpenIddict
         /// the access token and the id_token so the OIDC consumer can read the identity from the id_token
         /// (which is validated before userinfo is called); everything else stays in the access token only.
         /// </summary>
-        private static IEnumerable<string> GetDestinations(Claim claim)
+        internal static IEnumerable<string> GetDestinations(Claim claim)
         {
             switch (claim.Type)
             {

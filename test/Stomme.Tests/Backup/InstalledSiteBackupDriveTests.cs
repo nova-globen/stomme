@@ -356,7 +356,7 @@ namespace Stomme.Tests.Backup
         private protected override IGateStore Store() => new RavenGateStore();
     }
 
-    /// <summary>The same drive on SQL Server (a shared test server <c>:1434</c>) - installed fresh, it has no template clone.</summary>
+    /// <summary>The same drive on SQL Server (the test server, <see cref="SqlServerTestEndpoint"/>) - installed fresh, it has no template clone.</summary>
     [Trait("Category", "ExternalDatabase")]
     public sealed class SqlServerInstalledSiteBackupDriveTests(ITestOutputHelper output) : InstalledSiteBackupDriveTests(output)
     {

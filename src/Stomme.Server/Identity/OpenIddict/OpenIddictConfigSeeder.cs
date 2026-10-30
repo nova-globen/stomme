@@ -242,6 +242,12 @@ namespace Stomme.Identity.OpenIddict
             {
                 descriptor.Permissions.Add(Permissions.GrantTypes.RefreshToken);
             }
+            // The device authorization grant (RFC 8628, D117): opt-in, so a client without it never reaches connect/device.
+            if (grants.Contains("device_code") || grants.Contains(GrantTypes.DeviceCode))
+            {
+                descriptor.Permissions.Add(Permissions.Endpoints.DeviceAuthorization);
+                descriptor.Permissions.Add(Permissions.GrantTypes.DeviceCode);
+            }
 
             foreach (var uri in seed.RedirectUris ?? Enumerable.Empty<string>())
             {

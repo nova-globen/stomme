@@ -9,6 +9,6 @@
   <PropertyGroup>
     <!-- Mirror the framework package version (root Directory.Build.props <Version>), so Stomme.Sdk
          is versioned in lock-step with the module-facing packages it depends on. -->
-    <Version>10.76.0</Version>
+    <Version>10.77.0</Version>
   </PropertyGroup>
 </Project>

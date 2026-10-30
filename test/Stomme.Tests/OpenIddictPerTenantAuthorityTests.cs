@@ -56,7 +56,7 @@ namespace Stomme.Tests
     /// </list>
     /// <para>
     /// PROVIDER DIMENSION. SQLite is the always-on case (two files = true per-tenant DB isolation, no external
-    /// service). PostgreSQL runs additionally when reachable (shared test servers by default; see PostgresTestEndpoint). Unlike the
+    /// service). PostgreSQL runs additionally when reachable (this machine's test server by default; see PostgresTestEndpoint). Unlike the
     /// render guard there is NO "must have a real async provider" assertion here, and that is deliberate:
     /// the isolation mechanism under test — per-alias store routing, host-inferred issuer, the validation
     /// issuer check — lives above the database and is provider-independent, so SQLite is genuine cover, not a

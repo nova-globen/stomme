@@ -19,7 +19,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// answers <c>false</c>, and until this fixture existed that answer was in a comment, not in the suite.
 /// <para>
 /// <b>Two scratch PostgreSQL databases per test, mirroring the two contexts</b> — the same two-connection
-/// shape as the SQLite twin, on the shared test server (<c>stomme_conformance_fst_*</c> tenant,
+/// shape as the SQLite twin, on the test PostgreSQL (<c>stomme_conformance_fst_*</c> tenant,
 /// <c>stomme_conformance_fsm_*</c> master), force-dropped in teardown, stale leftovers swept at
 /// initialization (see <see cref="PostgresConformanceEndpoint"/>). FAILS, never skips, when PostgreSQL is
 /// unreachable; <see cref="PostgresParityCoverageTests"/> is the named diagnosis.

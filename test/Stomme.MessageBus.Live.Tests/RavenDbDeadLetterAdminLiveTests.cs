@@ -20,7 +20,7 @@ namespace Stomme.MessageBus.Live.Tests;
 /// </summary>
 public sealed class RavenDbDeadLetterAdminLiveTests : IAsyncLifetime
 {
-    private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") ?? "http://localhost:8080";
+    private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") is { Length: > 0 } url ? url : "http://127.0.0.1:7000";
 
     private static bool Available => Probe.HttpOk(Url);
 

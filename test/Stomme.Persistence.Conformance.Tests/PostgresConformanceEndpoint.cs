@@ -9,12 +9,15 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// PostgreSQL test-endpoint resolution for the conformance fixtures — a local equivalent of
 /// <c>Stomme.Tests.PostgresTestEndpoint</c> (this project cannot reference that one), following the same
 /// convention: env-overridable via <c>POSTGRES_TEST_HOST</c>/<c>POSTGRES_TEST_PORT</c>/<c>POSTGRES_TEST_USER</c>/
-/// <c>POSTGRES_TEST_PASSWORD</c>, defaulting to the shared test server (<c>192.168.10.20:5433</c>)
-/// with the password from <c>DEFAULT_PASSWORD</c>. Set <c>POSTGRES_TEST_*</c> to point the suites at your own server.
+/// <c>POSTGRES_TEST_PASSWORD</c>, defaulting to this machine's throwaway PostgreSQL that
+/// <c>scripts/postgres-test-server.ps1</c> makes on <c>127.0.0.1:15433</c>, its password read from the file that script
+/// writes under the user's temp folder (the shared test servers are gone, 2026-10-29). Set <c>POSTGRES_TEST_*</c> to point
+/// the suites at another server (a CI job's service container).
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>This is SHARED infrastructure</b>, so scratch-database hygiene is a mechanism, not a politeness:
+/// The server outlives a run (the gate removes it after a full run, a developer may keep it), so scratch-database hygiene is
+/// a mechanism, not a politeness:
 /// every fixture database is created under a fixture-owned <c>stomme_conformance_*</c> prefix, dropped in
 /// teardown with <c>DROP DATABASE ... WITH (FORCE)</c>, and — because a KILLED run never reaches teardown —
 /// each fixture sweeps its own prefix's stale leftovers at initialization, the
@@ -31,20 +34,31 @@ internal static class PostgresConformanceEndpoint
     private static readonly ConcurrentDictionary<string, bool> SweptPrefixes = new();
 
     public static string Host =>
-        Environment.GetEnvironmentVariable("POSTGRES_TEST_HOST") ?? "localhost";
+        Environment.GetEnvironmentVariable("POSTGRES_TEST_HOST") is { Length: > 0 } host ? host : "127.0.0.1";
 
     public static int Port =>
-        int.TryParse(Environment.GetEnvironmentVariable("POSTGRES_TEST_PORT"), out var port) ? port : 5433;
+        int.TryParse(Environment.GetEnvironmentVariable("POSTGRES_TEST_PORT"), out var port) ? port : 15433;
 
     public static string User =>
-        Environment.GetEnvironmentVariable("POSTGRES_TEST_USER") ?? "postgres";
+        Environment.GetEnvironmentVariable("POSTGRES_TEST_USER") is { Length: > 0 } user ? user : "postgres";
 
-    // No password literal is kept in the source: without POSTGRES_TEST_PASSWORD or DEFAULT_PASSWORD
-    // the server refuses the sign-in (28P01), which names the cause. Mirrors Stomme.Tests.PostgresTestEndpoint.
-    public static string Password =>
-        Environment.GetEnvironmentVariable("POSTGRES_TEST_PASSWORD")
-        ?? Environment.GetEnvironmentVariable("DEFAULT_PASSWORD")
-        ?? string.Empty;
+    // No password literal is kept in the source: POSTGRES_TEST_PASSWORD, else the local server's password file, else a
+    // failure that says how to get one. Mirrors Stomme.Tests.PostgresTestEndpoint.
+    public static string Password
+    {
+        get
+        {
+            if (Environment.GetEnvironmentVariable("POSTGRES_TEST_PASSWORD") is { Length: > 0 } given)
+            {
+                return given;
+            }
+
+            var file = Path.Combine(Path.GetTempPath(), "stomme-postgres-test", "password");
+            return System.IO.File.Exists(file)
+                ? System.IO.File.ReadAllText(file).Trim()
+                : throw new InvalidOperationException($"No PostgreSQL test server: run 'pwsh scripts/postgres-test-server.ps1' (a throwaway PostgreSQL on 127.0.0.1:15433, its password in {file}) or set POSTGRES_TEST_HOST, POSTGRES_TEST_PORT, POSTGRES_TEST_USER and POSTGRES_TEST_PASSWORD.");
+        }
+    }
 
     public static string ConnectionString(string database) =>
         $"Server={Host};Port={Port};Database={database};User Id={User};Password={Password};";
@@ -184,7 +198,6 @@ public sealed class PostgresParityCoverageTests
             $"so the PostgreSQL half of this conformance suite cannot run — and both EF fixtures are SQLite, " +
             $"which structurally cannot represent PostgreSQL's answers (PG's LIKE is case-SENSITIVE where " +
             $"SQLite's is not, the divergence this suite exists to represent). This is a FAILURE and not a skip on " +
-            $"purpose. Make the shared test PostgreSQL server reachable (password in " +
-            $"DEFAULT_PASSWORD) or point POSTGRES_TEST_HOST/PORT/USER/PASSWORD at another PostgreSQL. " +
-            $"Set POSTGRES_TEST_HOST/PORT/USER/PASSWORD to a reachable PostgreSQL.");
+            $"purpose. Start the local test PostgreSQL ('pwsh scripts/postgres-test-server.ps1') " +
+            $"or point POSTGRES_TEST_HOST/PORT/USER/PASSWORD at another PostgreSQL.");
 }

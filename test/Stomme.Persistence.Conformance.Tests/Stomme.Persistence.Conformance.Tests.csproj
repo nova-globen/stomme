@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -15,15 +15,15 @@
     every provider. A test that only one provider passes is a seam that is not a seam.
 
     GATED: this project IS in Stomme.slnx, so `dotnet test Stomme.slnx` runs it. It needs a live
-    RavenDB server via RAVENDB_TEST_URL — the shared test server, http://192.168.10.20:8081. In CI the
+    RavenDB server via RAVENDB_TEST_URL — by default this machine's RavenDB, http://127.0.0.1:7000. In CI the
     parity-suite job points it at a job-local service container instead. When that server is absent the suite FAILS. That is the point: an
     EF-only run of a parity suite certifies nothing, so parity untested reads as failure rather than a green
     skip. RavenParityCoverageTests is the named diagnosis.
 
     The SQLite EF half needs nothing (in-memory for the Widget half, two connections for the framework-store
     half). The suite also needs a live PostgreSQL — the Postgres* fixtures run the same contracts
-    against a scratch database on the shared test server (POSTGRES_TEST_HOST/PORT/USER/PASSWORD, defaulting to
-    192.168.10.20:5433 with DEFAULT_PASSWORD) and FAIL, not skip, when it is unreachable, for the same
+    against a scratch database on the test PostgreSQL (POSTGRES_TEST_HOST/PORT/USER/PASSWORD, defaulting to
+    the throwaway container scripts/postgres-test-server.ps1 makes on 127.0.0.1:15433) and FAIL, not skip, when it is unreachable, for the same
     reason: a SQLite-only EF half cannot represent PostgreSQL's answers (PostgresParityCoverageTests is the
     named diagnosis).
 
@@ -44,7 +44,7 @@
     <!-- The PostgreSQL fixtures (PostgresConformanceTests / PostgresFrameworkStoreConformanceTests).
          Both EF fixtures above are SQLite, which structurally cannot represent PostgreSQL's answers (its
          LIKE is case-SENSITIVE where SQLite's is not — the limit the SQLite fixtures cannot overcome), so the suite now
-         also runs against a live PG scratch database on the shared test server (POSTGRES_TEST_* / DEFAULT_PASSWORD). -->
+         also runs against a live PG scratch database on the test PostgreSQL (scripts/postgres-test-server.ps1, or POSTGRES_TEST_*). -->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <!-- Security pin: force the patched System.Drawing.Common (central 10.0.10) over the transitive
          4.7.0 pulled through Stomme.Server -> Sustainsys.Saml2 (GHSA-rxg9-xrhp-64gj, CRITICAL, NU1904).

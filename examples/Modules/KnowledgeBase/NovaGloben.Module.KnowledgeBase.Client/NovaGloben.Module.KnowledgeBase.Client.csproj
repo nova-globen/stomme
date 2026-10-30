@@ -25,7 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Stomme.Sdk.Slim" Version="10.76.0" />
+    <PackageReference Include="Stomme.Sdk.Slim" Version="10.77.0" />
   </ItemGroup>
 
   <ItemGroup>

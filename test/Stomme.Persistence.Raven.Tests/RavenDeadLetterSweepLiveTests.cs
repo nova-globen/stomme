@@ -28,7 +28,7 @@ namespace Stomme.Persistence.Raven.Tests;
 /// </remarks>
 public sealed class RavenDeadLetterSweepLiveTests : IAsyncLifetime
 {
-    private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") ?? "http://localhost:8080";
+    private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") is { Length: > 0 } url ? url : "http://127.0.0.1:7000";
 
     private readonly string _database = "stomme-dlq-sweep-" + Guid.NewGuid().ToString("N");
     private const string InputQueue = "sweep-input";

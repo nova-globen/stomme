@@ -607,7 +607,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                     var cookies = await LoginAsync(app, client);
                     var hostId = await UserIdAsync(app, HostUsername);
                     var created = await Send<JsonObject>(app, client, cookies, hostId, "/api/ModuleDefinition",
-                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.76.0", moduleDefinitionName = "[Owner].Module.[Module]" },
+                        new { owner = "Acme", name = "FieldNotes", description = "Notes taken in the field.", template = "External", version = "10.77.0", moduleDefinitionName = "[Owner].Module.[Module]" },
                         HttpStatusCode.OK);
                     Assert.Equal("Acme.Module.FieldNotes.Manager.FieldNotesManager, Acme.Module.FieldNotes.Server.Stomme", (string?)created["serverManagerType"]);
                 }
@@ -1022,7 +1022,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
             try { if (File.Exists(path)) File.Delete(path); } catch { }
         }
 
-        // ---- The stores - the shared test servers, read from the environment the broker provides ------------------------------
+        // ---- The stores - this machine's test servers (scripts/postgres-test-server.ps1, the local RavenDB), or the environment
 
         internal abstract class Store
         {
@@ -1106,13 +1106,19 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
 
         private sealed class PostgresStore : Store
         {
-            private static readonly string Server = Environment.GetEnvironmentVariable("POSTGRES_TEST_HOST") ?? "localhost";
-            private static readonly int Port = int.TryParse(Environment.GetEnvironmentVariable("POSTGRES_TEST_PORT"), out var port) ? port : 5433;
-            private static readonly string User = Environment.GetEnvironmentVariable("POSTGRES_TEST_USER") ?? "postgres";
+            // This machine's throwaway PostgreSQL (scripts/postgres-test-server.ps1, 127.0.0.1:15433, its password in a file under
+            // the user's temp folder), or POSTGRES_TEST_* where set.
+            private static readonly string Server = Environment.GetEnvironmentVariable("POSTGRES_TEST_HOST") is { Length: > 0 } host ? host : "127.0.0.1";
+            private static readonly int Port = int.TryParse(Environment.GetEnvironmentVariable("POSTGRES_TEST_PORT"), out var port) ? port : 15433;
+            private static readonly string User = Environment.GetEnvironmentVariable("POSTGRES_TEST_USER") is { Length: > 0 } user ? user : "postgres";
             private readonly string _suffix = Guid.NewGuid().ToString("N").Substring(0, 12);
 
-            private static string Password => Environment.GetEnvironmentVariable("POSTGRES_TEST_PASSWORD") ?? Environment.GetEnvironmentVariable("DEFAULT_PASSWORD")
-                ?? throw new InvalidOperationException("No PostgreSQL password in the environment - set POSTGRES_TEST_PASSWORD (or DEFAULT_PASSWORD) before running the drive.");
+            private static string Password =>
+                Environment.GetEnvironmentVariable("POSTGRES_TEST_PASSWORD") is { Length: > 0 } given ? given
+                : File.Exists(PasswordFile) ? File.ReadAllText(PasswordFile).Trim()
+                : throw new InvalidOperationException($"No PostgreSQL test server: run 'pwsh scripts/postgres-test-server.ps1' (its password in {PasswordFile}) or set POSTGRES_TEST_HOST, POSTGRES_TEST_PORT, POSTGRES_TEST_USER and POSTGRES_TEST_PASSWORD.");
+
+            private static string PasswordFile => Path.Combine(Path.GetTempPath(), "stomme-postgres-test", "password");
 
             private string SiteDb => "stomme_kb_drive_" + _suffix;
 
@@ -1162,7 +1168,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
                     }
                     catch
                     {
-                        // best effort: a failed drop leaves a scratch database on the shared server, named by its prefix
+                        // best effort: a failed drop leaves a scratch database on the test server, named by its prefix
                     }
                 }
             }
@@ -1172,7 +1178,7 @@ namespace NovaGloben.Module.KnowledgeBase.Drive
 
         private sealed class RavenStore : Store
         {
-            private static readonly string Url = Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") ?? "http://localhost:8080";
+            private static readonly string Url = Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") is { Length: > 0 } url ? url : "http://127.0.0.1:7000";
             private readonly string _database = "stomme-kb-drive-" + Guid.NewGuid().ToString("N").Substring(0, 12);
 
             public override string Name => "RavenDB";

@@ -19,10 +19,10 @@ namespace Stomme.MessageBus.Live.Tests;
 /// </summary>
 public sealed class RavenDbTransportLiveTests : IAsyncLifetime
 {
-    // Gated in Stomme.slnx; defaults to the shared test server (the PostgresTestEndpoint convention —
-    // env-overridable via RAVENDB_TEST_URL, defaulting to the shared instance). The older local and
+    // Gated in Stomme.slnx; defaults to this machine's RavenDB (the PostgresTestEndpoint convention —
+    // env-overridable via RAVENDB_TEST_URL, defaulting to http://127.0.0.1:7000). The older local and
     // container defaults (:7000, :8091, :8090) are no longer used.
-    private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") ?? "http://localhost:8080";
+    private static string Url => Environment.GetEnvironmentVariable("RAVENDB_TEST_URL") is { Length: > 0 } url ? url : "http://127.0.0.1:7000";
 
     private static bool Available => Probe.HttpOk(Url);
 

@@ -58,7 +58,7 @@ else
 				</div>
 				<div class="db-field">
 					<Label For="retention" HelpText="Number of days of broken urls to retain" ResourceKey="Retention">Retention (Days): </Label>
-					<FluentNumberInput id="retention" @bind-Value="_retention" Min="0" Step="1" class="db-field-control" />
+					<div class="db-field-control"><input id="retention" type="number" min="0" step="1" class="db-input" @bind="@_retention" /></div>
 				</div>
 			</div>
 			<div class="db-form-actions">

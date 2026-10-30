@@ -16,7 +16,7 @@ namespace Stomme.Identity.OpenIddict
 {
     /// <summary>
     /// Keeps a client registered for named sites (<c>OpenIddict:Applications:n:Sites</c>) to those sites: its authorization,
-    /// token and revocation requests at any other site are refused with <c>unauthorized_client</c>. The OpenIddict store is
+    /// device authorization, token and revocation requests at any other site are refused with <c>unauthorized_client</c>. The OpenIddict store is
     /// per TENANT and several sites can share a tenant, so the store alone would accept the client at every one of them.
     /// A client with no sites is accepted at every site of its tenant, as before.
     /// </summary>
@@ -32,6 +32,7 @@ namespace Stomme.Identity.OpenIddict
             options.AddEventHandler<ValidateAuthorizationRequestContext>(builder => builder.UseScopedHandler<Authorization>().SetOrder(order).SetType(OpenIddictServerHandlerType.Custom));
             options.AddEventHandler<ValidateTokenRequestContext>(builder => builder.UseScopedHandler<Token>().SetOrder(order).SetType(OpenIddictServerHandlerType.Custom));
             options.AddEventHandler<ValidateRevocationRequestContext>(builder => builder.UseScopedHandler<Revocation>().SetOrder(order).SetType(OpenIddictServerHandlerType.Custom));
+            options.AddEventHandler<ValidateDeviceAuthorizationRequestContext>(builder => builder.UseScopedHandler<DeviceAuthorization>().SetOrder(order).SetType(OpenIddictServerHandlerType.Custom));
         }
 
         /// <summary>An alias as the property stores it: trimmed, without a trailing slash, lower case.</summary>
@@ -91,6 +92,11 @@ namespace Stomme.Identity.OpenIddict
         internal sealed class Revocation(IOpenIddictApplicationManager applications) : IOpenIddictServerHandler<ValidateRevocationRequestContext>
         {
             public ValueTask HandleAsync(ValidateRevocationRequestContext context) => CheckAsync(context, context.ClientId, applications);
+        }
+
+        internal sealed class DeviceAuthorization(IOpenIddictApplicationManager applications) : IOpenIddictServerHandler<ValidateDeviceAuthorizationRequestContext>
+        {
+            public ValueTask HandleAsync(ValidateDeviceAuthorizationRequestContext context) => CheckAsync(context, context.ClientId, applications);
         }
     }
 }

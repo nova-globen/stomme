@@ -7,7 +7,7 @@
     packages-only bar is the MODULE's. It keeps its OWN bin - the InstallationManager extracts the module into the entry
     assembly's bin - so the installed module never leaks into the framework's gated suites. NOT in Stomme.slnx.
     Prerequisite: pwsh examples/Modules/KnowledgeBase/pack-knowledgebase.ps1 (after examples/pack-sdk-slim.ps1).
-    The PostgreSQL leg reads its password from the environment (POSTGRES_TEST_PASSWORD, or DEFAULT_PASSWORD).
+    The PostgreSQL leg uses the throwaway server scripts/postgres-test-server.ps1 makes (127.0.0.1:15433, its password in a file under %TEMP%), or POSTGRES_TEST_*; the RavenDB leg this machine's RavenDB (http://127.0.0.1:7000), or RAVENDB_TEST_URL.
   -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>

@@ -9,7 +9,7 @@ namespace Stomme.Persistence.Conformance.Tests;
 /// <summary>
 /// The conformance suite against the EF Core provider ON POSTGRESQL — the database the product
 /// actually ships on, which the SQLite fixture (<see cref="EfCoreConformanceTests"/>) structurally cannot
-/// represent (the limit the SQLite fixtures cannot overcome). Each test creates a scratch database on the shared test server
+/// represent (the limit the SQLite fixtures cannot overcome). Each test creates a scratch database on the test PostgreSQL
 /// (<c>stomme_conformance_wgt_*</c>), <c>EnsureCreated</c>s the fixture context — exactly as the SQLite
 /// twin does — and force-drops it in teardown; stale leftovers of a killed run are swept at initialization
 /// (see <see cref="PostgresConformanceEndpoint"/>).
