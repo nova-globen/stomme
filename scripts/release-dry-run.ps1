@@ -117,10 +117,13 @@ foreach ($p in $packages) {
 # Every file of every package, the app template's agent assets (AGENTS.md, CLAUDE.md, docs/, .claude/skills/) included,
 # read as bytes - as Latin-1 and as UTF-16, so a string in a DLL is found too. A package carries none of the old product
 # names, no forge or registry host, no host of the infrastructure and no broker command.
+# The infrastructure host's address, written once as a plain literal: the public snapshot rewrites that literal to a
+# placeholder, so the rule built from it stays whole there and the public tree names the address in no form.
+$infraAddress = '192.168.10.20'
 $forbidden = @(
     @{ Name = 'an old product name'; Pattern = 'd[i]da[ ._-]?(core|bit|deck|bin)' }
     @{ Name = 'a forge or registry host'; Pattern = 'forgejo|(git|store)\.d[i]da|dl-internal' }
-    @{ Name = 'an infrastructure host'; Pattern = '(runner|docker|store)0\d|ros[t]am|192\.168\.0\.11' }
+    @{ Name = 'an infrastructure host'; Pattern = '(runner|docker|store)0\d|ros[t]am|' + [regex]::Escape($infraAddress) }
     @{ Name = 'a broker command'; Pattern = '(^|[^a-z0-9])ng (exec|api|run|ops|actions|put-profile) ' }
 )
 foreach ($file in Get-ChildItem $push -Filter '*.nupkg' | Sort-Object Name) {

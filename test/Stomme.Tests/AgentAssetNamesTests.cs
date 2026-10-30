@@ -16,12 +16,19 @@ namespace Stomme.Tests
     /// </summary>
     public class AgentAssetNamesTests
     {
+        /// <summary>
+        /// The infrastructure host's address, written once as a plain literal: the public snapshot rewrites that literal to a
+        /// placeholder, and the rule and its sample are both built from it, so they stay in step there and the public tree
+        /// names the address in no form.
+        /// </summary>
+        private const string InfraAddress = "192.168.10.20";
+
         /// <summary>The same rules as the release dry run's names guard (scripts/release-dry-run.ps1).</summary>
         internal static readonly (string Name, Regex Pattern)[] Forbidden =
         {
             ("an old product name", new Regex("d[i]da[ ._-]?(core|bit|deck|bin)", RegexOptions.IgnoreCase)),
             ("a forge or registry host", new Regex(@"forgejo|(git|store)\.d[i]da|dl-internal", RegexOptions.IgnoreCase)),
-            ("an infrastructure host", new Regex(@"(runner|docker|store)0\d|ros[t]am|192\.168\.0\.11", RegexOptions.IgnoreCase)),
+            ("an infrastructure host", new Regex(@"(runner|docker|store)0\d|ros[t]am|" + Regex.Escape(InfraAddress), RegexOptions.IgnoreCase)),
             ("a broker command", new Regex(@"(^|[^a-z0-9])ng (exec|api|run|ops|actions|put-profile) ", RegexOptions.IgnoreCase | RegexOptions.Multiline))
         };
 
@@ -51,13 +58,13 @@ namespace Stomme.Tests
         [InlineData("Restore from https://git.di" + "dabit.com/api/packages/x/index.json", 2)]
         [InlineData("using Di" + "daCore.Shared;", 1)]
         [InlineData("run ng ex" + "ec a-profile -- dotnet test", 1)]
-        [InlineData("a host at 192.168.10.20:5433", 1)]
+        [InlineData("a host at {address}:5433", 1)]
         [InlineData("built on run" + "ner01, then " + "ROS" + "TAM", 1)]
         [InlineData("Stomme on nuget.org, a site at example.com/shop, authorizing API endpoints", 0)]
         [InlineData("the private network 192.168.0.0/16", 0)]
         public void The_rules_find_what_they_should_and_nothing_else(string text, int expected)
         {
-            Assert.Equal(expected, Findings(text).Count);
+            Assert.Equal(expected, Findings(text.Replace("{address}", InfraAddress)).Count);
         }
 
         internal static List<string> Findings(string text) =>
