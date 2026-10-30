@@ -15,7 +15,7 @@ namespace Stomme.Tests
     /// <para>
     /// The shared component layer (<c>--db-*</c>) ships in <c>Stomme.Server/wwwroot/css/app.css</c>, which is
     /// linked on every request. A theme's <c>Theme.css</c> is linked ONLY while that theme is active, and
-    /// Bootstrap arrives ONLY under <c>BlazorTheme</c> (CDN). So an admin module that borrows a Bootstrap
+    /// Bootstrap arrives ONLY under <c>BlazorTheme</c> (the host's <c>lib/bootstrap</c>, which this index deliberately leaves out). So an admin module that borrows a Bootstrap
     /// utility, or invents a class nobody defined, renders **unstyled on the default theme** — silently. The
     /// page still renders; it just looks wrong, and only on themes the author was not looking at. That is
     /// exactly how an earlier breadcrumb defect and this sweep's eleven classes survived unnoticed.

@@ -80,6 +80,13 @@ The sitemap page asks every placed module a visitor may view. `alias` is the ali
 the page's path. Build each `Url` with `Stomme.Shared.Utilities.NavigateUrl(alias, path, Utilities.AddUrlParameters(...))`
 and set `ModifiedOn`.
 
+Each site has its own sitemap: `https://host/sitemap.xml` for a site at the host's root, `https://host/<folder>/sitemap.xml`
+for a site in a folder (each lists only its own pages since 10.78.0; before, a folder site's answered the root's). The
+login, register, reset, 404 and search pages are never listed. `robots.txt` (a root site's only) is the site's `Robots`
+setting, or `User-agent: *`, plus a `Sitemap:` line with the request's scheme unless the setting names one already; behind
+a proxy that scheme is `https` only when the proxy sends `X-Forwarded-Proto`, so put the sitemap's full address in the
+setting when it is not.
+
 ### Upgrades (`ReleaseVersions` and `IInstallable`)
 
 ```csharp

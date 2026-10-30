@@ -84,27 +84,20 @@ namespace Stomme.Infrastructure
                     // handle sitemap.xml request
                     if (context.Request.Path.ToString().Contains("/sitemap.xml") && !context.Request.Path.ToString().Contains("/pages"))
                     {
+                        // A folder site keeps its folder as the PathBase (BL-265): the sitemap page is output-cached by path, and
+                        // without it /folder/sitemap.xml shared the root's cache entry and answered the root's pages.
+                        if (!string.IsNullOrEmpty(alias.Path) && context.Request.Path.StartsWithSegments("/" + alias.Path.Trim('/'), System.StringComparison.OrdinalIgnoreCase))
+                        {
+                            context.Request.PathBase = context.Request.PathBase.Add("/" + alias.Path.Trim('/'));
+                        }
+
                         context.Request.Path = "/pages/sitemap.xml";
                     }
 
                     // handle robots.txt root request (does not support subfolder aliases)
                     if (context.Request.Path.StartsWithSegments("/robots.txt") && string.IsNullOrEmpty(alias.Path))
                     {
-                        string robots = "";
-                        if (sitesettings.ContainsKey("Robots") && !string.IsNullOrEmpty(sitesettings["Robots"]))
-                        {
-                            robots = sitesettings["Robots"];
-                        }
-                        else
-                        {
-                            // allow all user agents by default
-                            robots = $"User-agent: *";
-                        }
-                        if (!robots.ToLower().Contains("Sitemap:"))
-                        {
-                            // add sitemap if not specified
-                            robots += $"\n\nSitemap: {context.Request.Scheme}://{alias.Name}/sitemap.xml";
-                        }
+                        var robots = RobotsText(sitesettings.ContainsKey("Robots") ? sitesettings["Robots"] : null, context.Request.Scheme, alias.Name);
                         context.Response.ContentType = "text/plain";
                         await context.Response.WriteAsync(robots);
                         return;
@@ -120,6 +113,23 @@ namespace Stomme.Infrastructure
         /// Whether <paramref name="path"/> is a request to the folder site's own authority (<c>/folder/connect/...</c> or
         /// <c>/folder/.well-known/...</c>), and the path that remains below the folder.
         /// </summary>
+        /// <summary>
+        /// The site's robots.txt: its <c>Robots</c> setting, or <c>User-agent: *</c>, and a <c>Sitemap:</c> line unless the
+        /// text already has one (in any case - BL-265: the old check lower-cased the text and then looked for "Sitemap:", so it
+        /// never matched and appended a second line). The scheme is the request's after forwarded headers, so behind a proxy it
+        /// is <c>https</c> only when the proxy sends <c>X-Forwarded-Proto</c>; a site can name its sitemap itself in the setting.
+        /// </summary>
+        internal static string RobotsText(string configured, string scheme, string aliasName)
+        {
+            var robots = string.IsNullOrEmpty(configured) ? "User-agent: *" : configured;
+            if (robots.IndexOf("sitemap:", System.StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                robots += $"\n\nSitemap: {scheme}://{aliasName}/sitemap.xml";
+            }
+
+            return robots;
+        }
+
         internal static bool IsAuthorityRequest(string path, string aliasPath, out string authorityPath)
         {
             authorityPath = null;

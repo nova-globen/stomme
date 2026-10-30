@@ -54,6 +54,10 @@ Dockerfile      text eol=lf
 Stomme.Server/wwwroot/Modules/Templates/External/Package/*.sh eol=lf
 Stomme.Server/wwwroot/Themes/Templates/External/Package/*.sh eol=lf
 
+# Vendored third-party files are kept byte for byte (BL-274): a stylesheet or script linked with an SRI hash stops loading
+# if a checkout rewrites its line endings, so these are never normalised.
+src/Stomme.Server/wwwroot/lib/** -text
+
 # Binary: never normalised, never line-diffed. A normalised binary is a corrupted binary.
 *.png           binary
 *.jpg           binary

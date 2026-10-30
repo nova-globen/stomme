@@ -21,7 +21,7 @@
 else if (!string.IsNullOrEmpty(HelpText))
 {
     <span class="@_spanclass" data-tip="@((MarkupString)@_helptext)">
-        <label for="@For" class="@_labelclass">@ChildContent</label> <img src="images/help.png" />
+        <label for="@For" class="@_labelclass">@ChildContent</label> <img src="images/help.png" alt="@HelpText" />
     </span>
 }
 else

@@ -55,6 +55,17 @@ Two string constant classes in `Stomme.Shared` (the `Stomme.Shared` package):
    supports; on a site with another runtime the module's components are not used and Stomme's error module renders in
    its place.
 
+### A static page without Blazor's script
+
+A Static site's page still loads `_framework/blazor.web.js` (about 200 KB with the FluentUI and Stomme JS modules its
+initializers load) for enhanced navigation, interactive islands, FluentUI web components and `[StreamRendering]`. A site
+whose public pages need none of that can leave it out (since 10.78.0): the site setting **`OmitBlazorScriptOnStaticPages`
+= `true`** (a Site setting, `EntityName` `Site`; set it from a module or a site template) drops `blazor.web.js` and
+`js/reload.js` from a page when the site is Static, the visitor is not signed in and no module on the page is
+interactive (the module's `RenderMode` is `Static`). A signed-in user, and any page with an interactive module, still gets
+the script. Turn it on only when the anonymous pages use no FluentUI component and no `[StreamRendering]`: without the
+script those render inert. Stomme's own `js/app.js`, `js/interop.js` and `js/loadjs.min.js` stay.
+
 ### Prerender
 
 With prerender on, the server first renders the interactive component as HTML, then the browser makes it interactive and

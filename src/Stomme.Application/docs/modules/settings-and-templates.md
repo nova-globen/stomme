@@ -55,7 +55,9 @@ missing:
 2. A template whose `Version` is `"*"` (the default) is considered on every startup. A template with a version number is
    applied only while that number is higher than the site's configuration version, and the site's version then moves up to
    it - so it is applied once.
-3. The page is found by `Path` (case-insensitive; `"home"` or `"/"` means the home page). A missing page is created with the
+3. The page is found by `Path` (case-insensitive; `"home"` or `"/"` means the home page). **An EMPTY `Path` does not mean the
+   home page: it is derived from the `Name`** (under `Parent` when one is set), so a home page named `Hem` with no path
+   becomes `/hem` - write `Path = "/"` for the home page. A missing page is created with the
    template's name, title, order, icon, navigation flags and `PermissionList`. An existing page is changed only when the
    template has `Update = true`.
 4. The parent is the page whose path is `Parent`, or, with `Parent` empty, the page at the path's prefix

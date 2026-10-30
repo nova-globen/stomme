@@ -2,7 +2,7 @@
 @inherits ModuleControlBase
 @inject IStringLocalizer<TriStateCheckBox> Localizer 
 
-<img src="@_src" title="@_title" @onclick="SetValue" />
+<img src="@_src" title="@_title" alt="@_title" @onclick="SetValue" />
 
 @code {
     private bool? _value = null;

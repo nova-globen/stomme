@@ -29,7 +29,7 @@ namespace Stomme.Tests
         /// <summary>Files allowed to name a CDN host, each with its reason; an entry that no longer matches fails the gate.</summary>
         private static readonly Dictionary<string, string> Allowed = new()
         {
-            ["Stomme.Shared/Shared/Constants.cs"] = "BL-274: Bootstrap from cdnjs for the stock BlazorTheme and the external theme template, until it is self-hosted"
+            // Empty since BL-274 self-hosted Bootstrap (2026-10-30).
         };
 
         [Fact]

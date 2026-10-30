@@ -12,7 +12,7 @@ namespace Stomme.Tests
     /// <para>
     /// <c>App.razor</c>'s <c>stommeTheme.apply()</c> is the single source of truth for the colour mode. It
     /// sets <c>data-theme</c> (the <c>--db-*</c> layer) and hands the mode to FluentUI 5. It must ALSO set
-    /// Bootstrap 5.3's own <c>data-bs-theme</c>, because <c>BlazorTheme</c> loads Bootstrap from the CDN and
+    /// Bootstrap 5.3's own <c>data-bs-theme</c>, because <c>BlazorTheme</c> loads Bootstrap (the host's copy, BL-274) and
     /// Bootstrap owns its chrome independently.
     /// </para>
     /// <para>

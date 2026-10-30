@@ -28,8 +28,10 @@ namespace Stomme.Tests.Help
     public sealed class LabelHelpTopicTests : BunitContext
     {
         // Recorded from the pre-change Label (see the remarks). Do not "fix" these to match a new rendering.
+        // CORRECTION 2026-10-30 (BL-268, a deliberate change unrelated to help topics): the tooltip's help icon carries its help
+        // text as alt, which axe required; the recording takes that attribute and the self-closed form a dynamic attribute renders in.
         private const string RecordedPlain = "<label for=\"name\" class=\"db-field-label\">Name: </label>";
-        private const string RecordedTooltip = "<span class=\"app-tooltip db-field-label\" data-tip=\"The name\"><label for=\"name\" class=\"db-field-label\">Name: </label> <img src=\"images/help.png\"></span>";
+        private const string RecordedTooltip = "<span class=\"app-tooltip db-field-label\" data-tip=\"The name\"><label for=\"name\" class=\"db-field-label\">Name: </label> <img src=\"images/help.png\" alt=\"The name\" /></span>";
         private const string RecordedClassed = "<label for=\"name\" class=\"db-field-label extra\">Name: </label>";
 
         public LabelHelpTopicTests()

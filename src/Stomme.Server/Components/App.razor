@@ -96,7 +96,7 @@
                         }
                         document.documentElement.setAttribute('data-theme', resolved);
                         document.documentElement.setAttribute('data-theme-mode', mode);
-                        // A Bootstrap-based theme (BlazorTheme loads Bootstrap 5.3 from the CDN)
+                        // A Bootstrap-based theme (BlazorTheme loads Bootstrap 5.3, the host's copy)
                         // owns its OWN colour mode via data-bs-theme. Setting only data-theme would flip the
                         // --db-* layer while Bootstrap's chrome stayed light: on a dark site the body
                         // stays white and the dark --db-* cards carry near-black heading text -- unreadable. Bootstrap ignores this attribute when absent, so
@@ -199,7 +199,10 @@
                 <Routes PageState="@_pageState" RenderMode="@_renderMode" Runtime="@_runtime" AntiForgeryToken="@_antiForgeryToken" AuthorizationToken="@_authorizationToken" Platform="@_platform" @rendermode="InteractiveRenderMode.GetInteractiveRenderMode(_runtime, _prerender)" />
             }
 
-            <script src="_framework/blazor.web.js"></script>
+            @if (!_omitBlazorScript)
+            {
+                <script src="_framework/blazor.web.js"></script>
+            }
             <script src="js/app.js?v=@_fingerprint"></script>
             <script src="js/loadjs.min.js?v=@_fingerprint"></script>
             <script src="js/interop.js?v=@_fingerprint"></script>
@@ -207,7 +210,7 @@
             @((MarkupString)_scripts)
             @((MarkupString)_bodyResources)
             @((MarkupString)_bodyContent)
-            @if (_renderMode == RenderModes.Static)
+            @if (_renderMode == RenderModes.Static && !_omitBlazorScript)
             {
                 <page-script src="./js/reload.js?v=@_fingerprint"></page-script>
             }
@@ -225,6 +228,14 @@
     private string _renderMode = RenderModes.Interactive;
     private string _runtime = Runtimes.Server;
     private bool _prerender = true;
+
+    // BL-269: a site may leave blazor.web.js - and with it the FluentUI and Stomme JS modules its initializers load - off a
+    // static page that needs none of it: the site setting OmitBlazorScriptOnStaticPages, a Static site, a visitor who is
+    // not signed in (no control panel) and no interactive module on the page. Opt-in, because a static page can still
+    // use FluentUI web components or [StreamRendering], both of which need it.
+    public const string OmitBlazorScriptSetting = "OmitBlazorScriptOnStaticPages";
+    private bool _omitBlazorScript;
+    private bool _pageHasInteractiveModule;
     Dictionary<string, object> _bodyAttributes { get; set; } = new();
     private string _fingerprint = "";
     private int _visitorId = -1;
@@ -326,6 +337,10 @@
 
                     // include resources
                     var resources = await GetPageResources(alias, site, page, modules, int.Parse(route.ModuleId, CultureInfo.InvariantCulture), route.Action);
+                    _omitBlazorScript = _renderMode == RenderModes.Static
+                        && Context.User.Identity?.IsAuthenticated != true
+                        && !_pageHasInteractiveModule
+                        && string.Equals(SettingService.GetSetting(site.Settings, OmitBlazorScriptSetting, "false"), "true", StringComparison.OrdinalIgnoreCase);
                     ManageStyleSheets(resources);
                     ManageScripts(resources, alias);
                     AddBodyContent(site.BodyContent);
@@ -808,6 +823,11 @@
                 var moduleobject = Activator.CreateInstance(moduletype) as IModuleControl;
                 if (moduleobject != null)
                 {
+                    if (moduleobject.RenderMode == RenderModes.Interactive)
+                    {
+                        _pageHasInteractiveModule = true;
+                    }
+
                     if (module.ModuleDefinition != null)
                     {
                         resources = AddResources(resources, module.ModuleDefinition.Resources, ResourceLevel.Module, alias, "Modules", moduletype.Namespace, module.ModuleDefinition.Fingerprint, moduleobject.RenderMode);

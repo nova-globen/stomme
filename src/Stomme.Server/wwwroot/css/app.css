@@ -619,7 +619,7 @@ body {
    /private (which renders on BlazorTheme): position:static, visibility:visible, rect
    [777,-197,639,490]. That is defect #1 ("the drawer lays out over the page and eats clicks")
    resurrected for the other theme. These rules are global so that any theme, including a
-   Bootstrap one that brings its own CDN Bootstrap, gets working shared chrome.
+   Bootstrap one that brings its own Bootstrap, gets working shared chrome.
 
    The --db-* tokens themselves are global at the top of this file.
    The wider point: the --db-* system is a framework concern, not a theme's.
@@ -1156,7 +1156,7 @@ body:has(.db-app) #db-boot { display: none; }
 
 /* ===================== Admin page chrome =====================
    Classes the admin modules already USED but that no always-loaded sheet DEFINED, so they rendered
-   unstyled on every theme except BlazorTheme (which happens to load Bootstrap from the CDN). Found by
+   unstyled on every theme except BlazorTheme (which happens to load Bootstrap). Found by
    scripts/scan-unstyled-classes.ps1 and pinned by AdminMarkupIsStyledTests. Kept deliberately plain: this
    restores the structure the markup asks for, it does not introduce a new visual language. */
 

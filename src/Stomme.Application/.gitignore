@@ -34,6 +34,8 @@ Server/wwwroot/Modules/*
 !Server/wwwroot/Modules/Templates
 Server/wwwroot/Modules/Templates/*
 !Server/wwwroot/Modules/Templates/External
+# The templates' shared package versions (BL-264): Create Module and Create Theme copy them beside a new project.
+!Server/wwwroot/Modules/Templates/Directory.Packages.props
 
 Server/wwwroot/Themes/*
 !Server/wwwroot/Themes/Stomme.Themes.*
@@ -42,3 +44,4 @@ Server/wwwroot/Themes/*
 !Server/wwwroot/Themes/Templates
 Server/wwwroot/Themes/Templates/*
 !Server/wwwroot/Themes/Templates/External
+!Server/wwwroot/Themes/Templates/Directory.Packages.props

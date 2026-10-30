@@ -281,7 +281,9 @@ generates before using it:
   Replace the two `Reference` items with `<PackageReference Include="Stomme.Client" Version="<the app's Stomme
   version>" />` and delete the three pinned `Microsoft.*` references; the project then builds (it has no
   `NuGet.config`, so copy the app's).
-- The generated layout uses Bootstrap class names and links Bootstrap from a CDN (`Constants.BootstrapStylesheetUrl`).
+- The generated layout uses Bootstrap class names and links Bootstrap 5.3.8 through `Constants.BootstrapStylesheetUrl` and
+  `BootstrapScriptUrl`, which the host serves itself from the `Stomme.Server` package (`/lib/bootstrap/5.3.8/`, since
+  10.78.0; before, a CDN), with the SRI hashes in `BootstrapStylesheetIntegrity` and `BootstrapScriptIntegrity`.
 - Its `Theme.css` sets no `--db-accent`, so Stomme's controls show the framework's default colour until you add the
   token block above.
 - Its project sets no `StaticWebAssetBasePath`, while its `ThemeInfo` links `_content/<Owner>.Theme.<Name>/Theme.css`

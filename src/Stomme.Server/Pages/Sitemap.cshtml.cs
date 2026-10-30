@@ -34,6 +34,9 @@ namespace Stomme.Pages
         private readonly ITenantManager _tenantManager;
         private Alias _alias;
 
+        // Pages a crawler has no use for beyond the internal ones: the search results page (BL-265).
+        private static readonly string[] NotListed = { "search" };
+
         public SitemapModel(IServiceProvider serviceProvider, IPageRepository pages, IPageModuleRepository pageModules, IModuleDefinitionRepository moduleDefinitions, ISettingRepository settings, IUserPermissions userPermissions, IUrlMappingRepository urlMappings, ISyncManager syncManager, ILogManager logger, ITenantManager tenantManager)
         {
             _serviceProvider = serviceProvider;
@@ -58,7 +61,7 @@ namespace Stomme.Pages
             var pageModules = await _pageModules.GetPageModulesAsync(_alias.SiteId);
             foreach (var page in await _pages.GetPagesAsync(_alias.SiteId))
             {
-                if (await _userPermissions.IsAuthorizedAsync(null, PermissionNames.View, page.PermissionList) && !Constants.InternalPagePaths.Contains(page.Path))
+                if (await _userPermissions.IsAuthorizedAsync(null, PermissionNames.View, page.PermissionList) && !Constants.InternalPagePaths.Contains(page.Path) && !NotListed.Contains(page.Path))
                 {
                     var pageurl = rooturl;
                     if (string.IsNullOrEmpty(page.Url))
