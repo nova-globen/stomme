@@ -21,6 +21,8 @@ Do this for every aggregate of yours that holds a person's id or data.
    `Anonymise` (the site keeps the row, the link to the person is removed - clear the id and any identifying text), or
    `Retain` with a `RetentionReason` (`LegalObligation`, `LegalClaims`, `Security`) and a period, after which
    `PurgeRetainedAsync` deletes it. A person's notes are theirs: Delete.
+   Give each declaration a `Summary` in the person's words (`with { Summary = "your notes" }`): the profile page's
+   Delete My Account section lists it before the person confirms, and `GET api/Erasure/summary` serves the same list.
 
 2. **The erasure participant.** Create `Server/Modules/Notes/DataRights/NoteErasureParticipant.cs`:
 
@@ -43,7 +45,7 @@ namespace Stomme.Application.Modules.Notes.DataRights
 
         public string Name => "Notes";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete(Store) };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete(Store) with { Summary = "your notes" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {
@@ -249,6 +251,7 @@ Export (`DataExport:Enabled` = `true`, restart; the host or an administrator hol
   participant too.
 - **The receipt stays pending.** A participant throws; the run is repeated every minute with every participant. Make
   "nothing to erase" return `0`, never throw.
+- **The profile page lists your store by its participant name.** The declaration has no `Summary`; add one.
 - **Rows from another site erased.** The filter left out `SiteId`. Erasure is per site.
 - **The receipt shows another handling than you meant.** The outcome's `Store` does not match a declaration; the
   receipt uses the declared handling of the matching store.

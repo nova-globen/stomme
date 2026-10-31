@@ -13,7 +13,7 @@ namespace Stomme.Modules.Notifications.Application
     {
         public string Name => "Notification preferences";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("NotificationPreferenceAggregate") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("NotificationPreferenceAggregate") with { Summary = "your notification preferences" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

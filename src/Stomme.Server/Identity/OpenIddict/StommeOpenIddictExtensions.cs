@@ -375,6 +375,12 @@ namespace Stomme.Identity.OpenIddict
                 }
                 identity.SetClaim(SiteClaim, context.GetAlias()?.Name);
 
+                var consent = await ExplicitConsentAsync(context, request, identity, userId);
+                if (consent is not null)
+                {
+                    return consent;
+                }
+
                 var principal = new ClaimsPrincipal(identity);
                 principal.SetScopes(request.GetScopes());
                 principal.SetResources(ApiResource);
@@ -597,6 +603,118 @@ namespace Stomme.Identity.OpenIddict
             {
                 await applications.UpdateAsync(existing, descriptor);
             }
+        }
+
+        /// <summary>The consent page's own form field: <c>accept</c> or <c>deny</c>.</summary>
+        private const string ConsentField = "stomme_consent";
+
+        /// <summary>
+        /// An application registered with EXPLICIT consent asks the signed-in user before it gets a code (BL-251, BL-239's
+        /// D#4: the consent type was stored and shown in the admin form - "Explicit asks the user to approve the requested
+        /// scopes" - and never enforced, so every application signed its users in without asking). The answer is kept as a
+        /// permanent authorization for this user, application and scopes, so the user is asked once; <c>prompt=none</c>
+        /// without one is <c>consent_required</c>; a refusal is <c>access_denied</c>. Implicit consent is unchanged. Null: go on
+        /// and issue the code (the authorization, when there is one, recorded on the identity).
+        /// </summary>
+        private static async Task<IResult> ExplicitConsentAsync(HttpContext context, OpenIddictRequest request, ClaimsIdentity identity, string userId)
+        {
+            var applications = context.RequestServices.GetRequiredService<IOpenIddictApplicationManager>();
+            var application = await applications.FindByClientIdAsync(request.ClientId ?? "", context.RequestAborted);
+            if (application is null || !await applications.HasConsentTypeAsync(application, ConsentTypes.Explicit, context.RequestAborted))
+            {
+                return null;
+            }
+
+            var authorizations = context.RequestServices.GetRequiredService<IOpenIddictAuthorizationManager>();
+            var applicationId = await applications.GetIdAsync(application, context.RequestAborted);
+            var scopes = request.GetScopes();
+            object authorization = null;
+            await foreach (var existing in authorizations.FindAsync(userId, applicationId, Statuses.Valid, AuthorizationTypes.Permanent, scopes, context.RequestAborted))
+            {
+                authorization = existing;
+                break;
+            }
+
+            if (authorization is null)
+            {
+                var decision = context.Request.HasFormContentType ? context.Request.Form[ConsentField].ToString() : "";
+                if (decision is "accept" or "deny")
+                {
+                    var antiforgery = context.RequestServices.GetRequiredService<Microsoft.AspNetCore.Antiforgery.IAntiforgery>();
+                    if (!await antiforgery.IsRequestValidAsync(context))
+                    {
+                        return Results.BadRequest("The consent form expired. Go back to the application and sign in again.");
+                    }
+
+                    if (decision == "deny")
+                    {
+                        return ConsentRefused(Errors.AccessDenied, "The user declined to allow this application.");
+                    }
+
+                    authorization = await authorizations.CreateAsync(identity, userId, applicationId, AuthorizationTypes.Permanent, scopes, context.RequestAborted);
+                }
+                else if (request.HasPromptValue(PromptValues.None))
+                {
+                    return ConsentRefused(Errors.ConsentRequired, "The user has not allowed this application yet.");
+                }
+                else
+                {
+                    var name = await applications.GetLocalizedDisplayNameAsync(application, context.RequestAborted);
+                    return ConsentPage(context, string.IsNullOrWhiteSpace(name) ? request.ClientId : name, scopes);
+                }
+            }
+
+            identity.SetAuthorizationId(await authorizations.GetIdAsync(authorization, context.RequestAborted));
+            return null;
+        }
+
+        private static IResult ConsentRefused(string error, string description) =>
+            Results.Forbid(
+                authenticationSchemes: new[] { OpenIddictServerAspNetCoreDefaults.AuthenticationScheme },
+                properties: new AuthenticationProperties(new Dictionary<string, string>
+                {
+                    [OpenIddictServerAspNetCoreConstants.Properties.Error] = error,
+                    [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = description
+                }));
+
+        /// <summary>
+        /// The consent page: who asks, for what, Allow and Deny - a form that posts the authorization request back to this
+        /// endpoint with the answer and an antiforgery token. Self-contained (the site's stylesheet, no script), every value
+        /// encoded.
+        /// </summary>
+        private static IResult ConsentPage(HttpContext context, string applicationName, System.Collections.Immutable.ImmutableArray<string> scopes)
+        {
+            static string Encode(string value) => System.Net.WebUtility.HtmlEncode(value);
+            var antiforgery = context.RequestServices.GetRequiredService<Microsoft.AspNetCore.Antiforgery.IAntiforgery>();
+            var tokens = antiforgery.GetAndStoreTokens(context);
+            var parameters = context.Request.HasFormContentType
+                ? context.Request.Form.Where(field => field.Key != ConsentField && field.Key != tokens.FormFieldName).SelectMany(field => field.Value.Select(value => (field.Key, Value: value ?? "")))
+                : context.Request.Query.SelectMany(field => field.Value.Select(value => (field.Key, Value: value ?? "")));
+            var site = context.GetAlias()?.Name ?? context.Request.Host.Value;
+
+            var html = new System.Text.StringBuilder();
+            html.Append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
+                .Append("<title>Allow ").Append(Encode(applicationName)).Append("?</title>")
+                .Append("<link rel=\"stylesheet\" href=\"").Append(Encode(context.Request.PathBase + "/css/app.css")).Append("\"></head>")
+                .Append("<body><main style=\"max-width:32rem;margin:3rem auto;padding:0 1rem;\">")
+                .Append("<h1>Allow ").Append(Encode(applicationName)).Append("?</h1>")
+                .Append("<p><strong>").Append(Encode(applicationName)).Append("</strong> asks to sign you in to ").Append(Encode(site)).Append(" and to use:</p><ul>");
+            foreach (var scope in scopes)
+            {
+                html.Append("<li>").Append(Encode(scope)).Append("</li>");
+            }
+
+            html.Append("</ul><form method=\"post\" action=\"").Append(Encode(context.Request.PathBase + context.Request.Path)).Append("\">")
+                .Append("<input type=\"hidden\" name=\"").Append(Encode(tokens.FormFieldName)).Append("\" value=\"").Append(Encode(tokens.RequestToken ?? "")).Append("\">");
+            foreach (var (key, value) in parameters)
+            {
+                html.Append("<input type=\"hidden\" name=\"").Append(Encode(key)).Append("\" value=\"").Append(Encode(value)).Append("\">");
+            }
+
+            html.Append("<button type=\"submit\" class=\"db-btn\" name=\"").Append(ConsentField).Append("\" value=\"accept\">Allow</button> ")
+                .Append("<button type=\"submit\" class=\"db-btn db-btn-neutral\" name=\"").Append(ConsentField).Append("\" value=\"deny\">Deny</button>")
+                .Append("</form></main></body></html>");
+            return Results.Content(html.ToString(), "text/html; charset=utf-8");
         }
     }
 }

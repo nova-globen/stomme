@@ -7,7 +7,9 @@ After=network.target
 # the installer fills it in based on the bundle it unpacked.
 WorkingDirectory=@APP_DIR@
 ExecStart=@EXEC_START@
-Restart=on-failure
+# Always: the admin "Restart Application" ends the process CLEANLY (StopApplication), so on-failure would leave the site
+# down (BL-251, BL-239's A3).
+Restart=always
 RestartSec=5
 User=@USER@
 Environment=ASPNETCORE_ENVIRONMENT=Production

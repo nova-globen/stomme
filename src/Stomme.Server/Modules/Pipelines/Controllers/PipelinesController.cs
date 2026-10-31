@@ -77,6 +77,15 @@ namespace Stomme.Modules.Pipelines.Controllers
             });
 
         /// <summary>
+        /// Checks a graph by the rule the save applies, without saving it: the reasons it would be refused, an empty list when
+        /// none (BL-251, BL-239's G5: only the AI gateway could ask).
+        /// </summary>
+        [HttpPost("graph/validate")]
+        [RequiresPermissionKey(PipelinesPermissions.Manage)]
+        public Task<IActionResult> ValidateGraph([FromBody] PipelineGraph graph, CancellationToken ct) =>
+            RunAsync(async () => Ok(await _mediator.Send(new ValidateGraphQuery(graph), ct)));
+
+        /// <summary>
         /// The collaborating save: the graph with the one it was based on. 200 when it applied or merged,
         /// 409 - carrying the conflicts and the graph stored now - when a field it changed was changed by someone else.
         /// </summary>

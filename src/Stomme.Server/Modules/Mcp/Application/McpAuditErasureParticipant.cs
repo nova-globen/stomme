@@ -20,7 +20,7 @@ namespace Stomme.Modules.Mcp.Application
 
         public string Name => "MCP audit";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Retain("McpAuditEntryAggregate", RetentionReason.Security, RetentionPeriod) };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Retain("McpAuditEntryAggregate", RetentionReason.Security, RetentionPeriod) with { Summary = "the record of what AI tools did on your behalf" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

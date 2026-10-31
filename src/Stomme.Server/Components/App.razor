@@ -201,11 +201,14 @@
 
             @if (!_omitBlazorScript)
             {
+                @* interop.js and the loadjs it uses are called only through Blazor's JS interop, and app.js holds the old
+                   subMenu() helper nothing calls: without blazor.web.js all three are dead weight (BL-278, the website
+                   measured 22 KB and three requests per page). *@
                 <script src="_framework/blazor.web.js"></script>
+                <script src="js/app.js?v=@_fingerprint"></script>
+                <script src="js/loadjs.min.js?v=@_fingerprint"></script>
+                <script src="js/interop.js?v=@_fingerprint"></script>
             }
-            <script src="js/app.js?v=@_fingerprint"></script>
-            <script src="js/loadjs.min.js?v=@_fingerprint"></script>
-            <script src="js/interop.js?v=@_fingerprint"></script>
 
             @((MarkupString)_scripts)
             @((MarkupString)_bodyResources)
@@ -232,7 +235,8 @@
     // BL-269: a site may leave blazor.web.js - and with it the FluentUI and Stomme JS modules its initializers load - off a
     // static page that needs none of it: the site setting OmitBlazorScriptOnStaticPages, a Static site, a visitor who is
     // not signed in (no control panel) and no interactive module on the page. Opt-in, because a static page can still
-    // use FluentUI web components or [StreamRendering], both of which need it.
+    // use FluentUI web components or [StreamRendering], both of which need it. js/app.js, js/loadjs.min.js and
+    // js/interop.js go with it (BL-278): nothing calls them without Blazor's JS interop.
     public const string OmitBlazorScriptSetting = "OmitBlazorScriptOnStaticPages";
     private bool _omitBlazorScript;
     private bool _pageHasInteractiveModule;

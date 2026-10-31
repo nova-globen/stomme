@@ -158,10 +158,9 @@ namespace Stomme.Application.Modules.Notes.Application
 
 - **The app does not start, or the service cannot be resolved, while the bus is off.** Cause: a constructor takes
   `IEventBus`. Fix: take `IEnumerable<IEventBus>`.
-- **Startup fails with the bus off after adding the subscription**, with "Unable to resolve service for type
-  'Rebus.Bus.IBus' while attempting to activate 'Stomme.Infrastructure.EventBus.BusSubscriptionInitializer'". Cause:
-  `AddBusSubscription` called unconditionally; its hosted service needs the bus. Fix: guard it with `Messaging:Enabled` as
-  in step 3.
+- **Startup fails with the bus off after adding the subscription** (Stomme before 10.79.0 only), with "Unable to resolve
+  service for type 'Rebus.Bus.IBus'...". Cause: `AddBusSubscription` called unconditionally on an older Stomme. Fix: guard
+  it with `Messaging:Enabled` as in step 3, or upgrade; since 10.79.0 a subscription with the bus off does nothing.
 - **The domain event handler never runs.** Cause: `IUnitOfWork.SaveChangesAsync` not called after the repository write, or
   the handler not registered. Fix: both.
 - **A handler's work happens twice, or is lost on an error.** Cause: the domain event handler calls `SaveChangesAsync`,

@@ -203,7 +203,7 @@
                     </select>
                 </div>
                 <button type="button" class="db-btn db-btn-block" @onclick="@AddModule">@Localizer["Page.Module.Add"]</button>
-                @((MarkupString)_message)
+                @((MarkupString)Utilities.SafeMessageMarkup(_message))
                 <hr class="db-drawer-rule" />
             }
 

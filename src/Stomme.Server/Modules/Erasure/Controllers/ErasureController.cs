@@ -37,6 +37,15 @@ namespace Stomme.Modules.Erasure.Controllers
             _siteState = siteState;
         }
 
+        /// <summary>
+        /// What deleting an account does on this site (BL-276): for anyone, signed in or not - it is the same for every
+        /// person, holds no personal data, and is what a privacy statement says anyway.
+        /// </summary>
+        [HttpGet("summary")]
+        [AllowAnonymous]
+        public List<ErasureSummaryItem> Summary([FromServices] IEnumerable<Stomme.Erasure.ISubjectErasureParticipant> participants) =>
+            Application.ErasureSummary.Build(participants);
+
         [HttpGet("receipts")]
         public async Task<IReadOnlyList<ErasureReceiptView>> Receipts([FromQuery] int take, CancellationToken ct) =>
             (await _requests.ListForSiteAsync(_siteState.Alias.SiteId, take <= 0 ? 100 : take, ct)).Select(ToView).ToList();

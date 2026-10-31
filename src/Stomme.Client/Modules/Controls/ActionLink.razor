@@ -185,8 +185,11 @@
                 }
                 else
                 {
-                    security = SecurityAccessLevel.Anonymous; // occurs when an action does not have a corresponding module control
-                    Class = "db-btn db-btn-warn"; // alert developer of missing module control
+                    // An action with no module control behind it: shown to the Host alone, in the warning style, to alert the
+                    // developer (BL-251, BL-239's fact-check: it fell back to Anonymous - shown to everyone - and set Class
+                    // after _classname had been copied, so the warning never showed).
+                    security = SecurityAccessLevel.Host;
+                    _classname = "db-btn db-btn-warn";
                 }
             }
             else

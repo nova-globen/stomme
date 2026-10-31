@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             foreach (var assembly in assemblies)
             {
                 // check if assembly contains MVC Controllers
-                if (assembly.GetTypes().Any(t => t.IsSubclassOf(typeof(Controller)) || t.IsSubclassOf(typeof(Page))))
+                if (assembly.GetTypes().Any(t => t.IsSubclassOf(typeof(ControllerBase)) || t.IsSubclassOf(typeof(Page)))) // ControllerBase: an API controller without views (BL-251, A11)
                 {
                     var partFactory = ApplicationPartFactory.GetApplicationPartFactory(assembly);
                     foreach (var part in partFactory.GetApplicationParts(assembly))

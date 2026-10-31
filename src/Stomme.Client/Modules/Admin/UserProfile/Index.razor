@@ -195,6 +195,25 @@
                 <br />
                 <Section Name="DeleteAccount" Heading="Delete My Account" ResourceKey="DeleteAccount">
                     <p style="margin:0 0 0.5rem 0;color:var(--db-text-2);">@Localizer["DeleteAccount.HelpText"]</p>
+                    @if (_erasure.Count > 0)
+                    {
+                        <div>
+                            @foreach (var (handling, heading) in new[] { ("Delete", "DeleteAccount.Erased"), ("Anonymise", "DeleteAccount.Anonymised"), ("Retain", "DeleteAccount.Retained") })
+                            {
+                                var items = ErasureItems(handling).ToList();
+                                if (items.Count > 0)
+                                {
+                                    <p style="margin:0.5rem 0 0.25rem 0;"><strong>@Localizer[heading]</strong></p>
+                                    <ul style="margin:0 0 0.5rem 0;">
+                                        @foreach (var item in items)
+                                        {
+                                            <li>@(handling == "Retain" ? RetentionText(item) : item.Description)</li>
+                                        }
+                                    </ul>
+                                }
+                            }
+                        </div>
+                    }
                     <ActionDialog Header="Delete My Account" Message="@Localizer["Confirm.Account.Delete"]" Action="Delete My Account" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAccount())" ResourceKey="DeleteAccount" />
                 </Section>
                 <br />
@@ -511,6 +530,30 @@
     private string _filter = "to";
     private List<Notification> _notifications;
     private string _notificationSummary = string.Empty;
+    private List<Stomme.Models.Erasure.ErasureSummaryItem> _erasure = new();
+
+    /// <summary>
+    /// The erasure participants' declarations, grouped as the section shows them. A site without the erasure service, or
+    /// a failed read, shows the help text alone - the list is an addition to it, never the only statement.
+    /// </summary>
+    private async Task<List<Stomme.Models.Erasure.ErasureSummaryItem>> LoadErasureSummaryAsync()
+    {
+        try
+        {
+            var service = ServiceProvider.GetService(typeof(Stomme.Modules.Erasure.Services.IErasureService)) as Stomme.Modules.Erasure.Services.IErasureService;
+            return service is null ? new() : await service.GetSummaryAsync();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading The Erasure Summary {Error}", ex.Message);
+            return new();
+        }
+    }
+
+    private IEnumerable<Stomme.Models.Erasure.ErasureSummaryItem> ErasureItems(string handling) => _erasure.Where(item => item.Handling == handling);
+
+    private string RetentionText(Stomme.Models.Erasure.ErasureSummaryItem item) =>
+        string.Format(Localizer["DeleteAccount.RetainedFor"], item.Description, Localizer["DeleteAccount.Reason." + item.Reason], item.RetentionDays);
 
     protected override async Task OnInitializedAsync()
     {
@@ -571,6 +614,12 @@
 
                 // notification section
                 await LoadNotificationsAsync();
+
+                // delete-account section: what deleting the account does on this site (BL-276)
+                if (!UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
+                {
+                    _erasure = await LoadErasureSummaryAsync();
+                }
 
                 _initialized = true;
             }

@@ -142,7 +142,7 @@ namespace Stomme.Extensions
             // execute any IServerStartup logic
             app.ConfigureStommeAssemblies(environment);
 
-            if (configuration.GetSection("UseSwagger").Value == "true")
+            if (string.Equals(configuration.GetSection("UseSwagger").Value, "true", StringComparison.OrdinalIgnoreCase)) // a JSON true reads "True" (BL-251, A7)
             {
                 app.UseEndpoints(endpoints => endpoints.MapOpenApi());
             }

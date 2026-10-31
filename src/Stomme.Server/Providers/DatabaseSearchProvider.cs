@@ -85,6 +85,7 @@ public class DatabaseSearchProvider(
         if (searchContent.IsDeleted)
         {
             await _searchContentRepository.DeleteSearchContentAsync(
+                searchContent.SiteId,
                 searchContent.EntityName,
                 searchContent.EntityId).ConfigureAwait(false);
 
@@ -96,6 +97,7 @@ public class DatabaseSearchProvider(
         CleanSearchContent(searchContent);
 
         await _searchContentRepository.DeleteSearchContentAsync(
+            searchContent.SiteId,
             searchContent.EntityName,
             searchContent.EntityId).ConfigureAwait(false);
 

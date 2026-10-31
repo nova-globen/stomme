@@ -19,6 +19,9 @@ namespace Stomme.Modules.Erasure.Services
 
         /// <summary>Marks a failed run for another attempt by the job.</summary>
         Task<ErasureReceiptView> RetryAsync(Guid id);
+
+        /// <summary>What deleting an account does on this site, from the erasure participants' declarations. Anyone's.</summary>
+        Task<List<ErasureSummaryItem>> GetSummaryAsync();
     }
 
     /// <summary>The BROWSER side: HTTP to <c>api/Erasure</c>.</summary>
@@ -36,5 +39,8 @@ namespace Stomme.Modules.Erasure.Services
 
         public async Task<ErasureReceiptView> RetryAsync(Guid id) =>
             await PostJsonAsync<object, ErasureReceiptView>($"{ApiUrl}/receipts/{id}/retry", new { });
+
+        public async Task<List<ErasureSummaryItem>> GetSummaryAsync() =>
+            await GetJsonAsync<List<ErasureSummaryItem>>($"{ApiUrl}/summary") ?? new List<ErasureSummaryItem>();
     }
 }

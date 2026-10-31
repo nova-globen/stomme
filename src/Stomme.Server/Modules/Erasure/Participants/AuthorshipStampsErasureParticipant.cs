@@ -52,7 +52,7 @@ namespace Stomme.Modules.Erasure.Participants
 
         public string Name => "Authorship stamps";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Anonymise("Authorship stamps") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Anonymise("Authorship stamps") with { Summary = "your username on what you created or changed (the content stays)" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

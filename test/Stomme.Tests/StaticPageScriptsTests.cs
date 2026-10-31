@@ -48,12 +48,16 @@ namespace Stomme.Tests
                 Assert.Equal(HttpStatusCode.OK, after.Status);
                 Assert.DoesNotContain("_framework/blazor.web.js", after.Body);
                 Assert.DoesNotContain("js/reload.js", after.Body);
-                Assert.Contains("js/app.js", after.Body);
+                // BL-278: nothing calls these without Blazor's interop, so they go with it.
+                Assert.DoesNotContain("js/app.js", after.Body);
+                Assert.DoesNotContain("js/interop.js", after.Body);
+                Assert.DoesNotContain("js/loadjs.min.js", after.Body);
 
                 var cookies = await GateDrive.LoginAsync(app, client, Host, UserNames.Host, GateDrive.HostPassword, output);
                 var signedIn = await GateDrive.GetAsync(client, cookies, Host, "/", output, "the same page, signed in");
                 Assert.Equal(HttpStatusCode.OK, signedIn.Status);
                 Assert.Contains("_framework/blazor.web.js", signedIn.Body);
+                Assert.Contains("js/interop.js", signedIn.Body);
             }
             finally
             {

@@ -319,11 +319,39 @@ namespace Stomme.Modules.AiAssistant.Application
         IAssistantGuardrail guardrail,
         IAssistantCaller caller,
         IEnumerable<IAssistantSpecialist> specialists,
-        IModelTierRouter? tierRouter = null) : IAssistantAgent
+        IModelTierRouter? tierRouter = null,
+        Microsoft.Extensions.Logging.ILogger<OrchestratorAgent>? logger = null) : IAssistantAgent
     {
         public const string AgentName = "orchestrator";
 
-        private readonly IReadOnlyDictionary<string, IAssistantSpecialist> _specialists = specialists.ToDictionary(specialist => specialist.Name, StringComparer.OrdinalIgnoreCase);
+        private readonly IReadOnlyDictionary<string, IAssistantSpecialist> _specialists = Distinct(specialists, logger);
+
+        /// <summary>
+        /// One specialist per name (BL-251, BL-239's F#10). A name two specialists declare is dropped on BOTH sides and
+        /// logged at Error - the MCP contributors' rule (BL-105): the duplicate made ToDictionary throw on every chat turn,
+        /// and keeping either one would let a module take over another's name.
+        /// </summary>
+        internal static IReadOnlyDictionary<string, IAssistantSpecialist> Distinct(IEnumerable<IAssistantSpecialist> specialists, Microsoft.Extensions.Logging.ILogger? logger)
+        {
+            var byName = new Dictionary<string, IAssistantSpecialist>(StringComparer.OrdinalIgnoreCase);
+            foreach (var group in specialists.GroupBy(specialist => specialist.Name, StringComparer.OrdinalIgnoreCase))
+            {
+                var all = group.ToList();
+                if (all.Count == 1)
+                {
+                    byName[group.Key] = all[0];
+                    continue;
+                }
+
+                if (logger is not null)
+                {
+                    Microsoft.Extensions.Logging.LoggerExtensions.LogError(logger, "The assistant specialist name {Name} is declared by {Types}; none of them is used.",
+                        group.Key, string.Join(", ", all.Select(specialist => specialist.GetType().FullName)));
+                }
+            }
+
+            return byName;
+        }
 
         public string Name => AgentName;
 

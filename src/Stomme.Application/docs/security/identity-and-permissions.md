@@ -282,8 +282,7 @@ Account endpoints are rate limited by default, per site and client address:
 - **The UI check is not security.** `IsAuthorizedPermission` only hides controls; every endpoint and request must
   check on the server.
 - **Jobs have no principal.** `IAccessGuard`, `[Requires]` and `[RequiresPermissionKey]` deny in a hosted job. A job
-  acting for a user re-checks with `IStoredRowPermissionEvaluator` - registered only by some framework modules, so add
-  `services.TryAddScoped<IStoredRowPermissionEvaluator, StoredRowPermissionEvaluator>();` to your startup - after
+  acting for a user re-checks with `IStoredRowPermissionEvaluator` (registered by the framework since 10.79.0) - after
   entering that user's site (the role cache is keyed by alias).
 - **Never reuse a key's resource as the `EntityName` of per-instance permission rows.** Saving instance rows for an
   `(EntityName, PermissionName)` pair deletes the key rows of that pair.

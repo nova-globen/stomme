@@ -394,6 +394,14 @@ namespace Stomme.Extensions
                 return identity;
             }
 
+            // The site's domain filter, for every provider (BL-251, BL-239's D#7): the OpenID Connect / OAuth handlers applied it
+            // only to an e-mail the provider sent, and SAML and Windows not at all. With a filter set, an address outside it - or
+            // none - signs no one in.
+            if (!EmailValid(email, httpContext.GetSiteSettings().GetValue("ExternalLogin:DomainFilter", "")))
+            {
+                id = "";
+            }
+
             // SAML/Negotiate pass the provider type/name explicitly (they are installation-wide schemes,
             // not per-site ExternalLogin config). OIDC/OAuth pass null and keep reading the site settings.
             var providerType = providerTypeOverride ?? httpContext.GetSiteSettings().GetValue("ExternalLogin:ProviderType", "");
@@ -773,29 +781,37 @@ namespace Stomme.Extensions
             return identity;
         }
 
-        private static bool EmailValid(string email, string domainfilter)
+        /// <summary>
+        /// Whether an external sign-in's e-mail passes the site's <c>ExternalLogin:DomainFilter</c> (BL-251, BL-239's D#7). The
+        /// filter is a comma-separated list of domains to accept and <c>!domain</c>s to refuse; an address is accepted when its
+        /// domain IS a listed one or a subdomain of it, and none of the refused ones. It matched by SUBSTRING (so
+        /// <c>company.com</c> accepted <c>x@company.com.attacker.example</c>) and required EVERY accepted domain at once (so a
+        /// filter of two domains refused everyone). With a filter set, an address is required.
+        /// </summary>
+        internal static bool EmailValid(string email, string domainfilter)
         {
-            if (!string.IsNullOrEmpty(email))
+            var entries = (domainfilter ?? "").ToLowerInvariant().Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (string.IsNullOrEmpty(email))
             {
-                if (email.Contains("@") && email.Contains("."))
-                {
-                    var domains = domainfilter.ToLower().Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var domain in domains)
-                    {
-                        if (domain.StartsWith("!"))
-                        {
-                            if (email.ToLower().Contains(domain.Substring(1))) return false;
-                        }
-                        else
-                        {
-                            if (!email.ToLower().Contains(domain)) return false;
-                        }
-                    }
-                    return true;
-                }
+                return entries.Length == 0; // email is optional unless domain filter is specified
+            }
+
+            var at = email.LastIndexOf('@');
+            var domain = at > 0 ? email.Substring(at + 1).Trim().ToLowerInvariant() : "";
+            if (!domain.Contains('.') || domain.StartsWith('.') || domain.EndsWith('.'))
+            {
                 return false;
-            }            
-            return (string.IsNullOrEmpty(domainfilter)); // email is optional unless domain filter is specified
+            }
+
+            static bool Matches(string domain, string entry)
+            {
+                entry = entry.TrimStart('@');
+                return entry.Length > 0 && (domain == entry || domain.EndsWith("." + entry, StringComparison.Ordinal));
+            }
+
+            var refused = entries.Where(entry => entry.StartsWith('!')).Select(entry => entry.Substring(1));
+            var accepted = entries.Where(entry => !entry.StartsWith('!')).ToList();
+            return !refused.Any(entry => Matches(domain, entry)) && (accepted.Count == 0 || accepted.Any(entry => Matches(domain, entry)));
         }
     }
 }

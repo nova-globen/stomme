@@ -195,7 +195,7 @@ production use `https://`.
   it), or it is a client-credentials token and no service account exists.
 - **`invalid_client` for a configured client.** It is confidential and its secret resolved to nothing - the variable
   named by `ClientSecretEnv` is not set in the app's environment.
-- **A consent screen was expected.** There is none; `ConsentType = explicit` is stored but not shown. Register only
-  clients you trust.
+- **No consent screen appears.** The client is `implicit` (the default), which never asks; set `ConsentType = explicit`
+  for a third-party client (Stomme 10.79.0 or later). A user who allowed it once is not asked again for the same scopes.
 - **Several instances disagree about tokens.** Every instance needs the same certificates (and the same Data Protection
   key ring - see [security-posture.md](../../../docs/security/security-posture.md)).

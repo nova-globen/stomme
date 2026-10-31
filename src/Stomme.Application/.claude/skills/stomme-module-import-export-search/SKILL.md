@@ -151,10 +151,11 @@ module definition gives it; nothing is registered. Read
    as one more constructor parameter and, after `await unitOfWork.SaveChangesAsync(ct);`:
 
    ```csharp
-   await searchContents.DeleteSearchContentAsync(Manager.NotesManager.SearchEntityName, note.Id.ToString());
+   await searchContents.DeleteSearchContentAsync(note.SiteId, Manager.NotesManager.SearchEntityName, note.Id.ToString());
    ```
 
-   This removes the entry from the site search's database index (the default search provider).
+   This removes the site's entry from the search's database index (the default search provider). Pass the site: the
+   overload without one matches the first entry of that id in the database, whatever its site.
 
 4. Optional - seed content on the page template. `PageTemplateModule.Content` takes an export of the module (the whole JSON
    the Export Content page shows), and is imported once, when the host creates the placement - at startup, with no user.

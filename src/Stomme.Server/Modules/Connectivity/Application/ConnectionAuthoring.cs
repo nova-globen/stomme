@@ -24,6 +24,33 @@ namespace Stomme.Modules.Connectivity.Application
         }
 
         /// <summary>The connector's schema, as a validation failure the API answers as the caller's input.</summary>
+        /// <summary>
+        /// The connector's field defaults for every setting the request leaves out, as the browser form fills them in
+        /// (BL-251, BL-239's H#9: a connection created over the API got none and behaved unlike the same one made in the
+        /// form). A field shown only for another field's value takes its default only when that value is set.
+        /// </summary>
+        public static IReadOnlyDictionary<string, string> WithDefaults(IConnector connector, IReadOnlyDictionary<string, string>? settings)
+        {
+            var filled = new Dictionary<string, string>(settings ?? new Dictionary<string, string>(StringComparer.Ordinal), StringComparer.Ordinal);
+            foreach (var field in connector.ConfigSchema.Fields)
+            {
+                if (field.Default is null || filled.ContainsKey(field.Name))
+                {
+                    continue;
+                }
+
+                if (field.VisibleWhen is { } visibleWhen
+                    && !(filled.TryGetValue(visibleWhen.Field, out var shown) && string.Equals(shown, visibleWhen.EqualsValue, StringComparison.OrdinalIgnoreCase)))
+                {
+                    continue;
+                }
+
+                filled[field.Name] = field.Default;
+            }
+
+            return filled;
+        }
+
         public static void ValidateSettings(IConnector connector, IReadOnlyDictionary<string, string>? settings)
         {
             var errors = connector.ConfigSchema.Validate(settings ?? new Dictionary<string, string>(StringComparer.Ordinal));

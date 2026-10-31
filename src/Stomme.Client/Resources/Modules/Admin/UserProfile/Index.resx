@@ -306,8 +306,29 @@
   <data name="DeleteAccount.Text" xml:space="preserve">
     <value>Delete My Account</value>
   </data>
+  <data name="DeleteAccount.Erased" xml:space="preserve">
+    <value>Erased:</value>
+  </data>
+  <data name="DeleteAccount.Anonymised" xml:space="preserve">
+    <value>Kept without your name:</value>
+  </data>
+  <data name="DeleteAccount.Retained" xml:space="preserve">
+    <value>Kept for a time, then erased:</value>
+  </data>
+  <data name="DeleteAccount.RetainedFor" xml:space="preserve">
+    <value>{0} - a {1}, kept {2} days</value>
+  </data>
+  <data name="DeleteAccount.Reason.Security" xml:space="preserve">
+    <value>security record</value>
+  </data>
+  <data name="DeleteAccount.Reason.LegalClaims" xml:space="preserve">
+    <value>record kept for legal claims</value>
+  </data>
+  <data name="DeleteAccount.Reason.LegalObligation" xml:space="preserve">
+    <value>record the law requires</value>
+  </data>
   <data name="Confirm.Account.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete Your Account On This Site? This Cannot Be Undone.</value>
+    <value>Are You Sure You Wish To Delete Your Account On This Site? What Is Listed Above Is Erased Or Kept As It Says, And This Cannot Be Undone.</value>
   </data>
   <data name="Error.Account.Delete" xml:space="preserve">
     <value>Your Account Could Not Be Deleted</value>

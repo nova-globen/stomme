@@ -9,7 +9,7 @@
     RenderFragment _MessageBody =
     @<text>
         <div class="db-message-body">
-            @((MarkupString)Message)
+            @((MarkupString)Utilities.SafeMessageMarkup(Message))
             @if (Type == MessageType.Error && PageState != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
             {
                 <NavLink class="db-message-link" href="@NavigateUrl("admin/log")">View Details</NavLink>

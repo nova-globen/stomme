@@ -117,8 +117,9 @@ namespace Stomme.Services
                 if (permission.Contains(":")) // permission
                 {
                     var entityName = permission.Split(":")[0];
-                    var entityId = int.Parse(permission.Split(":")[1]);
-                    if (!await _userPermissions.IsAuthorizedAsync(_accessor.HttpContext.User, searchQuery.SiteId, entityName, entityId, PermissionNames.View))
+                    // An id that is not a number names nothing a permission can grant: hidden, never a failed search (BL-251, E2#3).
+                    if (!int.TryParse(permission.Split(":")[1], System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var entityId)
+                        || !await _userPermissions.IsAuthorizedAsync(_accessor.HttpContext.User, searchQuery.SiteId, entityName, entityId, PermissionNames.View))
                     {
                         visible = false;
                         break;

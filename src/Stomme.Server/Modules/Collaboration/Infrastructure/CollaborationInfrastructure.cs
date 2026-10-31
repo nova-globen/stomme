@@ -108,8 +108,8 @@ namespace Stomme.Modules.Collaboration.Infrastructure
 
         public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[]
         {
-            ErasureDeclaration.Delete("ResourceLockAggregate"),
-            ErasureDeclaration.Delete("EditSessionAggregate"),
+            ErasureDeclaration.Delete("ResourceLockAggregate") with { Summary = "the edit locks you hold" },
+            ErasureDeclaration.Delete("EditSessionAggregate") with { Summary = "your open editing sessions" },
         };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)

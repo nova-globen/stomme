@@ -23,7 +23,7 @@ namespace Stomme.Modules.AiAssistant.Infrastructure
 
         public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[]
         {
-            ErasureDeclaration.Delete("AssistantConversationAggregate"),
+            ErasureDeclaration.Delete("AssistantConversationAggregate") with { Summary = "your conversations with the AI assistant" },
         };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)

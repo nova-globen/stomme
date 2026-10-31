@@ -133,5 +133,22 @@ namespace Stomme.Tests.AiAssistant
             Assert.Equal("Happy to help.", reply.Message.Content);
             Assert.Contains("Routing to: ASSISTANT.", model.ToolResults());
         }
+
+        /// <summary>
+        /// A name two specialists declare is dropped on both sides (BL-251, BL-239's F#10): the duplicate made the
+        /// orchestrator's ToDictionary throw on every chat turn. The others stay.
+        /// </summary>
+        [Fact]
+        public void A_specialist_name_declared_twice_is_dropped_on_both_sides_and_the_others_stay()
+        {
+            var specialists = OrchestratorAgent.Distinct(new IAssistantSpecialist[]
+            {
+                new RecordingSpecialist("designer", null!),
+                new RecordingSpecialist("DESIGNER", null!),
+                new RecordingSpecialist("help", null!),
+            }, logger: null);
+
+            Assert.Equal(new[] { "help" }, specialists.Keys);
+        }
     }
 }

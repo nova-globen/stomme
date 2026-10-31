@@ -214,7 +214,7 @@ Per-site external login (site settings, **Admin > User Management > Settings**, 
 | `ExternalLogin:Scopes` | `openid,profile,email` (OIDC) | Requested scopes |
 | `ExternalLogin:PKCE` | `false` | Use PKCE |
 | `ExternalLogin:IdentifierClaimType`, `NameClaimType`, `EmailClaimType` | empty (the form pre-fills `sub`, `name`, `email`) | Claims the bridge reads; see the claim mapping above |
-| `ExternalLogin:DomainFilter` | empty | Accept only these e-mail domains (the OpenID Connect / OAuth 2.0 provider only, not SAML or Windows). An address outside them is refused even for an account already linked |
+| `ExternalLogin:DomainFilter` | empty | Accept only these e-mail domains, comma-separated, for every external sign-in (OpenID Connect, OAuth 2.0, SAML, Windows; since 10.79.0). An address is accepted when its domain is a listed one or a subdomain of it (`company.com` takes `eu.company.com`, never `company.com.example`); a `!domain` refuses that domain and its subdomains. With a filter set, a sign-in with no e-mail claim, or an address outside it, is refused - even for an account already linked |
 | `ExternalLogin:RequireHttpsMetadata` | `true` | Refuse an `http://` authority. Not on the form; set it through the settings API, and only for a loopback test provider |
 | `ExternalLogin:MapInboundClaims` | `true` | Map the token's claim types to .NET claim types (`sub` becomes `...claims/nameidentifier`). Not on the form |
 | `ExternalLogin:ResponseMode` | `form_post` | How the provider returns the code. Not on the form |
@@ -249,8 +249,11 @@ Per-site external login (site settings, **Admin > User Management > Settings**, 
   the per-tenant store.
 - **The provider requires HTTPS outside Development.** Behind a TLS-terminating proxy the host must see
   `X-Forwarded-Proto: https`.
-- **`ConsentType = explicit` shows no consent screen.** The authorize endpoint issues a code for a signed-in user
-  whatever the client's consent type. Register only clients you trust.
+- **`ConsentType = explicit` asks the user once (since 10.79.0).** The authorize endpoint shows a consent page - the
+  application's display name and the scopes it asks for, Allow and Deny - and keeps the answer as a permanent
+  authorization for that user, application and scopes; `prompt=none` before an answer is `consent_required`, Deny is
+  `access_denied`. `implicit` (the default) never asks: use it for your own first-party apps only. Before 10.79.0 no
+  client was ever asked.
 - **Secrets go in environment variables.** Use `ClientSecretEnv` and `OpenIddict__SigningCertificatePassword`, never a
   literal in a committed file.
 - **One external provider per site.** A second OpenID Connect provider for the same site is not supported.

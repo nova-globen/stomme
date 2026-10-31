@@ -55,4 +55,23 @@ namespace Stomme.Models.Erasure
         /// <summary>For a retention: when the same job deleted the retained rows.</summary>
         public DateTime? PurgedOnUtc { get; set; }
     }
+
+    /// <summary>
+    /// One line of what deleting an account does on this site (BL-276), from the erasure participants' declarations:
+    /// what a person reads before they confirm. Holds no personal data - it is the same for everyone on the site.
+    /// </summary>
+    public class ErasureSummaryItem
+    {
+        /// <summary>The declaration's summary, in the person's words ("your conversations with the AI assistant").</summary>
+        public string Description { get; set; }
+
+        /// <summary>Delete, Anonymise or Retain.</summary>
+        public string Handling { get; set; }
+
+        /// <summary>For a retention: LegalObligation, LegalClaims or Security.</summary>
+        public string Reason { get; set; }
+
+        /// <summary>For a retention: how many days the rows are kept before the same job deletes them.</summary>
+        public int? RetentionDays { get; set; }
+    }
 }

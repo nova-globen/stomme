@@ -232,7 +232,7 @@ skipped rather than imported twice.
 
 A deleted note must also leave the search: the index job only adds and replaces entries, so the module's delete handler
 removes the entry itself with `Stomme.Repository.ISearchContentRepository`:
-`await searchContents.DeleteSearchContentAsync(NotesManager.SearchEntityName, note.Id.ToString());`. That writes the database
+`await searchContents.DeleteSearchContentAsync(note.SiteId, NotesManager.SearchEntityName, note.Id.ToString());` (the site's entry only - the overload without a site matches the first entry of that id in the database, whatever its site). That writes the database
 index directly; a site set to another search provider (Admin > Search) keeps the entry. To go through the site's provider,
 as the index job does, send a deleted marker through `Stomme.Services.ISearchService` (the server's own is injected on
 the server): `await search.SaveSearchContentsAsync(new() { new SearchContent { SiteId = siteId, EntityName = NotesManager.SearchEntityName, EntityId = note.Id.ToString(), IsDeleted = true } }, new());`.

@@ -13,7 +13,7 @@ namespace Stomme.Modules.Sessions.Application
     {
         public string Name => "Sessions";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("UserSessionAggregate") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("UserSessionAggregate") with { Summary = "your signed-in sessions" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

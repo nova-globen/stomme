@@ -58,9 +58,9 @@ the app react without the publisher knowing it; use a domain event when the reac
   is any class; `Stomme.EventBus.IntegrationEvent` is an optional base record with `EventId`, `OccurredOn`,
   `CorrelationId`.
 - **A published event reaches this host's handlers only if the host subscribes to it.** Call
-  `services.AddBusSubscription<TEvent>()` (namespace `Stomme.Infrastructure.EventBus`) in your `IServerStartup` - and
-  only while `Messaging:Enabled` is true, because the subscription service needs the bus. `SendLocalAsync` needs no
-  subscription.
+  `services.AddBusSubscription<TEvent>()` (namespace `Stomme.Infrastructure.EventBus`) in your `IServerStartup`. With
+  `Messaging:Enabled` off the subscription does nothing (since 10.79.0; before, the host did not start without the bus).
+  `SendLocalAsync` needs no subscription.
 - **Delivery is at least once.** A handler can see the same message twice: make it idempotent. After
   `Messaging:MaxDeliveryAttempts` failed attempts the message moves to the error (dead-letter) queue.
 - **Tenant.** The sender's tenant travels in a message header and the handler runs inside that tenant's scope. The **site**

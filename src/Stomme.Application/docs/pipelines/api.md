@@ -82,6 +82,7 @@ only. A `{{ }}` in `inputs` is sent as plain text, never rendered.
 | `PUT api/Pipelines/{definitionId}` | manage | `UpdatePipelineRequest {name, description, body}` (`body` null keeps it) | `PipelineView` |
 | `GET api/Pipelines/{definitionId}/graph` | view | | `PipelineGraph` |
 | `PUT api/Pipelines/{definitionId}/graph` | manage | `PipelineGraph` | `PipelineView`; 400 with the reason when refused |
+| `POST api/Pipelines/graph/validate` | manage | `PipelineGraph` | `string[]`: the reasons the save would refuse it, empty when none (since 10.79.0) |
 | `POST api/Pipelines/{definitionId}/publish` | manage | `PublishPipelineRequest {note}` or empty | `PublishResult {succeeded, errors[]}` |
 | `POST api/Pipelines/{definitionId}/retract` / `archive` / `restore` | manage | | 204 |
 | `DELETE api/Pipelines/{definitionId}` | manage | | 204 |

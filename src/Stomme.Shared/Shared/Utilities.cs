@@ -236,6 +236,35 @@ namespace Stomme.Shared
             return url;
         }
 
+        private static readonly Regex AllowedMessageTag = new(@"&lt;(/?)(b|strong|em|i|code|br|p)\s*/?&gt;", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+        private static readonly Regex AllowedMessageLink = new(@"&lt;a\s+href=(?:&quot;|&#39;)?(?<href>[^\s&]+?)(?:&quot;|&#39;)?\s*&gt;(?<text>.*?)&lt;/a&gt;", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Singleline);
+
+        /// <summary>
+        /// A module message as markup that is safe to render (BL-251, BL-239's C4: <c>ModuleMessage</c> rendered its text as
+        /// raw HTML, and admin pages put exception messages in it). Everything is encoded, then a handful of formatting tags
+        /// and links are let back in: <c>b strong em i code br p</c> with no attributes, and <c>&lt;a href=...&gt;</c> whose
+        /// address is local (<see cref="LocalReturnUrl"/>'s rules) or <c>http(s)://</c> - what the framework's own messages
+        /// use ("You Must &lt;a href={0}&gt;Restart&lt;/a&gt;"). Any other tag, attribute or address stays visible as text.
+        /// </summary>
+        public static string SafeMessageMarkup(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                return string.Empty;
+            }
+
+            var encoded = WebUtility.HtmlEncode(message);
+            encoded = AllowedMessageTag.Replace(encoded, match => $"<{match.Groups[1].Value}{match.Groups[2].Value.ToLowerInvariant()}>");
+            return AllowedMessageLink.Replace(encoded, match =>
+            {
+                var href = WebUtility.HtmlDecode(match.Groups["href"].Value);
+                var safe = LocalReturnUrl(href, string.Empty).Length > 0
+                    || (TryCreateAbsoluteUri(href, out var absolute) && (absolute.Scheme == Uri.UriSchemeHttp || absolute.Scheme == Uri.UriSchemeHttps));
+                return safe ? $"<a href=\"{WebUtility.HtmlEncode(href)}\">{match.Groups["text"].Value}</a>" : match.Value;
+            });
+        }
+
         public static string TenantUrl(Alias alias, string url)
         {
             url = (!url.StartsWith("/")) ? "/" + url : url;

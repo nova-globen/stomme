@@ -89,6 +89,10 @@ namespace Stomme.Modules.Metering.Startup
             // Erasure: when a user is removed from a site the ledger is pseudonymised, not deleted.
             services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, MeteringUserErasure>();
 
+            // Retention when metering is OFF (BL-275): PurgeJob runs on every install, the rollup job only with Metering:Enabled,
+            // so this pass takes the user id out of ledger rows past MeteringUsageRetention when nothing else would.
+            services.AddScoped<Stomme.Infrastructure.IRetentionPurger, MeteringLedgerRetentionPurger>();
+
             // The ports, and only the ports - except UsageRecorder, whose concrete type the fold recovery job
             // resolves so a recovered fold runs through exactly the same lock, retry and Applied flip as a live one.
             services.TryAddScoped<UsageRecorder>();

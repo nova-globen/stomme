@@ -49,7 +49,10 @@ namespace Stomme.Infrastructure
                 try
                 {
                     var type = Type.GetType(eventSubscriber);
-                    var obj = ActivatorUtilities.CreateInstance(_serviceProvider, type) as IEventSubscriber;
+                    // A scope per subscriber and event: created from the ROOT provider, a subscriber could take no scoped service
+                    // (BL-251, BL-239's E1-5) - the container refused it, logged here as an error on every event.
+                    await using var scope = _serviceProvider.CreateAsyncScope();
+                    var obj = ActivatorUtilities.CreateInstance(scope.ServiceProvider, type) as IEventSubscriber;
                     if (obj != null)
                     {
                         await obj.EntityChangedAsync(syncEvent);

@@ -50,8 +50,9 @@ namespace Stomme.Modules.Connectivity.Application
         {
             var connector = catalog.Find(request.ConnectorType) ?? throw new InvalidOperationException($"Unknown connector type '{request.ConnectorType}'.");
             ConnectionAuthoring.RequireHostIfHostOnly(connector, currentUser);
-            ConnectionAuthoring.ValidateSettings(connector, request.Settings);
-            ConnectionAuthoring.Preflight(connector, request.Endpoint, request.Settings);
+            var settings = ConnectionAuthoring.WithDefaults(connector, request.Settings);
+            ConnectionAuthoring.ValidateSettings(connector, settings);
+            ConnectionAuthoring.Preflight(connector, request.Endpoint, settings);
 
             var siteId = siteState.Alias?.SiteId ?? throw new InvalidOperationException("A connection belongs to the request's site; none is resolved.");
             var tenantId = tenantContext.CurrentTenantId ?? throw new InvalidOperationException("A connection belongs to a tenant; none is resolved in this scope.");
@@ -64,7 +65,7 @@ namespace Stomme.Modules.Connectivity.Application
             var id = Guid.NewGuid();
             var stored = await secrets.StoreAsync(siteId, id, connector.AuthType, request.Credentials, null, ct);
             var connection = ConnectionAggregate.Create(id, tenantId, siteId, request.Name, connector.ConnectorType, connector.EndpointKind, request.Endpoint,
-                request.Settings, stored, request.TimeoutSeconds, clock.GetUtcNow().UtcDateTime);
+                settings, stored, request.TimeoutSeconds, clock.GetUtcNow().UtcDateTime);
             await connections.AddAsync(connection, ct);
             await unitOfWork.SaveChangesAsync(ct);
             return id;

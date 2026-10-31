@@ -25,9 +25,9 @@ namespace Stomme.Modules.Portability.Application
 
         public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[]
         {
-            ErasureDeclaration.Delete("PortabilityPackageAggregate (subject)"),
-            ErasureDeclaration.Retain("PortabilityPackageAggregate (requester)", RetentionReason.LegalClaims, RetentionPeriod),
-            ErasureDeclaration.Retain("PortabilityAuditEntryAggregate", RetentionReason.LegalClaims, RetentionPeriod),
+            ErasureDeclaration.Delete("PortabilityPackageAggregate (subject)") with { Summary = "copies of your data prepared for you" },
+            ErasureDeclaration.Retain("PortabilityPackageAggregate (requester)", RetentionReason.LegalClaims, RetentionPeriod) with { Summary = "copies of other people's data you prepared" },
+            ErasureDeclaration.Retain("PortabilityAuditEntryAggregate", RetentionReason.LegalClaims, RetentionPeriod) with { Summary = "the record of requests for copies of personal data" },
         };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)

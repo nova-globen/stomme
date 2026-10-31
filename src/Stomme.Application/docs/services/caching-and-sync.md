@@ -40,7 +40,8 @@ change; they invalidate cache entries and tell interactive pages to refresh. Syn
   files, folders, aliases, languages, themes and module definitions (a page change also raises a `Refresh` of the site).
 - **Subscribers** are classes implementing `Stomme.Infrastructure.IEventSubscriber`
   (`Task EntityChangedAsync(SyncEvent syncEvent)`). The host discovers them by assembly scan in every `Stomme`-named
-  assembly and creates one per event with `ActivatorUtilities` from the **root** service provider. The framework's own
+  assembly and creates one per event with `ActivatorUtilities` in a **scope of its own** (since 10.79.0; the root provider
+  before). The framework's own
   subscriber removes the site, modules and user cache entries when those entities change.
 - **Clients**: an interactive page polls the server's sync events on each navigation. A `Refresh` of `EntityNames.Site`
   for its site makes it reload the site; a `Reload` of `EntityNames.Host` reloads the whole page. `Refresh` and `Reload`
@@ -155,9 +156,10 @@ shown and edited on **Admin > System Info**, which writes all of them together t
   global key leaks one tenant's data to another.
 - **In a job, the alias must be the site's.** A job's scope has a placeholder alias (`SiteId = -1`) until you call
   `ITenantManager.SetAliasAsync(tenantId, siteId)`; per-site cache reads then use the wrong key. See [jobs](jobs.md).
-- **An `IEventSubscriber` gets root services only.** It is created from the root provider; inject singletons
-  (`ICacheManager`, `ISyncManager`, `IServiceScopeFactory`) and create a scope for anything else. It runs inside the
-  writing request and its exceptions are logged to the file log and swallowed, so keep it short.
+- **An `IEventSubscriber`'s scope is not the request's.** It gets a scope of its own per event (since 10.79.0; before,
+  root services only), so a scoped service it takes knows no site: use the `SyncEvent`'s `TenantId` and `SiteId` and
+  `ITenantManager.SetAliasAsync` before a per-site read. It runs inside the writing request and its exceptions are logged
+  to the file log and swallowed, so keep it short.
 - **Sync events come from the framework's controllers.** A change made by a repository call in a job or in your own code
   raises none unless you call `ISyncManager.AddSyncEventAsync` yourself.
 - **Several instances without `Caching:ScaleOut` serve stale data** until expiry after a change on another instance.

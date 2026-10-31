@@ -492,10 +492,9 @@ operations with the real service's.
 - **Every test answers `DeniedByPolicy` against your local server.** The cause: loopback and private addresses are
   refused by design. The fix: the Host adds the exact host the endpoint names (`127.0.0.1`, `api.local`) under Private
   hosts. Do not bypass the egress with your own `HttpClient`.
-- **The Connections page and every `api/Connections` read answer 500 after you added a connector.** The cause: your
-  type key equals another connector's (compared case-insensitively). The host still starts; the catalogue is built on
-  first use and throws there. Admin > Event Log shows "Connector type key '...' is published twice: by ... and by ...".
-  The fix: choose a prefixed key.
+- **Your connector, and another, are missing from the picker after you added it.** The cause: your type key equals another
+  connector's (compared case-insensitively), so both are rejected; Admin > Event Log shows "Connector type key '...' is
+  published twice: by ... and by ...". The fix: choose a prefixed key.
 - **The connector is missing from the picker.** The cause: the startup class lives in a project whose assembly name does
   not contain `Stomme` (the template's `.Stomme` suffix was removed or the class went into a new project), or it is
   abstract or generic, so the scan skips it. The fix: put it in `Server/` as a plain class. (A startup class without a

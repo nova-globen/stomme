@@ -12,8 +12,8 @@ using Xunit.Abstractions;
 namespace Stomme.Tests.Connectivity
 {
     /// <summary>
-    /// The two gates around the contract. A type key published twice refuses the COMPOSITION:
-    /// the catalog throws when the host first resolves it, naming the key and both owners (in both directions: a planted
+    /// The two gates around the contract. A type key published twice is rejected on every side (BL-251; it threw on first
+    /// use), naming the key and both owners (in both directions: a planted
     /// duplicate throws, distinct keys in different cases resolve). And the contract is BCL-only: every type in
     /// <c>Stomme.Shared</c>'s <c>Stomme.Connectivity</c> namespace references, through its bases, interfaces, members and
     /// parameters, only the BCL and that namespace itself - so connectors reference <c>Stomme.Shared</c> and
@@ -22,7 +22,7 @@ namespace Stomme.Tests.Connectivity
     public class ConnectorCatalogGateTests(ITestOutputHelper output)
     {
         [Fact]
-        public void A_planted_duplicate_key_refuses_the_composition_and_names_both_owners()
+        public void A_planted_duplicate_key_is_rejected_on_both_sides_and_names_both_owners()
         {
             var services = new ServiceCollection();
             services.AddSingleton<IConnector>(new FixtureConnector("rest", "First"));
@@ -30,11 +30,13 @@ namespace Stomme.Tests.Connectivity
             services.AddConnectorCatalog();
             using var provider = services.BuildServiceProvider();
 
-            var ex = Assert.Throws<InvalidOperationException>(() => provider.GetRequiredService<IConnectorCatalog>());
+            var catalog = (ConnectorCatalog)provider.GetRequiredService<IConnectorCatalog>();
 
-            Assert.Contains("'Rest'", ex.Message);
-            Assert.Contains(nameof(FixtureConnector), ex.Message);
-            Assert.Contains(nameof(FixtureExtractingConnector), ex.Message);
+            Assert.Null(catalog.Find("rest"));
+            Assert.Empty(catalog.All);
+            var conflict = Assert.Single(catalog.Conflicts);
+            Assert.Contains(nameof(FixtureConnector), conflict);
+            Assert.Contains(nameof(FixtureExtractingConnector), conflict);
         }
 
         [Fact]

@@ -19,12 +19,19 @@ The contract, in `Stomme.Shared`, namespace `Stomme.Erasure`:
 - `ErasureDeclaration` - one store and its ONE handling: `ErasureDeclaration.Delete(store)`, `.Anonymise(store)`,
   `.Retain(store, RetentionReason reason, TimeSpan period)` (a period is required; `RetentionReason` is `LegalObligation`,
   `LegalClaims` or `Security`).
+  Give each one a `Summary` in the person's words - `ErasureDeclaration.Delete(store) with { Summary = "your notes" }`:
+  it is what the profile page lists before someone deletes their account (a declaration without one is listed under the
+  participant's `Name`).
 - `ErasureSubject(int SiteId, int UserId, string? IdentitySubject, string? Username = null)` - who is erased, on which site.
 - `ErasureOutcome(string Store, ErasureHandling Handling, int Affected, ...)` - what was done to one store.
 - `IErasureQueue.EnqueueAsync(ErasureSubject)` - what a deletion calls.
 
 The flow:
 
+0. Before anyone deletes their account, the **Delete My Account** section of their profile (Security tab) lists what it
+   does on this site, from every registered participant's declarations: what is erased, what is kept without their name,
+   and what is kept for a time and why. The same list is `GET api/Erasure/summary`, open to anyone - a privacy page can
+   show it too. A module that registers a participant is listed with no page change.
 1. A user is deleted from a site - by an administrator (Admin > User Management) or by themselves (the Delete account
    action on their profile, `DELETE api/User/me`; a Host account cannot delete itself). The deletion queues an erasure
    request for that site and user, then removes their roles on the site, their `Users/{userId}/` folder, and - when they
@@ -47,6 +54,23 @@ Stomme's own participants already cover its data: user settings, the site's noti
 and data-export records, AI assistant conversations, resource locks and edit sessions, pipeline step comments, the
 pipeline audit (retained for security, one year), the author name on HTML content, and the author stamps
 (`CreatedBy`/`ModifiedBy`/`DeletedBy`) on framework rows once no account with that user name remains in the tenant. **An app's module data is covered only if the module registers a participant.**
+
+### Retention of personal data (always on)
+
+The daily Purge Job ages out what a site keeps about people, per site, by Site settings in whole days (since 10.79.0 for
+the two marked new). A privacy policy can quote these:
+
+| Site setting | Default | What happens past it |
+|---|---|---|
+| `MeteringUsageRetention` | `90` (never below 62) | AI usage records (user, provider, model, tokens, cost, outcome) and metered usage records lose their user. With `Metering:Enabled` the rows are deleted and only daily rollups with no user remain (`MeteringUsageRollupRetention`, default 730); with metering off (the default) the user id is set to null and the row stays, so the counts are kept - the same rule as erasure. **New** for metering off: before, nothing aged those rows out. |
+| `LastIPAddressRetention` | `90` | A user's `LastIPAddress` is cleared once the sign-in that recorded it (or the registration, for a user who never signed in) is older. `LastLoginOn` stays. A user on several sites gets the shortest period. **New.** |
+| `IdentityAuditRetention` | `365` (never below 30) | Identity audit entries (sign-ins, lockouts, role changes) are deleted. |
+| `LogRetention` | `30` | Event Log entries are deleted. |
+| `VisitorRetention` | `30` | Visitor records (with their IP address) are deleted. |
+
+There is no admin page for the two new settings: set them as Site settings (`EntityName` `Site`) from a module, a site
+template or the settings API. The Purge Job's notes name each pass and how many rows it changed ("Last IP Addresses
+Purged", "Usage Ledger User Ids Purged").
 
 ### A person's data package (`Portability:Enabled`)
 
@@ -137,7 +161,7 @@ namespace Stomme.Application.Modules.Notes.DataRights
 
         public string Name => "Notes";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete(Store) };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete(Store) with { Summary = "your notes" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

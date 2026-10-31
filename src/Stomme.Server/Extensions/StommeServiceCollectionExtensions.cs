@@ -140,6 +140,10 @@ namespace Microsoft.Extensions.DependencyInjection
             // (exception -> logging -> performance -> validation). Registered after them, a denial would run
             // inside the module's exception boundary instead of before it. Pinned by AuthorizationBehaviorOrderingTests.
             services.AddStommeAuthorization<PermissionRowAccessGuard, StommeCurrentUser, FeatureEvaluatorBridge>();
+            // The headless twin of the row guard, for a job re-authorising a user from stored rows: the framework's, not two
+            // modules' (BL-251, BL-239's D#6/E1-7 - only DataExport and Pipelines comments registered it, so an app module
+            // that needed it found it only when one of them was composed). TryAdd: the modules' own lines stay harmless.
+            services.TryAddScoped<Stomme.Infrastructure.Security.IStoredRowPermissionEvaluator, Stomme.Infrastructure.Security.StoredRowPermissionEvaluator>();
 
             // The shared per-site secret store (one seam for notifications, MCP):
             // private Site setting rows whose values are protected through ISecretProtector (ASP.NET Data Protection).
@@ -418,6 +422,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IModuleRepository, ModuleRepository>();
             services.AddTransient<IPageModuleRepository, PageModuleRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            // BL-275: a user's last IP address is cleared after the site's LastIPAddressRetention, by PurgeJob.
+            services.AddScoped<IRetentionPurger, LastIPAddressRetentionPurger>();
             services.AddTransient<IProfileRepository, ProfileRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IUserRoleRepository, UserRoleRepository>();
@@ -602,8 +608,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     if (implementationType.AssemblyQualifiedName != null)
                     {
-                        var serviceType = Type.GetType(implementationType.AssemblyQualifiedName.Replace(implementationType.Name, $"I{implementationType.Name}"));
-                        services.AddScoped(serviceType ?? implementationType, implementationType);
+                        services.AddScoped(Stomme.Infrastructure.ServicePairing.InterfaceFor(implementationType) ?? implementationType, implementationType);
                     }
                 }
 
@@ -613,8 +618,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     if (implementationType.AssemblyQualifiedName != null)
                     {
-                        var serviceType = Type.GetType(implementationType.AssemblyQualifiedName.Replace(implementationType.Name, $"I{implementationType.Name}"));
-                        services.AddTransient(serviceType ?? implementationType, implementationType);
+                        services.AddTransient(Stomme.Infrastructure.ServicePairing.InterfaceFor(implementationType) ?? implementationType, implementationType);
                     }
                 }
 
@@ -994,7 +998,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection TryAddSwagger(this IServiceCollection services, IConfigurationRoot configuration)
         {
-            if (configuration.GetSection("UseSwagger").Value == "true")
+            if (string.Equals(configuration.GetSection("UseSwagger").Value, "true", StringComparison.OrdinalIgnoreCase)) // a JSON true reads "True" (BL-251, A7)
             {
                 services.AddOpenApi();
             }

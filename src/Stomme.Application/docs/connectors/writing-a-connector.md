@@ -14,10 +14,9 @@ calls it through the extraction port. This document explains the contract. The
    `IServerStartup` (`Stomme.Infrastructure`) it contains. Each needs a public parameterless constructor.
 2. Your startup calls `services.AddSingleton<IConnector, YourConnector>()`.
 3. The host's `IConnectorCatalog` collects every registered `IConnector` by `ConnectorType` (case-insensitive). The
-   catalogue is built the first time something resolves it; a type key registered twice makes that build throw,
-   naming both classes. The host still starts: the Connections page and every `api/Connections` read then fail with
-   500 (the write and test routes answer 400 or 404), a connection step faults its run, and the event log
-   (Admin > Event Log) carries the message.
+   catalogue is built the first time something resolves it. A type key registered twice is rejected on every side (since
+   10.79.0): neither connector is offered, the others work, and the event log (Admin > Event Log) names the key and both
+   classes. Choose a prefixed key.
 
 The connector is a **singleton shared by every site and tenant** of the installation. Keep no per-call state in fields.
 Everything that belongs to one call arrives in the context.

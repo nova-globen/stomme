@@ -64,7 +64,9 @@ whose public pages need none of that can leave it out (since 10.78.0): the site 
 `js/reload.js` from a page when the site is Static, the visitor is not signed in and no module on the page is
 interactive (the module's `RenderMode` is `Static`). A signed-in user, and any page with an interactive module, still gets
 the script. Turn it on only when the anonymous pages use no FluentUI component and no `[StreamRendering]`: without the
-script those render inert. Stomme's own `js/app.js`, `js/interop.js` and `js/loadjs.min.js` stay.
+script those render inert. Since 10.79.0 Stomme's own `js/app.js`, `js/interop.js` and `js/loadjs.min.js` go too: they are
+called only through Blazor's JS interop, so such a page loads no framework script at all. Your own scripts (a theme's or
+module's resources) are unaffected.
 
 ### Prerender
 

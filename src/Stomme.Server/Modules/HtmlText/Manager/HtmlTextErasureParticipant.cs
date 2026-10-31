@@ -23,7 +23,7 @@ namespace Stomme.Modules.HtmlText.Manager
     {
         public string Name => "HtmlText authorship";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Anonymise("HtmlTextAggregate (stamps)") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Anonymise("HtmlTextAggregate (stamps)") with { Summary = "your username on the text you edited (the text stays)" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

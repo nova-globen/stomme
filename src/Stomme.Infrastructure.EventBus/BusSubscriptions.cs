@@ -18,13 +18,20 @@ public sealed record BusTopicSubscription(Type EventType);
 /// the RavenDB transport it writes the centralized subscription document; with the default in-memory
 /// transport it binds against that transport's own subscription storage. Subscriptions are durable and
 /// intentionally not removed on stop — a restarting node must not miss events published while it was
-/// down (delivery is at-least-once; handlers are idempotent).
+/// down (delivery is at-least-once; handlers are idempotent). With messaging off there is no bus and nothing to subscribe:
+/// the initializer does nothing, so a module that subscribes unconditionally does not stop the host from starting (BL-251,
+/// BL-239's wE1-3: it required <see cref="IBus"/>, which only messaging registers, and container validation refused the host).
 /// </summary>
-public sealed class BusSubscriptionInitializer(IBus bus, IEnumerable<BusTopicSubscription> subscriptions) : IHostedService
+public sealed class BusSubscriptionInitializer(IServiceProvider services, IEnumerable<BusTopicSubscription> subscriptions) : IHostedService
 {
     /// <inheritdoc />
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        if (services.GetService(typeof(IBus)) is not IBus bus)
+        {
+            return;
+        }
+
         foreach (var eventType in subscriptions.Select(s => s.EventType).Distinct())
         {
             await bus.Subscribe(eventType).ConfigureAwait(false);

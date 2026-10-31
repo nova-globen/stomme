@@ -24,9 +24,9 @@ namespace Stomme.Modules.DataExport.Application
 
         public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[]
         {
-            ErasureDeclaration.Delete("ExportJobAggregate"),
-            ErasureDeclaration.Retain("ExportAuditEntryAggregate", RetentionReason.Security, RetentionPeriod),
-            ErasureDeclaration.Delete("ExportScheduleAggregate"),
+            ErasureDeclaration.Delete("ExportJobAggregate") with { Summary = "your data exports and their files" },
+            ErasureDeclaration.Retain("ExportAuditEntryAggregate", RetentionReason.Security, RetentionPeriod) with { Summary = "the record of the data exports you made" },
+            ErasureDeclaration.Delete("ExportScheduleAggregate") with { Summary = "your scheduled data exports" },
         };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)

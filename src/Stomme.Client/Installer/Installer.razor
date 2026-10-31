@@ -208,7 +208,7 @@
             @if (!string.IsNullOrEmpty(_message))
             {
                 <div class="db-message db-message-bad" role="alert">
-                    <div class="db-message-body">@((MarkupString)_message)</div>
+                    <div class="db-message-body">@((MarkupString)Utilities.SafeMessageMarkup(_message))</div>
                     <button type="button" class="db-message-close" aria-label="Close" @onclick="DismissModal">&times;</button>
                 </div>
             }

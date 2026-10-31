@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Stomme.Enums;
 using Stomme.Infrastructure;
 using Stomme.Models;
 using Stomme.Modules;
@@ -187,9 +188,11 @@ namespace Stomme.Repository
                                     var moduleobject = ActivatorUtilities.CreateInstance(_serviceProvider, moduletype);
                                     modulecontent.Content = await ((IPortable)moduleobject).ExportModuleAsync(module);
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
-                                    // error in IPortable implementation
+                                    // An error in the module's IPortable: the export carries no content, and the error is logged rather
+                                    // than swallowed (BL-251, BL-239's B1-5).
+                                    _serviceProvider.GetService<ILogManager>()?.Log(LogLevel.Error, this, LogFunction.Read, ex, "Error Exporting Content For Module {ModuleId} Through {ManagerType}", module.ModuleId, moduledefinition.ServerManagerType);
                                 }
                             }
                         }

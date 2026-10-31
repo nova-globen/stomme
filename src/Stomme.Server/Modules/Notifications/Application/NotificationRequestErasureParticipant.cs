@@ -22,7 +22,7 @@ namespace Stomme.Modules.Notifications.Application
     {
         public string Name => "Notification requests";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Anonymise("NotificationRequestAggregate") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Anonymise("NotificationRequestAggregate") with { Summary = "notifications addressed to you" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

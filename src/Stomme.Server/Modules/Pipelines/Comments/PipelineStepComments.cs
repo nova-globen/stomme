@@ -275,7 +275,7 @@ namespace Stomme.Modules.Pipelines.Comments
     {
         public string Name => "Pipeline step comments";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("PipelineStepCommentAggregate") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("PipelineStepCommentAggregate") with { Summary = "your comments on pipeline steps" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

@@ -20,8 +20,11 @@ namespace Stomme.Modules.Erasure.Services
     /// <c>[Authorize]</c>, and a denial THROWS: an empty list would say "nothing was erased", which is a different statement
     /// from "this is not yours". Then the same reads and the same retry as the controller - never an HTTP call to its own host.
     /// </summary>
-    public sealed class ServerErasureService(IErasureRequestRepository requests, IUnitOfWork unitOfWork, SiteState siteState, ICurrentUser currentUser) : IErasureService
+    public sealed class ServerErasureService(IErasureRequestRepository requests, IUnitOfWork unitOfWork, SiteState siteState, ICurrentUser currentUser, IEnumerable<Stomme.Erasure.ISubjectErasureParticipant> participants) : IErasureService
     {
+        /// <summary>Anyone's: the same list for every person (the controller's action is anonymous too).</summary>
+        public Task<List<ErasureSummaryItem>> GetSummaryAsync() => Task.FromResult(Application.ErasureSummary.Build(participants));
+
         public async Task<List<ErasureReceiptView>> GetReceiptsAsync(int take)
         {
             var site = RequireHostSite();

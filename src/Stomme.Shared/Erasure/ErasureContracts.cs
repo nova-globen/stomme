@@ -30,6 +30,13 @@ namespace Stomme.Erasure
     /// <summary>One store a participant owns and its ONE handling; a retention names its reason and period.</summary>
     public sealed record ErasureDeclaration(string Store, ErasureHandling Handling, RetentionReason? Reason = null, TimeSpan? Period = null)
     {
+        /// <summary>
+        /// What the person reads before deleting their account, in their words - "your conversations with the AI
+        /// assistant", not a store name (BL-276). Set it with <c>with { Summary = "..." }</c>; a declaration without one is
+        /// listed under its participant's <see cref="ISubjectErasureParticipant.Name"/>.
+        /// </summary>
+        public string? Summary { get; init; }
+
         public static ErasureDeclaration Delete(string store) => new(store, ErasureHandling.Delete);
 
         public static ErasureDeclaration Anonymise(string store) => new(store, ErasureHandling.Anonymise);

@@ -253,7 +253,7 @@ services.TryAddEnumerable(ServiceDescriptor.Scoped<Stomme.Health.IHealthContribu
 | `Health:MailServerProbeIntervalMinutes` | `1` when absent | How often the probe job connects to each site's mail server (`SMTPHost:SMTPPort`): every tick at 1, at most once per N minutes above it, never at 0. Each probe is a connection to the relay, so raise it when the relay counts connections. Run now always probes it. The store and cache probes still run every minute. |
 | `Health:LivenessPath` | `/healthz` | Path of the liveness endpoint (read at startup). |
 | `Health:ReadinessPath` | `/readyz` | Path of the readiness endpoint (read at startup). |
-| `Metering:Enabled` | `false` | Runs the two metering jobs. Recording and quota checks work either way. |
+| `Metering:Enabled` | `false` | Runs the two metering jobs. Recording and quota checks work either way, and so does the usage ledgers' retention: with metering off the Purge Job takes the user out of rows older than `MeteringUsageRetention` (see [data rights](data-rights.md)). |
 | `Metering:AiPricing` | empty | AI prices: `"provider": { "model": { "InputPerMillion": n, "OutputPerMillion": n, "Currency": "USD" } }`, or a bare model. An unpriced model costs 0. |
 | `module.health.enabled`, `module.metering.enabled` | seeded | Feature flags that stop those modules' pages from being seeded; see [configuration](../architecture/configuration.md). |
 

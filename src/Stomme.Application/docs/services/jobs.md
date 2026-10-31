@@ -95,6 +95,10 @@ sets the alias for the site, creates the task type with `ActivatorUtilities`, ru
 task's `Status`. Completed tasks are purged after 30 days by the Purge Job. The client can add one through
 `Stomme.Services.ISiteTaskService` (the API requires the Administrators role and the caller's own site).
 
+**Any loaded `ISiteTask` type can be queued by a site Administrator** through that API, by its type name, with
+parameters of their choosing. So a task does only what that site's Administrators may do, on that site, and checks its
+parameters; work that needs the Host's rights, or reaches other sites, belongs in a job of its own, never in an `ISiteTask`.
+
 ## Using it from an app
 
 A minimal job, in a module's Server folder (Server/Modules/Notes/Jobs/NightlyTidyJob.cs). The complete per-site version,

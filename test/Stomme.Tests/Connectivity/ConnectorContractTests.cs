@@ -310,12 +310,16 @@ namespace Stomme.Tests.Connectivity
         }
 
         [Fact]
-        public void DuplicateConnectorType_ThrowsAndNamesBothOwners_PredecessorLetTheFirstWin()
+        public void DuplicateConnectorType_IsRejectedOnBothSidesAndNamesBothOwners_PredecessorLetTheFirstWin()
         {
-            var ex = Assert.Throws<InvalidOperationException>(() => new ConnectorCatalog(new IConnector[] { new FixtureConnector("rest", "First"), new FixtureConnector("REST", "Second") }));
+            // BL-251 (H#5): rejected on every side, the host keeps working - it threw on first use and every call answered 500.
+            var catalog = new ConnectorCatalog(new IConnector[] { new FixtureConnector("rest", "First"), new FixtureConnector("REST", "Second"), new FixtureConnector("postgresql", "PostgreSQL") });
 
-            Assert.Contains("'REST'", ex.Message);
-            Assert.Contains(nameof(FixtureConnector), ex.Message);
+            Assert.Null(catalog.Find("rest"));
+            Assert.NotNull(catalog.Find("postgresql"));
+            var conflict = Assert.Single(catalog.Conflicts);
+            Assert.Contains("'rest'", conflict);
+            Assert.Contains(nameof(FixtureConnector), conflict);
         }
 
         [Fact]

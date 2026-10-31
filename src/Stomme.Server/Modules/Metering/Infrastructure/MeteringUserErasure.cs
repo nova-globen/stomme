@@ -49,8 +49,8 @@ namespace Stomme.Modules.Metering.Infrastructure
 
         public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[]
         {
-            ErasureDeclaration.Anonymise("UsageRecordAggregate"),
-            ErasureDeclaration.Anonymise("AiUsageRecordAggregate"),
+            ErasureDeclaration.Anonymise("UsageRecordAggregate") with { Summary = "your usage records (the counts stay)" },
+            ErasureDeclaration.Anonymise("AiUsageRecordAggregate") with { Summary = "your AI usage records (the counts stay)" },
         };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)

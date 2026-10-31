@@ -21,7 +21,7 @@ namespace Stomme.Modules.Erasure.Participants
     {
         public string Name => "User settings";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("SettingAggregate (User)") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("SettingAggregate (User)") with { Summary = "your personal settings" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {
@@ -40,7 +40,7 @@ namespace Stomme.Modules.Erasure.Participants
     {
         public string Name => "Site notifications";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("NotificationAggregate (framework)") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("NotificationAggregate (framework)") with { Summary = "messages sent to you or by you" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {
@@ -61,7 +61,7 @@ namespace Stomme.Modules.Erasure.Participants
     {
         public string Name => "Visitors";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("VisitorAggregate") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("VisitorAggregate") with { Summary = "the record of your visits" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {
@@ -84,7 +84,7 @@ namespace Stomme.Modules.Erasure.Participants
     {
         public string Name => "Event log";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Anonymise("LogAggregate") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Anonymise("LogAggregate") with { Summary = "your user id in the site's event log (the entries stay)" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {
@@ -104,7 +104,7 @@ namespace Stomme.Modules.Erasure.Participants
     {
         public string Name => "Personal pages";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("PageAggregate (personal)") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("PageAggregate (personal)") with { Summary = "your personal pages" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {
@@ -123,7 +123,7 @@ namespace Stomme.Modules.Erasure.Participants
     {
         public string Name => "Site access";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("UserRoleAggregate"), ErasureDeclaration.Delete("PermissionAggregate") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("UserRoleAggregate") with { Summary = "your roles on this site" }, ErasureDeclaration.Delete("PermissionAggregate") with { Summary = "permissions given to you by name" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {
@@ -156,7 +156,7 @@ namespace Stomme.Modules.Erasure.Participants
     {
         public string Name => "Authority tokens";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("OpenIddict tokens"), ErasureDeclaration.Delete("OpenIddict authorizations") };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Delete("OpenIddict tokens") with { Summary = "the sign-in tokens apps hold for you" }, ErasureDeclaration.Delete("OpenIddict authorizations") with { Summary = "the apps you allowed to sign you in" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

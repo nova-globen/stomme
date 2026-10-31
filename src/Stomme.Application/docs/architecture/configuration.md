@@ -217,7 +217,7 @@ at the next start. Restart after changing any switch unless you know its reader 
 | Cloud cost alerts | `CloudUsage:Alerts:Enabled` | `false` | `CloudUsage:Alerts:AnomalyLookbackDays` (7), `AnomalyThresholdPercent` (20). |
 | Temporary-file cleanup job | `CostOptimization:Cleanup:TempFiles:Enabled` | `false` | Sweeps only `CostOptimization:Cleanup:TempFiles:Directories` (none by default). `CostOptimization:Cleanup:DryRun` is `true` by default: it reports and deletes nothing. `CostOptimization:Cleanup:SafetyWindowDays` (7). |
 | Demo connections, datasets and boards on every site | `DemoContent:Enabled` | `false` | Restart. |
-| OpenAPI document (`/openapi/v1.json`) | `UseSwagger` | absent | On only when the value is exactly the text `true`; write it as the JSON string `"true"`. Restart. |
+| OpenAPI document (`/openapi/v1.json`) | `UseSwagger` | absent | On when the value is `true` - the JSON boolean or the string, in any case (since 10.79.0; before, only the exact string `"true"`). Restart. |
 
 A module's MCP surface has its own feature flag as well (for example `datasets.mcp`, `dashboards.mcp`), off by default.
 
@@ -251,9 +251,10 @@ at `/admin/mcp`). Turning the switch off again does not remove the page.
   every test that set the key on the builder passes.
 - **The override file wins over environment variables.** A value an admin page or the installer wrote there beats the
   same key set in a container's environment. To force a value from the environment, remove it from the override file.
-- **`STOMME_APPSETTINGS_PATH` must name an existing directory holding an existing `appsettings.override.json`.**
-  Otherwise the override source is skipped and the installer writes its connection string, with the password, into
-  `appsettings.json`. The app's `Program.cs` creates both; keep that code.
+- **`STOMME_APPSETTINGS_PATH` must name a directory the app can create and write.** Since 10.79.0 the framework creates
+  the directory and an empty `appsettings.override.json` when they are missing; before, a missing one was skipped and the
+  installer wrote its connection string, with the password, into `appsettings.json`. If the directory cannot be created
+  that still happens (a line on standard error says so). The app's `Program.cs` creates both too; keep that code.
 - **Do not add top-level sections named `Password`, `Lockout`, `User`, `SignIn`, `Tokens`, `Stores` or
   `ClaimsIdentity`.** The host binds the whole configuration root onto ASP.NET Core Identity's `IdentityOptions`, so such
   a section changes the sign-in rules.

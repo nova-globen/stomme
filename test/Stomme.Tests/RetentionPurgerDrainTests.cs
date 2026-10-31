@@ -209,9 +209,11 @@ namespace Stomme.Tests
                         "Broken Urls", "Completed Tasks", "Events",
                         "Health Rollups",   // The first contributed pass
                         "Identity Audit",   // The identity ledger, retention floor 30 days
+                        "Last IP Addresses", // BL-275: a user's last IP, cleared after LastIPAddressRetention (90 days)
                         "Notifications", "Orphaned Upload Parts",
                         "Portability",      // Retires package artifacts and old audit rows; 0 while disabled
                         "Sessions",         // Ended sessions, 30 days after they ended
+                        "Usage Ledger User Ids", // BL-275: the metering ledgers lose their user past MeteringUsageRetention while metering is off
                         "Visitors"
                     },
                     labels);

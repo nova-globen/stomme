@@ -87,27 +87,57 @@ namespace Stomme.Infrastructure
             }
         }
 
+        /// <summary>
+        /// The folder <c>STOMME_APPSETTINGS_PATH</c> names, created when it does not exist yet (BL-251, BL-239's A12: a folder or
+        /// file that did not exist was silently ignored, so the installer wrote the connection string and the host password
+        /// into <c>appsettings.json</c> beside the binaries instead of where the operator pointed). Null when the variable is
+        /// unset, or the folder cannot be created - then the settings go beside the binaries, as before.
+        /// </summary>
         public static string GetAppSettingsOverridePath()
         {
             var appSettingsOverrideFilePath = Environment.GetEnvironmentVariable(Constants.AppSettingsOverrideEnvironmentVariable);
-            if (!string.IsNullOrEmpty(appSettingsOverrideFilePath) && Directory.Exists(appSettingsOverrideFilePath))
+            if (string.IsNullOrEmpty(appSettingsOverrideFilePath))
             {
+                return null;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(appSettingsOverrideFilePath);
                 return appSettingsOverrideFilePath;
             }
-            return null;
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
+            {
+                Console.Error.WriteLine($"{Constants.AppSettingsOverrideEnvironmentVariable} names '{appSettingsOverrideFilePath}', which cannot be created ({ex.GetType().Name}): settings are written beside the application.");
+                return null;
+            }
         }
 
+        /// <summary>The override file in that folder, started as an empty object when it does not exist yet.</summary>
         public static string GetAppSettingsOverrideFilename()
         {
             var appSettingsOverrideFilePath = GetAppSettingsOverridePath();
-            if (!string.IsNullOrEmpty(appSettingsOverrideFilePath))
+            if (string.IsNullOrEmpty(appSettingsOverrideFilePath))
             {
-                var appSettingsOverrideFileName = Path.Combine(appSettingsOverrideFilePath, "appsettings.override.json");
-                return File.Exists(appSettingsOverrideFileName) ? appSettingsOverrideFileName : null;
+                return null;
             }
-            return null;
-        }
 
+            var appSettingsOverrideFileName = Path.Combine(appSettingsOverrideFilePath, "appsettings.override.json");
+            try
+            {
+                if (!File.Exists(appSettingsOverrideFileName))
+                {
+                    File.WriteAllText(appSettingsOverrideFileName, "{}");
+                }
+
+                return appSettingsOverrideFileName;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                Console.Error.WriteLine($"'{appSettingsOverrideFileName}' cannot be created ({ex.GetType().Name}): settings are written beside the application.");
+                return null;
+            }
+        }
         public IConfigurationSection GetSection(string key)
         {
             return _config.GetSection(key);

@@ -316,7 +316,7 @@ reaches the host before the install completes cannot claim it.
 |---|---|---|
 | `ASPNETCORE_URLS` (environment) | ASP.NET Core's default | The listeners. Keep at least one plain-HTTP listener for the host's calls to itself, or set `Installation:InternalUrl`. |
 | `ASPNETCORE_ENVIRONMENT` (environment) | `Production` | Outside `Development`: the `/Error` handler and HSTS. |
-| `STOMME_APPSETTINGS_PATH` (environment) | `<content root>/Data` | Directory of the override file. Must exist and contain the file; `Program.cs` creates both. |
+| `STOMME_APPSETTINGS_PATH` (environment) | `<content root>/Data` | Directory of the override file; created, with an empty file, when missing (`Program.cs` creates both too). |
 | `Installation:InternalUrl` | empty | Where the host's calls to its own API go: empty (its plain-HTTP listener), a URL, or `public`. |
 | `Installation:UseHttpsRedirection` | `false` | Leave off behind a TLS-terminating proxy. |
 | `Health:LivenessPath`, `Health:ReadinessPath` | `/healthz`, `/readyz` | The health endpoints. |

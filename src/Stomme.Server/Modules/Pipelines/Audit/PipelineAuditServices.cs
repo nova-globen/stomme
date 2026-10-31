@@ -98,7 +98,7 @@ namespace Stomme.Modules.Pipelines.Audit
 
         public string Name => "Pipeline activity";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Retain("PipelineAuditEntryAggregate", RetentionReason.Security, RetentionPeriod) };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Retain("PipelineAuditEntryAggregate", RetentionReason.Security, RetentionPeriod) with { Summary = "the record of what you did to pipelines" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {

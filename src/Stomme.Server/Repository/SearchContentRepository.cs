@@ -14,6 +14,7 @@ namespace Stomme.Repository
         Task<SearchContent> AddSearchContentAsync(SearchContent searchContent);
         Task DeleteSearchContentAsync(int searchContentId);
         Task DeleteSearchContentAsync(string entityName, string entryId);
+        Task DeleteSearchContentAsync(int siteId, string entityName, string entryId);
         Task DeleteSearchContentAsync(string uniqueKey);
         Task DeleteAllSearchContentAsync(int siteId);
 
@@ -103,6 +104,27 @@ namespace Stomme.Repository
         {
             var aggregate = await _searchContents.GetByIdAsync(searchContentId).ConfigureAwait(false);
             if (aggregate != null)
+            {
+                await DeleteWithDependentsAsync(aggregate).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The site's entry for an entity (BL-251, BL-239's E2#3): what replacing or deleting an entry must match. The
+        /// overload without a site matched the FIRST entry of that name and id in the tenant's store, so where two sites in
+        /// one database index an entity with the same id, saving one site's entry removed the other's.
+        /// </summary>
+        public async Task DeleteSearchContentAsync(int siteId, string entityName, string entryId)
+        {
+            List<SearchContentAggregate> aggregates;
+            await using (var session = _sessions.OpenQuerySession())
+            {
+                aggregates = session.Query<SearchContentAggregate>()
+                    .Where(item => item.SiteId == siteId && item.EntityName == entityName && item.EntityId == entryId)
+                    .ToList();
+            }
+
+            foreach (var aggregate in aggregates)
             {
                 await DeleteWithDependentsAsync(aggregate).ConfigureAwait(false);
             }

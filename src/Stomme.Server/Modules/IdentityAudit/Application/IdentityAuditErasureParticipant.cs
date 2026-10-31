@@ -21,7 +21,7 @@ namespace Stomme.Modules.IdentityAudit.Application
 
         public string Name => "Identity audit";
 
-        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Retain("IdentityAuditEntryAggregate", RetentionReason.Security, RetentionPeriod) };
+        public IReadOnlyList<ErasureDeclaration> Declarations { get; } = new[] { ErasureDeclaration.Retain("IdentityAuditEntryAggregate", RetentionReason.Security, RetentionPeriod) with { Summary = "the security record of your sign-ins and account changes" } };
 
         public async Task<IReadOnlyList<ErasureOutcome>> EraseAsync(ErasureSubject subject, CancellationToken ct = default)
         {
