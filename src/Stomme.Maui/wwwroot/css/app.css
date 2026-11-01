@@ -193,6 +193,9 @@ a:hover { color: var(--db-accent); }
 .db-input { padding: 0.45rem 0.6rem; border: 1px solid var(--db-border); border-radius: 6px; background: var(--db-bg-elev-2); color: var(--db-text); font-size: 13px; max-width: 100%; box-sizing: border-box; }
 .db-input:focus-visible { outline: none; border-color: var(--db-accent); box-shadow: 0 0 0 2px color-mix(in oklab, var(--db-accent) 40%, transparent); }
 .db-input[readonly] { background: var(--db-bg-elev); color: var(--db-text-2); }
+/* A form submitted with a field it refuses marks that field (BL-241): Bootstrap's was-validated class, which the admin forms
+   set on Save, had no style here, so nothing showed which field stopped the save. */
+.was-validated .db-input:invalid, .was-validated .db-select:invalid, .was-validated textarea:invalid { border-color: var(--db-bad); box-shadow: 0 0 0 1px var(--db-bad); }
 
 /* Native <select> counterpart to .db-input, for the admin pages that bind a plain <select>. */
 .db-select {
@@ -304,6 +307,7 @@ a:hover { color: var(--db-accent); }
     color: var(--db-text); font-size: 14px;
 }
 .db-message-body { flex: 1 1 auto; min-width: 0; }
+.db-message-link { margin-left: 0.5em; font-weight: 600; white-space: nowrap; }
 .db-message-ok   { background: color-mix(in oklab, var(--db-ok) 14%, transparent);   border-color: color-mix(in oklab, var(--db-ok) 38%, transparent); }
 .db-message-info { background: color-mix(in oklab, var(--db-info) 14%, transparent); border-color: color-mix(in oklab, var(--db-info) 38%, transparent); }
 .db-message-warn { background: color-mix(in oklab, var(--db-warn) 14%, transparent); border-color: color-mix(in oklab, var(--db-warn) 38%, transparent); }
@@ -388,13 +392,13 @@ a:hover { color: var(--db-accent); }
     min-width: 34px; height: 34px; padding: 0 0.55rem;
     border: 1px solid var(--db-border); border-radius: var(--db-radius-sm);
     background: var(--db-bg-elev); color: var(--db-text-2);
-    font-size: 13.5px; text-decoration: none; cursor: pointer; user-select: none;
+    font-family: inherit; font-size: 13.5px; text-decoration: none; cursor: pointer; user-select: none;
 }
 .db-page-link:hover { background: var(--db-bg-elev-2); color: var(--db-text); border-color: var(--db-border-strong); }
 .db-page-item.active .db-page-link {
     background: var(--db-accent); border-color: var(--db-accent); color: #101013; font-weight: 600;
 }
-.db-page-item.disabled .db-page-link { opacity: 0.45; pointer-events: none; }
+.db-page-item.disabled .db-page-link, .db-page-link:disabled { opacity: 0.45; pointer-events: none; }
 .db-page-link:focus-visible { outline: 2px solid var(--db-accent); outline-offset: 2px; }
 
 /* ============================== Form rows ============================== */

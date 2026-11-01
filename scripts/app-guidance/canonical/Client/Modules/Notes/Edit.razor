@@ -99,10 +99,16 @@ else
             await logger.LogInformation("Note saved {NoteId}", _id);
             NavigationManager.NavigateTo(NavigateUrl());
         }
+        catch (ServiceRefusalException ex)
+        {
+            // The server's reason, meant for the person: a duplicate title, a field it refuses, no permission.
+            AddModuleMessage("The note was not saved: " + ex.Message, MessageType.Warning);
+        }
         catch (Exception ex)
         {
+            // A fault, not a refusal: its text ("TypeError: Failed to fetch") goes to the log, not on the page.
             await logger.LogError(ex, "Could not save the note {Error}", ex.Message);
-            AddModuleMessage("The note was not saved: " + WebUtility.HtmlEncode(ex.Message), MessageType.Error);
+            AddModuleMessage("The note was not saved. Try again; if it keeps failing, ask an administrator to check the event log.", MessageType.Error);
         }
         finally
         {

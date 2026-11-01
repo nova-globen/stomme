@@ -18,7 +18,7 @@ namespace [Owner].Theme.[Theme]
             ContainerSettingsType = "[Owner].Theme.[Theme].ContainerSettings, [Owner].Theme.[Theme].Client.Stomme",
             Resources = new List<Resource>()
             {
-		// obtained from https://cdnjs.com/libraries
+                // Bootstrap is served by the host itself (no CDN); the layout in Themes/Theme1.razor uses its grid.
                 new Stylesheet(Constants.BootstrapStylesheetUrl, Constants.BootstrapStylesheetIntegrity, "anonymous"),
                 new Stylesheet("_content/[Owner].Theme.[Theme]/Theme.css"),
                 new Script(Constants.BootstrapScriptUrl, Constants.BootstrapScriptIntegrity, "anonymous")

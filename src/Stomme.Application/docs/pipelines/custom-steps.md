@@ -134,11 +134,15 @@ that site's rows.
 
 ### A step that writes your module's data
 
-A run has no signed-in user: `ICurrentUser.UserId` is null, and a mediator request marked `[Requires]` is refused
-("Access denied for 'CreateNoteCommand'."). Beware: **Test step** in the editor runs inside the request of the person
-testing, so the same command passes in a test and faults in the published run. A step therefore enters the site and
-uses the module's repository itself, the way a handler would, and takes from its inputs what a request would have taken
-from the user. For the Notes module (`Server/Steps/CreateNote.cs`, with
+A published run acts as a user (since 10.80.0): the person who started it by hand, else the person who published the
+version it runs. Once the step has entered its site with `Stomme.Modules.Pipelines.Tenancy.StommeSiteScope.EnsureSiteAsync(context)`,
+`ICurrentUser.UserId` is that user and a mediator request marked `[Requires]` is decided by that user's rights on the
+site - read from the stored permission rows each time, so a publisher who has lost the right, or been deleted, is refused.
+`StepSite` above enters the site only; call `StommeSiteScope.EnsureSiteAsync` instead when the step sends such a request.
+A run with no recorded user (a version published before 10.80.0) acts as no one: the request is refused
+("Access denied for 'CreateNoteCommand'."). **Test step** in the editor runs inside the request of the person testing,
+as that person. A step can also use the module's repository itself, the way a handler would, needing no rights and
+taking from its inputs what a request would have taken from the user. For the Notes module (`Server/Steps/CreateNote.cs`, with
 `StepSite` above in `Server/Steps/StepSite.cs`):
 
 ```csharp

@@ -116,6 +116,14 @@ namespace Stomme.Modules.Mcp.Startup
             services.AddScoped<IMcpAuditRepository, McpAuditRepository>();
             services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.McpAuditErasureParticipant>(); // A security record, retained one year then deleted
 
+            // Personal MCP tokens (D101a, BL-101): a user's own way in for an MCP client outside the browser. Registered with the
+            // rest; they sign anyone in only while the server half is on (McpPersonalTokenPipeline).
+            services.AddModuleAggregatePersistence<McpPersonalTokenAggregate, Guid>();
+            services.AddScoped<IMcpPersonalTokenRepository, McpPersonalTokenRepository>();
+            services.AddScoped<Application.McpPersonalTokenService>();
+            services.AddScoped<Stomme.Erasure.ISubjectErasureParticipant, Application.McpPersonalTokenErasure>();
+            services.AddScoped<Stomme.Portability.ISubjectDataContributor, Application.McpPersonalTokenSubjectContributor>();
+
             // The clock is shared by both halves, so it is registered before either switch is read.
             services.TryAddSingleton<IMcpClock, SystemMcpClock>();
 

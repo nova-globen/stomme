@@ -28,7 +28,19 @@ namespace Stomme.Modules.Mcp.Services
     /// </remarks>
     public interface IMcpService
     {
+        /// <summary>Which halves are on, and the rejected name collisions for an operator. Any of the three MCP keys may ask.</summary>
+        Task<McpStatusView> GetStatusAsync();
+
         Task<List<McpServerRegistrationView>> GetServersAsync();
+
+        /// <summary>The caller's own personal MCP tokens on this site (D101a). Needs mcp:view and the server half.</summary>
+        Task<List<McpTokenView>> GetTokensAsync();
+
+        /// <summary>Makes a personal MCP token; the answer holds its secret, shown this once.</summary>
+        Task<McpTokenCreated> CreateTokenAsync(McpTokenRequest request);
+
+        /// <summary>Revokes one of the caller's own tokens, at once.</summary>
+        Task RevokeTokenAsync(Guid id);
 
         Task<McpServerRegistrationView> RegisterServerAsync(McpServerRegistrationRequest request);
 
@@ -54,6 +66,17 @@ namespace Stomme.Modules.Mcp.Services
         public McpService(HttpClient http, SiteState siteState) : base(http, siteState) { }
 
         private string ApiUrl => CreateApiUrl("Mcp");
+
+        public async Task<McpStatusView> GetStatusAsync() =>
+            await GetJsonAsync<McpStatusView>($"{ApiUrl}/status") ?? new McpStatusView();
+
+        public async Task<List<McpTokenView>> GetTokensAsync() =>
+            await GetJsonAsync<List<McpTokenView>>($"{ApiUrl}/tokens") ?? new List<McpTokenView>();
+
+        public Task<McpTokenCreated> CreateTokenAsync(McpTokenRequest request) =>
+            PostJsonAsync<McpTokenRequest, McpTokenCreated>($"{ApiUrl}/tokens", request);
+
+        public Task RevokeTokenAsync(Guid id) => DeleteAsync($"{ApiUrl}/tokens/{id}");
 
         public async Task<List<McpServerRegistrationView>> GetServersAsync() =>
             await GetJsonAsync<List<McpServerRegistrationView>>($"{ApiUrl}/servers") ?? new List<McpServerRegistrationView>();

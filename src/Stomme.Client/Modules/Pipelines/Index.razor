@@ -43,7 +43,7 @@ else
                     <h3 style="margin:0;">New pipeline</h3>
                     <div style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;">
                         <label for="pipelines-new-name">Name</label>
-                        <input id="pipelines-new-name" type="text" class="db-input" style="width:16rem;" maxlength="200" @bind="_newName" />
+                        <input id="pipelines-new-name" type="text" class="db-input" style="width:16rem;" maxlength="200" @bind="_newName" @bind:event="oninput" />
                         <label for="pipelines-new-description">Description</label>
                         <input id="pipelines-new-description" type="text" class="db-input" style="width:24rem;" @bind="_newDescription" />
                         @* Start from a shipped pipeline (n8n's templates), or from nothing. *@
@@ -64,7 +64,7 @@ else
                         }
                         else
                         {
-                            @("A new pipeline is a draft with no steps. Open it with Edit to place its steps and connect them, then publish it to run it.")
+                            @("A new pipeline is a draft with no steps: Create opens it, to place its steps and connect them; then publish it to run it.")
                         }
                     </p>
                     @* A file exported from an editor - this site's or another's - as a new pipeline, judged by the save before anything is stored. *@
@@ -1555,13 +1555,16 @@ else
             var created = await PipelinesService.CreatePipelineAsync(new CreatePipelineRequest { Name = _newName, Description = _newDescription });
             _newName = "";
             _newDescription = "";
-            _message = $"Created '{created.Name}' as a draft" + (_folder.Length == 0 ? "." : $", in {_folder}.");
             await PlaceInFolderAsync(created.DefinitionId, _folder);
+            // Straight to its canvas, as a starter or an imported file goes: a new pipeline has nothing to do on the list but be
+            // opened, and a first-time author was left to find its row and press Edit (BL-240).
+            NavigationManager.NavigateTo(NavigateUrl(ModuleState.ModuleId, "Editor", "definition=" + created.DefinitionId));
+            return;
         }
         catch (Exception ex)
         {
             await logger.LogError(ex, "Error Creating Pipeline {Error}", ex.Message);
-            _error = "The pipeline was refused: it needs a name of at most 200 characters.";
+            _error = ex is ServiceRefusalException refusal ? "The pipeline was not created: " + refusal.Message : "The pipeline was not created. Try again; if it keeps failing, check the event log.";
         }
         finally
         {
@@ -1578,6 +1581,7 @@ else
         _error = "";
         _message = "";
         IReadOnlyList<PipelineExchangeDocument> documents;
+        IReadOnlyList<string> unreadable;
         try
         {
             // n8n's export of many workflows is one file too - each a pipeline of its own (PipelineExchange.ReadMany).
@@ -1587,7 +1591,8 @@ else
             }
 
             using var reader = new System.IO.StreamReader(args.File.OpenReadStream(PipelineExchange.MaxManyBytes));
-            documents = PipelineExchange.ReadMany(await reader.ReadToEndAsync());
+            // A workflow of many that is not a pipeline is left out and said, not a reason to refuse the rest (ReadEach).
+            (documents, unreadable) = PipelineExchange.ReadEach(await reader.ReadToEndAsync());
         }
         catch (PipelineExchangeException ex)
         {
@@ -1595,9 +1600,9 @@ else
             return;
         }
 
-        if (documents.Count > 1)
+        if (documents.Count > 1 || unreadable.Count > 0)
         {
-            await ImportManyAsync(documents, System.IO.Path.GetFileNameWithoutExtension(args.File.Name));
+            await ImportManyAsync(documents, System.IO.Path.GetFileNameWithoutExtension(args.File.Name), unreadable);
             return;
         }
 
@@ -1611,11 +1616,11 @@ else
     // Each workflow of n8n's export a draft of its own, judged by the save as any import is; the list says how many came
     // over, and which did not and why - the rest are not held back by one. A file of this site's many (a folder exported) keeps
     // its folders below the one shown, and once every pipeline is made, the calls among them are pointed at the new ones.
-    private async Task ImportManyAsync(IReadOnlyList<PipelineExchangeDocument> documents, string fileName)
+    private async Task ImportManyAsync(IReadOnlyList<PipelineExchangeDocument> documents, string fileName, IReadOnlyList<string> unreadable = null)
     {
         _busy = true;
         var created = 0;
-        var refused = new List<string>();
+        var refused = new List<string>(unreadable ?? Array.Empty<string>());
         var becameOf = new Dictionary<string, string>(StringComparer.Ordinal);
         var made = new List<(string DefinitionId, PipelineExchangeDocument Document)>();
         try
@@ -1664,7 +1669,7 @@ else
             _newName = "";
             _newDescription = "";
             await LoadAsync();
-            _message = $"Imported {created} of {documents.Count} pipelines as drafts"
+            _message = $"Imported {created} of {documents.Count + (unreadable?.Count ?? 0)} pipelines as drafts"
                 + (repointed == 0 ? "" : $" - what they named of each other now names the new pipelines ({(repointed == 1 ? "1 place" : $"{repointed} places")})")
                 + (fromN8n ? " - each brought over from n8n has a note on its canvas of what is left to finish." : ".");
             _error = refused.Count == 0 ? _error : "Not created: " + string.Join("; ", refused) + ".";

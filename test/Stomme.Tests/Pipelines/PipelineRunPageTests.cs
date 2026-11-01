@@ -1268,11 +1268,13 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("All pipelines / On call", Text(cut.Find("#pipelines-folder-path")));
             Assert.NotNull(cut.Find("#pipelines-folder-empty"));
             cut.Find("#pipelines-new-open").Click();
-            cut.Find("#pipelines-new-name").Change("Page the team");
+            cut.Find("#pipelines-new-name").Input("Page the team");
             cut.Find("#pipelines-create").Click();
             cut.WaitForAssertion(() => Assert.Equal(("def-new", "On call"), _service.Moved[^1]));
-            cut.WaitForAssertion(() => Assert.Equal(new[] { "Page the team" }, Names(cut)));
-            Assert.Equal("Created 'Page the team' as a draft, in On call.", cut.Find("#pipelines-message").TextContent.Trim());
+            // Placed in the folder, then opened on its canvas (BL-240: a new pipeline has nothing to do on the list).
+            var navigation = Services.GetRequiredService<Microsoft.AspNetCore.Components.NavigationManager>();
+            cut.WaitForAssertion(() => Assert.Contains("definition=def-new", navigation.Uri));
+            Assert.EndsWith("Editor", new Uri(navigation.Uri).AbsolutePath.TrimEnd('/'), StringComparison.OrdinalIgnoreCase);
         }
 
         // A folder as one file and back: the pipelines in it and in the folders inside it exported with their ids and their

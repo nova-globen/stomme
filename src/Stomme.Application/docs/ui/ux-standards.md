@@ -64,7 +64,7 @@ Each rule has an identifier for review reports.
   failures a sentence of your own.
 - **R3** Validation happens before the call: required fields are marked `required`, and a missing value produces
   `MessageType.Warning` with `SharedLocalizer["Message.InfoRequired"]` or a sentence naming the field.
-- **R4** User-entered text in a message is HTML-encoded (`System.Net.WebUtility.HtmlEncode`); messages render as markup.
+- **R4** User-entered text goes into a message as it is: since 10.79.0 a module message encodes its text (before, it was raw HTML and the text had to be encoded); a page that encodes it too shows `&#39;` for a quote.
 
 ### Confirmation
 

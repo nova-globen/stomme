@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-        <id>$projectname$</id>
+        <id>[Owner].Theme.[Theme]</id>
         <version>1.0.0</version>
         <authors>[Owner]</authors>
         <owners>[Owner]</owners>
@@ -10,25 +10,31 @@
         <copyright>[Owner]</copyright>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <license type="expression">MIT</license>
-        <projectUrl>https://github.com/nova-globen/stomme</projectUrl>
         <icon>icon.png</icon>
         <tags>stomme theme</tags>
-        <releaseNotes></releaseNotes>
-        <summary></summary>
+        <!-- The Stomme.Framework package type, with the minimum framework version, is how the host's InstallationManager
+             recognises a theme package and refuses one built for a newer framework than it runs. -->
         <packageTypes>
             <packageType name="Dependency" />
-            <packageType name="Stomme.Framework" version="[FrameworkVersion]" />
+            <packageType name="Stomme.Framework" version="[FrameworkRelease]" />
         </packageTypes>
     </metadata>
     <files>
-        <file src="..\Client\bin\Release\$targetframework$\$projectname$.Client.Stomme.dll" target="lib\$targetframework$" />
-        <file src="..\Client\bin\Release\$targetframework$\$projectname$.Client.Stomme.pdb" target="lib\$targetframework$" />
-        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.$ProjectName$.Microsoft.AspNetCore.StaticWebAssetEndpoints.props" target="build\Microsoft.AspNetCore.StaticWebAssetEndpoints.props" />
-        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.$ProjectName$.Microsoft.AspNetCore.StaticWebAssets.props" target="build\Microsoft.AspNetCore.StaticWebAssets.props" />
-        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.build.$ProjectName$.props" target="build\$ProjectName$.props" />
-        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.buildMultiTargeting.$ProjectName$.props" target="buildMultiTargeting\$ProjectName$.props" />
-        <file src="..\Client\obj\Release\$targetframework$\staticwebassets\msbuild.buildTransitive.$ProjectName$.props" target="buildTransitive\$ProjectName$.props" />
+        <!-- The .Stomme assembly under lib/net10.0, which the InstallationManager extracts into the host's /bin. No framework
+             assembly ships: they are the host's own. -->
+        <file src="..\Client\bin\$configuration$\net10.0\[Owner].Theme.[Theme].Client.Stomme.dll" target="lib\net10.0" />
+        <file src="..\Client\bin\$configuration$\net10.0\[Owner].Theme.[Theme].Client.Stomme.pdb" target="lib\net10.0" />
+        <!-- wwwroot as staticwebassets/, which the InstallationManager extracts to {webRoot}/_content/[Owner].Theme.[Theme]/. -->
         <file src="..\Client\wwwroot\**\*.*" target="staticwebassets" />
+        <!-- And the SDK's static-web-asset props, so an app that references the package at build time serves the same files at
+             the same address. NuGet imports build\{package id}.props; the generated chain imports the assembly-named one. -->
+        <file src="..\Client\obj\$configuration$\net10.0\staticwebassets\msbuild.[Owner].Theme.[Theme].Client.Stomme.Microsoft.AspNetCore.StaticWebAssetEndpoints.props" target="build\Microsoft.AspNetCore.StaticWebAssetEndpoints.props" />
+        <file src="..\Client\obj\$configuration$\net10.0\staticwebassets\msbuild.[Owner].Theme.[Theme].Client.Stomme.Microsoft.AspNetCore.StaticWebAssets.props" target="build\Microsoft.AspNetCore.StaticWebAssets.props" />
+        <file src="..\Client\obj\$configuration$\net10.0\staticwebassets\msbuild.build.[Owner].Theme.[Theme].Client.Stomme.props" target="build\[Owner].Theme.[Theme].props" />
+        <file src="..\Client\obj\$configuration$\net10.0\staticwebassets\msbuild.build.[Owner].Theme.[Theme].Client.Stomme.props" target="build\[Owner].Theme.[Theme].Client.Stomme.props" />
+        <file src="..\Client\obj\$configuration$\net10.0\staticwebassets\msbuild.buildMultiTargeting.[Owner].Theme.[Theme].Client.Stomme.props" target="buildMultiTargeting\[Owner].Theme.[Theme].props" />
+        <file src="..\Client\obj\$configuration$\net10.0\staticwebassets\msbuild.buildMultiTargeting.[Owner].Theme.[Theme].Client.Stomme.props" target="buildMultiTargeting\[Owner].Theme.[Theme].Client.Stomme.props" />
+        <file src="..\Client\obj\$configuration$\net10.0\staticwebassets\msbuild.buildTransitive.[Owner].Theme.[Theme].Client.Stomme.props" target="buildTransitive\[Owner].Theme.[Theme].props" />
         <file src="icon.png" target="" />
     </files>
 </package>

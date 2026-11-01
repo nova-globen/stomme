@@ -56,14 +56,20 @@ namespace Stomme.Infrastructure.Security
         private readonly IHttpContextAccessor _accessor;
         private readonly IUserPermissions _userPermissions;
         private readonly IFeatureEvaluator? _features;
+        private readonly RunPrincipal? _run;
+        private readonly IStoredRowPermissionEvaluator? _stored;
 
         // The evaluator is optional AT THE CONSTRUCTOR so a host that registered no IFeatureEvaluator at all
-        // still composes — and then denies every feature-gated request rather than admitting it.
-        public PermissionRowAccessGuard(IHttpContextAccessor accessor, IUserPermissions userPermissions, IFeatureEvaluator? features = null)
+        // still composes — and then denies every feature-gated request rather than admitting it. The run principal and the
+        // stored-row evaluator likewise: without them a scope with no request is denied, as it always was.
+        public PermissionRowAccessGuard(IHttpContextAccessor accessor, IUserPermissions userPermissions, IFeatureEvaluator? features = null,
+            RunPrincipal? run = null, IStoredRowPermissionEvaluator? stored = null)
         {
             _accessor = accessor;
             _userPermissions = userPermissions;
             _features = features;
+            _run = run;
+            _stored = stored;
         }
 
         public async Task<bool> IsAllowedAsync(string? feature, string? permission, CancellationToken ct = default)
@@ -79,7 +85,20 @@ namespace Stomme.Infrastructure.Security
             var context = _accessor.HttpContext;
             if (context == null)
             {
-                return false;
+                // No request: a pipeline run acts as its publisher, or whoever started it by hand (BL-280) - read from that
+                // user's STORED rows on the run's site each time, never the system key; anything else stays denied.
+                if (_run is not { IsSet: true } || _stored is null)
+                {
+                    return false;
+                }
+
+                if (requiresPermission && (string.Equals(permission!.Trim(), SystemAdminKey, StringComparison.OrdinalIgnoreCase)
+                    || !await _stored.IsAuthorizedAsync(_run.SiteId!.Value, _run.UserId!.Value, permission!.Trim(), ct)))
+                {
+                    return false;
+                }
+
+                return !requiresFeature || (_features != null && await _features.IsEnabledAsync(feature!, ct));
             }
 
             if (requiresPermission && !await IsPermissionHeldAsync(context, permission!))

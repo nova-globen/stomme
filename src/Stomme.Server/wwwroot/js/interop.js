@@ -462,6 +462,48 @@ Stomme.Interop = {
             window.location.href = url;
         }, wait * 1000);
     },
+    // A modal dialog keeps the keyboard inside it (BL-241): focus starts on `initial`, Tab and Shift+Tab wrap round its
+    // controls, and Escape presses its Close button, so the component closes it the usual way. In the browser, not over the
+    // circuit: a key round trip loses to a fast typist (driven - focus left the dialog before the server moved it back).
+    trapDialog: function (dialog, initial) {
+        if (!(dialog instanceof HTMLElement)) {
+            return;
+        }
+        if (!dialog.dataset.trapped) {
+            dialog.dataset.trapped = "true";
+            dialog.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") {
+                    var close = dialog.querySelector(".db-dialog-close");
+                    if (close) {
+                        e.preventDefault();
+                        close.click();
+                    }
+                    return;
+                }
+                if (e.key !== "Tab") {
+                    return;
+                }
+                var items = Array.prototype.filter.call(
+                    dialog.querySelectorAll("button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])"),
+                    function (item) { return item.offsetParent !== null; });
+                if (items.length === 0) {
+                    return;
+                }
+                var first = items[0];
+                var last = items[items.length - 1];
+                if (e.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            });
+        }
+        if (initial instanceof HTMLElement) {
+            initial.focus();
+        }
+    },
     formValid: function (formRef) {
         return formRef.checkValidity();
     },

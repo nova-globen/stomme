@@ -58,6 +58,7 @@ namespace Stomme.Tests.Erasure
             ["UsageRecordAggregate"] = Declared + "UsageRecordAggregate",
             ["AiUsageRecordAggregate"] = Declared + "AiUsageRecordAggregate",
             ["McpAuditEntryAggregate"] = Declared + "McpAuditEntryAggregate",
+            ["McpPersonalTokenAggregate"] = Declared + "McpPersonalTokenAggregate",
             ["PipelineAuditEntryAggregate"] = Declared + "PipelineAuditEntryAggregate",
             ["PipelineStepCommentAggregate"] = Declared + "PipelineStepCommentAggregate",
             ["PortabilityPackageAggregate"] = Declared + "PortabilityPackageAggregate (subject); PortabilityPackageAggregate (requester)",

@@ -20,7 +20,7 @@
 @* The Bootstrap JS that used to drive data-bs-toggle/data-bs-dismiss was removed with the CDN
    in Phase 1, so the drawer is opened/closed from Blazor state instead.
    Chrome migrated off Bootstrap's .offcanvas/.row/.col/.btn to the --db-* drawer. *@
-<button type="button" class="app-controlpanel db-icon-btn @ButtonClass" aria-controls="ControlPanel" aria-expanded="@_show.ToString().ToLower()" @onclick="ToggleControlPanel">
+<button type="button" class="app-controlpanel db-icon-btn @ButtonClass" aria-controls="ControlPanel" aria-expanded="@_show.ToString().ToLower()" aria-label="@Localizer["ControlPanel"]" title="@Localizer["ControlPanel"]" @onclick="ToggleControlPanel">
     <span class="oi oi-cog"></span>
 </button>
 
@@ -97,8 +97,8 @@
                 }
 
                 <div class="db-drawer-field">
-                    <label for="Module" class="db-field-label">@Localizer["Module.Manage"]</label>
-                    <select class="db-select" @onchange="(e => ModuleTypeChanged(e))">
+                    <label for="cp-module" class="db-field-label">@Localizer["Module.Manage"]</label>
+                    <select id="cp-module" class="db-select" @onchange="(e => ModuleTypeChanged(e))">
                         <option value="new">@Localizer["Module.AddNew"]</option>
                         @if (PageState.Page.UserId == null)
                         {
@@ -164,12 +164,12 @@
                         }
                 </div>
                 <div class="db-drawer-field">
-                    <label for="Title" class="db-field-label">@Localizer["Title"]</label>
-                    <input type="text" name="Title" class="db-input" @bind="@_title" />
+                    <label for="cp-title" class="db-field-label">@Localizer["Title"]</label>
+                    <input id="cp-title" type="text" name="Title" class="db-input" @bind="@_title" />
                 </div>
                 <div class="db-drawer-field">
-                    <label for="Pane" class="db-field-label">@Localizer["Pane"]</label>
-                    <select class="db-select" @bind="@_pane">
+                    <label for="cp-pane" class="db-field-label">@Localizer["Pane"]</label>
+                    <select id="cp-pane" class="db-select" @bind="@_pane">
                         @foreach (string pane in PageState.Page.Panes)
                         {
                             <option value="@pane">@pane Pane</option>
@@ -177,15 +177,15 @@
                     </select>
                 </div>
                 <div class="db-drawer-field">
-                    <label for="Insert" class="db-field-label">@Localizer["Location"]</label>
-                    <select class="db-select" @bind="@_location">
+                    <label for="cp-location" class="db-field-label">@Localizer["Location"]</label>
+                    <select id="cp-location" class="db-select" @bind="@_location">
                         <option value="@int.MinValue">@Localizer["LocationTop"]</option>
                         <option value="@int.MaxValue">@Localizer["LocationBottom"]</option>
                     </select>
                 </div>
                 <div class="db-drawer-field">
-                    <label for="Container" class="db-field-label">@Localizer["Container"]</label>
-                    <select class="db-select" @bind="@_containerType">
+                    <label for="cp-container" class="db-field-label">@Localizer["Container"]</label>
+                    <select id="cp-container" class="db-select" @bind="@_containerType">
                         @if (_containers != null)
                         {
                             foreach (var container in _containers)
@@ -196,8 +196,8 @@
                     </select>
                 </div>
                 <div class="db-drawer-field">
-                    <label for="visibility" class="db-field-label">@Localizer["Visibility"]</label>
-                    <select class="db-select" @bind="@_visibility">
+                    <label for="cp-visibility" class="db-field-label">@Localizer["Visibility"]</label>
+                    <select id="cp-visibility" class="db-select" @bind="@_visibility">
                         <option value="view">@Localizer["VisibilityView"]</option>
                         <option value="edit">@Localizer["VisibilityEdit"]</option>
                     </select>

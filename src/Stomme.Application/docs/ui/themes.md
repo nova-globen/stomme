@@ -268,30 +268,25 @@ To share a theme between apps, build it as a Razor class library and ship it as 
   start).
 
 Admin > Theme Management > Create Theme (Host only) generates a separately packaged theme from the template in
-`Server/wwwroot/Themes/Templates/External`. It does not produce a working theme in an app as it stands; read what it
-generates before using it:
+`Server/wwwroot/Themes/Templates/External`, in a folder named `<Owner>.Theme.<Name>` beside the app's own folder (its own
+solution, as Create Module's output is). Since 10.80.0 it builds and installs as generated:
 
-- It writes the new solution to a folder named `<Owner>.Theme.<Name>` beside the app's own folder (two levels above the
-  `Server` project), not inside the app.
-- With the default Framework Reference ("Installed Version") its `Client` project references `Stomme.Client.dll` and
-  `Stomme.Shared.dll` by a hint path under `<app folder>\Stomme.Server\bin\Debug\net10.0`, a folder an app does not
-  have. Built as generated, it fails with `CS0246` for every `Stomme` namespace. It also pins
-  `Microsoft.AspNetCore.Components.WebAssembly`, `...WebAssembly.Authentication` and `Microsoft.Extensions.Localization`
-  to versions older than `Stomme.Client` needs, which fails restore with `NU1605` once `Stomme.Client` is referenced.
-  Replace the two `Reference` items with `<PackageReference Include="Stomme.Client" Version="<the app's Stomme
-  version>" />` and delete the three pinned `Microsoft.*` references; the project then builds (it has no
-  `NuGet.config`, so copy the app's).
-- The generated layout uses Bootstrap class names and links Bootstrap 5.3.8 through `Constants.BootstrapStylesheetUrl` and
-  `BootstrapScriptUrl`, which the host serves itself from the `Stomme.Server` package (`/lib/bootstrap/5.3.8/`, since
-  10.78.0; before, a CDN), with the SRI hashes in `BootstrapStylesheetIntegrity` and `BootstrapScriptIntegrity`.
-- Its `Theme.css` sets no `--db-accent`, so Stomme's controls show the framework's default colour until you add the
-  token block above.
-- Its project sets no `StaticWebAssetBasePath`, while its `ThemeInfo` links `_content/<Owner>.Theme.<Name>/Theme.css`
-  (see the previous list).
-- Its `Package` folder's scripts call `FixProps.exe` and `nuget.exe` under `<app folder>\Stomme.Package` (`release.sh` and one line of
-  `debug.cmd` name a sibling folder literally called `Stomme` instead) and copy the package to
-  `<app folder>\Stomme.Server\Packages`, paths that exist only in a Stomme source checkout; pack with
-  `dotnet pack` over your own `.nuspec` instead.
+- Its `Client` project references Stomme through one package, `Stomme.Sdk.Slim`, at the version you choose ("Installed
+  Version" is the app's own), restored by the folder's own `nuget.config` from nuget.org; `Directory.Build.props`,
+  `Directory.Build.targets` and `Directory.Packages.props` keep an enclosing repository's settings out.
+- `StaticWebAssetBasePath` is the package id, so `ThemeInfo`'s `_content/<Owner>.Theme.<Name>/Theme.css` is served
+  whether the host installs the package or an app references it.
+- `pwsh pack.ps1 -PackagesFolder <app>/Server/Packages` packs it with `dotnet pack` over its nuspec and stages it; the host
+  installs it at the next start.
+- `Theme.css` sets `--db-accent`, and the top bar takes it. The layout uses Bootstrap's grid, which the host serves itself
+  (`Constants.BootstrapStylesheetUrl`, since 10.78.0).
+
+Before 10.80.0 the generated project referenced `Stomme.Client.dll` and `Stomme.Shared.dll` by a path under
+`<app folder>\Stomme.Server\bin\Debug` (a folder an app does not have, so the build failed with `CS0246`), pinned older
+`Microsoft.*` packages (`NU1605`), and packed with `FixProps.exe` and `nuget.exe` from a Stomme source checkout. On such a
+version, replace the two `Reference` items with `<PackageReference Include="Stomme.Client" Version="<the app's Stomme
+version>" />`, delete the pinned `Microsoft.*` references, add `StaticWebAssetBasePath`, copy the app's `NuGet.config`, and
+pack with `dotnet pack` over your own nuspec.
 
 ## Configuration
 

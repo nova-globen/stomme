@@ -1,27 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!--
+    Packs the theme: `dotnet pack` builds the Client project (the reference below orders the build) and packs the nuspec,
+    so no tool outside the .NET SDK is needed. The package is what an operator installs - dropped into a host's Packages
+    folder, or through the host's theme management - and what an app may reference as a PackageReference.
+  -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <AccelerateBuildsInVisualStudio>false</AccelerateBuildsInVisualStudio>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NuspecFile>[Owner].Theme.[Theme].nuspec</NuspecFile>
+    <NuspecProperties>configuration=$(Configuration)</NuspecProperties>
+    <PackageOutputPath>$(MSBuildProjectDirectory)</PackageOutputPath>
+    <NoWarn>$(NoWarn);NU5100;NU5128</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <ProjectReference Include="..\Client\[Owner].Theme.[Theme].Client.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Client\[Owner].Theme.[Theme].Client.csproj" />
-  </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Condition="'$(OS)' == 'Windows_NT' And '$(Configuration)' == 'Debug'" Command="debug.cmd $(TargetFramework) $([System.String]::Copy('$(MSBuildProjectName)').Replace('.Package',''))"  />
-    <Exec Condition="'$(OS)' != 'Windows_NT' And '$(Configuration)' == 'Debug'" Command="bash $(ProjectDir)debug.sh $(TargetFramework) $([System.String]::Copy('$(MSBuildProjectName)').Replace('.Package',''))" />
-    <Exec Condition="'$(OS)' == 'Windows_NT' And '$(Configuration)' == 'Release'" Command="release.cmd $(TargetFramework) $([System.String]::Copy('$(MSBuildProjectName)').Replace('.Package',''))" />
-    <Exec Condition="'$(OS)' != 'Windows_NT' And '$(Configuration)' == 'Release'" Command="bash $(ProjectDir)release.sh $(TargetFramework) $([System.String]::Copy('$(MSBuildProjectName)').Replace('.Package',''))" />
-  </Target>
 
 </Project>

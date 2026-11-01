@@ -256,6 +256,10 @@ Per-site external login (site settings, **Admin > User Management > Settings**, 
   client was ever asked.
 - **Secrets go in environment variables.** Use `ClientSecretEnv` and `OpenIddict__SigningCertificatePassword`, never a
   literal in a committed file.
+- **Forgot password, forgot username and the login link answer `true` whatever happened** - an unknown name or address,
+  a mail failure, login links switched off - so they tell no one whether an account exists. What happened is in the site's
+  log (an unknown name or address is a Warning, so it does not mail the hosts). A login link is sent only while
+  `LoginOptions:LoginLink` is on (since 10.80.0).
 - **One external provider per site.** A second OpenID Connect provider for the same site is not supported.
 - **Two-factor sign-in is an e-mailed code.** Configure mail before setting `LoginOptions:TwoFactor` to `required`, or
   nobody can sign in through the login page. There is no authenticator-app enrolment.

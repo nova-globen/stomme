@@ -21,8 +21,8 @@ A registration belongs to ONE site (and its tenant). It holds:
 - the endpoint: an absolute `http` or `https` URL of at most 2,048 characters, with no user name or password in it. Only
   the Streamable HTTP transport exists; there is no stdio transport, so no registration can start a program on the host.
   The endpoint cannot be changed - a different address is a different registration;
-- an optional requests-per-minute value (positive when set). It is stored and shown; because nothing calls external
-  tools yet, it limits nothing today;
+- an optional requests-per-minute value (positive when set), sent through the API only (the page's form no longer asks
+  for it, since 10.80.0). It is stored; because nothing calls external tools yet, it limits nothing today;
 - whether an API key is stored. The key itself is in the per-site secret store under a name derived from the
   registration's id. It is never read back to any page or API, and removing the registration removes its key first;
 - the trust state - `Unverified` until a refresh succeeds, then `Verified` - the time of the last refresh, whether it is
@@ -66,9 +66,17 @@ site it returns an empty list. It is list-only: there is no way through it to ca
 While `Mcp:Enabled` (or `Mcp:Server:Enabled`) is on, the admin page `/admin/mcp` exists (Administrators; added to
 existing sites at the next start). Its main control, for a holder of `mcp:manage`, lists the site's external servers -
 name, endpoint, state, tool count, whether a key is set, last refreshed - with **Register a server**, **Refresh**,
-**Enable**/**Disable**, **Set key** and **Remove**. With only `Mcp:Server:Enabled` on, the page says "The MCP client
-half is not enabled on this install (Mcp:Enabled)." and the API behind it answers 404, although the **Register a
-server** button is still shown.
+**Enable**/**Disable**, **Set key** and **Remove**. Links at the top lead to the page's other two views, **What this site
+publishes** (`mcp:view`) and **Audit ledger** (`mcp:view-audit`), each shown to a holder of its key (since 10.80.0; before,
+they were reached only by typing their address). With only `Mcp:Server:Enabled` on, the page says registering external
+servers is switched off and offers no **Register a server** (since 10.80.0; before, the button was shown and failed).
+The register form asks for a name and an endpoint; a per-minute cap can still be sent through the API, and nothing
+uses it while nothing calls a registered server's tools.
+
+`GET api/Mcp/status` tells the page which halves are on: `{ "clientEnabled", "serverEnabled", "conflicts" }`, for a
+holder of any of the three MCP keys (403 otherwise), with either half off. `conflicts` lists the names the server half
+REJECTED at startup because two contributors published them (kind, name, contributors, reason) - for a holder of
+`mcp:manage` or `mcp:view-audit` only, empty for anyone else; **What this site publishes** shows them.
 
 ### The API
 

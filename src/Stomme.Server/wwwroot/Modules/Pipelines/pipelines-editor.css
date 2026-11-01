@@ -6,7 +6,8 @@
 /* The runs, evaluations and data tables are wide tables: in the 960px dialog their dates wrapped over three lines and the row's
    buttons ran past its edge. */
 .db-admin-modal-dialog:has(.db-pipeline-runs), .db-admin-modal-dialog:has(.db-pipeline-evaluations), .db-admin-modal-dialog:has(.db-pipeline-tables) { max-width: min(1400px, 96vw); }
-.db-pipeline-editor { display: flex; flex-direction: column; gap: 0.5rem; min-height: 70vh; }
+/* The theme's text colour, set here: the editor opens in a dialog whose ancestors set none for dark mode, so its labels and the step picker's buttons came out black or #242424 on the dark panel (BL-240). */
+.db-pipeline-editor { display: flex; flex-direction: column; gap: 0.5rem; min-height: 70vh; color: var(--db-text); }
 .db-pipeline-editor__bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 .db-pipeline-editor__title { flex: 1 1 auto; display: flex; flex-direction: column; }
 .db-pipeline-editor__meta { color: var(--db-text-2); font-size: 0.85rem; }
@@ -25,7 +26,7 @@
 .db-pipeline-editor__settings { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
 .db-pipeline-editor__palette h4, .db-pipeline-editor__inspector h4 { margin: 0; }
 .db-pipeline-editor__group h5 { margin: 0.5rem 0 0.25rem; color: var(--db-text-2); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
-.db-pipeline-editor__step { display: block; width: 100%; text-align: left; margin: 0 0 0.25rem; padding: 0.35rem 0.5rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); cursor: pointer; }
+.db-pipeline-editor__step { display: block; width: 100%; text-align: left; margin: 0 0 0.25rem; padding: 0.35rem 0.5rem; border: 1px solid var(--db-border); border-radius: 0.375rem; background: var(--db-bg-elev); color: inherit; font: inherit; cursor: pointer; }
 .db-pipeline-editor__step:hover:not(:disabled) { border-color: var(--db-accent); }
 /* The edit toolbar above the canvas. */
 .db-pipeline-editor__tools { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 0.5rem; }

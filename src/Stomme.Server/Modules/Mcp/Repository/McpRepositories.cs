@@ -129,4 +129,36 @@ namespace Stomme.Mcp.Persistence
             return Inner.FindAsync(entry => entry.SiteId == siteId && entry.OccurredOnUtc < cutoff, ct);
         }
     }
-}
+
+    /// <summary>
+    /// The personal MCP tokens' closed read surface (D101a). A token is looked up by the hash of what a client sent, and listed
+    /// or fetched only for its own user on its own site - "no such token" and "another user's" are one answer, null. The hash is
+    /// lower-case hex on both sides, so the string compare is the same on every store.
+    /// </summary>
+    public interface IMcpPersonalTokenRepository : IRepository<McpPersonalTokenAggregate, Guid>
+    {
+        Task<McpPersonalTokenAggregate?> GetBySecretHashAsync(string secretHash, CancellationToken ct = default);
+
+        Task<IReadOnlyList<McpPersonalTokenAggregate>> ListForUserAsync(int siteId, int userId, CancellationToken ct = default);
+
+        Task<McpPersonalTokenAggregate?> GetForUserAsync(Guid id, int siteId, int userId, CancellationToken ct = default);
+    }
+
+    public sealed class McpPersonalTokenRepository(IRepository<McpPersonalTokenAggregate, Guid> inner)
+        : McpRepositoryBase<McpPersonalTokenAggregate>(inner), IMcpPersonalTokenRepository
+    {
+        public async Task<McpPersonalTokenAggregate?> GetBySecretHashAsync(string secretHash, CancellationToken ct = default)
+        {
+            var hash = (secretHash ?? string.Empty).ToLowerInvariant();
+            return hash.Length == 0 ? null : (await Inner.FindAsync(token => token.SecretHash == hash, ct)).FirstOrDefault(token => token.SecretHash == hash);
+        }
+
+        public Task<IReadOnlyList<McpPersonalTokenAggregate>> ListForUserAsync(int siteId, int userId, CancellationToken ct = default) =>
+            Inner.FindAsync(token => token.SiteId == siteId && token.UserId == userId, ct);
+
+        public async Task<McpPersonalTokenAggregate?> GetForUserAsync(Guid id, int siteId, int userId, CancellationToken ct = default)
+        {
+            var token = await Inner.GetByIdAsync(id, ct);
+            return token is null || token.SiteId != siteId || token.UserId != userId ? null : token;
+        }
+    }}

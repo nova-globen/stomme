@@ -63,6 +63,56 @@ namespace Stomme.Tests.Mcp
             cut.WaitForAssertion(() => Assert.Equal(1, _service.Refreshes));
         }
 
+        // BL-241 (BL-239's F1, F2, wF3): the three views link to each other; with the client half off the page says so
+        // instead of offering a Register that cannot work; a name two modules published is listed, not only logged.
+        [Fact]
+        public void The_three_views_link_to_each_other_for_an_administrator()
+        {
+            var cut = Render<McpIndex>(parameters => parameters
+                .AddCascadingValue(Page(RoleNames.Admin))
+                .AddCascadingValue(Module()));
+
+            var links = cut.FindAll("nav[aria-label=MCP] a").Select(link => link.TextContent.Trim()).ToList();
+            Assert.Equal(new[] { "External servers", "What this site publishes", "Audit ledger" }, links);
+            Assert.Equal("page", cut.Find("nav[aria-label=MCP] a.active").GetAttribute("aria-current"));
+        }
+
+        [Fact]
+        public void With_the_client_half_off_the_page_says_so_and_offers_no_register()
+        {
+            _service.Status = new McpStatusView { ClientEnabled = false, ServerEnabled = true };
+            var cut = Render<McpIndex>(parameters => parameters
+                .AddCascadingValue(Page(RoleNames.Admin))
+                .AddCascadingValue(Module()));
+
+            cut.WaitForAssertion(() => Assert.NotNull(cut.Find("#mcp-client-off")));
+            Assert.Empty(cut.FindAll("#mcp-server-new"));
+            Assert.Equal(0, _service.ServerReads);
+        }
+
+        [Fact]
+        public void The_catalog_lists_the_names_rejected_at_startup_and_says_when_the_server_half_is_off()
+        {
+            _service.Status = new McpStatusView
+            {
+                ClientEnabled = true,
+                ServerEnabled = true,
+                Conflicts = new[] { new McpConflictView { Kind = "tool", Name = "notes.search", Contributors = new[] { "A.Contributor", "B.Contributor" }, Reason = "published twice" } },
+            };
+            var cut = Render<McpCatalog>(parameters => parameters
+                .AddCascadingValue(Page(RoleNames.Admin))
+                .AddCascadingValue(Module()));
+
+            cut.WaitForAssertion(() => Assert.Contains("notes.search", cut.Find("#mcp-catalog-conflicts").TextContent));
+            Assert.Contains("A.Contributor and B.Contributor", cut.Find("#mcp-catalog-conflicts").TextContent);
+
+            _service.Status = new McpStatusView { ClientEnabled = true, ServerEnabled = false };
+            var off = Render<McpCatalog>(parameters => parameters
+                .AddCascadingValue(Page(RoleNames.Admin))
+                .AddCascadingValue(Module()));
+            off.WaitForAssertion(() => Assert.NotNull(off.Find("#mcp-server-off")));
+        }
+
         [Fact]
         public void Clicking_register_opens_the_form_and_submits_what_was_typed()
         {
@@ -149,6 +199,29 @@ namespace Stomme.Tests.Mcp
             public int Refreshes;
             public int PublishedReads;
             public int AuditReads;
+            public McpStatusView Status = new() { ClientEnabled = true, ServerEnabled = true };
+
+            public Task<McpStatusView> GetStatusAsync() => Task.FromResult(Status);
+
+            public readonly List<McpTokenView> TokenList = new();
+            public readonly List<McpTokenRequest> TokenRequests = new();
+            public readonly List<Guid> Revoked = new();
+
+            public Task<List<McpTokenView>> GetTokensAsync() => Task.FromResult(TokenList.ToList());
+
+            public Task<McpTokenCreated> CreateTokenAsync(McpTokenRequest request)
+            {
+                TokenRequests.Add(request);
+                var view = new McpTokenView { Id = Guid.NewGuid(), Name = request.Name, Prefix = "smcp_abcd1234", Scopes = request.Scopes, CreatedOnUtc = DateTime.UtcNow, ExpiresOnUtc = DateTime.UtcNow.AddDays(request.Days) };
+                TokenList.Add(view);
+                return Task.FromResult(new McpTokenCreated { Token = view, Secret = "smcp_abcd1234-the-secret" });
+            }
+
+            public Task RevokeTokenAsync(Guid id)
+            {
+                Revoked.Add(id);
+                return Task.CompletedTask;
+            }
 
             public Task<List<McpServerRegistrationView>> GetServersAsync()
             {

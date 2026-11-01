@@ -275,6 +275,13 @@ namespace Stomme.Controllers
                     filePath = tokenReplace.ReplaceTokens(filePath);
                     tokenReplace.AddSource("File", Path.GetFileName(filePath));
 
+                    if (ModuleTemplateTokens.IsBinary(file.Name))
+                    {
+                        // Copied byte for byte, as Create Module does: read as text and written back, the icon came out invalid.
+                        System.IO.File.Copy(file.FullName, filePath, overwrite: true);
+                        continue;
+                    }
+
                     var text = System.IO.File.ReadAllText(file.FullName);
                     text = tokenReplace.ReplaceTokens(text);
                     System.IO.File.WriteAllText(filePath, text);
@@ -302,30 +309,20 @@ namespace Stomme.Controllers
                 };
             });
 
-            if (theme.Version == "local")
+            // As Create Module does: the theme references Stomme through ONE package, Stomme.Sdk.Slim, at the chosen release,
+            // restored from the framework's feed - or, for "local", at this framework's own version from the slim SDK packed
+            // out of this source tree. Before, a "local" theme referenced the Debug build's DLLs by a path that exists only in
+            // the framework's own repository, so its output did not build in an app (BL-239's wC-3).
+            var local = theme.Version == "local";
+            var frameworkVersion = local ? Constants.PackageVersion : theme.Version;
+            var localFeed = Utilities.PathCombine(Directory.GetParent(rootPath.TrimEnd(Path.DirectorySeparatorChar))?.FullName ?? rootPath, "examples", "local-feed");
+            tokenReplace.AddSource(() => new Dictionary<string, object>
             {
-                tokenReplace.AddSource(() =>
-                {
-                    return new Dictionary<string, object>()
-                            {
-                                { "FrameworkVersion", Constants.Version },
-                                { "ClientReference", $"<Reference Include=\"Stomme.Client\"><HintPath>..\\..\\{rootFolder}\\Stomme.Server\\bin\\Debug\\net10.0\\Stomme.Client.dll</HintPath></Reference>" },
-                                { "SharedReference", $"<Reference Include=\"Stomme.Shared\"><HintPath>..\\..\\{rootFolder}\\Stomme.Server\\bin\\Debug\\net10.0\\Stomme.Shared.dll</HintPath></Reference>" },
-                            };
-                });
-            }
-            else
-            {
-                tokenReplace.AddSource(() =>
-                {
-                    return new Dictionary<string, object>()
-                            {
-                                { "FrameworkVersion", theme.Version },
-                                { "ClientReference", $"<PackageReference Include=\"Stomme.Client\" Version=\"{theme.Version}\" />" },
-                                { "SharedReference", $"<PackageReference Include=\"Stomme.Shared\" Version=\"{theme.Version}\" />" },
-                            };
-                });
-            }
+                { "Description", $"The {theme.Name} theme." },
+                { "FrameworkVersion", frameworkVersion },
+                { "FrameworkRelease", ModuleTemplateTokens.ReleaseNumber(frameworkVersion) },
+                { "StommeFeed", local && Directory.Exists(localFeed) ? localFeed : ModuleTemplateTokens.PackageFeed },
+            });
 
             return tokenReplace;
         }

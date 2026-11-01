@@ -25,20 +25,31 @@ namespace Stomme.Infrastructure.Security
     public sealed class StommeCurrentUser : ICurrentUser
     {
         private readonly IHttpContextAccessor _accessor;
+        private readonly RunPrincipal? _run;
 
-        public StommeCurrentUser(IHttpContextAccessor accessor)
+        public StommeCurrentUser(IHttpContextAccessor accessor, RunPrincipal? run = null)
         {
             _accessor = accessor;
+            _run = run;
         }
 
         private ClaimsPrincipal? Principal => _accessor.HttpContext?.User;
 
-        public bool IsAuthenticated => Principal?.Identity?.IsAuthenticated ?? false;
+        // No request, and a pipeline run acting for a user (BL-280): that user, on the run's site - the same pair the guard
+        // decides by, so "who am I" and "what may I do" still answer for one user on one site. No roles: they come from rows.
+        private RunPrincipal? Run => _accessor.HttpContext is null && _run is { IsSet: true } ? _run : null;
+
+        public bool IsAuthenticated => Run is not null || (Principal?.Identity?.IsAuthenticated ?? false);
 
         public int? UserId
         {
             get
             {
+                if (Run is { } run)
+                {
+                    return run.UserId;
+                }
+
                 if (!IsAuthenticated)
                 {
                     return null;
@@ -53,6 +64,11 @@ namespace Stomme.Infrastructure.Security
         {
             get
             {
+                if (Run is { } run)
+                {
+                    return run.UserName;
+                }
+
                 if (!IsAuthenticated)
                 {
                     return null;
@@ -68,6 +84,6 @@ namespace Stomme.Infrastructure.Security
                 ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 : new HashSet<string>(Principal.Roles(), StringComparer.OrdinalIgnoreCase);
 
-        public int SiteId => _accessor.HttpContext?.GetAlias()?.SiteId ?? -1;
+        public int SiteId => Run?.SiteId ?? _accessor.HttpContext?.GetAlias()?.SiteId ?? -1;
     }
 }

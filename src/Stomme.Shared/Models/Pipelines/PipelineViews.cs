@@ -427,6 +427,12 @@ namespace Stomme.Models.Pipelines
 
         public string CorrelationId { get; set; }
 
+        /// <summary>
+        /// Whom the run acts as (BL-280): the user who started it by hand, else the one who published its version - their
+        /// username; null when none is recorded (a version published before 10.80.0: the run acts as no one). One run's read only.
+        /// </summary>
+        public string ActsAs { get; set; }
+
         /// <summary>The engine's status: Running or Finished.</summary>
         public string Status { get; set; }
 

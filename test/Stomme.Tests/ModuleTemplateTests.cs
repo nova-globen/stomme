@@ -138,7 +138,7 @@ namespace Stomme.Tests
             return directory?.FullName ?? throw new InvalidOperationException("The repository root (Stomme.slnx) was not found above the test's bin.");
         }
 
-        private sealed class SilentLog : ILogManager
+        internal sealed class SilentLog : ILogManager
         {
             public void Log(Stomme.Shared.LogLevel level, object @class, LogFunction function, string message, params object[] args)
             {

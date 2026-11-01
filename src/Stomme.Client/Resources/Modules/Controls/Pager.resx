@@ -123,4 +123,25 @@
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Search: {0}</value>
   </data>
+  <data name="FirstPage" xml:space="preserve">
+    <value>First page</value>
+  </data>
+  <data name="PreviousPages" xml:space="preserve">
+    <value>Previous pages</value>
+  </data>
+  <data name="PreviousPage" xml:space="preserve">
+    <value>Previous page</value>
+  </data>
+  <data name="PageNumber" xml:space="preserve">
+    <value>Page {0}</value>
+  </data>
+  <data name="NextPage" xml:space="preserve">
+    <value>Next page</value>
+  </data>
+  <data name="NextPages" xml:space="preserve">
+    <value>Next pages</value>
+  </data>
+  <data name="LastPage" xml:space="preserve">
+    <value>Last page</value>
+  </data>
 </root>

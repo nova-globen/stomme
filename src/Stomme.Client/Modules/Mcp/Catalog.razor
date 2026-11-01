@@ -13,6 +13,20 @@
 
 <PageTitle>MCP catalog</PageTitle>
 
+<nav class="db-tablist" aria-label="MCP">
+    @if (IsAuthorizedPermission(McpPermissions.Manage))
+    {
+        <span class="db-tab-item"><a class="db-tab" href="@NavigateUrl()">External servers</a></span>
+    }
+    @if (IsAuthorizedPermission(McpPermissions.View))
+    {
+        <span class="db-tab-item"><a class="db-tab active" href="@EditUrl("Catalog")" aria-current="page">What this site publishes</a></span>
+    }
+    @if (IsAuthorizedPermission(McpPermissions.ViewAudit))
+    {
+        <span class="db-tab-item"><a class="db-tab" href="@EditUrl("Audit")">Audit ledger</a></span>
+    }
+</nav>
 @if (!IsAuthorizedPermission(McpPermissions.View))
 {
     <p class="db-mcp-denied" style="color:var(--db-text-2);">You do not have access to the MCP catalog.</p>
@@ -25,11 +39,36 @@ else
             <button id="mcp-catalog-refresh" type="button" class="db-btn" @onclick="LoadAsync">Refresh</button>
         </div>
 
-        @if (_items.Count == 0)
+        @if (_status?.Conflicts.Count > 0)
+        {
+            <section id="mcp-catalog-conflicts" class="db-message db-message-warn" role="status">
+                <div class="db-message-body">
+                    <p style="margin:0 0 0.35rem;">
+                        These names were published by two modules, so neither is served. Remove or rename one of the
+                        contributions and restart the site to restore the name.
+                    </p>
+                    <ul style="margin:0;padding-left:1.2rem;">
+                        @foreach (var conflict in _status.Conflicts)
+                        {
+                            <li>@conflict.Kind <code>@conflict.Name</code> - @string.Join(" and ", conflict.Contributors)</li>
+                        }
+                    </ul>
+                </div>
+            </section>
+        }
+
+        @if (_status is { ServerEnabled: false })
+        {
+            <p id="mcp-server-off" style="margin:0;color:var(--db-text-2);">
+                This install publishes nothing to MCP clients: the MCP server is switched off. A Host turns it on with the
+                setting <code>Mcp:Server:Enabled</code> and restarts the site.
+            </p>
+        }
+        else if (_items.Count == 0)
         {
             <p id="mcp-catalog-empty" style="margin:0;color:var(--db-text-2);">
-                Nothing is published to you on this site. Either no module contributes an MCP resource or tool, the MCP server
-                is switched off (<code>Mcp:Server:Enabled</code>), or you do not hold the keys the contributions require.
+                Nothing is published to you on this site: no module contributes an MCP resource or tool, or you do not hold
+                the keys the contributions require.
             </p>
         }
         else
@@ -59,6 +98,7 @@ else
 
 @code {
     private List<McpPublishedItemView> _items = new();
+    private McpStatusView? _status;
 
     protected override async Task OnInitializedAsync() => await LoadAsync();
 
@@ -69,6 +109,14 @@ else
             // An empty list is also the answer when the server half is off: the route does not exist then, and the
             // service answers an empty list rather than an error, because "this install publishes nothing" is the truth.
             _items = await McpService.GetPublishedAsync();
+            try
+            {
+                _status = await McpService.GetStatusAsync();
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "The MCP status could not be read.");
+            }
         }
     }
 }

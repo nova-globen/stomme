@@ -106,11 +106,16 @@ namespace Stomme.Controllers
         public async Task Start(int id)
         {
             Job job = await _jobs.GetJobAsync(id);
-            if (job != null)
+            if (job != null && Type.GetType(job.JobType) is { } jobtype)
             {
-                Type jobtype = Type.GetType(job.JobType);
                 var jobobject = ActivatorUtilities.CreateInstance(_serviceProvider, jobtype);
                 _ = ((IHostedService)jobobject).StartAsync(new System.Threading.CancellationToken());
+            }
+            else if (job != null)
+            {
+                // The module that brought the job is gone (listing the jobs deletes such a row): nothing to start - it was a 500.
+                _logger.Log(LogLevel.Warning, this, LogFunction.Other, "Job {JobId} Cannot Start - Its Type {JobType} Is Not Installed", id, job.JobType);
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
             }
             else
             {
@@ -125,11 +130,15 @@ namespace Stomme.Controllers
         public async Task Stop(int id)
         {
             Job job = await _jobs.GetJobAsync(id);
-            if (job != null)
+            if (job != null && Type.GetType(job.JobType) is { } jobtype)
             {
-                Type jobtype = Type.GetType(job.JobType);
                 var jobobject = ActivatorUtilities.CreateInstance(_serviceProvider, jobtype);
                 _ = ((IHostedService)jobobject).StopAsync(new System.Threading.CancellationToken());
+            }
+            else if (job != null)
+            {
+                _logger.Log(LogLevel.Warning, this, LogFunction.Other, "Job {JobId} Cannot Stop - Its Type {JobType} Is Not Installed", id, job.JobType);
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
             }
             else
             {

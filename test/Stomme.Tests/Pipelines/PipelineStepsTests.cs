@@ -144,6 +144,35 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("[{\"column1\":\"1\",\"column2\":\"2\"},{\"column1\":\"3\",\"column2\":\"4\"}]", Captured);
         }
 
+        // BL-239's wG2, run: the Map fields step an n8n Set after the Manual Trigger becomes, with the inputs the import gave it,
+        // makes one record of the fields it sets - as n8n does from its one empty item - where it made [].
+        [Fact]
+        public async Task An_imported_n8n_set_after_the_manual_trigger_makes_one_record_of_its_fields()
+        {
+            var step = Stomme.Models.Pipelines.PipelineExchange.Read("""
+                {
+                  "nodes": [
+                    { "parameters": {}, "name": "Start", "type": "n8n-nodes-base.manualTrigger", "typeVersion": 1, "position": [0, 0] },
+                    { "parameters": { "assignments": { "assignments": [ { "name": "greeting", "type": "string", "value": "hello" } ] } }, "name": "Set greeting", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [220, 0] }
+                  ],
+                  "connections": { "Start": { "main": [ [ { "node": "Set greeting", "type": "main", "index": 0 } ] ] } }
+                }
+                """).Graph!.Steps.Single(candidate => candidate.Name == "Set greeting");
+            string In(string name) => step.Inputs.TryGetValue(name, out var value) ? value : "";
+
+            var run = await RunAsync(new Sequence
+            {
+                Steps =
+                {
+                    new MapFields { Records = new(In("Records")), Mappings = new(In("Mappings")), Computed = new(In("Computed")), PassThroughUnmapped = new(In("PassThroughUnmapped") == "true") },
+                    new CaptureLastResult(),
+                },
+            });
+
+            AssertFinished(run);
+            Assert.Equal("hello", JsonNode.Parse(Captured)!.AsArray().Single()!["greeting"]!.GetValue<string>());
+        }
+
         [Fact]
         public async Task Map_fields_converts_types_tolerates_errors_under_the_threshold_and_faults_above_it()
         {

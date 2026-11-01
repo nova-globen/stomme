@@ -485,6 +485,14 @@
                 }
             }
         </TabPanel>
+        @if (_mcpStatus is { ServerEnabled: true })
+        {
+            @* Personal MCP tokens (D101a): only where the site publishes over MCP and the person holds an MCP key - the status
+               answers no one else, so the tab is not there for them. *@
+            <TabPanel Name="AiTools" Heading="AI tools" ResourceKey="AiTools">
+                <Stomme.Modules.Mcp.PersonalTokens Path="@_mcpStatus.Path" />
+            </TabPanel>
+        }
     </TabStrip>
     <br />
     <br />
@@ -531,6 +539,22 @@
     private List<Notification> _notifications;
     private string _notificationSummary = string.Empty;
     private List<Stomme.Models.Erasure.ErasureSummaryItem> _erasure = new();
+    private Stomme.Models.Mcp.McpStatusView _mcpStatus;
+
+    // Whether to offer personal MCP tokens: the status answers only a holder of an MCP key, and says whether the server half
+    // is on. Anything else - no MCP module, no key, an error - leaves the tab out.
+    private async Task<Stomme.Models.Mcp.McpStatusView> LoadMcpStatusAsync()
+    {
+        try
+        {
+            var service = ServiceProvider.GetService(typeof(Stomme.Modules.Mcp.Services.IMcpService)) as Stomme.Modules.Mcp.Services.IMcpService;
+            return service is null ? null : await service.GetStatusAsync();
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
 
     /// <summary>
     /// The erasure participants' declarations, grouped as the section shows them. A site without the erasure service, or
@@ -614,6 +638,9 @@
 
                 // notification section
                 await LoadNotificationsAsync();
+
+                // AI tools section: personal MCP tokens, when the site publishes over MCP to this person (BL-101)
+                _mcpStatus = await LoadMcpStatusAsync();
 
                 // delete-account section: what deleting the account does on this site (BL-276)
                 if (!UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))

@@ -82,6 +82,18 @@ namespace Stomme.Tests.Pipelines
             Assert.Throws<PipelineTemplateException>(() => PipelineTemplate.Render("{{ }}", Lookup));
         }
 
+        // BL-239's wG3: "Order {{ people.name }} for" rendered "Order  for " - a field read from a list. Now it says so; an item
+        // of the list, and a null or a missing field, read as before.
+        [Fact]
+        public void A_field_read_from_a_list_fails_and_says_how_to_read_an_item()
+        {
+            var thrown = Assert.Throws<PipelineTemplateException>(() => PipelineTemplate.Render("Order for {{ people.name }}", Lookup));
+            Assert.Equal("'name' was read from a list of 2 items, which has no fields - read one item ([0].name), or give the list to a step that takes records.", thrown.Message);
+            Assert.Throws<PipelineTemplateException>(() => PipelineTemplate.Render("{{ list.first }}", Lookup));
+            Assert.Equal("Ada", PipelineTemplate.Render("{{ people[0].name }}", Lookup));
+            Assert.Equal("[]", PipelineTemplate.Render("[{{ nothing }}]", Lookup));
+        }
+
         [Fact]
         public void Suggestions_offer_each_variable_and_the_fields_of_what_it_holds_and_follow_what_is_typed()
         {

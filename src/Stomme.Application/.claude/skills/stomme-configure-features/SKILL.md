@@ -163,8 +163,8 @@ host", and the module's hub route answering 404.
   - `Pipelines:Enabled`: off, `GET /api/Pipelines` and `/admin/pipelines` answer `404`; on, **Admin > Pipelines**
     (`/admin/pipelines`) lists the starting templates and `GET /api/Pipelines` answers `403` anonymous and `200` as the
     host.
-  - `Mcp:Server:Enabled`: on, **Admin > MCP** (`/admin/mcp`) appears (with only this switch it says the client half,
-    `Mcp:Enabled`, is off - that is expected), and an MCP `initialize` posted to `/mcp/v1` as the signed-in host (the
+  - `Mcp:Server:Enabled`: on, **Admin > MCP** (`/admin/mcp`) appears (with only this switch its first view says registering
+    external servers is switched off, `Mcp:Enabled` - that is expected), and an MCP `initialize` posted to `/mcp/v1` as the signed-in host (the
     session cookie is enough; this route checks no antiforgery token) answers `200`; anonymous it answers `401`.
 - For your flag: **Admin > Feature Flags** (`/admin/features`) lists `myapp.reports` with its description and category
   (`GET api/Feature` returns the same list to an Administrator). Toggle it as the host (in the page, or

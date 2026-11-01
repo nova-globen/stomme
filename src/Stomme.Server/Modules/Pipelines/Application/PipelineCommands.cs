@@ -93,7 +93,7 @@ namespace Stomme.Modules.Pipelines.Application
     // on the canvas as they arise (PipelineGraphProblems, one rule). Warnings refuse nothing, and a body the editor did not
     // draw (no flowchart) has no graph to judge. The engine's own validation still follows.
     public sealed class PublishPipelineCommandHandler(IPipelineDefinitionStore definitions, IPipelineDefinitionPublisher publisher, IStepRegistry registry, IRegistriesPopulator populator,
-        IKeyValueStore keyValues, ITenantAccessor tenants)
+        IKeyValueStore keyValues, ITenantAccessor tenants, Stomme.Security.Abstractions.ICurrentUser? currentUser = null)
         : ICommandHandler<PublishPipelineCommand, PublishResult?>
     {
         public async Task<PublishResult?> Handle(PublishPipelineCommand request, CancellationToken ct)
@@ -125,6 +125,8 @@ namespace Stomme.Modules.Pipelines.Application
 
             // What changed, in the author's words - the version published carries it, or none (never the last one's).
             PipelineWire.StampNote(latest, request.Note);
+            // Who published it: the version's runs act as this user (BL-280), unless one is started by hand.
+            PipelineWire.StampPublisher(latest, currentUser?.UserId);
             var result = await publisher.PublishAsync(latest, ct);
             return new PublishResult
             {
@@ -185,7 +187,7 @@ namespace Stomme.Modules.Pipelines.Application
     public sealed record StartPipelineCommand(string DefinitionId, string? CorrelationId, IDictionary<string, string>? Input) : ICommand<PipelineRunStarted?>;
 
     public sealed class StartPipelineCommandHandler(IPipelineDefinitionStore definitions, IPipelineInstanceStore instances, IPipelineDispatcher dispatcher, IIdentityGenerator identities,
-        Reliability.PipelineRunStops stops, ITenantAccessor tenants, Stomme.Engine.Common.ISystemClock clock, Reliability.PipelineTurns turns)
+        Reliability.PipelineRunStops stops, ITenantAccessor tenants, Stomme.Engine.Common.ISystemClock clock, Reliability.PipelineTurns turns, Stomme.Security.Abstractions.ICurrentUser? currentUser = null)
         : ICommandHandler<StartPipelineCommand, PipelineRunStarted?>
     {
         public async Task<PipelineRunStarted?> Handle(StartPipelineCommand request, CancellationToken ct)
@@ -216,6 +218,8 @@ namespace Stomme.Modules.Pipelines.Application
                 InstanceId = runId,
                 CorrelationId = correlationId,
                 Input = input,
+                // Started by hand: the run acts as the person who started it (BL-280).
+                Properties = currentUser?.UserId is int starter ? new Dictionary<string, object> { [Stomme.Modules.Pipelines.Tenancy.StommeSiteScope.StartedByUserProperty] = starter.ToString(System.Globalization.CultureInfo.InvariantCulture) } : null,
             }, options: null, ct);
 
             if (response.Fault is not null)

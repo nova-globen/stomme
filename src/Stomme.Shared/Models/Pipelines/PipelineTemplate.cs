@@ -20,6 +20,7 @@ namespace Stomme.Models.Pipelines
     /// <item>A template that is exactly one placeholder is the value itself - a list stays a list, a number a number.</item>
     /// <item>Otherwise each placeholder is replaced by the value's text: a string as it is, a number in the invariant culture,
     /// true/false, an object or a list as JSON, nothing for null or a path that leads nowhere.</item>
+    /// <item>A field read from a list (<c>{{ orders.total }}</c>) is an error that says so: a list has items, not fields.</item>
     /// <item>A variable's text that is JSON (how the data steps pass records) is read as the JSON it is.</item>
     /// <item>A name no variable has is an error (<see cref="PipelineTemplateException"/>): a typo fails loudly, never as an
     /// empty value.</item>
@@ -306,19 +307,28 @@ namespace Stomme.Models.Pipelines
                 case JsonElement { ValueKind: JsonValueKind.Object } element:
                     return element.TryGetProperty(step, out var property) ? property : FindCaseInsensitive(element, step);
                 case JsonElement { ValueKind: JsonValueKind.Array } element:
-                    return int.TryParse(step, NumberStyles.Integer, CultureInfo.InvariantCulture, out var index) && index >= 0 && index < element.GetArrayLength() ? element[index] : null;
+                    return int.TryParse(step, NumberStyles.Integer, CultureInfo.InvariantCulture, out var index)
+                        ? index >= 0 && index < element.GetArrayLength() ? element[index] : null
+                        : throw ListField(step, element.GetArrayLength());
                 case IDictionary<string, object?> dictionary:
                     return dictionary.TryGetValue(step, out var held) ? held : dictionary.FirstOrDefault(pair => string.Equals(pair.Key, step, StringComparison.OrdinalIgnoreCase)).Value;
                 case IDictionary dictionary:
                     return dictionary.Contains(step) ? dictionary[step] : null;
                 case IList list:
-                    return int.TryParse(step, NumberStyles.Integer, CultureInfo.InvariantCulture, out var position) && position >= 0 && position < list.Count ? list[position] : null;
+                    return int.TryParse(step, NumberStyles.Integer, CultureInfo.InvariantCulture, out var position)
+                        ? position >= 0 && position < list.Count ? list[position] : null
+                        : throw ListField(step, list.Count);
                 case null:
                     return null;
                 default:
                     return value.GetType().GetProperty(step, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase)?.GetValue(value);
             }
         }
+
+        // A field read from a list - {{ orders.total }} where orders holds records - is never what was meant, and it rendered as
+        // nothing ("Order  for ", BL-239's wG3). Said instead, with the two ways out.
+        private static PipelineTemplateException ListField(string field, int count) =>
+            new($"'{field}' was read from a list of {count} item{(count == 1 ? "" : "s")}, which has no fields - read one item ([0].{field}), or give the list to a step that takes records.");
 
         private static object? FindCaseInsensitive(JsonElement element, string name)
         {

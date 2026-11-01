@@ -76,6 +76,10 @@
     .db-header .app-search .db-search-input { display: none; }
     .db-header .app-search .db-search-btn { position: static; transform: none; }
 }
+/* A phone (BL-241, 2026-10-31): a signed-in administrator's cluster pushed the theme toggle off the screen at 390px. */
+@media (max-width: 480px) {
+    .db-header .app-logo img { max-height: 24px; }
+}
 .db-footer { border-top: 1px solid var(--db-border); background: var(--db-bg-elev); color: var(--db-text-2); padding: 1rem 2rem; text-align: center; }
 .db-footer:empty { display: none; }
 

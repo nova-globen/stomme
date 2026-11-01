@@ -32,6 +32,7 @@ namespace Stomme.Tests.Portability
             ["UserRoleAggregate"] = "SiteRolesSubjectContributor",
             ["UserSessionAggregate"] = "SessionSubjectContributor",
             ["AssistantConversationAggregate"] = "AssistantConversationSubjectContributor",
+            ["McpPersonalTokenAggregate"] = "McpPersonalTokenSubjectContributor",
             ["ResourceLockAggregate"] = "CollaborationSubjectContributor",
             ["EditSessionAggregate"] = "CollaborationSubjectContributor",
             ["IdentityAuditEntryAggregate"] = "IdentityAuditSubjectContributor",

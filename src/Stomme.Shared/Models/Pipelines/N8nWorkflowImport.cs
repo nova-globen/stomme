@@ -4614,6 +4614,7 @@ namespace Stomme.Models.Pipelines
 
             NodeReferences(graph, byName, todo);
             Connect(root, graph, byName, todo);
+            ManualTriggerItem(root, nodes, byName);
             OutputParsers(root, parsers, byName, todo);
             Fan(graph);
             WorkflowSettings(root, graph, todo);
@@ -4654,6 +4655,34 @@ namespace Stomme.Models.Pipelines
                 Graph = graph,
                 ConvertedFrom = Source,
             };
+        }
+
+        // n8n starts a run by hand with ONE empty item, so a Set right after its Manual Trigger makes one record of the fields it
+        // sets. The trigger is not brought over and a run here starts with no records, so that step made none (BL-239's wG2):
+        // a Map fields step the trigger fed, with no records of its own, starts from that one empty record instead.
+        private static void ManualTriggerItem(JsonElement root, List<JsonElement> nodes, Dictionary<string, (PipelineGraphStep Step, Mapping Mapping, JsonElement Node)> byName)
+        {
+            if (!root.TryGetProperty("connections", out var connections) || connections.ValueKind != JsonValueKind.Object)
+            {
+                return;
+            }
+
+            foreach (var trigger in nodes.Where(node => Text(node, "type").EndsWith(".manualTrigger", StringComparison.OrdinalIgnoreCase)).Select(node => Text(node, "name")))
+            {
+                if (!connections.TryGetProperty(trigger, out var from) || from.ValueKind != JsonValueKind.Object
+                    || !from.TryGetProperty("main", out var main) || main.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                foreach (var target in main.EnumerateArray().Where(output => output.ValueKind == JsonValueKind.Array).SelectMany(output => output.EnumerateArray()).Select(link => Text(link, "node")))
+                {
+                    if (byName.TryGetValue(target, out var to) && to.Step.Type == "Stomme.MapFields" && !to.Step.Inputs.ContainsKey("Records"))
+                    {
+                        to.Step.Inputs["Records"] = "[{}]";
+                    }
+                }
+            }
         }
 
         // n8n's output parsers, which hang off a chain by an ai_outputParser connection: a structured one's example - or its schema,

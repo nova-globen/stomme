@@ -263,11 +263,13 @@ the one exception is `Pipelines:Files:Root`, which the host fills in from the da
 - **A value with `{{ }}` went out as typed.** A fixed value is never rendered. Put a template in `InputExpressions` (in
   the editor: "Make it an expression").
 - **A placeholder names a variable that does not exist:** the step faults with "There is no variable named ...".
-- **A placeholder renders empty, with no fault:** its variable exists but was never set, or it reads a field of a
-  list. A records step's result (Map fields, Filter records, Parse CSV) is a list: `{{ rows[0].city }}` reads the
-  first record's field, `{{ rows.city }}` reads nothing.
+- **A placeholder renders empty, with no fault:** its variable exists but was never set, or the field is not there.
+- **"'city' was read from a list of 3 items, which has no fields":** the placeholder reads a field of a list. A records
+  step's result (Map fields, Filter records, Parse CSV) is a list: `{{ rows[0].city }}` reads the first record's field;
+  give the whole list to a step that takes records. (Before 10.80.0 `{{ rows.city }}` rendered empty, with no fault.)
 - **A test passes and the run faults.** A test from the editor or `test-step` runs inside the tester's request, as
-  that user and on the entered site; a published run has no user. Finish a change with a real run.
+  that user and on the entered site; a published run acts as whoever started it by hand, else its publisher (since
+  10.80.0), with that user's rights now. Finish a change with a real run.
 - **A secret in a step input is stored in the pipeline.** Marking an input as sensitive hides it in run data only. Keep
   credentials in a connection (Admin > Connections) and pick the connection in the step.
 - **Webhook calls all answer 401:** no secret is configured, the signature is not over the exact raw body, or the hex

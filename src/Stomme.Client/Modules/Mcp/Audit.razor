@@ -14,6 +14,20 @@
 
 <PageTitle>MCP audit</PageTitle>
 
+<nav class="db-tablist" aria-label="MCP">
+    @if (IsAuthorizedPermission(McpPermissions.Manage))
+    {
+        <span class="db-tab-item"><a class="db-tab" href="@NavigateUrl()">External servers</a></span>
+    }
+    @if (IsAuthorizedPermission(McpPermissions.View))
+    {
+        <span class="db-tab-item"><a class="db-tab" href="@EditUrl("Catalog")">What this site publishes</a></span>
+    }
+    @if (IsAuthorizedPermission(McpPermissions.ViewAudit))
+    {
+        <span class="db-tab-item"><a class="db-tab active" href="@EditUrl("Audit")" aria-current="page">Audit ledger</a></span>
+    }
+</nav>
 @if (!IsAuthorizedPermission(McpPermissions.ViewAudit))
 {
     <p class="db-mcp-denied" style="color:var(--db-text-2);">You do not have access to the MCP audit ledger.</p>

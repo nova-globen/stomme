@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Stomme.FeatureManagement;
 using Stomme.Mcp;
 using Stomme.Mcp.Persistence;
+using Stomme.Models.Mcp;
 using Stomme.Modules.Mcp.Domain;
 using Stomme.Repository;
 using Stomme.Security.Abstractions;
@@ -71,6 +72,7 @@ namespace Stomme.Modules.Mcp.Application
         private readonly IMcpClock _clock;
         private readonly ILogger<McpServerCatalog> _logger;
         private readonly IAccessGuard? _guard;
+        private readonly Microsoft.AspNetCore.Http.IHttpContextAccessor? _http;
 
         public McpServerCatalog(
             McpContributorRegistry registry,
@@ -81,8 +83,10 @@ namespace Stomme.Modules.Mcp.Application
             ISettingRepository settings,
             IMcpClock clock,
             ILogger<McpServerCatalog> logger,
-            IAccessGuard? guard = null)
+            IAccessGuard? guard = null,
+            Microsoft.AspNetCore.Http.IHttpContextAccessor? http = null)
         {
+            _http = http;
             _registry = registry;
             _audit = audit;
             _currentUser = currentUser;
@@ -96,10 +100,18 @@ namespace Stomme.Modules.Mcp.Application
 
         public static string ApprovalSettingName(string toolName) => ApprovalSettingPrefix + toolName + ApprovalSettingSuffix;
 
+        // A personal MCP token's scopes NARROW what its user may do (D101a): a principal carrying scope claims - a token's - may
+        // use only what they name; one carrying none - the signed-in browser session - is not narrowed.
+        private bool Allows(string scope)
+        {
+            var user = _http?.HttpContext?.User;
+            return user is null || !user.HasClaim(claim => claim.Type == McpTokenScopes.ClaimType) || user.HasClaim(McpTokenScopes.ClaimType, scope);
+        }
+
         public async Task<IReadOnlyList<McpResourceDescriptor>> GetResourcesAsync(CancellationToken ct = default)
         {
             var visible = new List<McpResourceDescriptor>();
-            if (Caller() is null || !await SitePublishesAsync(ct))
+            if (Caller() is null || !Allows(McpTokenScopes.Resources) || !await SitePublishesAsync(ct))
             {
                 return visible;
             }
@@ -119,7 +131,7 @@ namespace Stomme.Modules.Mcp.Application
         {
             var visible = new List<McpToolDescriptor>();
             var caller = Caller();
-            if (caller is null || !await SitePublishesAsync(ct))
+            if (caller is null || !Allows(McpTokenScopes.Tools) || !await SitePublishesAsync(ct))
             {
                 return visible;
             }
@@ -146,7 +158,8 @@ namespace Stomme.Modules.Mcp.Application
                 return null;
             }
 
-            if (!await SitePublishesAsync(ct)
+            if (!Allows(McpTokenScopes.Resources)
+                || !await SitePublishesAsync(ct)
                 || !_registry.TryGetResource(uri, out var resource, out var reader, out var arguments)
                 || !await PassesAsync(resource.Descriptor.Requires, ct))
             {
@@ -183,7 +196,8 @@ namespace Stomme.Modules.Mcp.Application
                 return null;
             }
 
-            if (!await SitePublishesAsync(ct)
+            if (!Allows(McpTokenScopes.Tools)
+                || !await SitePublishesAsync(ct)
                 || !_registry.TryGetTool(name, out var tool, out var invoker)
                 || !await PassesAsync(tool.Descriptor.Requires, ct))
             {

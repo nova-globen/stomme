@@ -12,7 +12,9 @@ using Stomme.Mcp.Persistence;
 using Stomme.Models.Mcp;
 using Stomme.Modules.Mcp.Application;
 using Stomme.Modules.Mcp.Domain;
+using Stomme.Modules.Mcp.Services;
 using Stomme.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -71,6 +73,13 @@ namespace Stomme.Modules.Mcp.Controllers
         private McpServerCatalog? Catalog => HttpContext.RequestServices.GetService<McpServerCatalog>();
 
         private int SiteId => _siteState.Alias?.SiteId ?? -1;
+
+        // GET api/Mcp/status - which halves are on, for the admin page; any of the three keys. No route constraint: it is
+        // the one answer that must exist with either half off. The service asks the guard for each key and throws
+        // AccessDeniedException (403) when the caller holds none.
+        [HttpGet("status")]
+        [Authorize]
+        public Task<McpStatusView> Status() => HttpContext.RequestServices.GetRequiredService<IMcpService>().GetStatusAsync();
 
         // ---- the client half: this site's external servers (mcp:manage) ------------------------------------------
 
@@ -163,6 +172,39 @@ namespace Stomme.Modules.Mcp.Controllers
 
             return items;
         }
+
+        // ---- personal MCP tokens (D101a): the CALLER's own, on this site, while the server half is on (mcp:view) ----------
+
+        // GET api/Mcp/tokens
+        [HttpGet("tokens")]
+        [McpServerEnabled]
+        [RequiresPermissionKey(McpPermissions.View)]
+        public Task<IReadOnlyList<McpTokenView>> Tokens(CancellationToken ct) => TokenService.ListAsync(ct);
+
+        // POST api/Mcp/tokens - the answer carries the secret, this once.
+        [HttpPost("tokens")]
+        [McpServerEnabled]
+        [RequiresPermissionKey(McpPermissions.View)]
+        public async Task<IActionResult> CreateToken([FromBody] McpTokenRequest request, CancellationToken ct)
+        {
+            try
+            {
+                return Ok(await TokenService.CreateAsync(request ?? new McpTokenRequest(), ct));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        // DELETE api/Mcp/tokens/{id} - revokes it at once; 404 for no token of the caller's.
+        [HttpDelete("tokens/{id:guid}")]
+        [McpServerEnabled]
+        [RequiresPermissionKey(McpPermissions.View)]
+        public async Task<IActionResult> RevokeToken(Guid id, CancellationToken ct) =>
+            await TokenService.RevokeAsync(id, ct) ? Ok() : NotFound();
+
+        private McpPersonalTokenService TokenService => HttpContext.RequestServices.GetRequiredService<McpPersonalTokenService>();
 
         // ---- the ledger (mcp:view-audit) ---------------------------------------------------------------------------
 

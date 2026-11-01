@@ -42,12 +42,26 @@ see and use on the site the request reached, and writes every call to an audit l
   (`ReadResource "..." threw an unhandled exception`, an `McpException` with the message above). That is the refusal
   travelling, not a fault.
 
-### Authentication today
+### Authentication
 
-The endpoint accepts the site's sign-in cookie only. An MCP client must carry a signed-in session of a user of that site.
-There is no `WWW-Authenticate` challenge and no OAuth flow for MCP clients: token authentication for external MCP
-clients is not built. (Stomme's own OpenID Connect provider issues tokens that its `/api/` routes accept while
-`OpenIddict:Enabled` is on; the MCP route is not under `/api/`.)
+The endpoint accepts a signed-in session of a user of the site (the in-browser assistant's way), and, since 10.80.0, a
+**personal MCP token** - how a client outside the browser (Claude Desktop, an agent on another machine) connects:
+
+- A user makes one on their profile, tab **AI tools** (shown while `Mcp:Server:Enabled` is on, to a holder of an MCP key -
+  `mcp:view`, which a new site grants Administrators), or with `POST api/Mcp/tokens` `{ "name", "days", "scopes" }`
+  (`GET api/Mcp/tokens` lists their own, `DELETE api/Mcp/tokens/{id}` revokes one). The answer carries the secret
+  (`smcp_...`) ONCE; only its SHA-256 is stored.
+- The client sends `Authorization: Bearer smcp_...` to `/mcp/v1` (`Mcp:Path`) and acts as that user, so the permission rows
+  decide every resource and tool, exactly as for a session. It works on the site it was made on only - another site, even
+  one in the same tenant, answers 401.
+- Its scopes only narrow what the user may do: `resources` (list and read resources), `tools` (list and call tools).
+- It always expires (1 to 365 days); a revoked or expired token, or one whose user is deleted, answers 401. Every call
+  it makes is in the audit ledger under its user; the token's last use shows in its list. Erasing a user deletes their
+  tokens.
+
+There is no `WWW-Authenticate` challenge and no OAuth flow for MCP clients. (Stomme's own OpenID Connect provider issues
+tokens that its `/api/` routes accept while `OpenIddict:Enabled` is on; the MCP route is not under `/api/`, and a personal
+MCP token is not a key to `/api/`.)
 
 ### Contributors
 
@@ -132,7 +146,8 @@ The registry is built once at startup (and logged then) and again per request. I
 
 The host still starts. Each rejection is logged once at startup at **Error**:
 `MCP contribution REJECTED - {Kind} '{Name}' from {Contributors}: {Reason} It is not served. Remove or rename the
-conflicting contribution to restore it.` The rejected name is simply not published. Stomme's own contributors are not
+conflicting contribution to restore it.` The rejected name is simply not published. Since 10.80.0 **Admin > MCP > What
+this site publishes** lists the rejected names too, for an administrator, and `GET api/Mcp/status` returns them. Stomme's own contributors are not
 privileged: a module that publishes `stomme://site` removes the framework's resource too.
 
 ### The catalog, per call
@@ -273,7 +288,8 @@ section of configuration (for example `Server/features.json`), which wins over t
   the key is decided again, and so the site is the request's. Never return another site's rows.
 - **Do not register a contributor while the server half is off.** Guard the registration with
   `McpSettings.ServerEnabled(HostConfiguration.Resolve(services))`, as Stomme's own modules do.
-- **Cookie only.** A desktop MCP client that cannot present the site's sign-in cookie cannot connect today.
+- **A desktop MCP client gets 401.** Give it a personal MCP token (above) as `Authorization: Bearer`; before 10.80.0 the
+  endpoint accepted the sign-in cookie only.
 - **Switching the server half off does not delete the ledger**, and the ledger's API keeps answering.
 
 ## Related

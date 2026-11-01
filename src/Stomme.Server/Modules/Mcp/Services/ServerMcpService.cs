@@ -10,6 +10,7 @@ using Stomme.Modules.Mcp.Application;
 using Stomme.Modules.Mcp.Controllers;
 using Stomme.Modules.Mcp.Services;
 using Stomme.Security.Abstractions;
+using Stomme.Services;
 using Stomme.Shared;
 
 namespace Stomme.Modules.Mcp.Services
@@ -47,22 +48,89 @@ namespace Stomme.Modules.Mcp.Services
         private readonly IAccessGuard? _guard;
         private readonly McpRegistrationService? _registrations;
         private readonly McpServerCatalog? _catalog;
+        private readonly McpContributorRegistry? _contributors;
+        private readonly McpPersonalTokenService? _tokens;
+        private readonly string _path;
 
         public ServerMcpService(
             IMcpAuditRepository audit,
             SiteState siteState,
             IAccessGuard? guard = null,
             McpRegistrationService? registrations = null,
-            McpServerCatalog? catalog = null)
+            McpServerCatalog? catalog = null,
+            McpContributorRegistry? contributors = null,
+            McpPersonalTokenService? tokens = null,
+            Microsoft.Extensions.Configuration.IConfigurationRoot? configuration = null)
         {
+            _tokens = tokens;
+            _path = Startup.McpSettings.Path(configuration);
             _audit = audit;
             _siteState = siteState;
             _guard = guard;
             _registrations = registrations;
             _catalog = catalog;
+            _contributors = contributors;
+        }
+
+        public async Task<McpStatusView> GetStatusAsync()
+        {
+            var allowed = new Dictionary<string, bool>();
+            foreach (var key in McpPermissions.All)
+            {
+                allowed[key] = _guard is not null && await _guard.IsAllowedAsync(null, key);
+            }
+
+            if (!allowed.Values.Any(granted => granted))
+            {
+                throw new AccessDeniedException("An MCP key is required.");
+            }
+
+            // The rejected collisions name the contributors' types - an operator's to read, not every holder of mcp:view.
+            var isOperator = allowed[McpPermissions.Manage] || allowed[McpPermissions.ViewAudit];
+            return new McpStatusView
+            {
+                Path = _path,
+                ClientEnabled = _registrations is not null,
+                ServerEnabled = _catalog is not null,
+                Conflicts = isOperator && _contributors is not null
+                    ? _contributors.Conflicts.Select(conflict => new McpConflictView { Kind = conflict.Kind, Name = conflict.Name, Contributors = conflict.Contributors, Reason = conflict.Reason }).ToList()
+                    : Array.Empty<McpConflictView>(),
+            };
         }
 
         private int SiteId => _siteState.Alias?.SiteId ?? -1;
+
+        public async Task<List<McpTokenView>> GetTokensAsync() => (await (await TokensAsync()).ListAsync()).ToList();
+
+        public async Task<McpTokenCreated> CreateTokenAsync(McpTokenRequest request)
+        {
+            try
+            {
+                return await (await TokensAsync()).CreateAsync(request ?? new McpTokenRequest());
+            }
+            catch (ArgumentException ex)
+            {
+                // The refusal the API answers 400 with, as the browser's service throws it.
+                throw new ServiceRefusalException(ex.Message, System.Net.HttpStatusCode.BadRequest);
+            }
+        }
+
+        public async Task RevokeTokenAsync(Guid id)
+        {
+            if (!await (await TokensAsync()).RevokeAsync(id))
+            {
+                throw new ServiceRefusalException("No such token.", System.Net.HttpStatusCode.NotFound);
+            }
+        }
+
+        // Tokens sign anyone in only through the server half, so they are made only while it is on - as the API's routes exist.
+        private async Task<McpPersonalTokenService> TokensAsync()
+        {
+            await RequireAsync(McpPermissions.View);
+            return _catalog is not null && _tokens is not null
+                ? _tokens
+                : throw new InvalidOperationException("The MCP server is not enabled on this install (Mcp:Server:Enabled).");
+        }
 
         public async Task<List<McpServerRegistrationView>> GetServersAsync()
         {

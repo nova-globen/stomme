@@ -104,7 +104,9 @@ the contract is in `Shared`. The full code is in
 By default `ServiceBase` returns the type's default value (for example `null`) when the server refuses a request; a GET
 answered 404 always returns the default. A client service that should surface the server's reason overrides
 `protected override bool ThrowOnRefusal => true;` and the page then catches `Stomme.Services.ServiceRefusalException`
-(its `Message` is the server's reason, `StatusCode` the HTTP status).
+(its `Message` is the server's reason, `StatusCode` the HTTP status). The service's server-side twin throws the same
+exception for a refusal (the reference module's `ServerNotesService`), so the page shows the reason alike on a Server and a
+WebAssembly site, and shows no other exception's text: anything else is logged, and the page says what to do.
 
 ## Using it from an app
 
@@ -206,12 +208,16 @@ else
             await NotesService.DeleteAsync(note.Id);
             await logger.LogInformation("Note deleted {NoteId}", note.Id);
             await LoadAsync();
-            AddModuleMessage($"The note '{WebUtility.HtmlEncode(note.Title)}' was deleted.", MessageType.Success);
+            AddModuleMessage($"The note '{note.Title}' was deleted.", MessageType.Success); // the message encodes it
+        }
+        catch (ServiceRefusalException ex)
+        {
+            AddModuleMessage("The note was not deleted: " + ex.Message, MessageType.Warning); // the server's reason
         }
         catch (Exception ex)
         {
             await logger.LogError(ex, "Could not delete note {NoteId} {Error}", note.Id, ex.Message);
-            AddModuleMessage("The note was not deleted: " + WebUtility.HtmlEncode(ex.Message), MessageType.Error);
+            AddModuleMessage("The note was not deleted. Try again; if it keeps failing, ask an administrator to check the event log.", MessageType.Error);
         }
 
         // ActionDialog calls a plain Action, so nothing re-renders the page unless it asks to.
@@ -324,10 +330,14 @@ else
             await logger.LogInformation("Note saved {NoteId}", _id);
             NavigationManager.NavigateTo(NavigateUrl());
         }
+        catch (ServiceRefusalException ex)
+        {
+            AddModuleMessage("The note was not saved: " + ex.Message, MessageType.Warning); // the server's reason
+        }
         catch (Exception ex)
         {
             await logger.LogError(ex, "Could not save the note {Error}", ex.Message);
-            AddModuleMessage("The note was not saved: " + WebUtility.HtmlEncode(ex.Message), MessageType.Error);
+            AddModuleMessage("The note was not saved. Try again; if it keeps failing, ask an administrator to check the event log.", MessageType.Error);
         }
         finally
         {

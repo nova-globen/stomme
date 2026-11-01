@@ -195,8 +195,7 @@ namespace Stomme.Repository
 
         public async Task<IEnumerable<UserRole>> GetUserRolesAsync(int userId, int siteId)
         {
-            // Read on EVERY authenticated request (UserManager.GetUser -> GetUserRoles), hence the cache.
-            return await _cache.GetCacheAsync(await _tenantManager.GetAliasAsync(), $"UserRoles:{userId}", async entry =>
+            async Task<IEnumerable<UserRole>> ReadAsync()
             {
                 var roleIds = await SiteRoleIdsAsync(siteId);
 
@@ -205,7 +204,19 @@ namespace Stomme.Repository
                     var query = session.Query<UserRoleAggregate>().Where(item => item.UserId == userId);
                     return (roleIds == null ? query : query.Where(item => roleIds.Contains(item.RoleId))).ToList();
                 }));
-            });
+            }
+
+            // Read on EVERY authenticated request (UserManager.GetUser -> GetUserRoles), hence the cache. The entry is the
+            // alias's own site's roles, so only a read FOR that site uses it (BL-279, found driving the account e-mails): the
+            // key names no site, and a read for another one - an anonymous reset or verify whose body said site 0 - cached
+            // that site's empty answer here, and the user could not sign in to their own site until it expired.
+            var alias = await _tenantManager.GetAliasAsync();
+            if (alias is null || alias.SiteId != siteId)
+            {
+                return await ReadAsync();
+            }
+
+            return await _cache.GetCacheAsync(alias, $"UserRoles:{userId}", async entry => await ReadAsync());
         }
 
         public async Task<IEnumerable<UserRole>> GetUserRolesAsync(string roleName, int siteId)

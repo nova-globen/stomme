@@ -37,7 +37,7 @@ else
         @if (_canManage)
         {
             <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:end;">
-                <label style="display:flex;flex-direction:column;gap:0.2rem;font-size:12px;">New dashboard<input id="dashboards-new-name" type="text" @bind="_newName" placeholder="Name" /></label>
+                <label style="display:flex;flex-direction:column;gap:0.2rem;font-size:12px;">New dashboard<input id="dashboards-new-name" type="text" @bind="_newName" @bind:event="oninput" placeholder="Name" /></label>
                 <button id="dashboards-create" type="button" class="db-btn" @onclick="CreateAsync" disabled="@(_busy || string.IsNullOrWhiteSpace(_newName))">Create</button>
             </div>
         }
@@ -157,7 +157,7 @@ else
                     <div id="dashboard-builder" style="display:flex;flex-direction:column;gap:0.75rem;border-top:1px dashed var(--db-border);padding-top:0.75rem;">
                         <h4 style="margin:0;">Builder</h4>
                         <div class="db-dash-form">
-                            <label>Name<input id="builder-name" type="text" @bind="_rename" /></label>
+                            <label>Name<input id="builder-name" type="text" @bind="_rename" @bind:event="oninput" /></label>
                             <button type="button" class="db-btn" @onclick="RenameAsync" disabled="@(_busy || string.IsNullOrWhiteSpace(_rename))">Rename</button>
                             <label>Columns<input id="builder-columns" type="number" min="1" max="48" @bind="_columns" /></label>
                             <label>Row height (px)<input id="builder-row-height" type="number" min="1" max="1000" @bind="_rowHeight" /></label>

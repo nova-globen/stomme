@@ -4981,7 +4981,7 @@ namespace Stomme.Tests.Pipelines
             Assert.False(cut.Find("#pipelines-create").HasAttribute("disabled"));
             cut.Find("#pipelines-new-starter").Change("greeting");
             Assert.Equal("Say hello", cut.Find("#pipelines-new-name").GetAttribute("value"));
-            cut.Find("#pipelines-new-name").Change("Morning check");
+            cut.Find("#pipelines-new-name").Input("Morning check");
             cut.Find("#pipelines-new-starter").Change("hourly-check");
             Assert.Equal("Morning check", cut.Find("#pipelines-new-name").GetAttribute("value"));
             cut.Find("#pipelines-new-starter").Change("");
@@ -5045,7 +5045,7 @@ namespace Stomme.Tests.Pipelines
 
             cut.Find("#pipelines-new-starter").Change("hourly-check");
             Assert.StartsWith("Every hour, call an address", cut.Find("#pipelines-new-starter-description").TextContent.Trim());
-            cut.Find("#pipelines-new-name").Change("Watch the shop");
+            cut.Find("#pipelines-new-name").Input("Watch the shop");
             cut.Find("#pipelines-create").Click();
 
             cut.WaitForAssertion(() => Assert.Single(service.Imported));

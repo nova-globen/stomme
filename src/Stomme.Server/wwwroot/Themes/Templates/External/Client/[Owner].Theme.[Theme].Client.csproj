@@ -1,33 +1,37 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
+  <!--
+    The theme: its layout (Themes/Theme1.razor), its container, their settings and its stylesheet (wwwroot/Theme.css).
+    INDEPENDENT: Stomme arrives only through the Stomme.Sdk.Slim package - no source or project reference, no framework
+    DLL by path. The assembly name ends in .Stomme, which is how the host's scan finds it. StaticWebAssetBasePath is the
+    PACKAGE id, so the stylesheet is served at _content/[Owner].Theme.[Theme]/Theme.css whether the host installs the
+    package or an app references it as a PackageReference.
+  -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>[Owner].Theme.[Theme].Client.Stomme</AssemblyName>
+    <RootNamespace>[Owner].Theme.[Theme]</RootNamespace>
+    <StaticWebAssetBasePath>_content/[Owner].Theme.[Theme]</StaticWebAssetBasePath>
+    <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
     <Version>1.0.0</Version>
     <Authors>[Owner]</Authors>
     <Company>[Owner]</Company>
-    <Description>[Description]</Description>
     <Product>[Owner].Theme.[Theme]</Product>
+    <Description>[Description]</Description>
     <Copyright>[Owner]</Copyright>
-    <AssemblyName>[Owner].Theme.[Theme].Client.Stomme</AssemblyName>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.9" />
+    <PackageReference Include="Stomme.Sdk.Slim" Version="[FrameworkVersion]" />
   </ItemGroup>
 
-  <ItemGroup>
-    [ClientReference]
-    [SharedReference]
-  </ItemGroup>
-
-  <PropertyGroup>
-    <!-- there may be other elements here -->
-    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-  </PropertyGroup>
+  <!-- WASM safety: a browser-bound assembly drops the OpenApi source generator, which would add server references. -->
+  <Target Name="RemoveOpenApiSourceGenerator" AfterTargets="ResolveReferences" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" Condition="$([System.String]::Copy('%(Analyzer.Identity)').Contains('Microsoft.AspNetCore.OpenApi.SourceGenerators'))" />
+    </ItemGroup>
+  </Target>
 
 </Project>

@@ -25,8 +25,8 @@ the graph and the API in [the pipelines HTTP API](../../../docs/pipelines/api.md
 3. **Import.** One of:
    - Admin > Pipelines > **New pipeline** > **Import a pipeline file**: each workflow in the file becomes a draft
      pipeline named as in n8n (or as typed in Name for a single one). The list says how many came over and which the
-     server refused, and why. A workflow the file reader cannot read at all (not a workflow, no nodes) refuses the
-     whole file, naming it ("Its workflow 2: ..."); take it out of the file and import again.
+     server refused, and why. A workflow the file reader cannot read at all (not a workflow, no nodes) is left out and
+     listed with its reason, and the rest come over (since 10.80.0; before, it refused the whole file, "Its workflow 2: ...").
    - In an open pipeline, **Import** puts the workflow on the canvas in place of what is there (Undo takes it back), or
      Ctrl+V pastes nodes copied in n8n.
    - In code (a tool or test project referencing the `Stomme.Shared` package): convert with
@@ -77,7 +77,8 @@ the graph and the API in [the pipelines HTTP API](../../../docs/pipelines/api.md
      ```
 
      `ReadMany` throws `PipelineExchangeException` with the reason when the file, or any one workflow in it, is not a
-     workflow export. Authenticate the `HttpClient` as the API skill says (a bearer token, or a signed-in session's
+     workflow export; `PipelineExchange.ReadEach` (since 10.80.0) returns the readable ones and a reason for each other,
+     as the editor's import does. Authenticate the `HttpClient` as the API skill says (a bearer token, or a signed-in session's
      cookies plus `X-XSRF-TOKEN-HEADER`); the caller needs `pipelines:manage`.
 
 4. **Read the amber note.** Open the pipeline (Edit). The import puts a note at the left of the canvas, headed
@@ -97,11 +98,11 @@ the graph and the API in [the pipelines HTTP API](../../../docs/pipelines/api.md
      Save the earlier step's `Result` to a variable (its **Variables** panel, or `outputVariables` over the API) and
      read it by name. Mind its shape: an HTTP request's `Result` is one object (`{{ weather.temperature }}`), but a
      records step's - Map fields, Filter records, Parse CSV - is a list (`{{ fields[0].city }}` for the first record;
-     `{{ fields.city }}` on a list renders empty, with no fault). In a Filter records condition the record's own fields
+     `{{ fields.city }}` on a list faults, saying it was read from a list - before 10.80.0 it rendered empty). In a Filter records condition the record's own fields
      are read directly (`{{ status }}`). The Problems list flags placeholders naming no variable.
-   - **A Set (Edit Fields) node right after the Manual Trigger** becomes a Map fields step with nothing to map: n8n
-     starts a workflow with one empty item, a pipeline here with no records, so the step's `Result` is `[]`. Give it the
-     records `[{}]` (its Records input) and it produces one record with the fields it sets.
+   - **A Set (Edit Fields) node right after the Manual Trigger** becomes a Map fields step whose Records are `[{}]`: n8n
+     starts a workflow with one empty item, so the step makes one record of the fields it sets (since 10.80.0; before,
+     its Records were empty and its `Result` was `[]` - give it `[{}]` by hand on an older version).
    - **Code nodes** became Run script steps whose "Written for" is `N8nAllItems` or `N8nEachItem`, so `$input`, `$json`
      and `items` work. A Python Code node is listed to rewrite in JavaScript.
    - **Webhooks.** Callers must now `POST` to `api/Pipelines/webhooks/{name}` on this site, signed with

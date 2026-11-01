@@ -154,7 +154,7 @@
     <value>Please Check Your Email For A Username Reminder Notification</value>
   </data>
   <data name="Message.SendLoginLink" xml:space="preserve">
-    <value>A Login Link Has Been Sent To Your Email Address. The Link Is Only Valid For A Limited Amount Of Time.</value>
+    <value>If An Account Uses This Email Address, A Login Link Has Been Sent To It. The Link Is Only Valid For A Limited Amount Of Time.</value>
   </data>
   <data name="Message.UserDoesNotExist" xml:space="preserve">
     <value>User Does Not Exist For Criteria Specified</value>

@@ -1,22 +1,26 @@
-﻿@namespace Stomme.Modules.Controls
+@namespace Stomme.Modules.Controls
 @using System.Text.Json
 @inherits LocalizableComponent
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 @if (PageState.RenderMode == RenderModes.Interactive || ModuleState.RenderMode == RenderModes.Interactive)
 {
     @if (_visible)
     {
+        @* A modal dialog for keyboard and screen-reader users too (BL-241): named by its title, described by its message, Escape
+           closes it, focus moves in when it opens (to Cancel, the safe choice), Tab stays inside it (Stomme.Interop.trapDialog),
+           and focus goes back to the button that opened it. *@
         <div class="app-actiondialog">
-            <div class="db-dialog" tabindex="-1" role="dialog">
+            <div class="db-dialog" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="@TitleId" aria-describedby="@BodyId" @ref="_dialog">
                 <div class="db-dialog-panel">
                     <div class="db-dialog-content">
                         <div class="db-dialog-head">
-                            <h5 class="db-dialog-title">@Header</h5>
-                            <button type="button" class="db-dialog-close" aria-label="Close" @onclick="DisplayModal"></button>
+                            <h5 class="db-dialog-title" id="@TitleId">@Header</h5>
+                            <button type="button" class="db-dialog-close" aria-label="@SharedLocalizer["Close"]" @onclick="DisplayModal"></button>
                         </div>
-                        <div class="db-dialog-body">
+                        <div class="db-dialog-body" id="@BodyId">
                             <p>@Message</p>
                         </div>
                         <div class="db-dialog-foot">
@@ -24,7 +28,7 @@
                             {
                                 <button type="button" class="@ConfirmClass" @onclick="Confirm">@((MarkupString)_iconSpan) @Text</button>
                             }
-                            <button type="button" class="@CancelClass" @onclick="DisplayModal">@SharedLocalizer["Cancel"]</button>
+                            <button type="button" class="@CancelClass" @onclick="DisplayModal" @ref="_cancel">@SharedLocalizer["Cancel"]</button>
                         </div>
                     </div>
                 </div>
@@ -39,7 +43,7 @@
         }
         else
         {
-            <button type="button" class="@Class" title="@AltText" @onclick="DisplayModal">@((MarkupString)_openIconSpan) @_openText</button>
+            <button type="button" class="@Class" title="@AltText" aria-label="@(string.IsNullOrEmpty(_openText) ? (string.IsNullOrEmpty(AltText) ? Text : AltText) : null)" @onclick="DisplayModal" @ref="_opener">@((MarkupString)_openIconSpan) @_openText</button>
         }
     }
 }
@@ -48,17 +52,17 @@ else
     @if (_visible)
     {
         <div class="app-actiondialog">
-            <div class="db-dialog" tabindex="-1" role="dialog">
+            <div class="db-dialog" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="@TitleId" aria-describedby="@BodyId">
                 <div class="db-dialog-panel">
                     <div class="db-dialog-content">
                         <form class="app-form-inline" method="post" @formname="@($"ActionDialogCloseForm:{ModuleState.PageModuleId}:{Id}")" @onsubmit="DisplayModal" data-enhance>
                             <input type="hidden" name="@Constants.RequestVerificationToken" value="@SiteState.AntiForgeryToken" />
                             <div class="db-dialog-head">
-                                <h5 class="db-dialog-title">@Header</h5>
-                                <button type="submit" class="db-dialog-close" aria-label="Close"></button>
+                                <h5 class="db-dialog-title" id="@TitleId">@Header</h5>
+                                <button type="submit" class="db-dialog-close" aria-label="@SharedLocalizer["Close"]"></button>
                             </div>
                         </form>
-                        <div class="db-dialog-body">
+                        <div class="db-dialog-body" id="@BodyId">
                             <p>@Message</p>
                         </div>
                         <div class="db-dialog-foot">
@@ -103,6 +107,15 @@ else
     private string _iconSpan = string.Empty;
     private string _openIconSpan = string.Empty;
     private string _openText = string.Empty;
+    private ElementReference _dialog;
+    private ElementReference _cancel;
+    private ElementReference _opener;
+    private bool _focusCancel;
+    private bool _focusOpener;
+
+    private string TitleId => $"actiondialog-{ModuleState?.PageModuleId}-{Id}-title";
+
+    private string BodyId => $"actiondialog-{ModuleState?.PageModuleId}-{Id}-message";
 
     [Parameter]
     public string Header { get; set; } // required
@@ -144,7 +157,15 @@ else
     public string EditMode { get; set; } // optional - specifies if an authorized user must be in edit mode to see the action - default is false
 
     [Parameter]
-    public Action OnClick { get; set; } // required if an Action is specified - executes a method in the calling component
+    public Action OnClick { get; set; } // required if an Action is specified and OnConfirm is not - executes a method in the calling component
+
+    /// <summary>
+    /// What Confirm does, awaited (since 10.80.0): an exception reaches the caller's renderer instead of running unobserved,
+    /// and the calling component re-renders afterwards by itself. Takes precedence over <see cref="OnClick"/>, a plain
+    /// <c>Action</c> through which an async lambda ran unawaited.
+    /// </summary>
+    [Parameter]
+    public EventCallback OnConfirm { get; set; }
 
     [Parameter]
     public string IconName { get; set; } // optional - specifies an icon for the link - default is no icon
@@ -278,6 +299,8 @@ else
         _visible = !_visible;
         if (PageState.RenderMode == RenderModes.Interactive || ModuleState.RenderMode == RenderModes.Interactive)
         {
+            _focusCancel = _visible;
+            _focusOpener = !_visible;
             StateHasChanged();
         }
         else
@@ -289,9 +312,51 @@ else
         }
     }
 
-    private void Confirm()
+    private async Task Confirm()
     {
-        OnClick();
+        if (OnConfirm.HasDelegate)
+        {
+            await OnConfirm.InvokeAsync();
+        }
+        else
+        {
+            OnClick?.Invoke();
+        }
+
         DisplayModal();
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_focusCancel)
+        {
+            _focusCancel = false;
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("Stomme.Interop.trapDialog", _dialog, _cancel);
+            }
+            catch (Exception)
+            {
+                // prerendering, or the circuit closed - the dialog still works with the mouse
+            }
+        }
+        else if (_focusOpener)
+        {
+            _focusOpener = false;
+            await TryFocusAsync(_opener);
+        }
+    }
+
+    private static async Task TryFocusAsync(ElementReference element)
+    {
+        try
+        {
+            await element.FocusAsync();
+        }
+        catch (Exception)
+        {
+            // the element is gone - the confirmed action removed the row that held the opener, or the circuit closed
+        }
     }
 }

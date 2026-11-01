@@ -20,7 +20,7 @@ controls it names are in [docs/ui/components-and-controls.md](../../../docs/ui/c
    - any `@onclick` on a `div`, `span`, `td` or an `a` without `href` (K3);
    - every input and its `Label For` / `id` pair, and duplicate ids (A1);
    - every service call and whether it is in a `try`/`catch` that shows a message (R1);
-   - every `AddModuleMessage` that includes user text without `WebUtility.HtmlEncode` (R4);
+   - every `AddModuleMessage` that encodes text itself (`WebUtility.HtmlEncode`): since 10.79.0 the message does, and a quote shows as `&#39;` (R4);
    - every delete or irreversible action and whether an `ActionDialog` guards it (C1).
 
 2. **Run the app.** `dotnet build` at the app root, then `cd Server` and `dotnet run`; open the URL it prints. Sign in as

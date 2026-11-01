@@ -124,6 +124,7 @@ services.AddTransient<INotesService, ServerNotesService>();   // last
 
 No `AddMediator`. Client: `NotesClientStartup` adds `INotesService -> NotesService` (scoped) only when no registration exists.
 `NotesService : ServiceBase` overrides `ThrowOnRefusal => true`; `CreateApiUrl("Notes")`.
+`ServerNotesService` turns a refusal into `ServiceRefusalException` (`Stomme.Services`) with the controller's reason and status (private `Answer<T>`), so both pages catch `ServiceRefusalException` (shown, Warning) apart from any other exception (logged; a generic Error message).
 
 ## Client UI
 

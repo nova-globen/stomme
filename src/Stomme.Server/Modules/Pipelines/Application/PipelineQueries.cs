@@ -240,12 +240,31 @@ namespace Stomme.Modules.Pipelines.Application
     [Requires(global::Stomme.Pipelines.PipelinesPermissions.View)]
     public sealed record GetRunQuery(string Id) : IQuery<PipelineRunView?>;
 
-    public sealed class GetRunQueryHandler(IPipelineInstanceStore instances, IPipelineDefinitionStore definitions, IAccessGuard guard, IKeyValueStore keyValues, ITenantAccessor tenants)
+    public sealed class GetRunQueryHandler(IPipelineInstanceStore instances, IPipelineDefinitionStore definitions, IAccessGuard guard, IKeyValueStore keyValues, ITenantAccessor tenants,
+        Stomme.Repository.IUserRepository? users = null)
         : IQueryHandler<GetRunQuery, PipelineRunView?>
     {
         /// <summary>The most of a run's sub-pipeline runs its page lists - a loop over Dispatch Pipeline can start many.</summary>
         public const int MaxChildRuns = 50;
 
+        /// <summary>The username of whom the run acts as (BL-280): its starter, else its version's publisher; null when none is recorded.</summary>
+        private async Task<string?> ActsAsAsync(PipelineInstance instance, CancellationToken ct)
+        {
+            string? recorded = instance.PipelineState.Properties.TryGetValue(Stomme.Modules.Pipelines.Tenancy.StommeSiteScope.StartedByUserProperty, out var starter) ? starter?.ToString() : null;
+            if (recorded is null && !string.IsNullOrEmpty(instance.DefinitionVersionId))
+            {
+                var version = await definitions.FindAsync(new PipelineDefinitionFilter { Id = instance.DefinitionVersionId }, ct);
+                recorded = version is not null && version.CustomProperties.TryGetValue(Stomme.Modules.Pipelines.Tenancy.StommeSiteScope.PublishedByUserProperty, out var publisher) ? publisher?.ToString() : null;
+            }
+
+            if (users is null || !int.TryParse(recorded, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var userId) || userId <= 0)
+            {
+                return null;
+            }
+
+            var user = await users.GetUserAsync(userId);
+            return user?.Username ?? $"user {userId} (deleted)";
+        }
         public async Task<PipelineRunView?> Handle(GetRunQuery request, CancellationToken ct)
         {
             var instance = await instances.FindAsync(new PipelineInstanceFilter { Id = request.Id }, ct);
@@ -267,6 +286,7 @@ namespace Stomme.Modules.Pipelines.Application
 
             (view.FailedRunId, view.FailedPipelineName) = PipelineRunDetails.FailureOf(input);
             view.RetryOfRunId = instance.PipelineState.Properties.TryGetValue(PipelineRetryFromFailure.RetryOfProperty, out var retryOf) ? retryOf?.ToString() : null;
+            view.ActsAs = await ActsAsAsync(instance, ct);
             view.Data = await PipelineRunDataStore.ReadAsync(keyValues, tenants.TenantId, instance.Id, ct);
             view.Review = await PipelineRunReviewStore.ReadAsync(keyValues, tenants.TenantId, instance.Id, ct);
 

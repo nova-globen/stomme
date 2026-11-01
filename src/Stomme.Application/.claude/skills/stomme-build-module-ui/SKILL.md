@@ -158,12 +158,16 @@ unchanged, driven on an Interactive Server site and on a WebAssembly site. `Stom
                await NotesService.DeleteAsync(note.Id);
                await logger.LogInformation("Note deleted {NoteId}", note.Id);
                await LoadAsync();
-               AddModuleMessage($"The note '{WebUtility.HtmlEncode(note.Title)}' was deleted.", MessageType.Success);
+               AddModuleMessage($"The note '{note.Title}' was deleted.", MessageType.Success); // the message encodes it
+           }
+           catch (ServiceRefusalException ex)
+           {
+               AddModuleMessage("The note was not deleted: " + ex.Message, MessageType.Warning);
            }
            catch (Exception ex)
            {
                await logger.LogError(ex, "Could not delete note {NoteId} {Error}", note.Id, ex.Message);
-               AddModuleMessage("The note was not deleted: " + WebUtility.HtmlEncode(ex.Message), MessageType.Error);
+               AddModuleMessage("The note was not deleted. Try again; if it keeps failing, ask an administrator to check the event log.", MessageType.Error);
            }
 
            // ActionDialog calls a plain Action, so nothing re-renders the page unless it asks to.
@@ -281,10 +285,16 @@ unchanged, driven on an Interactive Server site and on a WebAssembly site. `Stom
                await logger.LogInformation("Note saved {NoteId}", _id);
                NavigationManager.NavigateTo(NavigateUrl());
            }
+           catch (ServiceRefusalException ex)
+           {
+               // The server's reason, meant for the person: a duplicate title, a field it refuses, no permission.
+               AddModuleMessage("The note was not saved: " + ex.Message, MessageType.Warning);
+           }
            catch (Exception ex)
            {
+               // A fault, not a refusal: its text ("TypeError: Failed to fetch") goes to the log, not on the page.
                await logger.LogError(ex, "Could not save the note {Error}", ex.Message);
-               AddModuleMessage("The note was not saved: " + WebUtility.HtmlEncode(ex.Message), MessageType.Error);
+               AddModuleMessage("The note was not saved. Try again; if it keeps failing, ask an administrator to check the event log.", MessageType.Error);
            }
            finally
            {
@@ -349,7 +359,13 @@ does nothing when clicked.
 - **The list does not change after Delete.** `StateHasChanged()` missing at the end of the `ActionDialog` handler.
 - **`InvalidOperationException` about `RenderModeBoundary`.** `AddModuleMessage` called from a child component; pass
   `RenderModeBoundary="RenderModeBoundary"` to it or show the message from the module component.
-- **A message shows raw HTML or breaks the layout.** User text went into `AddModuleMessage` without
+- **An error message shows "TypeError: Failed to fetch" or "Validation failed: -- Title: ...".** The page put `ex.Message` of
+  any exception on the page. Show the reason of a `ServiceRefusalException` only - the server meant it for the person - and
+  log anything else with a message that says what to do; the server-side service must throw `ServiceRefusalException` for
+  refusals too (`ServerNotesService`), or a Server site shows the raw exception.
+- **A message shows `&#39;` or `&amp;` where a quote or an ampersand was typed.** The page encoded the text itself. Since
+  10.79.0 a module message encodes its text (only `b`, `strong`, `em`, `i`, `code`, `br`, `p` and safe links come
+  through as markup), so pass user text as it is; before 10.79.0 messages were raw HTML and user text needed
   `WebUtility.HtmlEncode`.
 - **Times are off by hours.** Printed `UpdatedUtc` directly; use `UtcToLocal(...)`.
 - **The Delete confirmation opens for the wrong row on a Static page.** Several `ActionDialog`s without distinct `Id`s.

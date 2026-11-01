@@ -70,6 +70,19 @@ namespace Stomme.Modules.Pipelines.Application
         public const string NoteProperty = "stomme.publishNote";
 
         /// <summary>The note, tidied and bounded, on a new dictionary (the draft shares its properties with the version it was made from).</summary>
+        /// <summary>The user publishing this version, whom its runs act as (BL-280); none when the publisher is not a user.</summary>
+        public static void StampPublisher(PipelineDefinition definition, int? userId)
+        {
+            var properties = new Dictionary<string, object>(definition.CustomProperties);
+            properties.Remove(Stomme.Modules.Pipelines.Tenancy.StommeSiteScope.PublishedByUserProperty);
+            if (userId is > 0)
+            {
+                properties[Stomme.Modules.Pipelines.Tenancy.StommeSiteScope.PublishedByUserProperty] = userId.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            definition.CustomProperties = properties;
+        }
+
         public static void StampNote(PipelineDefinition definition, string? note)
         {
             var tidy = string.IsNullOrWhiteSpace(note) ? null : note.Trim();

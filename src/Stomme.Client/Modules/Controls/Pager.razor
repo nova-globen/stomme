@@ -1,4 +1,4 @@
-﻿@namespace Stomme.Modules.Controls
+@namespace Stomme.Modules.Controls
 @inherits ModuleControlBase
 @inject IStringLocalizerFactory LocalizerFactory
 @inject IStringLocalizer<SharedResources> SharedLocalizer
@@ -28,16 +28,16 @@
         {
             <ul class="db-pagination db-pagination-@PaginationAlignment.ToLower()">
                 <li class="db-page-item@((_page > 1) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" @onclick=@(async () => UpdateList(1))><span class="oi oi-media-step-backward" title="start" aria-hidden="true"></span></a>
+                    <button type="button" class="db-page-link" @onclick=@(async () => UpdateList(1)) disabled="@(_page <= 1)" aria-label="@Localizer["FirstPage"]"><span class="oi oi-media-step-backward" aria-hidden="true"></span></button>
                 </li>
                 @if (_pages > _displayPages && _displayPages > 1)
                 {
                     <li class="db-page-item@((_page > _displayPages) ? " app-pager-pointer" : " disabled")">
-                        <a class="db-page-link" @onclick=@(async () => SkipPages("back"))><span class="oi oi-media-skip-backward" title="skip back" aria-hidden="true"></span></a>
+                        <button type="button" class="db-page-link" @onclick=@(async () => SkipPages("back")) disabled="@(_page <= _displayPages)" aria-label="@Localizer["PreviousPages"]"><span class="oi oi-media-skip-backward" aria-hidden="true"></span></button>
                     </li>
                 }
                 <li class="db-page-item@((_page > 1) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" @onclick=@(async () => NavigateToPage("previous"))><span class="oi oi-chevron-left" title="previous" aria-hidden="true"></span></a>
+                    <button type="button" class="db-page-link" @onclick=@(async () => NavigateToPage("previous")) disabled="@(_page <= 1)" aria-label="@Localizer["PreviousPage"]"><span class="oi oi-chevron-left" aria-hidden="true"></span></button>
                 </li>
                 @for (int i = _startPage; i <= _endPage; i++)
                 {
@@ -45,30 +45,30 @@
                     if (pager == _page)
                     {
                         <li class="db-page-item app-pager-pointer active">
-                            <a class="db-page-link" @onclick=@(async () => UpdateList(pager))>@pager</a>
+                            <button type="button" class="db-page-link" @onclick=@(async () => UpdateList(pager)) aria-label="@Localizer["PageNumber", pager]" aria-current="@(pager == _page ? "page" : null)">@pager</button>
                         </li>
                     }
                     else
                     {
                         <li class="db-page-item app-pager-pointer">
-                            <a class="db-page-link" @onclick=@(async () => UpdateList(pager))>@pager</a>
+                            <button type="button" class="db-page-link" @onclick=@(async () => UpdateList(pager)) aria-label="@Localizer["PageNumber", pager]" aria-current="@(pager == _page ? "page" : null)">@pager</button>
                         </li>
                     }
                 }
                 <li class="db-page-item@((_page < _pages) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" @onclick=@(async () => NavigateToPage("next"))><span class="oi oi-chevron-right" title="next" aria-hidden="true"></span></a>
+                    <button type="button" class="db-page-link" @onclick=@(async () => NavigateToPage("next")) disabled="@(_page >= _pages)" aria-label="@Localizer["NextPage"]"><span class="oi oi-chevron-right" aria-hidden="true"></span></button>
                 </li>
                 @if (_pages > _displayPages && _displayPages > 1)
                 {
                     <li class="db-page-item@((_endPage < _pages) ? " app-pager-pointer" : " disabled")">
-                        <a class="db-page-link" @onclick=@(async () => SkipPages("forward"))><span class="oi oi-media-skip-forward" title="skip forward" aria-hidden="true"></span></a>
+                        <button type="button" class="db-page-link" @onclick=@(async () => SkipPages("forward")) disabled="@(_endPage >= _pages)" aria-label="@Localizer["NextPages"]"><span class="oi oi-media-skip-forward" aria-hidden="true"></span></button>
                     </li>
                 }
                 <li class="db-page-item@((_page < _pages) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" @onclick=@(async () => UpdateList(_pages))><span class="oi oi-media-step-forward" title="end" aria-hidden="true"></span></a>
+                    <button type="button" class="db-page-link" @onclick=@(async () => UpdateList(_pages)) disabled="@(_page >= _pages)" aria-label="@Localizer["LastPage"]"><span class="oi oi-media-step-forward" aria-hidden="true"></span></button>
                 </li>
                 <li class="db-page-item disabled">
-                    <a class="db-page-link" style="white-space: nowrap;">@Localizer["PageOfPages", _page, _pages]</a>
+                    <span class="db-page-link" style="white-space: nowrap;">@Localizer["PageOfPages", _page, _pages]</span>
                 </li>
             </ul>
         }
@@ -104,16 +104,16 @@
         {
             <ul class="db-pagination db-pagination-@PaginationAlignment.ToLower()">
                 <li class="db-page-item@((_page > 1) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" href="@PageUrl(1, _search)"><span class="oi oi-media-step-backward" title="start" aria-hidden="true"></span></a>
+                    <a class="db-page-link" href="@PageUrl(1, _search)" aria-label="@Localizer["FirstPage"]"><span class="oi oi-media-step-backward" aria-hidden="true"></span></a>
                 </li>
                 @if (_pages > _displayPages && _displayPages > 1)
                 {
                     <li class="db-page-item@((_page > _displayPages) ? " app-pager-pointer" : " disabled")">
-                        <a class="db-page-link" href="@PageUrl(_startPage - 1, _search)"><span class="oi oi-media-skip-backward" title="skip back" aria-hidden="true"></span></a>
+                        <a class="db-page-link" href="@PageUrl(_startPage - 1, _search)" aria-label="@Localizer["PreviousPages"]"><span class="oi oi-media-skip-backward" aria-hidden="true"></span></a>
                     </li>
                 }
                 <li class="db-page-item@((_page > 1) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" href="@PageUrl(((_page > 1) ? _page - 1 : _page), _search)"><span class="oi oi-chevron-left" title="previous" aria-hidden="true"></span></a>
+                    <a class="db-page-link" href="@PageUrl(((_page > 1) ? _page - 1 : _page), _search)" aria-label="@Localizer["PreviousPage"]"><span class="oi oi-chevron-left" aria-hidden="true"></span></a>
                 </li>
                 @for (int i = _startPage; i <= _endPage; i++)
                 {
@@ -121,30 +121,30 @@
                     if (pager == _page)
                     {
                         <li class="db-page-item app-pager-pointer active">
-                            <a class="db-page-link" href="@PageUrl(pager, _search)">@pager</a>
+                            <a class="db-page-link" href="@PageUrl(pager, _search)" aria-label="@Localizer["PageNumber", pager]" aria-current="@(pager == _page ? "page" : null)">@pager</a>
                         </li>
                     }
                     else
                     {
                         <li class="db-page-item app-pager-pointer">
-                            <a class="db-page-link" href="@PageUrl(pager, _search)">@pager</a>
+                            <a class="db-page-link" href="@PageUrl(pager, _search)" aria-label="@Localizer["PageNumber", pager]" aria-current="@(pager == _page ? "page" : null)">@pager</a>
                         </li>
                     }
                 }
                 <li class="db-page-item@((_page < _pages) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" href="@PageUrl(((_page < _pages) ? _page + 1 : _page), _search)"><span class="oi oi-chevron-right" title="next" aria-hidden="true"></span></a>
+                    <a class="db-page-link" href="@PageUrl(((_page < _pages) ? _page + 1 : _page), _search)" aria-label="@Localizer["NextPage"]"><span class="oi oi-chevron-right" aria-hidden="true"></span></a>
                 </li>
                 @if (_pages > _displayPages && _displayPages > 1)
                 {
                     <li class="db-page-item@((_endPage < _pages) ? " app-pager-pointer" : " disabled")">
-                        <a class="db-page-link" href="@PageUrl(_endPage + 1, _search)"><span class="oi oi-media-skip-forward" title="skip forward" aria-hidden="true"></span></a>
+                        <a class="db-page-link" href="@PageUrl(_endPage + 1, _search)" aria-label="@Localizer["NextPages"]"><span class="oi oi-media-skip-forward" aria-hidden="true"></span></a>
                     </li>
                 }
                 <li class="db-page-item@((_page < _pages) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" href="@PageUrl(_pages, _search)"><span class="oi oi-media-step-forward" title="end" aria-hidden="true"></span></a>
+                    <a class="db-page-link" href="@PageUrl(_pages, _search)" aria-label="@Localizer["LastPage"]"><span class="oi oi-media-step-forward" aria-hidden="true"></span></a>
                 </li>
                 <li class="db-page-item disabled">
-                    <a class="db-page-link" style="white-space: nowrap;">@Localizer["PageOfPages", _page, _pages]</a>
+                    <span class="db-page-link" style="white-space: nowrap;">@Localizer["PageOfPages", _page, _pages]</span>
                 </li>
             </ul>
         }
@@ -220,16 +220,16 @@
         {
             <ul class="db-pagination db-pagination-@PaginationAlignment.ToLower()">
                 <li class="db-page-item@((_page > 1) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" @onclick=@(async () => UpdateList(1))><span class="oi oi-media-step-backward" title="start" aria-hidden="true"></span></a>
+                    <button type="button" class="db-page-link" @onclick=@(async () => UpdateList(1)) disabled="@(_page <= 1)" aria-label="@Localizer["FirstPage"]"><span class="oi oi-media-step-backward" aria-hidden="true"></span></button>
                 </li>
                 @if (_pages > _displayPages && _displayPages > 1)
                 {
                     <li class="db-page-item@((_page > _displayPages) ? " app-pager-pointer" : " disabled")">
-                        <a class="db-page-link" @onclick=@(async () => SkipPages("back"))><span class="oi oi-media-skip-backward" title="skip back" aria-hidden="true"></span></a>
+                        <button type="button" class="db-page-link" @onclick=@(async () => SkipPages("back")) disabled="@(_page <= _displayPages)" aria-label="@Localizer["PreviousPages"]"><span class="oi oi-media-skip-backward" aria-hidden="true"></span></button>
                     </li>
                 }
                 <li class="db-page-item@((_page > 1) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" @onclick=@(async () => NavigateToPage("previous"))><span class="oi oi-chevron-left" title="previous" aria-hidden="true"></span></a>
+                    <button type="button" class="db-page-link" @onclick=@(async () => NavigateToPage("previous")) disabled="@(_page <= 1)" aria-label="@Localizer["PreviousPage"]"><span class="oi oi-chevron-left" aria-hidden="true"></span></button>
                 </li>
                 @for (int i = _startPage; i <= _endPage; i++)
                 {
@@ -237,30 +237,30 @@
                     if (pager == _page)
                     {
                         <li class="db-page-item app-pager-pointer active">
-                            <a class="db-page-link" @onclick=@(async () => UpdateList(pager))>@pager</a>
+                            <button type="button" class="db-page-link" @onclick=@(async () => UpdateList(pager)) aria-label="@Localizer["PageNumber", pager]" aria-current="@(pager == _page ? "page" : null)">@pager</button>
                         </li>
                     }
                     else
                     {
                         <li class="db-page-item app-pager-pointer">
-                            <a class="db-page-link" @onclick=@(async () => UpdateList(pager))>@pager</a>
+                            <button type="button" class="db-page-link" @onclick=@(async () => UpdateList(pager)) aria-label="@Localizer["PageNumber", pager]" aria-current="@(pager == _page ? "page" : null)">@pager</button>
                         </li>
                     }
                 }
                 <li class="db-page-item@((_page < _pages) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" @onclick=@(async () => NavigateToPage("next"))><span class="oi oi-chevron-right" title="next" aria-hidden="true"></span></a>
+                    <button type="button" class="db-page-link" @onclick=@(async () => NavigateToPage("next")) disabled="@(_page >= _pages)" aria-label="@Localizer["NextPage"]"><span class="oi oi-chevron-right" aria-hidden="true"></span></button>
                 </li>
                 @if (_pages > _displayPages && _displayPages > 1)
                 {
                     <li class="db-page-item@((_endPage < _pages) ? " app-pager-pointer" : " disabled")">
-                        <a class="db-page-link" @onclick=@(async () => SkipPages("forward"))><span class="oi oi-media-skip-forward" title="skip forward" aria-hidden="true"></span></a>
+                        <button type="button" class="db-page-link" @onclick=@(async () => SkipPages("forward")) disabled="@(_endPage >= _pages)" aria-label="@Localizer["NextPages"]"><span class="oi oi-media-skip-forward" aria-hidden="true"></span></button>
                     </li>
                 }
                 <li class="db-page-item@((_page < _pages) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" @onclick=@(async () => UpdateList(_pages))><span class="oi oi-media-step-forward" title="end" aria-hidden="true"></span></a>
+                    <button type="button" class="db-page-link" @onclick=@(async () => UpdateList(_pages)) disabled="@(_page >= _pages)" aria-label="@Localizer["LastPage"]"><span class="oi oi-media-step-forward" aria-hidden="true"></span></button>
                 </li>
                 <li class="db-page-item disabled">
-                    <a class="db-page-link" style="white-space: nowrap;">@Localizer["PageOfPages", _page, _pages]</a>
+                    <span class="db-page-link" style="white-space: nowrap;">@Localizer["PageOfPages", _page, _pages]</span>
                 </li>
             </ul>
         }
@@ -268,16 +268,16 @@
         {
             <ul class="db-pagination db-pagination-@PaginationAlignment.ToLower()">
                 <li class="db-page-item@((_page > 1) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" href="@PageUrl(1, _search)"><span class="oi oi-media-step-backward" title="start" aria-hidden="true"></span></a>
+                    <a class="db-page-link" href="@PageUrl(1, _search)" aria-label="@Localizer["FirstPage"]"><span class="oi oi-media-step-backward" aria-hidden="true"></span></a>
                 </li>
                 @if (_pages > _displayPages && _displayPages > 1)
                 {
                     <li class="db-page-item@((_page > _displayPages) ? " app-pager-pointer" : " disabled")">
-                        <a class="db-page-link" href="@PageUrl(_startPage - 1, _search)"><span class="oi oi-media-skip-backward" title="skip back" aria-hidden="true"></span></a>
+                        <a class="db-page-link" href="@PageUrl(_startPage - 1, _search)" aria-label="@Localizer["PreviousPages"]"><span class="oi oi-media-skip-backward" aria-hidden="true"></span></a>
                     </li>
                 }
                 <li class="db-page-item@((_page > 1) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" href="@PageUrl(((_page > 1) ? _page - 1 : _page), _search)"><span class="oi oi-chevron-left" title="previous" aria-hidden="true"></span></a>
+                    <a class="db-page-link" href="@PageUrl(((_page > 1) ? _page - 1 : _page), _search)" aria-label="@Localizer["PreviousPage"]"><span class="oi oi-chevron-left" aria-hidden="true"></span></a>
                 </li>
                 @for (int i = _startPage; i <= _endPage; i++)
                 {
@@ -285,30 +285,30 @@
                     if (pager == _page)
                     {
                         <li class="db-page-item app-pager-pointer active">
-                            <a class="db-page-link" href="@PageUrl(pager, _search)">@pager</a>
+                            <a class="db-page-link" href="@PageUrl(pager, _search)" aria-label="@Localizer["PageNumber", pager]" aria-current="@(pager == _page ? "page" : null)">@pager</a>
                         </li>
                     }
                     else
                     {
                         <li class="db-page-item app-pager-pointer">
-                            <a class="db-page-link" href="@PageUrl(pager, _search)">@pager</a>
+                            <a class="db-page-link" href="@PageUrl(pager, _search)" aria-label="@Localizer["PageNumber", pager]" aria-current="@(pager == _page ? "page" : null)">@pager</a>
                         </li>
                     }
                 }
                 <li class="db-page-item@((_page < _pages) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" href="@PageUrl(((_page < _pages) ? _page + 1 : _page), _search)"><span class="oi oi-chevron-right" title="next" aria-hidden="true"></span></a>
+                    <a class="db-page-link" href="@PageUrl(((_page < _pages) ? _page + 1 : _page), _search)" aria-label="@Localizer["NextPage"]"><span class="oi oi-chevron-right" aria-hidden="true"></span></a>
                 </li>
                 @if (_pages > _displayPages && _displayPages > 1)
                 {
                     <li class="db-page-item@((_endPage < _pages) ? " app-pager-pointer" : " disabled")">
-                        <a class="db-page-link" href="@PageUrl(_endPage + 1, _search)"><span class="oi oi-media-skip-forward" title="skip forward" aria-hidden="true"></span></a>
+                        <a class="db-page-link" href="@PageUrl(_endPage + 1, _search)" aria-label="@Localizer["NextPages"]"><span class="oi oi-media-skip-forward" aria-hidden="true"></span></a>
                     </li>
                 }
                 <li class="db-page-item@((_page < _pages) ? " app-pager-pointer" : " disabled")">
-                    <a class="db-page-link" href="@PageUrl(_pages, _search)"><span class="oi oi-media-step-forward" title="end" aria-hidden="true"></span></a>
+                    <a class="db-page-link" href="@PageUrl(_pages, _search)" aria-label="@Localizer["LastPage"]"><span class="oi oi-media-step-forward" aria-hidden="true"></span></a>
                 </li>
                 <li class="db-page-item disabled">
-                    <a class="db-page-link" style="white-space: nowrap;">@Localizer["PageOfPages", _page, _pages]</a>
+                    <span class="db-page-link" style="white-space: nowrap;">@Localizer["PageOfPages", _page, _pages]</span>
                 </li>
             </ul>
         }

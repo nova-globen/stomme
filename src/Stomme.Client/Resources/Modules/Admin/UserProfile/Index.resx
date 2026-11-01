@@ -333,4 +333,7 @@
   <data name="Error.Account.Delete" xml:space="preserve">
     <value>Your Account Could Not Be Deleted</value>
   </data>
+  <data name="AiTools.Heading" xml:space="preserve">
+    <value>AI tools</value>
+  </data>
 </root>

@@ -88,12 +88,16 @@ else
             await NotesService.DeleteAsync(note.Id);
             await logger.LogInformation("Note deleted {NoteId}", note.Id);
             await LoadAsync();
-            AddModuleMessage($"The note '{WebUtility.HtmlEncode(note.Title)}' was deleted.", MessageType.Success);
+            AddModuleMessage($"The note '{note.Title}' was deleted.", MessageType.Success); // the message encodes it
+        }
+        catch (ServiceRefusalException ex)
+        {
+            AddModuleMessage("The note was not deleted: " + ex.Message, MessageType.Warning);
         }
         catch (Exception ex)
         {
             await logger.LogError(ex, "Could not delete note {NoteId} {Error}", note.Id, ex.Message);
-            AddModuleMessage("The note was not deleted: " + WebUtility.HtmlEncode(ex.Message), MessageType.Error);
+            AddModuleMessage("The note was not deleted. Try again; if it keeps failing, ask an administrator to check the event log.", MessageType.Error);
         }
 
         // ActionDialog calls a plain Action, so nothing re-renders the page unless it asks to.

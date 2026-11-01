@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject IPageService PageService
 @inject ISettingService SettingService
+@inject IStringLocalizer<ControlPanel> Localizer
 
 @if (ShowLanguageSwitcher)
 {
@@ -24,13 +25,13 @@
         @* Migrated to the --db-* header icon button; `active` is a state class, not Bootstrap. *@
         @if (PageState.EditMode)
         {
-            <button type="submit" class="app-editmode db-icon-btn @ButtonClass active" aria-pressed="true" autocomplete="off">
+            <button type="submit" class="app-editmode db-icon-btn @ButtonClass active" aria-pressed="true" aria-label="@Localizer["Edit Mode"]" title="@Localizer["Edit Mode"]" autocomplete="off">
                 <span class="oi oi-pencil"></span>
             </button>
         }
         else
         {
-            <button type="submit" class="app-editmode db-icon-btn @ButtonClass" aria-pressed="false" autocomplete="off">
+            <button type="submit" class="app-editmode db-icon-btn @ButtonClass" aria-pressed="false" aria-label="@Localizer["Edit Mode"]" title="@Localizer["Edit Mode"]" autocomplete="off">
                 <span class="oi oi-pencil"></span>
             </button>
         }

@@ -26,9 +26,9 @@ in light and dark.
 
 | Control | Use it for | Key parameters |
 |---|---|---|
-| `Pager<TableItem>` | Every list. Renders a `db-table` (or a grid) with paging and an optional search box. | `Items`, `Header`, `Row` (`RenderFragment<TableItem>`), `Detail`, `Footer`, `Format` (`"Table"` default, or `"Grid"`), `PageSize` (string, default 10), `SearchProperties` (comma-separated property names; adds the search box), `Toolbar` (`"Top"` default, `"Bottom"`, `"Both"`), `PaginationAlignment` (`"start"`, `"center"` default, `"end"`), `OnPageChange`, `Parameters` (query string kept on static paging links). |
+| `Pager<TableItem>` | Every list. Renders a `db-table` (or a grid) with paging and an optional search box. | `Items`, `Header`, `Row` (`RenderFragment<TableItem>`), `Detail`, `Footer`, `Format` (`"Table"` default, or `"Grid"`), `PageSize` (string, default 10), `SearchProperties` (comma-separated property names; adds the search box), `Toolbar` (`"Top"` default, `"Bottom"`, `"Both"`), `PaginationAlignment` (`"start"`, `"center"` default, `"end"`), `OnPageChange`, `Parameters` (query string kept on static paging links). Its page controls are buttons (links on a static page), each named for a screen reader ("First page", "Page 3") with the current page marked `aria-current`; reachable by Tab since 10.80.0. |
 | `ActionLink` | A button that opens one of the module's action pages (Add, Edit, ...) and hides itself from users not allowed to use it. | `Action` (required), `Text`, `Parameters` (`"id=5"`), `Security` (`SecurityAccessLevel`), `PermissionList`, `Disabled`, `Class` (default `db-btn`), `IconName`, `IconOnly`, `AltText`, `ReturnUrl`, `EditMode`, `ResourceKey`. |
-| `ActionDialog` | A confirmation before a destructive or irreversible action. | `Header`, `Message` (both required), `Action` (the action's name: without it there is no confirm button; without `Security` it names the component whose level applies), `Text` (the buttons' text, default `Action`), `OnClick` (an `Action` delegate), `Security`, `Class` (default `db-btn`; use `"db-btn db-btn-danger"` for delete), `ConfirmClass`, `CancelClass` (default `db-btn db-btn-neutral`), `Disabled`, `Id` (required when a static page holds several), `IconName`, `IconOnly`, `ResourceKey`. |
+| `ActionDialog` | A confirmation before a destructive or irreversible action. | `Header`, `Message` (both required), `Action` (the action's name: without it there is no confirm button; without `Security` it names the component whose level applies), `Text` (the buttons' text, default `Action`), `OnConfirm` (an `EventCallback`, awaited; since 10.80.0) or `OnClick` (an `Action` delegate), `Security`, `Class` (default `db-btn`; use `"db-btn db-btn-danger"` for delete), `ConfirmClass`, `CancelClass` (default `db-btn db-btn-neutral`), `Disabled`, `Id` (required when a static page holds several), `IconName`, `IconOnly`, `ResourceKey`. A modal for the keyboard too (since 10.80.0): named by `Header`, described by `Message`, focus starts on Cancel, Tab stays inside, Escape closes it and focus returns to the button that opened it; an `IconOnly` button is named by `AltText`, else `Text`. |
 | `Label` | The label of a form field, with optional help text. | `For` (the field's `id`), `HelpText`, `HelpTopic`, `Class`, `ResourceKey`, `ResourceType`. |
 | `Section` | A collapsible group of fields with a heading. | `Name` (required, also the element id), `Heading`, `Expanded` (`"true"`/`"false"` string), `IsVisible`, `ResourceKey`. |
 | `TabStrip` + `TabPanel` | Tabs. Static pages switch with a `tab=` query string. | TabStrip: `ActiveTab`, `Refresh`, `Id`. TabPanel: `Name` (required), `Heading`, `Security`, `RoleName`, `PermissionName`, `ResourceKey`. |
@@ -200,9 +200,12 @@ the app's `wwwroot` and a `<script>` for it on the pages that render the compone
   builds, renders and shows nothing where the control should be. Check every FluentUI tag name against version 5.
 - **`ActionDialog.OnClick` is a plain `Action`, not an `EventCallback`.** The component does not re-render after it runs:
   end the handler with `StateHasChanged()`, and catch exceptions inside it (an async lambda passed as an `Action` runs
-  unobserved).
-- **Messages are rendered as HTML.** `AddModuleMessage` text goes out as markup. Encode anything a user typed
-  (`System.Net.WebUtility.HtmlEncode`) before putting it in a message.
+  unobserved). Since 10.80.0 pass `OnConfirm` instead: an `EventCallback`, awaited before the dialog closes, after which
+  your component re-renders by itself.
+- **Messages encode their text (since 10.79.0).** `AddModuleMessage` and `ModuleMessage` encode everything, then let `b`,
+  `strong`, `em`, `i`, `code`, `br` and `p` (no attributes) and links to a local or `http(s)` address back in as markup.
+  Pass a user's text as it is: encoding it yourself shows `&#39;` for a quote. Before 10.79.0 messages were raw HTML, and
+  anything a user typed had to be encoded first.
 - **`AddModuleMessage` throws in a child component** that was not given the module's `RenderModeBoundary`. Pass it down:
   `<MyChild RenderModeBoundary="RenderModeBoundary" />`, or raise an event and let the module show the message.
 - **`Pager` with an empty list still renders an empty table** with its header row (with `Items` null it renders nothing).

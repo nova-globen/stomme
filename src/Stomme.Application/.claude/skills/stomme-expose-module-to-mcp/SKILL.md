@@ -257,9 +257,9 @@ Run the app (`cd Server`, `dotnet run`) and sign in as an administrator in a bro
    The Notes module grants `notes:view` to Registered Users, so first take it away: as the Host, open
    **Admin > Module Management** (`/admin/modules`), edit Notes, and on its Permissions tab clear Registered Users for
    `notes:view`; then create a user and sign in as them. Give the permission back afterwards.
-6. As an administrator, open the MCP page's Catalog and Audit actions - `/admin/mcp/*/{moduleId}/Catalog` and
-   `/admin/mcp/*/{moduleId}/Audit`, where `{moduleId}` is the id of the MCP module on `/admin/mcp` (the page has no
-   link to them) - or call `GET /api/Mcp/published` and `GET /api/Mcp/audit?days=1`. The catalog lists your three
+6. As an administrator, open **Admin > MCP** and its **What this site publishes** and **Audit ledger** links
+   (`/admin/mcp/*/{moduleId}/Catalog` and `/admin/mcp/*/{moduleId}/Audit`; before 10.80.0 the page had no link to
+   them) - or call `GET /api/Mcp/published` and `GET /api/Mcp/audit?days=1`. The catalog lists your three
    entries, `notes_search` as `Auto`. Each `tools/call` and `resources/read` above is an audit row: `Succeeded` for the
    allowed ones, `Denied` for the user without the key, and `Failed` for the random GUID and the call without a query
    (a reader that answers null and a tool result with `isError` are both written as `Failed`).
@@ -298,5 +298,6 @@ Steps 4, 5 and 7 are what prove the gates; a green step 2 alone proves only that
   Read through the module's gated queries on every call; the contributor is scoped for that reason.
 - **The call answers "The tool failed."** The invoker threw; the exception is in the log at Error. Return
   `McpToolResult(..., isError: true)` with a reason for anything the caller can fix.
-- **An MCP desktop client cannot connect.** The endpoint accepts the site's sign-in cookie only; token authentication
-  for MCP clients is not built. Drive it from a signed-in session as above.
+- **An MCP desktop client cannot connect.** Give it a personal MCP token (the user's profile, tab AI tools, or
+  `POST api/Mcp/tokens`) as `Authorization: Bearer smcp_...`, with the scope the tools need (`tools`, `resources`);
+  since 10.80.0. Before that the endpoint accepted the sign-in cookie only - drive it from a signed-in session as above.

@@ -1,12 +1,35 @@
-/* Stomme Styles */ 
+/* Stomme Styles */
+
+/* The theme's colour. Stomme's own controls - buttons, links, the active tab, the pager - take it from --db-accent, so set it
+   here rather than styling them one by one; --db-on-accent is the text on it. Without these the framework's default is used. */
+:root {
+    --db-accent: #1f5fae;
+    --db-on-accent: #ffffff;
+}
 
 body {
     padding-top: 7rem;
 }
 
+/* The top bar takes the theme's colour, and its links the text colour that reads on it. */
+.app-theme-bar {
+    background-color: var(--db-accent);
+}
+
+.app-theme-bar .db-nav-link {
+    color: var(--db-on-accent);
+}
+
+.app-theme-bar .db-nav-link.active,
+.app-theme-bar .db-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+    color: var(--db-on-accent);
+}
+
 /* App Logo */
-.app-logo .img-fluid {
-    max-height: 90px;
+.app-theme-bar .app-logo img {
+    max-height: 40px;
+    width: auto;
     padding: 0 5px 0 5px;
 }
 
@@ -108,7 +131,7 @@ div.app-moduleactions a.dropdown-toggle, div.app-moduleactions div.dropdown-menu
         position: fixed;
         top: 0px;
         width: 100%;
-        background-color: rgb(0, 0, 0);
+        background-color: var(--db-accent);
     }
 
     .controls-group {

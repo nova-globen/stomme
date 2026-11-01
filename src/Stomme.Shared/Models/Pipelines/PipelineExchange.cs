@@ -251,6 +251,67 @@ namespace Stomme.Models.Pipelines
         }
 
         /// <summary>
+        /// As <see cref="ReadMany"/>, but a workflow of a many-workflow file that is not a pipeline is left out and said - its place
+        /// in the file, its name when it has one, and why - instead of refusing the whole file, so one bad workflow does not hold
+        /// the rest back (since 10.80.0; BL-239's wG8). A file that is not a list, or not readable at all, still refuses as one.
+        /// </summary>
+        public static (IReadOnlyList<PipelineExchangeDocument> Documents, IReadOnlyList<string> Unreadable) ReadEach(string? json)
+        {
+            if (string.IsNullOrWhiteSpace(json) || !json.TrimStart().StartsWith('['))
+            {
+                return (new[] { Read(json) }, Array.Empty<string>());
+            }
+
+            if (Encoding.UTF8.GetByteCount(json) > MaxManyBytes)
+            {
+                throw new PipelineExchangeException($"The file is larger than {MaxManyBytes / (1024 * 1024)} MB.");
+            }
+
+            List<JsonElement> items;
+            try
+            {
+                using var parsed = JsonDocument.Parse(json);
+                items = parsed.RootElement.EnumerateArray().Select(item => item.Clone()).ToList();
+            }
+            catch (JsonException ex)
+            {
+                throw new PipelineExchangeException("The file is not a pipeline's JSON: " + ex.Message);
+            }
+
+            if (items.Count == 0)
+            {
+                throw new PipelineExchangeException("The file holds no pipeline.");
+            }
+
+            if (items.Count > MaxWorkflows)
+            {
+                throw new PipelineExchangeException($"The file holds {items.Count} workflows; at most {MaxWorkflows} come over at once.");
+            }
+
+            var documents = new List<PipelineExchangeDocument>();
+            var unreadable = new List<string>();
+            for (var index = 0; index < items.Count; index++)
+            {
+                try
+                {
+                    documents.Add(Read(items[index].GetRawText()));
+                }
+                catch (PipelineExchangeException ex)
+                {
+                    var name = items[index].ValueKind == JsonValueKind.Object && items[index].TryGetProperty("name", out var named) && named.ValueKind == JsonValueKind.String ? named.GetString() : null;
+                    unreadable.Add($"workflow {index + 1}{(string.IsNullOrWhiteSpace(name) ? "" : $" '{name}'")} ({ex.Message})");
+                }
+            }
+
+            if (documents.Count == 0)
+            {
+                throw new PipelineExchangeException("No workflow of the file is a pipeline: " + string.Join("; ", unreadable) + ".");
+            }
+
+            return (documents, unreadable);
+        }
+
+        /// <summary>
         /// The document a file holds - an n8n workflow export brought over (<see cref="N8nWorkflowImport"/>) - its lists never null,
         /// or <see cref="PipelineExchangeException"/> saying why it is not one:
         /// not JSON, another format, a newer format version, no graph, too many steps, a step without an id or a type, an id twice,

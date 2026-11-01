@@ -17,7 +17,7 @@
         </div>
         <form method="post" class="app-form-inline" @formname="ModuleMessageForm" @onsubmit="CloseMessage" data-enhance>
             <input type="hidden" name="@Constants.RequestVerificationToken" value="@SiteState.AntiForgeryToken" />
-            <button type="submit" class="db-message-close" aria-label="close">&times;</button>
+            <button type="submit" class="db-message-close" aria-label="Close">&times;</button>
         </form>
     </text>;
 }

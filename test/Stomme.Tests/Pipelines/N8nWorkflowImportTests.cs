@@ -54,6 +54,32 @@ namespace Stomme.Tests.Pipelines
             }
             """;
 
+        // BL-239's wG2: n8n starts a run by hand with one empty item, so a Set right after the Manual Trigger makes one record;
+        // the run here starts with none, and the Map fields step made []. It now starts from one empty record. A Set the trigger
+        // does not feed - or one given records - keeps reading the previous step's result.
+        [Fact]
+        public void A_set_right_after_the_manual_trigger_starts_from_one_empty_record_as_in_n8n()
+        {
+            var document = PipelineExchange.Read("""
+                {
+                  "name": "Greeting",
+                  "nodes": [
+                    { "parameters": {}, "name": "Start", "type": "n8n-nodes-base.manualTrigger", "typeVersion": 1, "position": [0, 0] },
+                    { "parameters": { "assignments": { "assignments": [ { "name": "greeting", "type": "string", "value": "hello" } ] } }, "name": "Set greeting", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [220, 0] },
+                    { "parameters": { "assignments": { "assignments": [ { "name": "shout", "type": "string", "value": "HELLO" } ] } }, "name": "Set shout", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [440, 0] }
+                  ],
+                  "connections": {
+                    "Start": { "main": [ [ { "node": "Set greeting", "type": "main", "index": 0 } ] ] },
+                    "Set greeting": { "main": [ [ { "node": "Set shout", "type": "main", "index": 0 } ] ] }
+                  }
+                }
+                """);
+
+            var steps = document.Graph!.Steps;
+            Assert.Equal("[{}]", steps.Single(step => step.Name == "Set greeting").Inputs["Records"]);
+            Assert.False(steps.Single(step => step.Name == "Set shout").Inputs.ContainsKey("Records"));
+        }
+
         [Fact]
         public void An_n8n_workflow_is_read_as_this_sites_steps_connections_and_notes()
         {
@@ -8626,6 +8652,20 @@ namespace Stomme.Tests.Pipelines
             Assert.Equal("Own", Assert.Single(PipelineExchange.ReadMany(PipelineExchange.Write("Own", null, new PipelineGraph()))).Name);
             Assert.StartsWith("Its workflow 2:", Assert.Throws<PipelineExchangeException>(() => PipelineExchange.ReadMany("[" + Workflow + ",{\"name\":\"x\"}]")).Message);
             Assert.Contains("no pipeline", Assert.Throws<PipelineExchangeException>(() => PipelineExchange.ReadMany("[]")).Message);
+        }
+
+        // BL-239's wG8: ReadEach, which the editor's import uses, leaves out a workflow of many that is not a pipeline and says
+        // which and why, instead of refusing the file; a file with none readable still refuses, as one that is not a list does.
+        [Fact]
+        public void One_unreadable_workflow_of_many_is_left_out_and_said_and_the_rest_come_over()
+        {
+            var (documents, unreadable) = PipelineExchange.ReadEach("[" + Workflow + ",{\"name\":\"Broken\"},{\"name\":\"Second\",\"nodes\":[],\"connections\":{}}]");
+            Assert.Equal(new[] { "Order alerts", "Second" }, documents.Select(document => document.Name));
+            Assert.StartsWith("workflow 2 'Broken' (", Assert.Single(unreadable));
+
+            Assert.Contains("No workflow of the file is a pipeline", Assert.Throws<PipelineExchangeException>(() => PipelineExchange.ReadEach("[{\"name\":\"x\"}]")).Message);
+            var (one, none) = PipelineExchange.ReadEach(Workflow);
+            Assert.Equal(("Order alerts", 0), (Assert.Single(one).Name, none.Count));
         }
 
         // Only an n8n export is converted: this site's own files, and anything else naming another format, are read as before.

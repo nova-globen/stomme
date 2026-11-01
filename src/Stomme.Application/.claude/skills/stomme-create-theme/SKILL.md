@@ -236,9 +236,8 @@ link is dead), modules missing from pages that showed them before (no `Default` 
 - **Duplicate toasts or dialogs.** The theme renders FluentUI providers; remove them - the host renders them.
 - **Your classes pick up odd padding or layout.** You named them `db-...`; Stomme's stylesheet styles those names. Use
   your own prefix.
-- **Used Admin > Theme Management > Create Theme and the result does not build.** It writes a separate,
-  Bootstrap-based solution to a folder beside the app's folder, not into the app. With the default Framework Reference
-  ("Installed Version") its project references `Stomme.Client.dll` and `Stomme.Shared.dll` by a path under
-  `<app folder>\Stomme.Server\bin\Debug`, which an app does not have, so the build fails with `CS0246` on every
-  `Stomme` namespace; its packaging scripts call tools that exist only in a Stomme source checkout. Follow this skill
-  instead; see also [docs/ui/themes.md](../../../docs/ui/themes.md#a-theme-in-its-own-package).
+- **Used Admin > Theme Management > Create Theme.** It writes a separate, Bootstrap-based solution to a folder beside the
+  app's folder, not into the app; since 10.80.0 it builds on `Stomme.Sdk.Slim` and packs with its own `pack.ps1`. Before
+  10.80.0 its project referenced the framework's DLLs by a path an app does not have (`CS0246` on every `Stomme`
+  namespace) and its packaging scripts called tools from a Stomme source checkout - see
+  [docs/ui/themes.md](../../../docs/ui/themes.md#a-theme-in-its-own-package) for the fix on those versions.

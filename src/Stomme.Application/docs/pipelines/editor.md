@@ -93,8 +93,9 @@ Nothing a test does is stored as a run, but each step runs for real (an HTTP req
   runs the selected step on its own, with the values the variables hold for the test; each step on the canvas also has
   a test button of its own. The result, its log and **Pin this result** appear below it.
 - **Test up to here** (shown when steps lead to the selected one) runs every step that leads to it first.
-- A test runs inside the tester's request, as that user, on the entered site. A published run has no user, so a step
-  that needs one can pass a test and fault in the run: finish with a real run.
+- A test runs inside the tester's request, as that user, on the entered site. A published run acts as the person who
+  started it by hand, else as the one who published it (since 10.80.0), with that user's rights on the site now - so a
+  step can pass your test and fault in a run published by someone with fewer rights: finish with a real run.
 - **Test pipeline** runs the whole pipeline as it stands on the canvas, unpublished.
 - **Test values**: the values typed for a test are kept for the session; **Keep with the pipeline** saves them with the
   pipeline (authors only; a run never reads them; an export never carries them); **Forget kept values** drops them;

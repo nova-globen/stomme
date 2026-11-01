@@ -53,6 +53,7 @@ else
                 <dt>Status</dt><dd id="pipelines-run-status" style="margin:0;" title="@(_run.Status + " / " + _run.SubStatus)">@PipelineRunStates.LabelOf(_run.SubStatus)</dd>
                 <dt>Pipeline version</dt><dd style="margin:0;">@_run.Version</dd>
                 <dt>Correlation</dt><dd style="margin:0;">@_run.CorrelationId</dd>
+                <dt>Acts as</dt><dd id="pipelines-run-acts-as" style="margin:0;" title="The user whose rights this run's steps use: who started it by hand, else who published its version">@(_run.ActsAs ?? "no one (publish the pipeline again)")</dd>
                 <dt>Started (UTC)</dt><dd style="margin:0;">@_run.CreatedOnUtc.ToString("u")</dd>
                 <dt>Finished (UTC)</dt><dd style="margin:0;">@(_run.FinishedOnUtc?.ToString("u") ?? "—")</dd>
                 <dt>Incidents</dt><dd style="margin:0;">@_run.IncidentCount</dd>

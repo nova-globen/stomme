@@ -45,7 +45,7 @@ The steps continue the reference **Notes** module of [stomme-create-module](../s
 
    The name passed to `CreateApiUrl` is the controller's name without `Controller`. With `ThrowOnRefusal`, a GET that
    answers 404 still returns null (not found); every other refusal throws `ServiceRefusalException` whose `Message` is
-   the server's reason (the `error`, the first validation error, or the problem's `detail`).
+   the server's reason (the `error`, the first validation error, or the problem's `detail`). `ServerNotesService` throws the same exception with the same reasons, so a page catches `ServiceRefusalException` alike on a Server and a WebAssembly site.
 
 4. **Register it for the browser only when nothing else has**, in `Client/Modules/Notes/Startup/NotesClientStartup.cs`
    (or in the module's existing `IClientStartup`):

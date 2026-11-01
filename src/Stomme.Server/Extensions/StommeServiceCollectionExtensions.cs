@@ -144,6 +144,9 @@ namespace Microsoft.Extensions.DependencyInjection
             // modules' (BL-251, BL-239's D#6/E1-7 - only DataExport and Pipelines comments registered it, so an app module
             // that needed it found it only when one of them was composed). TryAdd: the modules' own lines stay harmless.
             services.TryAddScoped<Stomme.Infrastructure.Security.IStoredRowPermissionEvaluator, Stomme.Infrastructure.Security.StoredRowPermissionEvaluator>();
+            // Who a pipeline run acts as when there is no request (BL-280): set when the run enters its site, read by the guard
+            // and the current user only with no HttpContext.
+            services.TryAddScoped<Stomme.Infrastructure.Security.RunPrincipal>();
 
             // The shared per-site secret store (one seam for notifications, MCP):
             // private Site setting rows whose values are protected through ISecretProtector (ASP.NET Data Protection).

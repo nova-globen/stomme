@@ -131,7 +131,7 @@
             </TabPanel>
             @if (_moduleSettingsType != null)
             {
-                <TabPanel Name="ModuleSettings" Heading="@_moduleSettingsTitle" ResourceKey="ModuleSettings">
+                <TabPanel Name="ModuleSettings" Heading="@_moduleSettingsTitle" ResourceKey="@_moduleSettingsResourceKey">
                     @ModuleSettingsComponent
                 </TabPanel>
             }
@@ -173,6 +173,9 @@
     private Type _moduleSettingsType;
     private object _moduleSettings;
     private string _moduleSettingsTitle;
+    // The page's own resource names the tab only when the module gives no title: with the key set, TabPanel's lookup of
+    // ModuleSettings.Heading replaced every module's own title with "Module Settings" (BL-239's wB-3).
+    private string _moduleSettingsResourceKey = "ModuleSettings";
     private RenderFragment ModuleSettingsComponent { get; set; }
     private Type _containerSettingsType;
     private object _containerSettings;
@@ -243,6 +246,7 @@
                 if (!string.IsNullOrEmpty(moduleobject.Title))
                 {
                     _moduleSettingsTitle = moduleobject.Title;
+                    _moduleSettingsResourceKey = null;
                 }
 
                 ModuleSettingsComponent = builder =>

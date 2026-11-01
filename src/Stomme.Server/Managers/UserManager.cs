@@ -94,7 +94,21 @@ namespace Stomme.Managers
 
         public async Task<User> GetUserAsync(int userid, int siteid)
         {
-            return await _cache.GetCacheAsync(await _tenantManager.GetAliasAsync(), $"User:{userid}", async entry =>
+            // The entry is the user AS SEEN ON the alias's own site - its SiteId and that site's roles - so only a read for
+            // that site uses it (BL-279, found driving the account e-mails): the key names no site, and a read for another
+            // one - an anonymous reset or verify whose body said site 0 - cached a user with no roles, who then could not
+            // sign in to their own site until the entry expired.
+            var alias = await _tenantManager.GetAliasAsync();
+            if (alias is null || alias.SiteId != siteid)
+            {
+                return await LoadUserAsync(userid, siteid);
+            }
+
+            return await _cache.GetCacheAsync(alias, $"User:{userid}", async entry => await LoadUserAsync(userid, siteid));
+        }
+
+        private async Task<User> LoadUserAsync(int userid, int siteid)
+        {
             {
                 User user = await _users.GetUserAsync(userid);
                 if (user != null)
@@ -111,7 +125,7 @@ namespace Stomme.Managers
                         .ToDictionary(setting => setting.SettingName, setting => setting.SettingValue);
                 }
                 return user;
-            });
+            }
         }
 
         public async Task<User> GetUserAsync(string username, int siteid)
@@ -630,7 +644,8 @@ namespace Stomme.Managers
             // account was there. Driven in RecoveryEndpointDisclosureTests. It compounds with the fact
             // that nothing rate-limits these endpoints: an oracle plus unlimited attempts is
             // enumeration at scale rather than one question.
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Password Reset Notification Failed For {Username}", username);
+            // Warning, not Error: an Error mails the hosts, and anyone can ask for an address or name that has no account.
+            _logger.Log(LogLevel.Warning, this, LogFunction.Security, "Password Reset Notification Failed For {Username}", username);
             return true;
         }
 
@@ -668,7 +683,7 @@ namespace Stomme.Managers
                 }
 
                 // Same answer whatever the lookup found - see the note in ForgotPassword.
-                _logger.Log(LogLevel.Error, this, LogFunction.Security, "Forgot Username Notification Failed For {Email}", email);
+                _logger.Log(LogLevel.Warning, this, LogFunction.Security, "Forgot Username Notification Failed For {Email}", email);
                 return true;
             }
             catch (Exception ex)
@@ -1059,10 +1074,23 @@ namespace Stomme.Managers
             }
         }
 
+        /// <summary>
+        /// Mails a sign-in link (BL-279, found driving the account e-mails): only when the site offers login links
+        /// (<c>LoginOptions:LoginLink</c>) - before, the link was mailed with the feature off, where it cannot work, to any
+        /// address an anonymous caller named - and the caller is answered <c>true</c> whatever happened, as forgot-password
+        /// is: answering whether the address has an account made the anonymous endpoint an account-existence oracle.
+        /// </summary>
         public async Task<bool> SendLoginLink(string email, string returnurl)
         {
             try
             {
+                var linkAlias = await _tenantManager.GetAliasAsync();
+                if (!bool.Parse(await _settings.GetSettingValueAsync(EntityNames.Site, linkAlias.SiteId, "LoginOptions:LoginLink", "false")))
+                {
+                    _logger.Log(LogLevel.Information, this, LogFunction.Security, "Login Link Not Sent - Login Links Are Not Enabled On Site {SiteId}", linkAlias.SiteId);
+                    return true;
+                }
+
                 if (!string.IsNullOrEmpty(email))
                 {
                     IdentityUser identityuser = await _identityUserManager.FindByEmailAsync(email);
@@ -1088,14 +1116,14 @@ namespace Stomme.Managers
                     }
                 }
 
-                _logger.Log(LogLevel.Error, this, LogFunction.Security, "Login Link Notification Failed For {Email}", email);
-                return false;
+                _logger.Log(LogLevel.Warning, this, LogFunction.Security, "Login Link Notification Failed For {Email}", email); // Warning: see ForgotPassword
+                return true; // the log says what happened; the caller is told the same either way
             }
             catch (Exception ex)
             {
                 // email may not be unique
                 _logger.Log(LogLevel.Error, this, LogFunction.Security, ex, "Login Link Notification Failed For {Email}", email);
-                return false;
+                return true; // the log says what happened; the caller is told the same either way
             }
         }
     }

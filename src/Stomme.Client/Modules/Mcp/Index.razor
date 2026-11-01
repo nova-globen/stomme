@@ -13,9 +13,30 @@
 
 <PageTitle>MCP servers</PageTitle>
 
+<nav class="db-tablist" aria-label="MCP">
+    @if (IsAuthorizedPermission(McpPermissions.Manage))
+    {
+        <span class="db-tab-item"><a class="db-tab active" href="@NavigateUrl()" aria-current="page">External servers</a></span>
+    }
+    @if (IsAuthorizedPermission(McpPermissions.View))
+    {
+        <span class="db-tab-item"><a class="db-tab" href="@EditUrl("Catalog")">What this site publishes</a></span>
+    }
+    @if (IsAuthorizedPermission(McpPermissions.ViewAudit))
+    {
+        <span class="db-tab-item"><a class="db-tab" href="@EditUrl("Audit")">Audit ledger</a></span>
+    }
+</nav>
 @if (!IsAuthorizedPermission(McpPermissions.Manage))
 {
     <p class="db-mcp-denied" style="color:var(--db-text-2);">You do not have access to MCP server registrations.</p>
+}
+else if (_status is { ClientEnabled: false })
+{
+    <p id="mcp-client-off" style="margin:0;color:var(--db-text-2);">
+        Registering external MCP servers is switched off on this install. A Host turns it on with the setting
+        <code>Mcp:Enabled</code> and restarts the site.
+    </p>
 }
 else
 {
@@ -68,9 +89,9 @@ else
                     Endpoint
                     <input id="mcp-server-endpoint" class="db-input" placeholder="https://mcp.example.com/mcp" @bind="_endpoint" @bind:event="oninput" />
                 </label>
-                <label>Requests per minute (optional) <input id="mcp-server-rpm" class="db-input" type="number" min="1" @bind="_rpm" /></label>
                 <p style="margin:0;color:var(--db-text-2);font-size:0.9em;">
-                    Registering does not contact the server. Press Refresh afterwards to discover what it offers. An address this
+                    Registering does not contact the server. Press Refresh afterwards to discover what it offers; the tools it lists
+                    are recorded here, and nothing on this install calls them yet. An address this
                     install may not reach - a loopback, private or link-local address - is refused when it is dialled, and an
                     operator can allow a host in the site setting <code>McpClientAllowedHosts</code>.
                 </p>
@@ -99,10 +120,10 @@ else
 
 @code {
     private List<McpServerRegistrationView> _servers = new();
+    private McpStatusView? _status;
     private bool _registering;
     private string _name = "";
     private string _endpoint = "";
-    private int? _rpm;
     private Guid? _keyingId;
     private string _keyingName = "";
     private string _apiKey = "";
@@ -114,6 +135,20 @@ else
     {
         if (IsAuthorizedPermission(McpPermissions.Manage))
         {
+            try
+            {
+                _status ??= await McpService.GetStatusAsync();
+            }
+            catch (Exception ex)
+            {
+                await logger.LogError(ex, "The MCP status could not be read.");
+            }
+
+            if (_status is { ClientEnabled: false })
+            {
+                return;
+            }
+
             try
             {
                 _servers = await McpService.GetServersAsync() ?? new();
@@ -132,7 +167,6 @@ else
         _registering = true;
         _name = "";
         _endpoint = "";
-        _rpm = null;
         _message = "";
     }
 
@@ -148,7 +182,7 @@ else
     {
         try
         {
-            await McpService.RegisterServerAsync(new McpServerRegistrationRequest { Name = _name, Endpoint = _endpoint, MaxRequestsPerMinute = _rpm });
+            await McpService.RegisterServerAsync(new McpServerRegistrationRequest { Name = _name, Endpoint = _endpoint });
             _registering = false;
             _message = "Registered. It has not been contacted - press Refresh to discover what it offers.";
             await LoadAsync();
