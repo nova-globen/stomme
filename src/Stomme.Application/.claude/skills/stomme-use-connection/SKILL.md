@@ -57,8 +57,9 @@ and parameter names from `GET api/Connections/connectors`.
    }
    ```
 
-   `read` is the REST connector's operation: it sends `method` (GET by default) to `path` resolved against the
-   connection's endpoint and reads the JSON array under `records_path`.
+   `read` is the REST connector's operation: it sends `method` (GET by default) to `path` appended to the
+   connection's endpoint (`https://api.example.com/v1` and `/notes` is `/v1/notes`; a path already starting with the
+   endpoint's path is taken as it is) and reads the JSON array under `records_path`.
 
 3. **Add a gated endpoint.** Create `Server/Modules/Notes/Controllers/NoteImportController.cs`:
 

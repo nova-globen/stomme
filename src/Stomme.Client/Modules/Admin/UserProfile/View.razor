@@ -12,25 +12,25 @@
     {
         <div class="db-fields">
             <div class="db-field">
-                <Label For="username" HelpText="The user who sent the message" ResourceKey="From">From:</Label>
+                <Label For="username" HelpText="The user who sent the message" ResourceKey="From">From</Label>
                 <div class="db-field-control">
                     <input id="username" class="db-input" @bind="@username" readonly />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="subject" HelpText="The subject of the message" ResourceKey="Subject">Subject:</Label>
+                <Label For="subject" HelpText="The subject of the message" ResourceKey="Subject">Subject</Label>
                 <div class="db-field-control">
                     <input id="subject" class="db-input" @bind="@subject" readonly />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="date" HelpText="The date the message was sent" ResourceKey="Date">Sent:</Label>
+                <Label For="date" HelpText="The date the message was sent" ResourceKey="Date">Sent</Label>
                 <div class="db-field-control">
                     <input id="date" class="db-input" @bind="@createdon" readonly />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="message" HelpText="The contents of the message" ResourceKey="Message">Message:</Label>
+                <Label For="message" HelpText="The contents of the message" ResourceKey="Message">Message</Label>
                 <div class="db-field-control">
                     <textarea id="message" class="db-input" @bind="@body" rows="5" readonly />
                 </div>
@@ -41,19 +41,19 @@
     {
         <div class="db-fields">
             <div class="db-field">
-                <Label For="username" HelpText="The user who will be the recipient of the message" ResourceKey="To">To:</Label>
+                <Label For="username" HelpText="The user who will be the recipient of the message" ResourceKey="To">To</Label>
                 <div class="db-field-control">
                     <input id="username" class="db-input" @bind="@username" readonly />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="subject" HelpText="The subject of the message" ResourceKey="Subject">Subject:</Label>
+                <Label For="subject" HelpText="The subject of the message" ResourceKey="Subject">Subject</Label>
                 <div class="db-field-control">
                     <input id="subject" class="db-input" @bind="@subject" readonly="@(!reply)" />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="message" HelpText="The content of the message" ResourceKey="Message">Message:</Label>
+                <Label For="message" HelpText="The content of the message" ResourceKey="Message">Message</Label>
                 <div class="db-field-control">
                     <textarea id="message" class="db-input" @bind="@body" rows="5" readonly="@(!reply)" />
                 </div>

@@ -17,7 +17,7 @@ link-or-create rules.
 
 1. **Register a client at the provider.** Redirect URI: `https://{site host}/signin-oidc` for OpenID Connect,
    `https://{site host}/signin-oauth2` for OAuth 2.0; for a virtual-folder alias, `https://{host}/{alias path}/signin-oidc`
-   (the settings form shows it as **Redirect Url** once a provider type is chosen). Note the client id, the secret, and
+   (the settings form shows it as **Redirect URL** once a provider type is chosen). Note the client id, the secret, and
    the authority (the issuer URL whose `/.well-known/openid-configuration` exists; it must be `https://`). Ask the
    provider to release the e-mail claim. Another Stomme installation can be the provider: register this site as a
    client there with the [stomme-oidc-provider](../stomme-oidc-provider/SKILL.md) skill (`authorization_code`,
@@ -25,28 +25,28 @@ link-or-create rules.
 2. **Sign in as the Host** and open **Admin > User Management > Settings** (Host only), section **External Login
    Settings**.
 3. Leave **Provider** at `<Custom>` (or pick a preset: Auth0, Facebook, GitHub, Microsoft Entra), choose the
-   **Provider Type** (`OpenID Connect (OIDC)` or `OAuth 2.0 (OAuth2)`), give it a **Provider Name** (the button reads
-   "Use {Provider Name}"), and fill in the **Authority** (or the **Metadata Url**) for OpenID Connect, or the
-   authorization, token and user-info URLs for OAuth 2.0; the **Client ID** and **Client Secret**; the **Scopes**
+   **Provider type** (`OpenID Connect (OIDC)` or `OAuth 2.0 (OAuth2)`), give it a **Provider name** (the button reads
+   "Use {Provider name}"), and fill in the **Authority** (or the **Metadata URL**) for OpenID Connect, or the
+   authorization, token and user-info URLs for OAuth 2.0; the **Client ID** and **Client secret**; the **Scopes**
    (`openid,profile,email` is pre-filled). Set **Use PKCE?** to Yes if the provider supports it.
-   **The authority must be `https://`.** The form refuses an `http://` Authority or Metadata Url ("must start with
+   **The authority must be `https://`.** The form refuses an `http://` Authority or Metadata URL ("must start with
    https://"); a value saved another way is not used, and signing in through the provider fails until it is fixed.
-4. **Find the claim types first.** Set **Review Claims?** to Yes, **Save**, sign out, and sign in through the
+4. **Find the claim types first.** Set **Review claims?** to Yes, **Save**, sign out, and sign in through the
    provider's button once. You come back to the login page with "The Review Claims Option Was Enabled In External Login
    Settings. Please Visit The Event Log To View The Claims Returned By The Provider." and are NOT signed in. **Admin >
-   Event Log** (Host only) has the entry "Provider Returned The Following Claims: {...}". Set **Identifier Claim**,
-   **Name Claim** and **Email Claim** to types from that list and set **Review Claims?** back to No.
+   Event Log** (Host only) has the entry "Provider Returned The Following Claims: {...}". Set **Identifier claim**,
+   **Name claim** and **Email claim** to types from that list and set **Review claims?** back to No.
    The form pre-fills `sub`, `name` and `email`, and for OpenID Connect those are usually WRONG: the handler maps the
    token's claims, so the list shows `sub` as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier`
    and `email` as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` (`name` stays `name`). Use those
    full types.
 5. Decide the account rules: keep **Verify Users** on (an existing account with the same e-mail is linked only after
-   its owner clicks the e-mailed link), keep **Create Users** on or off as the site needs, and set a **Domain Filter**
+   its owner clicks the e-mailed link), keep **Create Users** on or off as the site needs, and set a **Domain filter**
    to accept only your organisation's addresses.
 6. Optional roles: set the role claim type and mappings (`providerRole:StommeRole`, comma-separated); **Synchronize
    Roles** removes mapped roles the provider no longer sends. Leave **Allow Host Role** off.
-7. **Save** ("Settings Saved Successfully"). The change applies at once, no restart. The login page now shows the
-   "Use {Provider Name}" button; it sends people to `/pages/external`.
+7. **Save** ("Settings saved successfully"). The change applies at once, no restart. The login page now shows the
+   "Use {Provider name}" button; it sends people to `/pages/external`.
 
 ### B. SAML 2.0, for the installation
 
@@ -99,7 +99,7 @@ link-or-create rules.
 3. Restart. The button sends people to `/pages/windows-login`.
 
 The account rules of steps A5 and A6 - **Verify Users**, **Create Users** and the role-claim settings - are site settings
-and apply to SAML and Windows sign-in on that site too. The **Domain Filter** does not: it is applied only to the
+and apply to SAML and Windows sign-in on that site too. The **Domain filter** does not: it is applied only to the
 site's OpenID Connect and OAuth 2.0 provider.
 
 ## Verify
@@ -108,7 +108,7 @@ Steps 1 to 4 and 6 (domain filter) were driven with a second local Stomme app as
 browser over plain HTTP on `*.localhost` host names; steps 5 and the lockout half of 6 were not driven. SAML was not
 driven (no identity provider); Windows sign-in was driven on Windows with the machine's own account.
 
-1. In a private browser window open the site's login page: the "Use {Provider Name}" button is there (and is not, for
+1. In a private browser window open the site's login page: the "Use {Provider name}" button is there (and is not, for
    a switch that is off). `/pages/external` on a site without a provider type, and `/pages/saml-login` or
    `/pages/windows-login` with the scheme off, answer 403.
 2. Sign in with an account the site has never seen: the provider's login page, then you land on the return URL signed
@@ -138,7 +138,7 @@ driven (no identity provider); Windows sign-in was driven on Windows with the ma
 - **"The External Login Provider Did Not Provide All Of The Required Information."** The identifier claim type does
   not match a claim the bridge received - typically the pre-filled `sub` while the handler delivered it as
   `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier` (step A4). The same message is shown for an
-  address outside the **Domain Filter**.
+  address outside the **Domain filter**.
 - **The callback fails with "Correlation failed"** (Event Log: "External Login Remote Failure"). The browser dropped
   the handler's `Secure` correlation cookie: the site is served over plain HTTP on a host other than `localhost` /
   `*.localhost`. Serve it over HTTPS.

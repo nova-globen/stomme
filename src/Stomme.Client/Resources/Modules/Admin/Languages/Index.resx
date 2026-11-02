@@ -121,22 +121,22 @@
     <value>Code</value>
   </data>
   <data name="Confirm.Language.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete The {0} Language?</value>
+    <value>Are you sure you wish to delete the {0} language?</value>
   </data>
   <data name="Error.Language.Delete" xml:space="preserve">
-    <value>Error Deleting Language</value>
+    <value>Error deleting language</value>
   </data>
   <data name="AddLanguage.Text" xml:space="preserve">
-    <value>Add Language</value>
+    <value>Add language</value>
   </data>
   <data name="DeleteLanguage.Header" xml:space="preserve">
-    <value>Delete Language</value>
+    <value>Delete language</value>
   </data>
   <data name="Success.Language.Download" xml:space="preserve">
     <value>Translation Package Saved Successfully. You Must &lt;a href={0}&gt;Restart&lt;/a&gt; Your Application To Complete The Installation.</value>
   </data>
   <data name="Error.Language.Download" xml:space="preserve">
-    <value>Error Downloading Translation</value>
+    <value>Error downloading translation</value>
   </data>
   <data name="Default" xml:space="preserve">
     <value>Default</value>

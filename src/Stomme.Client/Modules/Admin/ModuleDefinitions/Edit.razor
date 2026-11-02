@@ -18,25 +18,25 @@
 			<form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
 				<div class="db-fields">
 					<div class="db-field">
-						<Label For="name" HelpText="The name of the module" ResourceKey="Name">Name: </Label>
+						<Label For="name" HelpText="The name of the module" ResourceKey="Name">Name</Label>
 						<div class="db-field-control">
 							<input id="name" class="db-input" @bind="@_name" maxlength="200" required />
 						</div>
 					</div>
 					<div class="db-field">
-						<Label For="description" HelpText="The description of the module" ResourceKey="Description">Description: </Label>
+						<Label For="description" HelpText="The description of the module" ResourceKey="Description">Description</Label>
 						<div class="db-field-control">
 							<textarea id="description" class="db-input" @bind="@_description" rows="2" maxlength="2000" required></textarea>
 						</div>
 					</div>
 					<div class="db-field">
-						<Label For="categories" HelpText="Comma delimited list of module categories" ResourceKey="Categories">Categories: </Label>
+						<Label For="categories" HelpText="Comma delimited list of module categories" ResourceKey="Categories">Categories</Label>
 						<div class="db-field-control">
 							<input id="categories" class="db-input" @bind="@_categories" maxlength="200" />
 						</div>
 					</div>
                     <div class="db-field">
-                        <Label For="isenabled" HelpText="Is module enabled for this site?" ResourceKey="IsEnabled">Enabled? </Label>
+                        <Label For="isenabled" HelpText="Is module enabled for this site?" ResourceKey="IsEnabled">Enabled?</Label>
                         <div class="db-field-control">
                             <select id="isenabled" class="db-select" @bind="@_isenabled" required>
                                 <option value="True">@SharedLocalizer["Yes"]</option>
@@ -50,43 +50,43 @@
             <Section Name="Information" ResourceKey="Information">
 				<div class="db-fields">
 					<div class="db-field">
-						<Label For="moduledefinitionname" HelpText="The internal name of the module" ResourceKey="InternalName">Internal Name: </Label>
+						<Label For="moduledefinitionname" HelpText="The internal name of the module" ResourceKey="InternalName">Internal name</Label>
 						<div class="db-field-control">
 							<input id="moduledefinitionname" class="db-input" @bind="@_moduledefinitionname" disabled />
 						</div>
 					</div>
 					<div class="db-field">
-						<Label For="version" HelpText="The version of the module" ResourceKey="Version">Version: </Label>
+						<Label For="version" HelpText="The version of the module" ResourceKey="Version">Version</Label>
 						<div class="db-field-control">
 							<input id="version" class="db-input" @bind="@_version" disabled />
 						</div>
 					</div>
 					<div class="db-field">
-						<Label For="packagename" HelpText="The unique name of the package from which this module was installed. This value must be specified within the module's IModule interface specification." ResourceKey="PackageName">Package Name: </Label>
+						<Label For="packagename" HelpText="The unique name of the package from which this module was installed. This value must be specified within the module's IModule interface specification." ResourceKey="PackageName">Package name</Label>
 						<div class="db-field-control">
                             <input id="packagename" class="db-input" @bind="@_packagename" disabled />
 						</div>
 					</div>
 					<div class="db-field">
-						<Label For="owner" HelpText="The owner or creator of the module" ResourceKey="Owner">Owner: </Label>
+						<Label For="owner" HelpText="The owner or creator of the module" ResourceKey="Owner">Owner</Label>
 						<div class="db-field-control">
 							<input id="owner" class="db-input" @bind="@_owner" disabled />
 						</div>
 					</div>
 					<div class="db-field">
-						<Label For="url" HelpText="The url of the module" ResourceKey="Url">Url: </Label>
+						<Label For="url" HelpText="The url of the module" ResourceKey="Url">URL</Label>
 						<div class="db-field-control">
 							<input id="url" class="db-input" @bind="@_url" disabled />
 						</div>
 					</div>
 					<div class="db-field">
-						<Label For="contact" HelpText="The contact for the module" ResourceKey="Contact">Contact: </Label>
+						<Label For="contact" HelpText="The contact for the module" ResourceKey="Contact">Contact</Label>
 						<div class="db-field-control">
 							<input id="contact" class="db-input" @bind="@_contact" disabled />
 						</div>
 					</div>
 					<div class="db-field">
-						<Label For="license" HelpText="The module license terms" ResourceKey="License">License: </Label>
+						<Label For="license" HelpText="The module license terms" ResourceKey="License">License</Label>
 						<div class="db-field-control">
                             @if (_license.StartsWith("http") || _license.StartsWith("/") || _license.StartsWith("~"))
                             {
@@ -99,7 +99,7 @@
 						</div>
 					</div>
                     <div class="db-field">
-                        <Label For="fingerprint" HelpText="A unique identifier for the module's static resources. This value can be changed by clicking the Save option below (ie. cache busting)." ResourceKey="Fingerprint">Fingerprint: </Label>
+                        <Label For="fingerprint" HelpText="A unique identifier for the module's static resources. This value can be changed by clicking the Save option below (ie. cache busting)." ResourceKey="Fingerprint">Fingerprint</Label>
                         <div class="db-field-control">
                             <input id="fingerprint" class="db-input" @bind="@_fingerprint" disabled />
                         </div>

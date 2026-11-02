@@ -11,13 +11,13 @@
     <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
         <div class="db-fields">
             <div class="db-field">
-                <Label For="name" HelpText="The name of the file" ResourceKey="Name">Name: </Label>
+                <Label For="name" HelpText="The name of the file" ResourceKey="Name">Name</Label>
                 <div class="db-field-control">
                     <input id="name" class="db-input" @bind="@_name" maxlength="50" required />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="parent" HelpText="The folder where the file is located" ResourceKey="Folder">Folder: </Label>
+                <Label For="parent" HelpText="The folder where the file is located" ResourceKey="Folder">Folder</Label>
                 <div class="db-field-control">
                     <select id="parent" class="db-select" @bind="@_folderId" required>
                         @foreach (Folder folder in _folders)
@@ -28,13 +28,13 @@
                 </div>
             </div>
             <div class="db-field">
-                <Label For="description" HelpText="A description of the file. This can be used as a caption for image files." ResourceKey="Description">Description: </Label>
+                <Label For="description" HelpText="A description of the file. This can be used as a caption for image files." ResourceKey="Description">Description</Label>
                 <div class="db-field-control">
                     <input id="description" class="db-input" @bind="@_description" />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="size" HelpText="The size of the file (in bytes)" ResourceKey="Size">Size: </Label>
+                <Label For="size" HelpText="The size of the file (in bytes)" ResourceKey="Size">Size</Label>
                 <div class="db-field-control">
                     <input id="size" class="db-input" @bind="@_size" readonly />
                 </div>

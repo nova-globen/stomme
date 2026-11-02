@@ -28,11 +28,11 @@ and [Configuration](../../../docs/architecture/configuration.md).
    - **Database**: the list is alphabetical and does not start on SQLite; choose **SQLite** for local work (or a server
      you have) and keep or change the file name. **Next**.
    - **Account**: **Username** is empty - type `host`; **Password** and **Confirm** (at least six characters, with
-     upper case, lower case, a digit and a symbol); **Email**; **Full Name**; leave **Template** on **Default Site
+     upper case, lower case, a digit and a symbol); **Email**; **Full name**; leave **Template** on **Default Site
      Template**. **Next**.
    - **Configure**: shows the framework's own install-time settings (a note about Notifications, HtmlText's **Default
      Content**); the defaults are fine. **Next**.
-   - **Finish**: leave **Register** unticked, press **Install Now**. After some seconds the browser goes to the new
+   - **Finish**: leave **Register** unticked, press **Install now**. After some seconds the browser goes to the new
      site's home page.
 4. **Unattended.** Before the first start, write `Server/Data/appsettings.override.json` (create the folder; the file is
    git-ignored). Generate a password; do not reuse a real one:
@@ -90,7 +90,7 @@ and [Configuration](../../../docs/architecture/configuration.md).
   Fix: complete the configuration, or clear those keys to use the web installer.
 - **The address you browse to answers a blank 404.** Cause: it is not an alias - only configured host names are (the
   installer records the address it was opened at; unattended uses `DefaultAlias`), and any other host gets a 404. Fix:
-  browse to the installed address and add the new one under **Admin > Site Settings > Site Urls**, or reset (step 6).
+  browse to the installed address and add the new one under **Admin > Site Settings > Site URLs**, or reset (step 6).
 - **The installer's secrets ended up in `Server/appsettings.json`.** Cause: `Server/Program.cs` lost its
   `KeepInstallStateOutOfAppSettings` call, which creates `appsettings.override.json` (in `Data`, or in the directory
   `STOMME_APPSETTINGS_PATH` names) before the host starts; without that file the installer writes to
@@ -101,5 +101,5 @@ and [Configuration](../../../docs/architecture/configuration.md).
   the password rules. The install does not report this: the site is created without its host user and no error is
   logged. Fix: reset (step 6) and use a password with upper case, lower case, a digit and a symbol, at least six
   characters.
-- **Admin > System Info > Restart Application stopped the app for good.** Cause: it ends the process; `dotnet run` does
+- **Admin > System Info > Restart application stopped the app for good.** Cause: it ends the process; `dotnet run` does
   not restart it. Fix: run `dotnet run` again.

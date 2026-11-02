@@ -55,26 +55,33 @@
             }
         </div>
 
+        <label for="@(IdPrefix + "-endpoint")" style="font-size:0.85em;color:var(--db-text-2);">@(selected.EndpointKind == "Url" ? "Address (URL)" : "Connection string")</label>
         <input id="@(IdPrefix + "-endpoint")" class="db-input" style="font-family:monospace;" placeholder="@(selected.EndpointExample ?? (selected.EndpointKind == "Url" ? "https://api.example.com/v1" : "Host=db;Port=5432;Database=app;Username=app (no password here - it goes below)"))" @bind="_endpoint" />
 
         @foreach (var field in selected.AuthFields)
         {
+            <label @key="@($"{selected.ConnectorType}:{field.Name}:label")" for="@(IdPrefix + "-credential-" + field.Name)" style="font-size:0.85em;color:var(--db-text-2);">@field.DisplayName</label>
             <input @key="@($"{selected.ConnectorType}:{field.Name}")" id="@(IdPrefix + "-credential-" + field.Name)" class="db-input" type="@(field.Secret ? "password" : "text")" autocomplete="off"
-                   placeholder="@(field.DisplayName + (Editing is not null ? " (blank keeps the stored value)" : ""))"
+                   placeholder="@(Editing is not null ? "blank keeps the stored value" : field.DisplayName)"
                    value="@Credential(field.Name)" @onchange="@(e => _credentials[field.Name] = e.Value?.ToString() ?? string.Empty)" />
         }
 
         @foreach (var field in VisibleFields(selected))
         {
+            var fieldId = IdPrefix + "-setting-" + field.Name;
             <div @key="@($"{selected.ConnectorType}:{field.Name}")" style="display:flex;flex-direction:column;gap:0.25rem;">
+                @if (field.Type != "Boolean")
+                {
+                    <label for="@fieldId" style="font-size:0.85em;color:var(--db-text-2);">@field.DisplayName@(field.Required ? " (required)" : "")</label>
+                }
                 @switch (field.Type)
                 {
                     case "Boolean":
                         <label><input type="checkbox" checked="@IsTrue(field.Name)" @onchange="@(e => _settings[field.Name] = e.Value is true ? "true" : "false")" /> @field.DisplayName</label>
                         break;
                     case "Select":
-                        <select class="db-input" @onchange="@(e => _settings[field.Name] = e.Value?.ToString() ?? string.Empty)">
-                            <option value="">@field.DisplayName</option>
+                        <select id="@fieldId" class="db-input" @onchange="@(e => _settings[field.Name] = e.Value?.ToString() ?? string.Empty)">
+                            <option value="">(choose)</option>
                             @foreach (var option in field.Options)
                             {
                                 <option value="@option.Value" selected="@(Setting(field.Name) == option.Value)">@option.Label</option>
@@ -82,10 +89,10 @@
                         </select>
                         break;
                     case "Multiline":
-                        <textarea class="db-input" placeholder="@(field.Placeholder ?? field.DisplayName)" value="@Setting(field.Name)" @onchange="@(e => _settings[field.Name] = e.Value?.ToString() ?? string.Empty)"></textarea>
+                        <textarea id="@fieldId" class="db-input" placeholder="@(field.Placeholder ?? field.DisplayName)" value="@Setting(field.Name)" @onchange="@(e => _settings[field.Name] = e.Value?.ToString() ?? string.Empty)"></textarea>
                         break;
                     default:
-                        <input class="db-input" type="@(field.Type is "Integer" or "Number" ? "number" : "text")" placeholder="@(field.Placeholder ?? field.DisplayName + (field.Required ? " (required)" : ""))"
+                        <input id="@fieldId" class="db-input" type="@(field.Type is "Integer" or "Number" ? "number" : "text")" placeholder="@(field.Placeholder ?? field.DisplayName)"
                                value="@Setting(field.Name)" @onchange="@(e => _settings[field.Name] = e.Value?.ToString() ?? string.Empty)" />
                         break;
                 }
@@ -96,7 +103,7 @@
             </div>
         }
 
-        <label style="display:flex;gap:0.5rem;align-items:center;">Timeout (seconds) <input id="@(IdPrefix + "-timeout")" class="db-input" type="number" min="1" max="300" style="width:6rem;" @bind="_timeoutSeconds" /></label>
+        <label for="@(IdPrefix + "-timeout")" style="display:flex;gap:0.5rem;align-items:center;">Timeout (seconds) <input id="@(IdPrefix + "-timeout")" class="db-input" type="number" min="1" max="300" style="width:6rem;" @bind="_timeoutSeconds" /></label>
     }
 
     <div style="display:flex;gap:0.5rem;">
@@ -108,7 +115,7 @@
     </div>
     @if (!string.IsNullOrEmpty(_refusal))
     {
-        <p id="@(IdPrefix + "-refusal")" style="margin:0;">@_refusal</p>
+        <div id="@(IdPrefix + "-refusal")" class="db-message db-message-warn" role="alert"><div class="db-message-body">@_refusal</div></div>
     }
 </div>
 

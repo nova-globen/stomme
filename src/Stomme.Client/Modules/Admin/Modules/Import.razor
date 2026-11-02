@@ -9,14 +9,14 @@
 <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
     <div class="db-fields">
         <div class="db-field">
-            <Label For="file" HelpText="Optionally upload or select a file to import for this module" ResourceKey="File">File: </Label>
+            <Label For="file" HelpText="Optionally upload or select a file to import for this module" ResourceKey="File">File</Label>
             <div class="db-field-control">
                 <FileManager Id="file" Filter="json" OnSelectFile="OnSelectFile" />
             </div>
         </div>
         <hr />
         <div class="db-field">
-            <Label For="content" HelpText="Provide the module content to import" ResourceKey="Content">Content: </Label>
+            <Label For="content" HelpText="Provide the module content to import" ResourceKey="Content">Content</Label>
             <div class="db-field-control">
                 <textarea id="content" class="db-input" @bind="@_content" rows="5" required></textarea>
             </div>

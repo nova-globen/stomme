@@ -67,9 +67,9 @@ controls it names are in [docs/ui/components-and-controls.md](../../../docs/ui/c
    says why (E3). Reload the browser on every URL the page has (list, an edit URL with `?id=`): each works directly (H2).
 
 9. **Pass 7 - other render modes, when the page is interactive.** As the Host, open Admin > Site Settings and click the
-   **UI Component Settings** heading (the section is collapsed, and only the Host sees it). Switch Interactivity to
-   "Client (WebAssembly)" and save; repeat pass 1 briefly with the console open. Then, separately, switch Render Mode
-   between Static and Interactive. Changing Render Mode also changes Prerender in the form (Interactive sets Yes, Static
+   **UI component settings** heading (the section is collapsed, and only the Host sees it). Switch Interactivity to
+   "Client (WebAssembly)" and save; repeat pass 1 briefly with the console open. Then, separately, switch Render mode
+   between Static and Interactive. Changing Render mode also changes Prerender in the form (Interactive sets Yes, Static
    sets No), so note all three values first and restore all three afterwards.
 
 10. **Fix or report.** Fix every failure that is in the app's own code, then repeat the pass that found it. A failure
@@ -103,7 +103,7 @@ without a browser run is not a review. Re-run the failing pass after each fix an
   console expression above.
 - **Tabbing with the mouse nearby.** Hover states hide missing focus rings. Use only the keyboard for pass 4.
 - **Ignoring console warnings.** A warning on every render is a defect; record it with the action that caused it.
-- **Leaving the site in another render mode** after pass 7. Restore Render Mode, Interactivity and Prerender.
+- **Leaving the site in another render mode** after pass 7. Restore Render mode, Interactivity and Prerender.
 - **Sign-in fails with HTTP 400, or you are signed out at random, while another Stomme app runs on this machine.**
   Browsers do not separate cookies by port, so two apps on `localhost:5000` and `localhost:5001` overwrite each other's
   sign-in and antiforgery cookies (the server log says "The antiforgery token could not be decrypted"). Give each app its

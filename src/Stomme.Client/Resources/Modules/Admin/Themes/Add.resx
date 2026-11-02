@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Error.Package.Load" xml:space="preserve">
-    <value>Error Loading Packages</value>
+    <value>Error loading packages</value>
   </data>
   <data name="Theme.Text" xml:space="preserve">
-    <value>Theme: </value>
+    <value>Theme</value>
   </data>
   <data name="Success.Theme.Download" xml:space="preserve">
     <value>Theme Package Downloaded Successfully. You Must &lt;a href={0}&gt;Restart&lt;/a&gt; Your Application To Complete The Installation.</value>
@@ -130,13 +130,13 @@
     <value>Theme Package Uploaded Successfully. You Must &lt;a href={0}&gt;Restart&lt;/a&gt; Your Application To Complete The Installation.</value>
   </data>
   <data name="Error.Theme.Download" xml:space="preserve">
-    <value>Error Downloading Theme</value>
+    <value>Error downloading theme</value>
   </data>
   <data name="Theme.HelpText" xml:space="preserve">
     <value>Upload one or more theme packages.</value>
   </data>
   <data name="Search.NoResults" xml:space="preserve">
-    <value>No Themes Match The Criteria Provided Or Package Service Is Disabled</value>
+    <value>No themes match the criteria provided or package service is disabled</value>
   </data>
   <data name="Download.Heading" xml:space="preserve">
     <value>Marketplace</value>

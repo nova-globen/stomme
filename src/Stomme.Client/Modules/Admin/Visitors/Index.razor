@@ -61,7 +61,7 @@ else
         <TabPanel Name="Settings" Heading="Settings" ResourceKey="Settings">
 			<div class="db-fields">
 				<div class="db-field">
-					<Label For="tracking" HelpText="Specify if visitor tracking is enabled" ResourceKey="Tracking">Tracking Enabled? </Label>
+					<Label For="tracking" HelpText="Specify if visitor tracking is enabled" ResourceKey="Tracking">Tracking enabled?</Label>
 					<div class="db-field-control">
 						<select id="tracking" class="db-select" @bind="@_tracking" >
 							<option value="True">@SharedLocalizer["Yes"]</option>
@@ -70,25 +70,25 @@ else
 					</div>
 				</div>
                 <div class="db-field">
-                    <Label For="duration" HelpText="The duration of a browsing session considered to be a distinct visit (in minutes)" ResourceKey="Duration">Session Duration: </Label>
+                    <Label For="duration" HelpText="The duration of a browsing session considered to be a distinct visit (in minutes)" ResourceKey="Duration">Session duration</Label>
                     <div class="db-field-control">
                         <input id="duration" class="db-input" type="number" min="0" step="1" @bind="@_duration" />
                     </div>
                 </div>
                 <div class="db-field">
-					<Label For="filter" HelpText="Comma delimited list of terms which may exist in IP addresses, user agents, or languages identifying visitors which should not be tracked" ResourceKey="Filter">Filter: </Label>
+					<Label For="filter" HelpText="Comma delimited list of terms which may exist in IP addresses, user agents, or languages identifying visitors which should not be tracked" ResourceKey="Filter">Filter</Label>
 					<div class="db-field-control">
 						<textarea id="filter" class="db-input" @bind="@_filter" rows="3"></textarea>
 					</div>
 				</div>
 				<div class="db-field">
-					<Label For="retention" HelpText="Number of days of visitor activity to retain" ResourceKey="Retention">Retention: </Label>
+					<Label For="retention" HelpText="Number of days of visitor activity to retain" ResourceKey="Retention">Retention</Label>
 					<div class="db-field-control">
                         <input id="retention" class="db-input" type="number" min="0" step="1" @bind="@_retention" />
 					</div>
 				</div>
 				<div class="db-field">
-					<Label For="correlation" HelpText="Indicate if new visitors to this site should be correlated based on their IP Address" ResourceKey="Correlation">Correlate Visitors? </Label>
+					<Label For="correlation" HelpText="Indicate if new visitors to this site should be correlated based on their IP address" ResourceKey="Correlation">Correlate visitors?</Label>
 					<div class="db-field-control">
                         <select id="correlation" class="db-select" @bind="@_correlation">
 							<option value="true">@SharedLocalizer["True"]</option>
@@ -103,7 +103,7 @@ else
         <TabPanel Name="Robots" Heading="Robots.txt" ResourceKey="Robots">
 			<div class="db-fields">
 				<div class="db-field">
-                    <Label For="robots" HelpText="Specify your robots.txt instructions to provide bots with guidance on which parts of your site should be indexed" ResourceKey="Robots">Instructions: </Label>
+                    <Label For="robots" HelpText="Specify your robots.txt instructions to provide bots with guidance on which parts of your site should be indexed" ResourceKey="Robots">Instructions</Label>
 					<div class="db-field-control">
                         <textarea id="robots" class="db-input" @bind="@_robots" rows="3"></textarea>
                     </div>

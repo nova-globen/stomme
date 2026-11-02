@@ -28,7 +28,7 @@ The contract, in `Stomme.Shared`, namespace `Stomme.Erasure`:
 
 The flow:
 
-0. Before anyone deletes their account, the **Delete My Account** section of their profile (Security tab) lists what it
+0. Before anyone deletes their account, the **Delete my account** section of their profile (Security tab) lists what it
    does on this site, from every registered participant's declarations: what is erased, what is kept without their name,
    and what is kept for a time and why. The same list is `GET api/Erasure/summary`, open to anyone - a privacy page can
    show it too. A module that registers a participant is listed with no page change.

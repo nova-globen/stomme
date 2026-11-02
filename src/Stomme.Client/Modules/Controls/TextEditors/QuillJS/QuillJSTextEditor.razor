@@ -10,7 +10,7 @@
     <TabStrip ActiveTab="@_activetab">
         @if (_allowRichText)
         {
-            <TabPanel Name="Rich" Heading="Rich Text Editor" ResourceKey="RichTextEditor">
+            <TabPanel Name="Rich" Heading="Rich text editor" ResourceKey="RichTextEditor">
                 @if (_richfilemanager)
                 {
                     <FileManager @ref="_fileManager" Filter="@PageState.Site.ImageFiles" />
@@ -69,7 +69,7 @@
         }
         @if (_allowRawHtml)
         {
-            <TabPanel Name="Raw" Heading="Raw HTML Editor" ResourceKey="HtmlEditor">
+            <TabPanel Name="Raw" Heading="Raw HTML editor" ResourceKey="HtmlEditor">
                 @if (_rawfilemanager)
                 {
                     <FileManager @ref="_fileManager" Filter="@PageState.Site.ImageFiles" />
@@ -102,7 +102,7 @@
             <TabPanel Name="Settings" Heading="Settings" ResourceKey="Settings">
                 <div class="quill-text-editor-settings">
                     <div class="db-field">
-                        <Label For="Scope" ResourceKey="Scope" ResourceType="@resourceType" HelpText="Specify if settings are scoped to the module or site">Scope: </Label>
+                        <Label For="Scope" ResourceKey="Scope" ResourceType="@resourceType" HelpText="Specify if settings are scoped to the module or site">Scope</Label>
                         <div class="db-field-control">
                             <select id="Scope" class="db-select" value="@_scopeSetting" @onchange="(e => ScopeChanged(e))">
                                 <option value="Module">@SharedLocalizer["Module"]</option>
@@ -114,7 +114,7 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="AllowRichText" ResourceKey="AllowRichText" ResourceType="@resourceType" HelpText="Specify if editors can use the Rich Text Editor">Rich Text Editor? </Label>
+                        <Label For="AllowRichText" ResourceKey="AllowRichText" ResourceType="@resourceType" HelpText="Specify if editors can use the rich text editor">Rich text editor?</Label>
                         <div class="db-field-control">
                             <select id="AllowRichText" class="db-select" @bind="@_allowRichTextSetting" required>
                                 <option value="True">@SharedLocalizer["Yes"]</option>
@@ -123,7 +123,7 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="AllowRawHtml" ResourceKey="AllowRawHtml" ResourceType="@resourceType" HelpText="Specify if editors can use the Raw HTML Editor">Raw HTML Editor? </Label>
+                        <Label For="AllowRawHtml" ResourceKey="AllowRawHtml" ResourceType="@resourceType" HelpText="Specify if editors can use the raw HTML editor">Raw HTML editor?</Label>
                         <div class="db-field-control">
                             <select id="AllowRawHtml" class="db-select" @bind="@_allowRawHtmlSetting" required>
                                 <option value="True">@SharedLocalizer["Yes"]</option>
@@ -132,7 +132,7 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="AllowFileManagement" ResourceKey="AllowFileManagement" ResourceType="@resourceType" HelpText="Specify if editors can upload and insert images">Insert Images? </Label>
+                        <Label For="AllowFileManagement" ResourceKey="AllowFileManagement" ResourceType="@resourceType" HelpText="Specify if editors can upload and insert images">Insert images?</Label>
                         <div class="db-field-control">
                             <select id="AllowFileManagement" class="db-select" @bind="@_allowFileManagementSetting" required>
                                 <option value="True">@SharedLocalizer["Yes"]</option>
@@ -141,13 +141,13 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="Theme" ResourceKey="Theme" ResourceType="@resourceType" HelpText="Specify the Rich Text Editor's theme">Theme: </Label>
+                        <Label For="Theme" ResourceKey="Theme" ResourceType="@resourceType" HelpText="Specify the rich text Editor's theme">Theme</Label>
                         <div class="db-field-control">
                             <input type="text" id="Theme" class="db-input" @bind="_themeSetting" />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="DebugLevel" ResourceKey="DebugLevel" ResourceType="@resourceType" HelpText="Specify the Debug Level">Debug Level: </Label>
+                        <Label For="DebugLevel" ResourceKey="DebugLevel" ResourceType="@resourceType" HelpText="Specify the debug level">Debug level</Label>
                         <div class="db-field-control">
                             <select id="DebugLevel" class="db-select" @bind="_debugLevelSetting">
                                 @foreach (var level in _debugLevels)
@@ -158,7 +158,7 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="ToolbarContent" ResourceKey="ToolbarContent" ResourceType="@resourceType" HelpText="Specify any toolbar content to customize the Rich Text Editor">Toolbar Content: </Label>
+                        <Label For="ToolbarContent" ResourceKey="ToolbarContent" ResourceType="@resourceType" HelpText="Specify any toolbar content to customize the rich text editor">Toolbar content</Label>
                         <div class="db-field-control">
                             <textarea id="ToolbarContent" class="db-input" @bind="_toolbarContentSetting" rows="3" />
                         </div>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Confirm.DeleteUrlMapping" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete {0}?</value>
+    <value>Are you sure you wish to delete {0}?</value>
   </data>
   <data name="AddUrlMapping.Text" xml:space="preserve">
-    <value>Add Url Mapping</value>
+    <value>Add URL mapping</value>
   </data>
   <data name="DeleteUrlMapping.Header" xml:space="preserve">
-    <value>Delete Url Mapping</value>
+    <value>Delete URL mapping</value>
   </data>
   <data name="Requested" xml:space="preserve">
     <value>Requested</value>
@@ -133,25 +133,25 @@
     <value>Requests</value>
   </data>
   <data name="Mapped" xml:space="preserve">
-    <value>Mapped Urls</value>
+    <value>Mapped URLs</value>
   </data>
   <data name="Broken" xml:space="preserve">
-    <value>Broken Urls</value>
+    <value>Broken URLs</value>
   </data>
   <data name="CaptureBrokenUrls.HelpText" xml:space="preserve">
-    <value>Specify if broken Urls should be captured automatically and saved in Url Mappings</value>
+    <value>Specify if broken URLs should be captured automatically and saved in URL mappings</value>
   </data>
   <data name="CaptureBrokenUrls.Text" xml:space="preserve">
-    <value>Capture Broken Urls?</value>
+    <value>Capture broken URLs?</value>
   </data>
   <data name="Error.SaveSiteSettings" xml:space="preserve">
-    <value>Error Saving Settings</value>
+    <value>Error saving settings</value>
   </data>
   <data name="Settings.Heading" xml:space="preserve">
     <value>Settings</value>
   </data>
   <data name="Success.SaveSiteSettings" xml:space="preserve">
-    <value>Settings Saved Successfully</value>
+    <value>Settings saved successfully</value>
   </data>
   <data name="Urls.Heading" xml:space="preserve">
     <value>Urls</value>
@@ -163,9 +163,15 @@
     <value>Edit</value>
   </data>
   <data name="Retention.Text" xml:space="preserve">
-    <value>Retention (Days):</value>
+    <value>Retention (days)</value>
   </data>
   <data name="Retention.HelpText" xml:space="preserve">
     <value>Number of days of broken urls to retain</value>
+  </data>
+  <data name="Empty.Mapped" xml:space="preserve">
+    <value>No address is mapped yet. Add URL mapping sends an old or short address to a page of this site.</value>
+  </data>
+  <data name="Empty.Broken" xml:space="preserve">
+    <value>No address that leads nowhere has been requested. One that is shows here, to map to a page.</value>
   </data>
 </root>

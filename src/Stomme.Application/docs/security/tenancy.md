@@ -165,10 +165,10 @@ site, the cache that is keyed by alias - are in [../services/jobs.md](../service
 
 ### Adding a site or a tenant
 
-The Host adds sites in **Admin > Site Management** (`/admin/sites`) > **Add Site**: a **Site Name**, a **Url** (the
+The Host adds sites in **Admin > Site Management** (`/admin/sites`) > **Add site**: a **Site name**, a **Url** (the
 alias; it is pre-filled with a virtual-folder alias, `{host}/sitename` - type a host name such as `shop.example.com`
-for a site of its own), a **Site Template** (`Default Site Template` or `Empty Site Template`) and a **Database**. The
-Database list offers the existing tenants (the first install's tenant is `Master`) and `<Create Database>`, which
+for a site of its own), a **Site template** (`Default Site Template` or `Empty Site Template`) and a **Database**. The
+Database list offers the existing tenants (the first install's tenant is `Master`) and `<Create database>`, which
 creates a new tenant with its own database. A site added on an existing tenant shares that tenant's database and its
 user accounts. On RavenDB a new tenant's database must live on the installation's own RavenDB server.
 

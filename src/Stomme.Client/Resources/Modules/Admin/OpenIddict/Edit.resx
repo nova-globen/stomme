@@ -129,33 +129,33 @@
   
 
   <data name="ClientId.HelpText" xml:space="preserve"><value>The OAuth client_id. It identifies the application in this tenant's store and cannot be changed - delete and re-add to rename.</value></data>
-  <data name="ClientId.Text" xml:space="preserve"><value>Client Id:</value></data>
+  <data name="ClientId.Text" xml:space="preserve"><value>Client ID</value></data>
   <data name="ClientSecret.HelpText" xml:space="preserve"><value>Leave blank to keep the current secret. Entering a value ROTATES it - every relying party using the old secret stops working immediately.</value></data>
   <data name="ClientSecret.Placeholder" xml:space="preserve"><value>Leave blank to keep the current secret</value></data>
-  <data name="ClientSecret.Text" xml:space="preserve"><value>New Client Secret:</value></data>
+  <data name="ClientSecret.Text" xml:space="preserve"><value>New client secret</value></data>
   <data name="Consent.Explicit" xml:space="preserve"><value>Explicit (ask the user)</value></data>
   <data name="Consent.Implicit" xml:space="preserve"><value>Implicit (no consent screen)</value></data>
   <data name="ConsentType.HelpText" xml:space="preserve"><value>Implicit skips the consent screen (first-party apps). Explicit asks the user to approve the requested scopes.</value></data>
-  <data name="ConsentType.Text" xml:space="preserve"><value>Consent Type:</value></data>
+  <data name="ConsentType.Text" xml:space="preserve"><value>Consent type</value></data>
   <data name="DisplayName.HelpText" xml:space="preserve"><value>A human-readable name, shown on the consent screen. Defaults to the client id.</value></data>
-  <data name="DisplayName.Text" xml:space="preserve"><value>Display Name:</value></data>
-  <data name="Error.Load" xml:space="preserve"><value>Error Loading Client</value></data>
-  <data name="Error.NotFound" xml:space="preserve"><value>That Client Was Not Found</value></data>
-  <data name="Error.SaveClient" xml:space="preserve"><value>Error Saving Client. Check that a confidential client has a secret and that every redirect Uri is absolute.</value></data>
+  <data name="DisplayName.Text" xml:space="preserve"><value>Display name</value></data>
+  <data name="Error.Load" xml:space="preserve"><value>Error loading client</value></data>
+  <data name="Error.NotFound" xml:space="preserve"><value>That client was not found</value></data>
+  <data name="Error.SaveClient" xml:space="preserve"><value>Error saving client. Check that a confidential client has a secret and that every redirect URI is absolute.</value></data>
   <data name="GrantTypes.HelpText" xml:space="preserve"><value>The OAuth grants this client may use. A client can only request what it is permitted.</value></data>
-  <data name="GrantTypes.Text" xml:space="preserve"><value>Grant Types:</value></data>
+  <data name="GrantTypes.Text" xml:space="preserve"><value>Grant types</value></data>
   <data name="PostLogoutRedirectUris.HelpText" xml:space="preserve"><value>Absolute URLs the authority may redirect back to after an RP-initiated logout, one per line.</value></data>
-  <data name="PostLogoutRedirectUris.Text" xml:space="preserve"><value>Post Logout Uris:</value></data>
+  <data name="PostLogoutRedirectUris.Text" xml:space="preserve"><value>Post logout URIs</value></data>
   <data name="RedirectUris.HelpText" xml:space="preserve"><value>Absolute callback URLs for the authorization-code flow, one per line. Required for authorization_code.</value></data>
-  <data name="RedirectUris.Text" xml:space="preserve"><value>Redirect Uris:</value></data>
+  <data name="RedirectUris.Text" xml:space="preserve"><value>Redirect URIs</value></data>
   <data name="Sites.HelpText" xml:space="preserve"><value>The sites this client may be used at, by alias (example.com/shop), one per line. Empty: every site of this tenant.</value></data>
-  <data name="Sites.Text" xml:space="preserve"><value>Sites:</value></data>
-  <data name="RequirePkce.HelpText" xml:space="preserve"><value>Require Proof Key for Code Exchange on the authorization-code flow. Always on for a public client.</value></data>
+  <data name="Sites.Text" xml:space="preserve"><value>Sites</value></data>
+  <data name="RequirePkce.HelpText" xml:space="preserve"><value>Require proof key for code exchange on the authorization-code flow. Always on for a public client.</value></data>
   <data name="RequirePkce.Text" xml:space="preserve"><value>Require PKCE?</value></data>
   <data name="Scopes.HelpText" xml:space="preserve"><value>The scopes this client may request, one per line (openid, profile, email, offline_access, or a custom scope).</value></data>
-  <data name="Scopes.Text" xml:space="preserve"><value>Scopes:</value></data>
+  <data name="Scopes.Text" xml:space="preserve"><value>Scopes</value></data>
   <data name="Type.Confidential" xml:space="preserve"><value>Confidential (holds a secret)</value></data>
   <data name="Type.HelpText" xml:space="preserve"><value>Confidential clients hold a secret (server-side apps). Public clients cannot keep one (SPA/native) and must use PKCE.</value></data>
   <data name="Type.Public" xml:space="preserve"><value>Public (SPA / native, PKCE only)</value></data>
-  <data name="Type.Text" xml:space="preserve"><value>Client Type:</value></data>
+  <data name="Type.Text" xml:space="preserve"><value>Client type</value></data>
 </root>

@@ -14,19 +14,19 @@
 {
 	<div class="db-fields">
 		<div class="db-field">
-			<Label For="owner" HelpText="Enter the name of the organization who is developing this theme. It should not contain spaces or punctuation." ResourceKey="OwnerName">Owner Name: </Label>
+			<Label For="owner" HelpText="Enter the name of the organization who is developing this theme. It should not contain spaces or punctuation." ResourceKey="OwnerName">Owner name</Label>
 			<div class="db-field-control">
 				<input id="owner" class="db-input" @bind="@_owner" />
 			</div>
 		</div>
 		<div class="db-field">
-			<Label For="module" HelpText="Enter a name for this theme. It should not contain spaces or punctuation." ResourceKey="ThemeName">Theme Name: </Label>
+			<Label For="module" HelpText="Enter a name for this theme. It should not contain spaces or punctuation." ResourceKey="ThemeName">Theme name</Label>
 			<div class="db-field-control">
 				<input id="module" class="db-input" @bind="@_theme" />
 			</div>
 		</div>
 		<div class="db-field">
-			<Label For="template" HelpText="Select a theme template. Templates are located in the wwwroot/Themes/Templates folder on the server." ResourceKey="Template">Template: </Label>
+			<Label For="template" HelpText="Select a theme template. Templates are located in the wwwroot/Themes/Templates folder on the server." ResourceKey="Template">Template</Label>
 			<div class="db-field-control">
 				<select id="template" class="db-select" @onchange="(e => TemplateChanged(e))">
 					<option value="-">&lt;@Localizer["Template.Select"]&gt;</option>
@@ -40,7 +40,7 @@
         @if (_type == "External")
         {
             <div class="db-field">
-                <Label For="reference" HelpText="Select a framework reference version" ResourceKey="FrameworkReference">Framework Reference: </Label>
+                <Label For="reference" HelpText="Select a framework reference version" ResourceKey="FrameworkReference">Framework reference</Label>
                 <div class="db-field-control">
                     <select id="reference" class="db-select" @bind="@_reference">
                         @foreach (string version in _versions)
@@ -57,7 +57,7 @@
             @if (!string.IsNullOrEmpty(_location))
             {
                 <div class="db-field">
-                    <Label For="location" HelpText="Location where the theme will be created" ResourceKey="Location">Location: </Label>
+                    <Label For="location" HelpText="Location where the theme will be created" ResourceKey="Location">Location</Label>
                     <div class="db-field-control">
                         <input id="location" class="db-input" @bind="@_location" readonly />
                     </div>

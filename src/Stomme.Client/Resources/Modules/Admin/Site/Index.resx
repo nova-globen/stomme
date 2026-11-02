@@ -118,43 +118,43 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Name.Text" xml:space="preserve">
-    <value>Name: </value>
+    <value>Name</value>
   </data>
   <data name="Container.Select" xml:space="preserve">
-    <value>Select Container</value>
+    <value>Select container</value>
   </data>
   <data name="Error.Theme.LoadPane" xml:space="preserve">
-    <value>Error Loading Pane Layouts For Theme</value>
+    <value>Error loading pane layouts for theme</value>
   </data>
   <data name="DefaultContainer.Text" xml:space="preserve">
-    <value>Default Container: </value>
+    <value>Default container</value>
   </data>
   <data name="DefaultAdminContainer" xml:space="preserve">
-    <value>Default Admin Container</value>
+    <value>Default admin container</value>
   </data>
   <data name="Smtp.TestConfig" xml:space="preserve">
-    <value>Test SMTP Configuration</value>
+    <value>Test SMTP configuration</value>
   </data>
   <data name="Success.Settings.SaveSite" xml:space="preserve">
-    <value>Site Settings Saved</value>
+    <value>Site settings saved</value>
   </data>
   <data name="Message.Aliases.Taken" xml:space="preserve">
-    <value>An Alias Was Specified That Has Already Been Used For Another Site</value>
+    <value>An alias was specified that has already been used for another site</value>
   </data>
   <data name="Message.Required.SiteName" xml:space="preserve">
-    <value>You Must Provide A Site Name, Alias, And Default Theme/Container</value>
+    <value>You must provide a site name, alias, and default theme/container</value>
   </data>
   <data name="Error.SaveSite" xml:space="preserve">
-    <value>Error Saving Site</value>
+    <value>Error saving site</value>
   </data>
   <data name="Info.Smtp.SaveSettings" xml:space="preserve">
-    <value>SMTP Settings Saved And A Message Has Been Sent To The Email Address Associated To Your User Account... Please Wait A Few Minutes For Delivery. If You Do Not Receive The Email Please Review The Notification Job In Scheduled Jobs For Any Log Details.</value>
+    <value>SMTP settings saved and a message has been sent to the email address associated to your user account... Please wait a few minutes for delivery. If you do not receive the email please review the notification job in scheduled jobs for any log details.</value>
   </data>
   <data name="Error.Smtp.TestConfig" xml:space="preserve">
-    <value>Error Testing SMTP Configuration</value>
+    <value>Error testing SMTP configuration</value>
   </data>
   <data name="Message.Required.Smtp" xml:space="preserve">
-    <value>You Must Specify The SMTP Host, Port, And Sender</value>
+    <value>You must specify the SMTP Host, port, and sender</value>
   </data>
   <data name="Name.HelpText" xml:space="preserve">
     <value>Enter the site name</value>
@@ -172,7 +172,7 @@
     <value>Specify a logo for the site</value>
   </data>
   <data name="FavoriteIcon.HelpText" xml:space="preserve">
-    <value>Specify a Favicon. The format for the image must be 16×16, 32×32, 48×48, or 64×64 pixels in size, and 8-bit, 24-bit, or 32-bit in color depth. The format of the image must be ICO, PNG, or GIF.</value>
+    <value>Specify a favicon. The format for the image must be 16×16, 32×32, 48×48, or 64×64 pixels in size, and 8-bit, 24-bit, or 32-bit in color depth. The format of the image must be ICO, PNG, or GIF.</value>
   </data>
   <data name="DefaultTheme.HelpText" xml:space="preserve">
     <value>Select the sites default theme</value>
@@ -202,88 +202,88 @@
     <value>Enter the email address which emails will be sent from. Please note that this email address usually needs to be authorized with the SMTP server.</value>
   </data>
   <data name="EnablePWA.HelpText" xml:space="preserve">
-    <value>Select whether you would like this site to be available as a Progressive Web Application (PWA)</value>
+    <value>Select whether you would like this site to be available as a progressive web application (PWA)</value>
   </data>
   <data name="PwaApplicationIcon.HelpText" xml:space="preserve">
-    <value>Include an application icon for your PWA. It should be a PNG which is 192 X 192 pixels in dimension.</value>
+    <value>Include an application icon for your PWA. It should be a PNG which is 192 x 192 pixels in dimension.</value>
   </data>
   <data name="PwaSplashIcon.HelpText" xml:space="preserve">
-    <value>Include a splash icon for your PWA. It should be a PNG which is 512 X 512 pixels in dimension.</value>
+    <value>Include a splash icon for your PWA. It should be a PNG which is 512 x 512 pixels in dimension.</value>
   </data>
   <data name="Tenant.Text" xml:space="preserve">
-    <value>Database: </value>
+    <value>Database</value>
   </data>
   <data name="Aliases.Text" xml:space="preserve">
-    <value>Urls:</value>
+    <value>URLs</value>
   </data>
   <data name="IsDeleted.Text" xml:space="preserve">
-    <value>Deleted? </value>
+    <value>Deleted?</value>
   </data>
   <data name="Logo.Text" xml:space="preserve">
-    <value>Logo: </value>
+    <value>Logo</value>
   </data>
   <data name="FavoriteIcon.Text" xml:space="preserve">
-    <value>Favicon: </value>
+    <value>Favicon</value>
   </data>
   <data name="DefaultTheme.Text" xml:space="preserve">
-    <value>Default Theme: </value>
+    <value>Default theme</value>
   </data>
   <data name="DefaultAdminContainer.Text" xml:space="preserve">
-    <value>Default Admin Container: </value>
+    <value>Default admin container</value>
   </data>
   <data name="Host.Text" xml:space="preserve">
-    <value>Host: </value>
+    <value>Host</value>
   </data>
   <data name="Port.Text" xml:space="preserve">
-    <value>Port: </value>
+    <value>Port</value>
   </data>
   <data name="SmtpSSL.Text" xml:space="preserve">
-    <value>SSL Options:</value>
+    <value>SSL options</value>
   </data>
   <data name="SmtpUsername.Text" xml:space="preserve">
-    <value>Username: </value>
+    <value>Username</value>
   </data>
   <data name="SmtpPassword.Text" xml:space="preserve">
-    <value>Password: </value>
+    <value>Password</value>
   </data>
   <data name="SmtpSender.Text" xml:space="preserve">
-    <value>Email Sender: </value>
+    <value>Email sender</value>
   </data>
   <data name="EnablePWA.Text" xml:space="preserve">
-    <value>Is Enabled? </value>
+    <value>Is enabled?</value>
   </data>
   <data name="PwaApplicationIcon.Text" xml:space="preserve">
-    <value>App Icon: </value>
+    <value>App icon</value>
   </data>
   <data name="PwaSplashIcon.Text" xml:space="preserve">
-    <value>Splash Icon: </value>
+    <value>Splash icon</value>
   </data>
   <data name="Confirm.DeleteSite" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete This Site?</value>
+    <value>Are you sure you wish to delete this site?</value>
   </data>
   <data name="Error.DeleteSite" xml:space="preserve">
-    <value>Error Deleting Site</value>
+    <value>Error deleting site</value>
   </data>
   <data name="Message.FailAuth.DeleteSite" xml:space="preserve">
-    <value>You Are Not Authorized To Delete The Site</value>
+    <value>You are not authorized to delete the site</value>
   </data>
   <data name="Theme.Select" xml:space="preserve">
-    <value>Select Theme</value>
+    <value>Select theme</value>
   </data>
   <data name="Hosting.Heading" xml:space="preserve">
-    <value>UI Component Settings</value>
+    <value>UI component settings</value>
   </data>
   <data name="Prerender.HelpText" xml:space="preserve">
     <value>Specifies if interactive components should prerender their output on the server</value>
   </data>
   <data name="Prerender.Text" xml:space="preserve">
-    <value>Prerender: </value>
+    <value>Prerender</value>
   </data>
   <data name="RenderMode.HelpText" xml:space="preserve">
     <value>The default render mode for the site</value>
   </data>
   <data name="RenderMode.Text" xml:space="preserve">
-    <value>Render Mode:</value>
+    <value>Render mode</value>
   </data>
   <data name="Browse" xml:space="preserve">
     <value>Browse</value>
@@ -292,16 +292,16 @@
     <value>Database</value>
   </data>
   <data name="PWASettings.Heading" xml:space="preserve">
-    <value>PWA Settings</value>
+    <value>PWA settings</value>
   </data>
   <data name="SMTPSettings.Heading" xml:space="preserve">
-    <value>SMTP Settings</value>
+    <value>SMTP settings</value>
   </data>
   <data name="ConnectionString.Text" xml:space="preserve">
-    <value>Connection:</value>
+    <value>Connection</value>
   </data>
   <data name="Database.Text" xml:space="preserve">
-    <value>Type:</value>
+    <value>Type</value>
   </data>
   <data name="ConnectionString.HelpText" xml:space="preserve">
     <value>The name of the connection string in appsettings.json which will be used to connect to the database</value>
@@ -310,10 +310,10 @@
     <value>The type of database</value>
   </data>
   <data name="DeleteSite.Header" xml:space="preserve">
-    <value>Delete Site</value>
+    <value>Delete site</value>
   </data>
   <data name="DeleteSite.Text" xml:space="preserve">
-    <value>Delete Site</value>
+    <value>Delete site</value>
   </data>
   <data name="DefaultAlias.HelpText" xml:space="preserve">
     <value>The default alias for the site. Requests for non-default aliases will be redirected to the default alias.</value>
@@ -322,28 +322,28 @@
     <value>Default?</value>
   </data>
   <data name="Aliases.Heading" xml:space="preserve">
-    <value>Site Urls</value>
+    <value>Site URLs</value>
   </data>
   <data name="AliasName.Text" xml:space="preserve">
-    <value>Url:</value>
+    <value>URL</value>
   </data>
   <data name="Default" xml:space="preserve">
     <value>Default</value>
   </data>
   <data name="Confirm.Alias.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete {0}?</value>
+    <value>Are you sure you wish to delete {0}?</value>
   </data>
   <data name="HomePage.HelpText" xml:space="preserve">
     <value>Select the home page for the site (to be used if there is no page with a path of '/')</value>
   </data>
   <data name="HomePage.Text" xml:space="preserve">
-    <value>Home Page:</value>
+    <value>Home page</value>
   </data>
   <data name="SiteMap.HelpText" xml:space="preserve">
     <value>The site map url for this site which can be submitted to search engines for indexing. The sitemap is cached for 5 minutes and the cache can be manually cleared.</value>
   </data>
   <data name="SiteMap.Text" xml:space="preserve">
-    <value>Site Map:</value>
+    <value>Site map</value>
   </data>
   <data name="Appearance.Heading" xml:space="preserve">
     <value>Appearance</value>
@@ -352,16 +352,16 @@
     <value>Optionally enter content to be included in the page head (ie. meta, link, or script tags)</value>
   </data>
   <data name="HeadContent.Text" xml:space="preserve">
-    <value>Head Content:</value>
+    <value>Head content</value>
   </data>
   <data name="BodyContent.HelpText" xml:space="preserve">
     <value>Optionally enter content to be included in the page body (ie. script tags)</value>
   </data>
   <data name="BodyContent.Text" xml:space="preserve">
-    <value>Body Content:</value>
+    <value>Body content</value>
   </data>
   <data name="PageContent.Heading" xml:space="preserve">
-    <value>Page Content</value>
+    <value>Page content</value>
   </data>
   <data name="SmtpEnabled.HelpText" xml:space="preserve">
     <value>Specify if SMTP is enabled for this site</value>
@@ -373,43 +373,43 @@
     <value>The site version (for site content migrations)</value>
   </data>
   <data name="Version.Text" xml:space="preserve">
-    <value>Version:</value>
+    <value>Version</value>
   </data>
   <data name="DeleteAlias.Text" xml:space="preserve">
     <value>Delete</value>
   </data>
   <data name="DeleteAlias.Header" xml:space="preserve">
-    <value>Delete Alias</value>
+    <value>Delete alias</value>
   </data>
   <data name="SiteGuid.HelpText" xml:space="preserve">
-    <value>The Unique Identifier For The Site</value>
+    <value>The unique identifier for the site</value>
   </data>
   <data name="SiteGuid.Text" xml:space="preserve">
-    <value>ID:</value>
+    <value>ID</value>
   </data>
   <data name="Retention.HelpText" xml:space="preserve">
     <value>Number of days of notifications to retain</value>
   </data>
   <data name="Retention.Text" xml:space="preserve">
-    <value>Retention (Days):</value>
+    <value>Retention (days)</value>
   </data>
   <data name="HybridEnabled.HelpText" xml:space="preserve">
     <value>Specifies if the site can be integrated with an external .NET MAUI hybrid application</value>
   </data>
   <data name="HybridEnabled.Text" xml:space="preserve">
-    <value>Hybrid Enabled?</value>
+    <value>Hybrid enabled?</value>
   </data>
   <data name="Runtime.HelpText" xml:space="preserve">
     <value>The hosting model for UI components which require interactivity</value>
   </data>
   <data name="Runtime.Text" xml:space="preserve">
-    <value>Interactivity:</value>
+    <value>Interactivity</value>
   </data>
   <data name="TextEditor.HelpText" xml:space="preserve">
     <value>Select the text editor for the site</value>
   </data>
   <data name="TextEditor.Text" xml:space="preserve">
-    <value>Text Editor:</value>
+    <value>Text editor</value>
   </data>
   <data name="Functionality" xml:space="preserve">
     <value>Functionality</value>
@@ -418,28 +418,28 @@
     <value>System</value>
   </data>
   <data name="CookieConsent.HelpText" xml:space="preserve">
-    <value>Specify if cookie consent is enabled on this site. Please note this option must be used in conjunction with a Theme which supports cookie consent.</value>
+    <value>Specify if cookie consent is enabled on this site. Please note this option must be used in conjunction with a theme which supports cookie consent.</value>
   </data>
   <data name="CookieConsent.Text" xml:space="preserve">
-    <value>Cookie Consent:</value>
+    <value>Cookie consent</value>
   </data>
   <data name="OptIn" xml:space="preserve">
-    <value>Opt-In (GDPR)</value>
+    <value>Opt-in (GDPR)</value>
   </data>
   <data name="OptOut" xml:space="preserve">
-    <value>Opt-Out (CCPA)</value>
+    <value>Opt-out (CCPA)</value>
   </data>
   <data name="Theme.Heading" xml:space="preserve">
     <value>Theme</value>
   </data>
   <data name="SiteMap.EvictCache" xml:space="preserve">
-    <value>Clear Cache</value>
+    <value>Clear cache</value>
   </data>
   <data name="Success.SiteMap.CacheEvicted" xml:space="preserve">
-    <value>Site Map Cache Cleared</value>
+    <value>Site map cache cleared</value>
   </data>
   <data name="TimeZone.Text" xml:space="preserve">
-    <value>Time Zone:</value>
+    <value>Time zone</value>
   </data>
   <data name="TimeZone.HelpText" xml:space="preserve">
     <value>The default time zone for the site</value>
@@ -451,34 +451,34 @@
     <value>OAuth 2.0 (OAuth2)</value>
   </data>
   <data name="SmtpAuthentication.Text" xml:space="preserve">
-    <value>Authentication:</value>
+    <value>Authentication</value>
   </data>
   <data name="SmtpAuthentication.HelpText" xml:space="preserve">
     <value>Specify the SMTP authentication type</value>
   </data>
   <data name="SmtpClientID.Text" xml:space="preserve">
-    <value>Client ID:</value>
+    <value>Client ID</value>
   </data>
   <data name="SmtpClientID.HelpText" xml:space="preserve">
-    <value>The Client ID for the SMTP provider</value>
+    <value>The client ID for the SMTP provider</value>
   </data>
   <data name="SmtpClientSecret.Text" xml:space="preserve">
-    <value>Client Secret:</value>
+    <value>Client secret</value>
   </data>
   <data name="SmtpClientSecret.HelpText" xml:space="preserve">
-    <value>The Client Secret for the SMTP provider</value>
+    <value>The client secret for the SMTP provider</value>
   </data>
   <data name="SmtpScopes.Text" xml:space="preserve">
-    <value>Scopes:</value>
+    <value>Scopes</value>
   </data>
   <data name="SmtpScopes.HelpText" xml:space="preserve">
-    <value>A list of Scopes for the SMTP provider (separated by commas)</value>
+    <value>A list of scopes for the SMTP provider (separated by commas)</value>
   </data>
   <data name="SmtpAuthority.Text" xml:space="preserve">
-    <value>Authority Url:</value>
+    <value>Authority URL</value>
   </data>
   <data name="SmtpAuthority.HelpText" xml:space="preserve">
-    <value>The Authority Url for the SMTP provider</value>
+    <value>The authority URL for the SMTP provider</value>
   </data>
   <data name="None" xml:space="preserve">
     <value>None</value>
@@ -487,19 +487,19 @@
     <value>Automatic</value>
   </data>
   <data name="StartTls" xml:space="preserve">
-    <value>Upgrade To TLS</value>
+    <value>Upgrade to TLS</value>
   </data>
   <data name="SslOnConnect" xml:space="preserve">
     <value>Require SSL/TLS</value>
   </data>
   <data name="StartTlsWhenAvailable" xml:space="preserve">
-    <value>Use TLS When Available</value>
+    <value>Use TLS when available</value>
   </data>
   <data name="AliasName.HelpText" xml:space="preserve">
     <value>A url for this site. This can include domain names (ie. domain.com), subdomains (ie. sub.domain.com) or virtual folders (ie. domain.com/folder).</value>
   </data>
   <data name="SiteGroupMembers.Text" xml:space="preserve">
-    <value>Group:</value>
+    <value>Group</value>
   </data>
   <data name="SiteGroupMembers.HelpText" xml:space="preserve">
     <value>The site groups in this tenant (database)</value>
@@ -511,7 +511,7 @@
     <value>Indicates if the selected member is the primary site of the site group</value>
   </data>
   <data name="GroupName.Text" xml:space="preserve">
-    <value>Name:</value>
+    <value>Name</value>
   </data>
   <data name="GroupName.HelpText" xml:space="preserve">
     <value>Name of the site group</value>
@@ -529,28 +529,28 @@
     <value>Update</value>
   </data>
   <data name="DeleteSiteGroupMember.Header" xml:space="preserve">
-    <value>Delete Site Group Member</value>
+    <value>Delete site group member</value>
   </data>
   <data name="Confirm.SiteGroupMember.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete This Member From The Site Group?</value>
+    <value>Are you sure you wish to delete this member from the site group?</value>
   </data>
   <data name="Message.Required.GroupName" xml:space="preserve">
-    <value>Site Group Name Is Required</value>
+    <value>Site group name is required</value>
   </data>
   <data name="Message.Site.Synchronize" xml:space="preserve">
-    <value>Site Submitted For Synchronization</value>
+    <value>Site submitted for synchronization</value>
   </data>
   <data name="Site.Text" xml:space="preserve">
-    <value>Members:</value>
+    <value>Members</value>
   </data>
   <data name="Site.HelpText" xml:space="preserve">
     <value>The sites which are members of this site group</value>
   </data>
   <data name="Synchronized.Text" xml:space="preserve">
-    <value>Synchronized:</value>
+    <value>Synchronized</value>
   </data>
   <data name="GroupType.Text" xml:space="preserve">
-    <value>Type:</value>
+    <value>Type</value>
   </data>
   <data name="GroupType.HelpText" xml:space="preserve">
     <value>Defines the specific behavior of the site group</value>
@@ -565,6 +565,6 @@
     <value>Localization</value>
   </data>
   <data name="ChangeDetection" xml:space="preserve">
-    <value>Change Detection</value>
+    <value>Change detection</value>
   </data>
 </root>

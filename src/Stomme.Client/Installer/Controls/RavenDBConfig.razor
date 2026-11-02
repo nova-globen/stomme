@@ -2,19 +2,19 @@
 @implements Stomme.Interfaces.IDatabaseConfigControl
 
 <div class="db-field">
-    <Label For="server" HelpText="Enter the RavenDB server host (without scheme)" ResourceKey="Server">Server:</Label>
+    <Label For="server" HelpText="Enter the RavenDB server host (without scheme)" ResourceKey="Server">Server</Label>
     <div class="db-field-control">
         <input id="server" type="text" class="db-input" @bind="@_server" />
     </div>
 </div>
 <div class="db-field">
-    <Label For="port" HelpText="Enter the port RavenDB listens on" ResourceKey="Port">Port:</Label>
+    <Label For="port" HelpText="Enter the port RavenDB listens on" ResourceKey="Port">Port</Label>
     <div class="db-field-control">
         <input id="port" type="text" class="db-input" @bind="@_port" />
     </div>
 </div>
 <div class="db-field">
-    <Label For="scheme" HelpText="Select the connection scheme" ResourceKey="Scheme">Scheme:</Label>
+    <Label For="scheme" HelpText="Select the connection scheme" ResourceKey="Scheme">Scheme</Label>
     <div class="db-field-control">
         <select id="scheme" class="db-select" @bind="@_scheme">
             <option value="http" selected>http</option>
@@ -23,7 +23,7 @@
     </div>
 </div>
 <div class="db-field">
-    <Label For="database" HelpText="Enter the name of the database" ResourceKey="Database">Database:</Label>
+    <Label For="database" HelpText="Enter the name of the database" ResourceKey="Database">Database</Label>
     <div class="db-field-control">
         <input id="database" type="text" class="db-input" @bind="@_database" />
     </div>

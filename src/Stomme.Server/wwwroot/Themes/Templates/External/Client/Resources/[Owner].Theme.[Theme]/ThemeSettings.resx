@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Login.HelpText" xml:space="preserve">
-    <value>Specify if a Login option should be displayed. Note that this option does not prevent the login page from being accessible via a direct url.</value>
+    <value>Specify if a login option should be displayed. Note that this option does not prevent the login page from being accessible via a direct url.</value>
   </data>
   <data name="Login.Text" xml:space="preserve">
-    <value>Show Login?</value>
+    <value>Show login?</value>
   </data>
   <data name="Register.HelpText" xml:space="preserve">
-    <value>Specify if a Register option should be displayed. Note that this option is also dependent on the Allow Registration option in Site Settings.</value>
+    <value>Specify if a register option should be displayed. Note that this option is also dependent on the allow registration option in site settings.</value>
   </data>
   <data name="Register.Text" xml:space="preserve">
-    <value>Show Register?</value>
+    <value>Show register?</value>
   </data>
   <data name="Scope.HelpText" xml:space="preserve">
     <value>Specify if the settings are applicable to this page or the entire site.</value>
   </data>
   <data name="Scope.Text" xml:space="preserve">
-    <value>Setting Scope:</value>
+    <value>Setting scope</value>
   </data>
 </root>

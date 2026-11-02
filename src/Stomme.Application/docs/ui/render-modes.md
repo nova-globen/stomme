@@ -31,7 +31,7 @@ Two string constant classes in `Stomme.Shared` (the `Stomme.Shared` package):
 1. **Per site.** Each site stores `RenderMode`, `Runtime`, `Prerender` and `EnhancedNavigation`. The first site takes the
    first three at install from the configuration keys below (Enhanced Navigation starts on); afterwards the
    Host changes them in Admin > Site Settings > UI Component
-   Settings, a section only the Host sees and collapsed until its heading is clicked: Render Mode (Interactive, Static,
+   Settings, a section only the Host sees and collapsed until its heading is clicked: Render mode (Interactive, Static,
    Headless (API Only)), Enhanced Navigation (shown for Static only), Interactivity (Server (SignalR), Client
    (WebAssembly), Auto), Prerender, Hybrid?. Choosing Interactive sets Prerender to Yes in the form, choosing Static sets
    it to No; check it before saving. A site added in Admin > Site Management starts as Static on the Server runtime.

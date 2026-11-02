@@ -22,7 +22,7 @@ change; they invalidate cache entries and tell interactive pages to refresh. Syn
   `TimeSpan.MinValue` as the distributed duration skips L2 for that entry.
 - **Fail-safe** is on by default: when an entry has expired and the factory then throws, the expired value is served
   again (for up to three times the cache duration) instead of the error.
-- `ClearAllAsync()` removes every entry of every tenant and site. It is the **Clear All** action in the Caching section of
+- `ClearAllAsync()` removes every entry of every tenant and site. It is the **Clear all** action in the Caching section of
   **Admin > System Info** (`admin/system`, host only).
 - Every key is also prefixed with the installation's `InstallationId`, so several installations can share one Redis.
 - With L2 configured, values are serialized with System.Text.Json. A value that does not serialize is not stored in L2 and
@@ -166,7 +166,7 @@ shown and edited on **Admin > System Info**, which writes all of them together t
 - **Cache values must be safe to share.** The same instance is handed to every caller from L1; do not mutate a cached
   object.
 - Do not use FusionCache's `IFusionCache` directly unless you need a feature `ICacheManager` lacks: you then bypass the
-  site-key convention and `Clear All` still removes your entries anyway.
+  site-key convention and `Clear all` still removes your entries anyway.
 
 ## Related
 

@@ -166,6 +166,12 @@
                             <tr>@Detail(item)</tr>
                         }
                     }
+                    @if (!ItemList.Any())
+                    {
+                        @* An empty list says so - a bare header row read as a page that had not loaded (BL-241, driven: Url
+                           Mappings, Setting Management). A page names its own next step through EmptyMessage. *@
+                        <tr class="app-pager-empty"><td colspan="100" style="color:var(--db-text-2);">@EmptyText()</td></tr>
+                    }
                 </tbody>
                 <tfoot>
                     <tr class="@RowClass">@Footer</tr>
@@ -381,6 +387,9 @@
     public string SearchBoxClass { get; set; } // class for Search box
 
     [Parameter]
+    public string EmptyMessage { get; set; } // optional - what an empty list says, e.g. what to do to fill it; a search that finds nothing says so instead
+
+    [Parameter]
     public string Parameters { get; set; } // optional - querystring parameters in the form of "id=x&name=y" used in static render mode
 
     [SupplyParameterFromForm(FormName = "PagerForm")]
@@ -393,6 +402,9 @@
     public string PaginationAlignment { get; set; } = "center"; // Alignment of the Page Numbering start, center, end
 
     private IEnumerable<TableItem> ItemList { get; set; }
+
+    private string EmptyText() =>
+        !string.IsNullOrEmpty(_search) ? Localizer["NoMatch", _search] : !string.IsNullOrEmpty(EmptyMessage) ? EmptyMessage : Localizer["Empty"];
 
     protected override void OnInitialized()
     {

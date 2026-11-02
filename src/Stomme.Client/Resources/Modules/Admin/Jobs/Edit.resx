@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Name.Text" xml:space="preserve">
-    <value>Name: </value>
+    <value>Name</value>
   </data>
   <data name="Minute(s)" xml:space="preserve">
     <value>Minute(s)</value>
@@ -133,13 +133,13 @@
     <value>Month(s)</value>
   </data>
   <data name="Error.Job.Load" xml:space="preserve">
-    <value>Error Loading Job</value>
+    <value>Error loading job</value>
   </data>
   <data name="Error.Job.Update" xml:space="preserve">
-    <value>Error Updating Job</value>
+    <value>Error updating job</value>
   </data>
   <data name="Message.Required.JobInfo" xml:space="preserve">
-    <value>You Must Provide The Job Name, Frequency, and Retention</value>
+    <value>You must provide the job name, frequency, and retention</value>
   </data>
   <data name="Name.HelpText" xml:space="preserve">
     <value>Enter the job name</value>
@@ -166,46 +166,46 @@
     <value>The date and time when this job will execute next. This value cannot be modified. Use the settings above to control the execution of the job.</value>
   </data>
   <data name="Type.Text" xml:space="preserve">
-    <value>Type: </value>
+    <value>Type</value>
   </data>
   <data name="Enabled.Text" xml:space="preserve">
-    <value>Enabled? </value>
+    <value>Enabled?</value>
   </data>
   <data name="RunsEvery.Text" xml:space="preserve">
-    <value>Runs Every: </value>
+    <value>Runs every</value>
   </data>
   <data name="Starting.Text" xml:space="preserve">
-    <value>Starting: </value>
+    <value>Starting</value>
   </data>
   <data name="Ending.Text" xml:space="preserve">
-    <value>Ending: </value>
+    <value>Ending</value>
   </data>
   <data name="RetentionLog.Text" xml:space="preserve">
-    <value>Retention Log (Items): </value>
+    <value>Retention log (items)</value>
   </data>
   <data name="NextExecution.Text" xml:space="preserve">
-    <value>Next Execution: </value>
+    <value>Next execution</value>
   </data>
   <data name="Week(s)" xml:space="preserve">
     <value>Week(s)</value>
   </data>
   <data name="Once" xml:space="preserve">
-    <value>Execute Once</value>
+    <value>Execute once</value>
   </data>
   <data name="Message.StartEndDateError" xml:space="preserve">
-    <value>The Start Date Cannot Be Later Than The End Date</value>
+    <value>The start date cannot be later than the end date</value>
   </data>
   <data name="Message.StartDateError" xml:space="preserve">
-    <value>The Start Date Cannot Be Prior To The Current Date</value>
+    <value>The start date cannot be prior to the current date</value>
   </data>
   <data name="Message.ExecutingError" xml:space="preserve">
-    <value>The Job Is Currently Executing. You Must Wait Until The Job Has Completed.</value>
+    <value>The job is currently executing. You must wait until the job has completed.</value>
   </data>
   <data name="JobNotEditable" xml:space="preserve">
-    <value>The Job Cannot Be Modified As It Is Currently Enabled. You Must Disable The Job To Change Its Settings.</value>
+    <value>The job cannot be modified as it is currently enabled. You must disable the job to change its settings.</value>
   </data>
   <data name="MaximumDuration.Text" xml:space="preserve">
-    <value>Maximum Duration:</value>
+    <value>Maximum duration</value>
   </data>
   <data name="MaximumDuration.HelpText" xml:space="preserve">
     <value>The maximum duration in minutes that the job is expected to run. If the job is still running after this time, it will assume the job terminated unexpectedly and it will reset itself automatically.</value>

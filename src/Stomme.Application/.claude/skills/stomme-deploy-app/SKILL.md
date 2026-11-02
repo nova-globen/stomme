@@ -61,7 +61,7 @@ How it works, and what each path holds: [Deploy](../../../docs/operations/deploy
    - Service: `sudo systemctl enable --now myapp`.
 9. **Install at the public address.** Open `https://<public host>/` and complete the installer there, so the first
    alias is the public host name; or install unattended with `Installation:DefaultAlias` set to it. When moving an
-   existing installation, add the new host name under **Admin > Site Settings > Site Urls** before switching DNS.
+   existing installation, add the new host name under **Admin > Site Settings > Site URLs** before switching DNS.
 10. **Health checks.** Liveness: `GET /healthz` (`200 alive`), for any `Host` header - the container check needs no
    site's host name. Readiness for a load balancer: `GET /readyz`, which is `503` until the first health probe has run
    after installation. Never use `/readyz` for liveness.
@@ -75,12 +75,12 @@ How it works, and what each path holds: [Deploy](../../../docs/operations/deploy
 
 - The publish output (or the image's `/app`) has no `Data` directory before the first start.
 - `curl -i http://127.0.0.1:8080/healthz` (container) answers `200` and `alive` before and after installation, and adds
-  no `127.0.0.1:8080` row under **Admin > Site Settings > Site Urls**;
+  no `127.0.0.1:8080` row under **Admin > Site Settings > Site URLs**;
   `/readyz` answers `503 not-ready` before installation and `200 ready` some time after it.
 - The keys directory holds a `key-<guid>.xml` file after the first start.
 - The public address opens the installer on a fresh deployment, and the site after installation; the page loads over
   HTTPS with no mixed-content or WebSocket errors in the browser console. An Interactive page responds to clicks.
-- **System Info** (`/admin/system`) shows **Root Path** as expected (`/app` in the container) and **Environment** as
+- **System Info** (`/admin/system`) shows **Root path** as expected (`/app` in the container) and **Environment** as
   `Production`.
 - Upload a file to a private and a public folder, save a setting, then redeploy (rebuild the image and recreate the
   container, or republish the service). After the redeploy: the site is still installed, you are still able to sign
@@ -88,7 +88,7 @@ How it works, and what each path holds: [Deploy](../../../docs/operations/deploy
   reads correctly - that last check proves the keys survived. A browser session (or a saved sign-in cookie) from
   before the redeploy is still signed in.
 - `docker inspect --format '{{.State.Health.Status}}' myapp` reports `healthy`.
-- **Restart Application** in System Info brings the app back by itself within a few seconds.
+- **Restart application** in System Info brings the app back by itself within a few seconds.
 
 ## Common mistakes
 
@@ -113,7 +113,7 @@ How it works, and what each path holds: [Deploy](../../../docs/operations/deploy
   `Upgrade`/`Connection` headers and `proxy_http_version 1.1`.
 - **The container restarts every few minutes on a fresh deployment.** Cause: the health check calls `/readyz`. Fix:
   use `/healthz`.
-- **Restart Application leaves the app down.** Cause: `Restart=on-failure` or a `--restart on-failure` policy; a
+- **Restart application leaves the app down.** Cause: `Restart=on-failure` or a `--restart on-failure` policy; a
   restart from the admin pages exits with success. Fix: `Restart=always`, `--restart unless-stopped`.
 - **Uploads fail above a few megabytes behind nginx.** Cause: nginx's default body size limit. Fix: raise
   `client_max_body_size`.

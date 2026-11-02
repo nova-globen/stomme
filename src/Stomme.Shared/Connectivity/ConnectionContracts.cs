@@ -92,7 +92,7 @@ namespace Stomme.Connectivity
             ConnectorOutcome.ConnectorUnavailable => "No connector of this type is installed.",
             ConnectorOutcome.CredentialsMissing => "A credential this connection needs is not stored; enter it again.",
             ConnectorOutcome.CredentialsUnreadable => "A stored credential can no longer be read; enter it again.",
-            ConnectorOutcome.DeniedByPolicy => "The destination is not permitted by the outbound policy.",
+            ConnectorOutcome.DeniedByPolicy => "This site may not reach that address. A private or local one (this machine, the local network) is reached only once a Host user lists it under Private hosts on the Connections page.",
             ConnectorOutcome.TimedOut => "The connection timed out.",
             ConnectorOutcome.Faulted => "The connector faulted; the log carries the exception type.",
             ConnectorOutcome.ConnectionNotFound => "The connection was not found.",
@@ -100,6 +100,40 @@ namespace Stomme.Connectivity
             ConnectorOutcome.OperationUndefined => "The operation is not one the connector defines.",
             ConnectorOutcome.HostKeyUntrusted => "The server's host key is not one this connection trusts, so nothing was sent to it: set its Host key to the server's own - its SHA256 fingerprint, or the line ssh-keyscan prints for it.",
             _ => "The connector call ended with an unknown outcome.",
+        };
+
+        /// <summary>
+        /// The fixed text, or - for a failure or a fault the remote answered with an HTTP status - what that status means and
+        /// what to check (BL-240: "The connector reported a failure" left a first-time author nothing to fix). The status is
+        /// the only thing taken from the connector, and it is three digits.
+        /// </summary>
+        public static string Message(ConnectorOutcome outcome, int? httpStatus) =>
+            httpStatus is { } status && outcome is ConnectorOutcome.Failed or ConnectorOutcome.Faulted ? Answered(status) : Message(outcome);
+
+        /// <summary>
+        /// The HTTP status a connector's own failure text starts with ("HTTP 404 Not Found.", "HTTP 401: ..."), or null. Only
+        /// the three digits are read; the rest of the text - which may echo the endpoint or the remote's words - stays
+        /// discarded, as every connector message is.
+        /// </summary>
+        public static int? HttpStatusOf(string? text)
+        {
+            var match = text is null ? null : HttpStatusPrefix.Match(text);
+            return match is { Success: true } && int.TryParse(match.Groups[1].Value, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var status)
+                && status is >= 100 and <= 599 ? status : null;
+        }
+
+        private static readonly System.Text.RegularExpressions.Regex HttpStatusPrefix = new(@"\AHTTP (\d{3})(?!\d)", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        private static string Answered(int status) => $"The service answered HTTP {status}" + status switch
+        {
+            400 => " - it did not accept the request: check the step's path, body and parameters.",
+            401 => " - it did not accept the credential: check the connection's token or password.",
+            403 => " - the credential may not do this: check what it is allowed in the service.",
+            404 => " - nothing is there: check the connection's address and the step's path.",
+            405 => " - it does not take that method here: check the step's method.",
+            408 or 429 => " - it is busy or limiting requests: try again later, or let the step try again.",
+            >= 500 => " - the service itself failed: try again later.",
+            _ => ".",
         };
     }
 
@@ -302,8 +336,8 @@ namespace Stomme.Connectivity
                 truncated ? $"Extracted {records.Count} record(s); the cap of {cap} was reached and the rest were left unread." : $"Extracted {records.Count} record(s).",
                 records, truncated);
 
-        public static ConnectorExtractionResult Fail(ConnectorOutcome outcome) =>
-            new(false, outcome, ConnectorOutcomes.Message(outcome), Array.Empty<ConnectorRecord>(), false);
+        public static ConnectorExtractionResult Fail(ConnectorOutcome outcome, int? httpStatus = null) =>
+            new(false, outcome, ConnectorOutcomes.Message(outcome, httpStatus), Array.Empty<ConnectorRecord>(), false);
     }
 
     /// <summary>

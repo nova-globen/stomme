@@ -64,6 +64,50 @@ namespace Stomme.Tests.Connectivity
         }
 
         [Fact]
+        public async Task An_http_status_a_failure_starts_with_is_said_and_nothing_else_of_the_connectors_text()
+        {
+            // BL-240: "The connector reported a failure" left an author nothing to fix. The three digits of a status the
+            // connector's own text starts with are read; the rest - here the endpoint and a password - stays discarded.
+            var tested = new RecordingDomainEventHandler<ConnectionTestedEvent>();
+            await using var harness = await ConnectivityApplicationHarness.StartAsync(
+                new IConnector[]
+                {
+                    new ProbeConnector("answers", (_, _) => Task.FromResult(ConnectionTestResult.Fail("HTTP 404 Not Found at " + Leak))),
+                    new ProbeConnector("throws", (_, _) => throw new InvalidOperationException("HTTP 401: " + Leak)),
+                    new ProbeConnector("quotes", (_, _) => Task.FromResult(ConnectionTestResult.Fail("the proxy said HTTP 500 " + Leak))),
+                },
+                services => services.AddSingleton<IDomainEventHandler<ConnectionTestedEvent>>(tested));
+            var credentials = new Dictionary<string, string> { ["password"] = "hunter2" };
+            var answers = await harness.SendAsync(new TestConnectionCommand(await harness.SendAsync(new CreateConnectionCommand("Answers", "answers", "host=db", Credentials: credentials))));
+            var throws = await harness.SendAsync(new TestConnectionCommand(await harness.SendAsync(new CreateConnectionCommand("Throws", "throws", "host=db", Credentials: credentials))));
+            var quotes = await harness.SendAsync(new TestConnectionCommand(await harness.SendAsync(new CreateConnectionCommand("Quotes", "quotes", "host=db", Credentials: credentials))));
+
+            Assert.Equal((ConnectorOutcome.Failed, "The service answered HTTP 404 - nothing is there: check the connection's address and the step's path."), (answers.Outcome, answers.Message));
+            Assert.Equal((ConnectorOutcome.Faulted, "The service answered HTTP 401 - it did not accept the credential: check the connection's token or password."), (throws.Outcome, throws.Message));
+            Assert.Equal(ConnectorOutcomes.Message(ConnectorOutcome.Failed), quotes.Message); // a status not at the start is not read
+            Assert.Equal(new[] { answers.Message, throws.Message, quotes.Message }, tested.Received.ConvertAll(received => received.Message));
+            foreach (var said in new[] { answers, throws, quotes })
+            {
+                Assert.DoesNotContain("hunter2", JsonSerializer.Serialize(said));
+                Assert.DoesNotContain("host=db", said.Message);
+            }
+
+            Assert.DoesNotContain(harness.Logs, line => line.Contains("hunter2", StringComparison.Ordinal));
+        }
+
+        [Theory]
+        [InlineData("HTTP 404 Not Found.", 404)]
+        [InlineData("HTTP 503", 503)]
+        [InlineData("HTTP 4040 x", null)]
+        [InlineData("HTTP 099 x", null)]
+        [InlineData(" HTTP 404", null)]
+        [InlineData("http 404", null)]
+        [InlineData("Failed: HTTP 404", null)]
+        [InlineData(null, null)]
+        public void Only_a_status_at_the_very_start_is_read(string? text, int? status) =>
+            Assert.Equal(status, ConnectorOutcomes.HttpStatusOf(text));
+
+        [Fact]
         public async Task The_policys_denial_and_a_timeout_are_their_own_categories()
         {
             var denied = new ProbeConnector("denied", (_, _) => throw new HttpRequestException("refused", new OutboundDestinationDeniedException("The destination is not permitted.")));

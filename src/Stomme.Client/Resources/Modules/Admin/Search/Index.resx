@@ -118,52 +118,52 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Enabled.Text" xml:space="preserve">
-    <value>Enabled? </value>
+    <value>Enabled?</value>
   </data>
   <data name="Enabled.HelpText" xml:space="preserve">
     <value>Specify if search indexing is enabled</value>
   </data>
   <data name="LastIndexedOn.Text" xml:space="preserve">
-    <value>Last Indexed (UTC): </value>
+    <value>Last indexed (UTC)</value>
   </data>
   <data name="LastIndexedOn.HelpText" xml:space="preserve">
     <value>The date/time, in UTC, which the site was last indexed on. Content changed after it is indexed on the next run; set it earlier to index again from that time.</value>
   </data>
   <data name="IgnorePages.Text" xml:space="preserve">
-    <value>Ignore Pages: </value>
+    <value>Ignore pages</value>
   </data>
   <data name="IgnorePages.HelpText" xml:space="preserve">
     <value>Comma delimited list of pages which should be ignored (based on page path)</value>
   </data>
   <data name="IgnoreEntities.Text" xml:space="preserve">
-    <value>Ignore Entities: </value>
+    <value>Ignore entities</value>
   </data>
   <data name="IgnoreEntities.HelpText" xml:space="preserve">
-    <value>Comma delimited list of entities which should be ignored. By default File entities are ignored.</value>
+    <value>Comma delimited list of entities which should be ignored. By default file entities are ignored.</value>
   </data>
   <data name="MinimumWordLength.Text" xml:space="preserve">
-    <value>Word Length: </value>
+    <value>Word length</value>
   </data>
   <data name="MinimumWordLength.HelpText" xml:space="preserve">
     <value>Minimum length of a word to be indexed</value>
   </data>
   <data name="IgnoreWords.Text" xml:space="preserve">
-    <value>Ignore Words: </value>
+    <value>Ignore words</value>
   </data>
   <data name="IgnoreWords.HelpText" xml:space="preserve">
     <value>Comma delimited list of words which should be ignored</value>
   </data>
   <data name="Success.Save" xml:space="preserve">
-    <value>Search Settings Saved Successfully. You Will Need Reindex For Your Changes To Be Reflected In The Search Results.</value>
+    <value>Search settings saved successfully. You will need reindex for your changes to be reflected in the search results.</value>
   </data>
   <data name="Error.Save" xml:space="preserve">
-    <value>Error Saving Search Settings</value>
+    <value>Error saving search settings</value>
   </data>
   <data name="SearchProvider.HelpText" xml:space="preserve">
     <value>Specify the search provider for this site</value>
   </data>
   <data name="SearchProvider.Text" xml:space="preserve">
-    <value>Search Provider:</value>
+    <value>Search provider</value>
   </data>
   <data name="Message.Reindex" xml:space="preserve">
     <value>The search index will be rebuilt for this site. Please be patient during the reindexing process.</value>
@@ -175,6 +175,6 @@
     <value>Reindex</value>
   </data>
   <data name="Reindex.Message" xml:space="preserve">
-    <value>Are You Sure You Wish To Reindex Search Content?</value>
+    <value>Are you sure you wish to reindex search content?</value>
   </data>
 </root>

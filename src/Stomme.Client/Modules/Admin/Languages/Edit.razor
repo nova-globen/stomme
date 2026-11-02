@@ -19,13 +19,13 @@ else
             <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
                 <div class="db-fields">
 				    <div class="db-field">
-                        <Label For="code" HelpText="Name Of The Language" ResourceKey="Name">Name:</Label>
+                        <Label For="code" HelpText="Name of the language" ResourceKey="Name">Name</Label>
                         <div class="db-field-control">
                             <input id="code" class="db-input" @bind="@_code" readonly/>
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="default" HelpText="Indicates Whether Or Not This Language Is The Default For The Site" ResourceKey="IsDefault">Default?</Label>
+                        <Label For="default" HelpText="Indicates whether or not this language is the default for the site" ResourceKey="IsDefault">Default?</Label>
                         <div class="db-field-control">
                             <select id="default" class="db-select" @bind="@_default" required>
                                 <option value="True">@SharedLocalizer["Yes"]</option>

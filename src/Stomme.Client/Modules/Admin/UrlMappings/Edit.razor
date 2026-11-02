@@ -8,13 +8,13 @@
 <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
     <div class="db-fields">
         <div class="db-field">
-            <Label For="url" HelpText="A Url identifying a path to a specific page in the site (absolute or relative)" ResourceKey="Url">Url:</Label>
+            <Label For="url" HelpText="A URL identifying a path to a specific page in the site (absolute or relative)" ResourceKey="Url">URL</Label>
             <div class="db-field-control">
                 <input id="url" class="db-input" @bind="@_url" maxlength="500" readonly />
             </div>
         </div>
         <div class="db-field">
-            <Label For="mappedurl" HelpText="A Url where the user will be redirected (absolute or relative). Use '/' for site root path." ResourceKey="MappedUrl">Redirect To:</Label>
+            <Label For="mappedurl" HelpText="A URL where the user will be redirected (absolute or relative). Use '/' for site root path." ResourceKey="MappedUrl">Redirect to</Label>
             <div class="db-field-control">
                 <input id="mappedurl" class="db-input" @bind="@_mappedurl" maxlength="500" required />
             </div>

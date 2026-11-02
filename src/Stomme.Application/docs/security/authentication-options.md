@@ -40,7 +40,7 @@ memberships when you map them.
 ### The site's OpenID Connect or OAuth 2.0 provider
 
 One external provider per site, configured by the Host in **Admin > User Management > Settings > External Login
-Settings** and stored as site settings. The form shows the **Redirect Url** to register at the provider: the
+Settings** and stored as site settings. The form shows the **Redirect URL** to register at the provider: the
 callback path is `/signin-oidc` (OpenID Connect) or `/signin-oauth2` (OAuth 2.0), prefixed by the alias path for a
 virtual-folder alias. The client secret is stored as a private site setting (in clear text in the tenant's database,
 hidden from everyone but administrators).
@@ -153,7 +153,7 @@ Step by step: the [stomme-oidc-provider](../../.claude/skills/stomme-oidc-provid
 ### Tokens for the site's own API (site JWT)
 
 Separately, a site can accept its own HS256 JWTs on `/api/...`: when the site setting `JwtOptions:Secret` is set
-(**Admin > User Management > Settings > Token Settings**), a bearer token signed with it, carrying the user id and name,
+(**Admin > User Management > Settings > Token settings**), a bearer token signed with it, carrying the user id and name,
 signs that user in. Off while the secret is empty.
 
 ## Using it from an app
@@ -235,7 +235,7 @@ Per-site external login (site settings, **Admin > User Management > Settings**, 
   included. Before, the sign-in pages read them, and the provider name they store on the user's login, from the web
   host's default configuration, which leaves out the override file and `features.json`, so a value there was ignored
   and the defaults applied.
-- **An `http://` authority is refused, and not used.** The form refuses an `http://` Authority or Metadata Url, and an
+- **An `http://` authority is refused, and not used.** The form refuses an `http://` Authority or Metadata URL, and an
   address saved another way while `ExternalLogin:RequireHttpsMetadata` is `true` is not handed to the OpenID Connect
   handler: signing in through the provider fails, and the rest of the site keeps serving. (Before 10.73.0 such a value
   made every page and API call of the site answer 500, a restart included.)

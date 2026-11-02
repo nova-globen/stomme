@@ -118,61 +118,61 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ForgotPassword" xml:space="preserve">
-    <value>Forgot Password?</value>
+    <value>Forgot password?</value>
   </data>
   <data name="ForgotUsername" xml:space="preserve">
-    <value>Forgot Username?</value>
+    <value>Forgot username?</value>
   </data>
   <data name="UseLoginLink" xml:space="preserve">
-    <value>Use Login Link</value>
+    <value>Use login link</value>
   </data>
   <data name="Success.Account.Verified" xml:space="preserve">
-    <value>User Account Email Address Verified Successfully. You Can Now Login With Your Username And Password.</value>
+    <value>User account email address verified successfully. You can now login with your username and password.</value>
   </data>
   <data name="Message.Account.NotVerified" xml:space="preserve">
-    <value>User Account Email Address Could Not Be Verified. Please Contact Your Administrator For Further Instructions.</value>
+    <value>User account email address could not be verified. Please contact your administrator for further instructions.</value>
   </data>
   <data name="Success.Account.Linked" xml:space="preserve">
-    <value>External Login Linked Successfully. You Can Now Login.</value>
+    <value>External login linked successfully. You can now login.</value>
   </data>
   <data name="Message.Account.NotLinked" xml:space="preserve">
-    <value>External Login Could Not Be Linked. Please Contact Your Administrator For Further Instructions.</value>
+    <value>External login could not be linked. Please contact your administrator for further instructions.</value>
   </data>
   <data name="Error.Login.Fail" xml:space="preserve">
-    <value>Login Failed. Please Remember That Passwords Are Case Sensitive. If You Have Attempted To Sign In Multiple Times Unsuccessfully, Your Account Will Be Locked Out For A Period Of Time. Note That New User Accounts Often Require Email Address Verification So You May Wish To Check Your Email For A Notification Containing Further Instructions.</value>
+    <value>Login failed. Please remember that passwords are case sensitive. If you have attempted to sign in multiple times unsuccessfully, your account will be locked out for a period of time. Note that new user accounts often require email address verification so you may wish to check your email for a notification containing further instructions.</value>
   </data>
   <data name="Message.Required.UserInfo" xml:space="preserve">
-    <value>Please Provide All Required Fields</value>
+    <value>Please provide all required fields</value>
   </data>
   <data name="Info.SignedIn" xml:space="preserve">
-    <value>You Are Already Signed In</value>
+    <value>You are already signed in</value>
   </data>
   <data name="Message.ForgotPassword" xml:space="preserve">
-    <value>Please Check The Email Address Associated To Your User Account For A Password Reset Notification</value>
+    <value>Please check the email address associated to your user account for a password reset notification</value>
   </data>
   <data name="Message.ForgotUsername" xml:space="preserve">
-    <value>Please Check Your Email For A Username Reminder Notification</value>
+    <value>Please check your email for a username reminder notification</value>
   </data>
   <data name="Message.SendLoginLink" xml:space="preserve">
-    <value>If An Account Uses This Email Address, A Login Link Has Been Sent To It. The Link Is Only Valid For A Limited Amount Of Time.</value>
+    <value>If an account uses this email address, a login link has been sent to it. The link is only valid for a limited amount of time.</value>
   </data>
   <data name="Message.UserDoesNotExist" xml:space="preserve">
-    <value>User Does Not Exist For Criteria Specified</value>
+    <value>User does not exist for criteria specified</value>
   </data>
   <data name="Code.HelpText" xml:space="preserve">
     <value>Please enter the secure verification code which was sent to you by email</value>
   </data>
   <data name="Code.Placeholder" xml:space="preserve">
-    <value>Verification Code</value>
+    <value>Verification code</value>
   </data>
   <data name="Code.Text" xml:space="preserve">
-    <value>Verification Code:</value>
+    <value>Verification code</value>
   </data>
   <data name="Error.TwoFactor.Fail" xml:space="preserve">
-    <value>Verification Failed. Please Ensure You Entered The Code Exactly In The Form Provided In Your Email. If You Wish To Request A New Verification Code Please Select The Cancel Option And Sign In Again. </value>
+    <value>Verification failed. Please ensure you entered the code exactly in the form provided in your email. If you wish to request a new verification code please select the cancel option and sign in again.</value>
   </data>
   <data name="Message.TwoFactor" xml:space="preserve">
-    <value>A Secure Verification Code Has Been Sent To Your Email Address. Please Enter The Code That You Received. If You Do Not Receive The Code Or You Have Lost Access To Your Email, Please Contact Your Administrator.</value>
+    <value>A secure verification code has been sent to your email address. Please enter the code that you received. If you do not receive the code or you have lost access to your email, please contact your administrator.</value>
   </data>
   <data name="Password.HelpText" xml:space="preserve">
     <value>Please enter the password related to your account. Remember that passwords are case sensitive. If you attempt to login to your account multiple times unsuccessfully, you will be locked out for a period of time.</value>
@@ -181,13 +181,13 @@
     <value>Password</value>
   </data>
   <data name="Password.Text" xml:space="preserve">
-    <value>Password:</value>
+    <value>Password</value>
   </data>
   <data name="Remember.HelpText" xml:space="preserve">
     <value>Specify if you would like to be signed back in automatically the next time you visit this site</value>
   </data>
   <data name="Remember.Text" xml:space="preserve">
-    <value>Stay Signed In?</value>
+    <value>Stay signed in?</value>
   </data>
   <data name="Username.HelpText" xml:space="preserve">
     <value>Please enter the username related to your account</value>
@@ -196,75 +196,75 @@
     <value>Username</value>
   </data>
   <data name="Username.Text" xml:space="preserve">
-    <value>Username:</value>
+    <value>Username</value>
   </data>
   <data name="Use" xml:space="preserve">
     <value>Use</value>
   </data>
   <data name="Error.LoadLogin" xml:space="preserve">
-    <value>Error Loading Login</value>
+    <value>Error loading login</value>
   </data>
   <data name="Error.Login" xml:space="preserve">
-    <value>Error Performing Login</value>
+    <value>Error performing login</value>
   </data>
   <data name="Error.ResetPassword" xml:space="preserve">
-    <value>Error Resetting Password</value>
+    <value>Error resetting password</value>
   </data>
   <data name="Error.ForgotUsername" xml:space="preserve">
-    <value>Error Sending Username Reminder</value>
+    <value>Error sending username reminder</value>
   </data>
   <data name="Error.SendLoginLink" xml:space="preserve">
-    <value>Error Sending Login Link</value>
+    <value>Error sending login link</value>
   </data>
     <data name="ExternalLoginStatus.DuplicateEmail" xml:space="preserve">
-    <value>Multiple User Accounts Already Exist With The Email Address Of Your External Login. Please Contact Your Administrator For Further Instructions.</value>
+    <value>Multiple user accounts already exist with the email address of your external login. Please contact your administrator for further instructions.</value>
   </data>
   <data name="ExternalLoginStatus.MissingClaims" xml:space="preserve">
-    <value>The External Login Provider Did Not Provide All Of The Required Information. Please Contact Your Administrator For Further Instructions.</value>
+    <value>The external login provider did not provide all of the required information. Please contact your administrator for further instructions.</value>
   </data>
   <data name="ExternalLoginStatus.ProviderKeyMismatch" xml:space="preserve">
-    <value>An Error Occurred Verifying Your External Login. Please Contact Your Administrator For Further Instructions.</value>
+    <value>An error occurred verifying your external login. Please contact your administrator for further instructions.</value>
   </data>
   <data name="ExternalLoginStatus.UserDoesNotExist" xml:space="preserve">
-    <value>A User Account Matching The Email Address Of Your External Login Does Not Exist. Please Contact Your Administrator For Further Instructions.</value>
+    <value>A user account matching the email address of your external login does not exist. Please contact your administrator for further instructions.</value>
   </data>
   <data name="ExternalLoginStatus.UserNotCreated" xml:space="preserve">
-    <value>A User Account Could Not Be Created For Your External Login. Please Contact Your Administrator For Further Instructions.</value>
+    <value>A user account could not be created for your external login. Please contact your administrator for further instructions.</value>
   </data>
   <data name="ExternalLoginStatus.VerificationRequired" xml:space="preserve">
-    <value>In Order To Link Your External Login With Your User Account You Must Verify Your Identity. Please Check Your Email For Further Instructions.</value>
+    <value>In order to link your external login with your user account you must verify your identity. Please check your email for further instructions.</value>
   </data>
   <data name="ExternalLoginStatus.AccessDenied" xml:space="preserve">
-    <value>Your External Login Was Denied Access. Please Contact Your Administrator For Further Instructions.</value>
+    <value>Your external login was denied access. Please contact your administrator for further instructions.</value>
   </data>
   <data name="ExternalLoginStatus.RemoteFailure" xml:space="preserve">
-    <value>Your External Login Failed. Please Contact Your Administrator For Further Instructions.</value>
+    <value>Your external login failed. Please contact your administrator for further instructions.</value>
   </data>
   <data name="ExternalLoginStatus.ReviewClaims" xml:space="preserve">
-    <value>The Review Claims Option Was Enabled In External Login Settings. Please Visit The Event Log To View The Claims Returned By The Provider.</value>
+    <value>The review claims option was enabled in external login settings. Please visit the event log to view the claims returned by the provider.</value>
   </data>
   <data name="ExternalLoginStatus.LoginLinkFailed" xml:space="preserve">
-    <value>Login Links Are Time Sensitive. Please Request Another Login Link To Complete The Login Process.</value>
+    <value>Login links are time sensitive. Please request another login link to complete the login process.</value>
   </data>
   <data name="ExternalLoginStatus.PasskeyFailed" xml:space="preserve">
-    <value>Passkey Login Was Unsuccessful. Please Ensure You Selected The Correct Passkey For This Site.</value>
+    <value>Passkey login was unsuccessful. Please ensure you selected the correct passkey for this site.</value>
   </data>
   <data name="Register" xml:space="preserve">
     <value>Register as new user?</value>
   </data>
   <data name="Passkey" xml:space="preserve">
-    <value>Use Passkey</value>
+    <value>Use passkey</value>
   </data>
   <data name="Error.Passkey.Fail" xml:space="preserve">
-    <value>Passkey Login Was Not Successful</value>
+    <value>Passkey login was not successful</value>
   </data>
     <data name="Email.HelpText" xml:space="preserve">
     <value>Please enter the email address related to your account</value>
   </data>
     <data name="Email.Placeholder" xml:space="preserve">
-    <value>Email Address</value>
+    <value>Email address</value>
   </data>
     <data name="Email.Text" xml:space="preserve">
-    <value>Email:</value>
+    <value>Email</value>
   </data>
 </root>

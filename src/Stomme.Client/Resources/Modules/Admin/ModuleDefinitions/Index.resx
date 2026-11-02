@@ -118,37 +118,37 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CreateModule.Text" xml:space="preserve">
-    <value>Create Module</value>
+    <value>Create module</value>
   </data>
   <data name="Success.Module.Install" xml:space="preserve">
     <value>Module Installed Successfully. You Must &lt;a href={0}&gt;Restart&lt;/a&gt; Your Application To Apply These Changes.</value>
   </data>
   <data name="Error.Module.Download" xml:space="preserve">
-    <value>Error Downloading Module</value>
+    <value>Error downloading module</value>
   </data>
   <data name="Confirm.Module.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Uninstall The {0} Module?</value>
+    <value>Are you sure you wish to uninstall the {0} module?</value>
   </data>
   <data name="Error.Module.Load" xml:space="preserve">
-    <value>Error Loading Modules</value>
+    <value>Error loading modules</value>
   </data>
   <data name="Success.Module.Delete" xml:space="preserve">
-    <value>Module Deleted Successfully</value>
+    <value>Module deleted successfully</value>
   </data>
   <data name="Error.Module.Delete" xml:space="preserve">
-    <value>Error Deleting Module</value>
+    <value>Error deleting module</value>
   </data>
   <data name="InstallModule.Text" xml:space="preserve">
-    <value>Install Module</value>
+    <value>Install module</value>
   </data>
   <data name="DeleteModule.Header" xml:space="preserve">
-    <value>Uninstall Module</value>
+    <value>Uninstall module</value>
   </data>
   <data name="DeleteModule.Text" xml:space="preserve">
     <value>Uninstall</value>
   </data>
   <data name="InUse" xml:space="preserve">
-    <value>In Use?</value>
+    <value>In use?</value>
   </data>
   <data name="EditModule.Text" xml:space="preserve">
     <value>Edit</value>
@@ -160,12 +160,12 @@
     <value>Enabled?</value>
   </data>
   <data name="Synchronize" xml:space="preserve">
-    <value>Check For Updates</value>
+    <value>Check for updates</value>
   </data>
   <data name="Success.Module.Synchronize" xml:space="preserve">
-    <value>Module Information Has Been Retrieved From The Marketplace</value>
+    <value>Module information has been retrieved from the marketplace</value>
   </data>
   <data name="Error.Module.Synchronize" xml:space="preserve">
-    <value>Error Retrieving Module Information From The Marketplace</value>
+    <value>Error retrieving module information from the marketplace</value>
   </data>
 </root>

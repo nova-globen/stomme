@@ -8,7 +8,7 @@
 <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
     <div class="db-fields">
         <div class="db-field">
-            <Label For="entityName" HelpText="Entity Name" ResourceKey="EntityName">Entity:</Label>
+            <Label For="entityName" HelpText="Entity name" ResourceKey="EntityName">Entity</Label>
             <div class="db-field-control">
                 <div class="db-input-group">
                     @if (_entityNameElement == "input")
@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="db-field">
-            <Label For="entityId" HelpText="Entity Id" ResourceKey="EntityId">Id:</Label>
+            <Label For="entityId" HelpText="Entity ID" ResourceKey="EntityId">ID</Label>
             <div class="db-field-control">
                 <div class="db-input-group">
                     @if (_entityIdElement == "input")
@@ -52,13 +52,13 @@
             </div>
         </div>
         <div class="db-field">
-            <Label For="settingName" HelpText="Setting Name" ResourceKey="SettingName">Name:</Label>
+            <Label For="settingName" HelpText="Setting name" ResourceKey="SettingName">Name</Label>
             <div class="db-field-control">
                 <input id="settingName" class="db-input" @bind="@_settingName" maxlength="256" required />
             </div>
         </div>
         <div class="db-field">
-            <Label For="settingValue" HelpText="Setting Value" ResourceKey="SettingValue">Value:</Label>
+            <Label For="settingValue" HelpText="Setting value" ResourceKey="SettingValue">Value</Label>
             <div class="db-field-control">
                 <input id="settingValue" class="db-input" @bind="@_settingValue" maxlength="256" />
             </div>

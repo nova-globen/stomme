@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Settings.Text" xml:space="preserve">
-    <value>Settings:</value>
+    <value>Settings</value>
   </data>
   <data name="Settings.HelpText" xml:space="preserve">
     <value>Provide settings in comma delimited format using the column template specified</value>
@@ -127,15 +127,15 @@
     <value>Import</value>
   </data>
   <data name="Message.Import.Success" xml:space="preserve">
-    <value>Setting Import Successful</value>
+    <value>Setting import successful</value>
   </data>
   <data name="Message.Import.Validation" xml:space="preserve">
-    <value>You Must Provide Settings To Import</value>
+    <value>You must provide settings to import</value>
   </data>
   <data name="Message.Import.Failure" xml:space="preserve">
-    <value>Setting Import Failed. Please Review Your Event Log For More Detailed Information.</value>
+    <value>Setting import failed. Please review your event log for more detailed information.</value>
   </data>
   <data name="Error.Import" xml:space="preserve">
-    <value>Error Importing Settings</value>
+    <value>Error importing settings</value>
   </data>
 </root>

@@ -446,20 +446,15 @@ namespace Stomme.Controllers
 
         // GET api/<controller>/passwordrequirements/5
         [HttpGet("passwordrequirements/{siteid}")]
-        public async Task<Dictionary<string, string>> PasswordRequirements(int siteid)
+        public Task<Dictionary<string, string>> PasswordRequirements(int siteid)
         {
-            var requirements = new Dictionary<string, string>();
-
-            var site = await _sites.GetSiteAsync(siteid);
-            if (site != null && (site.AllowRegistration || User.IsInRole(RoleNames.Registered)))
-            {
-                // get password settings
-                var sitesettings = HttpContext.GetSiteSettings();
-                requirements = sitesettings.Where(item => item.Key.StartsWith("IdentityOptions:Password:"))
-                    .ToDictionary(item => item.Key, item => item.Value);
-            }
-
-            return requirements;
+            // The site's password rules, to anyone setting a password: a person resetting a forgotten one is signed out on a
+            // site that may not allow registration, and was shown no rules at all (upstream 7164f277). The rules are the
+            // site's policy, not data - a refused password names them anyway. Read from the resolved site's settings, so
+            // `siteid` decides nothing.
+            var sitesettings = HttpContext.GetSiteSettings();
+            return Task.FromResult(sitesettings.Where(item => item.Key.StartsWith("IdentityOptions:Password:"))
+                .ToDictionary(item => item.Key, item => item.Value));
         }
 
         // GET: api/<controller>/passkey?id=x

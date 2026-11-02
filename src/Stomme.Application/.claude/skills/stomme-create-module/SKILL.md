@@ -1026,13 +1026,13 @@ else
     <form @onsubmit="SaveAsync" @onsubmit:preventDefault novalidate>
         <div class="db-fields">
             <div class="db-field">
-                <Label For="note-title" HelpText="A short name, shown in the list">Title:</Label>
+                <Label For="note-title" HelpText="A short name, shown in the list">Title</Label>
                 <div class="db-field-control">
                     <input id="note-title" class="db-input" @bind="_title" maxlength="120" required />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="note-body" HelpText="The text of the note">Note:</Label>
+                <Label For="note-body" HelpText="The text of the note">Note</Label>
                 <div class="db-field-control">
                     <textarea id="note-body" class="db-input" @bind="_body" rows="6" maxlength="4000"></textarea>
                 </div>

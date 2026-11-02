@@ -118,40 +118,40 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Template.Text" xml:space="preserve">
-    <value>Template: </value>
+    <value>Template</value>
   </data>
   <data name="Template.Select" xml:space="preserve">
-    <value>Select Template</value>
+    <value>Select template</value>
   </data>
   <data name="FrameworkReference.HelpText" xml:space="preserve">
     <value>Select a framework reference version</value>
   </data>
   <data name="OwnerName.Text" xml:space="preserve">
-    <value>Owner Name: </value>
+    <value>Owner name</value>
   </data>
   <data name="FrameworkReference.Text" xml:space="preserve">
-    <value>Framework Reference: </value>
+    <value>Framework reference</value>
   </data>
   <data name="Location.Text" xml:space="preserve">
-    <value>Location: </value>
+    <value>Location</value>
   </data>
   <data name="Theme.Create" xml:space="preserve">
-    <value>Create Theme</value>
+    <value>Create theme</value>
   </data>
   <data name="Info.Theme.CreatorIntent" xml:space="preserve">
-    <value>Please Note That The Theme Creator Is Only Intended To Be Used In A Development Environment</value>
+    <value>Please note that the theme creator is only intended to be used in a development environment</value>
   </data>
   <data name="Success.Theme.Create.Internal" xml:space="preserve">
-    <value>The Source Code For Your Theme Has Been Created In Your Solution And Must Be Compiled In Order To Make It Functional</value>
+    <value>The source code for your theme has been created in your solution and must be compiled in order to make it functional</value>
   </data>
   <data name="Success.Theme.Create.External" xml:space="preserve">
     <value>The Source Code For Your Theme Has Been Created At The Location Specified Below And Must Be Compiled In Order To Make It Functional. Once It Has Been Compiled You Must &lt;a href={0}&gt;Restart&lt;/a&gt; Your Application To Activate The Theme.</value>
   </data>
   <data name="Message.Required.ValidName" xml:space="preserve">
-    <value>You Must Provide A Valid Owner Name And Theme Name ( ie. No Punctuation Or Spaces And The Values Cannot Be The Same ) And Choose A Template</value>
+    <value>You must provide a valid owner name and theme name ( ie. No punctuation or spaces and the values cannot be the same ) and choose a template</value>
   </data>
   <data name="OwnerName.HelpText" xml:space="preserve">
-    <value>Enter the name of the organization who is developing this theme. It should not contain spaces or punctuation or contain the word stomme. If you are using an Internal template then make sure the owner matches the name of the project.</value>
+    <value>Enter the name of the organization who is developing this theme. It should not contain spaces or punctuation or contain the word stomme. If you are using an internal template then make sure the owner matches the name of the project.</value>
   </data>
   <data name="ThemeName.HelpText" xml:space="preserve">
     <value>Enter a name for this theme. It should not contain spaces or punctuation.</value>
@@ -163,6 +163,6 @@
     <value>Location where the theme will be created</value>
   </data>
   <data name="ThemeName.Text" xml:space="preserve">
-    <value>Theme Name: </value>
+    <value>Theme name</value>
   </data>
 </root>

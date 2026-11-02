@@ -7,31 +7,31 @@
 @* Migrated to native FluentUI form controls + the --db-* design system (Phase 4). *@
 <div class="db-card">
     <div class="db-field">
-        <Label For="searchprovider" HelpText="Specify the search provider for this site" ResourceKey="SearchProvider">Search Provider: </Label>
+        <Label For="searchprovider" HelpText="Specify the search provider for this site" ResourceKey="SearchProvider">Search provider</Label>
         <FluentTextInput id="searchprovider" @bind-Value="_searchProvider" class="db-field-control" />
     </div>
     <div class="db-field">
-        <Label For="enabled" HelpText="Specify if search indexing is enabled" ResourceKey="Enabled">Indexing Enabled? </Label>
+        <Label For="enabled" HelpText="Specify if search indexing is enabled" ResourceKey="Enabled">Indexing enabled?</Label>
         <FluentSwitch id="enabled" @bind-Value="_indexingEnabled" />
     </div>
     <div class="db-field">
-        <Label For="lastindexedon" HelpText="The date/time, in UTC, which the site was last indexed on. Content changed after it is indexed on the next run; set it earlier to index again from that time." ResourceKey="LastIndexedOn">Last Indexed (UTC): </Label>
+        <Label For="lastindexedon" HelpText="The date/time, in UTC, which the site was last indexed on. Content changed after it is indexed on the next run; set it earlier to index again from that time." ResourceKey="LastIndexedOn">Last indexed (UTC)</Label>
         <FluentTextInput id="lastindexedon" @bind-Value="_lastIndexedOn" class="db-field-control" />
     </div>
     <div class="db-field">
-        <Label For="ignorepages" HelpText="Comma delimited list of pages which should be ignored (based on their path)" ResourceKey="IgnorePages">Ignore Pages: </Label>
+        <Label For="ignorepages" HelpText="Comma delimited list of pages which should be ignored (based on their path)" ResourceKey="IgnorePages">Ignore pages</Label>
         <FluentTextArea id="ignorepages" @bind-Value="_ignorePages" Rows="3" class="db-field-control" />
     </div>
     <div class="db-field">
-        <Label For="ignoreentities" HelpText="Comma delimited list of entities which should be ignored" ResourceKey="IgnoreEntities">Ignore Entities: </Label>
+        <Label For="ignoreentities" HelpText="Comma delimited list of entities which should be ignored" ResourceKey="IgnoreEntities">Ignore entities</Label>
         <FluentTextArea id="ignoreentities" @bind-Value="_ignoreEntities" Rows="3" class="db-field-control" />
     </div>
     <div class="db-field">
-        <Label For="minimumwordlength" HelpText="Minimum length of a word to be indexed" ResourceKey="MinimumWordLength">Word Length: </Label>
+        <Label For="minimumwordlength" HelpText="Minimum length of a word to be indexed" ResourceKey="MinimumWordLength">Word length</Label>
         <div class="db-field-control"><input id="minimumwordlength" type="number" min="0" step="1" class="db-input" @bind="@_minimumWordLengthValue" /></div>
     </div>
     <div class="db-field">
-        <Label For="ignorewords" HelpText="Comma delimited list of words which should be ignored" ResourceKey="IgnoreWords">Ignore Words: </Label>
+        <Label For="ignorewords" HelpText="Comma delimited list of words which should be ignored" ResourceKey="IgnoreWords">Ignore words</Label>
         <FluentTextArea id="ignorewords" @bind-Value="_ignoreWords" Rows="3" class="db-field-control" />
     </div>
 </div>

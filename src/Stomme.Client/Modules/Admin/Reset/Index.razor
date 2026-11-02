@@ -10,16 +10,16 @@
     <ModuleMessage Message="@_passwordrequirements" Type="MessageType.Info" />
     <div class="db-card">
         <div class="db-field">
-            <Label For="username" HelpText="Your username will be populated from the link you received in the password reset notification" ResourceKey="Username">Username: </Label>
+            <Label For="username" HelpText="Your username will be populated from the link you received in the password reset notification" ResourceKey="Username">Username</Label>
             <FluentTextInput id="username" @bind-Value="_username" ReadOnly="true" class="db-field-control" />
         </div>
         <div class="db-field">
-            <Label For="password" HelpText="The new password. It must satisfy complexity rules for the site." ResourceKey="Password">Password: </Label>
+            <Label For="password" HelpText="The new password. It must satisfy complexity rules for the site." ResourceKey="Password">Password</Label>
             <FluentTextInput id="password" TextInputType="@_passwordFieldType" @bind-Value="_password" autocomplete="new-password" Required="true" class="db-field-control" />
             <FluentButton Appearance="ButtonAppearance.Default" OnClick="TogglePassword" tabindex="-1">@_togglepassword</FluentButton>
         </div>
         <div class="db-field">
-            <Label For="confirm" HelpText="Enter the password again. It must exactly match the password entered above." ResourceKey="Confirm">Confirm: </Label>
+            <Label For="confirm" HelpText="Enter the password again. It must exactly match the password entered above." ResourceKey="Confirm">Confirm</Label>
             <FluentTextInput id="confirm" TextInputType="@_passwordFieldType" @bind-Value="_confirm" autocomplete="new-password" Required="true" class="db-field-control" />
             <FluentButton Appearance="ButtonAppearance.Default" OnClick="TogglePassword" tabindex="-1">@_togglepassword</FluentButton>
         </div>

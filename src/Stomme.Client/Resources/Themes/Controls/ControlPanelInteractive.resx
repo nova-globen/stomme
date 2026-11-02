@@ -118,58 +118,58 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ControlPanel" xml:space="preserve">
-    <value>Control Panel</value>
+    <value>Control panel</value>
   </data>
   <data name="AdminDash" xml:space="preserve">
-    <value>Admin Dashboard</value>
+    <value>Admin dashboard</value>
   </data>
   <data name="Page.Unpublish" xml:space="preserve">
-    <value>Unpublish Page</value>
+    <value>Unpublish page</value>
   </data>
   <data name="Page.Publish" xml:space="preserve">
-    <value>Publish Page</value>
+    <value>Publish page</value>
   </data>
   <data name="Page.Delete" xml:space="preserve">
-    <value>Delete Page</value>
+    <value>Delete page</value>
   </data>
   <data name="Module.AddNew" xml:space="preserve">
-    <value>Add New Module</value>
+    <value>Add new module</value>
   </data>
   <data name="Module.AddExisting" xml:space="preserve">
-    <value>Add Existing Module</value>
+    <value>Add existing module</value>
   </data>
   <data name="Modules" xml:space="preserve">
     <value>Modules</value>
   </data>
   <data name="Page.Select" xml:space="preserve">
-    <value>Select Page</value>
+    <value>Select page</value>
   </data>
   <data name="Page.Module.Add" xml:space="preserve">
-    <value>Add Module To Page</value>
+    <value>Add module to page</value>
   </data>
   <data name="Container" xml:space="preserve">
     <value>Container:</value>
   </data>
   <data name="Error.Authorize.No" xml:space="preserve">
-    <value>Not Authorized</value>
+    <value>Not authorized</value>
   </data>
   <data name="Message.Require.ModuleSelect" xml:space="preserve">
-    <value>You Must Select A Module</value>
+    <value>You must select a module</value>
   </data>
   <data name="Module.Manage" xml:space="preserve">
-    <value>Module Management:</value>
+    <value>Module management:</value>
   </data>
   <data name="Module.Select" xml:space="preserve">
-    <value>Select Module</value>
+    <value>Select module</value>
   </data>
   <data name="Page.Manage" xml:space="preserve">
-    <value>Page Management:</value>
+    <value>Page management:</value>
   </data>
   <data name="Pane" xml:space="preserve">
     <value>Pane:</value>
   </data>
   <data name="Success.Page.ModuleAdd" xml:space="preserve">
-    <value>Module Added to Page</value>
+    <value>Module added to page</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Title:</value>
@@ -178,13 +178,13 @@
     <value>Visibility:</value>
   </data>
   <data name="VisibilityEdit" xml:space="preserve">
-    <value>Page Editors Only</value>
+    <value>Page editors only</value>
   </data>
   <data name="VisibilityView" xml:space="preserve">
-    <value>Same As Page</value>
+    <value>Same as page</value>
   </data>
   <data name="Confirm.Page.Delete" xml:space="preserve">
-    <value>Are You Sure You Want To Delete This Page?</value>
+    <value>Are you sure you want to delete this page?</value>
   </data>
   <data name="Location" xml:space="preserve">
     <value>Location:</value>
@@ -196,12 +196,12 @@
     <value>Top</value>
   </data>
   <data name="Module.CopyExisting" xml:space="preserve">
-    <value>Copy Existing Module</value>
+    <value>Copy existing module</value>
   </data>
   <data name="Synchronize" xml:space="preserve">
-    <value>Synchronize Site</value>
+    <value>Synchronize site</value>
   </data>
   <data name="Copy" xml:space="preserve">
-    <value>Copy Page</value>
+    <value>Copy page</value>
   </data>
 </root>

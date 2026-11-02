@@ -118,40 +118,40 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Message.Password.NoMatch" xml:space="preserve">
-    <value>Passwords Entered Do Not Match</value>
+    <value>Passwords entered do not match</value>
   </data>
   <data name="Message.Password.Complexity" xml:space="preserve">
-    <value>Password Provided Does Not Meet The Complexity Policy</value>
+    <value>Password provided does not meet the complexity policy</value>
   </data>
   <data name="Confirm.Delete" xml:space="preserve">
-    <value>Is Deleted?</value>
+    <value>Is deleted?</value>
   </data>
   <data name="Error.User.Load" xml:space="preserve">
-    <value>Error Loading User</value>
+    <value>Error loading user</value>
   </data>
   <data name="Message.Required.ProfileInfo" xml:space="preserve">
-    <value>You Must Provide A Username, Password, Email Address, And All Required Profile Information</value>
+    <value>You must provide a username, password, email address, and all required profile information</value>
   </data>
   <data name="Error.User.Save" xml:space="preserve">
-    <value>Error Saving User</value>
+    <value>Error saving user</value>
   </data>
   <data name="Confirm.HelpText" xml:space="preserve">
     <value>Please enter the password again to confirm it matches with the value above</value>
   </data>
   <data name="Confirm.Text" xml:space="preserve">
-    <value>Confirm Password:</value>
+    <value>Confirm password</value>
   </data>
   <data name="DisplayName.HelpText" xml:space="preserve">
     <value>The full name of the user</value>
   </data>
   <data name="DisplayName.Text" xml:space="preserve">
-    <value>Full Name:</value>
+    <value>Full name</value>
   </data>
   <data name="Email.HelpText" xml:space="preserve">
     <value>The email address where the user will receive notifications</value>
   </data>
   <data name="Email.Text" xml:space="preserve">
-    <value>Email:</value>
+    <value>Email</value>
   </data>
   <data name="IsDeleted.HelpText" xml:space="preserve">
     <value>Indicate if the user is active</value>
@@ -163,13 +163,13 @@
     <value>The user's password. Please choose a password which is sufficiently secure.</value>
   </data>
   <data name="Password.Text" xml:space="preserve">
-    <value>Password:</value>
+    <value>Password</value>
   </data>
   <data name="Username.HelpText" xml:space="preserve">
     <value>The unique username for a user. Note that this field can not be modified.</value>
   </data>
   <data name="Username.Text" xml:space="preserve">
-    <value>Username:</value>
+    <value>Username</value>
   </data>
   <data name="Identity.Heading" xml:space="preserve">
     <value>Identity</value>
@@ -181,34 +181,34 @@
     <value>Password</value>
   </data>
   <data name="LastIPAddress.HelpText" xml:space="preserve">
-    <value>The IP Address of the user recorded during their last login</value>
+    <value>The IP address of the user recorded during their last login</value>
   </data>
   <data name="LastIPAddress.Text" xml:space="preserve">
-    <value>Last IP Address: </value>
+    <value>Last IP address</value>
   </data>
   <data name="LastLogin.HelpText" xml:space="preserve">
     <value>The date and time when the user last signed in</value>
   </data>
   <data name="LastLogin.Text" xml:space="preserve">
-    <value>Last Login:</value>
+    <value>Last login</value>
   </data>
   <data name="DeleteUser.Header" xml:space="preserve">
-    <value>Delete User</value>
+    <value>Delete user</value>
   </data>
   <data name="DeleteUser.Text" xml:space="preserve">
     <value>Delete</value>
   </data>
   <data name="DeleteUser.Message" xml:space="preserve">
-    <value>Are You Sure You Wish To Permanently Delete This User?</value>
+    <value>Are you sure you wish to permanently delete this user?</value>
   </data>
   <data name="Impersonate" xml:space="preserve">
     <value>Impersonate</value>
   </data>
   <data name="Error.User.Impersonate" xml:space="preserve">
-    <value>Unable To Impersonate User</value>
+    <value>Unable to impersonate user</value>
   </data>
   <data name="TimeZone.Text" xml:space="preserve">
-    <value>Time Zone:</value>
+    <value>Time zone</value>
   </data>
   <data name="TimeZone.HelpText" xml:space="preserve">
     <value>The user's time zone</value>
@@ -226,7 +226,7 @@
     <value>Passkeys</value>
   </data>
   <data name="Logins.Heading" xml:space="preserve">
-    <value>External Logins</value>
+    <value>External logins</value>
   </data>
   <data name="Passkey" xml:space="preserve">
     <value>Passkey</value>
@@ -235,25 +235,25 @@
     <value>Login</value>
   </data>
   <data name="DeletePasskey.Header" xml:space="preserve">
-    <value>Delete Passkey</value>
+    <value>Delete passkey</value>
   </data>
   <data name="DeleteLogin.Header" xml:space="preserve">
-    <value>Delete Login</value>
+    <value>Delete login</value>
   </data>
   <data name="Confirm.Passkey.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete {0}?</value>
+    <value>Are you sure you wish to delete {0}?</value>
   </data>
   <data name="Confirm.Login.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete {0}?</value>
+    <value>Are you sure you wish to delete {0}?</value>
   </data>
   <data name="Message.Passkeys.None" xml:space="preserve">
-    <value>You Have Not Created Any Passkeys</value>
+    <value>You have not created any passkeys</value>
   </data>
   <data name="Message.Logins.None" xml:space="preserve">
-    <value>You Do Not Have Any External Logins For This Site</value>
+    <value>You do not have any external logins for this site</value>
   </data>
   <data name="CultureCode.Text" xml:space="preserve">
-    <value>Language:</value>
+    <value>Language</value>
   </data>
   <data name="CultureCode.HelpText" xml:space="preserve">
     <value>The user's preferred language. Note that you will only be able to choose from languages supported on this site.</value>

@@ -15,7 +15,7 @@
             {
                 <div class="db-card">
                     <div class="db-field">
-                        <Label For="backup" HelpText="Specify if you want to backup files during the upgrade process. Disabling this option will reduce the time required for the upgrade." ResourceKey="Backup">Backup Files? </Label>
+                        <Label For="backup" HelpText="Specify if you want to backup files during the upgrade process. Disabling this option will reduce the time required for the upgrade." ResourceKey="Backup">Backup files?</Label>
                         <FluentSwitch id="backup" @bind-Value="_backupFiles" />
                     </div>
                 </div>
@@ -38,11 +38,11 @@
         <TabPanel Name="Upload" ResourceKey="Upload">
             <div class="db-card">
                 <div class="db-field">
-                    <Label HelpText="Upload A Framework Package And Then Select Upgrade" ResourceKey="Framework">Framework: </Label>
+                    <Label HelpText="Upload a framework package and then select upgrade" ResourceKey="Framework">Framework</Label>
                     <FileManager Folder="@Constants.PackagesFolder" />
                 </div>
                 <div class="db-field">
-                    <Label For="backupupload" HelpText="Specify if you want to backup files during the upgrade process. Disabling this option will reduce the time required for the upgrade." ResourceKey="Backup">Backup Files? </Label>
+                    <Label For="backupupload" HelpText="Specify if you want to backup files during the upgrade process. Disabling this option will reduce the time required for the upgrade." ResourceKey="Backup">Backup files?</Label>
                     <FluentSwitch id="backupupload" @bind-Value="_backupFiles" />
                 </div>
             </div>

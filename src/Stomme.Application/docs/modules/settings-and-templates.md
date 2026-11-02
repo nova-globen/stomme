@@ -15,8 +15,8 @@ installer. **Page templates** declare pages the host creates on every site with 
    component named `Settings` in the module's namespace.
 2. An administrator opens the placement's actions menu in edit mode and chooses the settings item (the framework's
    `Settings` action, at `{page path}/*/{moduleId}/Settings`). The framework's settings page shows the placement's title,
-   pane, container and permissions, and the module's component on the **Module Settings** tab. (The framework reads the
-   component's `Title` for that heading, but the tab's own localized text "Module Settings" replaces it.)
+   pane, container and permissions, and the module's component on the **Module settings** tab. (The framework reads the
+   component's `Title` for that heading, but the tab's own localized text "Module settings" replaces it.)
 3. On Save, the framework calls the component's `UpdateSettings()` - through `Stomme.Interfaces.ISettingsControl`, which the
    component implements - BEFORE it saves the placement.
 4. The values are stored as settings of the module instance (`Stomme.Shared.EntityNames.Module`, keyed by `ModuleId`) in
@@ -51,7 +51,8 @@ On every startup, for every site, the host collects the `PageTemplates` of every
 missing:
 
 1. A template is applied only when its `AliasName` is `"*"` or the name of the site's alias. **The default `AliasName` is an
-   empty string, which matches nothing here** - a template without `AliasName = "*"` is silently skipped.
+   empty string, which matches nothing here** - a template without `AliasName = "*"` is skipped; since 10.81.0 the
+   boot logs a warning naming the module and the page's path.
 2. A template whose `Version` is `"*"` (the default) is considered on every startup. A template with a version number is
    applied only while that number is higher than the site's configuration version, and the site's version then moves up to
    it - so it is applied once.
@@ -78,7 +79,7 @@ a template for all sites (`"/path"`) or one alias (`"alias/path"`), with `View` 
 the component carries `[Authorize]`. Nested paths are not allowed this way, and `@page` is ignored when the module declares
 `PageTemplates`.
 
-Without any template, the module appears in the control panel (edit mode, **Add Module To Page**) under its `Categories`, and
+Without any template, the module appears in the control panel (edit mode, **Add module to page**) under its `Categories`, and
 an administrator places it by hand.
 
 ### `module.<id>.enabled`
@@ -291,7 +292,7 @@ Types: `Stomme.Models.PageTemplate`, `Stomme.Models.PageTemplateModule`, `Stomme
 ## Rules and pitfalls
 
 - **`AliasName = "*"` on every module page template.** The default empty alias name never matches, and a skipped template
-  logs nothing.
+  is only a warning in the log (since 10.81.0; nothing at all before).
 - **Prefer `Version = "*"` with `Update = false`.** A numbered version is compared with the SITE's configuration version,
   which every module's templates and site migrations move. A template numbered lower than what another part already moved
   the site to is never applied.

@@ -17,7 +17,7 @@ else
     @* Migrated to native FluentUI form controls + the --db-* design system (Phase 4). *@
     <div class="db-card">
 		<div class="db-field">
-			<Label For="connection" HelpText="Select a database connection (from appsettings.json)" ResourceKey="Connection">Connection: </Label>
+			<Label For="connection" HelpText="Select a database connection (from appsettings.json)" ResourceKey="Connection">Connection</Label>
 			<FluentSelect id="connection" TOption="string" TValue="string" Value="@_connection" ValueChanged="@(v => ConnectionChanged(v))" class="db-field-control">
 				<FluentOption TValue="string" Value="@("-")">&lt;@Localizer["Connection.Select"]&gt;</FluentOption>
 				<FluentOption TValue="string" Value="@("+")">&lt;@Localizer["Connection.Add"]&gt;</FluentOption>
@@ -30,11 +30,11 @@ else
 		@if (_connection == "+")
 		{
 			<div class="db-field">
-				<Label For="name" HelpText="Enter the name of the connection" ResourceKey="Name">Name: </Label>
+				<Label For="name" HelpText="Enter the name of the connection" ResourceKey="Name">Name</Label>
 				<FluentTextInput id="name" @bind-Value="_name" MaxLength="100" Required="true" class="db-field-control" />
 			</div>
 			<div class="db-field">
-				<Label For="databasetype" HelpText="Select the database type" ResourceKey="DatabaseType">Type: </Label>
+				<Label For="databasetype" HelpText="Select the database type" ResourceKey="DatabaseType">Type</Label>
 				@if (_databases != null)
 				{
 					<FluentSelect id="databasetype" TOption="string" TValue="string" Value="@_databasetype" ValueChanged="@(v => DatabaseTypeChanged(v))" Required="true" class="db-field-control">
@@ -58,7 +58,7 @@ else
 			else
 			{
 				<div class="db-field">
-					<Label For="connectionstring" HelpText="Enter a complete connection string including all parameters and delimiters" ResourceKey="ConnectionString">Settings:</Label>
+					<Label For="connectionstring" HelpText="Enter a complete connection string including all parameters and delimiters" ResourceKey="ConnectionString">Settings</Label>
 					<FluentTextArea id="connectionstring" @bind-Value="_connectionstring" Rows="3" class="db-field-control" />
 				</div>
 			}
@@ -71,23 +71,23 @@ else
 			@if (_connection != "-")
 			{
 				<div class="db-field">
-					<Label For="databasetype" HelpText="The database type" ResourceKey="DatabaseType">Type: </Label>
+					<Label For="databasetype" HelpText="The database type" ResourceKey="DatabaseType">Type</Label>
 					<FluentTextInput id="databasetype" @bind-Value="_databasetype" ReadOnly="true" class="db-field-control" />
 				</div>
 				@if (!string.IsNullOrEmpty(_tenant))
 				{
 					<div class="db-field">
-						<Label For="tenant" HelpText="The database using this connection" ResourceKey="Tenant">Database: </Label>
+						<Label For="tenant" HelpText="The database using this connection" ResourceKey="Tenant">Database</Label>
 						<FluentTextInput id="tenant" @bind-Value="_tenant" ReadOnly="true" class="db-field-control" />
 					</div>
 				}
 				<div class="db-field">
-					<Label For="connectionstring" HelpText="The connection string" ResourceKey="ConnectionString">Settings: </Label>
+					<Label For="connectionstring" HelpText="The connection string" ResourceKey="ConnectionString">Settings</Label>
 					<FluentTextInput id="connectionstring" TextInputType="@_connectionStringFieldType" @bind-Value="_connectionstring" ReadOnly="true" class="db-field-control" />
 					<FluentButton Appearance="ButtonAppearance.Default" OnClick="ToggleConnectionString">@_connectionstringtoggle</FluentButton>
 				</div>
 				<div class="db-field">
-					<Label For="sqlQuery" HelpText="Enter a valid SQL query for the database" ResourceKey="SqlQuery">SQL Query: </Label>
+					<Label For="sqlQuery" HelpText="Enter a valid SQL query for the database" ResourceKey="SqlQuery">SQL query</Label>
 					<FluentTextArea id="sqlQuery" @bind-Value="_sql" Rows="3" class="db-field-control" />
 				</div>
 				<div class="db-form-actions">

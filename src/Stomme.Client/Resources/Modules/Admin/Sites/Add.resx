@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LocalDatabase" xml:space="preserve">
-    <value>Local Database</value>
+    <value>Local database</value>
   </data>
   <data name="SqlServer" xml:space="preserve">
     <value>SQL Server</value>
@@ -127,37 +127,37 @@
     <value>The primary url for the site. This can be a domain name (ie. domain.com), subdomain (ie. sub.domain.com) or a virtual folder (ie. domain.com/folder).</value>
   </data>
   <data name="Tenant.Text" xml:space="preserve">
-    <value>Database: </value>
+    <value>Database</value>
   </data>
   <data name="Aliases.Text" xml:space="preserve">
-    <value>Url: </value>
+    <value>URL</value>
   </data>
   <data name="SiteTemplate.Select" xml:space="preserve">
-    <value>Select Site Template</value>
+    <value>Select site template</value>
   </data>
   <data name="Tenant.Select" xml:space="preserve">
-    <value>Select Database</value>
+    <value>Select database</value>
   </data>
   <data name="Tenant.Add" xml:space="preserve">
-    <value>Create Database</value>
+    <value>Create database</value>
   </data>
   <data name="Error.Theme.LoadContainers" xml:space="preserve">
-    <value>Error Loading Containers For Theme</value>
+    <value>Error loading containers for theme</value>
   </data>
   <data name="Error.Required.ServerDatabase" xml:space="preserve">
-    <value>You Must Specify A Server And Database</value>
+    <value>You must specify a server and database</value>
   </data>
   <data name="Error.InvalidPassword" xml:space="preserve">
-    <value>Invalid Host Password</value>
+    <value>Invalid Host password</value>
   </data>
   <data name="Error.TenantName.Exists" xml:space="preserve">
-    <value>Database Name Is Missing Or Already Exists</value>
+    <value>Database name is missing or already exists</value>
   </data>
   <data name="Message.SiteName.InUse" xml:space="preserve">
-    <value>{0} Already Used For Another Site</value>
+    <value>{0} already used for another site</value>
   </data>
   <data name="Message.Required.Tenant" xml:space="preserve">
-    <value>You Must Provide A Database, Site Name, Alias, Default Theme/Container, And Site Template</value>
+    <value>You must provide a database, site name, alias, default theme/container, and site template</value>
   </data>
   <data name="Name.HelpText" xml:space="preserve">
     <value>Enter the name of the site</value>
@@ -181,39 +181,39 @@
     <value>Enter the password of an existing host user</value>
   </data>
   <data name="Name.Text" xml:space="preserve">
-    <value>Site Name: </value>
+    <value>Site name</value>
   </data>
   <data name="SiteTemplate.Text" xml:space="preserve">
-    <value>Site Template: </value>
+    <value>Site template</value>
   </data>
   <data name="TenantName.Text" xml:space="preserve">
-    <value>Name: </value>
+    <value>Name</value>
   </data>
   <data name="DatabaseType.Text" xml:space="preserve">
-    <value>Type: </value>
+    <value>Type</value>
   </data>
   <data name="Database.Text" xml:space="preserve">
-    <value>Database: </value>
+    <value>Database</value>
   </data>
   <data name="HostUsername.Text" xml:space="preserve">
-    <value>Host Username:</value>
+    <value>Host username</value>
   </data>
   <data name="HostPassword.Text" xml:space="preserve">
-    <value>Host Password:</value>
+    <value>Host password</value>
   </data>
   <data name="Error.Database.LoadConfig" xml:space="preserve">
-    <value>Error loading Database Configuration Control</value>
+    <value>Error loading database configuration control</value>
   </data>
   <data name="ConnectionString.HelpText" xml:space="preserve">
     <value>Enter a complete connection string including all parameters and delimiters</value>
   </data>
   <data name="ConnectionString.Text" xml:space="preserve">
-    <value>Settings:</value>
+    <value>Settings</value>
   </data>
   <data name="EnterConnectionParameters" xml:space="preserve">
-    <value>Enter Connection Parameters</value>
+    <value>Enter connection parameters</value>
   </data>
   <data name="EnterConnectionString" xml:space="preserve">
-    <value>Enter Connection String</value>
+    <value>Enter connection string</value>
   </data>
 </root>

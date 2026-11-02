@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DeleteModule.Header" xml:space="preserve">
-    <value>Delete Module</value>
+    <value>Delete module</value>
   </data>
   <data name="DeleteModule.Text" xml:space="preserve">
     <value>Delete</value>
   </data>
   <data name="DeletePage.Header" xml:space="preserve">
-    <value>Delete Page</value>
+    <value>Delete page</value>
   </data>
   <data name="DeletePage.Text" xml:space="preserve">
     <value>Delete</value>
   </data>
   <data name="NoPage.Deleted" xml:space="preserve">
-    <value>No Deleted Pages</value>
+    <value>No deleted pages</value>
   </data>
   <data name="DeletedBy" xml:space="preserve">
-    <value>Deleted By</value>
+    <value>Deleted by</value>
   </data>
   <data name="DeletedOn" xml:space="preserve">
-    <value>Deleted On</value>
+    <value>Deleted on</value>
   </data>
   <data name="Confirm.Page.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Permanently Delete The {0} Page?</value>
+    <value>Are you sure you wish to permanently delete the {0} page?</value>
   </data>
   <data name="NoModule.Deleted" xml:space="preserve">
-    <value>No Deleted Modules</value>
+    <value>No deleted modules</value>
   </data>
   <data name="Page" xml:space="preserve">
     <value>Page</value>
@@ -154,40 +154,40 @@
     <value>Restore</value>
   </data>
   <data name="Confirm.Module.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Permanently Delete The {0} Module?</value>
+    <value>Are you sure you wish to permanently delete the {0} module?</value>
   </data>
   <data name="Error.DeletedModulePage.Load" xml:space="preserve">
-    <value>Error Loading Deleted Pages Or Modules</value>
+    <value>Error loading deleted pages or modules</value>
   </data>
   <data name="Error.Page.Restore" xml:space="preserve">
-    <value>Error Restoring Deleted Page</value>
+    <value>Error restoring deleted page</value>
   </data>
   <data name="Error.Module.Restore" xml:space="preserve">
-    <value>Error Restoring Deleted Module</value>
+    <value>Error restoring deleted module</value>
   </data>
   <data name="Error.Module.Delete" xml:space="preserve">
-    <value>Error Permanently Deleting Module</value>
+    <value>Error permanently deleting module</value>
   </data>
   <data name="Error.Modules.Delete" xml:space="preserve">
-    <value>Error Permanently Deleting Modules</value>
+    <value>Error permanently deleting modules</value>
   </data>
   <data name="DeleteAllPages.Header" xml:space="preserve">
-    <value>Remove All Deleted Pages</value>
+    <value>Remove all deleted pages</value>
   </data>
   <data name="DeleteAllPages.Message" xml:space="preserve">
-    <value>Are You Sure You Wish To Permanently Remove All Deleted Pages?</value>
+    <value>Are you sure you wish to permanently remove all deleted pages?</value>
   </data>
   <data name="DeleteAllPages.Text" xml:space="preserve">
-    <value>Remove All Deleted Pages</value>
+    <value>Remove all deleted pages</value>
   </data>
   <data name="DeleteAllModules.Header" xml:space="preserve">
-    <value>Remove All Deleted Modules</value>
+    <value>Remove all deleted modules</value>
   </data>
   <data name="DeleteAllModules.Message" xml:space="preserve">
-    <value>Are You Sure You Wish To Permanently Remove All Deleted Modules?</value>
+    <value>Are you sure you wish to permanently remove all deleted modules?</value>
   </data>
   <data name="DeleteAllModules.Text" xml:space="preserve">
-    <value>Remove All Deleted Modules</value>
+    <value>Remove all deleted modules</value>
   </data>
   <data name="Pages.Heading" xml:space="preserve">
     <value>Pages</value>
@@ -196,24 +196,24 @@
     <value>Modules</value>
   </data>
   <data name="Message.Page.Restore" xml:space="preserve">
-    <value>You Cannot Restore A Page If Its Parent Is Deleted</value>
+    <value>You cannot restore a page if its parent is deleted</value>
   </data>
   <data name="Success.Page.Restore" xml:space="preserve">
-    <value>Page Restored Successfully</value>
+    <value>Page restored successfully</value>
   </data>
   <data name="Success.Page.Delete" xml:space="preserve">
-    <value>Page Deleted Successfully</value>
+    <value>Page deleted successfully</value>
   </data>
   <data name="Success.Pages.Delete" xml:space="preserve">
-    <value>All Pages Deleted Successfully</value>
+    <value>All pages deleted successfully</value>
   </data>
   <data name="Success.Module.Restore" xml:space="preserve">
-    <value>Module Restored Successfully</value>
+    <value>Module restored successfully</value>
   </data>
   <data name="Success.Module.Delete" xml:space="preserve">
-    <value>Module Deleted Successfully</value>
+    <value>Module deleted successfully</value>
   </data>
   <data name="Success.Modules.Delete" xml:space="preserve">
-    <value>All Modules Deleted Successfully</value>
+    <value>All modules deleted successfully</value>
   </data>
 </root>

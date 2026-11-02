@@ -118,22 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Message.Password.NoMatch" xml:space="preserve">
-    <value>Passwords Entered Do Not Match</value>
+    <value>Passwords entered do not match</value>
   </data>
   <data name="Message.Required.UserInfo" xml:space="preserve">
-    <value>You Must Provide The Password And Confirmation</value>
+    <value>You must provide the password and confirmation</value>
   </data>
   <data name="Password.Reset" xml:space="preserve">
-    <value>Reset Password</value>
+    <value>Reset password</value>
   </data>
   <data name="Error.Password.ResetInfo" xml:space="preserve">
-    <value>Error Resetting User Password. Please Ensure The Request To Reset Your Password Was Made Within The Past 24 Hours And The New Password Meets The Complexity Requirements.</value>
+    <value>Error resetting user password. Please ensure the request to reset your password was made within the past 24 hours and the new password meets the complexity requirements.</value>
   </data>
   <data name="Error.Password.Reset" xml:space="preserve">
-    <value>Error Resetting User Password</value>
+    <value>Error resetting user password</value>
   </data>
   <data name="Confirm.Text" xml:space="preserve">
-    <value>Confirm:</value>
+    <value>Confirm</value>
   </data>
   <data name="Conform.HelpText" xml:space="preserve">
     <value>Enter the password again. It must exactly match the password entered above.</value>
@@ -142,12 +142,12 @@
     <value>The new password. It must satisfy complexity rules for the site.</value>
   </data>
   <data name="Password.Text" xml:space="preserve">
-    <value>Password:</value>
+    <value>Password</value>
   </data>
   <data name="Username.HelpText" xml:space="preserve">
     <value>Your username will be populated from the link you received in the password reset notification</value>
   </data>
   <data name="Username.Text" xml:space="preserve">
-    <value>Username:</value>
+    <value>Username</value>
   </data>
 </root>

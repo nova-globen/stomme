@@ -43,6 +43,27 @@ namespace Stomme.Tests.Connectors
             Assert.Equal("https://api.example.com/health/ready", handler.Request?.RequestUri?.ToString());
         }
 
+        // BL-240, driven: an endpoint with a path of its own and a step's path - "http://host/api" and "/Site/1" - went to
+        // http://host/Site/1 (a 404), URI resolution dropping the endpoint's path. The path is appended now, as described; one
+        // already starting with the endpoint's path is taken as it is, so a pipeline written for the old resolution is unchanged.
+        [Theory]
+        [InlineData("https://api.example.com/v1", "/devices", "https://api.example.com/v1/devices")]
+        [InlineData("https://api.example.com/v1/", "devices", "https://api.example.com/v1/devices")]
+        [InlineData("https://api.example.com/v1", "/v1/devices", "https://api.example.com/v1/devices")]
+        [InlineData("https://api.example.com/v1", "/V1", "https://api.example.com/V1")]
+        [InlineData("https://api.example.com/v1", "/v10/devices", "https://api.example.com/v1/v10/devices")]
+        [InlineData("https://api.example.com", "/v1/events", "https://api.example.com/v1/events")]
+        [InlineData("https://api.example.com/", "health/ready", "https://api.example.com/health/ready")]
+        [InlineData("https://api.example.com/v1?key=a", "/devices?page=2", "https://api.example.com/v1/devices?page=2")]
+        [InlineData("http://localhost:44411/api", "/Site/1", "http://localhost:44411/api/Site/1")]
+        [InlineData("https://api.example.com/v1", "https://other.example.com/x", "https://other.example.com/x")]
+        public async Task A_steps_path_is_appended_to_the_endpoints_own(string endpoint, string path, string sent)
+        {
+            var handler = new StubHandler(HttpStatusCode.OK, "[]");
+            await Contexts.DrainAsync(new RestApiConnector(), Contexts.Extract(new StubEgress(handler), endpoint, "read", new Dictionary<string, string> { ["path"] = path }));
+            Assert.Equal(sent, handler.Request?.RequestUri?.ToString());
+        }
+
         [Fact]
         public void ConfigSchema_DeclaresTheOptionalConnectionFields()
         {

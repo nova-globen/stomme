@@ -465,7 +465,14 @@ namespace Stomme.Managers
                                     user.LastIPAddress = lastIPAddress;
                                     await _users.UpdateUserAsync(user);
                                     _logger.Log(LogLevel.Information, this, LogFunction.Security, "User Login Successful For {Username} From IP Address {IPAddress}", user.Username, lastIPAddress);
-                                    await AuditAsync(Stomme.Models.IdentityAudit.IdentityAuditEvent.SignIn, user.UserId, user.Username, siteId: user.SiteId);
+                                    // A sign-in is recorded where the session opens. Without the cookie this is a check of the
+                                    // password - the web login's first step, whose post to the login page opens the session and
+                                    // records it there; Add Site's re-check of the host's - and recording it too put every web
+                                    // sign-in in the identity audit twice (BL-241, driven).
+                                    if (setCookie)
+                                    {
+                                        await AuditAsync(Stomme.Models.IdentityAudit.IdentityAuditEvent.SignIn, user.UserId, user.Username, siteId: user.SiteId);
+                                    }
 
                                     await _syncManager.AddSyncEventAsync(await _tenantManager.GetAliasAsync(), EntityNames.User, user.UserId, "Login");
 

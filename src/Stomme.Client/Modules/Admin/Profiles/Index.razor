@@ -10,7 +10,7 @@
 }
 else
 {
-	<ActionLink Action="Add" Text="Add Profile" Security="SecurityAccessLevel.Edit" ResourceKey="AddProfile" />
+	<ActionLink Action="Add" Text="Add profile" Security="SecurityAccessLevel.Edit" ResourceKey="AddProfile" />
 
     <Pager Items="@_profiles" SearchProperties="Title,Category">
         <Header>
@@ -23,7 +23,7 @@ else
         </Header>
         <Row>
             <td><ActionLink Action="Edit" Text="Edit" Parameters="@($"id=" + context.ProfileId.ToString())" Security="SecurityAccessLevel.Edit" ResourceKey="EditProfile" /></td>
-			<td><ActionDialog Header="Delete Profile" Message="@string.Format(Localizer["Confirm.Profile.Delete"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteProfile(context.ProfileId))" ResourceKey="DeleteProfile" /></td>
+			<td><ActionDialog Header="Delete profile" Message="@string.Format(Localizer["Confirm.Profile.Delete"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteProfile(context.ProfileId))" ResourceKey="DeleteProfile" /></td>
             <td>@context.Name</td>
             <td>@context.Title</td>
             <td>@context.Category</td>

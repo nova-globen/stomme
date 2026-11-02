@@ -124,10 +124,10 @@
     <value>User</value>
   </data>
   <data name="Username.Enter" xml:space="preserve">
-    <value>Enter User's Name</value>
+    <value>Enter User's name</value>
   </data>
   <data name="Message.Username.DontExist" xml:space="preserve">
-    <value>User Does Not Exist With Name Specified</value>
+    <value>User does not exist with name specified</value>
   </data>
   <data name="ModuleDefinition" xml:space="preserve">
     <value>Module</value>

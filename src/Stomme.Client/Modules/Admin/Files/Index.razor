@@ -19,7 +19,7 @@ else
         <TabPanel Name="Files" Heading="Files" ResourceKey="Files">
             <div class="db-filters">
                 <div class="db-filter db-filter-auto">
-                    <ActionLink Action="Edit" Text="Add Folder" Class="db-btn db-btn-neutral" ResourceKey="AddFolder" />
+                    <ActionLink Action="Edit" Text="Add folder" Class="db-btn db-btn-neutral" ResourceKey="AddFolder" />
                 </div>
                 <div class="db-filter">
                     <div class="db-input-group">
@@ -30,11 +30,11 @@ else
                                 <option value="@(folder.FolderId)">@(new string('-', folder.Level * 2))@(folder.Name)</option>
                             }
                         </select>
-                        <ActionLink Action="Edit" Text="Edit Folder" Class="db-btn db-btn-neutral" Parameters="@($"id=" + _folderId.ToString())" ResourceKey="EditFolder" />&nbsp;
+                        <ActionLink Action="Edit" Text="Edit folder" Class="db-btn db-btn-neutral" Parameters="@($"id=" + _folderId.ToString())" ResourceKey="EditFolder" />&nbsp;
                     </div>
                 </div>
                 <div class="db-filter db-filter-auto db-filter-end">
-                    <ActionLink Action="Add" Text="Upload Files" Parameters="@($"id=" + _folderId.ToString())" ResourceKey="UploadFiles" />
+                    <ActionLink Action="Add" Text="Upload files" Parameters="@($"id=" + _folderId.ToString())" ResourceKey="UploadFiles" />
                 </div>
             </div>
 
@@ -51,7 +51,7 @@ else
                     </Header>
                     <Row>
                         <td><ActionLink Action="Details" Text="Edit" Parameters="@($"id=" + context.FileId.ToString())" ResourceKey="Details" /></td>
-                        <td><ActionDialog Header="Delete File" Message="@string.Format(Localizer["Confirm.File.Delete"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteFile(context))" ResourceKey="DeleteFile" /></td>
+                        <td><ActionDialog Header="Delete file" Message="@string.Format(Localizer["Confirm.File.Delete"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteFile(context))" ResourceKey="DeleteFile" /></td>
                         <td><a href="@context.Url" target="_new">@context.Name</a></td>
                         <td>@UtcToLocal(context.ModifiedOn)</td>
                         <td>@context.Extension.ToUpper() @SharedLocalizer["File"]</td>
@@ -67,19 +67,19 @@ else
         <TabPanel Name="Settings" Heading="Settings" ResourceKey="Settings" Security="SecurityAccessLevel.Admin">
 			<div class="db-fields">
                 <div class="db-field">
-                    <Label For="imageExt" HelpText="Enter a comma separated list of image file extensions" ResourceKey="ImageExtensions">Image Extensions: </Label>
+                    <Label For="imageExt" HelpText="Enter a comma separated list of image file extensions" ResourceKey="ImageExtensions">Image extensions</Label>
                     <div class="db-field-control">
                         <input id="imageExt" spellcheck="false" class="db-input" @bind="@_imageFiles" />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="uploadableFileExt" HelpText="Enter a comma separated list of uploadable file extensions" ResourceKey="UploadableFileExtensions">Uploadable File Extensions: </Label>
+                    <Label For="uploadableFileExt" HelpText="Enter a comma separated list of uploadable file extensions" ResourceKey="UploadableFileExtensions">Uploadable file extensions</Label>
                     <div class="db-field-control">
                         <input id="uploadableFileExt" spellcheck="false" class="db-input" @bind="@_uploadableFiles" />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="maxChunkSize" HelpText="Files are split into chunks to streamline the upload process. Specify the maximum chunk size in MB (note that higher chunk sizes should only be used on faster networks)." ResourceKey="MaxChunkSize">Max Upload Chunk Size (MB): </Label>
+                    <Label For="maxChunkSize" HelpText="Files are split into chunks to streamline the upload process. Specify the maximum chunk size in MB (note that higher chunk sizes should only be used on faster networks)." ResourceKey="MaxChunkSize">Max upload chunk size (MB)</Label>
                     <div class="db-field-control">
                         <input id="maxChunkSize" type="number" min="1" max="10" step="1" class="db-input" @bind="@_maxChunkSize" />
                     </div>

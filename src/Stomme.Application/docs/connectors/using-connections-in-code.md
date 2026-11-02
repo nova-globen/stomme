@@ -117,9 +117,11 @@ Register it in the module's `NotesServerStartup.ConfigureServices`, before the `
 services.AddScoped<NoteImportReader>();
 ```
 
-The sample assumes a `rest` connection whose endpoint is the API's address. The REST connector resolves `path` against
-the endpoint as a relative URL, so a path that starts with `/` replaces any path the endpoint has, and a non-blank path drops the endpoint's query
-string (write the query inside `path`, or in the `query` parameter). `ConnectorRecordJson.Serialize(records)` (`Stomme.Connectivity`) turns records into a JSON array string, the
+The sample assumes a `rest` connection whose endpoint is the API's address. The REST connector appends `path` to the
+endpoint's own path - `https://api.example.com/v1` and `/notes` is `https://api.example.com/v1/notes` - and takes a path
+that already starts with the endpoint's path (`/v1/notes`) as it is, so both spellings reach the same URL; an absolute
+`http(s)` URL in `path` is used as it is. A non-blank path drops the endpoint's query string (write the query inside
+`path`, or in the `query` parameter). Before Stomme 10.81.0 a path starting with `/` replaced the endpoint's path. `ConnectorRecordJson.Serialize(records)` (`Stomme.Connectivity`) turns records into a JSON array string, the
 same shape pipeline steps pass on.
 
 The [stomme-use-connection](../../.claude/skills/stomme-use-connection/SKILL.md) skill adds a gated API endpoint that

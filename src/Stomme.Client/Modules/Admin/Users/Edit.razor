@@ -18,13 +18,13 @@
         <TabPanel Name="Identity" Heading="Identity" ResourceKey="Identity">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="username" HelpText="The unique username for a user. Note that this field can not be modified." ResourceKey="Username">Username:</Label>
+                    <Label For="username" HelpText="The unique username for a user. Note that this field can not be modified." ResourceKey="Username">Username</Label>
                     <div class="db-field-control">
                         <input id="username" class="db-input" @bind="@_username" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="email" HelpText="The email address where the user will receive notifications" ResourceKey="Email">Email:</Label>
+                    <Label For="email" HelpText="The email address where the user will receive notifications" ResourceKey="Email">Email</Label>
                     <div class="db-field-control">
                         <input id="email" class="db-input" @bind="@_email" />
                     </div>
@@ -39,13 +39,13 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="displayname" HelpText="The full name of the user" ResourceKey="DisplayName">Full Name:</Label>
+                    <Label For="displayname" HelpText="The full name of the user" ResourceKey="DisplayName">Full name</Label>
                     <div class="db-field-control">
                         <input id="displayname" class="db-input" @bind="@_displayname" />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time Zone:</Label>
+                    <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time zone</Label>
                     <div class="db-field-control">
                         <select id="timezone" class="db-select" @bind="@_timezoneid">
                             <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="culture" HelpText="The user's preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language:</Label>
+                    <Label For="culture" HelpText="The user's preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language</Label>
                     <div class="db-field-control">
                         <select id="culture" class="db-select" @bind="@_culturecode">
                             <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
@@ -81,13 +81,13 @@
                     </div>
                 }
                 <div class="db-field">
-                    <Label For="lastlogin" HelpText="The date and time when the user last signed in" ResourceKey="LastLogin">Last Login:</Label>
+                    <Label For="lastlogin" HelpText="The date and time when the user last signed in" ResourceKey="LastLogin">Last login</Label>
                     <div class="db-field-control">
                         <input id="lastlogin" class="db-input" @bind="@_lastlogin" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="lastipaddress" HelpText="The IP Address of the user recorded during their last login" ResourceKey="LastIPAddress">Last IP Address:</Label>
+                    <Label For="lastipaddress" HelpText="The IP address of the user recorded during their last login" ResourceKey="LastIPAddress">Last IP address</Label>
                     <div class="db-field-control">
                         <input id="lastipaddress" class="db-input" @bind="@_lastipaddress" readonly />
                     </div>
@@ -98,7 +98,7 @@
             <ModuleMessage Message="@_passwordrequirements" Type="MessageType.Info" />
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="password" HelpText="The user's password. Please choose a password which is sufficiently secure." ResourceKey="Password">Password:</Label>
+                    <Label For="password" HelpText="The user's password. Please choose a password which is sufficiently secure." ResourceKey="Password">Password</Label>
                     <div class="db-field-control">
                         <div class="db-input-group">
                             <input id="password" type="@_passwordtype" class="db-input" @bind="@_password" autocomplete="new-password" />
@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="confirm" HelpText="Please enter the password again to confirm it matches with the value above" ResourceKey="Confirm">Confirm Password:</Label>
+                    <Label For="confirm" HelpText="Please enter the password again to confirm it matches with the value above" ResourceKey="Confirm">Confirm password</Label>
                     <div class="db-field-control">
                         <div class="db-input-group">
                             <input id="confirm" type="@_passwordtype" class="db-input" @bind="@_confirm" autocomplete="new-password" />
@@ -128,7 +128,7 @@
                             <th>@Localizer["Passkey"]</th>
                             </Header>
                             <Row>
-                                <td><ActionDialog Action="Delete" OnClick="@(async () => await DeletePasskey(context))" ResourceKey="DeletePasskey" Class="db-btn db-btn-danger" Header="Delete Passkey" Message="@string.Format(Localizer["Confirm.Passkey.Delete", context.Name])" /></td>
+                                <td><ActionDialog Action="Delete" OnClick="@(async () => await DeletePasskey(context))" ResourceKey="DeletePasskey" Class="db-btn db-btn-danger" Header="Delete passkey" Message="@string.Format(Localizer["Confirm.Passkey.Delete", context.Name])" /></td>
                                 <td>@context.Name</td>
                             </Row>
                         </Pager>
@@ -151,7 +151,7 @@
                             <th>@Localizer["Login"]</th>
                             </Header>
                             <Row>
-                                <td><ActionDialog Action="Delete" OnClick="@(async () => await DeleteLogin(context))" ResourceKey="DeleteLogin" Class="db-btn db-btn-danger" Header="Delete Login" Message="@string.Format(Localizer["Confirm.Login.Delete", context.Name])" /></td>
+                                <td><ActionDialog Action="Delete" OnClick="@(async () => await DeleteLogin(context))" ResourceKey="DeleteLogin" Class="db-btn db-btn-danger" Header="Delete login" Message="@string.Format(Localizer["Confirm.Login.Delete", context.Name])" /></td>
                                 <td>@context.Name</td>
                             </Row>
                         </Pager>
@@ -226,7 +226,7 @@
     }
     @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host) && _candelete)
     {
-        <ActionDialog Header="Delete User" Message="Are You Sure You Wish To Permanently Delete This User?" Action="Delete" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUser())" ResourceKey="DeleteUser" />
+        <ActionDialog Header="Delete user" Message="Are You Sure You Wish To Permanently Delete This User?" Action="Delete" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUser())" ResourceKey="DeleteUser" />
     }
     <br /><br />
     <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon" DeletedBy="@_deletedby" DeletedOn="@_deletedon"></AuditInfo>

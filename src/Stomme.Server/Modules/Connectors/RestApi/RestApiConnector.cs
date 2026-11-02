@@ -58,7 +58,7 @@ namespace Stomme.Modules.Connectors.RestApi
                         Default = "GET",
                         Options = new[] { new ConnectorConfigFieldOption("GET"), new ConnectorConfigFieldOption("POST"), new ConnectorConfigFieldOption("PUT"), new ConnectorConfigFieldOption("DELETE") },
                     },
-                    new ConnectorConfigField("path", "Path", ConnectorConfigFieldType.Text, Required: false, Description: "Optional path appended to the endpoint (e.g. /v1/devices)."),
+                    new ConnectorConfigField("path", "Path", ConnectorConfigFieldType.Text, Required: false, Description: "Optional path appended to the endpoint (e.g. /devices: https://api.example.com/v1 and /devices is /v1/devices)."),
                     new ConnectorConfigField("body", "Request body", ConnectorConfigFieldType.Multiline, Required: false, Description: "Optional JSON request body for POST/PUT."),
                     new ConnectorConfigField("content_type", "Content type", ConnectorConfigFieldType.Text, Required: false, Description: "Media type of the request body (defaults to application/json).")
                     {
@@ -79,7 +79,7 @@ namespace Stomme.Modules.Connectors.RestApi
                         Default = "POST",
                         Options = new[] { new ConnectorConfigFieldOption("POST"), new ConnectorConfigFieldOption("PUT"), new ConnectorConfigFieldOption("PATCH"), new ConnectorConfigFieldOption("DELETE"), new ConnectorConfigFieldOption("GET") },
                     },
-                    new ConnectorConfigField("path", "Path", ConnectorConfigFieldType.Text, Required: false, Description: "Optional path appended to the endpoint (e.g. /v1/events)."),
+                    new ConnectorConfigField("path", "Path", ConnectorConfigFieldType.Text, Required: false, Description: "Optional path appended to the endpoint (e.g. /events: https://api.example.com/v1 and /events is /v1/events)."),
                     new ConnectorConfigField("body", "Request body", ConnectorConfigFieldType.Multiline, Required: false, Description: "The request body (not sent with GET)."),
                     new ConnectorConfigField("content_type", "Content type", ConnectorConfigFieldType.Text, Required: false, Description: "Media type of the request body (defaults to application/json).")
                     {
@@ -202,13 +202,34 @@ namespace Stomme.Modules.Connectors.RestApi
             }
 
             target = uri;
-            if (!string.IsNullOrWhiteSpace(path) && Uri.TryCreate(uri, path, out var relative))
+            if (!string.IsNullOrWhiteSpace(path))
             {
-                target = relative;
+                var trimmed = path.Trim();
+                target = Stomme.Shared.Utilities.TryCreateAbsoluteUri(trimmed, out var absolute) && (absolute.Scheme == Uri.UriSchemeHttp || absolute.Scheme == Uri.UriSchemeHttps)
+                    ? absolute
+                    : Appended(uri, trimmed);
             }
 
             problem = string.Empty;
             return true;
+        }
+
+        /// <summary>
+        /// The path APPENDED to the endpoint's own, as its description says and n8n's base URL does: <c>https://api.example.com/v1</c>
+        /// and <c>/devices</c> is <c>/v1/devices</c>. URI resolution dropped the endpoint's path - the request went to
+        /// <c>/devices</c> (BL-240, driven: a 404 for a path the author had right). A path that already starts with the
+        /// endpoint's own (<c>/v1/devices</c>) is taken as it is, so a pipeline written for the old resolution sends where it did.
+        /// </summary>
+        internal static Uri Appended(Uri endpoint, string path)
+        {
+            var cut = path.IndexOfAny(new[] { '?', '#' });
+            var (pathPart, tail) = cut < 0 ? (path, string.Empty) : (path[..cut], path[cut..]);
+            var relative = "/" + pathPart.TrimStart('/');
+            var basePath = endpoint.AbsolutePath.TrimEnd('/');
+            var joined = basePath.Length == 0 || relative.Equals(basePath, StringComparison.OrdinalIgnoreCase) || relative.StartsWith(basePath + "/", StringComparison.OrdinalIgnoreCase)
+                ? relative
+                : basePath + relative;
+            return new Uri(endpoint.GetLeftPart(UriPartial.Authority) + joined + tail);
         }
     }
 }

@@ -124,13 +124,13 @@
     <value>The number of characters displayed for each search result summary. The default is 255 characters.</value>
   </data>
   <data name="BodyLength.Text" xml:space="preserve">
-    <value>Body Size:</value>
+    <value>Body size</value>
   </data>
   <data name="DateRange.HelpText" xml:space="preserve">
     <value>Enter the date range for search results. The default includes all content.</value>
   </data>
   <data name="DateRange.Text" xml:space="preserve">
-    <value>Date Range:</value>
+    <value>Date range</value>
   </data>
   <data name="Descending" xml:space="preserve">
     <value>Descending</value>
@@ -139,13 +139,13 @@
     <value>Comma delimited list of entities to exclude from search results. By default no entities will be excluded.</value>
   </data>
   <data name="ExcludeEntities.Text" xml:space="preserve">
-    <value>Exlude Entities:</value>
+    <value>Exlude entities</value>
   </data>
   <data name="IncludeEntities.HelpText" xml:space="preserve">
     <value>Comma delimited list of entities to include in the search results. By default all entities will be included.</value>
   </data>
   <data name="IncludeEntities.Text" xml:space="preserve">
-    <value>Include Entities:</value>
+    <value>Include entities</value>
   </data>
   <data name="LastModified" xml:space="preserve">
     <value>LastModified</value>
@@ -154,7 +154,7 @@
     <value>The maximum number of search results to retrieve. The default is unlimited.</value>
   </data>
   <data name="PageSize.Text" xml:space="preserve">
-    <value>Page Size:</value>
+    <value>Page size</value>
   </data>
   <data name="Relevance" xml:space="preserve">
     <value>Relevance</value>
@@ -163,13 +163,13 @@
     <value>Specify the default sort field</value>
   </data>
   <data name="SortField.Text" xml:space="preserve">
-    <value>Sort By:</value>
+    <value>Sort by</value>
   </data>
   <data name="SortOrder.HelpText" xml:space="preserve">
     <value>Specify the default sort order</value>
   </data>
   <data name="SortOrder.Text" xml:space="preserve">
-    <value>Sort Order:</value>
+    <value>Sort order</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Title</value>

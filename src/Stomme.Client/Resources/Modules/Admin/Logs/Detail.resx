@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Url.Text" xml:space="preserve">
-    <value>Url: </value>
+    <value>URL</value>
   </data>
   <data name="Error Loading Log" xml:space="preserve">
-    <value>Error Loading Log</value>
+    <value>Error loading log</value>
   </data>
   <data name="DateTime.HelpText" xml:space="preserve">
     <value>The date and time of this log</value>
@@ -166,49 +166,49 @@
     <value>The server that was affected</value>
   </data>
   <data name="DateTime.Text" xml:space="preserve">
-    <value>Date/Time: </value>
+    <value>Date/time</value>
   </data>
   <data name="Level.Text" xml:space="preserve">
-    <value>Level: </value>
+    <value>Level</value>
   </data>
   <data name="Feature.Text" xml:space="preserve">
-    <value>Feature: </value>
+    <value>Feature</value>
   </data>
   <data name="Function.Text" xml:space="preserve">
-    <value>Function: </value>
+    <value>Function</value>
   </data>
   <data name="Category.Text" xml:space="preserve">
-    <value>Type Name: </value>
+    <value>Type name</value>
   </data>
   <data name="Page.Text" xml:space="preserve">
-    <value>Page: </value>
+    <value>Page</value>
   </data>
   <data name="Module.Text" xml:space="preserve">
-    <value>Module: </value>
+    <value>Module</value>
   </data>
   <data name="User.Text" xml:space="preserve">
-    <value>User: </value>
+    <value>User</value>
   </data>
   <data name="Template.Text" xml:space="preserve">
-    <value>Template: </value>
+    <value>Template</value>
   </data>
   <data name="Message.Text" xml:space="preserve">
-    <value>Message: </value>
+    <value>Message</value>
   </data>
   <data name="Exception.Text" xml:space="preserve">
-    <value>Exception: </value>
+    <value>Exception</value>
   </data>
   <data name="Properties.Text" xml:space="preserve">
-    <value>Properties: </value>
+    <value>Properties</value>
   </data>
   <data name="Server.Text" xml:space="preserve">
-    <value>Server: </value>
+    <value>Server</value>
   </data>
   <data name="Error.Log.Load" xml:space="preserve">
-    <value>Error Loading Log</value>
+    <value>Error loading log</value>
   </data>
   <data name="Instance.Text" xml:space="preserve">
-    <value>Instance:</value>
+    <value>Instance</value>
   </data>
   <data name="Instance.HelpText" xml:space="preserve">
     <value>The web instance on the server that was affected</value>

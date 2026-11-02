@@ -44,7 +44,8 @@ Each rule has an identifier for review reports.
 - **E1 Loading.** While data loads, the page shows a short loading text (`SharedLocalizer["Loading"]`), not an empty table
   and not a blank area.
 - **E2 Empty.** An empty list shows a `db-empty` block that says what the list holds and what to do next ("No notes yet.
-  Add the first note with Add note."), and the action to do it is visible. Never an empty table with only headers.
+  Add the first note with Add note."), and the action to do it is visible. Never an empty table with only headers:
+  a list in a `Pager` gives it as `EmptyMessage`.
 - **E3 No access.** A user without permission sees a sentence that says so, or does not see the control at all (pass
   `Security`/`PermissionList` to `ActionLink` and `ActionDialog`). The server refuses the same request regardless.
 - **E4 Busy.** While a save or a long action runs, its button is disabled (`disabled="@_busy"`) so it cannot be sent twice;
@@ -123,8 +124,9 @@ Each rule has an identifier for review reports.
 
 ### Wording
 
-- **W1** One capitalisation style across the module's headings, labels and buttons. The older admin pages use Title Case
-  ("Add Role"), the newer ones sentence case ("New format"); prefer sentence case ("Add note") and do not mix.
+- **W1** Sentence case for headings, labels, buttons and messages ("Add note", "Default theme", "Settings saved"), as the
+  admin pages use since 10.81.0; capitals only for names and acronyms ("SMTP settings", "Client ID"). A label carries no
+  trailing colon; a yes/no label may end in a question mark ("Allow registration?").
 - **W2** Labels name the thing ("Title"), help text says why or how ("A short name shown in the list").
 - **W3** Messages are full sentences in plain language, from the user's point of view, with no internal names (no type
   names, ids, exception text, "null").

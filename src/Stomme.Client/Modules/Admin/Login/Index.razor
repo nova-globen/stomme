@@ -37,11 +37,11 @@ else
                     @if (_allowsitelogin)
                     {
                         <div class="db-login-field">
-                            <Label For="username" HelpText="Please enter your Username" ResourceKey="Username">Username:</Label>
+                            <Label For="username" HelpText="Please enter your username" ResourceKey="Username">Username</Label>
                             <input id="username" type="text" @ref="username" class="db-input" placeholder="@Localizer["Username.Placeholder"]" @bind="@_username" @bind:event="oninput" required />
                         </div>
                         <div class="db-login-field">
-                            <Label For="password" HelpText="Please enter your Password" ResourceKey="Password">Password:</Label>
+                            <Label For="password" HelpText="Please enter your password" ResourceKey="Password">Password</Label>
                             <div class="db-input-group">
                                 <input id="password" type="@_passwordtype" @ref="password" name="Password" class="db-input" placeholder="@Localizer["Password.Placeholder"]" @bind="@_password" @bind:event="oninput" required />
                                 <button type="button" class="db-btn db-btn-neutral" @onclick="@TogglePassword" tabindex="-1">@_togglepassword</button>
@@ -52,7 +52,7 @@ else
                             <div class="db-login-field">
                                 <div>
                                     <input id="remember" type="checkbox" @bind="@_remember" />
-                                    <Label For="remember" HelpText="Specify if you would like to be signed back in automatically the next time you visit this site" ResourceKey="Remember">Stay Signed In?</Label>
+                                    <Label For="remember" HelpText="Specify if you would like to be signed back in automatically the next time you visit this site" ResourceKey="Remember">Stay signed in?</Label>
                                 </div>
                             </div>
                         }
@@ -90,7 +90,7 @@ else
                     break;
                 case "ForgotPassword":
                     <div class="db-login-field">
-                        <Label For="username" HelpText="Please enter your Username" ResourceKey="Username">Username:</Label>
+                        <Label For="username" HelpText="Please enter your username" ResourceKey="Username">Username</Label>
                         <input id="username" type="text" class="db-input" placeholder="@Localizer["Username.Placeholder"]" @bind="@_username" @bind:event="oninput" required />
                     </div>
                     <div class="db-btn-split" role="group">
@@ -101,7 +101,7 @@ else
                     break;
                 case "ForgotUsername":
                     <div class="db-login-field">
-                        <Label For="email" HelpText="Please enter your Email" ResourceKey="Email">Email:</Label>
+                        <Label For="email" HelpText="Please enter your email" ResourceKey="Email">Email</Label>
                         <input id="email" type="text" class="db-input" placeholder="@Localizer["Email.Placeholder"]" @bind="@_email" required />
                     </div>
                     <div class="db-btn-split" role="group">
@@ -111,7 +111,7 @@ else
                     break;
                 case "LoginLink":
                     <div class="db-login-field">
-                        <Label For="email" HelpText="Please enter your Email" ResourceKey="Email">Email:</Label>
+                        <Label For="email" HelpText="Please enter your email" ResourceKey="Email">Email</Label>
                         <input id="email" type="text" class="db-input" placeholder="@Localizer["Email.Placeholder"]" @bind="@_email" required />
                     </div>
                     <div class="db-btn-split" role="group">
@@ -121,7 +121,7 @@ else
                     break;
                 case "TwoFactor":
                     <div class="db-login-field">
-                        <Label For="code" HelpText="Please enter the secure verification code which was sent to you by email" ResourceKey="Code">Verification Code:</Label>
+                        <Label For="code" HelpText="Please enter the secure verification code which was sent to you by email" ResourceKey="Code">Verification code</Label>
                         <input id="code" class="db-input" @bind="@_code" placeholder="@Localizer["Code.Placeholder"]" maxlength="6" required />
                     </div>
                     <div class="db-btn-split" role="group">

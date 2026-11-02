@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page.Text" xml:space="preserve">
-    <value>Page: </value>
+    <value>Page</value>
   </data>
   <data name="Title.HelpText" xml:space="preserve">
     <value>Enter the title of the module</value>
@@ -133,49 +133,49 @@
     <value>The page that the module is located on. Please note that shared modules cannot be moved to other pages.</value>
   </data>
   <data name="Title.Text" xml:space="preserve">
-    <value>Title: </value>
+    <value>Title</value>
   </data>
   <data name="Container.Text" xml:space="preserve">
-    <value>Container: </value>
+    <value>Container</value>
   </data>
   <data name="DisplayOnAllPages.Text" xml:space="preserve">
-    <value>Display On All Pages? </value>
+    <value>Display on all pages?</value>
   </data>
   <data name="Settings.Heading" xml:space="preserve">
     <value>Settings</value>
   </data>
   <data name="Message.Required.Title" xml:space="preserve">
-    <value>You Must Provide A Title For The Module</value>
+    <value>You must provide a title for the module</value>
   </data>
   <data name="Error.Module.Load" xml:space="preserve">
-    <value>A Problem Was Encountered Loading Module {0}. The Module Is Either Invalid Or Does Not Exist.</value>
+    <value>A problem was encountered loading module {0}. The module is either invalid or does not exist.</value>
   </data>
   <data name="Module.HelpText" xml:space="preserve">
     <value>The name of the module</value>
   </data>
   <data name="Module.Text" xml:space="preserve">
-    <value>Module:</value>
+    <value>Module</value>
   </data>
   <data name="ModuleSettings.Heading" xml:space="preserve">
-    <value>Module Settings</value>
+    <value>Module settings</value>
   </data>
   <data name="Pane.HelpText" xml:space="preserve">
     <value>The pane where the module will be displayed</value>
   </data>
   <data name="Pane.Text" xml:space="preserve">
-    <value>Pane:</value>
+    <value>Pane</value>
   </data>
   <data name="EffectiveDate.HelpText" xml:space="preserve">
     <value>The date that this module is active</value>
   </data>
   <data name="EffectiveDate.Text" xml:space="preserve">
-    <value>Effective Date: </value>
+    <value>Effective date</value>
   </data>
   <data name="ExpiryDate.HelpText" xml:space="preserve">
     <value>The date that this module expires</value>
   </data>
   <data name="ExpiryDate.Text" xml:space="preserve">
-    <value>Expiry Date: </value>
+    <value>Expiry date</value>
   </data>
   <data name="Permissions.Text" xml:space="preserve">
     <value>Permissions</value>
@@ -184,19 +184,19 @@
     <value>Permissions</value>
   </data>
   <data name="ContainerSettings.Heading" xml:space="preserve">
-    <value>Container Settings</value>
+    <value>Container settings</value>
   </data>
   <data name="ModuleSettings.Title" xml:space="preserve">
-    <value>Module Settings</value>
+    <value>Module settings</value>
   </data>
   <data name="Header.Text" xml:space="preserve">
-    <value>Header:</value>
+    <value>Header</value>
   </data>
   <data name="Header.HelpText" xml:space="preserve">
     <value>Optionally provide content to be injected above the module instance</value>
   </data>
   <data name="Footer.Text" xml:space="preserve">
-    <value>Footer:</value>
+    <value>Footer</value>
   </data>
   <data name="Footer.HelpText" xml:space="preserve">
     <value>Optionally provide content to be injected below the module instance</value>

@@ -4516,6 +4516,7 @@ namespace Stomme.Models.Pipelines
             var dropped = new List<string>();
             var parsers = new List<(string Name, string Kind, JsonElement Parameters)>();
             var placeholders = 0;
+            var manualTriggers = 0;
             var nodes = root.GetProperty("nodes").EnumerateArray().Where(node => node.ValueKind == JsonValueKind.Object).ToList();
             var mainFlow = MainFlow(root);
             var positions = nodes.Select(Position).ToList();
@@ -4539,6 +4540,7 @@ namespace Stomme.Models.Pipelines
 
                 if (type.EndsWith(".manualTrigger", StringComparison.OrdinalIgnoreCase))
                 {
+                    manualTriggers++;
                     continue; // a pipeline here runs by hand without a trigger: the steps it led to start the run
                 }
 
@@ -4602,7 +4604,10 @@ namespace Stomme.Models.Pipelines
                 }
 
                 Settings(node, step);
-                if (node.TryGetProperty("credentials", out var credentials) && credentials.ValueKind == JsonValueKind.Object && credentials.EnumerateObject().Any())
+                // The general line only when the step's own mapping said nothing about its sign-in - the same step was told twice
+                // (BL-240, driven: "it signed in with ..." and then "credentials do not travel ...").
+                if (node.TryGetProperty("credentials", out var credentials) && credentials.ValueKind == JsonValueKind.Object && credentials.EnumerateObject().Any()
+                    && !todo.Lines.Any(line => line.StartsWith("'" + name + "': ", StringComparison.Ordinal) && (line.Contains("connection", StringComparison.OrdinalIgnoreCase) || line.Contains("credential", StringComparison.OrdinalIgnoreCase))))
                 {
                     todo.Add("credentials do not travel - give it the site's connection, or the secret it needs.");
                 }
@@ -4630,6 +4635,12 @@ namespace Stomme.Models.Pipelines
             if (graph.Notes.Count > 0)
             {
                 report.Append(graph.Notes.Count == 1 ? ", 1 note" : ", " + graph.Notes.Count + " notes");
+            }
+
+            if (manualTriggers > 0)
+            {
+                // Said, so a count that does not add up is not a mystery (BL-240): the trigger is left out, not lost.
+                report.Append(manualTriggers == 1 ? "; its manual trigger is not needed - a pipeline here runs by hand without one" : "; its manual triggers are not needed - a pipeline here runs by hand without one");
             }
 
             report.Append(".\n");
@@ -17937,8 +17948,33 @@ namespace Stomme.Models.Pipelines
 
             if (Text(p, "authentication") is { Length: > 0 } auth && auth != "none")
             {
-                todo.Add("it signed in with n8n's " + auth + " - give it a connection, or the Authorization it needs.");
+                todo.Add("it signed in with " + SignIn(auth, p) + ", which an export never carries - give it the Authorization header it needs, or make a connection (Admin > Connections) and send through it.");
             }
+        }
+
+        // How an HTTP Request node signed in, in words: n8n's own names ("genericCredentialType", "httpHeaderAuth") told a
+        // first-time author nothing (BL-240, driven).
+        private static string SignIn(string authentication, JsonElement p)
+        {
+            var kind = authentication switch
+            {
+                "genericCredentialType" => Text(p, "genericAuthType"),
+                "predefinedCredentialType" => Text(p, "nodeCredentialType"),
+                _ => authentication,
+            };
+            return kind switch
+            {
+                "httpHeaderAuth" or "headerAuth" => "a key in a request header (n8n's Header Auth credential)",
+                "httpBasicAuth" or "basicAuth" => "a user name and password (n8n's Basic Auth credential)",
+                "httpDigestAuth" or "digestAuth" => "a user name and password by digest (n8n's Digest Auth credential)",
+                "httpQueryAuth" or "queryAuth" => "a key in the URL's query (n8n's Query Auth credential)",
+                "httpBearerAuth" => "a bearer token (n8n's Bearer Auth credential)",
+                "oAuth2Api" or "oAuth2" => "OAuth2 (n8n's OAuth2 credential)",
+                "oAuth1Api" or "oAuth1" => "OAuth1 (n8n's OAuth1 credential)",
+                "httpCustomAuth" => "n8n's Custom Auth credential",
+                "" => "an n8n credential",
+                _ => "n8n's " + kind + " credential",
+            };
         }
 
         // n8n's body fields, by name and value as written.
@@ -18538,7 +18574,7 @@ namespace Stomme.Models.Pipelines
 
             if (moved.Count > 0)
             {
-                todo.Add("its " + string.Join(", ", moved) + " " + (moved.Count == 1 ? "is an n8n expression" : "are n8n expressions") + " - $json is n8n's item; here a step reads variables.");
+                todo.Add("its " + string.Join(", ", moved) + " " + (moved.Count == 1 ? "is an n8n expression" : "are n8n expressions") + " - $json is n8n's item; here a step reads an earlier step's result: select the step and choose it under \"earlier steps' results\" beside " + (moved.Count == 1 ? "that input" : "each") + ", or name a variable.");
             }
         }
 

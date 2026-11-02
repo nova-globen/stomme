@@ -118,34 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Error.User.Load" xml:space="preserve">
-    <value>Error Loading Users</value>
+    <value>Error loading users</value>
   </data>
   <data name="Message.User.Invalid" xml:space="preserve">
-    <value>User Does Not Exist. Please Verify That The Username Provided Is Correct.</value>
+    <value>User does not exist. Please verify that the username provided is correct.</value>
   </data>
   <data name="Error.Notification.Add" xml:space="preserve">
-    <value>Error Adding Notification</value>
+    <value>Error adding notification</value>
   </data>
   <data name="View Notification" xml:space="preserve">
-    <value>View Notification</value>
+    <value>View notification</value>
   </data>
   <data name="Date.HelpText" xml:space="preserve">
     <value>The date the message was sent</value>
   </data>
   <data name="Date.Text" xml:space="preserve">
-    <value>Sent:</value>
+    <value>Sent</value>
   </data>
   <data name="From.HelpText" xml:space="preserve">
     <value>The user who sent the message</value>
   </data>
   <data name="From.Text" xml:space="preserve">
-    <value>From:</value>
+    <value>From</value>
   </data>
   <data name="Message.HelpText" xml:space="preserve">
     <value>The content of the message</value>
   </data>
   <data name="Message.Text" xml:space="preserve">
-    <value>Message:</value>
+    <value>Message</value>
   </data>
   <data name="RE" xml:space="preserve">
     <value>RE:</value>
@@ -154,7 +154,7 @@
     <value>The subject of the message</value>
   </data>
   <data name="Subject.Text" xml:space="preserve">
-    <value>Subject:</value>
+    <value>Subject</value>
   </data>
   <data name="System" xml:space="preserve">
     <value>System</value>
@@ -163,6 +163,6 @@
     <value>The user who will be the recipient of the message</value>
   </data>
   <data name="To.Text" xml:space="preserve">
-    <value>To:</value>
+    <value>To</value>
   </data>
 </root>

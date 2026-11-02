@@ -26,7 +26,7 @@ in light and dark.
 
 | Control | Use it for | Key parameters |
 |---|---|---|
-| `Pager<TableItem>` | Every list. Renders a `db-table` (or a grid) with paging and an optional search box. | `Items`, `Header`, `Row` (`RenderFragment<TableItem>`), `Detail`, `Footer`, `Format` (`"Table"` default, or `"Grid"`), `PageSize` (string, default 10), `SearchProperties` (comma-separated property names; adds the search box), `Toolbar` (`"Top"` default, `"Bottom"`, `"Both"`), `PaginationAlignment` (`"start"`, `"center"` default, `"end"`), `OnPageChange`, `Parameters` (query string kept on static paging links). Its page controls are buttons (links on a static page), each named for a screen reader ("First page", "Page 3") with the current page marked `aria-current`; reachable by Tab since 10.80.0. |
+| `Pager<TableItem>` | Every list. Renders a `db-table` (or a grid) with paging and an optional search box. | `Items`, `Header`, `Row` (`RenderFragment<TableItem>`), `Detail`, `Footer`, `Format` (`"Table"` default, or `"Grid"`), `PageSize` (string, default 10), `SearchProperties` (comma-separated property names; adds the search box), `Toolbar` (`"Top"` default, `"Bottom"`, `"Both"`), `PaginationAlignment` (`"start"`, `"center"` default, `"end"`), `OnPageChange`, `Parameters` (query string kept on static paging links), `EmptyMessage` (what an empty table says - what the list holds and how to fill it; without it "Nothing here yet.", and a search that finds nothing says so, since 10.81.0). Its page controls are buttons (links on a static page), each named for a screen reader ("First page", "Page 3") with the current page marked `aria-current`; reachable by Tab since 10.80.0. |
 | `ActionLink` | A button that opens one of the module's action pages (Add, Edit, ...) and hides itself from users not allowed to use it. | `Action` (required), `Text`, `Parameters` (`"id=5"`), `Security` (`SecurityAccessLevel`), `PermissionList`, `Disabled`, `Class` (default `db-btn`), `IconName`, `IconOnly`, `AltText`, `ReturnUrl`, `EditMode`, `ResourceKey`. |
 | `ActionDialog` | A confirmation before a destructive or irreversible action. | `Header`, `Message` (both required), `Action` (the action's name: without it there is no confirm button; without `Security` it names the component whose level applies), `Text` (the buttons' text, default `Action`), `OnConfirm` (an `EventCallback`, awaited; since 10.80.0) or `OnClick` (an `Action` delegate), `Security`, `Class` (default `db-btn`; use `"db-btn db-btn-danger"` for delete), `ConfirmClass`, `CancelClass` (default `db-btn db-btn-neutral`), `Disabled`, `Id` (required when a static page holds several), `IconName`, `IconOnly`, `ResourceKey`. A modal for the keyboard too (since 10.80.0): named by `Header`, described by `Message`, focus starts on Cancel, Tab stays inside, Escape closes it and focus returns to the button that opened it; an `IconOnly` button is named by `AltText`, else `Text`. |
 | `Label` | The label of a form field, with optional help text. | `For` (the field's `id`), `HelpText`, `HelpTopic`, `Class`, `ResourceKey`, `ResourceType`. |
@@ -133,7 +133,7 @@ A form in the house style:
 ```razor
 <div class="db-fields">
     <div class="db-field">
-        <Label For="title" HelpText="A short name for the note">Title:</Label>
+        <Label For="title" HelpText="A short name for the note">Title</Label>
         <div class="db-field-control">
             <input id="title" class="db-input" @bind="_title" maxlength="200" required />
         </div>
@@ -189,7 +189,7 @@ the app's `wwwroot` and a `<script>` for it on the pages that render the compone
 
 ## Configuration
 
-- The rich-text editor is the site's choice: Admin > Site Settings > Functionality > Text Editor (the site setting
+- The rich-text editor is the site's choice: Admin > Site Settings > Functionality > Text editor (the site setting
   `TextEditor`; default `Constants.DefaultTextEditor`, the QuillJS editor). `RichTextEditor.Provider` picks an editor by
   name instead.
 - No control reads an `appsettings.json` key.

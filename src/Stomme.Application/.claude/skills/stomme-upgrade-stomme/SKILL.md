@@ -74,7 +74,7 @@ database upgraded at the first start, and the app driven to prove it. How instal
 
 - `dotnet build` succeeds with no `NU1605` (package downgrade) or `NU1608` warnings about `Stomme.*`.
 - The first start logs no migration error and does not stop with "The installation did not complete".
-- **System Info** (`/admin/system`) shows the target framework version as **Framework Version**, and
+- **System Info** (`/admin/system`) shows the target framework version as **Framework version**, and
   `InstallationVersion` in `Server/Data/appsettings.override.json` is the target version.
 - Users made before the upgrade still sign in.
 - The app's own modules render and save on the upgraded data, and the browser console is clean.

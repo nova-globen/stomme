@@ -87,7 +87,7 @@ Run the app (`cd Server`, `dotnet run`), sign in as the host, and drive it:
 8. Repeat 2-5 in light and in dark mode, at 375 pixels wide, and with the keyboard only (Tab, Enter, Space).
 9. Sign in as a Registered User: Add note shows; Edit and Delete show only on that user's own notes. A user without
    `notes:edit` sees no Add note at all.
-10. Repeat on a site whose runtime is WebAssembly (Admin > Site Settings > UI Component Settings, a section only the Host
+10. Repeat on a site whose runtime is WebAssembly (Admin > Site Settings > UI component settings, a section only the Host
     sees), with the console open.
 11. The browser console shows no errors at any step, except one "Failed to load resource: ... 409" line on a WebAssembly
     site for the duplicate title you provoked in step 4.

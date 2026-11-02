@@ -19,7 +19,7 @@ class, and the host creates it when it needs it.
 
 | Interface | Namespace (package) | Asked by |
 | --- | --- | --- |
-| `IPortable` | `Stomme.Modules` (`Stomme.Server`) | Export Content / Import Content, page templates with `Content`, site configuration packages |
+| `IPortable` | `Stomme.Modules` (`Stomme.Server`) | Export content / Import content, page templates with `Content`, site configuration packages |
 | `ISearchable` | `Stomme.Interfaces` (`Stomme.Shared`) | The site search's index job |
 | `ISitemap` | `Stomme.Modules` (`Stomme.Server`) | `/sitemap.xml` |
 | `ISynchronizable` | `Stomme.Modules` (`Stomme.Server`) | The site-group synchronization job |
@@ -33,7 +33,7 @@ Task ImportModuleAsync(Stomme.Models.Module module, string content, string versi
 ```
 
 1. When `ServerManagerType` implements `IPortable`, the host sets `ModuleDefinition.IsPortable`, and the placement's actions
-   menu (edit mode) offers **Import Content** and **Export Content**. Both need `Edit` on the page.
+   menu (edit mode) offers **Import content** and **Export content**. Both need `Edit` on the page.
 2. Export: the host builds a `Stomme.Models.ModuleContent` - `ModuleDefinitionName`, `Version` (the module's), the
    instance's non-private settings, and `Content`, the string your `ExportModuleAsync` returns - and serializes it to JSON.
    Your content can be any string; JSON with a schema number is the practical choice.
@@ -225,7 +225,7 @@ ServerManagerType = "Stomme.Application.Modules.Notes.Manager.NotesManager, Stom
 ```
 
 The import writes through the repository rather than through the module's gated commands: the host has already checked
-`Edit` on the page for Import Content, and anything stricter is yours to check. A Note needs an author, so this import
+`Edit` on the page for Import content, and anything stricter is yours to check. A Note needs an author, so this import
 takes the signed-in user and refuses to run without one - which also means the Notes module cannot seed notes from a page
 template's `Content` (imported at startup, with no user). Titles are unique per site, so a note the site already has is
 skipped rather than imported twice.

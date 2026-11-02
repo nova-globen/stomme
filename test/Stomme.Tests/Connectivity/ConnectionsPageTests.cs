@@ -48,6 +48,15 @@ namespace Stomme.Tests.Connectivity
             cut.Find("#connections-credential-username").Change("orders");
             cut.Find("#connections-credential-password").Change("test-only-secret");
             Assert.Equal("password", cut.Find("#connections-credential-password").GetAttribute("type"));
+
+            // Every field says what it is when typed in, not only in a placeholder that is gone once it holds a value (BL-240).
+            foreach (var field in cut.FindAll("#connections-form input:not([type=checkbox]), #connections-form select, #connections-form textarea"))
+            {
+                Assert.True(cut.FindAll($"#connections-form label[for='{field.Id}']").Count == 1, $"'{field.Id}' has no label of its own.");
+            }
+
+            Assert.Equal("Connection string", cut.Find("label[for='connections-endpoint']").TextContent.Trim());
+            Assert.Equal("Password", cut.Find("label[for='connections-credential-password']").TextContent.Trim());
             cut.Find("#connections-save").Click();
 
             cut.WaitForAssertion(() => Assert.Equal("'Orders DB' saved.", cut.Find("#connections-message").TextContent.Trim()));
@@ -83,6 +92,7 @@ namespace Stomme.Tests.Connectivity
             cut.Find("#connections-name").Change("Another");
             cut.Find("#connections-save").Click();
             cut.WaitForAssertion(() => Assert.Equal("The connection was not saved: You may not manage this site's connections.", cut.Find("#connections-refusal").TextContent.Trim()));
+            Assert.Equal("alert", cut.Find("#connections-refusal").GetAttribute("role"));
             Assert.Equal("Another", cut.Find("#connections-name").GetAttribute("value")); // nothing typed is lost
         }
 

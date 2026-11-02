@@ -118,37 +118,37 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SettingName.Text" xml:space="preserve">
-    <value>Name:</value>
+    <value>Name</value>
   </data>
   <data name="SettingName.HelpText" xml:space="preserve">
-    <value>Setting Name</value>
+    <value>Setting name</value>
   </data>
   <data name="EntityId.HelpText" xml:space="preserve">
-    <value>Entity Id</value>
+    <value>Entity ID</value>
   </data>
   <data name="EntityName.HelpText" xml:space="preserve">
-    <value>Entity Name</value>
+    <value>Entity name</value>
   </data>
   <data name="EntityId.Text" xml:space="preserve">
-    <value>Id:</value>
+    <value>ID</value>
   </data>
   <data name="EntityName.Text" xml:space="preserve">
-    <value>Entity:</value>
+    <value>Entity</value>
   </data>
   <data name="Error.LoadSetting" xml:space="preserve">
-    <value>Error Loading Setting</value>
+    <value>Error loading setting</value>
   </data>
   <data name="Error.SaveSetting" xml:space="preserve">
-    <value>Error Saving Setting</value>
+    <value>Error saving setting</value>
   </data>
   <data name="Message.InfoRequired" xml:space="preserve">
-    <value>Please Provide All Required Information</value>
+    <value>Please provide all required information</value>
   </data>
   <data name="SettingValue.Text" xml:space="preserve">
-    <value>Value:</value>
+    <value>Value</value>
   </data>
   <data name="SettingValue.HelpText" xml:space="preserve">
-    <value>Setting Value</value>
+    <value>Setting value</value>
   </data>
   <data name="IsPrivate.Text" xml:space="preserve">
     <value>Private?</value>

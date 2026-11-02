@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Message.Text" xml:space="preserve">
-    <value>Message: </value>
+    <value>Message</value>
   </data>
   <data name="Message.User.Invalid" xml:space="preserve">
-    <value>The User Specified Does Not Exist</value>
+    <value>The user specified does not exist</value>
   </data>
   <data name="Error.Notification.Add" xml:space="preserve">
-    <value>Error Adding Notification</value>
+    <value>Error adding notification</value>
   </data>
   <data name="To.HelpText" xml:space="preserve">
     <value>Enter the username you wish to send a message to</value>
@@ -136,18 +136,18 @@
     <value>Enter the message content</value>
   </data>
   <data name="To.Text" xml:space="preserve">
-    <value>To: </value>
+    <value>To</value>
   </data>
   <data name="Subject.Text" xml:space="preserve">
-    <value>Subject: </value>
+    <value>Subject</value>
   </data>
   <data name="Send Notification" xml:space="preserve">
-    <value>Send Notification</value>
+    <value>Send notification</value>
   </data>
   <data name="Message.Required" xml:space="preserve">
-    <value>You Must Enter All Required Information</value>
+    <value>You must enter all required information</value>
   </data>
   <data name="Username.Enter" xml:space="preserve">
-    <value>Enter Username</value>
+    <value>Enter username</value>
   </data>
 </root>

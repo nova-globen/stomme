@@ -7,7 +7,7 @@
 
 @if (_pages != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
 {
-    <ActionLink Action="Add" Text="Add Page" ResourceKey="AddPage" />
+    <ActionLink Action="Add" Text="Add page" ResourceKey="AddPage" />
 
     <Pager Items="@_pages.Where(item => !item.IsDeleted)" SearchProperties="Name">
         <Header>
@@ -18,7 +18,7 @@
         </Header>
         <Row>
             <td><ActionLink Action="Edit" Text="Edit" Parameters="@($"id=" + context.PageId.ToString())" ResourceKey="EditPage" /></td>
-            <td><ActionDialog Header="Delete Page" Message="@string.Format(Localizer["Confirm.Page.Delete"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeletePage(context))" ResourceKey="DeletePage" /></td>
+            <td><ActionDialog Header="Delete page" Message="@string.Format(Localizer["Confirm.Page.Delete"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeletePage(context))" ResourceKey="DeletePage" /></td>
             <td><button type="button" class="db-btn db-btn-neutral" @onclick="@(async () => NavigationManager.NavigateTo(Browse(context)))">@Localizer["Browse"]</button></td>
             <td>@(new string('-', context.Level * 2))@(context.Name)</td>
         </Row>

@@ -52,6 +52,31 @@ namespace Stomme.Tests
             Assert.Equal("2", cut.Find("[aria-current=page]").TextContent.Trim());
         }
 
+        // BL-241, driven: an empty list was a bare header row (Url Mappings, Setting Management), which reads as a page that did
+        // not load. It says so now, in the page's own words when it gives them.
+        [Theory]
+        [InlineData(null, "Empty")]
+        [InlineData("No URL is mapped yet. Add one to send an old address to a page.", "No URL is mapped yet. Add one to send an old address to a page.")]
+        public void An_empty_list_says_so(string? emptyMessage, string said)
+        {
+            var cut = Render<Pager<int>>(parameters => parameters
+                .AddCascadingValue(State())
+                .AddCascadingValue(Module())
+                .Add(pager => pager.Items, Enumerable.Empty<int>())
+                .Add(pager => pager.EmptyMessage, emptyMessage)
+                .Add(pager => pager.Header, (RenderFragment)(builder => builder.AddMarkupContent(0, "<th>N</th>")))
+                .Add(pager => pager.Row, (RenderFragment<int>)(item => builder => builder.AddMarkupContent(0, $"<td>{item}</td>"))));
+
+            Assert.Equal(said, cut.Find("tbody tr.app-pager-empty").TextContent.Trim()); // the resource key in bUnit, "Nothing here yet." in a site
+
+            var filled = Render<Pager<int>>(parameters => parameters
+                .AddCascadingValue(State())
+                .AddCascadingValue(Module())
+                .Add(pager => pager.Items, new[] { 1 })
+                .Add(pager => pager.Row, (RenderFragment<int>)(item => builder => builder.AddMarkupContent(0, $"<td>{item}</td>"))));
+            Assert.Empty(filled.FindAll("tr.app-pager-empty"));
+        }
+
         [Fact]
         public void The_action_dialog_is_a_named_modal_that_traps_the_keyboard_and_closes()
         {

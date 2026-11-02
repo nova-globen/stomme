@@ -178,7 +178,7 @@ namespace Stomme.Application.Modules.Notes.Jobs
    `Notes Digest Is Disabled (Notes:Digest:Enabled)` - the switch works.
 4. Set `"Notes": { "Digest": { "Enabled": true } }` in `Server/Data/appsettings.override.json` (or wherever
    `STOMME_APPSETTINGS_PATH` points). To see a run without waiting an hour, change its schedule on the Scheduled Jobs page:
-   an enabled job cannot be edited, so open **Edit**, click **Disable**, open **Edit** again, set **Runs Every** to 1
+   an enabled job cannot be edited, so open **Edit**, click **Disable**, open **Edit** again, set **Runs every** to 1
    Minute(s) with **Enabled?** Yes, and **Save**. The next log entry is **Succeeded** and shows one "Site ...: N notes" line per site.
 5. With two sites (add one under **Admin > Site Management**, give each a different number of notes), each site's line
    carries its own count, each site once. Open **Admin > Event Log** on each site (sign in at that site's URL): the

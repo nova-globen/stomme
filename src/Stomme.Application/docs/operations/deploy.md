@@ -16,7 +16,7 @@ Publishing `Server/Stomme.Application.Server.csproj` gives one folder that holds
   static web assets;
 - `appsettings.json` and `features.json`;
 - `wwwroot/Modules/Templates` and `wwwroot/Themes/Templates`, copied by the project's `PublishStommeTemplates`
-  target so **Create Module** and **Create Theme** work in the published app.
+  target so **Create module** and **Create theme** work in the published app.
 
 The folder needs the ASP.NET Core 10 runtime, or publish self-contained with `-r <rid> --self-contained`.
 
@@ -228,7 +228,7 @@ volumes: { app-data: {}, app-content: {}, app-public: {}, app-keys: {} }
 - Every site keeps its own sign-in, cookies and users; the folder sites' requests reach the same container, so the proxy
   in front sends `example.com/*` to it (see [nginx in front](#nginx-in-front)). Each name in `Installation:Sites`
   is created on the first start that finds it missing; nothing is created twice.
-- The **mail server** is a setting of each site, not of configuration: set it in **Admin > Site Settings > SMTP Settings** on each
+- The **mail server** is a setting of each site, not of configuration: set it in **Admin > Site Settings > SMTP settings** on each
   site (a relay on the host's network is the usual shape), or have a module of yours write the site's SMTP settings at
   start-up. See [Notifications](../services/notifications.md).
 - A **module switched off** with `FeatureManagement__module.<id>.enabled=false` is still in the image and loaded; the
@@ -335,7 +335,7 @@ reaches the host before the install completes cannot claim it.
   the app sees `http` and the proxy's address. Name it in `ForwardedHeaders:KnownProxies` or
   `ForwardedHeaders:KnownNetworks`.
 - **The site answers only on its aliases.** A request whose host name matches no alias gets a plain 404. Add the public host
-  name under **Admin > Site Settings > Site Urls** before switching DNS.
+  name under **Admin > Site Settings > Site URLs** before switching DNS.
 - **A restart from the admin pages is an exit.** Without a supervisor that restarts on a clean exit, the app stays down.
 - **More than one instance needs more than a load balancer.** The default cache is in memory per instance, Stomme's
   internal sync events stay in their process, SQLite files cannot be shared, and the data-protection keys must be shared.

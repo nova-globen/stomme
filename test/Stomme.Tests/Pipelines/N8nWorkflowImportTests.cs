@@ -136,11 +136,15 @@ namespace Stomme.Tests.Pipelines
             var sticky = graph.Notes.Single(note => note.Text.StartsWith("## Orders"));
             Assert.Equal(PipelineNoteColors.Green, sticky.Color);
             var todo = graph.Notes[0];
-            Assert.StartsWith("### Brought over from n8n\n12 nodes: 8 steps, 1 placeholder, 1 note.", todo.Text);
+            Assert.StartsWith("### Brought over from n8n\n12 nodes: 8 steps, 1 placeholder, 1 note; its manual trigger is not needed - a pipeline here runs by hand without one.", todo.Text);
             Assert.Contains("- 'LINE': no step here does what n8n-nodes-base.line did", todo.Text);
             Assert.Contains("- 'Webhook': n8n took its calls by GET, unsigned - here a caller POSTs to api/Pipelines/webhooks/orders, signed with X-Signature-256", todo.Text);
-            Assert.Contains("- 'HTTP Request': it signed in with n8n's genericCredentialType", todo.Text);
-            Assert.Contains("- 'HTTP Request': its Body is an n8n expression", todo.Text);
+            // BL-240, driven: its sign-in said in words, once - not again as "credentials do not travel" - and its expression
+            // says what to do here.
+            Assert.Contains("- 'HTTP Request': it signed in with an n8n credential, which an export never carries", todo.Text);
+            Assert.DoesNotContain("genericCredentialType", todo.Text);
+            Assert.DoesNotContain("'HTTP Request': credentials do not travel", todo.Text);
+            Assert.Contains("- 'HTTP Request': its Body is an n8n expression - $json is n8n's item; here a step reads an earlier step's result: select the step and choose it under \"earlier steps' results\"", todo.Text);
             Assert.Contains("- 'Big order?': its condition reads n8n's items ($json)", todo.Text);
             Assert.Contains("- 'Paid only': n8n's regex rule has no counterpart here", todo.Text);
             Assert.DoesNotContain("'Paid only': its condition reads", todo.Text); // its $json became the record's field

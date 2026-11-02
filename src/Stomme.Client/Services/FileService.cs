@@ -143,7 +143,8 @@ namespace Stomme.Services
 
         public async Task<File> GetFileAsync(int folderId, string name)
         {
-            return await GetJsonAsync<File>($"{Apiurl}/name/{name}/{folderId}");
+            // Escaped as a path segment: a name with '#', '?' or '%' otherwise asked for another file, or none (upstream 15f4deca).
+            return await GetJsonAsync<File>($"{Apiurl}/name/{System.Uri.EscapeDataString(name)}/{folderId}");
         }
 
         public async Task<File> AddFileAsync(File file)

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NextExecution" xml:space="preserve">
-    <value>Next Execution</value>
+    <value>Next execution</value>
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>Disabled</value>
@@ -145,7 +145,7 @@
     <value>Month(s)</value>
   </data>
   <data name="ViewLogs.Text" xml:space="preserve">
-    <value>View All Logs</value>
+    <value>View all logs</value>
   </data>
   <data name="Frequency" xml:space="preserve">
     <value>Frequency</value>
@@ -172,13 +172,13 @@
     <value>The process responsible for executing this job has been started. The next execution will be based on the schedule criteria for the job.</value>
   </data>
   <data name="Message.Job.Stop" xml:space="preserve">
-    <value>The process responsible for executing this job has been stopped. In order to restart the process you will need to use the Start button or restart the application.</value>
+    <value>The process responsible for executing this job has been stopped. In order to restart the process you will need to use the start button or restart the application.</value>
   </data>
   <data name="Week" xml:space="preserve">
     <value>Week(s)</value>
   </data>
   <data name="Once" xml:space="preserve">
-    <value>Execute Once</value>
+    <value>Execute once</value>
   </data>
   <data name="Refresh.Text" xml:space="preserve">
     <value>Refresh</value>

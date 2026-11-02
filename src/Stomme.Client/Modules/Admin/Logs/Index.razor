@@ -17,7 +17,7 @@ else
 			<div class="db-fields">
 				<div class="db-filters">
 					<div class="db-filter">
-						<Label For="level" HelpText="Select the log level for event log items" ResourceKey="Level">Level: </Label>
+						<Label For="level" HelpText="Select the log level for event log items" ResourceKey="Level">Level</Label>
 						<select id="level" class="db-select" value="@_level" @onchange="(e => LevelChanged(e))">
 							<option value="-">&lt;@Localizer["AllLevels"]&gt;</option>
 							<option value="Trace">@Localizer["Trace"]</option>
@@ -29,7 +29,7 @@ else
 						</select>
 					</div>            
 					<div class="db-filter">
-						<Label For="function" HelpText="Select the function for event log items" ResourceKey="Function">Function: </Label>
+						<Label For="function" HelpText="Select the function for event log items" ResourceKey="Function">Function</Label>
 						<select id="function" class="db-select" value="@_function" @onchange="(e => FunctionChanged(e))">
 							<option value="-">&lt;@Localizer["AllFunctions"]&gt;</option>
 							<option value="Create">@Localizer["Create"]</option>
@@ -41,7 +41,7 @@ else
 						</select>
 					</div>            
 					<div class="db-filter">
-						<Label For="rows" HelpText="Select the maximum number of event log items to review. Please note that if you choose more than 10 items the information will be split into pages." ResourceKey="Rows">Maximum Items: </Label>
+						<Label For="rows" HelpText="Select the maximum number of event log items to review. Please note that if you choose more than 10 items the information will be split into pages." ResourceKey="Rows">Maximum items</Label>
 						<select id="rows" class="db-select" value="@_rows" @onchange="(e => RowsChanged(e))">
 							<option value="10">10</option>
 							<option value="50">50</option>
@@ -79,7 +79,7 @@ else
         <TabPanel Name="Settings" Heading="Settings" ResourceKey="Settings">
 			<div class="db-fields">
 				<div class="db-field">
-					<Label For="retention" HelpText="Number of days of events to retain" ResourceKey="Retention">Retention (Days): </Label>
+					<Label For="retention" HelpText="Number of days of events to retain" ResourceKey="Retention">Retention (days)</Label>
 					<div class="db-field-control">
                         <input id="retention" type="number" min="0" step="1" class="db-input" @bind="@_retention" />
 					</div>
@@ -87,7 +87,7 @@ else
 			</div>
 			<br />
             <button type="button" class="db-btn" @onclick="SaveSiteSettings">@SharedLocalizer["Save"]</button>
-            <ActionDialog Header="Clear Events" Message="Are You Sure You Wish To Remove All Log Events?" Action="DeleteLogs" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteLogs())" ResourceKey="DeleteLogs" />
+            <ActionDialog Header="Clear events" Message="Are You Sure You Wish To Remove All Log Events?" Action="DeleteLogs" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteLogs())" ResourceKey="DeleteLogs" />
 		</TabPanel>
 	</TabStrip>
 }

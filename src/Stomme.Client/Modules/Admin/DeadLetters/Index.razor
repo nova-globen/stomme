@@ -55,7 +55,7 @@ else
                     <button type="button" class="db-btn" @onclick="@(async () => await Retry(context))">@Localizer["Retry"]</button>
                 </td>
                 <td>
-                    <ActionDialog Header="Discard Message" Message="@string.Format(Localizer["Confirm.Discard"], context.MessageType)" Action="Discard"
+                    <ActionDialog Header="Discard message" Message="@string.Format(Localizer["Confirm.Discard"], context.MessageType)" Action="Discard"
                                   Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger"
                                   OnClick="@(async () => await Discard(context))" ResourceKey="DiscardMessage" />
                 </td>

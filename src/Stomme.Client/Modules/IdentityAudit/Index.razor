@@ -51,9 +51,9 @@
                     {
                         <tr>
                             <td>@entry.OccurredOnUtc.ToString("u")</td>
-                            <td>@entry.Event</td>
+                            <td>@EventText(entry.Event)</td>
                             <td>@(string.IsNullOrEmpty(entry.SubjectName) ? (entry.SubjectUserId is null ? "(unknown account)" : $"#{entry.SubjectUserId}") : entry.SubjectName)</td>
-                            <td>@(entry.ActorUserId is null ? "—" : $"#{entry.ActorUserId}")</td>
+                            <td>@ActorText(entry)</td>
                             <td>@(string.IsNullOrEmpty(entry.RemoteAddress) ? "—" : entry.RemoteAddress)</td>
                             <td style="color:var(--db-text-2);">@(string.IsNullOrEmpty(entry.Detail) ? "—" : entry.Detail)</td>
                         </tr>
@@ -66,6 +66,17 @@
 
 @code {
     private List<IdentityAuditEntryView> _entries;
+
+    // The event in words ("Sign in failed", not "SignInFailed") and who did it by name - "self" when on their own account,
+    // a name the page already holds, else the id; the page showed "#1" beside "host" (BL-241, driven).
+    private static string EventText(object value) =>
+        System.Text.RegularExpressions.Regex.Replace(value?.ToString() ?? "", "(?<=[a-z])([A-Z])", match => " " + match.Value.ToLowerInvariant());
+
+    private string ActorText(IdentityAuditEntryView entry) =>
+        entry.ActorUserId is not { } actor ? "—"
+        : actor == entry.SubjectUserId ? "self"
+        : _entries?.FirstOrDefault(other => other.SubjectUserId == actor && !string.IsNullOrEmpty(other.SubjectName))?.SubjectName ?? $"#{actor}";
+
     private int _days = 30;
     private bool _busy;
 

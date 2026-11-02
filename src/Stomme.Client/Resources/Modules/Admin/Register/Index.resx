@@ -118,70 +118,70 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Info.Registration.Exists" xml:space="preserve">
-    <value>You Are Already Registered</value>
+    <value>You are already Registered</value>
   </data>
   <data name="Info.Registration.InvalidEmail" xml:space="preserve">
-    <value>Please Note That Registration Requires A Valid Email Address In Order To Verify Your Identity</value>
+    <value>Please note that registration requires a valid email address in order to verify your identity</value>
   </data>
   <data name="Password.Confirm" xml:space="preserve">
-    <value>Confirm Password:</value>
+    <value>Confirm password:</value>
   </data>
   <data name="Register" xml:space="preserve">
     <value>Register</value>
   </data>
   <data name="Info.Registration.Disabled" xml:space="preserve">
-    <value>Registration is Disabled For This Site</value>
+    <value>Registration is disabled for this site</value>
   </data>
   <data name="Info.User.AccountCreate" xml:space="preserve">
-    <value>User Account Created. Please Check Your Email For Verification Instructions.</value>
+    <value>User account created. Please check your email for verification instructions.</value>
   </data>
   <data name="Error.User.AddInfo" xml:space="preserve">
-    <value>Error Adding User. Please Ensure Password Meets Complexity Requirements And Username And Email Is Not Already In Use.</value>
+    <value>Error adding user. Please ensure password meets complexity requirements and username and email is not already in use.</value>
   </data>
   <data name="Message.Password.NoMatch" xml:space="preserve">
-    <value>Passwords Entered Do Not Match</value>
+    <value>Passwords entered do not match</value>
   </data>
   <data name="Message.Required.UserInfo" xml:space="preserve">
-    <value>You Must Provide A Username, Password, and Email Address</value>
+    <value>You must provide a username, password, and email address</value>
   </data>
   <data name="Error.User.Add" xml:space="preserve">
-    <value>Error Adding User</value>
+    <value>Error adding user</value>
   </data>
   <data name="Confirm.HelpText" xml:space="preserve">
     <value>Enter your password again to confirm it matches the value entered above</value>
   </data>
   <data name="Confirm.Text" xml:space="preserve">
-    <value>Confirm Password:</value>
+    <value>Confirm password</value>
   </data>
   <data name="DisplayName.HelpText" xml:space="preserve">
     <value>Your full name</value>
   </data>
   <data name="DisplayName.Text" xml:space="preserve">
-    <value>Full Name:</value>
+    <value>Full name</value>
   </data>
   <data name="Email.HelpText" xml:space="preserve">
     <value>Your email address where you wish to receive notifications</value>
   </data>
   <data name="Email.Text" xml:space="preserve">
-    <value>Email:</value>
+    <value>Email</value>
   </data>
   <data name="Password.HelpText" xml:space="preserve">
     <value>Please enter a sufficiently secure password which meets the password complexity requirements</value>
   </data>
   <data name="Password.Text" xml:space="preserve">
-    <value>Password:</value>
+    <value>Password</value>
   </data>
   <data name="Username.HelpText" xml:space="preserve">
     <value>Your username. Note that this field can not be modified once it is saved.</value>
   </data>
   <data name="Username.Text" xml:space="preserve">
-    <value>Username:</value>
+    <value>Username</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Already have account? Login now.</value>
   </data>
   <data name="TimeZone.Text" xml:space="preserve">
-    <value>Time Zone:</value>
+    <value>Time zone</value>
   </data>
   <data name="TimeZone.HelpText" xml:space="preserve">
     <value>Your time zone</value>
@@ -193,7 +193,7 @@
     <value>The time zone is not one in the list. Type part of a city or region name and pick it from the suggestions, or leave the field empty.</value>
   </data>
   <data name="CultureCode.Text" xml:space="preserve">
-    <value>Language:</value>
+    <value>Language</value>
   </data>
   <data name="CultureCode.HelpText" xml:space="preserve">
     <value>Your preferred language. Note that you will only be able to choose from languages supported on this site.</value>

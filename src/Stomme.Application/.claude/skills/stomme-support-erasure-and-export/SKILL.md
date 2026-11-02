@@ -22,7 +22,7 @@ Do this for every aggregate of yours that holds a person's id or data.
    `Retain` with a `RetentionReason` (`LegalObligation`, `LegalClaims`, `Security`) and a period, after which
    `PurgeRetainedAsync` deletes it. A person's notes are theirs: Delete.
    Give each declaration a `Summary` in the person's words (`with { Summary = "your notes" }`): the profile page's
-   Delete My Account section lists it before the person confirms, and `GET api/Erasure/summary` serves the same list.
+   Delete my account section lists it before the person confirms, and `GET api/Erasure/summary` serves the same list.
 
 2. **The erasure participant.** Create `Server/Modules/Notes/DataRights/NoteErasureParticipant.cs`:
 

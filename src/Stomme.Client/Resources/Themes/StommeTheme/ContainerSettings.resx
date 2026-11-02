@@ -118,27 +118,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Title.HelpText" xml:space="preserve">
-    <value>Specify If The Module Title Should Be Displayed</value>
+    <value>Specify if the module title should be displayed</value>
   </data>
   <data name="Background.HelpText" xml:space="preserve">
-    <value>Optionally Specify A Background Color For The Container</value>
+    <value>Optionally specify a background color for the container</value>
   </data>
   <data name="Text.HelpText" xml:space="preserve">
-    <value>Optionally Specify A Text Color For The Container</value>
+    <value>Optionally specify a text color for the container</value>
   </data>
   <data name="Border.HelpText" xml:space="preserve">
-    <value>Optionally Specify A Border For The Container</value>
+    <value>Optionally specify a border for the container</value>
   </data>
   <data name="Title.Text" xml:space="preserve">
-    <value>Display Title?</value>
+    <value>Display title?</value>
   </data>
   <data name="Background.Text" xml:space="preserve">
-    <value>Background Color:</value>
+    <value>Background color</value>
   </data>
   <data name="Text.Text" xml:space="preserve">
-    <value>Text Color:</value>
+    <value>Text color</value>
   </data>
   <data name="Border.Text" xml:space="preserve">
-    <value>Border Color:</value>
+    <value>Border color</value>
   </data>
 </root>

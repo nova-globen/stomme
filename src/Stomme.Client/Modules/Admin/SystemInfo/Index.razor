@@ -13,31 +13,31 @@
         <TabPanel Name="Info" Heading="Info" ResourceKey="Info">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="version" HelpText="Framework Version" ResourceKey="FrameworkVersion">Framework Version: </Label>
+                    <Label For="version" HelpText="Framework version" ResourceKey="FrameworkVersion">Framework version</Label>
                     <div class="db-field-control">
                         <input id="version" class="db-input" @bind="@_version" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="clrversion" HelpText="Common Language Runtime Version" ResourceKey="CLRVersion">CLR Version: </Label>
+                    <Label For="clrversion" HelpText="Common language runtime version" ResourceKey="CLRVersion">CLR version</Label>
                     <div class="db-field-control">
                         <input id="clrversion" class="db-input" @bind="@_clrversion" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="osversion" HelpText="Operating System Version" ResourceKey="OSVersion">OS Version: </Label>
+                    <Label For="osversion" HelpText="Operating system version" ResourceKey="OSVersion">OS version</Label>
                     <div class="db-field-control">
                         <input id="osversion" class="db-input" @bind="@_osversion" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="process" HelpText="Indicates if the current process is 32 bit or 64 bit" ResourceKey="Process">Process: </Label>
+                    <Label For="process" HelpText="Indicates if the current process is 32 bit or 64 bit" ResourceKey="Process">Process</Label>
                     <div class="db-field-control">
                         <input id="process" class="db-input" @bind="@_process" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="machinename" HelpText="Machine Name of the Server" ResourceKey="MachineName">Server: </Label>
+                    <Label For="machinename" HelpText="Machine name of the server" ResourceKey="MachineName">Server</Label>
                     <div class="db-field-control">
                         <input id="machinename" class="db-input" @bind="@_machinename" readonly />
                     </div>
@@ -45,62 +45,62 @@
                 @if (!string.IsNullOrEmpty(_instance))
                 {
                     <div class="db-field">
-                        <Label For="instance" HelpText="Instance" ResourceKey="Instance">Instance: </Label>
+                        <Label For="instance" HelpText="Instance" ResourceKey="Instance">Instance</Label>
                         <div class="db-field-control">
                             <input id="instance" class="db-input" @bind="@_instance" readonly />
                         </div>
                     </div>
                 }
                 <div class="db-field">
-                    <Label For="ipaddress" HelpText="Server IP Address" ResourceKey="IPAddress">IP Address: </Label>
+                    <Label For="ipaddress" HelpText="Server IP address" ResourceKey="IPAddress">IP address</Label>
                     <div class="db-field-control">
                         <input id="ipaddress" class="db-input" @bind="@_ipaddress" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="environment" HelpText="Environment name" ResourceKey="Environment">Environment: </Label>
+                    <Label For="environment" HelpText="Environment name" ResourceKey="Environment">Environment</Label>
                     <div class="db-field-control">
                         <input id="environment" class="db-input" @bind="@_environment" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="contentrootpath" HelpText="Root Path" ResourceKey="ContentRootPath">Root Path: </Label>
+                    <Label For="contentrootpath" HelpText="Root path" ResourceKey="ContentRootPath">Root path</Label>
                     <div class="db-field-control">
                         <input id="contentrootpath" class="db-input" @bind="@_contentrootpath" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="webrootpath" HelpText="Web Path" ResourceKey="WebRootPath">Web Path: </Label>
+                    <Label For="webrootpath" HelpText="Web path" ResourceKey="WebRootPath">Web path</Label>
                     <div class="db-field-control">
                         <input id="webrootpath" class="db-input" @bind="@_webrootpath" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="servertime" HelpText="Server Date/Time (in UTC)" ResourceKey="ServerTime">Server Date/Time: </Label>
+                    <Label For="servertime" HelpText="Server date/time (in UTC)" ResourceKey="ServerTime">Server date/time</Label>
                     <div class="db-field-control">
                         <input id="servertime" class="db-input" @bind="@_servertime" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="workingset" HelpText="Memory Allocation Of Service (in MB)" ResourceKey="WorkingSet">Memory Allocation: </Label>
+                    <Label For="workingset" HelpText="Memory allocation of service (in MB)" ResourceKey="WorkingSet">Memory allocation</Label>
                     <div class="db-field-control">
                         <input id="workingset" class="db-input" @bind="@_workingset" readonly />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="installationid" HelpText="The Unique Identifier For Your Installation" ResourceKey="InstallationId">Installation ID: </Label>
+                    <Label For="installationid" HelpText="The unique identifier for your installation" ResourceKey="InstallationId">Installation ID</Label>
                     <div class="db-field-control">
                         <input id="installationid" class="db-input" @bind="@_installationid" readonly />
                     </div>
                 </div>
             </div>
             <br /><br />
-            <ActionDialog Header="Restart Application" Message="Are You Sure You Wish To Restart The Application?" Action="Restart Application" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await RestartApplication())" ResourceKey="RestartApplication" />
+            <ActionDialog Header="Restart application" Message="Are You Sure You Wish To Restart The Application?" Action="Restart Application" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await RestartApplication())" ResourceKey="RestartApplication" />
         </TabPanel>
         <TabPanel Name="Options" Heading="Options" ResourceKey="Options">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="detailederrors" HelpText="Specify If Detailed Errors Are Enabled For Blazor. This Option Should Not Not Be Enabled In Production." ResourceKey="DetailedErrors">Detailed Errors? </Label>
+                    <Label For="detailederrors" HelpText="Specify if detailed errors are enabled for Blazor. This option should not be enabled in production." ResourceKey="DetailedErrors">Detailed errors?</Label>
                     <div class="db-field-control">
                         <select id="detailederrors" class="db-select" @bind="@_detailederrors">
                             <option value="true">@SharedLocalizer["True"]</option>
@@ -109,7 +109,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="logginglevel" HelpText="The Minimum Logging Level For The Event Log. This Option Can Be Used To Control The Volume Of Items Stored In Your Event Log." ResourceKey="LoggingLevel">Logging Level: </Label>
+                    <Label For="logginglevel" HelpText="The minimum logging level for the event log. This option can be used to control the volume of items stored in your event log." ResourceKey="LoggingLevel">Logging level</Label>
                     <div class="db-field-control">
                         <select id="logginglevel" class="db-select" @bind="@_logginglevel">
                             <option value="Trace">@Localizer["Trace"]</option>
@@ -123,7 +123,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="notificationlevel" HelpText="The Minimum Logging Level For Which Notifications Should Be Sent To Host Users" ResourceKey="NotificationLevel">Notification Level: </Label>
+                    <Label For="notificationlevel" HelpText="The minimum logging level for which notifications should be sent to Host users" ResourceKey="NotificationLevel">Notification level</Label>
                     <div class="db-field-control">
                         <select id="notificationlevel" class="db-select" @bind="@_notificationlevel">
                             <option value="Trace">@Localizer["Trace"]</option>
@@ -137,7 +137,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="broadcast" HelpText="The Minimum Logging Level For Which Events Should Be Broadcast To Registered Logging Providers" ResourceKey="Broadcast">Broadcast Level: </Label>
+                    <Label For="broadcast" HelpText="The minimum logging level for which events should be broadcast to Registered logging providers" ResourceKey="Broadcast">Broadcast level</Label>
                     <div class="db-field-control">
                         <select id="broadcast" class="db-select" @bind="@_broadcast">
                             <option value="Trace">@Localizer["Trace"]</option>
@@ -151,7 +151,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="swagger" HelpText="Specify If Swagger Is Enabled For Your Server API" ResourceKey="Swagger">Swagger Enabled? </Label>
+                    <Label For="swagger" HelpText="Specify if Swagger is enabled for your server API" ResourceKey="Swagger">Swagger enabled?</Label>
                     <div class="db-field-control">
                         <select id="swagger" class="db-select" @bind="@_swagger">
                             <option value="true">@SharedLocalizer["True"]</option>
@@ -163,13 +163,13 @@
                 <Section Name="Caching" Heading="Caching" ResourceKey="Caching">
                     <div class="db-fields">
                         <div class="db-field">
-                            <Label For="cacheduration" HelpText="The amount of time (in minutes) when a cache item is considered to be expired" ResourceKey="CacheDuration">Cache Duration: </Label>
+                            <Label For="cacheduration" HelpText="The amount of time (in minutes) when a cache item is considered to be expired" ResourceKey="CacheDuration">Cache duration</Label>
                             <div class="db-field-control">
                                 <input id="cacheduration" class="db-input" @bind="@_cacheduration" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="failsafe" HelpText="Specify if you wish to temporarily reuse an expired value if a problem occurs when loading data" ResourceKey="FailSafe">Use Fail Safe? </Label>
+                            <Label For="failsafe" HelpText="Specify if you wish to temporarily reuse an expired value if a problem occurs when loading data" ResourceKey="FailSafe">Use fail safe?</Label>
                             <div class="db-field-control">
                                 <select id="failsafe" class="db-select" @bind="@_failsafe">
                                     <option value="true">@SharedLocalizer["Yes"]</option>
@@ -178,7 +178,7 @@
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="distributedcache" HelpText="Specify if you are using a distributed cache service" ResourceKey="DistributedCache">Using Distributed Cache? </Label>
+                            <Label For="distributedcache" HelpText="Specify if you are using a distributed cache service" ResourceKey="DistributedCache">Using distributed cache?</Label>
                             <div class="db-field-control">
                                 <select id="distributedcache" class="db-select" value="@_distributedcache" @onchange="(e => DistributedCacheChanged(e))">
                                     <option value="true">@SharedLocalizer["Yes"]</option>
@@ -187,7 +187,7 @@
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="scaleout" HelpText="Specify if you are using a scale out approach which includes multiple web instances. A distributed cache service is required for synchronization in this scenario." ResourceKey="ScaleOut">Using Scale Out? </Label>
+                            <Label For="scaleout" HelpText="Specify if you are using a scale out approach which includes multiple web instances. A distributed cache service is required for synchronization in this scenario." ResourceKey="ScaleOut">Using scale out?</Label>
                             <div class="db-field-control">
                                 <select id="scaleout" class="db-select" value="@_scaleout" @onchange="(e => ScaleOutChanged(e))">
                                     <option value="true">@SharedLocalizer["Yes"]</option>
@@ -198,7 +198,7 @@
                         @if (_distributedcache == "true" || _scaleout == "true")
                         {
                             <div class="db-field">
-                                <Label For="distributedconnection" HelpText="Provide the connection string for the distributed cache service" ResourceKey="DistributedConnection">Connection String: </Label>
+                                <Label For="distributedconnection" HelpText="Provide the connection string for the distributed cache service" ResourceKey="DistributedConnection">Connection string</Label>
                                 <div class="db-field-control">
                                     <div class="db-input-group">
                                         <input id="distributedconnection" type="@_distributedconnectiontype" class="db-input" @bind="@_distributedconnection" />
@@ -208,26 +208,26 @@
                             </div>
                         }
                         <div class="db-field">
-                            <Label For="cachecontrol" HelpText="Provide a Cache-Control directive for static assets. For example 'public, max-age=60' indicates that static assets should be cached for 60 seconds. A blank value indicates caching for static assets is not enabled." ResourceKey="CacheControl">Static Asset Cache-Control: </Label>
+                            <Label For="cachecontrol" HelpText="Provide a cache-control directive for static assets. For example 'public, max-age=60' indicates that static assets should be cached for 60 seconds. A blank value indicates caching for static assets is not enabled." ResourceKey="CacheControl">Static asset cache-control</Label>
                             <div class="db-field-control">
                                 <input id="cachecontrol" class="db-input" @bind="@_cachecontrol" />
                             </div>
                         </div>
                     </div>
                     <br />
-                    <ActionDialog Header="Clear Cache" Message="Are You Sure You Wish To Clear The Entire Cache? Every Cached Value Is Removed And Reloaded On Next Use." Action="Clear All" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await ClearCache())" ResourceKey="ClearCache" />
+                    <ActionDialog Header="Clear cache" Message="Are You Sure You Wish To Clear The Entire Cache? Every Cached Value Is Removed And Reloaded On Next Use." Action="Clear All" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await ClearCache())" ResourceKey="ClearCache" />
                 </Section>
                 <br />
                 <Section Name="Marketplace" Heading="Marketplace" ResourceKey="Marketplace">
                     <div class="db-fields">
                         <div class="db-field">
-                            <Label For="packageregistryurl" HelpText="Specify The Url Of The Package Manager Service For Installing Modules, Themes, And Translations. If This Field Is Blank It Means The Package Manager Service Is Disabled For This Installation." ResourceKey="PackageManager">Package Manager Url: </Label>
+                            <Label For="packageregistryurl" HelpText="Specify the URL of the package manager service for installing modules, themes, and translations. If this field is blank it means the package manager service is disabled for this installation." ResourceKey="PackageManager">Package manager URL</Label>
                             <div class="db-field-control">
                                 <input id="packageregistryurl" class="db-input" @bind="@_packageregistryurl" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="packageregistryemail" HelpText="Specify The Email Address Of The User Account Used For Interacting With The Package Manager Service. This Account Is Used For Managing Packages Across Multiple Installations." ResourceKey="PackageManagerEmail">Package Manager Email: </Label>
+                            <Label For="packageregistryemail" HelpText="Specify the email address of the user account used for interacting with the package manager service. This account is used for managing packages across multiple installations." ResourceKey="PackageManagerEmail">Package manager email</Label>
                             <div class="db-field-control">
                                 <input id="packageregistryemail" class="db-input" @bind="@_packageregistryemail" />
                             </div>
@@ -237,7 +237,7 @@
             </div>
             <br /><br />
             <button type="button" class="db-btn" @onclick="SaveConfig">@SharedLocalizer["Save"]</button>&nbsp;
-            <ActionDialog Header="Restart Application" Message="Are You Sure You Wish To Restart The Application?" Action="Restart Application" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await RestartApplication())" ResourceKey="RestartApplication" />
+            <ActionDialog Header="Restart application" Message="Are You Sure You Wish To Restart The Application?" Action="Restart Application" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await RestartApplication())" ResourceKey="RestartApplication" />
             <br /><br />
             <a class="db-btn" href="/openapi/v1.json" target="_new">@Localizer["OpenApi"]</a>&nbsp;
             <a class="db-btn db-btn-neutral" href="api/endpoint" target="_new">@Localizer["Endpoints"]</a>
@@ -245,7 +245,7 @@
         <TabPanel Name="Log" Heading="Log" ResourceKey="Log">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="log" HelpText="System log information for current day" ResourceKey="Log">Log: </Label>
+                    <Label For="log" HelpText="System log information for current day" ResourceKey="Log">Log</Label>
                     <div class="db-field-control">
                         <textarea id="log" class="db-input" rows="10" @bind="@_log" readonly />
                     </div>
@@ -257,7 +257,7 @@
         <TabPanel Name="Migrations" Heading="Migrations" ResourceKey="Migrations">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="tenant" HelpText="The name of the current database. Note that this is not the physical database name but rather the tenant name which is used within the framework to identify a database." ResourceKey="Tenant">Database: </Label>
+                    <Label For="tenant" HelpText="The name of the current database. Note that this is not the physical database name but rather the tenant name which is used within the framework to identify a database." ResourceKey="Tenant">Database</Label>
                     <div class="db-field-control">
                         <input id="tenant" class="db-input" @bind="@_tenant" readonly />
                     </div>

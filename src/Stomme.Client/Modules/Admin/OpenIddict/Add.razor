@@ -8,19 +8,19 @@
 <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
     <div class="db-fields">
         <div class="db-field">
-            <Label For="clientid" HelpText="The OAuth client_id the relying party authenticates with. Must be unique within this tenant." ResourceKey="ClientId">Client Id:</Label>
+            <Label For="clientid" HelpText="The OAuth client_id the relying party authenticates with. Must be unique within this tenant." ResourceKey="ClientId">Client ID</Label>
             <div class="db-field-control">
                 <input id="clientid" class="db-input" @bind="@_clientId" maxlength="100" required />
             </div>
         </div>
         <div class="db-field">
-            <Label For="displayname" HelpText="A human-readable name, shown on the consent screen. Defaults to the client id." ResourceKey="DisplayName">Display Name:</Label>
+            <Label For="displayname" HelpText="A human-readable name, shown on the consent screen. Defaults to the client id." ResourceKey="DisplayName">Display name</Label>
             <div class="db-field-control">
                 <input id="displayname" class="db-input" @bind="@_displayName" maxlength="200" />
             </div>
         </div>
         <div class="db-field">
-            <Label For="type" HelpText="Confidential clients hold a secret (server-side apps). Public clients cannot keep one (SPA/native) and must use PKCE." ResourceKey="Type">Client Type:</Label>
+            <Label For="type" HelpText="Confidential clients hold a secret (server-side apps). Public clients cannot keep one (SPA/native) and must use PKCE." ResourceKey="Type">Client type</Label>
             <div class="db-field-control">
                 <select id="type" class="db-select" @bind="@_type" required>
                     <option value="confidential">@Localizer["Type.Confidential"]</option>
@@ -31,14 +31,14 @@
         @if (_type == "confidential")
         {
             <div class="db-field">
-                <Label For="secret" HelpText="The client secret. It is hashed at rest and can never be read back — record it now." ResourceKey="ClientSecret">Client Secret:</Label>
+                <Label For="secret" HelpText="The client secret. It is hashed at rest and can never be read back — record it now." ResourceKey="ClientSecret">Client secret</Label>
                 <div class="db-field-control">
                     <input id="secret" type="password" class="db-input" @bind="@_clientSecret" maxlength="200" required />
                 </div>
             </div>
         }
         <div class="db-field">
-            <Label For="consent" HelpText="Implicit skips the consent screen (first-party apps). Explicit asks the user to approve the requested scopes." ResourceKey="ConsentType">Consent Type:</Label>
+            <Label For="consent" HelpText="Implicit skips the consent screen (first-party apps). Explicit asks the user to approve the requested scopes." ResourceKey="ConsentType">Consent type</Label>
             <div class="db-field-control">
                 <select id="consent" class="db-select" @bind="@_consentType" required>
                     <option value="implicit">@Localizer["Consent.Implicit"]</option>
@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="db-field">
-            <Label HelpText="The OAuth grants this client may use. A client can only request what it is permitted." ResourceKey="GrantTypes">Grant Types:</Label>
+            <Label HelpText="The OAuth grants this client may use. A client can only request what it is permitted." ResourceKey="GrantTypes">Grant types</Label>
             <div class="db-field-control">
                 <FluentCheckbox @bind-Value="_authorizationCode" Label="authorization_code" />
                 <FluentCheckbox @bind-Value="_clientCredentials" Label="client_credentials" />
@@ -55,31 +55,31 @@
             </div>
         </div>
         <div class="db-field">
-            <Label For="scopes" HelpText="The scopes this client may request, one per line (openid, profile, email, offline_access, or a custom scope)." ResourceKey="Scopes">Scopes:</Label>
+            <Label For="scopes" HelpText="The scopes this client may request, one per line (openid, profile, email, offline_access, or a custom scope)." ResourceKey="Scopes">Scopes</Label>
             <div class="db-field-control">
                 <textarea id="scopes" class="db-input" rows="4" @bind="@_scopes"></textarea>
             </div>
         </div>
         <div class="db-field">
-            <Label For="redirecturis" HelpText="Absolute callback URLs for the authorization-code flow, one per line. Required for authorization_code." ResourceKey="RedirectUris">Redirect Uris:</Label>
+            <Label For="redirecturis" HelpText="Absolute callback URLs for the authorization-code flow, one per line. Required for authorization_code." ResourceKey="RedirectUris">Redirect URIs</Label>
             <div class="db-field-control">
                 <textarea id="redirecturis" class="db-input" rows="3" @bind="@_redirectUris"></textarea>
             </div>
         </div>
         <div class="db-field">
-            <Label For="postlogouturis" HelpText="Absolute URLs the authority may redirect back to after an RP-initiated logout, one per line." ResourceKey="PostLogoutRedirectUris">Post Logout Uris:</Label>
+            <Label For="postlogouturis" HelpText="Absolute URLs the authority may redirect back to after an RP-initiated logout, one per line." ResourceKey="PostLogoutRedirectUris">Post logout URIs</Label>
             <div class="db-field-control">
                 <textarea id="postlogouturis" class="db-input" rows="3" @bind="@_postLogoutRedirectUris"></textarea>
             </div>
         </div>
         <div class="db-field">
-            <Label For="sites" HelpText="The sites this client may be used at, by alias (example.com/shop), one per line. Empty: every site of this tenant." ResourceKey="Sites">Sites:</Label>
+            <Label For="sites" HelpText="The sites this client may be used at, by alias (example.com/shop), one per line. Empty: every site of this tenant." ResourceKey="Sites">Sites</Label>
             <div class="db-field-control">
                 <textarea id="sites" class="db-input" rows="2" @bind="@_sites"></textarea>
             </div>
         </div>
         <div class="db-field">
-            <Label For="pkce" HelpText="Require Proof Key for Code Exchange on the authorization-code flow. Always on for a public client." ResourceKey="RequirePkce">Require PKCE?</Label>
+            <Label For="pkce" HelpText="Require proof key for code exchange on the authorization-code flow. Always on for a public client." ResourceKey="RequirePkce">Require PKCE?</Label>
             <div class="db-field-control">
                 <FluentSwitch id="pkce" @bind-Value="_requirePkce" />
             </div>

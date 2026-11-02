@@ -50,7 +50,7 @@ with [AGENTS.md](AGENTS.md): it says what Stomme already provides and how to bui
 ## What your app gets, and the switch for each
 
 Everything below arrives with the `Stomme.*` packages. The only framework files in your source are the templates Create
-Module and Create Theme generate from, under `Server/wwwroot`. A stock app is conservative:
+Module and Create theme generate from, under `Server/wwwroot`. A stock app is conservative:
 anything that reaches out, runs code, keeps extra data or costs money is **off** until you turn it on. Set a switch in
 `Server/appsettings.json` (or `appsettings.{Environment}.json`, environment variables, or the installation's override file,
 which wins over the others); `true`/`false` unless noted.
@@ -60,8 +60,8 @@ which wins over the others); `true`/`false` unless noted.
 - Multi-tenancy: one installation, many tenants (a database each, or shared) and many sites per tenant, resolved by host name.
 - Your choice of database at install: SQL Server, SQLite, PostgreSQL or RavenDB. Modules are storage-blind and work on all four.
 - Users, roles and per-site permissions on ASP.NET Identity; lockout; external OpenID Connect / OAuth2 login per site.
-- Modules and themes discovered by convention, bundled at build time or installed as packages; **Create Module** and
-  **Create Theme** for the host, generating from the templates in `Server/wwwroot/{Modules,Themes}/Templates`.
+- Modules and themes discovered by convention, bundled at build time or installed as packages; **Create module** and
+  **Create theme** for the host, generating from the templates in `Server/wwwroot/{Modules,Themes}/Templates`.
 - Pages, content, files and folders with per-user privacy, search, localization, notifications (email and in-app),
   a site landing page, connections to external systems through a catalogue of connectors (`GET api/Connections/connectors`
   lists them) with a per-site egress allowlist the Host sets, datasets with classification, dashboards, formats, and the

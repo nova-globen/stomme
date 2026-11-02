@@ -159,7 +159,7 @@ namespace Stomme.Application.Modules.Notes.Application
    invalidator ran.
 5. Two sites: each site's list shows only its own notes, and each logs its own key (`1:1`, `1:2`); a write on one site does
    not reload the other's.
-6. **Clear All** in the Caching section of **Admin > System Info** (host only) clears it too; the next read loads again.
+6. **Clear all** in the Caching section of **Admin > System Info** (host only) clears it too; the next read loads again.
 
 ## Common mistakes
 

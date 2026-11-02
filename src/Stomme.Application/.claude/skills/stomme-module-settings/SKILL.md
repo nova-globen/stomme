@@ -227,8 +227,8 @@ lower-cased, spaces removed). The module stays installed and placeable by hand; 
 1. `dotnet build`, then `cd Server` and `dotnet run`.
 2. Sign in as the host and add at least six notes on `/notes`. Switch the page to edit mode, open the Notes placement's
    actions menu and choose the settings item (the address is `/notes/*/{moduleId}/Settings`). The settings page has the tabs
-   **Settings**, **Permissions**, **Module Settings** and **Container Settings**; your component is on **Module Settings**
-   (the framework names that tab itself: its localized "Module Settings" replaces the component's `Title`) with
+   **Settings**, **Permissions**, **Module settings** and **Container settings**; your component is on **Module settings**
+   (the framework names that tab itself: its localized "Module settings" replaces the component's `Title`) with
    "Notes per page" at 20. Change it to 5 and choose Save at the bottom of the page. On `/notes` the list now shows 5 notes and the pager "Page 1 of 2". Reopen
    the settings: the value is 5.
 3. Open **Admin > Module Management** and edit Notes: a **Configure** tab shows "Longest note (characters)" at 4000. The tab
@@ -249,7 +249,7 @@ lower-cased, spaces removed). The module stays installed and placeable by hand; 
 
 ## Common mistakes
 
-- **No Module Settings tab appears.** `SettingsType` names a type that does not resolve (wrong namespace or assembly name),
+- **No Module settings tab appears.** `SettingsType` names a type that does not resolve (wrong namespace or assembly name),
   or the component is not in the `Client` project. With no `SettingsType`, only a component named exactly `Settings` in the
   module's namespace is found.
 - **The Configure value does not save.** The Configure tab has its own Save button; the Save on the Module and Permissions

@@ -118,27 +118,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Content.HelpText" xml:space="preserve">
-    <value>Enter The Module Content To Import</value>
+    <value>Enter the module content to import</value>
   </data>
   <data name="Content.Text" xml:space="preserve">
-    <value>Content: </value>
+    <value>Content</value>
   </data>
   <data name="Import" xml:space="preserve">
     <value>Import</value>
   </data>
   <data name="Success.Content.Import" xml:space="preserve">
-    <value>Content Imported Successfully</value>
+    <value>Content imported successfully</value>
   </data>
   <data name="Message.Content.ImportProblem" xml:space="preserve">
-    <value>A Problem Was Encountered Importing Content. Please Ensure The Content Is Formatted Correctly For The Module.</value>
+    <value>A problem was encountered importing content. Please ensure the content is formatted correctly for the module.</value>
   </data>
   <data name="Error.Module.Import" xml:space="preserve">
-    <value>Error Importing Module Content</value>
+    <value>Error importing module content</value>
   </data>
   <data name="Message.Required.ImportContent" xml:space="preserve">
-    <value>You Must Enter Some Content To Import</value>
+    <value>You must enter some content to import</value>
   </data>
   <data name="Import Content" xml:space="preserve">
-    <value>Import Content</value>
+    <value>Import content</value>
   </data>
 </root>

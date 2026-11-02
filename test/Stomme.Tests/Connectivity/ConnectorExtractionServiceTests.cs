@@ -139,6 +139,20 @@ namespace Stomme.Tests.Connectivity
         }
 
         [Fact]
+        public async Task Extract_ARemotesHttpStatus_IsSaid_AndNothingElseOfTheConnectorsText()
+        {
+            // BL-240: a step that sent through a connection and got a 404 said only "The connector faulted".
+            await using var harness = await ConnectivityApplicationHarness.StartAsync(new ProbeExtractor("fake-extract", count: 1, fault: new InvalidOperationException("HTTP 404 Not Found for password=hunter2")));
+            var id = await harness.SendAsync(new CreateConnectionCommand("Sys", "fake-extract", "endpoint://x"));
+
+            var result = await harness.ExtractAsync(id, "list");
+
+            Assert.Equal((false, ConnectorOutcome.Faulted), (result.Success, result.Outcome));
+            Assert.Equal("The service answered HTTP 404 - nothing is there: check the connection's address and the step's path.", result.Message);
+            Assert.DoesNotContain(harness.Logs, line => line.Contains("hunter2", StringComparison.Ordinal));
+        }
+
+        [Fact]
         public async Task An_untrusted_host_key_while_extracting_is_its_own_category()
         {
             // The extraction port classifies it as the test runner does.

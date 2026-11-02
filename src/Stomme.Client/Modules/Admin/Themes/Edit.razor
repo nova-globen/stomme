@@ -14,13 +14,13 @@
             <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
                 <div class="db-fields">
                     <div class="db-field">
-                        <Label For="name" HelpText="The name of the theme" ResourceKey="Name">Name: </Label>
+                        <Label For="name" HelpText="The name of the theme" ResourceKey="Name">Name</Label>
                         <div class="db-field-control">
                             <input id="name" class="db-input" @bind="@_name" />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="isenabled" HelpText="Is theme enabled for this site?" ResourceKey="IsEnabled">Enabled? </Label>
+                        <Label For="isenabled" HelpText="Is theme enabled for this site?" ResourceKey="IsEnabled">Enabled?</Label>
                         <div class="db-field-control">
                             <select id="isenabled" class="db-select" @bind="@_isenabled" required>
                                 <option value="True">@SharedLocalizer["Yes"]</option>
@@ -34,43 +34,43 @@
             <Section Name="Information" ResourceKey="Information" Heading="Information">
                 <div class="db-fields">
                     <div class="db-field">
-                        <Label For="themename" HelpText="The internal name of the theme" ResourceKey="InternalName">Internal Name: </Label>
+                        <Label For="themename" HelpText="The internal name of the theme" ResourceKey="InternalName">Internal name</Label>
                         <div class="db-field-control">
                             <input id="themename" class="db-input" @bind="@_themeName" disabled />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="version" HelpText="The version of the theme" ResourceKey="Version">Version: </Label>
+                        <Label For="version" HelpText="The version of the theme" ResourceKey="Version">Version</Label>
                         <div class="db-field-control">
                             <input id="version" class="db-input" @bind="@_version" disabled />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="packagename" HelpText="The unique name of the package from which this theme was installed. This value must be specified within the theme's ITheme interface specification." ResourceKey="PackageName">Package Name: </Label>
+                        <Label For="packagename" HelpText="The unique name of the package from which this theme was installed. This value must be specified within the theme's ITheme interface specification." ResourceKey="PackageName">Package name</Label>
                         <div class="db-field-control">
                             <input id="packagename" class="db-input" @bind="@_packagename" disabled />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="owner" HelpText="The owner or creator of the theme" ResourceKey="Owner">Owner: </Label>
+                        <Label For="owner" HelpText="The owner or creator of the theme" ResourceKey="Owner">Owner</Label>
                         <div class="db-field-control">
                             <input id="owner" class="db-input" @bind="@_owner" disabled />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="url" HelpText="The url of the theme" ResourceKey="Url">Url: </Label>
+                        <Label For="url" HelpText="The url of the theme" ResourceKey="Url">URL</Label>
                         <div class="db-field-control">
                             <input id="url" class="db-input" @bind="@_url" disabled />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="contact" HelpText="The contact for the theme" ResourceKey="Contact">Contact: </Label>
+                        <Label For="contact" HelpText="The contact for the theme" ResourceKey="Contact">Contact</Label>
                         <div class="db-field-control">
                             <input id="contact" class="db-input" @bind="@_contact" disabled />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="license" HelpText="The license of the theme" ResourceKey="License">License: </Label>
+                        <Label For="license" HelpText="The license of the theme" ResourceKey="License">License</Label>
                         <div class="db-field-control">
                             @if (_license.StartsWith("http") || _license.StartsWith("/") || _license.StartsWith("~"))
                             {
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="fingerprint" HelpText="A unique identifier for the theme's static resources. This value can be changed by clicking the Save option below (ie. cache busting)." ResourceKey="Fingerprint">Fingerprint: </Label>
+                        <Label For="fingerprint" HelpText="A unique identifier for the theme's static resources. This value can be changed by clicking the Save option below (ie. cache busting)." ResourceKey="Fingerprint">Fingerprint</Label>
                         <div class="db-field-control">
                             <input id="fingerprint" class="db-input" @bind="@_fingerprint" disabled />
                         </div>

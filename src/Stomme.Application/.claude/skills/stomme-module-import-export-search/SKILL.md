@@ -1,6 +1,6 @@
 ---
 name: stomme-module-import-export-search
-description: Use when a module's content must be exportable and importable ("Export Content", "Import Content", seed a page with content), findable in the site search, listed in the sitemap, or upgraded between module versions ("server manager", "IPortable", "ISearchable", "ISitemap", "IInstallable", "ReleaseVersions").
+description: Use when a module's content must be exportable and importable ("Export content", "Import content", seed a page with content), findable in the site search, listed in the sitemap, or upgraded between module versions ("server manager", "IPortable", "ISearchable", "ISitemap", "IInstallable", "ReleaseVersions").
 ---
 
 # Make a module portable, searchable and upgradeable
@@ -51,7 +51,7 @@ module definition gives it; nothing is registered. Read
 
            private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
-           // Export Content: the site's notes, oldest first. Notes belong to a site, so every placement on it exports the same.
+           // Export content: the site's notes, oldest first. Notes belong to a site, so every placement on it exports the same.
            public async Task<string> ExportModuleAsync(Stomme.Models.Module module)
            {
                var items = (await notes.ListForSiteAsync(module.SiteId))
@@ -61,7 +61,7 @@ module definition gives it; nothing is registered. Read
                return JsonSerializer.Serialize(new NotesContent(ContentSchema, items), Json);
            }
 
-           // Import Content. Refuses a shape it does not know; skips a note whose title the site already has.
+           // Import content. Refuses a shape it does not know; skips a note whose title the site already has.
            public async Task ImportModuleAsync(Stomme.Models.Module module, string content, string version)
            {
                try
@@ -158,7 +158,7 @@ module definition gives it; nothing is registered. Read
    overload without one matches the first entry of that id in the database, whatever its site.
 
 4. Optional - seed content on the page template. `PageTemplateModule.Content` takes an export of the module (the whole JSON
-   the Export Content page shows), and is imported once, when the host creates the placement - at startup, with no user.
+   the Export content page shows), and is imported once, when the host creates the placement - at startup, with no user.
    The Notes import above refuses that (a note needs an author), so the Notes module cannot seed notes this way. A module
    whose items need no user can.
 
@@ -175,12 +175,12 @@ module definition gives it; nothing is registered. Read
 ## Verify
 
 1. `dotnet build`, then `cd Server` and `dotnet run`. Sign in as the host and add two notes on `/notes`.
-2. Switch the page to edit mode and open the Notes placement's actions menu: **Import Content** and **Export Content** are
+2. Switch the page to edit mode and open the Notes placement's actions menu: **Import content** and **Export content** are
    there (they are absent when `ServerManagerType` does not resolve; `GET api/ModuleDefinition?siteid=1` shows `isPortable`
-   true for Notes). On Export Content (`/notes/*/{moduleId}/Export`) choose **Export**: the Content box shows JSON with
+   true for Notes). On Export content (`/notes/*/{moduleId}/Export`) choose **Export**: the Content box shows JSON with
    `ModuleDefinitionName`, `Version`, `Settings` and `Content` - your notes, as a JSON string inside it.
-3. Copy it, delete the notes (or open a Notes placement on another site), and paste it into **Import Content**
-   (`/notes/*/{moduleId}/Import`), then **Import**: "Content Imported Successfully", and the notes are back. Import the same
+3. Copy it, delete the notes (or open a Notes placement on another site), and paste it into **Import content**
+   (`/notes/*/{moduleId}/Import`), then **Import**: "Content imported successfully", and the notes are back. Import the same
    wrapper with `"Content":"{\"schema\":7}"`: "A Problem Was Encountered Importing Content..." appears, nothing is added,
    and the server log has "Importing notes into module ... failed: This is not notes content of schema 1."
 4. Wait for the search index job (it runs every minute; Admin > Scheduled Jobs, "Search Index Job", shows "Items Indexed"

@@ -246,6 +246,16 @@ namespace Stomme.Repository
                                 pageTemplateModule.Title = moduleDefinition.Name;
                             }
                         }
+                        // CreatePagesAsync takes a template on a site's own path only when its AliasName is "*" or that site's
+                        // alias; an empty one - a module that set none - was skipped without a word, so its page never appeared
+                        // (BL-239's B1-5, BL-241). Said here, for a module's templates only: the admin template relies on the skip.
+                        if (alias != null && string.IsNullOrEmpty(pageTemplate.AliasName))
+                        {
+                            _logger.Log(LogLevel.Warning, "Site Template", LogFunction.Create,
+                                "Module {Module}'s page template '{Path}' names no site (its AliasName is empty), so it is not added to site {SiteId}: set AliasName to \"*\" for every site, or to a site's alias",
+                                moduleDefinition.Name, pageTemplate.Path ?? "", site.SiteId);
+                        }
+
                         pageTemplates.Add(pageTemplate);
                         if (pageTemplate.Version != "*" && (string.IsNullOrEmpty(version) || Version.Parse(pageTemplate.Version) > Version.Parse(version)))
                         {

@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Server.Text" xml:space="preserve">
-    <value>Server:</value>
+    <value>Server</value>
   </data>
   <data name="Server.HelpText" xml:space="preserve">
     <value>Enter the database server name. This might include a port number as well if you are using a cloud service.</value>
   </data>
   <data name="Database.Text" xml:space="preserve">
-    <value>Database:</value>
+    <value>Database</value>
   </data>
   <data name="Database.HelpText" xml:space="preserve">
     <value>Enter the name of the database</value>
   </data>
   <data name="IntegratedSecurity.Text" xml:space="preserve">
-    <value>Integrated Security:</value>
+    <value>Integrated security</value>
   </data>
   <data name="IntegratedSecurity.HelpText" xml:space="preserve">
     <value>Select if you are using integrated security</value>
   </data>
   <data name="Uid.Text" xml:space="preserve">
-    <value>User Id:</value>
+    <value>User ID</value>
   </data>
   <data name="Uid.HelpText" xml:space="preserve">
     <value>Enter the username to use for the database</value>
   </data>
   <data name="Pwd.Text" xml:space="preserve">
-    <value>Password:</value>
+    <value>Password</value>
   </data>
   <data name="Pwd.HelpText" xml:space="preserve">
     <value>Enter the password to use for the database</value>
@@ -154,19 +154,19 @@
     <value>Integrated</value>
   </data>
   <data name="Encryption.Text" xml:space="preserve">
-    <value>Encryption:</value>
+    <value>Encryption</value>
   </data>
   <data name="Encryption.HelpText" xml:space="preserve">
     <value>Specify if you are using an encrypted database connection. It is highly recommended to use encryption in a production environment.</value>
   </data>
   <data name="Self Signed" xml:space="preserve">
-    <value>Self Signed</value>
+    <value>Self signed</value>
   </data>
   <data name="TrustServerCertificate.HelpText" xml:space="preserve">
-    <value>Specify the type of certificate you are using for encryption. Verifiable is equivalent to False. Self Signed is equivalent to True.</value>
+    <value>Specify the type of certificate you are using for encryption. Verifiable is equivalent to False. Self signed is equivalent to True.</value>
   </data>
   <data name="TrustServerCertificate.Text" xml:space="preserve">
-    <value>Trust Server Certificate:</value>
+    <value>Trust server certificate</value>
   </data>
   <data name="Verifiable" xml:space="preserve">
     <value>Verifiable</value>

@@ -1,12 +1,12 @@
 ---
 name: stomme-bundle-external-module
-description: Use when the app must ship or install a Nova Globen Stomme module that lives in its own NuGet package - "bundle a module package", "add a module by PackageReference", "install a module .nupkg", "make this module a separate package", "Create Module", "turn a bundled module off with module.<id>.enabled".
+description: Use when the app must ship or install a Nova Globen Stomme module that lives in its own NuGet package - "bundle a module package", "add a module by PackageReference", "install a module .nupkg", "make this module a separate package", "Create module", "turn a bundled module off with module.<id>.enabled".
 ---
 
 # Bundle or install a module package
 
 You will have a module that is NOT part of this app's source - a package built elsewhere, or one you generate with the
-host's **Create Module** - running in the app, either **bundled at build time** by a `PackageReference` (it ships inside every
+host's **Create module** - running in the app, either **bundled at build time** by a `PackageReference` (it ships inside every
 build and deployment of the app) or **installed at runtime** from the `Packages` folder. Read
 [Module anatomy](../../../docs/modules/anatomy.md) (discovery, the three assemblies, in the app or as a package) and
 [Settings and templates](../../../docs/modules/settings-and-templates.md) (`module.<id>.enabled`) first.
@@ -21,7 +21,7 @@ and `Stomme.Framework` (with the minimum framework version).
 
 - **An existing package** (for example from nuget.org, or a folder): note its id and version. The app's `NuGet.config`
   restores from nuget.org; a package from anywhere else needs a source added for it.
-- **A new one:** run the app, sign in as the host, open **Admin > Module Management** and choose **Create Module**. Give an
+- **A new one:** run the app, sign in as the host, open **Admin > Module Management** and choose **Create module**. Give an
   owner name (no spaces or punctuation, and not "stomme"), a module name, a description, the `External` template
   and the framework reference (the Stomme version the module builds against; keep it at or below the app's). The host
   shows the location it writes to. It writes a solution named `{Owner}.Module.{Name}` into the folder that CONTAINS the app's
@@ -129,7 +129,7 @@ and `Stomme.Framework` (with the minimum framework version).
 4. With the feature key on (or absent) and a module that declares page templates: after a restart its page exists on the
    site and renders the module; click its buttons in an interactive render mode and confirm they act. With the key `false`
    on a fresh installation: the page's address answers 404 (no page was created), while Module Management still lists the
-   module and it can be added by hand from the control panel (**Add Module To Page**).
+   module and it can be added by hand from the control panel (**Add module to page**).
 5. Its API answers an anonymous caller 401 or 403, not 404 (a 404 means its controller was not found).
 6. On a WebAssembly site, the page renders the module and the browser console shows no assembly load error.
 

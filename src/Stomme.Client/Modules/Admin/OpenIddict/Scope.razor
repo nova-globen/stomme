@@ -8,25 +8,25 @@
 <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
     <div class="db-fields">
         <div class="db-field">
-            <Label For="name" HelpText="The scope identifier a client requests and a resource server validates (e.g. api, invoices.read)." ResourceKey="Name">Name:</Label>
+            <Label For="name" HelpText="The scope identifier a client requests and a resource server validates (e.g. api, invoices.read)." ResourceKey="Name">Name</Label>
             <div class="db-field-control">
                 <input id="name" class="db-input" @bind="@_name" maxlength="100" readonly="@_isExisting" required />
             </div>
         </div>
         <div class="db-field">
-            <Label For="displayname" HelpText="A human-readable name, shown on the consent screen." ResourceKey="DisplayName">Display Name:</Label>
+            <Label For="displayname" HelpText="A human-readable name, shown on the consent screen." ResourceKey="DisplayName">Display name</Label>
             <div class="db-field-control">
                 <input id="displayname" class="db-input" @bind="@_displayName" maxlength="200" />
             </div>
         </div>
         <div class="db-field">
-            <Label For="description" HelpText="What this scope grants, shown to the user on an explicit-consent screen." ResourceKey="Description">Description:</Label>
+            <Label For="description" HelpText="What this scope grants, shown to the user on an explicit-consent screen." ResourceKey="Description">Description</Label>
             <div class="db-field-control">
                 <textarea id="description" class="db-input" rows="3" @bind="@_description"></textarea>
             </div>
         </div>
         <div class="db-field">
-            <Label For="resources" HelpText="Resource identifiers (audiences) that tokens carrying this scope are valid for, one per line." ResourceKey="Resources">Resources:</Label>
+            <Label For="resources" HelpText="Resource identifiers (audiences) that tokens carrying this scope are valid for, one per line." ResourceKey="Resources">Resources</Label>
             <div class="db-field-control">
                 <textarea id="resources" class="db-input" rows="3" @bind="@_resources"></textarea>
             </div>

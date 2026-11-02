@@ -137,7 +137,7 @@ else
                 <FileManager Filter="csv,json,xlsx" UploadMultiple="false" OnUpload="OnFileUploaded" OnSelectFile="OnFileSelected" />
                 <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
                     <input id="datasets-upload-name" class="db-input" style="flex:1 1 12rem;" placeholder="Name (defaults to the file's name)" @bind="_uploadName" />
-                    <select id="datasets-upload-classification" class="db-input" style="width:auto;" @bind="_uploadClassification">
+                    <select id="datasets-upload-classification" class="db-input" style="width:auto;" aria-label="Classification" title="Classification - the server may raise it" @bind="_uploadClassification">
                         @foreach (var level in Enum.GetValues<DataClassification>())
                         {
                             <option value="@level">@level</option>
@@ -151,16 +151,18 @@ else
                 <h3 style="margin:0;">@(_refreshing is null ? "Register a dataset" : $"Refresh '{_refreshing.Name}' with fresh rows")</h3>
                 @if (_refreshing is null)
                 {
+                    <label for="datasets-name" style="font-size:0.85em;color:var(--db-text-2);">Name</label>
                     <input id="datasets-name" class="db-input" placeholder="Name" @bind="_name" />
                     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-                        <select id="datasets-origin" class="db-input" style="width:auto;" @bind="_originKind">
+                        @* What a dataset comes from, in words: the enum's names (PipelineOutput, ExternalQuery, DemoSeed) were shown as they are (BL-241, driven). *@
+                        <select id="datasets-origin" class="db-input" style="width:auto;" aria-label="It comes from" @bind="_originKind">
                             @foreach (var kind in Enum.GetValues<OriginKind>())
                             {
-                                <option value="@kind">@kind</option>
+                                <option value="@kind">@OriginWords(kind)</option>
                             }
                         </select>
                         <input id="datasets-reference" class="db-input" style="flex:1 1 12rem;" placeholder="Origin reference (a pipeline id, a file id, a seed key)" @bind="_originReference" />
-                        <select id="datasets-classification" class="db-input" style="width:auto;" @bind="_classification">
+                        <select id="datasets-classification" class="db-input" style="width:auto;" aria-label="Classification" @bind="_classification">
                             @foreach (var level in Enum.GetValues<DataClassification>())
                             {
                                 <option value="@level">@level</option>
@@ -187,6 +189,16 @@ else
 }
 
 @code {
+    // OriginKind in an author's words.
+    private static string OriginWords(OriginKind kind) => kind switch
+    {
+        OriginKind.PipelineOutput => "from a pipeline's output",
+        OriginKind.Upload => "from an uploaded file",
+        OriginKind.ExternalQuery => "from a query to another system",
+        OriginKind.DemoSeed => "from demo content",
+        _ => kind.ToString(),
+    };
+
     private List<DatasetDescriptor> _datasets;
     private DatasetDescriptor _selected;
     private DatasetPreviewRows _preview;

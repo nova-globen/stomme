@@ -8,7 +8,7 @@
 <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
     <div class="db-fields">
         <div class="db-field">
-            <Label For="dynamictokens" ResourceKey="DynamicTokens" ResourceType="@resourceType" HelpText="Do you wish to allow tokens to be dynamically replaced? Please note that this will affect the performance of your site.">Dynamic Tokens? </Label>
+            <Label For="dynamictokens" ResourceKey="DynamicTokens" ResourceType="@resourceType" HelpText="Do you wish to allow tokens to be dynamically replaced? Please note that this will affect the performance of your site.">Dynamic tokens?</Label>
             <div class="db-field-control">
                 <select id="dynamictokens" class="db-select" @bind="@_dynamictokens">
                     <option value="true">@SharedLocalizer["Yes"]</option>
@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="db-field">
-            <Label For="versions" ResourceKey="Versions" ResourceType="@resourceType" HelpText="The number of content versions to preserve (note that zero means unlimited)">Versions: </Label>
+            <Label For="versions" ResourceKey="Versions" ResourceType="@resourceType" HelpText="The number of content versions to preserve (note that zero means unlimited)">Versions</Label>
             <div class="db-field-control">
                 <input id="versions" type="number" min="0" max="9" step="1" class="db-input" @bind="@_versions" />
             </div>

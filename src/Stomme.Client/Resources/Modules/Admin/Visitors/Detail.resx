@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IP.Text" xml:space="preserve">
-    <value>IP Address:</value>
+    <value>IP address</value>
   </data>
   <data name="IP.HelpText" xml:space="preserve">
     <value>The last recorded IP address for this visitor</value>
@@ -127,51 +127,51 @@
     <value>The last recorded language for this visitor</value>
   </data>
   <data name="Language.Text" xml:space="preserve">
-    <value>Language:</value>
+    <value>Language</value>
   </data>
   <data name="Error.LoadVisitor" xml:space="preserve">
-    <value>Error Loading Visitor</value>
+    <value>Error loading visitor</value>
   </data>
   <data name="Created.HelpText" xml:space="preserve">
     <value>The frst recorded date/time when the visitor visited the site</value>
   </data>
   <data name="Created.Text" xml:space="preserve">
-    <value>Created:</value>
+    <value>Created</value>
   </data>
   <data name="Referrer.HelpText" xml:space="preserve">
     <value>The last recorded referrer for this visitor</value>
   </data>
   <data name="Referrer.Text" xml:space="preserve">
-    <value>Referrer:</value>
+    <value>Referrer</value>
   </data>
   <data name="Url.HelpText" xml:space="preserve">
-    <value>The last recorded Url for this visitor</value>
+    <value>The last recorded URL for this visitor</value>
   </data>
   <data name="Url.Text" xml:space="preserve">
-    <value>Url:</value>
+    <value>URL</value>
   </data>
   <data name="User.HelpText" xml:space="preserve">
     <value>The last recorded user associated with this visitor</value>
   </data>
   <data name="User.Text" xml:space="preserve">
-    <value>User:</value>
+    <value>User</value>
   </data>
   <data name="UserAgent.HelpText" xml:space="preserve">
     <value>The last recorded user agent for this visitor</value>
   </data>
   <data name="UserAgent.Text" xml:space="preserve">
-    <value>User Agent:</value>
+    <value>User agent</value>
   </data>
   <data name="Visited.HelpText" xml:space="preserve">
     <value>The last recorded date/time when the visitor visited the site</value>
   </data>
   <data name="Visited.Text" xml:space="preserve">
-    <value>Visited:</value>
+    <value>Visited</value>
   </data>
   <data name="Visits.HelpText" xml:space="preserve">
     <value>The total number of visits by this visitor all time</value>
   </data>
   <data name="Visits.Text" xml:space="preserve">
-    <value>Visits:</value>
+    <value>Visits</value>
   </data>
 </root>

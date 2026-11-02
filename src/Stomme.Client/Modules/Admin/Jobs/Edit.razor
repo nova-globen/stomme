@@ -14,19 +14,19 @@
                 <ModuleMessage Message="@Localizer["JobNotEditable"]" Type="MessageType.Warning" />
             }
             <div class="db-field">
-                <Label For="type" HelpText="The fully qualified job type name" ResourceKey="Type">Type: </Label>
+                <Label For="type" HelpText="The fully qualified job type name" ResourceKey="Type">Type</Label>
                 <div class="db-field-control">
                     <input id="type" class="db-input" @bind="@_jobType" required disabled />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="name" HelpText="Enter the job name" ResourceKey="Name">Name: </Label>
+                <Label For="name" HelpText="Enter the job name" ResourceKey="Name">Name</Label>
                 <div class="db-field-control">
                     <input id="name" class="db-input" @bind="@_name" maxlength="200" required disabled="@(!_editable)" />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="enabled" HelpText="Select whether you want the job enabled or not" ResourceKey="Enabled">Enabled? </Label>
+                <Label For="enabled" HelpText="Select whether you want the job enabled or not" ResourceKey="Enabled">Enabled?</Label>
                 <div class="db-field-control">
                     <select id="enabled" class="db-select" @bind="@_isEnabled" required disabled="@(!_editable)">
                         <option value="True">@SharedLocalizer["Yes"]</option>
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="db-field">
-                <Label For="runs-every" HelpText="Select how often you want the job to run" ResourceKey="RunsEvery">Runs Every: </Label>
+                <Label For="runs-every" HelpText="Select how often you want the job to run" ResourceKey="RunsEvery">Runs every</Label>
                 <div class="db-field-control">
                     <input id="runs-every" class="db-input" @bind="@_interval" maxlength="4" required disabled="@(!_editable)" />
                     <select id="runs-every" class="db-select" @bind="@_frequency" required disabled="@(!_editable)">
@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div class="db-field">
-                <Label For="starting" HelpText="Optionally enter the date and time when this job should start executing" ResourceKey="Starting">Starting: </Label>
+                <Label For="starting" HelpText="Optionally enter the date and time when this job should start executing" ResourceKey="Starting">Starting</Label>
                 <div class="db-field-control">
                     <div class="db-row">
                         <div class="db-col">
@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="db-field">
-                <Label For="ending" HelpText="Optionally enter the date and time when this job should stop executing" ResourceKey="Ending">Ending: </Label>
+                <Label For="ending" HelpText="Optionally enter the date and time when this job should stop executing" ResourceKey="Ending">Ending</Label>
                 <div class="db-field-control">
                     <div class="db-row">
                         <div class="db-col">
@@ -75,19 +75,19 @@
                 </div>
             </div>
             <div class="db-field">
-                <Label For="maximumduration" HelpText="The maximum duration in minutes that the job is expected to run. If the job is still running after this time, it will assume the job terminated unexpectedly and it will reset itself automatically." ResourceKey="MaximumDuration">Maximum Duration: </Label>
+                <Label For="maximumduration" HelpText="The maximum duration in minutes that the job is expected to run. If the job is still running after this time, it will assume the job terminated unexpectedly and it will reset itself automatically." ResourceKey="MaximumDuration">Maximum duration</Label>
                 <div class="db-field-control">
                     <input id="maximumduration" type="number" min="0" step="1" class="db-input" @bind="@_maximumDuration" maxlength="3" required disabled="@(!_editable)" />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="retention" HelpText="Number of log entries to retain for this job" ResourceKey="RetentionLog">Retention Log (Items): </Label>
+                <Label For="retention" HelpText="Number of log entries to retain for this job" ResourceKey="RetentionLog">Retention log (items)</Label>
                 <div class="db-field-control">
                     <input id="retention" type="number" min="0" step="1" class="db-input" @bind="@_retentionHistory" maxlength="3" required disabled="@(!_editable)" />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="next" HelpText="The date and time when this job will execute next. This value cannot be modified. Use the settings above to control the execution of the job." ResourceKey="NextExecution">Next Execution: </Label>
+                <Label For="next" HelpText="The date and time when this job will execute next. This value cannot be modified. Use the settings above to control the execution of the job." ResourceKey="NextExecution">Next execution</Label>
                 <div class="db-field-control">
                     <input id="next" class="db-input" @bind="@_nextDate" disabled />
                 </div>

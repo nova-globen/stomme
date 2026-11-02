@@ -15,11 +15,11 @@ else
         <TabPanel Name="Settings" Heading="Settings" ResourceKey="Settings">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="key" HelpText="The flag key. Keys are created by catalog seeding or by the first toggle, and cannot be renamed." ResourceKey="Key">Key:</Label>
+                    <Label For="key" HelpText="The flag key. Keys are created by catalog seeding or by the first toggle, and cannot be renamed." ResourceKey="Key">Key</Label>
                     <div class="db-field-control"><input id="key" class="db-input db-mono" readonly value="@_feature.Key" /></div>
                 </div>
                 <div class="db-field">
-                    <Label For="enabled" HelpText="The stored state of the flag. Config-sourced values (the FeatureManagement section) still take precedence over this at evaluation time." ResourceKey="Enabled">Enabled:</Label>
+                    <Label For="enabled" HelpText="The stored state of the flag. Config-sourced values (the FeatureManagement section) still take precedence over this at evaluation time." ResourceKey="Enabled">Enabled</Label>
                     <div class="db-field-control">
                         @* Bound as a STRING like every other admin bool select (e.g. Jobs/Edit) — a bound
                            bool select rendered its first option regardless of value (observed driving). *@
@@ -30,11 +30,11 @@ else
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="roles" HelpText="Restrict the flag to these roles (comma separated). Empty means everyone." ResourceKey="TargetRoles">Target Roles:</Label>
+                    <Label For="roles" HelpText="Restrict the flag to these roles (comma separated). Empty means everyone." ResourceKey="TargetRoles">Target roles</Label>
                     <div class="db-field-control"><input id="roles" class="db-input" @bind="@_targetRoles" /></div>
                 </div>
                 <div class="db-field">
-                    <Label For="rollout" HelpText="Percentage rollout, 0-100. Users are bucketed deterministically." ResourceKey="Rollout">Rollout %:</Label>
+                    <Label For="rollout" HelpText="Percentage rollout, 0-100. Users are bucketed deterministically." ResourceKey="Rollout">Rollout %</Label>
                     <div class="db-field-control"><input id="rollout" type="number" min="0" max="100" class="db-input" @bind="@_rolloutPercentage" /></div>
                 </div>
             </div>
@@ -45,11 +45,11 @@ else
         <TabPanel Name="Overrides" Heading="Overrides" ResourceKey="Overrides">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="userid" HelpText="The user id (see the Users admin page) to override the flag for" ResourceKey="UserId">User Id:</Label>
+                    <Label For="userid" HelpText="The user id (see the Users admin page) to override the flag for" ResourceKey="UserId">User ID</Label>
                     <div class="db-field-control"><input id="userid" type="number" min="1" class="db-input" @bind="@_overrideUserId" /></div>
                 </div>
                 <div class="db-field">
-                    <Label For="overridestate" HelpText="Force the flag on or off for that user, or clear an existing override" ResourceKey="OverrideState">State:</Label>
+                    <Label For="overridestate" HelpText="Force the flag on or off for that user, or clear an existing override" ResourceKey="OverrideState">State</Label>
                     <div class="db-field-control">
                         <select id="overridestate" class="db-input" @bind="@_overrideState">
                             <option value="on">@Localizer["Override.On"]</option>

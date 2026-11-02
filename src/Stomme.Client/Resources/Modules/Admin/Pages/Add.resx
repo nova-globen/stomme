@@ -118,22 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Name.Text" xml:space="preserve">
-    <value>Name: </value>
+    <value>Name</value>
   </data>
   <data name="Parent.Text" xml:space="preserve">
-    <value>Parent: </value>
+    <value>Parent</value>
   </data>
   <data name="Title.Text" xml:space="preserve">
-    <value>Title: </value>
+    <value>Title</value>
   </data>
   <data name="Settings.Heading" xml:space="preserve">
     <value>Settings</value>
   </data>
   <data name="SiteRoot" xml:space="preserve">
-    <value>Site Root</value>
+    <value>Site root</value>
   </data>
   <data name="AtBeginning" xml:space="preserve">
-    <value>At Beginning</value>
+    <value>At beginning</value>
   </data>
   <data name="Before" xml:space="preserve">
     <value>Before</value>
@@ -142,31 +142,31 @@
     <value>After</value>
   </data>
   <data name="AtEnd" xml:space="preserve">
-    <value>At End</value>
+    <value>At end</value>
   </data>
   <data name="Page.Select" xml:space="preserve">
-    <value>Select Page</value>
+    <value>Select page</value>
   </data>
   <data name="Container.Select" xml:space="preserve">
-    <value>Select Container</value>
+    <value>Select container</value>
   </data>
   <data name="Error.Page.Load" xml:space="preserve">
-    <value>Error Loading Page</value>
+    <value>Error loading page</value>
   </data>
   <data name="Error.ChildPage.Load" xml:space="preserve">
-    <value>Error Loading Child Pages For Parent</value>
+    <value>Error loading child pages for parent</value>
   </data>
   <data name="Error.Pane.Load" xml:space="preserve">
-    <value>Error Loading Pane Layouts For Theme</value>
+    <value>Error loading pane layouts for theme</value>
   </data>
   <data name="Message.Page.Exists" xml:space="preserve">
     <value>A page with path '{0}' already exists for this site. Page paths must be unique. You may need to check if a page with this path exists in the Recycle Bin.</value>
   </data>
   <data name="Message.Required.PageInfo" xml:space="preserve">
-    <value>You Must Provide Page Name, Theme, and Container</value>
+    <value>You must provide page name, theme, and container</value>
   </data>
   <data name="Error.Page.Save" xml:space="preserve">
-    <value>Error Saving Page</value>
+    <value>Error saving page</value>
   </data>
   <data name="Name.HelpText" xml:space="preserve">
     <value>Enter the page name</value>
@@ -202,34 +202,34 @@
     <value>Select whether you would like users to be able to personalize this page with their own content</value>
   </data>
   <data name="Insert.Text" xml:space="preserve">
-    <value>Insert: </value>
+    <value>Insert</value>
   </data>
   <data name="Navigation.Text" xml:space="preserve">
-    <value>Navigation? </value>
+    <value>Navigation?</value>
   </data>
   <data name="UrlPath.Text" xml:space="preserve">
-    <value>Url Path: </value>
+    <value>URL path</value>
   </data>
   <data name="Redirect.Text" xml:space="preserve">
-    <value>Redirect: </value>
+    <value>Redirect</value>
   </data>
   <data name="Theme.Text" xml:space="preserve">
-    <value>Theme: </value>
+    <value>Theme</value>
   </data>
   <data name="DefaultContainer.Text" xml:space="preserve">
-    <value>Default Container: </value>
+    <value>Default container</value>
   </data>
   <data name="Icon.Text" xml:space="preserve">
-    <value>Icon: </value>
+    <value>Icon</value>
   </data>
   <data name="Personalizable.Text" xml:space="preserve">
-    <value>Personalizable? </value>
+    <value>Personalizable?</value>
   </data>
   <data name="HeadContent.HelpText" xml:space="preserve">
     <value>Optionally enter content to be included in the page head (ie. meta, link, or script tags)</value>
   </data>
   <data name="HeadContent.Text" xml:space="preserve">
-    <value>Head Content:</value>
+    <value>Head content</value>
   </data>
   <data name="Message.Page.Reserved" xml:space="preserve">
     <value>The page name {0} is reserved. Please enter a different name for your page.</value>
@@ -238,13 +238,13 @@
     <value>Optionally enter content to be included in the page body (ie. script tags)</value>
   </data>
   <data name="BodyContent.Text" xml:space="preserve">
-    <value>Body Content:</value>
+    <value>Body content</value>
   </data>
   <data name="PageContent.Heading" xml:space="preserve">
-    <value>Page Content</value>
+    <value>Page content</value>
   </data>
   <data name="ThemeChanged.Message" xml:space="preserve">
-    <value>Please Note That Overriding The Default Site Theme With An Unrelated Page Theme May Result In Compatibility Issues For Your Site</value>
+    <value>Please note that overriding the default site theme with an unrelated page theme may result in compatibility issues for your site</value>
   </data>
   <data name="Permissions.Heading" xml:space="preserve">
     <value>Permissions</value>
@@ -256,13 +256,13 @@
     <value>The date that this page is active</value>
   </data>
   <data name="EffectiveDate.Text" xml:space="preserve">
-    <value>Effective Date: </value>
+    <value>Effective date</value>
   </data>
   <data name="ExpiryDate.HelpText" xml:space="preserve">
     <value>The date that this page expires</value>
   </data>
   <data name="ExpiryDate.Text" xml:space="preserve">
-    <value>Expiry Date: </value>
+    <value>Expiry date</value>
   </data>
   <data name="Appearance.Heading" xml:space="preserve">
     <value>Appearance</value>

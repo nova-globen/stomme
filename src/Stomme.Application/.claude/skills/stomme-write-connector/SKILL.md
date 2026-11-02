@@ -472,10 +472,9 @@ operations with the real service's.
      parameters, and a monogram `icon`.
 3. Create a connection to a real or local test server, enter the key, and press **Test**.
    - Against a reachable server with a good key the page says "Connection succeeded." and the row shows `Healthy`.
-   - With a wrong key it says "The connector reported a failure." and the row shows `Failing`. The key appears nowhere
-     on the page.
-   - A test server on `localhost`, `127.0.0.1` or a LAN address is refused ("The destination is not permitted by the
-     outbound policy.") until the Host adds its exact host to **Private hosts** on the same page and saves. An entry
+   - With a wrong key it says "The service answered HTTP 401 - it did not accept the credential: check the
+     connection's token or password." (when your failure text starts with `HTTP 401`; any other text says "The connector reported a failure.") and the row shows `Failing`. The key appears nowhere on the page.
+   - A test server on `localhost`, `127.0.0.1` or a LAN address is refused ("This site may not reach that address. ...") until the Host adds its exact host to **Private hosts** on the same page and saves. An entry
      matches only the host as written: `127.0.0.1` does not open `localhost`. That proves the connector uses the egress.
 4. Run an operation from a pipeline. Pipelines are off by default: set `Pipelines:Enabled` to `true` (see
    [configuration](../../../docs/architecture/configuration.md)) and restart. Create a pipeline with an **Extract from
@@ -500,8 +499,9 @@ operations with the real service's.
   abstract or generic, so the scan skips it. The fix: put it in `Server/` as a plain class. (A startup class without a
   parameterless constructor is not skipped: the host fails to start with a `MissingMethodException`.)
 - **A failure shows as "the connector faulted" with no detail.** The cause: by design, the host discards connector
-  messages. The fix: read the server log for the exception type and the connection id, and reproduce it in a unit
-  test, where the message is visible.
+  messages - all but an HTTP status the text STARTS with (`HTTP 404 ...`), which the page says with what to check. The
+  fix: start a remote's non-2xx answer with `HTTP {status}`; otherwise read the server log for the exception type and
+  the connection id, and reproduce it in a unit test, where the message is visible.
 - **A policy refusal shows as "the connector reported a failure".** The cause: a `catch` without
   `when (!context.Egress.IsDenial(ex))` turned the host's refusal into `Fail`. The fix: add the filter.
 - **`CS1626: Cannot yield a value in the body of a try block with a catch clause`.** The cause: `yield return` inside

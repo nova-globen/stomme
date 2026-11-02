@@ -49,7 +49,7 @@ A new theme is enabled on every site by default (`Theme.IsAutoEnabled` is `true`
 - A page's own theme (Admin > Page Management > edit a page > Theme) wins.
 - Otherwise an admin page (the path `admin` or anything under `admin/`) renders the site's **Admin Theme** when one is
   set (Admin > Site Settings > Theme > Admin Theme). This is `Site.AdminThemeType`.
-- Everything else renders the site's **Default Theme** (`Site.DefaultThemeType`, Admin > Site Settings > Theme).
+- Everything else renders the site's **Default theme** (`Site.DefaultThemeType`, Admin > Site Settings > Theme).
 - The rule is `Stomme.Shared.Utilities.ResolveThemeType(pageThemeType, pagePath, defaultThemeType, adminThemeType)`; the
   host calls it on the server render and in the interactive router, so both agree.
 - Five themes ship with Stomme and can be chosen per site: **Graphite** (the default), **Stomme Theme** and **Blazor
@@ -248,8 +248,8 @@ The stock header controls do not size themselves for a theme's header: without t
 renders at its full size, and without the narrow rules a signed-in header (user name, Logout, edit mode, Control Panel,
 the mode toggle) is wider than a 390-pixel screen. These rules set sizes only, never colours.
 
-Select the theme in Admin > Site Settings, Theme section: the Default Theme list names it "Harbor - Harbor" (the theme's
-`Name`, then the layout's `Name`). Choosing it limits the Default Container list to the theme's containers, here
+Select the theme in Admin > Site Settings, Theme section: the Default theme list names it "Harbor - Harbor" (the theme's
+`Name`, then the layout's `Name`). Choosing it limits the Default container list to the theme's containers, here
 "Harbor Container".
 
 ### A theme in its own package
@@ -267,9 +267,9 @@ To share a theme between apps, build it as a Razor class library and ship it as 
   time, discovered like any assembly) or by uploading the `.nupkg` in Admin > Theme Management (installed at the next
   start).
 
-Admin > Theme Management > Create Theme (Host only) generates a separately packaged theme from the template in
+Admin > Theme Management > Create theme (Host only) generates a separately packaged theme from the template in
 `Server/wwwroot/Themes/Templates/External`, in a folder named `<Owner>.Theme.<Name>` beside the app's own folder (its own
-solution, as Create Module's output is). Since 10.80.0 it builds and installs as generated:
+solution, as Create module's output is). Since 10.80.0 it builds and installs as generated:
 
 - Its `Client` project references Stomme through one package, `Stomme.Sdk.Slim`, at the version you choose ("Installed
   Version" is the app's own), restored by the folder's own `nuget.config` from nuget.org; `Directory.Build.props`,
@@ -292,7 +292,7 @@ pack with `dotnet pack` over your own nuspec.
 
 A theme reads no configuration key. The site's theme choices are stored per site (Admin > Site Settings > Theme) and per
 page (Admin > Page Management). A theme can offer settings of its own: set `ThemeSettingsType` (shown on a page's Theme
-Settings tab) or `ContainerSettingsType` (shown on a module's Container Settings tab) to the assembly-qualified name of a
+Settings tab) or `ContainerSettingsType` (shown on a module's Container settings tab) to the assembly-qualified name of a
 component that inherits `Stomme.Modules.ModuleBase` and implements `Stomme.Interfaces.ISettingsControl`
 (`Task UpdateSettings()`) and carries `[Stomme.Shared.StommeIgnore]` (else the host registers it as a
 module), and read the values with `Stomme.Services.ISettingService`

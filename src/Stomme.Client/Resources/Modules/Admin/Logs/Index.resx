@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Level.Text" xml:space="preserve">
-    <value>Level: </value>
+    <value>Level</value>
   </data>
   <data name="Function.Text" xml:space="preserve">
-    <value>Function: </value>
+    <value>Function</value>
   </data>
   <data name="AllLevels" xml:space="preserve">
-    <value>All Levels</value>
+    <value>All levels</value>
   </data>
   <data name="Trace" xml:space="preserve">
     <value>Trace</value>
@@ -145,7 +145,7 @@
     <value>Critical</value>
   </data>
   <data name="AllFunctions" xml:space="preserve">
-    <value>All Functions</value>
+    <value>All functions</value>
   </data>
   <data name="Read" xml:space="preserve">
     <value>Read</value>
@@ -169,10 +169,10 @@
     <value>Function</value>
   </data>
   <data name="NoLogs" xml:space="preserve">
-    <value>No Logs Match The Criteria Specified</value>
+    <value>No logs match the criteria specified</value>
   </data>
   <data name="Error.Log.Load" xml:space="preserve">
-    <value>Error Loading Logs</value>
+    <value>Error loading logs</value>
   </data>
   <data name="Level.HelpText" xml:space="preserve">
     <value>Select the log level for event log items</value>
@@ -184,7 +184,7 @@
     <value>Select the maximum number of event log items to review. Please note that if you choose more than 10 items the information will be split into pages.</value>
   </data>
   <data name="Rows.Text" xml:space="preserve">
-    <value>Maximum Items: </value>
+    <value>Maximum items</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Create</value>
@@ -193,7 +193,7 @@
     <value>Details</value>
   </data>
   <data name="Error.SaveSiteSettings" xml:space="preserve">
-    <value>Error Saving Settings</value>
+    <value>Error saving settings</value>
   </data>
   <data name="Events.Heading" xml:space="preserve">
     <value>Events</value>
@@ -202,24 +202,24 @@
     <value>Number of days of events to retain</value>
   </data>
   <data name="Retention.Text" xml:space="preserve">
-    <value>Retention (Days):</value>
+    <value>Retention (days)</value>
   </data>
   <data name="Settings.Heading" xml:space="preserve">
     <value>Settings</value>
   </data>
   <data name="Success.SaveSiteSettings" xml:space="preserve">
-    <value>Settings Saved Successfully</value>
+    <value>Settings saved successfully</value>
   </data>
   <data name="DeleteLogs.Header" xml:space="preserve">
-    <value>Clear Events</value>
+    <value>Clear events</value>
   </data>
   <data name="DeleteLogs.Message" xml:space="preserve">
-    <value>Are You Sure You Wish To Remove All Log Events?</value>
+    <value>Are you sure you wish to remove all log events?</value>
   </data>
     <data name="DeleteLogs.Text" xml:space="preserve">
-  <value>Clear Events</value>
+  <value>Clear events</value>
   </data>
     <data name="Error.DeleteLogs" xml:space="preserve">
-  <value>Error Deleting Log Events</value>
+  <value>Error deleting log events</value>
   </data>
 </root>

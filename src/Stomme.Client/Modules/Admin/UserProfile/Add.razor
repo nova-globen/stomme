@@ -11,19 +11,19 @@
 {
 <div class="db-fields">
     <div class="db-field">
-        <Label For="to" HelpText="Enter the user you wish to send a message to" ResourceKey="To">To: </Label>
+        <Label For="to" HelpText="Enter the user you wish to send a message to" ResourceKey="To">To</Label>
         <div class="db-field-control">
             <AutoComplete Id="to" OnSearch="GetUsers" Placeholder="@Localizer["Username.Enter"]" @ref="username" />
         </div>
     </div>
     <div class="db-field">
-        <Label For="subject" HelpText="Enter the subject of the message" ResourceKey="Subject">Subject: </Label>
+        <Label For="subject" HelpText="Enter the subject of the message" ResourceKey="Subject">Subject</Label>
         <div class="db-field-control">
             <input id="subject" class="db-input" @bind="@subject" />
         </div>
     </div>
     <div class="db-field">
-        <Label For="message" HelpText="Enter the message" ResourceKey="Message">Message: </Label>
+        <Label For="message" HelpText="Enter the message" ResourceKey="Message">Message</Label>
         <div class="db-field-control">
             <textarea id="message" class="db-input" @bind="@body" rows="5" />
         </div>

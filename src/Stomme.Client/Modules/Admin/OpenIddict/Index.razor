@@ -25,7 +25,7 @@ else
     <TabStrip>
         <TabPanel Name="Applications" Heading="Applications" ResourceKey="Applications">
             <div class="db-page-head">
-                <ActionLink Action="Add" Text="Add Client" Security="SecurityAccessLevel.Host" ResourceKey="AddClient" />
+                <ActionLink Action="Add" Text="Add client" Security="SecurityAccessLevel.Host" ResourceKey="AddClient" />
             </div>
 
             @if (_applications == null || _applications.Count == 0)
@@ -48,7 +48,7 @@ else
                     <Row>
                         <td><ActionLink Action="Edit" Text="Edit" Security="SecurityAccessLevel.Host" Parameters="@($"clientid={Uri.EscapeDataString(context.ClientId)}")" ResourceKey="EditClient" /></td>
                         <td>
-                            <ActionDialog Header="Delete Client" Message="@string.Format(Localizer["Confirm.DeleteClient"], context.ClientId)" Action="Delete"
+                            <ActionDialog Header="Delete client" Message="@string.Format(Localizer["Confirm.DeleteClient"], context.ClientId)" Action="Delete"
                                           Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger"
                                           OnClick="@(async () => await DeleteApplication(context))" ResourceKey="DeleteClient" />
                         </td>
@@ -71,7 +71,7 @@ else
 
         <TabPanel Name="Scopes" Heading="Scopes" ResourceKey="Scopes">
             <div class="db-page-head">
-                <ActionLink Action="Scope" Text="Add Scope" Security="SecurityAccessLevel.Host" ResourceKey="AddScope" />
+                <ActionLink Action="Scope" Text="Add scope" Security="SecurityAccessLevel.Host" ResourceKey="AddScope" />
             </div>
 
             @if (_scopes == null || _scopes.Count == 0)
@@ -92,7 +92,7 @@ else
                     <Row>
                         <td><ActionLink Action="Scope" Text="Edit" Security="SecurityAccessLevel.Host" Parameters="@($"name={Uri.EscapeDataString(context.Name)}")" ResourceKey="EditScope" /></td>
                         <td>
-                            <ActionDialog Header="Delete Scope" Message="@string.Format(Localizer["Confirm.DeleteScope"], context.Name)" Action="Delete"
+                            <ActionDialog Header="Delete scope" Message="@string.Format(Localizer["Confirm.DeleteScope"], context.Name)" Action="Delete"
                                           Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger"
                                           OnClick="@(async () => await DeleteScope(context))" ResourceKey="DeleteScope" />
                         </td>
@@ -111,35 +111,35 @@ else
             <div class="db-card">
                 <div class="db-fields">
                     <div class="db-field">
-                        <Label HelpText="The issuer this tenant's tokens carry. It is inferred from the request host, so every alias is its own issuer." ResourceKey="Issuer">Issuer:</Label>
+                        <Label HelpText="The issuer this tenant's tokens carry. It is inferred from the request host, so every alias is its own issuer." ResourceKey="Issuer">Issuer</Label>
                         <div class="db-field-control"><input class="db-input" readonly value="@_status.Issuer" /></div>
                     </div>
                     <div class="db-field">
-                        <Label HelpText="The OpenID Connect discovery document a relying party reads to configure itself" ResourceKey="Discovery">Discovery:</Label>
+                        <Label HelpText="The OpenID connect discovery document a relying party reads to configure itself" ResourceKey="Discovery">Discovery</Label>
                         <div class="db-field-control"><input class="db-input" readonly value="@_status.DiscoveryEndpoint" /></div>
                     </div>
                     <div class="db-field">
-                        <Label HelpText="The authorization endpoint (interactive browser login)" ResourceKey="Authorization">Authorization:</Label>
+                        <Label HelpText="The authorization endpoint (interactive browser login)" ResourceKey="Authorization">Authorization</Label>
                         <div class="db-field-control"><input class="db-input" readonly value="@_status.AuthorizationEndpoint" /></div>
                     </div>
                     <div class="db-field">
-                        <Label HelpText="The token endpoint" ResourceKey="Token">Token:</Label>
+                        <Label HelpText="The token endpoint" ResourceKey="Token">Token</Label>
                         <div class="db-field-control"><input class="db-input" readonly value="@_status.TokenEndpoint" /></div>
                     </div>
                     <div class="db-field">
-                        <Label HelpText="The userinfo endpoint" ResourceKey="UserInfo">UserInfo:</Label>
+                        <Label HelpText="The userinfo endpoint" ResourceKey="UserInfo">UserInfo</Label>
                         <div class="db-field-control"><input class="db-input" readonly value="@_status.UserInfoEndpoint" /></div>
                     </div>
                     <div class="db-field">
-                        <Label HelpText="The RP-initiated logout (end session) endpoint" ResourceKey="EndSession">End Session:</Label>
+                        <Label HelpText="The RP-initiated logout (end session) endpoint" ResourceKey="EndSession">End session</Label>
                         <div class="db-field-control"><input class="db-input" readonly value="@_status.EndSessionEndpoint" /></div>
                     </div>
                     <div class="db-field">
-                        <Label HelpText="The JSON Web Key Set a relying party uses to validate token signatures" ResourceKey="Jwks">JWKS:</Label>
+                        <Label HelpText="The JSON web key set a relying party uses to validate token signatures" ResourceKey="Jwks">JWKS</Label>
                         <div class="db-field-control"><input class="db-input" readonly value="@_status.JsonWebKeySetEndpoint" /></div>
                     </div>
                     <div class="db-field">
-                        <Label HelpText="Whether a persistent signing certificate is configured. Without one the key is ephemeral and regenerates on every restart, invalidating outstanding tokens." ResourceKey="SigningKey">Signing Key:</Label>
+                        <Label HelpText="Whether a persistent signing certificate is configured. Without one the key is ephemeral and regenerates on every restart, invalidating outstanding tokens." ResourceKey="SigningKey">Signing key</Label>
                         <div class="db-field-control">
                             @if (_status.HasPersistentSigningKey)
                             {

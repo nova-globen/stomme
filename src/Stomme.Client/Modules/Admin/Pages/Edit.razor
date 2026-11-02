@@ -20,7 +20,7 @@
                 <TabPanel Name="Settings" ResourceKey="Settings" Heading="Settings">
                     <div class="db-fields">
                         <div class="db-field">
-                            <Label For="name" HelpText="Enter the page name" ResourceKey="Name">Name: </Label>
+                            <Label For="name" HelpText="Enter the page name" ResourceKey="Name">Name</Label>
                             <div class="db-field-control">
                                 <input id="name" class="db-input" @bind="@_name" maxlength="100" required />
                             </div>
@@ -28,7 +28,7 @@
                         @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
                         {
                             <div class="db-field">
-                                <Label For="parent" HelpText="Select the parent for the page in the site hierarchy" ResourceKey="Parent">Parent: </Label>
+                                <Label For="parent" HelpText="Select the parent for the page in the site hierarchy" ResourceKey="Parent">Parent</Label>
                                 <div class="db-field-control">
                                     <select id="parent" class="db-select" value="@_parentid" @onchange="(e => ParentChanged(e))" required>
                                         <option value="-1">&lt;@Localizer["SiteRoot"]&gt;</option>
@@ -43,7 +43,7 @@
                                 </div>
                             </div>
                             <div class="db-field">
-                                <Label For="move" HelpText="Select the location where you would like the page to be moved in relation to other pages" ResourceKey="Move">Move: </Label>
+                                <Label For="move" HelpText="Select the location where you would like the page to be moved in relation to other pages" ResourceKey="Move">Move</Label>
                                 <div class="db-field-control">
                                     <select id="move" class="db-select" @bind="@_insert" required>
                                         @if (_parentid == _currentparentid && !_copy)
@@ -77,7 +77,7 @@
                         else
                         {
                             <div class="db-field">
-                                <Label For="parent" HelpText="Select the parent for the page in the site hierarchy" ResourceKey="Parent">Parent: </Label>
+                                <Label For="parent" HelpText="Select the parent for the page in the site hierarchy" ResourceKey="Parent">Parent</Label>
                                 <div class="db-field-control">
                                     <select id="parent" class="db-select" value="@_parentid" @onchange="(e => ParentChanged(e))" disabled>
                                         <option value="-1">&lt;@Localizer["SiteRoot"]&gt;</option>
@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                             <div class="db-field">
-                                <Label For="move" HelpText="Select the location where you would like the page to be moved in relation to other pages" ResourceKey="Move">Move: </Label>
+                                <Label For="move" HelpText="Select the location where you would like the page to be moved in relation to other pages" ResourceKey="Move">Move</Label>
                                 <div class="db-field-control">
                                     <select id="move" class="db-select" @bind="@_insert" disabled>
                                         <option value="=">&lt;@Localizer["ThisLocation.Keep"]&gt;</option>
@@ -98,25 +98,25 @@
                             </div>
                         }
                         <div class="db-field">
-                            <Label For="title" HelpText="Optionally enter the page title. If you do not provide a page title, the page name will be used." ResourceKey="Title">Title: </Label>
+                            <Label For="title" HelpText="Optionally enter the page title. If you do not provide a page title, the page name will be used." ResourceKey="Title">Title</Label>
                             <div class="db-field-control">
                                 <input id="title" class="db-input" @bind="@_title" maxlength="200" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="path" HelpText="Optionally enter a url path for this page (ie. home ). If you do not provide a url path, the page name will be used. Please note that spaces and punctuation will be replaced by a dash. If the page is intended to be the root path specify '/'." ResourceKey="UrlPath">Url Path: </Label>
+                            <Label For="path" HelpText="Optionally enter a url path for this page (ie. home ). If you do not provide a url path, the page name will be used. Please note that spaces and punctuation will be replaced by a dash. If the page is intended to be the root path specify '/'." ResourceKey="UrlPath">URL path</Label>
                             <div class="db-field-control">
                                 <input id="path" class="db-input" @bind="@_path" maxlength="256" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="url" HelpText="Optionally enter a url which this page should redirect to when a user navigates to it" ResourceKey="Redirect">Redirect: </Label>
+                            <Label For="url" HelpText="Optionally enter a url which this page should redirect to when a user navigates to it" ResourceKey="Redirect">Redirect</Label>
                             <div class="db-field-control">
                                 <input id="url" class="db-input" @bind="@_url" maxlength="500" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="personalizable" HelpText="Select whether you would like users to be able to personalize this page with their own content" ResourceKey="Personalizable">Personalizable? </Label>
+                            <Label For="personalizable" HelpText="Select whether you would like users to be able to personalize this page with their own content" ResourceKey="Personalizable">Personalizable?</Label>
                             <div class="db-field-control">
                                 <select id="personalizable" class="db-select" @bind="@_ispersonalizable" required>
                                     <option value="True">@SharedLocalizer["Yes"]</option>
@@ -128,7 +128,7 @@
                     <Section Name="Theme" ResourceKey="Theme" Heading="Theme">
                         <div class="db-fields">
                             <div class="db-field">
-                                <Label For="theme" HelpText="Select the theme for this page" ResourceKey="Theme">Theme: </Label>
+                                <Label For="theme" HelpText="Select the theme for this page" ResourceKey="Theme">Theme</Label>
                                 <div class="db-field-control">
                                     <select id="theme" class="db-select" value="@_themetype" @onchange="(e => ThemeChanged(e))" required>
                                         @foreach (var theme in _themes)
@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                             <div class="db-field">
-                                <Label For="container" HelpText="Select the default container for the page" ResourceKey="DefaultContainer">Default Container: </Label>
+                                <Label For="container" HelpText="Select the default container for the page" ResourceKey="DefaultContainer">Default container</Label>
                                 <div class="db-field-control">
                                     <select id="container" class="db-select" @bind="@_containertype" required>
                                         @if (_containers != null)
@@ -164,7 +164,7 @@
                     <Section Name="Appearance" ResourceKey="Appearance" Heading="Appearance">
                         <div class="db-fields">
                             <div class="db-field">
-                                <Label For="icon" HelpText="Optionally provide an icon class name for this page which will be displayed in the site navigation" ResourceKey="Icon">Icon: </Label>
+                                <Label For="icon" HelpText="Optionally provide an icon class name for this page which will be displayed in the site navigation" ResourceKey="Icon">Icon</Label>
                                 <div class="db-field-control">
                                     <InputList Id="icon" Value="@_icon" ValueChanged="IconChanged" DataList="@_icons" ResourceKey="Icon" ResourceType="@_iconresources" />
                                 </div>
@@ -173,7 +173,7 @@
                                 </div>
                             </div>
                             <div class="db-field">
-                                <Label For="navigation" HelpText="Select whether the page is part of the site navigation or hidden" ResourceKey="Navigation">Navigation? </Label>
+                                <Label For="navigation" HelpText="Select whether the page is part of the site navigation or hidden" ResourceKey="Navigation">Navigation?</Label>
                                 <div class="db-field-control">
                                     <select id="navigation" class="db-select" @bind="@_isnavigation" required>
                                         <option value="True">@SharedLocalizer["Yes"]</option>
@@ -182,7 +182,7 @@
                                 </div>
                             </div>
                             <div class="db-field">
-                                <Label For="clickable" HelpText="Select whether the link in the site navigation is enabled or disabled" ResourceKey="Clickable">Clickable? </Label>
+                                <Label For="clickable" HelpText="Select whether the link in the site navigation is enabled or disabled" ResourceKey="Clickable">Clickable?</Label>
                                 <div class="db-field-control">
                                     <select id="clickable" class="db-select" @bind="@_isclickable" required>
                                         <option value="True">@SharedLocalizer["Yes"]</option>
@@ -191,29 +191,29 @@
                                 </div>
                             </div>
                             <div class="db-field">
-                                <Label For="effectiveDate" HelpText="The date that this page is active" ResourceKey="EffectiveDate">Effective Date: </Label>
+                                <Label For="effectiveDate" HelpText="The date that this page is active" ResourceKey="EffectiveDate">Effective date</Label>
                                 <div class="db-field-control">
                                     <input type="date" id="effectiveDate" class="db-input" @bind="@_effectivedate" />
                                 </div>
                             </div>
                             <div class="db-field">
-                                <Label For="expiryDate" HelpText="The date that this page expires" ResourceKey="ExpiryDate">Expiry Date: </Label>
+                                <Label For="expiryDate" HelpText="The date that this page expires" ResourceKey="ExpiryDate">Expiry date</Label>
                                 <div class="db-field-control">
                                     <input type="date" id="expiryDate" class="db-input" @bind="@_expirydate" />
                                 </div>
                             </div>
                         </div>
                     </Section>
-                    <Section Name="PageContent" Heading="Page Content" ResourceKey="PageContent">
+                    <Section Name="PageContent" Heading="Page content" ResourceKey="PageContent">
                         <div class="db-fields">
                             <div class="db-field">
-                                <Label For="headcontent" HelpText="Optionally enter content to be included in the page head (ie. meta, link, or script tags)" ResourceKey="HeadContent">Head Content: </Label>
+                                <Label For="headcontent" HelpText="Optionally enter content to be included in the page head (ie. meta, link, or script tags)" ResourceKey="HeadContent">Head content</Label>
                                 <div class="db-field-control">
                                     <textarea id="headcontent" class="db-input" @bind="@_headcontent" rows="3" maxlength="4000"></textarea>
                                 </div>
                             </div>
                             <div class="db-field">
-                                <Label For="bodycontent" HelpText="Optionally enter content to be included in the page body (ie. script tags)" ResourceKey="BodyContent">Body Content: </Label>
+                                <Label For="bodycontent" HelpText="Optionally enter content to be included in the page body (ie. script tags)" ResourceKey="BodyContent">Body content</Label>
                                 <div class="db-field-control">
                                     <textarea id="bodycontent" class="db-input" @bind="@_bodycontent" rows="3" maxlength="4000"></textarea>
                                 </div>
@@ -237,7 +237,7 @@
                         </div>
                         <br /><br />
                         <div class="db-field">
-                            <Label For="updatemodulepermissions" HelpText="Specify if changes made to page permissions should be propagated to the modules on this page" ResourceKey="UpdateModulePermissions">Update Module Permissions? </Label>
+                            <Label For="updatemodulepermissions" HelpText="Specify if changes made to page permissions should be propagated to the modules on this page" ResourceKey="UpdateModulePermissions">Update module permissions?</Label>
                             <div class="db-field-control">
                                 <select id="updatemodulepermissions" class="db-select" @bind="@_updatemodulepermissions" required>
                                     <option value="True">@SharedLocalizer["Yes"]</option>
@@ -262,7 +262,7 @@
                             </Header>
                             <Row>
                                 <td><ActionLink Action="Settings" Text="Edit" Path="@_actualpath" ModuleId="@context.ModuleId" Security="SecurityAccessLevel.Edit" PermissionList="@context.PermissionList" ResourceKey="ModuleSettings" /></td>
-                                <td><ActionDialog Header="Delete Module" Message="Are You Sure You Wish To Delete This Module?" Action="Delete" Security="SecurityAccessLevel.Edit" PermissionList="@context.PermissionList" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteModule(context))" ResourceKey="DeleteModule" /></td>
+                                <td><ActionDialog Header="Delete module" Message="Are You Sure You Wish To Delete This Module?" Action="Delete" Security="SecurityAccessLevel.Edit" PermissionList="@context.PermissionList" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteModule(context))" ResourceKey="DeleteModule" /></td>
                                 <td>@context.Title</td>
                                 <td>@context.ModuleDefinition?.Name</td>
                             </Row>
@@ -270,7 +270,7 @@
                     </TabPanel>
                     @if (_themeSettingsType != null)
                     {
-                        <TabPanel Name="ThemeSettings" Heading="Theme Settings" ResourceKey="ThemeSettings">
+                        <TabPanel Name="ThemeSettings" Heading="Theme settings" ResourceKey="ThemeSettings">
                             @_themeSettingsComponent
                             <br />
                             <button type="button" class="db-btn" @onclick="SavePage">@SharedLocalizer["Save"]</button>
@@ -287,19 +287,19 @@
                 <TabPanel Name="Settings" ResourceKey="Settings" Heading="Settings">
                     <div class="db-fields">
                         <div class="db-field">
-                            <Label For="title" HelpText="Optionally enter the page title. If you do not provide a page title, the page name will be used." ResourceKey="Title">Title: </Label>
+                            <Label For="title" HelpText="Optionally enter the page title. If you do not provide a page title, the page name will be used." ResourceKey="Title">Title</Label>
                             <div class="db-field-control">
                                 <input id="title" class="db-input" @bind="@_title" maxlength="200" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="path" HelpText="Provide a url path for your personalized page. Please note that spaces and punctuation will be replaced by a dash." ResourceKey="PersonalizedUrlPath">Url Path: </Label>
+                            <Label For="path" HelpText="Provide a url path for your personalized page. Please note that spaces and punctuation will be replaced by a dash." ResourceKey="PersonalizedUrlPath">URL path</Label>
                             <div class="db-field-control">
                                 <input id="path" class="db-input" @bind="@_path" maxlength="256" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="theme" HelpText="Select the theme for this page" ResourceKey="Theme">Theme: </Label>
+                            <Label For="theme" HelpText="Select the theme for this page" ResourceKey="Theme">Theme</Label>
                             <div class="db-field-control">
                                 <select id="theme" class="db-select" @bind="@_themetype" required>
                                     @foreach (var theme in _themes)
@@ -317,7 +317,7 @@
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="container" HelpText="Select the default container for the page" ResourceKey="DefaultContainer">Default Container: </Label>
+                            <Label For="container" HelpText="Select the default container for the page" ResourceKey="DefaultContainer">Default container</Label>
                             <div class="db-field-control">
                                 <select id="container" class="db-select" @bind="@_containertype" required>
                                     @foreach (var container in _containers)
@@ -334,7 +334,7 @@
                 </TabPanel>
                 @if (_themeSettingsType != null)
                 {
-                    <TabPanel Name="ThemeSettings" Heading="Theme Settings" ResourceKey="ThemeSettings">
+                    <TabPanel Name="ThemeSettings" Heading="Theme settings" ResourceKey="ThemeSettings">
                         @_themeSettingsComponent
                         <br />
                         <button type="button" class="db-btn" @onclick="SavePage">@SharedLocalizer["Save"]</button>

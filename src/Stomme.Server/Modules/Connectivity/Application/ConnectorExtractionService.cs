@@ -96,7 +96,9 @@ namespace Stomme.Modules.Connectivity.Application
             // TaskCanceledException - and is categorised like any failure (TimedOut); only the caller's own passes through.
             catch (Exception ex) when (ex is not OperationCanceledException || !cancellationToken.IsCancellationRequested)
             {
-                return ConnectorExtractionResult.Fail(ConnectionTestRunner.Classify(ex, connection, logger));
+                // A remote's non-2xx answer says its HTTP status (three digits, nothing else of the connector's text) - BL-240.
+                var outcome = ConnectionTestRunner.Classify(ex, connection, logger);
+                return ConnectorExtractionResult.Fail(outcome, outcome == ConnectorOutcome.Faulted ? ConnectorOutcomes.HttpStatusOf(ex.Message) : null);
             }
 
             return ConnectorExtractionResult.Ok(records, truncated, cap);

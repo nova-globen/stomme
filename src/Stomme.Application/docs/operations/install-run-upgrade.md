@@ -29,16 +29,16 @@ The installer is a four-step wizard: **Database**, **Account**, **Configure**, *
 - **Database** lists the entries of `AvailableDatabases` in `appsettings.json` in alphabetical order: Azure SQL,
   LocalDB, PostgreSQL, RavenDB, SQL Server, SQLite. The one preselected is not SQLite; pick the one you want - SQLite
   is the one to choose unless you will run more than one instance of the app (it needs no server). Each has
-  its own form (SQLite asks only for a file name), or **Enter Connection String**. Default database names have the form
+  its own form (SQLite asks only for a file name), or **Enter connection string**. Default database names have the form
   `Stomme-yyyyMMddHHmm` (SQLite's file `Stomme-yyyyMMddHHmm.db`); Azure SQL's fields hold placeholders such as
   `{SQL Database Name}` to replace.
 - **Account** is the host account: **Username** (empty; type `host` or your own), **Password** and **Confirm**,
-  **Email**, **Full Name**, and the **Template** of the first site (**Default Site Template**, preselected, or **Empty
-  Site Template**). The password must have at least six characters, with an upper-case letter, a lower-case letter, a
+  **Email**, **Full name**, and the **Template** of the first site (**Default Site Template**, preselected, or **Empty
+  Site template**). The password must have at least six characters, with an upper-case letter, a lower-case letter, a
   digit and a non-alphanumeric character.
 - **Configure** shows the module-wide settings that modules declare for installation time. A stock app shows the
   framework's own (a note about **Notifications**, and **HtmlText**'s **Default Content**); the defaults are fine.
-- **Finish** shows the database and user name and installs on **Install Now**. Its **Register** box ("Please Register
+- **Finish** shows the database and user name and installs on **Install now**. Its **Register** box ("Please Register
   Me For Major Product Updates And Security Bulletins") is unticked by default; leave it unticked unless you mean to
   send the host's e-mail and name to the package registry.
 
@@ -157,7 +157,7 @@ exists in the database.
 ### More sites from configuration: `Installation:Sites`
 
 `Installation:Sites` lists the sites beyond the first. On every start of an installed host, each entry whose first alias
-does not name a site yet is created, the way **Admin > Site Management > Add Site** creates one; an entry that exists
+does not name a site yet is created, the way **Admin > Site Management > Add site** creates one; an entry that exists
 is left alone, so a restart never duplicates a site and an entry added later appears on the next start. Each entry:
 
 | Key | Required | Meaning |
@@ -200,7 +200,7 @@ database as well; a connection string pointing at an existing installation goes 
 
 ### Restart
 
-**System Info > Restart Application** stops the process; it does not start it again. Under `dotnet run` the app
+**System Info > Restart application** stops the process; it does not start it again. Under `dotnet run` the app
 exits. In production a supervisor (systemd, a container restart policy, IIS) must start it again. See [Deploy](deploy.md).
 
 ### Upgrade Stomme
@@ -250,7 +250,7 @@ The step-by-step version, with checks, is the
 - **A weak `HostPassword` in an unattended install fails silently.** The site is created, the host user is not, and
   nothing is logged. Check that you can sign in right after an unattended install.
 - **The first alias is the address you installed from.** Install at `localhost:44358` and deploy to `example.com`, and
-  `example.com` resolves to no site. Add the public address under **Admin > Site Settings > Site Urls** before moving, or
+  `example.com` resolves to no site. Add the public address under **Admin > Site Settings > Site URLs** before moving, or
   install through the public address.
 - **Run from the `Server` folder** (or set the content root). Started elsewhere, the host does not find
   `appsettings.json` and the data directory moves.

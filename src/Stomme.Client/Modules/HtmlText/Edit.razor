@@ -36,8 +36,8 @@
 			</Header>
 			<Row>
 				<td><ActionLink Action="View" Security="SecurityAccessLevel.Edit" OnClick="@(async () => await View(context))" ResourceKey="View" /></td>
-				<td><ActionDialog Header="Restore Version" Message="@string.Format(Localizer["Confirm.Restore"], UtcToLocal(context.CreatedOn))" Action="Restore" Security="SecurityAccessLevel.Edit" Class="db-btn" OnClick="@(async () => await Restore(context))" ResourceKey="Restore" /></td>
-				<td><ActionDialog Header="Delete Version" Message="@string.Format(Localizer["Confirm.Delete"], UtcToLocal(context.CreatedOn))" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await Delete(context))" ResourceKey="Delete" /></td>
+				<td><ActionDialog Header="Restore version" Message="@string.Format(Localizer["Confirm.Restore"], UtcToLocal(context.CreatedOn))" Action="Restore" Security="SecurityAccessLevel.Edit" Class="db-btn" OnClick="@(async () => await Restore(context))" ResourceKey="Restore" /></td>
+				<td><ActionDialog Header="Delete version" Message="@string.Format(Localizer["Confirm.Delete"], UtcToLocal(context.CreatedOn))" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await Delete(context))" ResourceKey="Delete" /></td>
 				<td>@UtcToLocal(context.CreatedOn)</td>
 				<td>@context.CreatedBy</td>
 			</Row>

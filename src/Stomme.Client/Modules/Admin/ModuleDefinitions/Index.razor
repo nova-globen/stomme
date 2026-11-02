@@ -16,8 +16,8 @@ else
     <div class="db-fields">
         <div class="db-filters">
             <div class="db-filter db-filter-auto db-btn-row">
-                <ActionLink Action="Add" Text="Install Module" ResourceKey="InstallModule" />
-                <ActionLink Action="Create" Text="Create Module" ResourceKey="CreateModule" Class="db-btn db-btn-neutral" />
+                <ActionLink Action="Add" Text="Install module" ResourceKey="InstallModule" />
+                <ActionLink Action="Create" Text="Create module" ResourceKey="CreateModule" Class="db-btn db-btn-neutral" />
                 <button type="button" class="db-btn db-btn-neutral" @onclick="@Synchronize">@Localizer["Synchronize"]</button>
             </div>
             <div class="db-filter">
@@ -55,7 +55,7 @@ else
             <td>
                 @if (context.AssemblyName != Constants.ClientId)
                 {
-                    <ActionDialog Header="Delete Module" Message="@string.Format(Localizer["Confirm.Module.Delete", context.Name])" Action="Delete" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteModule(context))" ResourceKey="DeleteModule" />
+                    <ActionDialog Header="Delete module" Message="@string.Format(Localizer["Confirm.Module.Delete", context.Name])" Action="Delete" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteModule(context))" ResourceKey="DeleteModule" />
                 }
             </td>
             <td>@context.Name</td>

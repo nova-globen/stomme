@@ -1154,6 +1154,13 @@ else
                             var script = _selected.InputScripts.TryGetValue(name, out var heldScript) ? heldScript ?? "" : null;
                             var scriptsOffered = _capabilities?.Scripts == true || script is not null;
                             var isBoolean = input.TypeName == "Boolean";
+                            @if (IsUntouchedOwnFailureInput(input, readsVariable, expression, script))
+                            {
+                                @* A data step's own On failure (Fault/Continue) left as it starts: "When it fails" below decides the
+                                   same thing, so a first-time author met two failure settings (BL-240, driven). One set otherwise -
+                                   an import, an older pipeline - stays shown, so it can be seen and undone. *@
+                                continue;
+                            }
                             @if (_selected.Entry.OutcomesFrom == StepCatalogEntry.CaseOutcomes && name == StepCatalogEntry.CaseOutcomes)
                             {
                                 @* A Switch's cases - each a label (an outcome port on the step) and a condition. *@
@@ -1214,8 +1221,10 @@ else
                                 continue;
                             }
                             <label for="@("pipelines-editor-input-" + name)" title="@input.Description">@input.DisplayName@if (input.IsRequired) {<span class="db-pipeline-editor__required" title="The step needs a value here"> *</span>}@if (kind is not null) {<span style="color:var(--db-text-2);"> (@kind)</span>}</label>
-                            @* An earlier step's result is a value to read too, so it offers the choice even before any variable exists. *@
-                            @if (_variables.Count > 0 || expression is not null || condition is not null || isBoolean || scriptsOffered || (CanManage && EarlierSteps(_selected).Count > 0))
+                            @* An author always has the choice - n8n's Fixed / Expression on every field: the built-in values (the run's
+                               id, the time) are there with no variable and no earlier step, and a lone step offered no way to write
+                               an expression but dragging one in (BL-240, driven). A reader sees it where it says something. *@
+                            @if (CanManage || _variables.Count > 0 || expression is not null || condition is not null || isBoolean || scriptsOffered)
                             {
                                 <select id="@("pipelines-editor-source-" + name)" class="db-input" aria-label="@("Where " + input.DisplayName + " comes from")" value="@(condition is not null ? ConditionSource : script is not null ? ScriptSource : expression is not null ? ExpressionSource : readsVariable ?? "")" @onchange="e => SetInputSource(name, e.Value?.ToString())" disabled="@(!CanManage)">
                                     <option value="">a value</option>
@@ -1269,9 +1278,9 @@ else
                                 var suggestions = CanManage ? PipelineTemplate.Suggest(expression, PreviewValues(out _)) : new List<string>();
                                 @if (suggestions.Count > 0)
                                 {
-                                    @* Every value offered: the built-in ones folded away, as in the drag list above; while a name is typed after
-                                       an open {{ the few that match are all shown. *@
-                                    var narrowing = System.Text.RegularExpressions.Regex.IsMatch(expression, @"\{\{\s*[^}\s][^}]*$");
+                                    @* Every value offered: the built-in ones folded away, as in the drag list above; once a {{ is open - a
+                                       name begun or not yet (BL-240: "{{ " offered only a folded list) - those that fit are all shown. *@
+                                    var narrowing = System.Text.RegularExpressions.Regex.IsMatch(expression, @"\{\{[^}]*$");
                                     var foldedBuiltIns = narrowing ? new List<string>() : suggestions.Where(suggestion => suggestion.StartsWith("{{ $", StringComparison.Ordinal)).ToList();
                                     <div id="@("pipelines-editor-suggestions-" + name)" class="db-pipeline-editor__suggestions" aria-label="Variables to use">
                                         @foreach (var suggestion in suggestions.Except(foldedBuiltIns))
@@ -6142,6 +6151,8 @@ else
         {
             _testing = false;
         }
+
+        ApplyRunToNodes();
     }
 
     // Each variable holding something for a test, by name; one holding nothing keeps its starting value.
@@ -6298,7 +6309,14 @@ else
             source.OutputVariables[ResultOutput] = variable.Id;
         }
 
-        _selected.InputExpressions[input] = PipelineTemplate.Accept(expression, "{{ " + variable.Name + " }}");
+        // An expression brought over from n8n reads $json, n8n's item - what the earlier step passed along. Taking that step's
+        // result puts its variable where $json was ({{ $json.name }} is {{ get_items.name }}), which is what the import's note
+        // asks; appended, the $json stayed to be fixed by hand (BL-240, driven).
+        var held = expression ?? "";
+        var readsItem = System.Text.RegularExpressions.Regex.IsMatch(held, @"\{\{[^}]*\$json\b");
+        _selected.InputExpressions[input] = readsItem
+            ? System.Text.RegularExpressions.Regex.Replace(held, @"\{\{[^}]*\}\}", tag => System.Text.RegularExpressions.Regex.Replace(tag.Value, @"\$json\b", variable.Name))
+            : PipelineTemplate.Accept(held, "{{ " + variable.Name + " }}");
         MarkDirty();
     }
 
@@ -6520,6 +6538,11 @@ else
     }
 
     private static string Value(Dictionary<string, string> inputs, string name) => inputs.TryGetValue(name, out var value) ? value : "";
+
+    // A data step's own OnFailure (DataStep: Fault, the start, or Continue) holding nothing but its start, read from nowhere.
+    private bool IsUntouchedOwnFailureInput(StepInputView input, string readsVariable, string expression, string script) =>
+        input.Name == "OnFailure" && input.Category == "Failure" && readsVariable is null && expression is null && script is null
+            && Value(_selected.Inputs, input.Name) is var held && (string.IsNullOrEmpty(held) || held == "0" || string.Equals(held, "Fault", StringComparison.OrdinalIgnoreCase));
 
     // What an author reads beside an input's name: the kind of value it takes, never a .NET type name (found walking the
     // editor in a browser: "Seconds (Int32)", "Level (LogMessageLevel)"). Text, a checkbox and a dropdown need no word.
@@ -8440,6 +8463,21 @@ else
 
             if (_shownRunId is null)
             {
+                // With no run shown, the step tested last says how its test went, as a run marks a step: one that failed its test
+                // looked like one never tried (BL-240, driven). The steps a "test up to here" ran first stay unmarked.
+                if (node.StepId == _testedStepId && _testResult?.Steps?.LastOrDefault(step => step.StepId == node.StepId) is { } tested)
+                {
+                    var testStatus = PipelineStepStates.Of(tested, new PipelineRunView { Status = "Finished", SubStatus = _testResult.Status });
+                    node.ShowRun(testStatus, testStatus switch
+                    {
+                        "completed" => "test: done",
+                        "handled" => "test: failed, went on",
+                        "faulted" => "test: failed",
+                        _ => "test: " + testStatus,
+                    });
+                    continue;
+                }
+
                 node.ShowRun(null, null);
                 continue;
             }

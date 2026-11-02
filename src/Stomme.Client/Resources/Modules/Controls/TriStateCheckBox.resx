@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PermissionGranted" xml:space="preserve">
-    <value>Permission Granted</value>
+    <value>Permission granted</value>
   </data>
   <data name="PermissionDenied" xml:space="preserve">
-    <value>Permission Denied</value>
+    <value>Permission denied</value>
   </data>
   <data name="PermissionDisabled" xml:space="preserve">
-    <value>Permission Disabled</value>
+    <value>Permission disabled</value>
   </data>
 </root>

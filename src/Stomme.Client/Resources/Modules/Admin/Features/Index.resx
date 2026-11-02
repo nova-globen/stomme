@@ -130,8 +130,8 @@
   <data name="Everyone" xml:space="preserve"><value>Everyone</value></data>
   <data name="EditFlag.Text" xml:space="preserve"><value>Edit</value></data>
   <data name="EditFlag.HelpText" xml:space="preserve"><value>Edit this feature flag's state, targeting, overrides and history</value></data>
-  <data name="NoFlags.Heading" xml:space="preserve"><value>No Feature Flags Yet</value></data>
+  <data name="NoFlags.Heading" xml:space="preserve"><value>No feature flags yet</value></data>
   <data name="NoFlags.Text" xml:space="preserve"><value>Flags appear here when a module's feature catalog is seeded or when a flag is first toggled. Config-declared values (the FeatureManagement section) always take precedence over what is stored here.</value></data>
-  <data name="Error.Load" xml:space="preserve"><value>Error Loading Feature Flags</value></data>
-  <data name="Error.Toggle" xml:space="preserve"><value>Error Toggling Feature Flag {0}</value></data>
+  <data name="Error.Load" xml:space="preserve"><value>Error loading feature flags</value></data>
+  <data name="Error.Toggle" xml:space="preserve"><value>Error toggling feature flag {0}</value></data>
 </root>

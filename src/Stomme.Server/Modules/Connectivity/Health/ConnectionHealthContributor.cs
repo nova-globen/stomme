@@ -95,10 +95,10 @@ namespace Stomme.Modules.Connectivity.Health
             /// <summary>One connection: the shared runner's category, written on that row - one write per call, contained so one connection's trouble never costs another its verdict.</summary>
             private async Task<ConnectorOutcome> TestAndRecordAsync(ConnectionAggregate connection, CancellationToken cancellationToken)
             {
-                var outcome = await runner.TestAsync(connection, cancellationToken).ConfigureAwait(false);
+                var (outcome, httpStatus) = await runner.TestWithStatusAsync(connection, cancellationToken).ConfigureAwait(false);
                 try
                 {
-                    connection.RecordTestResult(ConnectorOutcomes.IsSuccess(outcome), ConnectorOutcomes.Message(outcome), clock.GetUtcNow().UtcDateTime);
+                    connection.RecordTestResult(ConnectorOutcomes.IsSuccess(outcome), ConnectorOutcomes.Message(outcome, httpStatus), clock.GetUtcNow().UtcDateTime);
                     await connections.UpdateAsync(connection, cancellationToken).ConfigureAwait(false);
                     await unitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 }

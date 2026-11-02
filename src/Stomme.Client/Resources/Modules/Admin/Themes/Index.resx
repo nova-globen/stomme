@@ -121,31 +121,31 @@
     <value>Theme Installed Successfully. You Must &lt;a href={0}&gt;Restart&lt;/a&gt; Your Application To Apply These Changes.</value>
   </data>
   <data name="Error.Theme.Download" xml:space="preserve">
-    <value>Error Downloading Theme</value>
+    <value>Error downloading theme</value>
   </data>
   <data name="Confirm.Theme.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Uninstall The {0} Theme?</value>
+    <value>Are you sure you wish to uninstall the {0} theme?</value>
   </data>
   <data name="Error.Theme.Load" xml:space="preserve">
-    <value>Error Loading Themes</value>
+    <value>Error loading themes</value>
   </data>
   <data name="Success.Theme.Delete" xml:space="preserve">
-    <value>Theme Deleted Successfully</value>
+    <value>Theme deleted successfully</value>
   </data>
   <data name="Error.Theme.Delete" xml:space="preserve">
-    <value>Error Deleting Theme</value>
+    <value>Error deleting theme</value>
   </data>
   <data name="DeleteTheme.Header" xml:space="preserve">
-    <value>Uninstall Theme</value>
+    <value>Uninstall theme</value>
   </data>
   <data name="DeleteTheme.Text" xml:space="preserve">
     <value>Uninstall</value>
   </data>
   <data name="CreateTheme.Text" xml:space="preserve">
-    <value>Create Theme</value>
+    <value>Create theme</value>
   </data>
   <data name="InstallTheme.Text" xml:space="preserve">
-    <value>Install Theme</value>
+    <value>Install theme</value>
   </data>
   <data name="ViewTheme.Text" xml:space="preserve">
     <value>View</value>
@@ -157,12 +157,12 @@
     <value>Enabled?</value>
   </data>
   <data name="Synchronize" xml:space="preserve">
-    <value>Check For Updates</value>
+    <value>Check for updates</value>
   </data>
   <data name="Success.Theme.Synchronize" xml:space="preserve">
-    <value>Theme Information Has Been Retrieved From The Marketplace</value>
+    <value>Theme information has been retrieved from the marketplace</value>
   </data>
   <data name="Error.Theme.Synchronize" xml:space="preserve">
-    <value>Error Retrieving Theme Information From The Marketplace</value>
+    <value>Error retrieving theme information from the marketplace</value>
   </data>
 </root>

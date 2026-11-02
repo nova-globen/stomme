@@ -13,28 +13,32 @@ namespace Stomme.Modules.Connectivity.Application
     /// Runs a connector's test for a connection - the one path the Test command and
     /// the health probe share: the connector from the catalog, the credentials from the per-site secret
     /// store, the HOST's egress for the connection's site, the connection's timeout, and a CATEGORY back. The
-    /// connector's message is discarded (it may echo the endpoint, a user name, a password); an exception is
-    /// classified and logged by TYPE only.
+    /// connector's message is discarded (it may echo the endpoint, a user name, a password) but for the three digits of an
+    /// HTTP status it starts with (BL-240, D110's correction); an exception is classified and logged by TYPE only.
     /// </summary>
     public sealed class ConnectionTestRunner(IConnectorCatalog catalog, ConnectionSecrets secrets, IConnectorEgressFactory egressFactory, ILogger<ConnectionTestRunner> logger)
     {
-        public async Task<ConnectorOutcome> TestAsync(ConnectionAggregate connection, CancellationToken ct = default)
+        public async Task<ConnectorOutcome> TestAsync(ConnectionAggregate connection, CancellationToken ct = default) =>
+            (await TestWithStatusAsync(connection, ct)).Outcome;
+
+        /// <summary>The category, and the HTTP status a failure or a fault was answered with when the connector's text starts with one (<see cref="ConnectorOutcomes.HttpStatusOf"/>).</summary>
+        public async Task<(ConnectorOutcome Outcome, int? HttpStatus)> TestWithStatusAsync(ConnectionAggregate connection, CancellationToken ct = default)
         {
             ArgumentNullException.ThrowIfNull(connection);
             if (catalog.Find(connection.ConnectorType) is not { } connector)
             {
-                return ConnectorOutcome.ConnectorUnavailable;
+                return (ConnectorOutcome.ConnectorUnavailable, null);
             }
 
             var resolved = await secrets.ResolveAsync(connection.SiteId, connection, ct);
             if (resolved.Unreadable.Count > 0)
             {
-                return ConnectorOutcome.CredentialsUnreadable;
+                return (ConnectorOutcome.CredentialsUnreadable, null);
             }
 
             if (resolved.Missing.Count > 0)
             {
-                return ConnectorOutcome.CredentialsMissing;
+                return (ConnectorOutcome.CredentialsMissing, null);
             }
 
             var timeout = TimeSpan.FromSeconds(connection.TimeoutSeconds);
@@ -46,15 +50,17 @@ namespace Stomme.Modules.Connectivity.Application
             try
             {
                 var result = await connector.TestConnectionAsync(context, bounded.Token);
-                return result.Success ? ConnectorOutcome.Succeeded : ConnectorOutcome.Failed; // result.Message is discarded on purpose
+                // result.Message is discarded on purpose; only an HTTP status it starts with is kept.
+                return result.Success ? (ConnectorOutcome.Succeeded, null) : (ConnectorOutcome.Failed, ConnectorOutcomes.HttpStatusOf(result.Message));
             }
             catch (OperationCanceledException) when (!ct.IsCancellationRequested)
             {
-                return ConnectorOutcome.TimedOut;
+                return (ConnectorOutcome.TimedOut, null);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                return Classify(ex, connection, logger);
+                var outcome = Classify(ex, connection, logger);
+                return (outcome, outcome == ConnectorOutcome.Faulted ? ConnectorOutcomes.HttpStatusOf(ex.Message) : null);
             }
         }
 

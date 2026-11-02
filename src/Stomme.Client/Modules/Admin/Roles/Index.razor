@@ -10,7 +10,7 @@
 }
 else
 {
-	<ActionLink Action="Add" Text="Add Role" Security="SecurityAccessLevel.Edit" ResourceKey="AddRole" />
+	<ActionLink Action="Add" Text="Add role" Security="SecurityAccessLevel.Edit" ResourceKey="AddRole" />
 
     <Pager Items="@_roles" SearchProperties="Name">
         <Header>
@@ -21,7 +21,7 @@ else
         </Header>
         <Row>
             <td><ActionLink Action="Edit" Text="Edit" Parameters="@($"id=" + context.RoleId.ToString())" Security="SecurityAccessLevel.Edit" Disabled="@(context.IsSystem)" ResourceKey="Edit" /></td>
-            <td><ActionDialog Header="Delete Role" Message="@string.Format(Localizer["Confirm.DeleteUser"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteRole(context))" Disabled="@(context.IsSystem)" ResourceKey="DeleteRole" /></td>
+            <td><ActionDialog Header="Delete role" Message="@string.Format(Localizer["Confirm.DeleteUser"], context.Name)" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteRole(context))" Disabled="@(context.IsSystem)" ResourceKey="DeleteRole" /></td>
 			<td><ActionLink Action="Users" Text="Users" Parameters="@($"id=" + context.RoleId.ToString())" Security="SecurityAccessLevel.Edit" ResourceKey="Users" /></td>
             <td>@context.Name</td>
         </Row>

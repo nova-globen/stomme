@@ -118,34 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Confirm.User.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete {0}?</value>
+    <value>Are you sure you wish to delete {0}?</value>
   </data>
   <data name="AddUser.Text" xml:space="preserve">
-    <value>Add User</value>
+    <value>Add user</value>
   </data>
   <data name="DeleteUser.Header" xml:space="preserve">
-    <value>Delete User</value>
+    <value>Delete user</value>
   </data>
   <data name="AllowRegistration.HelpText" xml:space="preserve">
     <value>Do you want anonymous visitors to be able to register for an account on the site</value>
   </data>
   <data name="AllowRegistration.Text" xml:space="preserve">
-    <value>Allow Registration? </value>
+    <value>Allow registration?</value>
   </data>
   <data name="RegisterUrl.HelpText" xml:space="preserve">
     <value>Optionally provide a custom registration url</value>
   </data>
   <data name="RegisterUrl.Text" xml:space="preserve">
-    <value>Register Url: </value>
+    <value>Register URL</value>
   </data>
   <data name="ProfileUrl.HelpText" xml:space="preserve">
     <value>Optionally provide a custom user profile url</value>
   </data>
   <data name="ProfileUrl.Text" xml:space="preserve">
-    <value>Profile Url: </value>
+    <value>Profile URL</value>
   </data>
   <data name="Error.SaveSiteSettings" xml:space="preserve">
-    <value>Error Saving Settings</value>
+    <value>Error saving settings</value>
   </data>
   <data name="Error.ExternalLoginHttps" xml:space="preserve">
     <value>The provider's Authority and Metadata Url must start with https:// - an OpenID Connect provider is only reached over https.</value>
@@ -154,7 +154,7 @@
     <value>Settings</value>
   </data>
   <data name="Success.SaveSiteSettings" xml:space="preserve">
-    <value>Settings Saved Successfully</value>
+    <value>Settings saved successfully</value>
   </data>
   <data name="Users.Heading" xml:space="preserve">
     <value>Users</value>
@@ -172,115 +172,115 @@
     <value>The number of minutes a user should be locked out</value>
   </data>
   <data name="LockoutDuration.Text" xml:space="preserve">
-    <value>Lockout Duration:</value>
+    <value>Lockout duration</value>
   </data>
   <data name="MaximumFailures.HelpText" xml:space="preserve">
     <value>The maximum number of sign in attempts before a user is locked out</value>
   </data>
   <data name="MaximumFailures.Text" xml:space="preserve">
-    <value>Maximum Failures:</value>
+    <value>Maximum failures</value>
   </data>
   <data name="RequireDigit.HelpText" xml:space="preserve">
     <value>Indicate if passwords must contain a digit</value>
   </data>
   <data name="RequireDigit.Text" xml:space="preserve">
-    <value>Require Digit?</value>
+    <value>Require digit?</value>
   </data>
   <data name="RequiredLength.HelpText" xml:space="preserve">
     <value>The minimum length for a password</value>
   </data>
   <data name="RequiredLength.Text" xml:space="preserve">
-    <value>Minimum Length:</value>
+    <value>Minimum length</value>
   </data>
   <data name="RequireLower.HelpText" xml:space="preserve">
     <value>Indicate if passwords must contain a lower case character</value>
   </data>
   <data name="RequireLower.Text" xml:space="preserve">
-    <value>Require Lowercase?</value>
+    <value>Require lowercase?</value>
   </data>
   <data name="RequirePunctuation.HelpText" xml:space="preserve">
     <value>Indicate if passwords must contain a non-alphanumeric character (ie. punctuation)</value>
   </data>
   <data name="RequirePunctuation.Text" xml:space="preserve">
-    <value>Require Punctuation?</value>
+    <value>Require punctuation?</value>
   </data>
   <data name="RequireUpper.HelpText" xml:space="preserve">
     <value>Indicate if passwords must contain an upper case character</value>
   </data>
   <data name="RequireUpper.Text" xml:space="preserve">
-    <value>Require Uppercase?</value>
+    <value>Require uppercase?</value>
   </data>
   <data name="Success.UpdateConfig.Restart" xml:space="preserve">
-    <value>Configuration Updated. Please Select Restart Application For These Changes To Be Activated.</value>
+    <value>Configuration updated. Please select restart application for these changes to be activated.</value>
   </data>
   <data name="UniqueCharacters.HelpText" xml:space="preserve">
     <value>The minimum number of unique characters which a password must contain</value>
   </data>
   <data name="UniqueCharacters.Text" xml:space="preserve">
-    <value>Unique Characters:</value>
+    <value>Unique characters</value>
   </data>
   <data name="AllowSiteLogin.HelpText" xml:space="preserve">
     <value>Do you want to allow users to sign in using a username and password that is managed locally on this site? Note that you should only disable this option if you have already successfully configured an alternate login method, or else you may lock yourself out of the site.</value>
   </data>
   <data name="AllowSiteLogin.Text" xml:space="preserve">
-    <value>Allow Local Login?</value>
+    <value>Allow local login?</value>
   </data>
   <data name="Authority.HelpText" xml:space="preserve">
     <value>The authority url or issuer url associated with the identity provider</value>
   </data>
   <data name="Authority.Text" xml:space="preserve">
-    <value>Authority:</value>
+    <value>Authority</value>
   </data>
   <data name="AuthorizationUrl.HelpText" xml:space="preserve">
     <value>The endpoint for obtaining an authorization code</value>
   </data>
   <data name="AuthorizationUrl.Text" xml:space="preserve">
-    <value>Authorization Url:</value>
+    <value>Authorization URL</value>
   </data>
   <data name="ClientID.HelpText" xml:space="preserve">
     <value>The client id for the identity provider</value>
   </data>
   <data name="ClientID.Text" xml:space="preserve">
-    <value>Client ID:</value>
+    <value>Client ID</value>
   </data>
   <data name="ClientSecret.HelpText" xml:space="preserve">
     <value>The client secret for the identity provider</value>
   </data>
   <data name="ClientSecret.Text" xml:space="preserve">
-    <value>Client Secret:</value>
+    <value>Client secret</value>
   </data>
   <data name="CreateUsers.HelpText" xml:space="preserve">
     <value>Do you want new users to be created automatically? If you disable this option, users must already be registered on the site in order to sign in with their external login.</value>
   </data>
   <data name="CreateUsers.Text" xml:space="preserve">
-    <value>Create New Users?</value>
+    <value>Create new users?</value>
   </data>
   <data name="DomainFilter.HelpText" xml:space="preserve">
     <value>Provide any email domain filter criteria (separated by commas). Domains to exclude should be prefixed with an exclamation point (!). For example 'microsoft.com,!hotmail.com' would include microsoft.com email addresses but not hotmail.com email addresses.</value>
   </data>
   <data name="DomainFilter.Text" xml:space="preserve">
-    <value>Domain Filter:</value>
+    <value>Domain filter</value>
   </data>
   <data name="EmailClaimType.HelpText" xml:space="preserve">
     <value>Optionally specify the type name of the email address claim provided by the identity provider. The typical value is 'email'.</value>
   </data>
   <data name="EmailClaimType.Text" xml:space="preserve">
-    <value>Email Claim:</value>
+    <value>Email claim</value>
   </data>
   <data name="ExternalLoginSettings.Heading" xml:space="preserve">
-    <value>External Login Settings</value>
+    <value>External login settings</value>
   </data>
   <data name="LockoutSettings.Heading" xml:space="preserve">
-    <value>Lockout Settings</value>
+    <value>Lockout settings</value>
   </data>
   <data name="MetadataUrl.HelpText" xml:space="preserve">
     <value>The discovery endpoint for obtaining metadata for this identity provider. Only specify if the identity provider does not use the standard approach (ie. /.well-known/openid-configuration)</value>
   </data>
   <data name="MetadataUrl.Text" xml:space="preserve">
-    <value>Metadata Url:</value>
+    <value>Metadata URL</value>
   </data>
   <data name="PasswordSettings.Heading" xml:space="preserve">
-    <value>Password Settings</value>
+    <value>Password settings</value>
   </data>
   <data name="PKCE.HelpText" xml:space="preserve">
     <value>Indicate if the identity provider supports proof key for code exchange (PKCE)</value>
@@ -289,88 +289,88 @@
     <value>Use PKCE?</value>
   </data>
   <data name="ProviderName.HelpText" xml:space="preserve">
-    <value>Specify a friendly name for the external login provider which will be displayed on the Login page</value>
+    <value>Specify a friendly name for the external login provider which will be displayed on the login page</value>
   </data>
   <data name="ProviderName.Text" xml:space="preserve">
-    <value>Provider Name:</value>
+    <value>Provider name</value>
   </data>
   <data name="ProviderType.HelpText" xml:space="preserve">
     <value>Select the external login provider type</value>
   </data>
   <data name="ProviderType.Text" xml:space="preserve">
-    <value>Provider Type:</value>
+    <value>Provider type</value>
   </data>
   <data name="RedirectUrl.HelpText" xml:space="preserve">
     <value>The redirect url (or callback url) which usually needs to be registered with the identity provider</value>
   </data>
   <data name="RedirectUrl.Text" xml:space="preserve">
-    <value>Redirect Url:</value>
+    <value>Redirect URL</value>
   </data>
   <data name="Scopes.HelpText" xml:space="preserve">
-    <value>A list of scopes to request from the identity provider (separated by commas). If none are specified, standard Scopes will be used by default.</value>
+    <value>A list of scopes to request from the identity provider (separated by commas). If none are specified, standard scopes will be used by default.</value>
   </data>
   <data name="Scopes.Text" xml:space="preserve">
-    <value>Scopes:</value>
+    <value>Scopes</value>
   </data>
   <data name="TokenUrl.HelpText" xml:space="preserve">
     <value>The endpoint for obtaining an auth token</value>
   </data>
   <data name="TokenUrl.Text" xml:space="preserve">
-    <value>Token Url:</value>
+    <value>Token URL</value>
   </data>
   <data name="UserInfoUrl.HelpText" xml:space="preserve">
     <value>The endpoint for obtaining user information. This should be an API endpoint or page url which contains the users email address.</value>
   </data>
   <data name="UserInfoUrl.Text" xml:space="preserve">
-    <value>User Info Url:</value>
+    <value>User info URL</value>
   </data>
   <data name="Audience.HelpText" xml:space="preserve">
     <value>Optionally provide the audience for the token</value>
   </data>
   <data name="Audience.Text" xml:space="preserve">
-    <value>Audience:</value>
+    <value>Audience</value>
   </data>
   <data name="UserSettings.Heading" xml:space="preserve">
-    <value>User Settings</value>
+    <value>User settings</value>
   </data>
   <data name="CookieName.HelpText" xml:space="preserve">
     <value>You can choose to use a custom authentication cookie name for each site. However please be aware that if you want to share an authentication cookie between sites on the same domain they need to use a consistent cookie name. Also be aware that changing the authentication cookie name will logout all current users.</value>
   </data>
   <data name="CookieName.Text" xml:space="preserve">
-    <value>Cookie Name:</value>
+    <value>Cookie name</value>
   </data>
   <data name="CreateToken" xml:space="preserve">
-    <value>Create Token</value>
+    <value>Create token</value>
   </data>
   <data name="Issuer.HelpText" xml:space="preserve">
     <value>Optionally provide the issuer of the token</value>
   </data>
   <data name="Issuer.Text" xml:space="preserve">
-    <value>Issuer:</value>
+    <value>Issuer</value>
   </data>
   <data name="Lifetime.HelpText" xml:space="preserve">
     <value>The number of minutes for which a token should be valid</value>
   </data>
   <data name="Lifetime.Text" xml:space="preserve">
-    <value>Lifetime:</value>
+    <value>Lifetime</value>
   </data>
   <data name="Secret.HelpText" xml:space="preserve">
     <value>If you want to want to provide API access, please specify a secret which will be used to encrypt your tokens. The secret should be 16 characters or more to ensure optimal security. Please note that if you change this secret, all existing tokens will become invalid and will need to be regenerated.</value>
   </data>
   <data name="Secret.Text" xml:space="preserve">
-    <value>Secret:</value>
+    <value>Secret</value>
   </data>
   <data name="Token.HelpText" xml:space="preserve">
-    <value>Select the Create Token button to generate a long-lived access token (valid for 1 year). Be sure to store this token in a safe location as you will not be able to access it in the future.</value>
+    <value>Select the create token button to generate a long-lived access token (valid for 1 year). Be sure to store this token in a safe location as you will not be able to access it in the future.</value>
   </data>
   <data name="Token.Text" xml:space="preserve">
-    <value>Token:</value>
+    <value>Token</value>
   </data>
   <data name="TokenSettings.Heading" xml:space="preserve">
-    <value>Token Settings</value>
+    <value>Token settings</value>
   </data>
   <data name="TwoFactor.HelpText" xml:space="preserve">
-    <value>Do you want users to use two factor authentication? Note that you should use the Disabled option until you have successfully verified that the Notification Job in Scheduled Jobs is enabled and your SMTP options in Site Settings are configured or else you will lock yourself out.</value>
+    <value>Do you want users to use two factor authentication? Note that you should use the disabled option until you have successfully verified that the notification job in scheduled jobs is enabled and your SMTP options in site settings are configured or else you will lock yourself out.</value>
   </data>
   <data name="TwoFactor.Text" xml:space="preserve">
     <value>Use 2FA?</value>
@@ -379,7 +379,7 @@
     <value>Do you want to require registered users to verify their email address before they are allowed to log in?</value>
   </data>
   <data name="RequireConfirmedEmail.Text" xml:space="preserve">
-    <value>Require Verified Email?</value>
+    <value>Require verified email?</value>
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>Disabled</value>
@@ -391,46 +391,46 @@
     <value>Required</value>
   </data>
   <data name="LastLoginOn" xml:space="preserve">
-    <value>Last Login</value>
+    <value>Last login</value>
   </data>
   <data name="IdentifierClaimType.HelpText" xml:space="preserve">
     <value>Specify the type name of the unique user identifier claim provided by the identity provider. The default value is 'sub'.</value>
   </data>
   <data name="IdentifierClaimType.Text" xml:space="preserve">
-    <value>Identifier Claim:</value>
+    <value>Identifier claim</value>
   </data>
   <data name="Parameters.HelpText" xml:space="preserve">
     <value>Optionally specify any additional parameters as name/value pairs to send to the identity provider (separated by commas if there are multiple).</value>
   </data>
   <data name="Parameters.Text" xml:space="preserve">
-    <value>Parameters:</value>
+    <value>Parameters</value>
   </data>
   <data name="RoleClaimType.HelpText" xml:space="preserve">
-    <value>Optionally provide the type name of the roles claim provided by the identity provider (the standard default is 'roles'). If role names from the identity provider do not exactly match your site role names, please use the Role Claim Mappings.</value>
+    <value>Optionally provide the type name of the roles claim provided by the identity provider (the standard default is 'roles'). If role names from the identity provider do not exactly match your site role names, please use the role claim mappings.</value>
   </data>
   <data name="RoleClaimType.Text" xml:space="preserve">
-    <value>Roles Claim:</value>
+    <value>Roles claim</value>
   </data>
   <data name="RoleClaimMappings.HelpText" xml:space="preserve">
-    <value>Optionally provide a comma delimited list of role names provided by the identity provider, as well as mappings to your site roles. For example if the identity provider includes an 'Admin' role name and you want it to map to the 'Administrators' site role you should specify 'Admin:Administrators'.</value>
+    <value>Optionally provide a comma delimited list of role names provided by the identity provider, as well as mappings to your site roles. For example if the identity provider includes an 'Admin' role name and you want it to map to the 'Administrators' site role you should specify 'admin:Administrators'.</value>
   </data>
   <data name="RoleClaimMappings.Text" xml:space="preserve">
-    <value>Role Claim Mappings:</value>
+    <value>Role claim mappings</value>
   </data>
   <data name="SynchronizeRoles.HelpText" xml:space="preserve">
     <value>This option will add or remove role assignments so that the site roles exactly match the roles provided by the identity provider for a user</value>
   </data>
   <data name="SynchronizeRoles.Text" xml:space="preserve">
-    <value>Synchronize Roles?</value>
+    <value>Synchronize roles?</value>
   </data>
   <data name="ProfileClaimTypes.HelpText" xml:space="preserve">
     <value>Optionally provide a comma delimited list of user profile claim type names provided by the identity provider, as well as mappings to your user profile definition. For example if the identity provider includes a 'given_name' claim and you have a 'FirstName' user profile definition you should specify 'given_name:FirstName'.</value>
   </data>
   <data name="ProfileClaimTypes.Text" xml:space="preserve">
-    <value>User Profile Claims:</value>
+    <value>User profile claims</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>User Name</value>
+    <value>User name</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
@@ -439,73 +439,73 @@
     <value>Email</value>
   </data>
   <data name="ImportUsers.Text" xml:space="preserve">
-    <value>Import Users</value>
+    <value>Import users</value>
   </data>
   <data name="AuthFlow.Code" xml:space="preserve">
-    <value>Authorization Code</value>
+    <value>Authorization code</value>
   </data>
   <data name="AuthFlow.CodeIdToken" xml:space="preserve">
-    <value>Authorization Code + ID Token</value>
+    <value>Authorization code + ID token</value>
   </data>
   <data name="AuthFlow.CodeIdTokenToken" xml:space="preserve">
-    <value>Authorization Code + ID Token + Access Token</value>
+    <value>Authorization code + ID token + access token</value>
   </data>
   <data name="AuthFlow.CodeToken" xml:space="preserve">
-    <value>Authorization Code + Access Token</value>
+    <value>Authorization code + access token</value>
   </data>
   <data name="AuthFlow.IdToken" xml:space="preserve">
-    <value>ID Token</value>
+    <value>ID token</value>
   </data>
   <data name="AuthFlow.IdTokenToken" xml:space="preserve">
-    <value>ID Token + Access Token</value>
+    <value>ID token + access token</value>
   </data>
   <data name="AuthFlow.None" xml:space="preserve">
     <value>None</value>
   </data>
   <data name="AuthFlow.Token" xml:space="preserve">
-    <value>Access Token</value>
+    <value>Access token</value>
   </data>
   <data name="AuthResponseType.Text" xml:space="preserve">
-    <value>Authorization Response Type:</value>
+    <value>Authorization response type</value>
   </data>
   <data name="AuthResponseType.HelpText" xml:space="preserve">
-    <value>Specify the authorization response type. The default is Authorization Code which is considered to be the most secure option based on the latest OAuth specification.</value>
+    <value>Specify the authorization response type. The default is authorization code which is considered to be the most secure option based on the latest OAuth specification.</value>
   </data>
   <data name="VerifyUsers.HelpText" xml:space="preserve">
     <value>Do you want existing users to perform an additional email verification step to link their external login? If you disable this option, existing users will be linked automatically.</value>
   </data>
   <data name="VerifyUsers.Text" xml:space="preserve">
-    <value>Verify Existing Users?</value>
+    <value>Verify existing users?</value>
   </data>
   <data name="AlwaysRemember.HelpText" xml:space="preserve">
-    <value>Enabling this option will set a permanent cookie in conjunction with the Cookie Expiration Timespan, which will automatically sign in users the next time they visit the site. By default the site will use session cookies.</value>
+    <value>Enabling this option will set a permanent cookie in conjunction with the cookie expiration timespan, which will automatically sign in users the next time they visit the site. By default the site will use session cookies.</value>
   </data>
   <data name="AlwaysRemember.Text" xml:space="preserve">
-    <value>Always Remember User?</value>
+    <value>Always remember user?</value>
   </data>
   <data name="CookieExpiration.HelpText" xml:space="preserve">
     <value>You can choose to use a custom authentication cookie expiration timespan for each site (e.g. '08:00:00' for 8 hours). The default is 14 days if not specified.</value>
   </data>
   <data name="CookieExpiration.Text" xml:space="preserve">
-    <value>Cookie Expiration Timespan:</value>
+    <value>Cookie expiration timespan</value>
   </data>
   <data name="ReviewClaims.Text" xml:space="preserve">
-    <value>Review Claims?</value>
+    <value>Review claims?</value>
   </data>
   <data name="ReviewClaims.HelpText" xml:space="preserve">
-    <value>This option will record the full list of Claims returned by the Provider in the Event Log. It should only be used for testing purposes. External Login will be restricted when this option is enabled.</value>
+    <value>This option will record the full list of claims returned by the provider in the event log. It should only be used for testing purposes. External login will be restricted when this option is enabled.</value>
   </data>
   <data name="NameClaimType.HelpText" xml:space="preserve">
     <value>Optionally specify the type name of the user's name claim provided by the identity provider. The typical value is 'name'.</value>
   </data>
   <data name="NameClaimType.Text" xml:space="preserve">
-    <value>Name Claim:</value>
+    <value>Name claim</value>
   </data>
   <data name="Provider.HelpText" xml:space="preserve">
     <value>Select the external login provider</value>
   </data>
   <data name="Provider.Text" xml:space="preserve">
-    <value>Provider:</value>
+    <value>Provider</value>
   </data>
   <data name="Info" xml:space="preserve">
     <value>Info</value>
@@ -517,67 +517,67 @@
     <value>OpenID Connect (OIDC)</value>
   </data>
   <data name="RequireNonce.Text" xml:space="preserve">
-    <value>Require Nonce?</value>
+    <value>Require nonce?</value>
   </data>
   <data name="RequireNonce.HelpText" xml:space="preserve">
-    <value>Specify if Nonce validation is required for the ID token (the default is true)</value>
+    <value>Specify if nonce validation is required for the ID token (the default is true)</value>
   </data>
   <data name="SaveTokens.Text" xml:space="preserve">
-    <value>Save Tokens?</value>
+    <value>Save tokens?</value>
   </data>
   <data name="SaveTokens.HelpText" xml:space="preserve">
     <value>Specify whether access and refresh tokens should be saved after a successful login. The default is false to reduce the size of the authentication cookie.</value>
   </data>
   <data name="Success.DeleteUser" xml:space="preserve">
-    <value>User Deleted Successfully</value>
+    <value>User deleted successfully</value>
   </data>
   <data name="Error.DeleteUser" xml:space="preserve">
-    <value>Error Deleting User</value>
+    <value>Error deleting user</value>
   </data>
   <data name="LogoutEverywhere.Text" xml:space="preserve">
-    <value>Logout Everywhere?</value>
+    <value>Logout everywhere?</value>
   </data>
   <data name="LogoutEverywhere.HelpText" xml:space="preserve">
     <value>Do you want users to be logged out of every active session on any device, or only their current session?</value>
   </data>
   <data name="AllowHostRole.Text" xml:space="preserve">
-    <value>Allow Host Role?</value>
+    <value>Allow Host role?</value>
   </data>
   <data name="AllowHostRole.HelpText" xml:space="preserve">
     <value>Indicate if host roles are supported from the identity provider. Please use caution with this option as it allows the host user to administrate every site within your installation.</value>
   </data>
   <data name="Active Users" xml:space="preserve">
-    <value>Active Users</value>
+    <value>Active users</value>
   </data>
   <data name="Deleted Users" xml:space="preserve">
-    <value>Deleted Users</value>
+    <value>Deleted users</value>
   </data>
   <data name="CookieDomain.Text" xml:space="preserve">
-    <value>Cookie Domain:</value>
+    <value>Cookie domain</value>
   </data>
   <data name="CookieDomain.HelpText" xml:space="preserve">
     <value>If you would like to share cookies across subdomains you will need to specify a root domain with a leading dot (ie. '.example.com')</value>
   </data>
   <data name="SingleLogout.Text" xml:space="preserve">
-    <value>Allow Single Logout?</value>
+    <value>Allow single logout?</value>
   </data>
   <data name="SingleLogout.HelpText" xml:space="preserve">
     <value>Specify if users should be logged out of both the application and provider (the default is false indicating they will only be logged out of the application)</value>
   </data>
   <data name="Passkeys.Text" xml:space="preserve">
-    <value>Allow Passkeys?</value>
+    <value>Allow passkeys?</value>
   </data>
   <data name="Passkeys.HelpText" xml:space="preserve">
     <value>Do you want to allow users to login using passkeys (ie. passwordless authentication using WebAuthn/FIDO2)?</value>
   </data>
   <data name="LoginLink.Text" xml:space="preserve">
-    <value>Allow Login Link?</value>
+    <value>Allow login link?</value>
   </data>
   <data name="LoginLink.HelpText" xml:space="preserve">
     <value>Do you want to allow users to login using a time sensitive link sent by email?</value>
   </data>
   <data name="ProfileDisplayName.Text" xml:space="preserve">
-    <value>Profile Display Name:</value>
+    <value>Profile display name</value>
   </data>
   <data name="ProfileDisplayName.HelpText" xml:space="preserve">
     <value>Optionally specify the identifier which will be used for the user's profile (the default is username)</value>

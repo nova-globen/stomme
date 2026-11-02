@@ -223,7 +223,7 @@
     <value>Search</value>
   </data>
   <data name="Search.Hint" xml:space="preserve">
-    <value>Enter Search Term</value>
+    <value>Enter search term</value>
   </data>
   <data name="Search.By" xml:space="preserve">
     <value>by</value>
@@ -277,19 +277,19 @@
     <value>Email</value>
   </data>
   <data name="FullName" xml:space="preserve">
-    <value>Full Name:</value>
+    <value>Full name:</value>
   </data>
   <data name="LocalVersion" xml:space="preserve">
-    <value>Installed Version</value>
+    <value>Installed version</value>
   </data>
   <data name="Search.Source" xml:space="preserve">
     <value>Source</value>
   </data>
   <data name="Message.InfoRequired" xml:space="preserve">
-    <value>Please Provide All Required Information</value>
+    <value>Please provide all required information</value>
   </data>
   <data name="Free" xml:space="preserve">
-    <value>Open Source</value>
+    <value>Open source</value>
   </data>
   <data name="Paid" xml:space="preserve">
     <value>Commercial</value>
@@ -307,7 +307,7 @@
     <value>Review License Terms</value>
   </data>
   <data name="Trial" xml:space="preserve">
-    <value>Day Trial</value>
+    <value>Day trial</value>
   </data>
   <data name="Expires" xml:space="preserve">
     <value>Expires</value>
@@ -325,7 +325,7 @@
     <value>Client (WebAssembly)</value>
   </data>
   <data name="StaticServer" xml:space="preserve">
-    <value>Static Server Rendering</value>
+    <value>Static server rendering</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
@@ -400,7 +400,7 @@
     <value>Alphabetical</value>
   </data>
   <data name="Buy" xml:space="preserve">
-    <value>Buy Now</value>
+    <value>Buy now</value>
   </data>
   <data name="Search.Popularity" xml:space="preserve">
     <value>Popularity</value>
@@ -409,7 +409,7 @@
     <value>Results</value>
   </data>
   <data name="Search.RecentlyReleased" xml:space="preserve">
-    <value>Recently Released</value>
+    <value>Recently released</value>
   </data>
   <data name="From" xml:space="preserve">
     <value>From</value>
@@ -418,25 +418,25 @@
     <value>To</value>
   </data>
   <data name="Password.DigitRequirement" xml:space="preserve">
-    <value>At Least One Digit</value>
+    <value>at least one digit</value>
   </data>
   <data name="Password.LowercaseRequirement" xml:space="preserve">
-    <value>At Least One Lowercase Letter</value>
+    <value>at least one lowercase letter</value>
   </data>
   <data name="Password.PunctuationRequirement" xml:space="preserve">
-    <value>At Least One Punctuation Mark</value>
+    <value>at least one punctuation mark</value>
   </data>
   <data name="Password.UppercaseRequirement" xml:space="preserve">
-    <value>At Least One Uppercase Letter</value>
+    <value>at least one uppercase letter</value>
   </data>
   <data name="Password.ValidationCriteria" xml:space="preserve">
-    <value>Passwords Must Have A Minimum Length Of {0} Characters, Including At Least {1} Unique Character(s), {2}{3}{4}{5} To Satisfy Password Complexity Requirements For This Site.</value>
+    <value>Passwords must have a minimum length of {0} characters, including at least {1} unique character(s), {2}{3}{4}{5} to satisfy the password complexity requirements for this site.</value>
   </data>
   <data name="ProfileInvalid" xml:space="preserve">
-    <value>{0} Is Not Valid</value>
+    <value>{0} is not valid</value>
   </data>
   <data name="ProfileRequired" xml:space="preserve">
-    <value>{0} Is Required</value>
+    <value>{0} is required</value>
   </data>
   <data name="Uninstall" xml:space="preserve">
     <value>Uninstall</value>
@@ -445,13 +445,13 @@
     <value>Test</value>
   </data>
   <data name="Message.EffectiveExpiryDateError" xml:space="preserve">
-    <value>Effective Date cannot be after Expiry Date.</value>
+    <value>The effective date cannot be after the expiry date.</value>
   </data>
   <data name="RuntimeAuto" xml:space="preserve">
     <value>Auto</value>
   </data>
   <data name="RenderModeHeadless" xml:space="preserve">
-    <value>Headless (API Only)</value>
+    <value>Headless (API only)</value>
   </data>
   <data name="RenderModeInteractive" xml:space="preserve">
     <value>Interactive</value>

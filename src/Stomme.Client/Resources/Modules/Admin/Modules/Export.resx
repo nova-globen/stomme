@@ -121,19 +121,19 @@
     <value>Export</value>
   </data>
   <data name="Content.HelpText" xml:space="preserve">
-    <value>Select the Export option and you will be able to view the module content</value>
+    <value>Select the export option and you will be able to view the module content</value>
   </data>
   <data name="Content.Text" xml:space="preserve">
-    <value>Content: </value>
+    <value>Content</value>
   </data>
   <data name="Error.Module.Export" xml:space="preserve">
-    <value>Error Exporting Module Content</value>
+    <value>Error exporting module content</value>
   </data>
   <data name="Success.Content.Export" xml:space="preserve">
-    <value>Content Exported Successfully</value>
+    <value>Content exported successfully</value>
   </data>
   <data name="Export Content" xml:space="preserve">
-    <value>Export Content</value>
+    <value>Export content</value>
   </data>
   <data name="Content.Heading" xml:space="preserve">
     <value>Content</value>
@@ -142,16 +142,16 @@
     <value>File</value>
   </data>
   <data name="Folder.Text" xml:space="preserve">
-    <value>Folder:</value>
+    <value>Folder</value>
   </data>
   <data name="Folder.HelpText" xml:space="preserve">
     <value>Select a folder where you wish to save the exported content</value>
   </data>
   <data name="Message.Content.Export" xml:space="preserve">
-    <value>Please Select A Folder And Provide A Filename Before Choosing Export</value>
+    <value>Please select a folder and provide a filename before choosing export</value>
   </data>
   <data name="Filename.Text" xml:space="preserve">
-    <value>Filename:</value>
+    <value>Filename</value>
   </data>
   <data name="Filename.HelpText" xml:space="preserve">
     <value>Specify a name for the file (without an extension)</value>

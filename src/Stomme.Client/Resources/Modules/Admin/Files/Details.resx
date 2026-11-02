@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Folder.Text" xml:space="preserve">
-    <value>Folder: </value>
+    <value>Folder</value>
   </data>
   <data name="Error.File.Load" xml:space="preserve">
-    <value>Error Loading File</value>
+    <value>Error loading file</value>
   </data>
   <data name="Message.File.InvalidName" xml:space="preserve">
-    <value>File Name Not Valid</value>
+    <value>File name not valid</value>
   </data>
   <data name="Error.File.Save" xml:space="preserve">
-    <value>Error Saving File</value>
+    <value>Error saving file</value>
   </data>
   <data name="Name.HelpText" xml:space="preserve">
     <value>The name of the file</value>
@@ -139,18 +139,18 @@
     <value>The size of the file (in bytes)</value>
   </data>
   <data name="Name.Text" xml:space="preserve">
-    <value>Name: </value>
+    <value>Name</value>
   </data>
   <data name="Size.Text" xml:space="preserve">
-    <value>Size: </value>
+    <value>Size</value>
   </data>
   <data name="Description.HelpText" xml:space="preserve">
     <value>A description of the file. This can be used as a caption for image files.</value>
   </data>
   <data name="Description.Text" xml:space="preserve">
-    <value>Description:</value>
+    <value>Description</value>
   </data>
   <data name="File Management" xml:space="preserve">
-    <value>File Management</value>
+    <value>File management</value>
   </data>
 </root>

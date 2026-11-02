@@ -14,13 +14,13 @@ else
 {
     <div class="db-fields">
         <div class="db-field">
-            <Label For="user" HelpText="The user you are assigning roles to" ResourceKey="User">User: </Label>
+            <Label For="user" HelpText="The user you are assigning roles to" ResourceKey="User">User</Label>
             <div class="db-field-control">
                 <input id="user" class="db-input" @bind="@name" disabled />
             </div>
         </div>
         <div class="db-field">
-            <Label For="role" HelpText="Select a role" ResourceKey="Role">Role: </Label>
+            <Label For="role" HelpText="Select a role" ResourceKey="Role">Role</Label>
             <div class="db-field-control">
                 <select id="role" class="db-select" @bind="@roleid">
                     <option value="-1">&lt;@Localizer["Role.Select"]&gt;</option>
@@ -32,13 +32,13 @@ else
             </div>
         </div>
         <div class="db-field">
-            <Label For="effectiveDate" HelpText="The date that this role assignment is active" ResourceKey="EffectiveDate">Effective Date: </Label>
+            <Label For="effectiveDate" HelpText="The date that this role assignment is active" ResourceKey="EffectiveDate">Effective date</Label>
             <div class="db-field-control">
                 <input type="date" id="effectiveDate" class="db-input" @bind="@_effectivedate" />
             </div>
         </div>
         <div class="db-field">
-            <Label For="expiryDate" HelpText="The date that this role assignment expires" ResourceKey="ExpiryDate">Expiry Date: </Label>
+            <Label For="expiryDate" HelpText="The date that this role assignment expires" ResourceKey="ExpiryDate">Expiry date</Label>
             <div class="db-field-control">
                 <input type="date" id="expiryDate" class="db-input" @bind="@_expirydate" />
             </div>
@@ -63,7 +63,7 @@ else
                 <td>@Utilities.UtcAsLocalDate(context.EffectiveDate)</td>
                 <td>@Utilities.UtcAsLocalDate(context.ExpiryDate)</td>
                 <td>
-                    <ActionDialog Header="Remove Role" Message="@string.Format(Localizer["Confirm.User.RemoveRole"], context.Role.Name)" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUserRole(context.UserRoleId))" Disabled="@(context.Role.Name == RoleNames.Host && userid == PageState.User.UserId)" ResourceKey="DeleteUserRole" />
+                    <ActionDialog Header="Remove role" Message="@string.Format(Localizer["Confirm.User.RemoveRole"], context.Role.Name)" Action="Delete" Security="SecurityAccessLevel.Edit" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUserRole(context.UserRoleId))" Disabled="@(context.Role.Name == RoleNames.Host && userid == PageState.User.UserId)" ResourceKey="DeleteUserRole" />
                 </td>
             </Row>
         </Pager>

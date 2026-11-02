@@ -118,37 +118,37 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Error.User.Add" xml:space="preserve">
-    <value>Error Adding User</value>
+    <value>Error adding user</value>
   </data>
   <data name="Error.Profile.Load" xml:space="preserve">
-    <value>Error Loading User Profile</value>
+    <value>Error loading user profile</value>
   </data>
   <data name="Identity.Name" xml:space="preserve">
     <value>Identity</value>
   </data>
   <data name="Message.Required.ProfileInfo" xml:space="preserve">
-    <value>You Must Provide A Username, Email Address And All Required Profile Information</value>
+    <value>You must provide a username, email address and all required profile information</value>
   </data>
   <data name="Message.Username.Exists" xml:space="preserve">
-    <value>Username Already Exists</value>
+    <value>Username already exists</value>
   </data>
   <data name="DisplayName.HelpText" xml:space="preserve">
     <value>The full name of the user</value>
   </data>
   <data name="DisplayName.Text" xml:space="preserve">
-    <value>Full Name:</value>
+    <value>Full name</value>
   </data>
   <data name="Email.HelpText" xml:space="preserve">
     <value>The email address where the user will receive notifications</value>
   </data>
   <data name="Email.Text" xml:space="preserve">
-    <value>Email:</value>
+    <value>Email</value>
   </data>
   <data name="Username.HelpText" xml:space="preserve">
     <value>A unique username for a user. Note that this field can not be modified once it is saved.</value>
   </data>
   <data name="Username.Text" xml:space="preserve">
-    <value>Username:</value>
+    <value>Username</value>
   </data>
   <data name="Notify.HelpText" xml:space="preserve">
     <value>Indicate if new users should receive an email notification</value>
@@ -157,7 +157,7 @@
     <value>Notify?</value>
   </data>
   <data name="TimeZone.Text" xml:space="preserve">
-    <value>Time Zone:</value>
+    <value>Time zone</value>
   </data>
   <data name="TimeZone.HelpText" xml:space="preserve">
     <value>The user's time zone</value>
@@ -169,7 +169,7 @@
     <value>Indicates if the user's email is verified</value>
   </data>
   <data name="CultureCode.Text" xml:space="preserve">
-    <value>Language:</value>
+    <value>Language</value>
   </data>
   <data name="CultureCode.HelpText" xml:space="preserve">
     <value />

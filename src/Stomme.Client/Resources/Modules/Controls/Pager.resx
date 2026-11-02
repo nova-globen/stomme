@@ -144,4 +144,10 @@
   <data name="LastPage" xml:space="preserve">
     <value>Last page</value>
   </data>
+  <data name="Empty" xml:space="preserve">
+    <value>Nothing here yet.</value>
+  </data>
+  <data name="NoMatch" xml:space="preserve">
+    <value>Nothing matches '{0}'.</value>
+  </data>
 </root>

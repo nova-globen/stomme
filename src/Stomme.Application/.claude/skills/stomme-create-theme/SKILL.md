@@ -190,9 +190,9 @@ your own. `Stomme.Application` below is your app's name (the template replaced i
 
 Run the app (`cd Server`, `dotnet run`), sign in as the host, and:
 
-1. Admin > Site Settings, the Theme section: choose **Harbor - Harbor** as Default Theme (the list shows
-   "<theme name> - <layout name>"). The Default Container list then offers only Harbor's containers and selects
-   **Harbor Container** (the container's `Name`). Save; the page says "Site Settings Saved".
+1. Admin > Site Settings, the Theme section: choose **Harbor - Harbor** as Default theme (the list shows
+   "<theme name> - <layout name>"). The Default container list then offers only Harbor's containers and selects
+   **Harbor Container** (the container's `Name`). Save; the page says "Site settings saved".
 2. Open the home page. The header, menu and footer are Harbor's; the modules show inside Harbor's container.
 3. Page source: a `<link ... href="/Themes/Stomme.Application.Client.Themes.Harbor/Theme.css?...">` is present and
    that URL answers 200 with your CSS (open it).
@@ -216,7 +216,7 @@ link is dead), modules missing from pages that showed them before (no `Default` 
 
 ## Common mistakes
 
-- **Theme not in the Default Theme list.** The component does not inherit `ThemeBase`, is abstract, or the app was not
+- **Theme not in the Default theme list.** The component does not inherit `ThemeBase`, is abstract, or the app was not
   rebuilt and restarted. The Client assembly's name must still contain `Stomme` (the template's
   `Stomme.Application.Client.Stomme`); do not rename it.
 - **Theme listed under the component's class name, page unstyled.** `ThemeInfo` is in a different namespace from the
@@ -236,7 +236,7 @@ link is dead), modules missing from pages that showed them before (no `Default` 
 - **Duplicate toasts or dialogs.** The theme renders FluentUI providers; remove them - the host renders them.
 - **Your classes pick up odd padding or layout.** You named them `db-...`; Stomme's stylesheet styles those names. Use
   your own prefix.
-- **Used Admin > Theme Management > Create Theme.** It writes a separate, Bootstrap-based solution to a folder beside the
+- **Used Admin > Theme Management > Create theme.** It writes a separate, Bootstrap-based solution to a folder beside the
   app's folder, not into the app; since 10.80.0 it builds on `Stomme.Sdk.Slim` and packs with its own `pack.ps1`. Before
   10.80.0 its project referenced the framework's DLLs by a path an app does not have (`CS0246` on every `Stomme`
   namespace) and its packaging scripts called tools from a Stomme source checkout - see

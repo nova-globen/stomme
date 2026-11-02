@@ -118,22 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ImportFile.HelpText" xml:space="preserve">
-    <value>Upload or select a tab delimited text file containing user information. The file must be in the Template format specified (Roles can be specified as a comma delimited list).</value>
+    <value>Upload or select a tab delimited text file containing user information. The file must be in the template format specified (roles can be specified as a comma delimited list).</value>
   </data>
   <data name="ImportFile.Text" xml:space="preserve">
-    <value>Import File:</value>
+    <value>Import file</value>
   </data>
   <data name="Error.Import" xml:space="preserve">
-    <value>Error Importing Users</value>
+    <value>Error importing users</value>
   </data>
   <data name="Import" xml:space="preserve">
     <value>Import</value>
   </data>
   <data name="Message.Import.Success" xml:space="preserve">
-    <value>Your User Import Request Has Been Submitted And Will Be Executed Shortly. Please Be Patient.</value>
+    <value>Your user import request has been submitted and will be executed shortly. Please be patient.</value>
   </data>
   <data name="Message.Import.Validation" xml:space="preserve">
-    <value>You Must Specify A User File For Import</value>
+    <value>You must specify a user file for import</value>
   </data>
   <data name="Template" xml:space="preserve">
     <value>Template</value>

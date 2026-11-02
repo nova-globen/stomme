@@ -118,33 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DeleteModule" xml:space="preserve">
-    <value>Delete Module</value>
+    <value>Delete module</value>
   </data>
   <data name="ExportContent" xml:space="preserve">
-    <value>Export Content</value>
+    <value>Export content</value>
   </data>
   <data name="ImportContent" xml:space="preserve">
-    <value>Import Content</value>
+    <value>Import content</value>
   </data>
   <data name="ManageSettings" xml:space="preserve">
-    <value>Manage Settings</value>
+    <value>Manage settings</value>
   </data>
   <data name="MoveDown" xml:space="preserve">
-    <value>Move Down</value>
+    <value>Move down</value>
   </data>
   <data name="MoveToBottom" xml:space="preserve">
-    <value>Move To Bottom</value>
+    <value>Move to bottom</value>
   </data>
   <data name="MoveToTop" xml:space="preserve">
-    <value>Move To Top</value>
+    <value>Move to top</value>
   </data>
   <data name="MoveUp" xml:space="preserve">
     <value>MoveUp</value>
   </data>
   <data name="PublishModule" xml:space="preserve">
-    <value>Publish Module</value>
+    <value>Publish module</value>
   </data>
   <data name="UnpublishModule" xml:space="preserve">
-    <value>Unpublish Module</value>
+    <value>Unpublish module</value>
   </data>
 </root>

@@ -47,11 +47,11 @@
                             <FluentTextInput id="displayname" @bind-Value="_displayname" MaxLength="50" class="db-field-control" />
                         </div>
                         <div class="db-field">
-                            <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time Zone:</Label>
+                            <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time zone</Label>
                             <TimeZonePicker @ref="_timezonepicker" Id="timezone" @bind-Value="_timezoneid" UseBrowserTimeZone="true" Placeholder="@Localizer["TimeZone.Placeholder"]" Class="db-field-control" />
                         </div>
                         <div class="db-field">
-                            <Label For="culture" HelpText="Your preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language:</Label>
+                            <Label For="culture" HelpText="Your preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language</Label>
                             <FluentSelect id="culture" TOption="string" TValue="string" @bind-Value="_culturecode" class="db-field-control">
                                 <FluentOption TValue="string" Value="@string.Empty">&lt;@SharedLocalizer["Not Specified"]&gt;</FluentOption>
                                 @foreach (var language in _languages)

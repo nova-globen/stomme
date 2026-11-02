@@ -121,33 +121,33 @@
   <data name="Settings.Heading" xml:space="preserve"><value>Settings</value></data>
   <data name="Overrides.Heading" xml:space="preserve"><value>Overrides</value></data>
   <data name="History.Heading" xml:space="preserve"><value>History</value></data>
-  <data name="Key.Text" xml:space="preserve"><value>Key:</value></data>
+  <data name="Key.Text" xml:space="preserve"><value>Key</value></data>
   <data name="Key.HelpText" xml:space="preserve"><value>The flag key. Keys are created by catalog seeding or by the first toggle, and cannot be renamed.</value></data>
-  <data name="Enabled.Text" xml:space="preserve"><value>Enabled:</value></data>
+  <data name="Enabled.Text" xml:space="preserve"><value>Enabled</value></data>
   <data name="Enabled.HelpText" xml:space="preserve"><value>The stored state of the flag. Config-sourced values (the FeatureManagement section) still take precedence over this at evaluation time.</value></data>
-  <data name="TargetRoles.Text" xml:space="preserve"><value>Target Roles:</value></data>
+  <data name="TargetRoles.Text" xml:space="preserve"><value>Target roles</value></data>
   <data name="TargetRoles.HelpText" xml:space="preserve"><value>Restrict the flag to these roles (comma separated). Empty means everyone.</value></data>
-  <data name="Rollout.Text" xml:space="preserve"><value>Rollout %:</value></data>
+  <data name="Rollout.Text" xml:space="preserve"><value>Rollout %</value></data>
   <data name="Rollout.HelpText" xml:space="preserve"><value>Percentage rollout, 0-100. Users are bucketed deterministically.</value></data>
-  <data name="UserId.Text" xml:space="preserve"><value>User Id:</value></data>
+  <data name="UserId.Text" xml:space="preserve"><value>User ID</value></data>
   <data name="UserId.HelpText" xml:space="preserve"><value>The user id (see the Users admin page) to override the flag for</value></data>
-  <data name="OverrideState.Text" xml:space="preserve"><value>State:</value></data>
+  <data name="OverrideState.Text" xml:space="preserve"><value>State</value></data>
   <data name="OverrideState.HelpText" xml:space="preserve"><value>Force the flag on or off for that user, or clear an existing override</value></data>
   <data name="OverrideState" xml:space="preserve"><value>State</value></data>
   <data name="OverrideUser" xml:space="preserve"><value>User</value></data>
   <data name="Override.On" xml:space="preserve"><value>On</value></data>
   <data name="Override.Off" xml:space="preserve"><value>Off</value></data>
-  <data name="Override.Clear" xml:space="preserve"><value>Clear Override</value></data>
-  <data name="ApplyOverride" xml:space="preserve"><value>Apply Override</value></data>
-  <data name="NoHistory" xml:space="preserve"><value>No Changes Recorded Yet</value></data>
-  <data name="ChangedAt" xml:space="preserve"><value>Changed At (UTC)</value></data>
-  <data name="ChangedTo" xml:space="preserve"><value>Changed To</value></data>
-  <data name="ChangedBy" xml:space="preserve"><value>Changed By</value></data>
-  <data name="Error.NotFound" xml:space="preserve"><value>That Feature Flag Was Not Found</value></data>
-  <data name="Error.Load" xml:space="preserve"><value>Error Loading Feature Flag</value></data>
-  <data name="Error.Save" xml:space="preserve"><value>Error Saving Feature Flag</value></data>
-  <data name="Error.Rollout" xml:space="preserve"><value>Rollout Must Be Between 0 And 100</value></data>
-  <data name="Error.UserId" xml:space="preserve"><value>Provide A Valid User Id</value></data>
-  <data name="Error.Override" xml:space="preserve"><value>Error Applying Override</value></data>
-  <data name="Success.Override" xml:space="preserve"><value>Override Applied</value></data>
+  <data name="Override.Clear" xml:space="preserve"><value>Clear override</value></data>
+  <data name="ApplyOverride" xml:space="preserve"><value>Apply override</value></data>
+  <data name="NoHistory" xml:space="preserve"><value>No changes recorded yet</value></data>
+  <data name="ChangedAt" xml:space="preserve"><value>Changed at (UTC)</value></data>
+  <data name="ChangedTo" xml:space="preserve"><value>Changed to</value></data>
+  <data name="ChangedBy" xml:space="preserve"><value>Changed by</value></data>
+  <data name="Error.NotFound" xml:space="preserve"><value>That feature flag was not found</value></data>
+  <data name="Error.Load" xml:space="preserve"><value>Error loading feature flag</value></data>
+  <data name="Error.Save" xml:space="preserve"><value>Error saving feature flag</value></data>
+  <data name="Error.Rollout" xml:space="preserve"><value>Rollout must be between 0 and 100</value></data>
+  <data name="Error.UserId" xml:space="preserve"><value>Provide a valid user ID</value></data>
+  <data name="Error.Override" xml:space="preserve"><value>Error applying override</value></data>
+  <data name="Success.Override" xml:space="preserve"><value>Override applied</value></data>
 </root>

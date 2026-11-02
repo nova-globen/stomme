@@ -118,25 +118,25 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Template.Text" xml:space="preserve">
-    <value>Template: </value>
+    <value>Template</value>
   </data>
   <data name="Template.Select" xml:space="preserve">
-    <value>Select Template</value>
+    <value>Select template</value>
   </data>
   <data name="CreateModule" xml:space="preserve">
-    <value>Create Module</value>
+    <value>Create module</value>
   </data>
   <data name="Info.Module.Development" xml:space="preserve">
-    <value>Please Note That The Module Creator Is Only Intended To Be Used In A Development Environment</value>
+    <value>Please note that the module creator is only intended to be used in a development environment</value>
   </data>
   <data name="Message.Require.ValidName" xml:space="preserve">
-    <value>You Must Provide A Valid Owner Name And Module Name ( ie. No Punctuation Or Spaces And The Values Cannot Be The Same Or Contain The Word "Stomme" ) And Choose A Template</value>
+    <value>You must provide a valid owner name and module name ( ie. No punctuation or spaces and the values cannot be the same or contain the word "Stomme" ) and choose a template</value>
   </data>
   <data name="Message.Require.ValidDescription" xml:space="preserve">
-    <value>You Must Provide A Valid Description (ie. No Punctuation)</value>
+    <value>You must provide a valid description (ie. No punctuation)</value>
   </data>
   <data name="OwnerName.HelpText" xml:space="preserve">
-    <value>Enter the name of the organization who is developing this module. It should not contain spaces or punctuation or contain the word "stomme". If you are using an Internal template then make sure the owner matches the name of the project.</value>
+    <value>Enter the name of the organization who is developing this module. It should not contain spaces or punctuation or contain the word "stomme". If you are using an internal template then make sure the owner matches the name of the project.</value>
   </data>
   <data name="ModuleName.HelpText" xml:space="preserve">
     <value>Enter a name for this module. It should not contain spaces or punctuation or contain the word "stomme".</value>
@@ -154,22 +154,22 @@
     <value>Location where the module will be created</value>
   </data>
   <data name="OwnerName.Text" xml:space="preserve">
-    <value>Owner Name: </value>
+    <value>Owner name</value>
   </data>
   <data name="ModuleName.Text" xml:space="preserve">
-    <value>Module Name: </value>
+    <value>Module name</value>
   </data>
   <data name="Description.Text" xml:space="preserve">
-    <value>Description: </value>
+    <value>Description</value>
   </data>
   <data name="FrameworkReference.Text" xml:space="preserve">
-    <value>Framework Reference: </value>
+    <value>Framework reference</value>
   </data>
   <data name="Location.Text" xml:space="preserve">
-    <value>Location: </value>
+    <value>Location</value>
   </data>
   <data name="Success.Module.Create.Internal" xml:space="preserve">
-    <value>The Source Code For Your Module Has Been Created In Your Solution And Must Be Compiled In Order To Make It Functional</value>
+    <value>The source code for your module has been created in your solution and must be compiled in order to make it functional</value>
   </data>
   <data name="Success.Module.Create.External" xml:space="preserve">
     <value>The Source Code For Your Module Has Been Created At The Location Specified Below And Must Be Compiled In Order To Make It Functional. Once It Has Been Compiled You Must &lt;a href={0}&gt;Restart&lt;/a&gt; Your Application To Activate The Module.</value>

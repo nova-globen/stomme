@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DatabaseConfig" xml:space="preserve">
-    <value>Database Configuration</value>
+    <value>Database configuration</value>
   </data>
   <data name="DatabaseType" xml:space="preserve">
-    <value>Database Type:</value>
+    <value>Database type:</value>
   </data>
   <data name="ApplicationAdmin" xml:space="preserve">
-    <value>Application Administrator</value>
+    <value>Application administrator</value>
   </data>
   <data name="InstallNow" xml:space="preserve">
-    <value>Install Now</value>
+    <value>Install now</value>
   </data>
   <data name="Error.DbConfig.Load" xml:space="preserve">
-    <value>Error loading Database Configuration Control</value>
+    <value>Error loading database configuration control</value>
   </data>
   <data name="Message.Require.DbInfo" xml:space="preserve">
-    <value>Please Enter All Fields And Ensure Passwords Match And Are Greater Than 5 Characters In Length</value>
+    <value>Please enter all fields and ensure passwords match and are greater than 5 characters in length</value>
   </data>
 </root>

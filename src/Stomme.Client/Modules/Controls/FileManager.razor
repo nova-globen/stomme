@@ -63,7 +63,7 @@
                         <button type="button" class="db-btn" @onclick="UploadFiles">@SharedLocalizer["Upload"]</button>
                         @if (FileId != -1 && !UploadMultiple)
                         {
-                            <ActionDialog Header="Delete File" Message="Delete the selected file? It cannot be undone." Action="Delete" Text="@SharedLocalizer["Delete"]" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => { await DeleteFile(); StateHasChanged(); })" />
+                            <ActionDialog Header="Delete file" Message="Delete the selected file? It cannot be undone." Action="Delete" Text="@SharedLocalizer["Delete"]" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => { await DeleteFile(); StateHasChanged(); })" />
                         }
                     </div>
                 </div>
@@ -236,13 +236,15 @@
             File file = await FileService.GetFileAsync(FileId);
             if (file != null)
             {
-                FolderId = file.FolderId;
+                // A file the user may see in a folder they may not (their own photo in "My Folder"): keep the file,
+                // leave the folder unselected rather than select one the list does not hold (upstream 94b49151).
+                FolderId = _folders.Any(item => item.FolderId == file.FolderId) ? file.FolderId : -1;
             }
             else
             {
-                _message = "FileId " + FileId.ToString() + " Does Not Exist";
+                _message = "The file does not exist, or you do not have permission to see it.";
                 _messagetype = MessageType.Error;
-                FileId = -1; // file does not exist
+                FileId = -1;
             }
         }
 

@@ -31,7 +31,7 @@ Other files the template gives you:
 - `Server/appsettings.json` - the framework's default settings. Committed. See [Configuration](configuration.md).
 - `Server/features.json` - feature-flag overrides (the `FeatureManagement` section).
 - `Server/wwwroot/Modules/Templates` and `Server/wwwroot/Themes/Templates` - the source templates the host's
-  **Create Module** and **Create Theme** admin pages generate from. They are excluded from compilation.
+  **Create module** and **Create theme** admin pages generate from. They are excluded from compilation.
 
 ### The packages
 

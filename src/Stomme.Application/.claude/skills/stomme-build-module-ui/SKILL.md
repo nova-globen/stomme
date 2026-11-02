@@ -198,13 +198,13 @@ unchanged, driven on an Interactive Server site and on a WebAssembly site. `Stom
        <form @onsubmit="SaveAsync" @onsubmit:preventDefault novalidate>
            <div class="db-fields">
                <div class="db-field">
-                   <Label For="note-title" HelpText="A short name, shown in the list">Title:</Label>
+                   <Label For="note-title" HelpText="A short name, shown in the list">Title</Label>
                    <div class="db-field-control">
                        <input id="note-title" class="db-input" @bind="_title" maxlength="120" required />
                    </div>
                </div>
                <div class="db-field">
-                   <Label For="note-body" HelpText="The text of the note">Note:</Label>
+                   <Label For="note-body" HelpText="The text of the note">Note</Label>
                    <div class="db-field-control">
                        <textarea id="note-body" class="db-input" @bind="_body" rows="6" maxlength="4000"></textarea>
                    </div>
@@ -332,7 +332,7 @@ Run the app (`cd Server`, `dotnet run`), sign in as the host, and drive it:
 8. Repeat 2-5 in light and in dark mode, at 375 pixels wide, and with the keyboard only (Tab, Enter, Space).
 9. Sign in as a Registered User: Add note shows; Edit and Delete show only on that user's own notes. A user without
    `notes:edit` sees no Add note at all.
-10. Repeat on a site whose runtime is WebAssembly (Admin > Site Settings > UI Component Settings, a section only the Host
+10. Repeat on a site whose runtime is WebAssembly (Admin > Site Settings > UI component settings, a section only the Host
     sees), with the console open.
 11. The browser console shows no errors at any step, except one "Failed to load resource: ... 409" line on a WebAssembly
     site for the duplicate title you provoked in step 4.

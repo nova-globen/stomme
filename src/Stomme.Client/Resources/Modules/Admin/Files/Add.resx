@@ -118,22 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Folder.Select" xml:space="preserve">
-    <value>Select Folder</value>
+    <value>Select folder</value>
   </data>
   <data name="Message.Required.UrlFolder" xml:space="preserve">
-    <value>You Must Enter A Url And Select A Folder</value>
+    <value>You must enter a URL and select a folder</value>
   </data>
   <data name="Message.Download.InvalidExtension" xml:space="preserve">
-    <value>File Could Not Be Downloaded From Url Due To Its File Extension</value>
+    <value>File could not be downloaded from URL due to its file extension</value>
   </data>
   <data name="Message.Required.UrlName" xml:space="preserve">
-    <value>You Must Enter A Url With A Valid File Name</value>
+    <value>You must enter a URL with a valid file name</value>
   </data>
   <data name="Success.Download.File" xml:space="preserve">
-    <value>File Downloaded Successfully From Url</value>
+    <value>File downloaded successfully from URL</value>
   </data>
   <data name="Error.Download.InvalidUrl" xml:space="preserve">
-    <value>Error Downloading File From Url. Please Verify That The Url Is Valid.</value>
+    <value>Error downloading file from URL. Please verify that the URL is valid.</value>
   </data>
   <data name="Upload.HelpText" xml:space="preserve">
     <value>Upload the file you want</value>
@@ -145,24 +145,24 @@
     <value>Select the folder to save the file in</value>
   </data>
   <data name="Upload.Text" xml:space="preserve">
-    <value>Upload: </value>
+    <value>Upload</value>
   </data>
   <data name="Url.Text" xml:space="preserve">
-    <value>Url: </value>
+    <value>URL</value>
   </data>
   <data name="Folder.Text" xml:space="preserve">
-    <value>Folder: </value>
+    <value>Folder</value>
   </data>
   <data name="UploadFiles.Heading" xml:space="preserve">
-    <value>Upload Files</value>
+    <value>Upload files</value>
   </data>
   <data name="Name.HelpText" xml:space="preserve">
     <value>Enter the name of the file being downloaded</value>
   </data>
   <data name="Name.Text" xml:space="preserve">
-    <value>Name:</value>
+    <value>Name</value>
   </data>
   <data name="DownloadFiles.Heading" xml:space="preserve">
-    <value>Download Files</value>
+    <value>Download files</value>
   </data>
 </root>

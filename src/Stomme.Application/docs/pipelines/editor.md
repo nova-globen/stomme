@@ -58,11 +58,17 @@ Each input can be **a value**, **an expression** (a `{{ }}` template, with sugge
 of the records they hold, and a preview), **a variable**, a **condition** built from rules (for a true-or-false input) or
 **JavaScript** (offered only where `Pipelines:Scripts:Enabled`). A value that contains `{{ name }}` of a variable is a
 warning, and **Make it an expression** converts it. Variables are declared under **Variables**; outputs are saved to
-them from the inspector. A variable or a record field can be dragged into an input.
+them from the inspector. A variable or a record field can be dragged into an input. The choice is offered on every
+input to its author, even on a lone step with no variable (the built-in values `$now`, `$run`, `$pipeline` are always
+there), and a `{{` just opened lists every value. Under an expression, **earlier steps' results** offers the result of
+each step that leads here, through a variable made for it; when the expression reads n8n's `$json` (an import), taking a
+result puts its variable where `$json` was (`{{ $json.name }}` becomes `{{ get_items.name }}`).
 
 An input marked required (the step gives it no starting value) shows `*`. A step's **When it fails** settings:
 retries (count and delay), go on past a failure, or a **Failed path** - an outcome port of its own whose error can be
-saved to a variable. A step can be switched off: it stays, greyed, and a run goes past it.
+saved to a variable. A data step's own **On failure** input (Fault or Continue) is shown only once it holds Continue,
+as an import may set it: left as it starts, **When it fails** decides. A step can be switched off: it stays, greyed, and
+a run goes past it.
 
 ### Problems before publish
 
@@ -91,7 +97,10 @@ Nothing a test does is stored as a run, but each step runs for real (an HTTP req
 
 - **Test step** (under "Test this step" in the inspector, for a person with `pipelines:manage` and `pipelines:run`)
   runs the selected step on its own, with the values the variables hold for the test; each step on the canvas also has
-  a test button of its own. The result, its log and **Pin this result** appear below it.
+  a test button of its own. The result, its log and **Pin this result** appear below it, and the step on the canvas
+  says `test: done` or `test: failed` until another run or test is shown. A step that sent through a connection and got
+  an HTTP error says the status and what to check ("The service answered HTTP 404 - nothing is there: check the
+  connection's address and the step's path.").
 - **Test up to here** (shown when steps lead to the selected one) runs every step that leads to it first.
 - A test runs inside the tester's request, as that user, on the entered site. A published run acts as the person who
   started it by hand, else as the one who published it (since 10.80.0), with that user's rights on the site now - so a

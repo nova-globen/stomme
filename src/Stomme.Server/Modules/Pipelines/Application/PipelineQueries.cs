@@ -515,10 +515,13 @@ namespace Stomme.Modules.Pipelines.Application
 
         // Relaxed escaping: the editor shows this as TEXT (never markup), and """ for every quote of a record made the
         // records unreadable (found driving).
+        // An input chosen from a list - a method, what a failure does - is shown by its name, as the author picked it, not as
+        // the number it is stored as ("Method": "Get", not "Method": 0; BL-240, driven).
         private static readonly System.Text.Json.JsonSerializerOptions Json = new(System.Text.Json.JsonSerializerDefaults.Web)
         {
             WriteIndented = true,
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() },
         };
 
         public async Task<IReadOnlyList<PipelineStepRunView>> Handle(ListRunStepsQuery request, CancellationToken ct)

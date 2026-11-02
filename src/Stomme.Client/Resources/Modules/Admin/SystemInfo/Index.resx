@@ -121,55 +121,55 @@
     <value>Swagger UI</value>
   </data>
   <data name="FrameworkVersion.HelpText" xml:space="preserve">
-    <value>Framework Version</value>
+    <value>Framework version</value>
   </data>
   <data name="CLRVersion.HelpText" xml:space="preserve">
-    <value>Common Language Runtime Version</value>
+    <value>Common language runtime version</value>
   </data>
   <data name="OSVersion.HelpText" xml:space="preserve">
-    <value>Operating System Version</value>
+    <value>Operating system version</value>
   </data>
   <data name="ContentRootPath.HelpText" xml:space="preserve">
-    <value>Server Root Path</value>
+    <value>Server root path</value>
   </data>
   <data name="ServerTime.HelpText" xml:space="preserve">
-    <value>Server Date/Time (in UTC)</value>
+    <value>Server date/time (in UTC)</value>
   </data>
   <data name="FrameworkVersion.Text" xml:space="preserve">
-    <value>Framework Version: </value>
+    <value>Framework version</value>
   </data>
   <data name="CLRVersion.Text" xml:space="preserve">
-    <value>CLR Version: </value>
+    <value>CLR version</value>
   </data>
   <data name="OSVersion.Text" xml:space="preserve">
-    <value>OS Version: </value>
+    <value>OS version</value>
   </data>
   <data name="ContentRootPath.Text" xml:space="preserve">
-    <value>Root Path: </value>
+    <value>Root path</value>
   </data>
   <data name="ServerTime.Text" xml:space="preserve">
-    <value>Server Date/Time: </value>
+    <value>Server date/time</value>
   </data>
   <data name="RestartApplication.Message" xml:space="preserve">
-    <value>Are You Sure You Wish To Restart The Application?</value>
+    <value>Are you sure you wish to restart the application?</value>
   </data>
   <data name="Error.UpdateConfig" xml:space="preserve">
-    <value>An Error Occurred Updating The Configuration</value>
+    <value>An error occurred updating the configuration</value>
   </data>
   <data name="Success.UpdateConfig.Restart" xml:space="preserve">
-    <value>Configuration Updated. Please Select Restart Application For These Changes To Be Activated.</value>
+    <value>Configuration updated. Please select restart application for these changes to be activated.</value>
   </data>
   <data name="InstallationId.Text" xml:space="preserve">
-    <value>Installation ID: </value>
+    <value>Installation ID</value>
   </data>
   <data name="InstallationId.HelpText" xml:space="preserve">
-    <value>The Unique Identifier For Your Installation</value>
+    <value>The unique identifier for your installation</value>
   </data>
   <data name="DetailedErrors.Text" xml:space="preserve">
-    <value>Detailed Errors? </value>
+    <value>Detailed errors?</value>
   </data>
   <data name="DetailedErrors.HelpText" xml:space="preserve">
-    <value>Specify If Detailed Errors Are Enabled For Blazor. This Option Should Not Not Be Enabled In Production.</value>
+    <value>Specify if detailed errors are enabled for Blazor. This option should not be enabled in production.</value>
   </data>
   <data name="True" xml:space="preserve">
     <value>True</value>
@@ -178,10 +178,10 @@
     <value>False</value>
   </data>
   <data name="LoggingLevel.Text" xml:space="preserve">
-    <value>Logging Level: </value>
+    <value>Logging level</value>
   </data>
   <data name="LoggingLevel.HelpText" xml:space="preserve">
-    <value>The Minimum Logging Level For The Event Log. This Option Can Be Used To Control The Volume Of Items Stored In Your Event Log.</value>
+    <value>The minimum logging level for the event log. This option can be used to control the volume of items stored in your event log.</value>
   </data>
   <data name="Trace" xml:space="preserve">
     <value>Trace</value>
@@ -211,67 +211,67 @@
     <value>Log</value>
   </data>
   <data name="Register" xml:space="preserve">
-    <value>Please Register Me For Major Product Updates And Security Bulletins</value>
+    <value>Please register me for major product updates and security bulletins</value>
   </data>
   <data name="Success.Register" xml:space="preserve">
-    <value>You Have Been Successfully Registered For Updates</value>
+    <value>You have been successfully Registered for updates</value>
   </data>
   <data name="PackageManager.HelpText" xml:space="preserve">
-    <value>Specify The Url Of The Package Manager Service For Installing Modules, Themes, And Translations. If This Field Is Blank It Means The Package Manager Service Is Disabled For This Installation.</value>
+    <value>Specify the URL of the package manager service for installing modules, themes, and translations. If this field is blank it means the package manager service is disabled for this installation.</value>
   </data>
   <data name="PackageManager.Text" xml:space="preserve">
-    <value>Package Manager Url:</value>
+    <value>Package manager URL</value>
   </data>
   <data name="Swagger.HelpText" xml:space="preserve">
-    <value>Specify If Swagger Is Enabled For Your Server API</value>
+    <value>Specify if Swagger is enabled for your server API</value>
   </data>
   <data name="Swagger.Text" xml:space="preserve">
-    <value>Swagger Enabled?</value>
+    <value>Swagger enabled?</value>
   </data>
   <data name="RestartApplication.Text" xml:space="preserve">
-    <value>Restart Application</value>
+    <value>Restart application</value>
   </data>
   <data name="None" xml:space="preserve">
     <value>None</value>
   </data>
   <data name="NotificationLevel.HelpText" xml:space="preserve">
-    <value>The Minimum Logging Level For Which Notifications Should Be Sent To Host Users</value>
+    <value>The minimum logging level for which notifications should be sent to Host users</value>
   </data>
   <data name="NotificationLevel.Text" xml:space="preserve">
-    <value>Notification Level:</value>
+    <value>Notification level</value>
   </data>
   <data name="IPAddress.HelpText" xml:space="preserve">
-    <value>Server IP Address</value>
+    <value>Server IP address</value>
   </data>
   <data name="IPAddress.Text" xml:space="preserve">
-    <value>IP Address:</value>
+    <value>IP address</value>
   </data>
   <data name="MachineName.HelpText" xml:space="preserve">
-    <value>Machine Name of the Server</value>
+    <value>Machine name of the server</value>
   </data>
   <data name="MachineName.Text" xml:space="preserve">
-    <value>Server:</value>
+    <value>Server</value>
   </data>
   <data name="WebRootPath.HelpText" xml:space="preserve">
-    <value>Server Web Root Path</value>
+    <value>Server web root path</value>
   </data>
   <data name="WebRootPath.Text" xml:space="preserve">
-    <value>Web Path:</value>
+    <value>Web path</value>
   </data>
   <data name="WorkingSet.HelpText" xml:space="preserve">
-    <value>Memory Allocation Of Service (in MB)</value>
+    <value>Memory allocation of service (in MB)</value>
   </data>
   <data name="WorkingSet.Text" xml:space="preserve">
-    <value>Memory Allocation:</value>
+    <value>Memory allocation</value>
   </data>
   <data name="Environment.HelpText" xml:space="preserve">
-    <value>Environment Name</value>
+    <value>Environment name</value>
   </data>
   <data name="Environment.Text" xml:space="preserve">
-    <value>Environment:</value>
+    <value>Environment</value>
   </data>
   <data name="Log.Text" xml:space="preserve">
-    <value>Log:</value>
+    <value>Log</value>
   </data>
   <data name="Log.HelpText" xml:space="preserve">
     <value>System log information for current day</value>
@@ -280,31 +280,31 @@
     <value>Clear</value>
   </data>
   <data name="Success.ClearLog" xml:space="preserve">
-    <value>System Log Has Been Successfully Cleared</value>
+    <value>System log has been successfully cleared</value>
   </data>
   <data name="Error.ClearLog" xml:space="preserve">
-    <value>Ann Error Occurred Clearing The System Log</value>
+    <value>Ann error occurred clearing the system log</value>
   </data>
   <data name="Process.HelpText" xml:space="preserve">
     <value>Indicates if the current process is 32 bit or 64 bit</value>
   </data>
   <data name="Process.Text" xml:space="preserve">
-    <value>Process: </value>
+    <value>Process</value>
   </data>
   <data name="PackageManagerEmail.Text" xml:space="preserve">
-    <value>Package Manager Email:</value>
+    <value>Package manager email</value>
   </data>
   <data name="PackageManagerEmail.HelpText" xml:space="preserve">
-    <value>Specify The Email Address Of The User Account Used For Interacting With The Package Manager Service. This Account Is Used For Managing Packages Across Multiple Installations.</value>
+    <value>Specify the email address of the user account used for interacting with the package manager service. This account is used for managing packages across multiple installations.</value>
   </data>
   <data name="CacheControl.Text" xml:space="preserve">
-    <value>Static Asset Cache-Control:</value>
+    <value>Static asset cache-control</value>
   </data>
   <data name="CacheControl.HelpText" xml:space="preserve">
     <value>Provide a Cache-Control directive for static assets. For example 'public, max-age=60' indicates that static assets should be cached for 60 seconds. A blank value indicates caching for static assets is not enabled.</value>
   </data>
   <data name="Endpoints" xml:space="preserve">
-    <value>API Endpoints</value>
+    <value>API endpoints</value>
   </data>
   <data name="Migration" xml:space="preserve">
     <value>Migration</value>
@@ -313,43 +313,43 @@
     <value>Date</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>Framework Version</value>
+    <value>Framework version</value>
   </data>
   <data name="Tenant.Text" xml:space="preserve">
-    <value>Database:</value>
+    <value>Database</value>
   </data>
   <data name="Tenant.HelpText" xml:space="preserve">
     <value>The name of the current database. Note that this is not the physical database name but rather the tenant name which is used within the framework to identify a database.</value>
   </data>
   <data name="Instance.Text" xml:space="preserve">
-    <value>Instance:</value>
+    <value>Instance</value>
   </data>
   <data name="Instance.HelpText" xml:space="preserve">
     <value>The web instance identifier</value>
   </data>
   <data name="CacheDuration.Text" xml:space="preserve">
-    <value>Cache Duration:</value>
+    <value>Cache duration</value>
   </data>
   <data name="CacheDuration.HelpText" xml:space="preserve">
     <value>The amount of time (in minutes) when a cache item is considered to be expired</value>
   </data>
   <data name="RestartApplication.Header" xml:space="preserve">
-    <value>Restart Application</value>
+    <value>Restart application</value>
   </data>
   <data name="DistributedCache.Text" xml:space="preserve">
-    <value>Using Distributed Cache?</value>
+    <value>Using distributed cache?</value>
   </data>
   <data name="DistributedCache.HelpText" xml:space="preserve">
     <value>Specify if you are using a distributed cache service</value>
   </data>
   <data name="DistributedConnection.Text" xml:space="preserve">
-    <value>Connection String:</value>
+    <value>Connection string</value>
   </data>
   <data name="DistributedConnection.HelpText" xml:space="preserve">
     <value>Provide the connection string for the distributed cache service</value>
   </data>
   <data name="ScaleOut.Text" xml:space="preserve">
-    <value>Using Scale Out?</value>
+    <value>Using scale out?</value>
   </data>
   <data name="ScaleOut.HelpText" xml:space="preserve">
     <value>Specify if you are using a scale out approach which includes multiple web instances. A distributed cache service is required for synchronization in this scenario.</value>
@@ -361,30 +361,30 @@
     <value>Marketplace</value>
   </data>
   <data name="FailSafe.Text" xml:space="preserve">
-    <value>Use Fail Safe?</value>
+    <value>Use fail safe?</value>
   </data>
   <data name="FailSafe.HelpText" xml:space="preserve">
     <value>Specify if you wish to temporarily reuse an expired value if a problem occurs when loading data</value>
   </data>
   <data name="Broadcast.Text" xml:space="preserve">
-    <value>Broadcast Level:</value>
+    <value>Broadcast level</value>
   </data>
   <data name="Broadcast.HelpText" xml:space="preserve">
-    <value>The Minimum Logging Level For Which Events Should Be Broadcast To Registered Logging Providers</value>
+    <value>The minimum logging level for which events should be broadcast to Registered logging providers</value>
   </data>
   <data name="ClearCache.Header" xml:space="preserve">
-    <value>Clear Cache</value>
+    <value>Clear cache</value>
   </data>
   <data name="ClearCache.Message" xml:space="preserve">
-    <value>Are You Sure You Wish To Clear The Entire Cache? Every Cached Value Is Removed And Reloaded On Next Use.</value>
+    <value>Are you sure you wish to clear the entire cache? Every cached value is removed and reloaded on next use.</value>
   </data>
   <data name="ClearCache.Text" xml:space="preserve">
-    <value>Clear All</value>
+    <value>Clear all</value>
   </data>
   <data name="Success.ClearCache" xml:space="preserve">
-    <value>The Cache Has Been Successfully Cleared</value>
+    <value>The cache has been successfully cleared</value>
   </data>
   <data name="Error.ClearCache" xml:space="preserve">
-    <value>An Error Occurred Clearing The Cache</value>
+    <value>An error occurred clearing the cache</value>
   </data>
 </root>

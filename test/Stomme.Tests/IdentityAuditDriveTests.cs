@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Stomme.Managers;
 using Stomme.Models;
 using Stomme.Repository;
 using Stomme.Shared;
@@ -48,6 +49,12 @@ namespace Stomme.Tests
                     await LoginFormAsync(app, unknown, "Hunter2-typed-into-the-username-field", "whatever");
                 }
 
+                // The browser's login checks the password first, through the API without a cookie, then posts to the login page
+                // that opens the session: one sign-in, recorded once (BL-241, driven: every web sign-in was in the ledger twice).
+                var checkedFirst = await GateDrive.InTenantAsync(app, Host, async (sp, alias) =>
+                    await sp.GetRequiredService<IUserManager>().LoginUser(new User { SiteId = alias.SiteId, Username = GateDrive.HostUsername, Password = GateDrive.HostPassword }, false, false));
+                Assert.True(checkedFirst.IsAuthenticated);
+
                 using var admin = GateDrive.NewClient(app, Host);
                 var adminCookies = await GateDrive.LoginAsync(app, admin, Host, GateDrive.HostUsername, GateDrive.HostPassword, _output);
 
@@ -73,7 +80,7 @@ namespace Stomme.Tests
 
                 Assert.Contains(entries, e => e.Event == (int)Models.IdentityAudit.IdentityAuditEvent.SignInFailed && e.Subject == hostId && e.Name == GateDrive.HostUsername);
                 Assert.Contains(entries, e => e.Event == (int)Models.IdentityAudit.IdentityAuditEvent.SignInFailed && e.Subject == null && e.Name == "" && e.Detail == "unknown account");
-                Assert.Contains(entries, e => e.Event == (int)Models.IdentityAudit.IdentityAuditEvent.SignIn && e.Subject == hostId);
+                Assert.Single(entries, e => e.Event == (int)Models.IdentityAudit.IdentityAuditEvent.SignIn && e.Subject == hostId);
                 Assert.Contains(entries, e => e.Event == (int)Models.IdentityAudit.IdentityAuditEvent.RoleGranted && e.Subject == member.UserId && e.Actor == hostId && e.Detail == RoleNames.Admin);
 
                 // The text typed for the unknown account is nowhere in the ledger.

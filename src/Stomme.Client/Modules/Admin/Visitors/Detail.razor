@@ -11,31 +11,31 @@
 {
 	<div class="db-fields">
 		<div class="db-field">
-			<Label For="ip" HelpText="The last recorded IP address for this visitor" ResourceKey="IP">IP Address: </Label>
+			<Label For="ip" HelpText="The last recorded IP address for this visitor" ResourceKey="IP">IP address</Label>
 			<div class="db-field-control">
 				<input id="ip" class="db-input" @bind="@_ip" readonly />
 			</div>
 		</div>
 		<div class="db-field">
-			<Label For="language" HelpText="The last recorded language for this visitor" ResourceKey="Language">Language: </Label>
+			<Label For="language" HelpText="The last recorded language for this visitor" ResourceKey="Language">Language</Label>
 			<div class="db-field-control">
 				<input id="language" class="db-input" @bind="@_language" readonly />
 			</div>
 		</div>
 		<div class="db-field">
-			<Label For="useragent" HelpText="The last recorded user agent for this visitor" ResourceKey="UserAgent">User Agent: </Label>
+			<Label For="useragent" HelpText="The last recorded user agent for this visitor" ResourceKey="UserAgent">User agent</Label>
 			<div class="db-field-control">
 				<input id="useragent" class="db-input" @bind="@_useragent" readonly />
 			</div>
 		</div>
 		<div class="db-field">
-			<Label For="url" HelpText="The last recorded url for this visitor" ResourceKey="Url">Url: </Label>
+			<Label For="url" HelpText="The last recorded url for this visitor" ResourceKey="Url">URL</Label>
 			<div class="db-field-control">
 				<input id="url" class="db-input" @bind="@_url" readonly />
 			</div>
 		</div>
 		<div class="db-field">
-			<Label For="referrer" HelpText="The last recorded referrer for this visitor" ResourceKey="Referrer">Referrer: </Label>
+			<Label For="referrer" HelpText="The last recorded referrer for this visitor" ResourceKey="Referrer">Referrer</Label>
 			<div class="db-field-control">
 				<input id="referrer" class="db-input" @bind="@_referrer" readonly />
 			</div>
@@ -43,26 +43,26 @@
 		@if (_user != string.Empty)
 		{
 			<div class="db-field">
-				<Label For="user" HelpText="The last recorded user associated with this visitor" ResourceKey="User">User: </Label>
+				<Label For="user" HelpText="The last recorded user associated with this visitor" ResourceKey="User">User</Label>
 				<div class="db-field-control">
 					<input id="user" class="db-input" @bind="@_user" readonly />
 				</div>
 			</div>
 		}
 		<div class="db-field">
-			<Label For="visits" HelpText="The total number of visits by this visitor all time" ResourceKey="Visits">Visits: </Label>
+			<Label For="visits" HelpText="The total number of visits by this visitor all time" ResourceKey="Visits">Visits</Label>
 			<div class="db-field-control">
 				<input id="visits" class="db-input" @bind="@_visits" readonly />
 			</div>
 		</div>
 		<div class="db-field">
-			<Label For="visited" HelpText="The last recorded date/time when the visitor visited the site" ResourceKey="Visited">Visited: </Label>
+			<Label For="visited" HelpText="The last recorded date/time when the visitor visited the site" ResourceKey="Visited">Visited</Label>
 				<div class="db-field-control">
 				<input id="visited" class="db-input" @bind="@_visited" readonly />
 			</div>
 		</div>
 		<div class="db-field">
-			<Label For="created" HelpText="The first recorded date/time when this visitor visited the site" ResourceKey="Created">Created: </Label>
+			<Label For="created" HelpText="The first recorded date/time when this visitor visited the site" ResourceKey="Created">Created</Label>
 			<div class="db-field-control">
 				<input id="created" class="db-input" @bind="@_created" readonly />
 			</div>

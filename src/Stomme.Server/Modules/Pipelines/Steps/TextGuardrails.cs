@@ -65,8 +65,10 @@ namespace Stomme.Modules.Pipelines.Steps
     /// </summary>
     public static class TextGuardrails
     {
-        /// <summary>The longest any one pattern may take on a text.</summary>
-        public static readonly TimeSpan PatternTimeout = TimeSpan.FromMilliseconds(250);
+        /// <summary>The longest any one pattern may take on a text. Wall-clock time, the first match's JIT of a compiled
+        /// pattern included, so it guards against runaway backtracking, not against a busy machine: at 250 ms a sanitize step
+        /// faulted on a short text while the host was loaded (the fast gate, 2026-11-01, green alone).</summary>
+        public static readonly TimeSpan PatternTimeout = TimeSpan.FromSeconds(1);
 
         public const string Keyword = "Keywords";
         public const string PersonalDataCheck = "Personal data";

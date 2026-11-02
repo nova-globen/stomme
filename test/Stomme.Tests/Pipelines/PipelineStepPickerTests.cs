@@ -74,6 +74,7 @@ namespace Stomme.Tests.Pipelines
                     new() { Name = "Connection", DisplayName = "Connection", TypeName = "String", UIHint = PipelineInputHints.ConnectionPicker },
                     new() { Name = "Operation", DisplayName = "Operation", TypeName = "String", UIHint = PipelineInputHints.ConnectorOperation },
                     new() { Name = "Query", DisplayName = "Query", TypeName = "String", UIHint = PipelineInputHints.SqlQuery },
+                    new() { Name = "OnFailure", DisplayName = "On failure", TypeName = "FailurePolicy", Category = "Failure", Options = new List<string> { "Fault", "Continue" } },
                 },
             },
             // The two triggers with a panel of their own.
@@ -684,6 +685,41 @@ namespace Stomme.Tests.Pipelines
             cut.WaitForAssertion(() => Assert.Equal("1 open comment", Badges("Each order")));
             Assert.True(poll.Armed); // and read again after the next half minute
             Assert.Contains("Batch these?", cut.Find("#pipelines-editor-discussion").TextContent);
+        }
+
+        // BL-240, driven: a data step showed its own On failure (Fault/Continue) above "When it fails", two failure settings for
+        // one step. Left as it starts it is not shown; one set to Continue - an import, an older pipeline - still is.
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("Fault", false)]
+        [InlineData("Continue", true)]
+        public void A_data_steps_own_on_failure_is_shown_only_when_it_was_set(string? held, bool shown)
+        {
+            var service = new FakePipelinesService();
+            var step = new PipelineGraphStep { Id = "a", Type = "Stomme.ExtractFromConnection", Name = "Read", Position = new GraphPosition { X = 30, Y = 40 } };
+            if (held is not null)
+            {
+                step.Inputs["OnFailure"] = held;
+            }
+
+            service.Loaded = new PipelineGraph { Steps = { step } };
+            JSInterop.Mode = JSRuntimeMode.Loose;
+            JSInterop.Setup<Blazor.Diagrams.Core.Geometry.Rectangle>(_ => true).SetResult(new Blazor.Diagrams.Core.Geometry.Rectangle(0, 0, 1200, 800));
+            Services.AddSingleton(new SiteState { Alias = Alias() });
+            Services.AddSingleton<ILogService>(new NoOpLogService());
+            Services.AddSingleton<IPipelinesService>(service);
+            Services.AddSingleton<ICollaborationService>(new UnusedCollaborationService());
+
+            var page = Page();
+            page.QueryString["step"] = "a";
+            var cut = Render<EditorPage>(parameters => parameters.AddCascadingValue(page).AddCascadingValue(Module()));
+            cut.WaitForAssertion(() => Assert.Equal("Read", cut.Find("#pipelines-editor-step-name").GetAttribute("value")));
+
+            Assert.NotNull(cut.Find("#pipelines-editor-on-failure")); // "When it fails" is always there
+            Assert.Equal(shown, cut.FindAll("#pipelines-editor-input-OnFailure").Count == 1);
+
+            // A lone step, no variables: its author can still make an input an expression (the built-ins are always there).
+            Assert.Contains("an expression", cut.FindAll("#pipelines-editor-source-Query option").Select(option => option.TextContent.Trim()));
         }
 
         // @mentions: an @ and the start of a name offers the people who can see the pipeline (never oneself); one chosen
@@ -1684,6 +1720,12 @@ namespace Stomme.Tests.Pipelines
             Assert.All(cut.FindAll("#pipelines-editor-suggestions-Text details button"), button => Assert.StartsWith("{{ $", button.TextContent.Trim())); // the built-ins folded
             Assert.Equal(3, cut.FindAll("#pipelines-editor-suggestions-Text > button").Count);
 
+            // A {{ just opened shows them all, the built-ins unfolded (BL-240: "{{ " offered only a folded list).
+            cut.Find("#pipelines-editor-expression-Text").Input("Hello {{ ");
+            cut.WaitForAssertion(() => Assert.Empty(cut.FindAll("#pipelines-editor-suggestions-Text details")));
+            Assert.Contains("{{ $now }}", Suggestions());
+            Assert.Contains("{{ person.name }}", Suggestions());
+
             // Typing after an open {{ narrows them - every match in sight; taking one completes it; the preview shows what the step would get.
             cut.Find("#pipelines-editor-expression-Text").Input("Hello {{ na");
             cut.WaitForAssertion(() => Assert.Equal(new[] { "{{ person.name }}", "{{ $pipeline.name }}" }, Suggestions()));
@@ -1799,6 +1841,12 @@ namespace Stomme.Tests.Pipelines
             cut.Find("#pipelines-editor-undo").Click();
             cut.Find("#pipelines-editor-undo").Click();
             cut.WaitForAssertion(() => Assert.Equal("Fetch orders", cut.Find("#pipelines-editor-earlier-Text button").TextContent.Trim()));
+
+            // An expression brought over from n8n reads $json, the item the earlier step passed along: taking that step's result
+            // puts its variable where $json was, as the import's note asks - not after it (BL-240, driven).
+            cut.Find("#pipelines-editor-expression-Text").Input("New order: {{ $json.id }} for {{ $json.customer }}");
+            cut.Find("#pipelines-editor-earlier-Text button").Click();
+            cut.WaitForAssertion(() => Assert.Equal("New order: {{ fetch_orders.id }} for {{ fetch_orders.customer }}", cut.Find("#pipelines-editor-expression-Text").GetAttribute("value")));
         }
 
         // n8n's pinned data: what a step produced in a test is pinned with a click - marked on the step, shown in its
@@ -1883,6 +1931,8 @@ namespace Stomme.Tests.Pipelines
             Assert.StartsWith("Ran on its own: done", cut.Find("#pipelines-editor-test-status").TextContent.Trim());
             Assert.Contains("Hello Ada", cut.Find("#pipelines-editor-test-input").TextContent);
             Assert.Equal("wrote a line", cut.Find("#pipelines-editor-test-log").TextContent.Trim());
+            // The step tested says how its test went on the canvas, as a run marks a step (BL-240: a failed test left no mark).
+            Assert.Equal("test: done", cut.Find(".db-step-node__run").TextContent.Trim());
 
             // Reset: back to the starting value.
             cut.Find("#pipelines-editor-test-reset").Click();
@@ -2515,7 +2565,9 @@ namespace Stomme.Tests.Pipelines
             Assert.EndsWith("id=run-9", cut.Find("#pipelines-editor-activity-list a").GetAttribute("href"));
 
             cut.Find("#pipelines-editor-activity-toggle").Click();
-            Assert.Empty(cut.FindAll("#pipelines-editor-activity-list"));
+            // Waited for, like every other step here: the toggle's handler is async, and under the full gate's load the
+            // list was still there when read at once (2026-11-01).
+            cut.WaitForAssertion(() => Assert.Empty(cut.FindAll("#pipelines-editor-activity-list")));
             cut.Find("#pipelines-editor-activity-toggle").Click();
             cut.WaitForAssertion(() => Assert.Equal(new[] { "def-1", "def-1" }, service.AuditAsked)); // read again
 

@@ -121,12 +121,12 @@
     <value>Do you wish to allow tokens to be dynamically replaced? Please note that this will affect the performance of your site.</value>
   </data>
   <data name="DynamicTokens.Text" xml:space="preserve">
-    <value>Dynamic Tokens?</value>
+    <value>Dynamic tokens?</value>
   </data>
   <data name="Versions.HelpText" xml:space="preserve">
     <value>The number of content versions to preserve (note that zero means unlimited)</value>
   </data>
   <data name="Versions.Text" xml:space="preserve">
-    <value>Versions:</value>
+    <value>Versions</value>
   </data>
 </root>

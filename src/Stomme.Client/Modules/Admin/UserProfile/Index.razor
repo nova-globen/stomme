@@ -48,7 +48,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time Zone:</Label>
+                    <Label For="timezone" HelpText="Your time zone" ResourceKey="TimeZone">Time zone</Label>
                     <div class="db-field-control">
                         <select id="timezone" class="db-select" @bind="@_timezoneid">
                             <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="culture" HelpText="Your preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language:</Label>
+                    <Label For="culture" HelpText="Your preferred language. Note that you will only be able to choose from languages supported on this site." ResourceKey="CultureCode">Language</Label>
                     <div class="db-field-control">
                         <select id="culture" class="db-select" @bind="@_culturecode">
                             <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
@@ -110,7 +110,7 @@
             <br /><br />
             @if (_allowtwofactor)
             {
-                <Section Name="MFA" Heading="Multi-Factor Authentication" ResourceKey="MFA">
+                <Section Name="MFA" Heading="Multi-factor authentication" ResourceKey="MFA">
                     <div class="db-fields">
                         <div class="db-field">
                             <Label For="twofactor" HelpText="Indicates if you are using two factor authentication. Two factor authentication requires you to enter a verification code sent via email after you sign in." ResourceKey="TwoFactor"></Label>
@@ -141,7 +141,7 @@
                                 @if (context.CredentialId != _passkeyId)
                                 {
                                     <td><button type="button" class="db-btn" @onclick="@(() => EditPasskey(context))">@SharedLocalizer["Edit"]</button></td>
-                                    <td><ActionDialog Action="Delete" OnClick="@(async () => await DeletePasskey(context))" ResourceKey="DeletePasskey" Class="db-btn db-btn-danger" Header="Delete Passkey" Message="@string.Format(Localizer["Confirm.Passkey.Delete", context.Name])" /></td>
+                                    <td><ActionDialog Action="Delete" OnClick="@(async () => await DeletePasskey(context))" ResourceKey="DeletePasskey" Class="db-btn db-btn-danger" Header="Delete passkey" Message="@string.Format(Localizer["Confirm.Passkey.Delete", context.Name])" /></td>
                                     <td>@context.Name</td>
                                 }
                                 else
@@ -171,7 +171,7 @@
                                 <th>@Localizer["Login"]</th>
                             </Header>
                             <Row>
-                                <td><ActionDialog Action="Delete" OnClick="@(async () => await DeleteLogin(context))" ResourceKey="DeleteLogin" Class="db-btn db-btn-danger" Header="Delete Login" Message="@string.Format(Localizer["Confirm.Login.Delete", context.Name])" /></td>
+                                <td><ActionDialog Action="Delete" OnClick="@(async () => await DeleteLogin(context))" ResourceKey="DeleteLogin" Class="db-btn db-btn-danger" Header="Delete login" Message="@string.Format(Localizer["Confirm.Login.Delete", context.Name])" /></td>
                                 <td>@context.Name</td>
                             </Row>
                         </Pager>
@@ -193,7 +193,7 @@
             @if (!UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
             {
                 <br />
-                <Section Name="DeleteAccount" Heading="Delete My Account" ResourceKey="DeleteAccount">
+                <Section Name="DeleteAccount" Heading="Delete my account" ResourceKey="DeleteAccount">
                     <p style="margin:0 0 0.5rem 0;color:var(--db-text-2);">@Localizer["DeleteAccount.HelpText"]</p>
                     @if (_erasure.Count > 0)
                     {
@@ -214,7 +214,7 @@
                             }
                         </div>
                     }
-                    <ActionDialog Header="Delete My Account" Message="@Localizer["Confirm.Account.Delete"]" Action="Delete My Account" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAccount())" ResourceKey="DeleteAccount" />
+                    <ActionDialog Header="Delete my account" Message="@Localizer["Confirm.Account.Delete"]" Action="Delete My Account" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAccount())" ResourceKey="DeleteAccount" />
                 </Section>
                 <br />
             }
@@ -349,7 +349,7 @@
             <button type="button" class="db-btn db-btn-neutral" @onclick="Cancel">@SharedLocalizer["Cancel"]</button>
         </TabPanel>
         <TabPanel Name="Notifications" Heading="Notifications" ResourceKey="Notifications">
-            <ActionLink Action="Add" Text="Send Notification" Security="SecurityAccessLevel.View" EditMode="false" ResourceKey="SendNotification" ReturnUrl="@NavigateUrl(PageState.Page.Path, "tab=Notifications")" />
+            <ActionLink Action="Add" Text="Send notification" Security="SecurityAccessLevel.View" EditMode="false" ResourceKey="SendNotification" ReturnUrl="@NavigateUrl(PageState.Page.Path, "tab=Notifications")" />
             <br />
             <br />
             <select class="db-select" @onchange="(e => FilterNotifications(e))">
@@ -371,7 +371,7 @@
                         </Header>
                         <Row>
                             <td><ActionLink Action="View" Parameters="@($"id=" + context.NotificationId.ToString())" Security="SecurityAccessLevel.View" EditMode="false" ResourceKey="ViewNotification" ReturnUrl="@NavigateUrl(PageState.Page.Path, "tab=Notifications")" /></td>
-                            <td><ActionDialog Header="Delete Notification" Message="Are You Sure You Wish To Delete This Notification?" Action="Delete" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteNotification(context))" EditMode="false" ResourceKey="DeleteNotification" /></td>
+                            <td><ActionDialog Header="Delete notification" Message="Are You Sure You Wish To Delete This Notification?" Action="Delete" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteNotification(context))" EditMode="false" ResourceKey="DeleteNotification" /></td>
 
                             @if (context.IsRead)
                             {
@@ -411,7 +411,7 @@
                         </Detail>
                     </Pager>
                     <br />
-                    <ActionDialog Header="Clear Notifications" Message="Are You Sure You Wish To Permanently Delete All Notifications ?" Action="Delete All Notifications" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAllNotifications())" ResourceKey="DeleteAllNotifications" />
+                    <ActionDialog Header="Clear notifications" Message="Are You Sure You Wish To Permanently Delete All Notifications ?" Action="Delete All Notifications" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAllNotifications())" ResourceKey="DeleteAllNotifications" />
                 }
                 else
                 {
@@ -434,7 +434,7 @@
                         </Header>
                         <Row>
                             <td><ActionLink Action="View" Parameters="@($"id=" + context.NotificationId.ToString())" Security="SecurityAccessLevel.View" EditMode="false" ResourceKey="ViewNotification" ReturnUrl="@NavigateUrl(PageState.Page.Path, "tab=Notifications")" /></td>
-                            <td><ActionDialog Header="Delete Notification" Message="Are You Sure You Wish To Delete This Notification?" Action="Delete" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteNotification(context))" EditMode="false" ResourceKey="DeleteNotification" /></td>
+                            <td><ActionDialog Header="Delete notification" Message="Are You Sure You Wish To Delete This Notification?" Action="Delete" Security="SecurityAccessLevel.View" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteNotification(context))" EditMode="false" ResourceKey="DeleteNotification" /></td>
 
                             @if (context.IsRead)
                             {
@@ -475,7 +475,7 @@
                         </Detail>
                     </Pager>
                     <br />
-                    <ActionDialog Header="Clear Notifications" Message="Are You Sure You Wish To Permanently Delete All Notifications ?" Action="Delete All Notifications" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAllNotifications())" ResourceKey="DeleteAllNotifications" />
+                    <ActionDialog Header="Clear notifications" Message="Are You Sure You Wish To Permanently Delete All Notifications ?" Action="Delete All Notifications" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteAllNotifications())" ResourceKey="DeleteAllNotifications" />
                 }
                 else
                 {
@@ -702,6 +702,17 @@
                         {
                             await SettingService.UpdateUserSettingsAsync(_userSettings, PageState.User.UserId);
                             await logger.LogInformation("User Profile Saved");
+
+                            // A language chosen here applies at once: the visitor's language cookie wins over the profile
+                            // on every render (App.razor), so without this the old language stayed (upstream 76745382).
+                            if (!string.IsNullOrEmpty(_culturecode) && _culturecode != System.Globalization.CultureInfo.CurrentUICulture.Name
+                                && PageState.Site.Languages.Any(item => item.Code == _culturecode))
+                            {
+                                var cookie = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(PageState.Site.CultureCode, _culturecode));
+                                await new Interop(jsRuntime).SetCookie(CookieRequestCultureProvider.DefaultCookieName, cookie, 360, true, "Lax", Utilities.SitePath(PageState.Alias.Path));
+                                NavigationManager.NavigateTo(string.IsNullOrEmpty(PageState.ReturnUrl) ? NavigationManager.Uri : PageState.ReturnUrl, true);
+                                return;
+                            }
 
                             if (!string.IsNullOrEmpty(PageState.ReturnUrl))
                             {

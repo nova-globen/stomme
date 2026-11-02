@@ -14,19 +14,19 @@ else
     <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
         <div class="db-fields">
             <div class="db-field">
-                <Label For="clientid" HelpText="The OAuth client_id. It identifies the application in this tenant's store and cannot be changed — delete and re-add to rename." ResourceKey="ClientId">Client Id:</Label>
+                <Label For="clientid" HelpText="The OAuth client_id. It identifies the application in this tenant's store and cannot be changed — delete and re-add to rename." ResourceKey="ClientId">Client ID</Label>
                 <div class="db-field-control">
                     <input id="clientid" class="db-input" @bind="@_clientId" readonly />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="displayname" HelpText="A human-readable name, shown on the consent screen. Defaults to the client id." ResourceKey="DisplayName">Display Name:</Label>
+                <Label For="displayname" HelpText="A human-readable name, shown on the consent screen. Defaults to the client id." ResourceKey="DisplayName">Display name</Label>
                 <div class="db-field-control">
                     <input id="displayname" class="db-input" @bind="@_displayName" maxlength="200" />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="type" HelpText="Confidential clients hold a secret (server-side apps). Public clients cannot keep one (SPA/native) and must use PKCE." ResourceKey="Type">Client Type:</Label>
+                <Label For="type" HelpText="Confidential clients hold a secret (server-side apps). Public clients cannot keep one (SPA/native) and must use PKCE." ResourceKey="Type">Client type</Label>
                 <div class="db-field-control">
                     <select id="type" class="db-select" @bind="@_type" required>
                         <option value="confidential">@Localizer["Type.Confidential"]</option>
@@ -40,14 +40,14 @@ else
                     @* The stored secret is hashed and unrecoverable, so it cannot be shown. Blank therefore has
                        to MEAN something: the server keeps the stored secret when none is supplied on an update,
                        so editing a redirect URI does not silently break every relying party. *@
-                    <Label For="secret" HelpText="Leave blank to keep the current secret. Entering a value ROTATES it — every relying party using the old secret stops working immediately." ResourceKey="ClientSecret">New Client Secret:</Label>
+                    <Label For="secret" HelpText="Leave blank to keep the current secret. Entering a value ROTATES it — every relying party using the old secret stops working immediately." ResourceKey="ClientSecret">New client secret</Label>
                     <div class="db-field-control">
                         <input id="secret" type="password" class="db-input" @bind="@_clientSecret" maxlength="200" placeholder="@Localizer["ClientSecret.Placeholder"]" />
                     </div>
                 </div>
             }
             <div class="db-field">
-                <Label For="consent" HelpText="Implicit skips the consent screen (first-party apps). Explicit asks the user to approve the requested scopes." ResourceKey="ConsentType">Consent Type:</Label>
+                <Label For="consent" HelpText="Implicit skips the consent screen (first-party apps). Explicit asks the user to approve the requested scopes." ResourceKey="ConsentType">Consent type</Label>
                 <div class="db-field-control">
                     <select id="consent" class="db-select" @bind="@_consentType" required>
                         <option value="implicit">@Localizer["Consent.Implicit"]</option>
@@ -56,7 +56,7 @@ else
                 </div>
             </div>
             <div class="db-field">
-                <Label HelpText="The OAuth grants this client may use. A client can only request what it is permitted." ResourceKey="GrantTypes">Grant Types:</Label>
+                <Label HelpText="The OAuth grants this client may use. A client can only request what it is permitted." ResourceKey="GrantTypes">Grant types</Label>
                 <div class="db-field-control">
                     <FluentCheckbox @bind-Value="_authorizationCode" Label="authorization_code" />
                     <FluentCheckbox @bind-Value="_clientCredentials" Label="client_credentials" />
@@ -64,31 +64,31 @@ else
                 </div>
             </div>
             <div class="db-field">
-                <Label For="scopes" HelpText="The scopes this client may request, one per line (openid, profile, email, offline_access, or a custom scope)." ResourceKey="Scopes">Scopes:</Label>
+                <Label For="scopes" HelpText="The scopes this client may request, one per line (openid, profile, email, offline_access, or a custom scope)." ResourceKey="Scopes">Scopes</Label>
                 <div class="db-field-control">
                     <textarea id="scopes" class="db-input" rows="4" @bind="@_scopes"></textarea>
                 </div>
             </div>
             <div class="db-field">
-                <Label For="redirecturis" HelpText="Absolute callback URLs for the authorization-code flow, one per line. Required for authorization_code." ResourceKey="RedirectUris">Redirect Uris:</Label>
+                <Label For="redirecturis" HelpText="Absolute callback URLs for the authorization-code flow, one per line. Required for authorization_code." ResourceKey="RedirectUris">Redirect URIs</Label>
                 <div class="db-field-control">
                     <textarea id="redirecturis" class="db-input" rows="3" @bind="@_redirectUris"></textarea>
                 </div>
             </div>
             <div class="db-field">
-                <Label For="postlogouturis" HelpText="Absolute URLs the authority may redirect back to after an RP-initiated logout, one per line." ResourceKey="PostLogoutRedirectUris">Post Logout Uris:</Label>
+                <Label For="postlogouturis" HelpText="Absolute URLs the authority may redirect back to after an RP-initiated logout, one per line." ResourceKey="PostLogoutRedirectUris">Post logout URIs</Label>
                 <div class="db-field-control">
                     <textarea id="postlogouturis" class="db-input" rows="3" @bind="@_postLogoutRedirectUris"></textarea>
                 </div>
             </div>
             <div class="db-field">
-                <Label For="sites" HelpText="The sites this client may be used at, by alias (example.com/shop), one per line. Empty: every site of this tenant." ResourceKey="Sites">Sites:</Label>
+                <Label For="sites" HelpText="The sites this client may be used at, by alias (example.com/shop), one per line. Empty: every site of this tenant." ResourceKey="Sites">Sites</Label>
                 <div class="db-field-control">
                     <textarea id="sites" class="db-input" rows="2" @bind="@_sites"></textarea>
                 </div>
             </div>
             <div class="db-field">
-                <Label For="pkce" HelpText="Require Proof Key for Code Exchange on the authorization-code flow. Always on for a public client." ResourceKey="RequirePkce">Require PKCE?</Label>
+                <Label For="pkce" HelpText="Require proof key for code exchange on the authorization-code flow. Always on for a public client." ResourceKey="RequirePkce">Require PKCE?</Label>
                 <div class="db-field-control">
                     <FluentSwitch id="pkce" @bind-Value="_requirePkce" />
                 </div>
@@ -107,7 +107,7 @@ else
             {
                 <p style="margin:0;">This application's client-credentials tokens act on the site's API as <strong>@_serviceAccount.Username</strong>, an account that can never sign in. Grant it roles and permissions under Users, as for a person; it holds only the site's default role until you do.</p>
                 <div>
-                    <ActionDialog Header="Remove Service Account" Message="@($"Remove the service account {_serviceAccount.Username}? This application's tokens will sign no one in to the API.")" Action="Remove"
+                    <ActionDialog Header="Remove service account" Message="@($"Remove the service account {_serviceAccount.Username}? This application's tokens will sign no one in to the API.")" Action="Remove"
                                   Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await RemoveServiceAccountAsync())" />
                 </div>
             }

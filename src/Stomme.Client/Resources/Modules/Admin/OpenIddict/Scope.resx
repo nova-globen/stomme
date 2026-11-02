@@ -129,14 +129,14 @@
   
 
   <data name="Description.HelpText" xml:space="preserve"><value>What this scope grants, shown to the user on an explicit-consent screen.</value></data>
-  <data name="Description.Text" xml:space="preserve"><value>Description:</value></data>
+  <data name="Description.Text" xml:space="preserve"><value>Description</value></data>
   <data name="DisplayName.HelpText" xml:space="preserve"><value>A human-readable name, shown on the consent screen.</value></data>
-  <data name="DisplayName.Text" xml:space="preserve"><value>Display Name:</value></data>
-  <data name="Error.Load" xml:space="preserve"><value>Error Loading Scope</value></data>
-  <data name="Error.NotFound" xml:space="preserve"><value>That Scope Was Not Found</value></data>
-  <data name="Error.SaveScope" xml:space="preserve"><value>Error Saving Scope</value></data>
+  <data name="DisplayName.Text" xml:space="preserve"><value>Display name</value></data>
+  <data name="Error.Load" xml:space="preserve"><value>Error loading scope</value></data>
+  <data name="Error.NotFound" xml:space="preserve"><value>That scope was not found</value></data>
+  <data name="Error.SaveScope" xml:space="preserve"><value>Error saving scope</value></data>
   <data name="Name.HelpText" xml:space="preserve"><value>The scope identifier a client requests and a resource server validates (e.g. api, invoices.read).</value></data>
-  <data name="Name.Text" xml:space="preserve"><value>Name:</value></data>
+  <data name="Name.Text" xml:space="preserve"><value>Name</value></data>
   <data name="Resources.HelpText" xml:space="preserve"><value>Resource identifiers (audiences) that tokens carrying this scope are valid for, one per line.</value></data>
-  <data name="Resources.Text" xml:space="preserve"><value>Resources:</value></data>
+  <data name="Resources.Text" xml:space="preserve"><value>Resources</value></data>
 </root>

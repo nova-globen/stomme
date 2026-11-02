@@ -8,19 +8,19 @@
 <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
     <div class="db-fields">
         <div class="db-field">
-            <Label For="name" HelpText="Name Of The Role" ResourceKey="Name">Name:</Label>
+            <Label For="name" HelpText="Name of the role" ResourceKey="Name">Name</Label>
             <div class="db-field-control">
                 <input id="name" class="db-input" @bind="@_name" maxlength="256" required />
             </div>
         </div>
         <div class="db-field">
-            <Label For="description" HelpText="A Short Description Of The Role Which Describes Its Purpose" ResourceKey="Description">Description:</Label>
+            <Label For="description" HelpText="A short description of the role which describes its purpose" ResourceKey="Description">Description</Label>
             <div class="db-field-control">
                 <textarea id="description" class="db-input" @bind="@_description" rows="5" maxlength="256" required></textarea>
             </div>
         </div>
         <div class="db-field">
-            <Label For="isautoassigned" HelpText="Indicates Whether Or Not New Users Are Automatically Assigned To This Role" ResourceKey="AutoAssigned">Auto Assigned?</Label>
+            <Label For="isautoassigned" HelpText="Indicates whether or not new users are automatically assigned to this role" ResourceKey="AutoAssigned">Auto assigned?</Label>
             <div class="db-field-control">
                 <select id="isautoassigned" class="db-select" @bind="@_isautoassigned" required>
                     <option value="True">@SharedLocalizer["Yes"]</option>

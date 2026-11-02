@@ -238,7 +238,7 @@ The steps continue the reference **Notes** module of [stomme-create-module](../s
 4. On the module's page, add, edit and delete a note. On a WebAssembly site, the browser's developer tools (Network) show
    the POST/PUT/DELETE requests to `/api/Notes` carrying `X-XSRF-TOKEN-HEADER`; on an Interactive Server site no request
    to `/api/Notes` appears at all, because the page calls the mediator directly. Both must work: test on a site of each
-   runtime (Admin > Site Settings > UI Component Settings (a section only the Host sees)).
+   runtime (Admin > Site Settings > UI component settings (a section only the Host sees)).
 5. Over HTTP as the host: `POST /api/Notes` with an empty title answers 400 with "Give the note a title."; the same title
    twice answers 409; `GET /api/Notes/{a new Guid}` answers 404; a POST without `X-XSRF-TOKEN-HEADER` answers 400.
 6. Open `/api/Notes/{id}` with an id from another site of the installation, as that site's administrator: 404.

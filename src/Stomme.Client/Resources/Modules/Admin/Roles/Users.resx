@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="User.Text" xml:space="preserve">
-    <value>User: </value>
+    <value>User</value>
   </data>
   <data name="User.Select" xml:space="preserve">
-    <value>Enter User's Name</value>
+    <value>Enter User's name</value>
   </data>
   <data name="Users" xml:space="preserve">
     <value>Users</value>
   </data>
   <data name="Error.User.Load" xml:space="preserve">
-    <value>Error Loading Users</value>
+    <value>Error loading users</value>
   </data>
   <data name="Success.User.AssignedRole" xml:space="preserve">
-    <value>User Assigned To Role</value>
+    <value>User assigned to role</value>
   </data>
   <data name="Message.Required.UserSelect" xml:space="preserve">
-    <value>You Must Select A User</value>
+    <value>You must select a user</value>
   </data>
   <data name="Error.User.SaveRole" xml:space="preserve">
-    <value>Error Saving User Roles</value>
+    <value>Error saving user roles</value>
   </data>
   <data name="Confirm.User.RoleRemoved" xml:space="preserve">
-    <value>User Removed From Role</value>
+    <value>User removed from role</value>
   </data>
   <data name="Error.User.RemoveRole" xml:space="preserve">
-    <value>Error Removing User From Role</value>
+    <value>Error removing user from role</value>
   </data>
   <data name="Role.HelpText" xml:space="preserve">
     <value>The role you are assigning users to</value>
@@ -157,16 +157,16 @@
     <value>The date that this role assignment expires</value>
   </data>
   <data name="Role.Text" xml:space="preserve">
-    <value>Role: </value>
+    <value>Role</value>
   </data>
   <data name="EffectiveDate.Text" xml:space="preserve">
-    <value>Effective Date: </value>
+    <value>Effective date</value>
   </data>
   <data name="ExpiryDate.Text" xml:space="preserve">
-    <value>Expiry Date: </value>
+    <value>Expiry date</value>
   </data>
   <data name="Confirm.User.DeleteRole" xml:space="preserve">
-    <value>Are You Sure You Wish To Remove {0} From This Role?</value>
+    <value>Are you sure you wish to remove {0} from this role?</value>
   </data>
   <data name="Effective" xml:space="preserve">
     <value>Effective</value>

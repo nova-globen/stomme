@@ -29,11 +29,19 @@ else
             }
         </div>
 
-        <p style="margin:0;color:var(--db-text-2);">
-            Consumption is counted per site. A quota's counter is authoritative and the ledger repairs it; nothing on
-            this page can be addressed to another site or another user - the site and the subject are resolved by the
-            server on every call.
-        </p>
+        @* What each view holds, in a reader's words - the page said how the counters work, not what to find here (BL-241, driven). *@
+        <p style="margin:0;color:var(--db-text-2);">What is used on this site - AI calls among it - is counted per site and per person.</p>
+        <ul id="metering-views" style="margin:0;padding-left:1.2rem;color:var(--db-text-2);">
+            @if (IsAuthorizedPermission(MeteringPermissions.ViewOwn))
+            {
+                <li><strong>My usage</strong> - what you have used, beside the whole site's use and each limit.</li>
+            }
+            @if (IsAuthorizedPermission(MeteringPermissions.View))
+            {
+                <li><strong>Quotas</strong> - the limits set on this site, how near each one is, and setting them.</li>
+                <li><strong>Usage log</strong> - AI calls by day, model and cost, and each use as it was recorded: what, by whom and when.</li>
+            }
+        </ul>
     </div>
 }
 

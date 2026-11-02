@@ -19,7 +19,7 @@ else
             <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
                 <div class="db-fields">
 					<div class="db-field">
-                        <Label For="name" HelpText="Name Of The Language" ResourceKey="Name">Name:</Label>
+                        <Label For="name" HelpText="Name of the language" ResourceKey="Name">Name</Label>
                         <div class="db-field-control">
                             <select id="name" class="db-select" @bind="@_code" required>
 								<option value="-">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
@@ -31,7 +31,7 @@ else
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="default" HelpText="Indicates Whether Or Not This Language Is The Default For The Site" ResourceKey="IsDefault">Default?</Label>
+                        <Label For="default" HelpText="Indicates whether or not this language is the default for the site" ResourceKey="IsDefault">Default?</Label>
                         <div class="db-field-control">
                             <select id="default" class="db-select" @bind="@_default" required>
                                 <option value="True">@SharedLocalizer["Yes"]</option>
@@ -47,7 +47,7 @@ else
         <TabPanel Name="Upload" ResourceKey="Upload" Security="SecurityAccessLevel.Host" Heading="Upload">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label HelpText="Upload one or more translations. Once they are uploaded click Install." ResourceKey="LanguageUpload">Translation: </Label>
+                    <Label HelpText="Upload one or more translations. Once they are uploaded click Install." ResourceKey="LanguageUpload">Translation</Label>
                     <div class="db-field-control">
                         <FileManager Folder="@Constants.PackagesFolder" UploadMultiple="true" OnUpload="OnUpload" />
                     </div>

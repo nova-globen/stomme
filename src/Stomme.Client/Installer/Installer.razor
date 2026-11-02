@@ -48,7 +48,7 @@
                 <h2>@Localizer["DatabaseConfig"]</h2><br />
                 <div class="db-fields">
                     <div class="db-field">
-                        <Label For="databaseType" HelpText="Select the type of database you wish to use" ResourceKey="DatabaseType">Database:</Label>
+                        <Label For="databaseType" HelpText="Select the type of database you wish to use" ResourceKey="DatabaseType">Database</Label>
                         <div class="db-field-control">
                             @if (_databases != null)
                             {
@@ -81,7 +81,7 @@
                     else
                     {
                         <div class="db-field">
-                            <Label For="connectionstring" HelpText="Enter a complete connection string including all parameters and delimiters" ResourceKey="ConnectionString">Settings:</Label>
+                            <Label For="connectionstring" HelpText="Enter a complete connection string including all parameters and delimiters" ResourceKey="ConnectionString">Settings</Label>
                             <div class="db-field-control">
                                 <textarea id="connectionstring" class="db-input" @bind="@_connectionString" rows="3"></textarea>
                             </div>
@@ -94,13 +94,13 @@
                 <h2>@Localizer["ApplicationAdmin"]</h2><br />
                 <div class="db-fields">
                     <div class="db-field">
-                        <Label For="username" HelpText="Provide a username for the primary user account" ResourceKey="Username">Username:</Label>
+                        <Label For="username" HelpText="Provide a username for the primary user account" ResourceKey="Username">Username</Label>
                         <div class="db-field-control">
                             <input id="username" type="text" class="db-input" maxlength="256" @bind="@_hostUsername" />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="password" HelpText="Provide a password for the primary user account" ResourceKey="Password">Password:</Label>
+                        <Label For="password" HelpText="Provide a password for the primary user account" ResourceKey="Password">Password</Label>
                         <div class="db-field-control">
                             <div class="db-input-group">
                                 <input id="password" type="@_passwordType" class="db-input" maxlength="256" @bind="@_hostPassword" autocomplete="new-password" />
@@ -109,7 +109,7 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="confirm" HelpText="Please confirm the password entered above by entering it again" ResourceKey="Confirm">Confirm:</Label>
+                        <Label For="confirm" HelpText="Please confirm the password entered above by entering it again" ResourceKey="Confirm">Confirm</Label>
                         <div class="db-field-control">
                             <div class="db-input-group">
                                 <input id="confirm" type="@_confirmPasswordType" class="db-input" maxlength="256" @bind="@_confirmPassword" autocomplete="new-password" />
@@ -118,19 +118,19 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="email" HelpText="Provide the email address for the host user account" ResourceKey="Email">Email:</Label>
+                        <Label For="email" HelpText="Provide the email address for the host user account" ResourceKey="Email">Email</Label>
                         <div class="db-field-control">
                             <input id="email" type="text" class="db-input" maxlength="256" @bind="@_hostEmail" />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="name" HelpText="Provide the full name of the host user" ResourceKey="Name">Full Name:</Label>
+                        <Label For="name" HelpText="Provide the full name of the host user" ResourceKey="Name">Full name</Label>
                         <div class="db-field-control">
                             <input id="name" type="text" class="db-input" maxlength="50" @bind="@_hostName" />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="template" HelpText="Select a site template" ResourceKey="Template">Template:</Label>
+                        <Label For="template" HelpText="Select a site template" ResourceKey="Template">Template</Label>
                         <div class="db-field-control">
                             @if (_templates != null)
                             {
@@ -174,11 +174,11 @@
                 <h2>@Localizer["ReadyToInstall"]</h2><br />
                 <div class="db-fields">
                     <div class="db-field">
-                        <Label For="finish-db" ResourceKey="DatabaseType">Database:</Label>
+                        <Label For="finish-db" ResourceKey="DatabaseType">Database</Label>
                         <div class="db-field-control"><input id="finish-db" class="db-input" value="@_databaseName" disabled /></div>
                     </div>
                     <div class="db-field">
-                        <Label For="finish-user" ResourceKey="Username">Username:</Label>
+                        <Label For="finish-user" ResourceKey="Username">Username</Label>
                         <div class="db-field-control"><input id="finish-user" class="db-input" value="@_hostUsername" disabled /></div>
                     </div>
                 </div>

@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Module.Text" xml:space="preserve">
-    <value>Module: </value>
+    <value>Module</value>
   </data>
   <data name="Error.Package.Load" xml:space="preserve">
-    <value>Error Loading Packages</value>
+    <value>Error loading packages</value>
   </data>
   <data name="Success.Module.Download" xml:space="preserve">
     <value>Module Package Downloaded Successfully. You Must &lt;a href={0}&gt;Restart&lt;/a&gt; Your Application To Complete The Installation.</value>
@@ -130,13 +130,13 @@
     <value>Module Package Uploaded Successfully. You Must &lt;a href={0}&gt;Restart&lt;/a&gt; Your Application To Complete The Installation.</value>
   </data>
   <data name="Error.Module.Download" xml:space="preserve">
-    <value>Error Downloading Module</value>
+    <value>Error downloading module</value>
   </data>
   <data name="Module.HelpText" xml:space="preserve">
     <value>Upload one or more module packages.</value>
   </data>
   <data name="Search.NoResults" xml:space="preserve">
-    <value>No Modules Match The Criteria Provided Or Package Service Is Disabled</value>
+    <value>No modules match the criteria provided or package service is disabled</value>
   </data>
   <data name="Download.Heading" xml:space="preserve">
     <value>Marketplace</value>

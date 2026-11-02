@@ -161,7 +161,7 @@ reaches the browser twice, which works (see Rules and pitfalls).
 
 Both are discovered the same way. For a module inside the app follow
 [stomme-create-module](../../.claude/skills/stomme-create-module/SKILL.md). For a separate package use the host's
-**Admin > Module Management > Create Module** (Host users only): it generates a three-project module with a package project
+**Admin > Module Management > Create module** (Host users only): it generates a three-project module with a package project
 from the template in `Server/wwwroot/Modules/Templates/External`, in a folder named `{Owner}.Module.{Name}` next to the
 app's folder. To ship a packaged module with the app, follow
 [stomme-bundle-external-module](../../.claude/skills/stomme-bundle-external-module/SKILL.md).

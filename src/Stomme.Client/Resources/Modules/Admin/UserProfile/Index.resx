@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Message.Password.Invalid" xml:space="preserve">
-    <value>Passwords Entered Do Not Match</value>
+    <value>Passwords entered do not match</value>
   </data>
   <data name="Message.Password.Complexity" xml:space="preserve">
-    <value>Password Provided Does Not Meet The Complexity Policy</value>
+    <value>Password provided does not meet the complexity policy</value>
   </data>
   <data name="From" xml:space="preserve">
     <value>From</value>
@@ -142,82 +142,82 @@
     <value>Inbox</value>
   </data>
   <data name="Items.Sent" xml:space="preserve">
-    <value>Sent Items</value>
+    <value>Sent items</value>
   </data>
   <data name="Message.User.NoLogIn" xml:space="preserve">
-    <value>Current User Is Not Logged In</value>
+    <value>Current user is not logged in</value>
   </data>
   <data name="Error.Profile.Load" xml:space="preserve">
-    <value>Error Loading User Profile</value>
+    <value>Error loading user profile</value>
   </data>
   <data name="Success.Profile.Update" xml:space="preserve">
-    <value>User Profile Updated Successfully</value>
+    <value>User profile updated successfully</value>
   </data>
   <data name="Message.Required.ProfileInfo" xml:space="preserve">
-    <value>You Must Provide A Username and Email Address As Well As All Required Profile Information</value>
+    <value>You must provide a username and email address as well as all required profile information</value>
   </data>
   <data name="Error.Profile.Save" xml:space="preserve">
-    <value>Error Saving User Profile</value>
+    <value>Error saving user profile</value>
   </data>
   <data name="SendNotification.Text" xml:space="preserve">
-    <value>Send Notification</value>
+    <value>Send notification</value>
   </data>
   <data name="DeleteNotification.Header" xml:space="preserve">
-    <value>Delete Notification</value>
+    <value>Delete notification</value>
   </data>
   <data name="DeleteNotification.Message" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete This Notification?</value>
+    <value>Are you sure you wish to delete this notification?</value>
   </data>
   <data name="Confirm.HelpText" xml:space="preserve">
     <value>If you are changing your password you must enter it again to confirm it matches the value entered above</value>
   </data>
   <data name="Confirm.Text" xml:space="preserve">
-    <value>Confirmation:</value>
+    <value>Confirmation</value>
   </data>
   <data name="DisplayName.HelpText" xml:space="preserve">
     <value>Your full name</value>
   </data>
   <data name="DisplayName.Text" xml:space="preserve">
-    <value>Full Name:</value>
+    <value>Full name</value>
   </data>
   <data name="Email.HelpText" xml:space="preserve">
     <value>Your email address where you wish to receive notifications</value>
   </data>
   <data name="Email.Text" xml:space="preserve">
-    <value>Email:</value>
+    <value>Email</value>
   </data>
   <data name="Password.HelpText" xml:space="preserve">
     <value>If you wish to change your password you can enter it here. Please choose a sufficiently secure password.</value>
   </data>
   <data name="Password.Text" xml:space="preserve">
-    <value>Password:</value>
+    <value>Password</value>
   </data>
   <data name="Photo.HelpText" xml:space="preserve">
     <value>A photo of yourself</value>
   </data>
   <data name="Photo.Text" xml:space="preserve">
-    <value>Photo:</value>
+    <value>Photo</value>
   </data>
   <data name="Username.HelpText" xml:space="preserve">
     <value>Your username. Note that this field can not be modified.</value>
   </data>
   <data name="Username.Text" xml:space="preserve">
-    <value>Username:</value>
+    <value>Username</value>
   </data>
   <data name="TwoFactor.HelpText" xml:space="preserve">
     <value>Indicates if you are using two factor authentication. Two factor authentication requires you to enter a verification code sent via email after you sign in.</value>
   </data>
   <data name="TwoFactor.Text" xml:space="preserve">
-    <value>Use Two Factor?</value>
+    <value>Use two factor?</value>
   </data>
   <data name="DeleteAllNotifications.Header" xml:space="preserve">
-    <value>Clear Notifications</value>
+    <value>Clear notifications</value>
   </data>
   <data name="DeleteAllNotifications.Message" xml:space="preserve">
-    <value>Are You Sure You Wish To Permanently Delete All Notifications?</value>
+    <value>Are you sure you wish to permanently delete all notifications?</value>
   </data>
   <data name="DeleteAllNotifications.Text" xml:space="preserve">
-    <value>Delete ALL Notifications</value>
+    <value>Delete ALL notifications</value>
   </data>
   <data name="Notifications.Heading" xml:space="preserve">
     <value>Notifications</value>
@@ -232,16 +232,16 @@
     <value>Delete</value>
   </data>
   <data name="NoNotificationsReceived" xml:space="preserve">
-    <value>You Have Not Received Any Notifications</value>
+    <value>You have not received any notifications</value>
   </data>
   <data name="NoNotificationsSent" xml:space="preserve">
-    <value>You Have Not Sent Any Notifications</value>
+    <value>You have not sent any notifications</value>
   </data>
   <data name="Logout Everywhere" xml:space="preserve">
-    <value>Logout Everywhere</value>
+    <value>Logout everywhere</value>
   </data>
   <data name="TimeZone.Text" xml:space="preserve">
-    <value>Time Zone:</value>
+    <value>Time zone</value>
   </data>
   <data name="TimeZone.HelpText" xml:space="preserve">
     <value>Your time zone</value>
@@ -253,58 +253,58 @@
     <value>Security</value>
   </data>
   <data name="MFA.Heading" xml:space="preserve">
-    <value>Multi-Factor Authenticationxxx</value>
+    <value>Multi-factor authentication</value>
   </data>
   <data name="Passkeys.Heading" xml:space="preserve">
     <value>Passkeys</value>
   </data>
   <data name="Logins.Heading" xml:space="preserve">
-    <value>External Logins</value>
+    <value>External logins</value>
   </data>
   <data name="Passkey" xml:space="preserve">
     <value>Passkey</value>
   </data>
   <data name="DeletePasskey.Header" xml:space="preserve">
-    <value>Delete Passkey</value>
+    <value>Delete passkey</value>
   </data>
   <data name="Confirm.Passkey.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete {0}?</value>
+    <value>Are you sure you wish to delete {0}?</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="DeleteLogin.Header" xml:space="preserve">
-    <value>Delete Login</value>
+    <value>Delete login</value>
   </data>
   <data name="Confirm.Login.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete {0}?</value>
+    <value>Are you sure you wish to delete {0}?</value>
   </data>
   <data name="Message.Passkeys.None" xml:space="preserve">
-    <value>You Have Not Created Any Passkeys</value>
+    <value>You have not created any passkeys</value>
   </data>
   <data name="Message.Logins.None" xml:space="preserve">
-    <value>You Do Not Have Any External Logins For This Site</value>
+    <value>You do not have any external logins for this site</value>
   </data>
   <data name="Error.Passkey.Fail" xml:space="preserve">
-    <value>Passkey Could Not Be Created</value>
+    <value>Passkey could not be created</value>
   </data>
   <data name="CultureCode.Text" xml:space="preserve">
-    <value>Language:</value>
+    <value>Language</value>
   </data>
   <data name="CultureCode.HelpText" xml:space="preserve">
     <value>Your preferred language. Note that you will only be able to choose from languages supported on this site.</value>
   </data>
   <data name="DeleteAccount.Heading" xml:space="preserve">
-    <value>Delete My Account</value>
+    <value>Delete my account</value>
   </data>
   <data name="DeleteAccount.HelpText" xml:space="preserve">
     <value>Deleting your account removes it from this site and erases the data the site holds about you. What the site must keep for a time (its security and legal records) is kept without your name and deleted when that time is up. This cannot be undone.</value>
   </data>
   <data name="DeleteAccount.Header" xml:space="preserve">
-    <value>Delete My Account</value>
+    <value>Delete my account</value>
   </data>
   <data name="DeleteAccount.Text" xml:space="preserve">
-    <value>Delete My Account</value>
+    <value>Delete my account</value>
   </data>
   <data name="DeleteAccount.Erased" xml:space="preserve">
     <value>Erased:</value>
@@ -328,10 +328,10 @@
     <value>record the law requires</value>
   </data>
   <data name="Confirm.Account.Delete" xml:space="preserve">
-    <value>Are You Sure You Wish To Delete Your Account On This Site? What Is Listed Above Is Erased Or Kept As It Says, And This Cannot Be Undone.</value>
+    <value>Are you sure you wish to delete your account on this site? What is listed above is erased or kept as it says, and this cannot be undone.</value>
   </data>
   <data name="Error.Account.Delete" xml:space="preserve">
-    <value>Your Account Could Not Be Deleted</value>
+    <value>Your account could not be deleted</value>
   </data>
   <data name="AiTools.Heading" xml:space="preserve">
     <value>AI tools</value>

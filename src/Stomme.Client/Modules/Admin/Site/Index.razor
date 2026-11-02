@@ -26,13 +26,13 @@
     <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
         <div class="db-fields">
             <div class="db-field">
-                <Label For="name" HelpText="Enter the site name" ResourceKey="Name">Name: </Label>
+                <Label For="name" HelpText="Enter the site name" ResourceKey="Name">Name</Label>
                 <div class="db-field-control">
                     <input id="name" class="db-input" @bind="@_name" maxlength="200" required />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="timezone" HelpText="The default time zone for the site" ResourceKey="TimeZone">Time Zone:</Label>
+                <Label For="timezone" HelpText="The default time zone for the site" ResourceKey="TimeZone">Time zone</Label>
                 <div class="db-field-control">
                     <select id="timezone" class="db-select" @bind="@_timezoneid">
                         <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="db-field">
-                <Label For="culture" HelpText="The default language of the site's content" ResourceKey="Culture">Language:</Label>
+                <Label For="culture" HelpText="The default language of the site's content" ResourceKey="Culture">Language</Label>
                 <div class="db-field-control">
                     <select id="culture" class="db-select" @bind="@_culturecode">
                         <option value="">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
@@ -58,7 +58,7 @@
             @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
             {
                 <div class="db-field">
-                    <Label For="isDeleted" HelpText="Is this site deleted?" ResourceKey="IsDeleted">Deleted? </Label>
+                    <Label For="isDeleted" HelpText="Is this site deleted?" ResourceKey="IsDeleted">Deleted?</Label>
                     <div class="db-field-control">
                         <select id="isDeleted" class="db-select" @bind="@_isdeleted" required>
                             <option value="True">@SharedLocalizer["Yes"]</option>
@@ -68,7 +68,7 @@
                 </div>
             }
             <div class="db-field">
-                <Label For="sitemap" HelpText="The site map url for this site which can be submitted to search engines for indexing. The sitemap is cached for 5 minutes and the cache can be manually cleared." ResourceKey="SiteMap">Site Map: </Label>
+                <Label For="sitemap" HelpText="The site map url for this site which can be submitted to search engines for indexing. The sitemap is cached for 5 minutes and the cache can be manually cleared." ResourceKey="SiteMap">Site map</Label>
                 <div class="db-field-control">
                     <div class="db-input-group">
                         <input id="sitemap" class="db-input" @bind="@_sitemap" disabled />
@@ -78,13 +78,13 @@
                 </div>
             </div>
             <div class="db-field">
-                <Label For="siteguid" HelpText="The Unique Identifier For The Site" ResourceKey="SiteGuid">ID: </Label>
+                <Label For="siteguid" HelpText="The unique identifier for the site" ResourceKey="SiteGuid">ID</Label>
                 <div class="db-field-control">
                     <input id="siteguid" class="db-input" @bind="@_siteguid" required disabled />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="version" HelpText="The site version (for site content migrations)" ResourceKey="Version">Version: </Label>
+                <Label For="version" HelpText="The site version (for site content migrations)" ResourceKey="Version">Version</Label>
                 <div class="db-field-control">
                     <input id="version" class="db-input" @bind="@_version" required disabled />
                 </div>
@@ -94,7 +94,7 @@
         <Section Name="Theme" Heading="Theme" ResourceKey="Theme">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="defaultTheme" HelpText="Select the sites default theme" ResourceKey="DefaultTheme">Default Theme: </Label>
+                    <Label For="defaultTheme" HelpText="Select the sites default theme" ResourceKey="DefaultTheme">Default theme</Label>
                     <div class="db-field-control">
                         <select id="defaultTheme" class="db-select" value="@_themetype" @onchange="(e => ThemeChanged(e))" required>
                             @foreach (var theme in _themes)
@@ -105,7 +105,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="defaultContainer" HelpText="Select the default container for the site" ResourceKey="DefaultContainer">Default Container: </Label>
+                    <Label For="defaultContainer" HelpText="Select the default container for the site" ResourceKey="DefaultContainer">Default container</Label>
                     <div class="db-field-control">
                         <select id="defaultContainer" class="db-select" @bind="@_containertype" required>
                             @if (_containers != null)
@@ -119,7 +119,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="defaultAdminContainer" HelpText="Select the default admin container for the site" ResourceKey="DefaultAdminContainer">Default Admin Container: </Label>
+                    <Label For="defaultAdminContainer" HelpText="Select the default admin container for the site" ResourceKey="DefaultAdminContainer">Default admin container</Label>
                     <div class="db-field-control">
                         <select id="defaultAdminContainer" class="db-select" @bind="@_admincontainertype" required>
                             <option value="@Constants.DefaultAdminContainer">&lt;@Localizer["DefaultAdminContainer"]&gt;</option>
@@ -134,7 +134,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="adminTheme" HelpText="Select the theme used for admin pages. Leave as the default theme to render admin pages in the site's default theme." ResourceKey="AdminTheme">Admin Theme: </Label>
+                    <Label For="adminTheme" HelpText="Select the theme used for admin pages. Leave as the default theme to render admin pages in the site's default theme." ResourceKey="AdminTheme">Admin theme</Label>
                     <div class="db-field-control">
                         <select id="adminTheme" class="db-select" @bind="@_adminthemetype">
                             <option value="">&lt;@Localizer["DefaultTheme"]&gt;</option>
@@ -146,7 +146,7 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="cookieconsent" HelpText="Specify if cookie consent is enabled on this site. Please note this option must be used in conjunction with a Theme which supports cookie consent." ResourceKey="CookieConsent">Cookie Consent: </Label>
+                    <Label For="cookieconsent" HelpText="Specify if cookie consent is enabled on this site. Please note this option must be used in conjunction with a theme which supports cookie consent." ResourceKey="CookieConsent">Cookie consent</Label>
                     <div class="db-field-control">
                         <select id="cookieconsent" class="db-select" @bind="@_cookieconsent">
                             <option value="">@SharedLocalizer["Disabled"]</option>
@@ -160,13 +160,13 @@
         <Section Name="Appearance" Heading="Appearance" ResourceKey="Appearance">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="logo" HelpText="Specify a logo for the site" ResourceKey="Logo">Logo: </Label>
+                    <Label For="logo" HelpText="Specify a logo for the site" ResourceKey="Logo">Logo</Label>
                     <div class="db-field-control">
                         <FileManager Id="logo" FileId="@_logofileid" Filter="@_imagefiles" @ref="_logofilemanager" />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="favicon" HelpText="Specify a Favicon" ResourceKey="FavoriteIcon">Favicon: </Label>
+                    <Label For="favicon" HelpText="Specify a favicon" ResourceKey="FavoriteIcon">Favicon</Label>
                     <div class="db-field-control">
                         <FileManager Id="favicon" FileId="@_faviconfileid" Filter="ico,png,gif" @ref="_faviconfilemanager" />
                     </div>
@@ -176,7 +176,7 @@
         <Section Name="Functionality" Heading="Functionality" ResourceKey="Functionality">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="textEditor" HelpText="Select the text editor for the site" ResourceKey="TextEditor">Text Editor: </Label>
+                    <Label For="textEditor" HelpText="Select the text editor for the site" ResourceKey="TextEditor">Text editor</Label>
                     <div class="db-field-control">
                         <select id="textEditor" class="db-select" @bind="@_textEditor" required>
                             @if (_textEditors != null)
@@ -191,26 +191,26 @@
                 </div>
             </div>
         </Section>
-        <Section Name="PageContent" Heading="Page Content" ResourceKey="PageContent">
+        <Section Name="PageContent" Heading="Page content" ResourceKey="PageContent">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="headcontent" HelpText="Optionally enter content to be included in the page head (ie. meta, link, or script tags)" ResourceKey="HeadContent">Head Content: </Label>
+                    <Label For="headcontent" HelpText="Optionally enter content to be included in the page head (ie. meta, link, or script tags)" ResourceKey="HeadContent">Head content</Label>
                     <div class="db-field-control">
                         <textarea id="headcontent" class="db-input" @bind="@_headcontent" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="bodycontent" HelpText="Optionally enter content to be included in the page body (ie. script tags)" ResourceKey="BodyContent">Body Content: </Label>
+                    <Label For="bodycontent" HelpText="Optionally enter content to be included in the page body (ie. script tags)" ResourceKey="BodyContent">Body content</Label>
                     <div class="db-field-control">
                         <textarea id="bodycontent" class="db-input" @bind="@_bodycontent" rows="3"></textarea>
                     </div>
                 </div>
             </div>
         </Section>
-        <Section Name="SMTP" Heading="SMTP Settings" ResourceKey="SMTPSettings">
+        <Section Name="SMTP" Heading="SMTP settings" ResourceKey="SMTPSettings">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="smtpenabled" HelpText="Specify if SMTP is enabled for this site" ResourceKey="SmtpEnabled">Enabled? </Label>
+                    <Label For="smtpenabled" HelpText="Specify if SMTP is enabled for this site" ResourceKey="SmtpEnabled">Enabled?</Label>
                     <div class="db-field-control">
                         <select id="smtpenabled" class="db-select" value="@_smtpenabled" @onchange="(e => SMTPEnabledChanged(e))">
                             <option value="True">@SharedLocalizer["Yes"]</option>
@@ -221,19 +221,19 @@
                 @if (_smtpenabled == "True" && UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
                 {
                     <div class="db-field">
-                        <Label For="host" HelpText="Enter the host name of the SMTP server" ResourceKey="Host">Host: </Label>
+                        <Label For="host" HelpText="Enter the host name of the SMTP server" ResourceKey="Host">Host</Label>
                         <div class="db-field-control">
                             <input id="host" class="db-input" @bind="@_smtphost" />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="port" HelpText="Enter the port number for the SMTP server. Please note this field is required if you provide a host name." ResourceKey="Port">Port: </Label>
+                        <Label For="port" HelpText="Enter the port number for the SMTP server. Please note this field is required if you provide a host name." ResourceKey="Port">Port</Label>
                         <div class="db-field-control">
                             <input id="port" class="db-input" @bind="@_smtpport" />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="smtpssl" HelpText="Specify the type of SSL connection for your SMTP server" ResourceKey="SmtpSSL">SSL Options: </Label>
+                        <Label For="smtpssl" HelpText="Specify the type of SSL connection for your SMTP server" ResourceKey="SmtpSSL">SSL options</Label>
                         <div class="db-field-control">
                             <select id="smtpssl" class="db-select" @bind="@_smtpssl">
                                 <option value="None">@Localizer["None"]</option>
@@ -245,7 +245,7 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="smtpauthentication" HelpText="Specify the SMTP authentication type" ResourceKey="SMTPAuthentication">Authentication: </Label>
+                        <Label For="smtpauthentication" HelpText="Specify the SMTP authentication type" ResourceKey="SMTPAuthentication">Authentication</Label>
                         <div class="db-field-control">
                             <select id="smtpauthentication" class="db-select" value="@_smtpauthentication" @onchange="(e => SMTPAuthenticationChanged(e))">
                                 <option value="Basic">@Localizer["Basic"]</option>
@@ -256,13 +256,13 @@
                     @if (_smtpauthentication == "Basic")
                     {
                         <div class="db-field">
-                            <Label For="username" HelpText="Enter the username for your SMTP account" ResourceKey="SmtpUsername">Username: </Label>
+                            <Label For="username" HelpText="Enter the username for your SMTP account" ResourceKey="SmtpUsername">Username</Label>
                             <div class="db-field-control">
                                 <input id="username" class="db-input" @bind="@_smtpusername" autocomplete="off" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="password" HelpText="Enter the password for your SMTP account" ResourceKey="SmtpPassword">Password: </Label>
+                            <Label For="password" HelpText="Enter the password for your SMTP account" ResourceKey="SmtpPassword">Password</Label>
                             <div class="db-field-control">
                                 <div class="db-input-group">
                                     <input id="password" type="@_smtppasswordtype" class="db-input" @bind="@_smtppassword" autocomplete="off" />
@@ -274,19 +274,19 @@
                     else
                     {
                         <div class="db-field">
-                            <Label For="smtpauthority" HelpText="The Authority Url for the SMTP provider" ResourceKey="SmtpAuthority">Authority Url:</Label>
+                            <Label For="smtpauthority" HelpText="The authority URL for the SMTP provider" ResourceKey="SmtpAuthority">Authority URL</Label>
                             <div class="db-field-control">
                                 <input id="smtpauthority" class="db-input" @bind="@_smtpauthority" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="smtpclientid" HelpText="The Client ID for the SMTP provider" ResourceKey="SmtpClientID">Client ID:</Label>
+                            <Label For="smtpclientid" HelpText="The client ID for the SMTP provider" ResourceKey="SmtpClientID">Client ID</Label>
                             <div class="db-field-control">
                                 <input id="smtpclientid" class="db-input" @bind="@_smtpclientid" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="smtpclientsecret" HelpText="The Client Secret for the SMTP provider" ResourceKey="SmtpClientSecret">Client Secret:</Label>
+                            <Label For="smtpclientsecret" HelpText="The client secret for the SMTP provider" ResourceKey="SmtpClientSecret">Client secret</Label>
                             <div class="db-field-control">
                                 <div class="db-input-group">
                                     <input type="@_smtpclientsecrettype" id="smtpclientsecret" class="db-input" @bind="@_smtpclientsecret" />
@@ -295,20 +295,20 @@
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="smtpscopes" HelpText="A list of Scopes for the SMTP provider (separated by commas)" ResourceKey="SmtpScopes">Scopes:</Label>
+                            <Label For="smtpscopes" HelpText="A list of scopes for the SMTP provider (separated by commas)" ResourceKey="SmtpScopes">Scopes</Label>
                             <div class="db-field-control">
                                 <input id="smtpscopes" class="db-input" @bind="@_smtpscopes" />
                             </div>
                         </div>
                     }
                     <div class="db-field">
-                        <Label For="sender" HelpText="Enter the email address which emails will be sent from. Please note that this email address usually needs to be authorized with the SMTP provider." ResourceKey="SmtpSender">Email Sender: </Label>
+                        <Label For="sender" HelpText="Enter the email address which emails will be sent from. Please note that this email address usually needs to be authorized with the SMTP provider." ResourceKey="SmtpSender">Email sender</Label>
                         <div class="db-field-control">
                             <input id="sender" class="db-input" @bind="@_smtpsender" />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="retention" HelpText="Number of days of notifications to retain" ResourceKey="Retention">Retention (Days): </Label>
+                        <Label For="retention" HelpText="Number of days of notifications to retain" ResourceKey="Retention">Retention (days)</Label>
                         <div class="db-field-control">
                             <input id="retention" class="db-input" type="number" min="0" step="1" @bind="@_retention" />
                         </div>
@@ -318,10 +318,10 @@
                 }
             </div>
         </Section>
-        <Section Name="PWA" Heading="Progressive Web Application Settings" ResourceKey="PWASettings">
+        <Section Name="PWA" Heading="Progressive web application settings" ResourceKey="PWASettings">
             <div class="db-fields">
                 <div class="db-field">
-                    <Label For="isEnabled" HelpText="Select whether you would like this site to be available as a Progressive Web Application (PWA)" ResourceKey="EnablePWA">Is Enabled? </Label>
+                    <Label For="isEnabled" HelpText="Select whether you would like this site to be available as a progressive web application (PWA)" ResourceKey="EnablePWA">Is enabled?</Label>
                     <div class="db-field-control">
                         <select id="isEnabled" class="db-select" @bind="@_pwaisenabled" required>
                             <option value="True">@SharedLocalizer["Yes"]</option>
@@ -330,13 +330,13 @@
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="appIcon" HelpText="Include an application icon for your PWA. It should be a PNG which is 192 X 192 pixels in dimension." ResourceKey="PwaApplicationIcon">App Icon: </Label>
+                    <Label For="appIcon" HelpText="Include an application icon for your PWA. It should be a PNG which is 192 x 192 pixels in dimension." ResourceKey="PwaApplicationIcon">App icon</Label>
                     <div class="db-field-control">
                         <FileManager Id="appIcon" FileId="@_pwaappiconfileid" Filter="png" @ref="_pwaappiconfilemanager" />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="splashIcon" HelpText="Include a splash icon for your PWA. It should be a PNG which is 512 X 512 pixels in dimension." ResourceKey="PwaSplashIcon">Splash Icon: </Label>
+                    <Label For="splashIcon" HelpText="Include a splash icon for your PWA. It should be a PNG which is 512 x 512 pixels in dimension." ResourceKey="PwaSplashIcon">Splash icon</Label>
                     <div class="db-field-control">
                         <FileManager Id="splashIcon" FileId="@_pwasplashiconfileid" Filter="png" @ref="_pwasplashiconfilemanager" />
                     </div>
@@ -345,10 +345,10 @@
         </Section>
         @if (_aliases != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Host))
         {
-            <Section Name="Hosting" Heading="Hosting Model" ResourceKey="Hosting">
+            <Section Name="Hosting" Heading="Hosting model" ResourceKey="Hosting">
                 <div class="db-fields">
                     <div class="db-field">
-                        <Label For="rendermode" HelpText="The default render mode for the site" HelpTopic="stomme:site.rendermode" ResourceKey="Rendermode">Render Mode: </Label>
+                        <Label For="rendermode" HelpText="The default render mode for the site" HelpTopic="stomme:site.rendermode" ResourceKey="Rendermode">Render mode</Label>
                         <div class="db-field-control">
                             <select id="rendermode" class="db-select" value="@_rendermode" @onchange="(e => RenderModeChanged(e))" required>
                                 <option value="@RenderModes.Interactive">@(SharedLocalizer["RenderMode" + @RenderModes.Interactive])</option>
@@ -360,7 +360,7 @@
                     @if (_rendermode == RenderModes.Static)
                     {
                         <div class="db-field">
-                            <Label For="enhancednavigation" HelpText="Indicates if enhanced navigation should be used with static rendering" ResourceKey="EnhancedNavigation">Enhanced Navigation: </Label>
+                            <Label For="enhancednavigation" HelpText="Indicates if enhanced navigation should be used with static rendering" ResourceKey="EnhancedNavigation">Enhanced navigation</Label>
                             <div class="db-field-control">
                                 <select id="enhancednavigation" class="db-select" @bind="@_enhancednavigation" required>
                                     <option value="True">@SharedLocalizer["Yes"]</option>
@@ -370,7 +370,7 @@
                         </div>
                     }
                     <div class="db-field">
-                        <Label For="runtime" HelpText="The hosting model for UI components which require interactivity" ResourceKey="Runtime">Interactivity: </Label>
+                        <Label For="runtime" HelpText="The hosting model for UI components which require interactivity" ResourceKey="Runtime">Interactivity</Label>
                         <div class="db-field-control">
                             <select id="runtime" class="db-select" @bind="@_runtime" required>
                                 <option value="@Runtimes.Server">@(SharedLocalizer["Runtime" + @Runtimes.Server])</option>
@@ -380,7 +380,7 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="prerender" HelpText="Specifies if interactive components should prerender their output on the server" ResourceKey="Prerender">Prerender: </Label>
+                        <Label For="prerender" HelpText="Specifies if interactive components should prerender their output on the server" ResourceKey="Prerender">Prerender</Label>
                         <div class="db-field-control">
                             <select id="prerender" class="db-select" @bind="@_prerender" required>
                                 <option value="True">@SharedLocalizer["Yes"]</option>
@@ -389,7 +389,7 @@
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="hybrid" HelpText="Specifies if the site can be integrated with an external .NET MAUI hybrid application" ResourceKey="Hybrid">Hybrid? </Label>
+                        <Label For="hybrid" HelpText="Specifies if the site can be integrated with an external .NET MAUI hybrid application" ResourceKey="Hybrid">Hybrid?</Label>
                         <div class="db-field-control">
                             <select id="hybrid" class="db-select" @bind="@_hybrid" required>
                                 <option value="True">@SharedLocalizer["Yes"]</option>
@@ -399,12 +399,12 @@
                     </div>
                 </div>
             </Section>
-            <Section Name="Aliases" Heading="Urls" ResourceKey="Aliases">
+            <Section Name="Aliases" Heading="URLs" ResourceKey="Aliases">
                 <div class="db-fields">
                     @if (!_addAlias)
                     {
                         <div class="db-field">
-                            <Label For="aliases" HelpText="The urls for this site. This can include domain names (ie. domain.com), subdomains (ie. sub.domain.com) or virtual folders (ie. domain.com/folder)." ResourceKey="Aliases">Urls: </Label>
+                            <Label For="aliases" HelpText="The urls for this site. This can include domain names (ie. domain.com), subdomains (ie. sub.domain.com) or virtual folders (ie. domain.com/folder)." ResourceKey="Aliases">URLs</Label>
                             <div class="db-field-control">
                                 <div class="db-input-group">
                                     <select id="aliases" class="db-select" value="@_aliasid" @onchange="(e => AliasChanged(e))">
@@ -425,13 +425,13 @@
                     @if (_aliasid != -1 || _addAlias)
                     {
                         <div class="db-field">
-                            <Label For="aliasname" HelpText="A url for this site. This can include domain names (ie. domain.com), subdomains (ie. sub.domain.com) or virtual folders (ie. domain.com/folder)." ResourceKey="AliasName">Url: </Label>
+                            <Label For="aliasname" HelpText="A url for this site. This can include domain names (ie. domain.com), subdomains (ie. sub.domain.com) or virtual folders (ie. domain.com/folder)." ResourceKey="AliasName">URL</Label>
                             <div class="db-field-control">
                                 <input id="aliasname" class="db-input" @bind="@_aliasname" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="defaultalias" HelpText="The default alias for the site. Requests for non-default aliases will be redirected to the default alias." ResourceKey="DefaultAlias">Default? </Label>
+                            <Label For="defaultalias" HelpText="The default alias for the site. Requests for non-default aliases will be redirected to the default alias." ResourceKey="DefaultAlias">Default?</Label>
                             <div class="db-field-control">
                                 <select id="defaultalias" class="db-select" @bind="@_defaultalias">
                                     <option value="True">@SharedLocalizer["Yes"]</option>
@@ -450,7 +450,7 @@
                             }
                             @if (_aliasid != -1 && !_addAlias)
                             {
-                                <ActionDialog Action="Delete" OnClick="@(async () => await DeleteAlias())" ResourceKey="DeleteAlias" Class="db-btn db-btn-danger" Header="Delete Alias" Message="@string.Format(Localizer["Confirm.Alias.Delete", _aliasname])" />
+                                <ActionDialog Action="Delete" OnClick="@(async () => await DeleteAlias())" ResourceKey="DeleteAlias" Class="db-btn db-btn-danger" Header="Delete alias" Message="@string.Format(Localizer["Confirm.Alias.Delete", _aliasname])" />
                             }
                             @if (_addAlias)
                             {
@@ -460,12 +460,12 @@
                     </div>
                 </div>
             </Section>
-            <Section Name="SiteGroupMembers" Heading="Site Groups" ResourceKey="SiteGroupMembers">
+            <Section Name="SiteGroupMembers" Heading="Site groups" ResourceKey="SiteGroupMembers">
                 <div class="db-fields">
                     @if (!_addSiteGroup)
                     {
                         <div class="db-field">
-                            <Label For="group" HelpText="The site groups in this tenant (database)" ResourceKey="SiteGroupMembers">Group: </Label>
+                            <Label For="group" HelpText="The site groups in this tenant (database)" ResourceKey="SiteGroupMembers">Group</Label>
                             <div class="db-field-control">
                                 <div class="db-input-group">
                                     <select id="group" class="db-select" value="@_siteGroupId" @onchange="(e => SiteGroupChanged(e))">
@@ -486,13 +486,13 @@
                     @if (_siteGroupId != -1 || _addSiteGroup)
                     {
                         <div class="db-field">
-                            <Label For="groupname" HelpText="Name of the site group" ResourceKey="GroupName">Name: </Label>
+                            <Label For="groupname" HelpText="Name of the site group" ResourceKey="GroupName">Name</Label>
                             <div class="db-field-control">
                                 <input id="groupname" class="db-input" @bind="@_groupName" />
                             </div>
                         </div>
                         <div class="db-field">
-                            <Label For="grouptype" HelpText="Defines the specific behavior of the site group" ResourceKey="GroupType">Type: </Label>
+                            <Label For="grouptype" HelpText="Defines the specific behavior of the site group" ResourceKey="GroupType">Type</Label>
                             <div class="db-field-control">
                                 <select id="grouptype" class="db-select" @bind="@_groupType">
                                     <option value="@SiteGroupTypes.Synchronization">@Localizer[@SiteGroupTypes.Synchronization]</option>
@@ -505,7 +505,7 @@
                     @if (_siteGroupId != -1)
                     {
                         <div class="db-field">
-                            <Label For="site" HelpText="The sites which are members of this site group" ResourceKey="Site">Members: </Label>
+                            <Label For="site" HelpText="The sites which are members of this site group" ResourceKey="Site">Members</Label>
                             <div class="db-field-control">
                                 <div class="db-input-group">
                                     <select id="site" class="db-select" value="@_siteId" @onchange="(e => SiteChanged(e))">
@@ -530,7 +530,7 @@
                     @if (_siteGroupId != -1 && _siteId != -1)
                     {
                         <div class="db-field">
-                            <Label For="primary" HelpText="Indicates if the selected member is the primary site of the site group" ResourceKey="Primary">Primary? </Label>
+                            <Label For="primary" HelpText="Indicates if the selected member is the primary site of the site group" ResourceKey="Primary">Primary?</Label>
                             <div class="db-field-control">
                                 <select id="primary" class="db-select" @bind="@_primary">
                                     <option value="False">@SharedLocalizer["No"]</option>
@@ -541,7 +541,7 @@
                         @if (_primary == "False" && !string.IsNullOrEmpty(_synchronized) && (_groupType == SiteGroupTypes.Synchronization || _groupType == SiteGroupTypes.ChangeDetection))
                         {
                             <div class="db-field">
-                                <Label For="synchronized" HelpText="The date/time when the site was last synchronized" ResourceKey="Synchronized">Synchronized: </Label>
+                                <Label For="synchronized" HelpText="The date/time when the site was last synchronized" ResourceKey="Synchronized">Synchronized</Label>
                                 <div class="db-field-control">
                                     <div class="db-input-group">
                                         <input id="synchronized" class="db-input" @bind="@_synchronized" disabled />
@@ -563,7 +563,7 @@
                             }
                             @if (_siteGroupId != -1 && !_addSiteGroup && _siteId != -1 && !_addSiteGroupMember)
                             {
-                                <ActionDialog Action="Delete" OnClick="@(async () => await DeleteSiteGroupMember())" ResourceKey="DeleteSiteGroupMember" Class="db-btn db-btn-danger" Header="Delete Site Group" Message="@Localizer["Confirm.SiteGroupMember.Delete"]" />
+                                <ActionDialog Action="Delete" OnClick="@(async () => await DeleteSiteGroupMember())" ResourceKey="DeleteSiteGroupMember" Class="db-btn db-btn-danger" Header="Delete site group" Message="@Localizer["Confirm.SiteGroupMember.Delete"]" />
                             }
                             @if (_addSiteGroup)
                             {
@@ -576,19 +576,19 @@
             <Section Name="TenantInformation" Heading="Database" ResourceKey="TenantInformation">
                 <div class="db-fields">
                     <div class="db-field">
-                        <Label For="tenant" HelpText="The name of the database used for the site. Note that this is not the physical database name but rather the tenant name which is used within the framework to identify a database." ResourceKey="Tenant">Database: </Label>
+                        <Label For="tenant" HelpText="The name of the database used for the site. Note that this is not the physical database name but rather the tenant name which is used within the framework to identify a database." ResourceKey="Tenant">Database</Label>
                         <div class="db-field-control">
                             <input id="tenant" class="db-input" @bind="@_tenant" readonly />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="database" HelpText="The type of database" ResourceKey="Database">Type: </Label>
+                        <Label For="database" HelpText="The type of database" ResourceKey="Database">Type</Label>
                         <div class="db-field-control">
                             <input id="database" class="db-input" @bind="@_database" readonly />
                         </div>
                     </div>
                     <div class="db-field">
-                        <Label For="connectionstring" HelpText="The name of the connection string in appsettings.json which will be used to connect to the database" ResourceKey="ConnectionString">Connection: </Label>
+                        <Label For="connectionstring" HelpText="The name of the connection string in appsettings.json which will be used to connect to the database" ResourceKey="ConnectionString">Connection</Label>
                         <div class="db-field-control">
                             <input id="connectionstring" class="db-input" @bind="@_connectionstring" readonly />
                         </div>
@@ -598,7 +598,7 @@
         }
         <br />
         <button type="button" class="db-btn" @onclick="SaveSite">@SharedLocalizer["Save"]</button>
-        <ActionDialog Header="Delete Site" Message="@Localizer["Confirm.DeleteSite"]" Action="Delete" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteSite())" ResourceKey="DeleteSite" />
+        <ActionDialog Header="Delete site" Message="@Localizer["Confirm.DeleteSite"]" Action="Delete" Security="SecurityAccessLevel.Host" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteSite())" ResourceKey="DeleteSite" />
         <br />
         <br />
         <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon" DeletedBy="@_deletedby" DeletedOn="@_deletedon"></AuditInfo>

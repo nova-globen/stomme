@@ -9,7 +9,7 @@
     <TabPanel Name="Content" Heading="Content" ResourceKey="Content">
         <div class="db-fields">
             <div class="db-field">
-                <Label For="content" HelpText="Select the Export option and you will be able to view the module content" ResourceKey="Content">Content: </Label>
+                <Label For="content" HelpText="Select the export option and you will be able to view the module content" ResourceKey="Content">Content</Label>
                 <div class="db-field-control">
                     <textarea id="content" class="db-input" @bind="@_content" rows="5" readonly></textarea>
                 </div>
@@ -22,13 +22,13 @@
     <TabPanel Name="File" Heading="File" ResourceKey="File">
         <div class="db-fields">
             <div class="db-field">
-                <Label For="folder" HelpText="Select a folder where you wish to save the exported content" ResourceKey="Folder">Folder: </Label>
+                <Label For="folder" HelpText="Select a folder where you wish to save the exported content" ResourceKey="Folder">Folder</Label>
                 <div class="db-field-control">
                     <FileManager Id="folder" ShowFiles="false" ShowUpload="false" @ref="_filemanager" />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="filename" HelpText="Specify a name for the file (without an extension)" ResourceKey="Filename">Filename: </Label>
+                <Label For="filename" HelpText="Specify a name for the file (without an extension)" ResourceKey="Filename">Filename</Label>
                 <div class="db-field-control">
                     <input id="filename" type="text" class="db-input" @bind="@_filename" />
                 </div>

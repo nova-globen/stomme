@@ -35,10 +35,10 @@ namespace Stomme.Modules.Connectivity.Application
     {
         public CreateConnectionCommandValidator()
         {
-            RuleFor(command => command.Name).NotEmpty().MaximumLength(ConnectionAggregate.MaxNameLength);
-            RuleFor(command => command.ConnectorType).NotEmpty();
-            RuleFor(command => command.Endpoint).NotEmpty().MaximumLength(ConnectionEndpoint.MaxLength);
-            RuleFor(command => command.TimeoutSeconds).InclusiveBetween(ConnectionAggregate.MinTimeoutSeconds, ConnectionAggregate.MaxTimeoutSeconds);
+            RuleFor(command => command.Name).NotEmpty().WithMessage("Give the connection a name.").MaximumLength(ConnectionAggregate.MaxNameLength);
+            RuleFor(command => command.ConnectorType).NotEmpty().WithMessage("Choose a connector.");
+            RuleFor(command => command.Endpoint).NotEmpty().WithMessage("Give the address the connection reaches - its URL or connection string.").MaximumLength(ConnectionEndpoint.MaxLength);
+            RuleFor(command => command.TimeoutSeconds).InclusiveBetween(ConnectionAggregate.MinTimeoutSeconds, ConnectionAggregate.MaxTimeoutSeconds).WithMessage($"The timeout is {ConnectionAggregate.MinTimeoutSeconds} to {ConnectionAggregate.MaxTimeoutSeconds} seconds.");
         }
     }
 
@@ -87,9 +87,9 @@ namespace Stomme.Modules.Connectivity.Application
         public UpdateConnectionCommandValidator()
         {
             RuleFor(command => command.ConnectionId).NotEmpty();
-            RuleFor(command => command.Name).NotEmpty().MaximumLength(ConnectionAggregate.MaxNameLength);
-            RuleFor(command => command.Endpoint).NotEmpty().MaximumLength(ConnectionEndpoint.MaxLength);
-            RuleFor(command => command.TimeoutSeconds).InclusiveBetween(ConnectionAggregate.MinTimeoutSeconds, ConnectionAggregate.MaxTimeoutSeconds);
+            RuleFor(command => command.Name).NotEmpty().WithMessage("Give the connection a name.").MaximumLength(ConnectionAggregate.MaxNameLength);
+            RuleFor(command => command.Endpoint).NotEmpty().WithMessage("Give the address the connection reaches - its URL or connection string.").MaximumLength(ConnectionEndpoint.MaxLength);
+            RuleFor(command => command.TimeoutSeconds).InclusiveBetween(ConnectionAggregate.MinTimeoutSeconds, ConnectionAggregate.MaxTimeoutSeconds).WithMessage($"The timeout is {ConnectionAggregate.MinTimeoutSeconds} to {ConnectionAggregate.MaxTimeoutSeconds} seconds.");
         }
     }
 
@@ -140,9 +140,9 @@ namespace Stomme.Modules.Connectivity.Application
                 throw new InvalidOperationException($"Connection '{request.ConnectionId}' was not found.");
             }
 
-            var outcome = await runner.TestAsync(connection, ct);
+            var (outcome, httpStatus) = await runner.TestWithStatusAsync(connection, ct);
             var success = ConnectorOutcomes.IsSuccess(outcome);
-            var message = ConnectorOutcomes.Message(outcome);
+            var message = ConnectorOutcomes.Message(outcome, httpStatus);
             connection.RecordTestResult(success, message, clock.GetUtcNow().UtcDateTime);
             await connections.UpdateAsync(connection, ct);
             await unitOfWork.SaveChangesAsync(ct);

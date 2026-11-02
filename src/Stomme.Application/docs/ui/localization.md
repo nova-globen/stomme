@@ -9,7 +9,7 @@ look up text.
 
 ### Culture
 
-1. Each site has languages (Admin > Language Management > Add Language): any .NET culture can be added, one is the site's
+1. Each site has languages (Admin > Language Management > Add language): any .NET culture can be added, one is the site's
    default.
 2. On the server, the host runs ASP.NET Core request localization, which reads the culture from the
    `.AspNetCore.Culture` cookie (`CookieRequestCultureProvider.DefaultCookieName`). When it renders a page, the host works
@@ -92,7 +92,7 @@ module component it is placed in:
 
 A key that is missing or empty leaves the text you wrote in the markup. So a page can ship in English with no resource file
 and gain translations later without a markup change. Measured on the Notes module's `Edit` page: with
-`<Label For="note-title" ResourceKey="Title" HelpText="A short name, shown in the list">Title:</Label>` and only a Swedish
+`<Label For="note-title" ResourceKey="Title" HelpText="A short name, shown in the list">Title</Label>` and only a Swedish
 resource file holding `Title.Text` and `Title.HelpText`, an English user sees the markup text and a Swedish user the
 translation, help text included.
 
@@ -142,7 +142,7 @@ imports. `IStringLocalizer<Stomme.SharedResources>` gives the framework's shared
 Then:
 
 1. Build. Check that `Server/bin/Debug/net10.0/sv/` holds the Client project's `.resources.dll` (measured: it does).
-2. Admin > Language Management > Add Language: add Swedish. The list shows it with "---" under Translation (no Stomme
+2. Admin > Language Management > Add language: add Swedish. The list shows it with "---" under Translation (no Stomme
    translation package is installed; Stomme's own text stays English).
 3. Set a user's Language to Swedish (User Profile > Language), sign in as that user and open the Notes page: the empty
    list says "Inga anteckningar ännu". Another user still sees "No notes yet".

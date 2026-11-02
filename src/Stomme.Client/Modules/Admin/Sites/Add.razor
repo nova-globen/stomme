@@ -22,19 +22,19 @@ else
     <form @ref="form" class="@(validated ? "was-validated" : "needs-validation")" novalidate>
         <div class="db-fields">
             <div class="db-field">
-                <Label For="name" HelpText="Enter the name of the site" ResourceKey="Name">Site Name: </Label>
+                <Label For="name" HelpText="Enter the name of the site" ResourceKey="Name">Site name</Label>
                 <div class="db-field-control">
                     <input id="name" class="db-input" @bind="@_name" maxlength="200" required />
                 </div>
             </div>
             <div class="db-field">
-                <Label For="alias" HelpText="The primary url for the site. This can be a domain name (ie. domain.com), subdomain (ie. sub.domain.com) or a virtual folder (ie. domain.com/folder)." ResourceKey="Aliases">Url: </Label>
+                <Label For="alias" HelpText="The primary url for the site. This can be a domain name (ie. domain.com), subdomain (ie. sub.domain.com) or a virtual folder (ie. domain.com/folder)." ResourceKey="Aliases">URL</Label>
                 <div class="db-field-control">
                     <input id="alias" class="db-input" @bind="@_urls" required></input>
                 </div>
             </div>
             <div class="db-field">
-                <Label For="siteTemplate" HelpText="Select the site template" ResourceKey="SiteTemplate">Site Template: </Label>
+                <Label For="siteTemplate" HelpText="Select the site template" ResourceKey="SiteTemplate">Site template</Label>
                 <div class="db-field-control">
                     <select id="siteTemplate" class="db-select" @bind="@_sitetemplatetype" required>
                         <option value="-">&lt;@Localizer["SiteTemplate.Select"]&gt;</option>
@@ -46,7 +46,7 @@ else
                 </div>
             </div>
             <div class="db-field">
-                <Label For="tenant" HelpText="Select the database for the site" ResourceKey="Tenant">Database: </Label>
+                <Label For="tenant" HelpText="Select the database for the site" ResourceKey="Tenant">Database</Label>
                 <div class="db-field-control">
                     <select id="tenant" class="db-select" value="@_tenantid" @onchange="(e => TenantChanged(e))" required>
                         <option value="-">&lt;@Localizer["Tenant.Select"]&gt;</option>
@@ -64,13 +64,13 @@ else
                     <hr class="app-rule" />
                 </div>
                 <div class="db-field">
-                    <Label For="name" HelpText="Enter the name for the database. Note that this will be the tenant name which is used within the framework to identify the database." ResourceKey="TenantName">Name: </Label>
+                    <Label For="name" HelpText="Enter the name for the database. Note that this will be the tenant name which is used within the framework to identify the database." ResourceKey="TenantName">Name</Label>
                     <div class="db-field-control">
                         <input id="name" class="db-input" @bind="@_tenantName" maxlength="100" required />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="databaseType" HelpText="Select the database type" ResourceKey="DatabaseType">Type: </Label>
+                    <Label For="databaseType" HelpText="Select the database type" ResourceKey="DatabaseType">Type</Label>
                     <div class="db-field-control">
                         @if (_databases != null)
                         {
@@ -103,20 +103,20 @@ else
                 else
                 {
                     <div class="db-field">
-                        <Label For="connectionstring" HelpText="Enter a complete connection string including all parameters and delimiters" ResourceKey="ConnectionString">Settings:</Label>
+                        <Label For="connectionstring" HelpText="Enter a complete connection string including all parameters and delimiters" ResourceKey="ConnectionString">Settings</Label>
                         <div class="db-field-control">
                             <textarea id="connectionstring" class="db-input" @bind="@_connectionString" rows="3"></textarea>
                         </div>
                     </div>
                 }
                 <div class="db-field">
-                    <Label For="hostUsername" HelpText="Enter the username of an existing host user" ResourceKey="HostUsername">Host Username:</Label>
+                    <Label For="hostUsername" HelpText="Enter the username of an existing host user" ResourceKey="HostUsername">Host username</Label>
                     <div class="db-field-control">
                         <input id="hostUsername" class="db-input" @bind="@_hostusername" required />
                     </div>
                 </div>
                 <div class="db-field">
-                    <Label For="hostPassword" HelpText="Enter the password of an existing host user" ResourceKey="HostPassword">Host Password:</Label>
+                    <Label For="hostPassword" HelpText="Enter the password of an existing host user" ResourceKey="HostPassword">Host password</Label>
                     <div class="db-field-control">
                         <input id="hostPassword" type="password" class="db-input" @bind="@_hostpassword" autocomplete="new-password" required />
                     </div>

@@ -14,10 +14,10 @@
 else
 {
     <TabStrip>
-        <TabPanel Name="Urls" Heading="Urls" ResourceKey="Urls">
+        <TabPanel Name="Urls" Heading="URLs" ResourceKey="Urls">
 			@* Migrated to native FluentUI controls + the --db-* design system (Phase 4). *@
 			<div class="db-page-head">
-				<ActionLink Action="Add" Text="Add Url Mapping" ResourceKey="AddUrlMapping" />
+				<ActionLink Action="Add" Text="Add URL mapping" ResourceKey="AddUrlMapping" />
 				<div class="db-page-head-actions">
 					<FluentSelect id="type" TOption="string" TValue="string" Value="@_mapped.ToString().ToLower()" ValueChanged="@(v => MappedChanged(v))">
 						<FluentOption TValue="string" Value="@("true")">@Localizer["Mapped"]</FluentOption>
@@ -25,7 +25,7 @@ else
 					</FluentSelect>
 				</div>
 			</div>
-            <Pager Items="@_urlMappings" SearchProperties="Url">
+            <Pager Items="@_urlMappings" SearchProperties="Url" EmptyMessage="@(_mapped ? Localizer["Empty.Mapped"] : Localizer["Empty.Broken"])">
 				<Header>
 					<th style="width: 1px;">&nbsp;</th>
 					<th style="width: 1px;">&nbsp;</th>
@@ -36,7 +36,7 @@ else
 				</Header>
 				<Row>
                     <td><ActionLink Action="Edit" Text="Edit" Parameters="@($"id=" + context.UrlMappingId.ToString())" ResourceKey="Edit" /></td>
-					<td><ActionDialog Header="Delete Url Mapping" Message="@string.Format(Localizer["Confirm.DeleteUrlMapping"], context.Url)" Action="Delete" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUrlMapping(context))" ResourceKey="DeleteUrlMapping" /></td>
+					<td><ActionDialog Header="Delete URL mapping" Message="@string.Format(Localizer["Confirm.DeleteUrlMapping"], context.Url)" Action="Delete" Security="SecurityAccessLevel.Admin" Class="db-btn db-btn-danger" OnClick="@(async () => await DeleteUrlMapping(context))" ResourceKey="DeleteUrlMapping" /></td>
 					<td>
 						<a href="@Utilities.TenantUrl(PageState.Alias, context.Url)">@context.Url</a>
 						@if (_mapped)
@@ -53,11 +53,11 @@ else
         <TabPanel Name="Settings" Heading="Settings" ResourceKey="Settings">
 			<div class="db-card">
 				<div class="db-field">
-					<Label For="capturebrokenurls" HelpText="Specify if broken Urls should be captured automatically and saved in Url Mappings" ResourceKey="CaptureBrokenUrls">Capture Broken Urls? </Label>
+					<Label For="capturebrokenurls" HelpText="Specify if broken URLs should be captured automatically and saved in URL mappings" ResourceKey="CaptureBrokenUrls">Capture broken URLs?</Label>
 					<FluentSwitch id="capturebrokenurls" @bind-Value="_captureBrokenUrls" />
 				</div>
 				<div class="db-field">
-					<Label For="retention" HelpText="Number of days of broken urls to retain" ResourceKey="Retention">Retention (Days): </Label>
+					<Label For="retention" HelpText="Number of days of broken urls to retain" ResourceKey="Retention">Retention (days)</Label>
 					<div class="db-field-control"><input id="retention" type="number" min="0" step="1" class="db-input" @bind="@_retention" /></div>
 				</div>
 			</div>

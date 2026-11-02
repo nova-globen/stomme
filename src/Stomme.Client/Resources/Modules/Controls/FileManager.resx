@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Folder.Select" xml:space="preserve">
-    <value>Select Folder</value>
+    <value>Select folder</value>
   </data>
   <data name="File.Select" xml:space="preserve">
-    <value>Select File</value>
+    <value>Select file</value>
   </data>
   <data name="Error.File.Load" xml:space="preserve">
-    <value>Error Loading Files</value>
+    <value>Error loading files</value>
   </data>
   <data name="Error.File.Upload" xml:space="preserve">
-    <value>File Upload Failed</value>
+    <value>File upload failed</value>
   </data>
   <data name="Message.File.NotSelected" xml:space="preserve">
-    <value>You Have Not Selected A File To Upload</value>
+    <value>You have not selected a file to upload</value>
   </data>
   <data name="Success.File.Delete" xml:space="preserve">
-    <value>File Deleted</value>
+    <value>File deleted</value>
   </data>
   <data name="Error.File.Delete" xml:space="preserve">
-    <value>Error Deleting File</value>
+    <value>Error deleting file</value>
   </data>
   <data name="Success.File.Upload" xml:space="preserve">
-    <value>File Upload Succeeded</value>
+    <value>File upload succeeded</value>
   </data>
   <data name="Message.File.Restricted" xml:space="preserve">
-    <value>Files With Extension Of {0} Are Restricted From Upload. Please Contact Your Administrator For More Information.</value>
+    <value>Files with extension of {0} are restricted from upload. Please contact your administrator for more information.</value>
   </data>
   <data name="File.MaxSize" xml:space="preserve">
     <value>Maximum upload file size: {0} MB</value>

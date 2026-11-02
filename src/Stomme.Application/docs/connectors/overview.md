@@ -115,7 +115,10 @@ A refusal by the egress is reported as the outcome `DeniedByPolicy`, and the rem
 settings, the credentials from the secret store, the site's egress and the connection's timeout. The answer is a
 `ConnectionTestView` (`Success`, `Outcome`, `Message`, `Status`): a `ConnectorOutcome` and a fixed message from
 `ConnectorOutcomes.Message`. The connector's own error text is never shown, logged or put in an event, because it may
-echo an endpoint, a user name or a password. A `Faulted` outcome is logged as a warning with the exception type and
+echo an endpoint, a user name or a password - with one exception: when a `Failed` or `Faulted` text STARTS with an HTTP
+status (`HTTP 404 Not Found.`), its three digits are read and the message says what that status means and what to check
+("The service answered HTTP 404 - nothing is there: check the connection's address and the step's path."); the same
+holds for a pipeline step's error from an extraction (since 10.81.0). A `Faulted` outcome is logged as a warning with the exception type and
 the connection id. Over the HTTP API the outcome travels as its number (the first column).
 
 | # | `ConnectorOutcome` | Meaning |

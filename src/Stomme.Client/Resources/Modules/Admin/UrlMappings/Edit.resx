@@ -118,27 +118,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MappedUrl.Text" xml:space="preserve">
-    <value>Redirect To:</value>
+    <value>Redirect to</value>
   </data>
   <data name="MappedUrl.HelpText" xml:space="preserve">
-    <value>A Url where the user will be redirected (absolute or relative). Use '/' for site root path.</value>
+    <value>A URL where the user will be redirected (absolute or relative). Use '/' for site root path.</value>
   </data>
   <data name="Url.HelpText" xml:space="preserve">
-    <value>A Url identifying a path to a specific page in the site (absolute or relative)</value>
+    <value>A URL identifying a path to a specific page in the site (absolute or relative)</value>
   </data>
   <data name="Url.Text" xml:space="preserve">
-    <value>Url:</value>
+    <value>URL</value>
   </data>
   <data name="Error.LoadUrlMapping" xml:space="preserve">
-    <value>Error Loading Url Mapping</value>
+    <value>Error loading URL mapping</value>
   </data>
   <data name="Error.SaveUrlMapping" xml:space="preserve">
-    <value>Error Saving Url Mapping</value>
+    <value>Error saving URL mapping</value>
   </data>
   <data name="Message.InfoRequired" xml:space="preserve">
-    <value>Please Provide All Required Information</value>
+    <value>Please provide all required information</value>
   </data>
   <data name="Message.DuplicateUrlMapping" xml:space="preserve">
-    <value>The Url and Redirect To cannot be the same</value>
+    <value>The URL and redirect to cannot be the same</value>
   </data>
 </root>

@@ -42,7 +42,7 @@ else
     <div class="db-card">
         <div class="db-fields">
             <div class="db-field">
-                <Label For="installationid" HelpText="Send this id to your vendor: a licence key is issued for exactly one installation." ResourceKey="InstallationId">Installation Id:</Label>
+                <Label For="installationid" HelpText="Send this id to your vendor: a licence key is issued for exactly one installation." ResourceKey="InstallationId">Installation ID</Label>
                 <div class="db-field-control"><input id="installationid" class="db-input db-mono" readonly value="@_status.InstallationId" /></div>
             </div>
         </div>
@@ -83,7 +83,7 @@ else
                             <td>
                                 @if (key.Deletable)
                                 {
-                                    <ActionDialog Header="Delete Licence Key" Message="Delete this licence key? The entitlements it grants end with it." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => { await DeleteKey(key); StateHasChanged(); })" Disabled="@_busy" />
+                                    <ActionDialog Header="Delete licence key" Message="Delete this licence key? The entitlements it grants end with it." Action="Delete" Security="SecurityAccessLevel.Anonymous" Class="db-btn db-btn-danger" OnClick="@(async () => { await DeleteKey(key); StateHasChanged(); })" Disabled="@_busy" />
                                 }
                                 else
                                 {
@@ -101,7 +101,7 @@ else
     <div class="db-card">
         <div class="db-fields">
             <div class="db-field">
-                <Label For="licencekey" HelpText="Paste the complete SLK1 key your vendor issued for this installation." ResourceKey="LicenceKey">Licence Key:</Label>
+                <Label For="licencekey" HelpText="Paste the complete SLK1 key your vendor issued for this installation." ResourceKey="LicenceKey">Licence key</Label>
                 <div class="db-field-control">
                     <textarea id="licencekey" class="db-input db-mono" rows="4" @bind="_key" @bind:event="oninput" spellcheck="false" autocomplete="off"></textarea>
                 </div>

@@ -8,7 +8,7 @@
 
     <div class="container">
         <div class="row mb-1 align-items-center">
-            <Label Class="col-sm-3" For="scope" ResourceKey="Scope" ResourceType="@resourceType" HelpText="Specify if the settings are applicable to this page or the entire site.">Setting Scope:</Label>
+            <Label Class="col-sm-3" For="scope" ResourceKey="Scope" ResourceType="@resourceType" HelpText="Specify if the settings are applicable to this page or the entire site.">Setting scope</Label>
             <div class="col-sm-9">
                 <select id="scope" class="form-select" value="@_scope" @onchange="(e => ScopeChanged(e))">
                     @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="row mb-1 align-items-center">
-            <Label Class="col-sm-3" For="login" ResourceKey="Login" ResourceType="@resourceType" HelpText="Specify if a Login option should be displayed. Note that this option does not prevent the login page from being accessible via a direct url.">Show Login?</Label>
+            <Label Class="col-sm-3" For="login" ResourceKey="Login" ResourceType="@resourceType" HelpText="Specify if a login option should be displayed. Note that this option does not prevent the login page from being accessible via a direct url.">Show login?</Label>
             <div class="col-sm-9">
                 <select id="login" class="form-select" @bind="@_login">
                     <option value="-">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="row mb-1 align-items-center">
-            <Label Class="col-sm-3" For="register" ResourceKey="Register" ResourceType="@resourceType" HelpText="Specify if a Register option should be displayed. Note that this option is also dependent on the Allow Registration option in Site Settings.">Show Register?</Label>
+            <Label Class="col-sm-3" For="register" ResourceKey="Register" ResourceType="@resourceType" HelpText="Specify if a register option should be displayed. Note that this option is also dependent on the allow registration? option in site settings.">Show register?</Label>
             <div class="col-sm-9">
                 <select id="register" class="form-select" @bind="@_register">
                     <option value="-">&lt;@SharedLocalizer["Not Specified"]&gt;</option>
