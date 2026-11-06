@@ -161,12 +161,12 @@ a:hover { color: var(--db-accent); }
 .db-btn { background: var(--db-accent); color: var(--db-on-accent); }
 .db-btn:hover { background: var(--db-accent-2); color: var(--db-on-accent); }
 .db-btn-neutral { background: var(--db-bg-elev-2); color: var(--db-text); border-color: var(--db-border); }
-.db-btn-neutral:hover { background: var(--db-bg-elev-3); border-color: var(--db-border-strong); }
+.db-btn-neutral:hover { background: var(--db-bg-elev-3); color: var(--db-text); border-color: var(--db-border-strong); }
 .db-btn-danger { background: color-mix(in oklab, var(--db-bad) 16%, transparent); color: var(--db-bad); border-color: color-mix(in oklab, var(--db-bad) 35%, transparent); }
-.db-btn-danger:hover { background: color-mix(in oklab, var(--db-bad) 26%, transparent); }
+.db-btn-danger:hover { background: color-mix(in oklab, var(--db-bad) 26%, transparent); color: var(--db-bad); }
 /* Developer-facing warning state (ActionLink: action with no corresponding module control). */
 .db-btn-warn { background: color-mix(in oklab, var(--db-warn) 16%, transparent); color: var(--db-warn); border-color: color-mix(in oklab, var(--db-warn) 35%, transparent); }
-.db-btn-warn:hover { background: color-mix(in oklab, var(--db-warn) 26%, transparent); }
+.db-btn-warn:hover { background: color-mix(in oklab, var(--db-warn) 26%, transparent); color: var(--db-warn); }
 .db-btn:disabled, .db-btn-neutral:disabled, .db-btn-danger:disabled, .db-btn-warn:disabled,
 .db-btn[disabled], .db-btn-neutral[disabled], .db-btn-danger[disabled], .db-btn-warn[disabled] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
 .db-btn:focus-visible, .db-btn-neutral:focus-visible, .db-btn-danger:focus-visible, .db-btn-warn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--db-accent); }

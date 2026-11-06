@@ -1,0 +1,43 @@
+{
+  "nature": {
+    "kind": "code | documentation | design | data | mixed | <one word of your own>",
+    "description": "one sentence on what the repository is and what it is for",
+    "confidence": 0.0,
+    "reasoning": "why, naming the evidence",
+    "evidence": [{ "path": "README.md", "line": 1, "quote": "a short quote" }]
+  },
+  "natural_languages": ["en"],
+  "programming_languages": ["the languages of the code, as names, or an empty list"],
+  "id_schemes": [
+    {
+      "name": "a short name for the scheme",
+      "example": "BL-12",
+      "regex": "\\bBL-(\\d+)\\b",
+      "numeric_group": 1,
+      "refers_to": "work-item | decision | spec | section | release | other",
+      "where_defined": "the file that defines or lists these ids, or null",
+      "reasoning": "why you think this scheme is in use",
+      "evidence": { "path": "docs/backlog.md", "line": 12, "quote": "a short quote showing the id" }
+    }
+  ],
+  "status_vocabulary": [
+    {
+      "word": "OPEN",
+      "meaning": "what the guides say it means",
+      "mapped": "triage | backlog | ready | in-progress | in-review | done | cancelled | null",
+      "evidence": { "path": "docs/backlog.md", "line": 40, "quote": "a short quote" }
+    }
+  ],
+  "tier_vocabulary": [
+    { "word": "P0", "meaning": "what it means", "evidence": { "path": "docs/backlog.md", "line": 41, "quote": "a short quote" } }
+  ],
+  "spec_index": { "path": "docs/backlog.md", "anchor": "j-item-specs--index", "reasoning": "why" },
+  "ledgers": [
+    { "path": "docs/backlog.md", "kind": "open-ledger | finished-ledger | change-log", "reasoning": "why", "evidence": { "path": "CLAUDE.md", "line": 5, "quote": "a short quote" } }
+  ],
+  "document_roots": ["docs/"],
+  "documents_thin": { "value": false, "reasoning": "why" },
+  "requests": [{ "kind": "file | listing", "path": "docs/specs", "why": "why you need it" }],
+  "notes": ["anything the later passes should know"],
+  "reasoning": "two to five sentences on how you read the repository"
+}

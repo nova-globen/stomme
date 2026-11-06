@@ -1,0 +1,21 @@
+{
+  "title": "the title as written, or null",
+  "kind": "one of the kinds listed in the task",
+  "language": "en",
+  "summary": "two to five sentences in English saying what the document is and what it says",
+  "topics": ["a short lower-case tag"],
+  "components": ["a module, service, package, folder or product named in the text"],
+  "people": ["a person or role as written"],
+  "dates": [{ "what": "decided", "date": "2026-11-03" }],
+  "references": [{ "kind": "id | path | anchor | version | url | mention", "text": "as written", "line": 12 }],
+  "decisions": [{ "text": "the decision in one sentence", "line": 12, "quote": "a short quote from the text shown" }],
+  "status": "current | draft | accepted | superseded | deprecated | snapshot | unstated",
+  "status_as_written": "the words that say so, or null",
+  "superseded_by": "what replaces it, as written, or null",
+  "self_rating": "how the text rates its own reliability or currency, as written, or null",
+  "audience": "people | agents | both",
+  "shelf": "process | product | null",
+  "evidence": { "line": 1, "quote": "a short quote from the text shown" },
+  "confidence": 0.0,
+  "reasoning": "one to three sentences naming what you saw"
+}

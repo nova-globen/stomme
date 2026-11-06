@@ -1,0 +1,29 @@
+{
+  "rows": [
+    {
+      "key": "BL-12",
+      "ids": ["BL-12"],
+      "title": "the title as written, without the id and without emphasis marks",
+      "status_as_written": "OPEN",
+      "status": "triage | backlog | ready | in-progress | in-review | done | cancelled | deferred | null",
+      "condition": "what the item waits on, or null",
+      "tier": "P2",
+      "size": "M",
+      "type": "bug | feature | task | spike | chore | question | epic | decision | documentation | null",
+      "type_as_written": "the word or phrase that says the kind, as written, or null",
+      "type_confidence": 0.0,
+      "relations": [{ "kind": "parent | child | blocker | blocks | related | duplicate | supersedes", "id": "BL-7", "as_written": "blocked by BL-7", "confidence": 0.0 }],
+      "dates": [{ "what": "closed", "date": "2026-10-04" }],
+      "detail": "the row's text beyond its title, as markdown, kept as written",
+      "references": [{ "kind": "id | path | anchor | version | url", "text": "D94" }],
+      "evidence": { "line": 12, "quote": "a short quote from the text shown" },
+      "confidence": 0.0,
+      "reasoning": "one or two sentences naming what you saw"
+    }
+  ],
+  "prose_work": [
+    { "heading": "Deferred features", "bullets": ["a bullet quoted as written"], "reasoning": "why these are work" }
+  ],
+  "notes": ["anything the engine should know about this chunk"],
+  "reasoning": "one to three sentences on what the chunk holds"
+}

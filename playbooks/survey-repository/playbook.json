@@ -1,0 +1,50 @@
+{
+  "name": "survey-repository",
+  "version": "0.6.0",
+  "description": "Surveys a software repository of any shape and proposes what a tracker and a wiki should hold.",
+  "phases": [
+    "orientation",
+    "items",
+    "documents",
+    "decisions",
+    "links",
+    "code-survey",
+    "verify"
+  ],
+  "prompts": {
+    "rules": "phases/rules.md",
+    "orientation-nature": "phases/orientation-nature.md",
+    "orientation-kinds": "phases/orientation-kinds.md",
+    "items-rows": "phases/items-rows.md",
+    "document-card": "phases/document-card.md",
+    "decision-draft": "phases/decision-draft.md"
+  },
+  "schemas": {
+    "repository-map": "schemas/repository-map.json",
+    "file-kinds": "schemas/file-kinds.json",
+    "item-rows": "schemas/item-rows.json",
+    "document-card": "schemas/document-card.json",
+    "decision-draft": "schemas/decision-draft.json"
+  },
+  "judge": "judge/questions.json",
+  "data": {
+    "files": "data/files.json",
+    "kinds": "data/kinds.json",
+    "statuses": "data/statuses.json",
+    "document-statuses": "data/document-statuses.json",
+    "agent-guides": "data/agent-guides.json",
+    "decision-words": "data/decision-words.json"
+  },
+  "glossary_kinds": [
+    "repository",
+    "id-scheme",
+    "status",
+    "tier",
+    "ledger",
+    "index",
+    "alias",
+    "component",
+    "person",
+    "note"
+  ]
+}

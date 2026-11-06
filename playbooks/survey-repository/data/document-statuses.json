@@ -1,0 +1,12 @@
+{
+  "_about": "What a document says about its own standing (ADR 0020 rule 9): recorded as a field and shown in the atlas, so a wiki reader never takes an old document as current. The reader maps only what the text says about itself; a text that says nothing is unstated, never current.",
+  "statuses": {
+    "current": "the text says it is current, maintained, or verified as of a date",
+    "draft": "the text says it is a draft, a proposal, or not yet accepted",
+    "accepted": "a decision record that says it was accepted or decided",
+    "superseded": "the text says another document or decision replaces it",
+    "deprecated": "the text says it no longer applies, is retired, or is archived",
+    "snapshot": "the text says it records a moment (a run, a review, a date) and is not kept current",
+    "unstated": "the text says nothing about its own standing"
+  }
+}

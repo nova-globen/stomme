@@ -1,0 +1,11 @@
+{
+  "_about": "Words that make a commit message a candidate decision for the judge (ADR 0006). A message with none of them is not judged; the judge decides the rest. Lower case; a phrase matches as a whole.",
+  "words": [
+    "decided", "decide", "decision", "chose", "chosen", "choose",
+    "instead of", "in favour of", "in favor of", "rather than", "over the",
+    "adopt", "adopted", "switch to", "switched to", "move to", "moved to",
+    "replace", "replaced", "drop", "dropped", "no longer", "retire", "retired",
+    "we use", "we keep", "keep", "kept", "settle", "settled", "standardise", "standardize",
+    "policy", "rule", "convention", "adr", "supersede", "superseded"
+  ]
+}

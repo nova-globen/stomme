@@ -18,7 +18,7 @@ namespace Stomme.Tests.Connectors
 {
     /// <summary>
     /// The LDAP connector's live tests' directory: LDAP_TEST_HOST / PORT / PASSWORD where set, otherwise this machine's
-    /// throwaway OpenLDAP that <c>scripts/ldap-test-server.ps1</c> makes on 127.0.0.1:13389 - its tree dc=kafe,dc=example, its
+    /// throwaway OpenLDAP that <c>scripts/ldap-test-server.ps1</c> makes on 127.0.0.1:16389 - its tree dc=kafe,dc=example, its
     /// admin cn=admin and its password read from the file that script writes under the user's temp folder. No password is a
     /// FAILURE that says how to get one, never a skip.
     /// </summary>
@@ -30,7 +30,7 @@ namespace Stomme.Tests.Connectors
 
         public static string Host => Environment.GetEnvironmentVariable("LDAP_TEST_HOST") is { Length: > 0 } host ? host : "127.0.0.1";
 
-        public static int Port => int.TryParse(Environment.GetEnvironmentVariable("LDAP_TEST_PORT"), out var port) ? port : 13389;
+        public static int Port => int.TryParse(Environment.GetEnvironmentVariable("LDAP_TEST_PORT"), out var port) ? port : 16389;
 
         public static string Password
         {
@@ -44,7 +44,7 @@ namespace Stomme.Tests.Connectors
                 var file = Path.Combine(Path.GetTempPath(), "stomme-ldap-test", "password");
                 return File.Exists(file)
                     ? File.ReadAllText(file).Trim()
-                    : throw new InvalidOperationException($"No LDAP test directory: run 'pwsh scripts/ldap-test-server.ps1' (a throwaway OpenLDAP on 127.0.0.1:13389, its password in {file}) or set LDAP_TEST_HOST, LDAP_TEST_PORT and LDAP_TEST_PASSWORD.");
+                    : throw new InvalidOperationException($"No LDAP test directory: run 'pwsh scripts/ldap-test-server.ps1' (a throwaway OpenLDAP on 127.0.0.1:16389, its password in {file}) or set LDAP_TEST_HOST, LDAP_TEST_PORT and LDAP_TEST_PASSWORD.");
             }
         }
 

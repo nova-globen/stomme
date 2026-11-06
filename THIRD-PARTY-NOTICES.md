@@ -116,13 +116,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-## Markdig (Markdown processor — NuGet `Markdig` 1.3.2)
+## Markdig (Markdown processor — NuGet `Markdig` 1.5.1)
 
-The contextual-help renderer (BL-84, D103) consumes this as a NuGet package, not vendored source. It is recorded here
+The contextual-help renderer (BL-84, D103) and the import engine's decoders (`Stomme.Cartographer`) consume this as a NuGet package, not vendored source. It is recorded here
 because it ships inside a Stomme distribution. The licence expression and copyright holder are as declared in the
-package's `.nuspec` (verified 2026-09-23 from the local package cache); on `net10.0` it has no dependencies.
+package's `.nuspec` (verified 2026-09-23 from the local package cache, and again for 1.5.1 on 2026-11-06); on `net10.0` it has no dependencies.
 
-- **Markdig** 1.3.2 — https://github.com/xoofx/markdig — `BSD-2-Clause`, Copyright (c) Alexandre Mutel.
+- **Markdig** 1.5.1 — https://github.com/xoofx/markdig — `BSD-2-Clause`, Copyright (c) Alexandre Mutel.
 
 ```
 BSD 2-Clause License
@@ -162,13 +162,26 @@ Licensed under the Apache License, Version 2.0; you may obtain a copy at http://
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
 "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
-## OpenAI .NET SDK (NuGet `OpenAI` 2.14.0, through `Microsoft.Extensions.AI.OpenAI` 10.10.1)
+## OpenAI .NET SDK (NuGet `OpenAI` 2.14.0, through `Microsoft.Extensions.AI.OpenAI` 10.11.0)
 
 The AI assistant's OpenAI-compatible provider (BL-97 increment 9, D113) consumes these as NuGet packages, not vendored
 source; they are recorded here because they ship inside a Stomme distribution. `OpenAI` is `MIT`, Copyright (c) 2026
 OpenAI (https://openai.com), as declared in its `.nuspec` (verified 2026-09-30 from the package itself). Its dependency
 `System.ClientModel` and the adapter `Microsoft.Extensions.AI.OpenAI` (with `Microsoft.Extensions.AI.Abstractions`, and `Microsoft.Extensions.AI` for the agents' tool-calling loop, BL-97 increment 10) are
-Microsoft's, `MIT`. Project: https://github.com/openai/openai-dotnet
+Microsoft's, `MIT`. The import engine (`Stomme.Conductor`) references `OpenAI`, `Microsoft.Extensions.AI`, `Microsoft.Extensions.AI.Abstractions` and `Microsoft.Extensions.AI.OpenAI` 10.11.0 directly (verified 2026-11-06 from the packages' `.nuspec`s). Project: https://github.com/openai/openai-dotnet
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+files, to deal in the Software without restriction, subject to the MIT License's conditions; THE SOFTWARE IS PROVIDED "AS
+IS", WITHOUT WARRANTY OF ANY KIND. The full text: https://opensource.org/licenses/MIT
+
+## The import engine's other dependencies (NuGet `Microsoft.Data.Sqlite` 10.0.9, `System.CommandLine` 2.0.14)
+
+The import engine consumes these as NuGet packages, not vendored source. `Stomme.Conductor` keeps its run state in SQLite
+through **Microsoft.Data.Sqlite** 10.0.9 (with `Microsoft.Data.Sqlite.Core` and the `SQLitePCLRaw` bundle Stomme already
+carries, pinned at 3.0.3); the survey's console (`Stomme.Cartographer.Cli`, built from source, not packed) reads its
+switches with **System.CommandLine** 2.0.14. Both are `MIT`, © Microsoft Corporation, as declared in each package's
+`.nuspec` (verified 2026-11-06 from the packages themselves). Projects: https://github.com/dotnet/efcore and
+https://github.com/dotnet/command-line-api
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 files, to deal in the Software without restriction, subject to the MIT License's conditions; THE SOFTWARE IS PROVIDED "AS

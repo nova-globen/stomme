@@ -1,0 +1,9 @@
+{
+  "_about": "The files written for AI agents and tools (ADR 0020 rule 8): a .claude/ skill or agent, CLAUDE.md, AGENTS.md, and their like, by path. The documents phase puts them on a shelf of their own (process or product), marks the atlas copy reference-only, and leaves git as their owner. Kept apart from files.json so that a change here redoes no orientation unit.",
+  "patterns": [
+    "CLAUDE.md", "**/CLAUDE.md", "AGENTS.md", "**/AGENTS.md", "GEMINI.md", "**/GEMINI.md",
+    ".claude/**", "**/.claude/**", ".cursor/**", "**/.cursor/**", ".cursorrules", ".codex/**",
+    ".github/copilot-instructions.md", ".github/agents/**", ".windsurfrules", ".clinerules",
+    "**/SKILL.md", "**/AGENT.md", "llms.txt", "**/llms.txt"
+  ]
+}

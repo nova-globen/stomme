@@ -23,6 +23,13 @@
   <Project Path="test\Stomme.Persistence.Conformance.Tests\Stomme.Persistence.Conformance.Tests.csproj" />
   <Project Path="test\Stomme.Persistence.Raven.Tests\Stomme.Persistence.Raven.Tests.csproj" />
   <Project Path="test\Stomme.MessageBus.Live.Tests\Stomme.MessageBus.Live.Tests.csproj" />
+  <Folder Name="/Import engine/">
+    <Project Path="src\Stomme.Conductor\Stomme.Conductor.csproj" />
+    <Project Path="src\Stomme.Cartographer\Stomme.Cartographer.csproj" />
+    <Project Path="src\Stomme.Cartographer.Cli\Stomme.Cartographer.Cli.csproj" />
+    <Project Path="test\Stomme.Conductor.Tests\Stomme.Conductor.Tests.csproj" />
+    <Project Path="test\Stomme.Cartographer.Tests\Stomme.Cartographer.Tests.csproj" />
+  </Folder>
   <Folder Name="/Engine/">
     <Project Path="src\Engine\Stomme.Engine.Features\Stomme.Engine.Features.csproj" />
     <Project Path="src\Engine\Stomme.Engine.Mediator\Stomme.Engine.Mediator.csproj" />

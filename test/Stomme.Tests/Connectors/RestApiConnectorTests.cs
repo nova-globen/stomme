@@ -50,6 +50,7 @@ namespace Stomme.Tests.Connectors
         [InlineData("https://api.example.com/v1", "/devices", "https://api.example.com/v1/devices")]
         [InlineData("https://api.example.com/v1/", "devices", "https://api.example.com/v1/devices")]
         [InlineData("https://api.example.com/v1", "/v1/devices", "https://api.example.com/v1/devices")]
+        [InlineData("https://api.example.com/v1", "//other.example.com/x", "https://api.example.com/v1/other.example.com/x")]
         [InlineData("https://api.example.com/v1", "/V1", "https://api.example.com/V1")]
         [InlineData("https://api.example.com/v1", "/v10/devices", "https://api.example.com/v1/v10/devices")]
         [InlineData("https://api.example.com", "/v1/events", "https://api.example.com/v1/events")]

@@ -1,0 +1,28 @@
+{
+  "_about": "The kinds a document can be (the plan, phase 0), each with its meaning as the reader sees it, and the kinds for a text file that turns out not to be a document at all (ADR 0016: the reader says what a file in an unknown shape is). Kinds decided by rule for non-text files: image, design-file, archive, binary.",
+  "document": {
+    "open-ledger": "a list or table of open work items (a backlog, a to-do list, open issues), each with a status",
+    "finished-ledger": "a list or table of finished or closed work items, moved out of the open ledger",
+    "change-log": "dated entries of what landed or changed (a changelog, a release history, a gate history, a review log)",
+    "spec": "a specification of one item, feature or module: objective, constraints, definition of done",
+    "adr": "a recorded decision (an architecture decision record, a decision log entry with context, options and a decision)",
+    "plan": "a plan, roadmap, milestone list or order of work",
+    "design": "a design document, UX standard, mockup description or brand guide",
+    "evidence": "a report of a run, a test, a measurement, a drive or a review that proves something",
+    "guide": "instructions for people or tools working in the repository (README, CLAUDE.md, AGENTS.md, CONTRIBUTING, a skill, an agent definition, a how-to)",
+    "release-notes": "notes for a release or version: what changed for users",
+    "report": "a written report, handover, retrospective or analysis",
+    "reference": "reference documentation of an API, a module, a configuration or a command",
+    "legal": "a license, notices, terms, a policy",
+    "index": "a table of contents, a ledger of numbers, or a list pointing at other documents",
+    "other": "a document that fits none of the kinds above"
+  },
+  "not-a-document": {
+    "code": "source code or a script in any language (a shell hook, a patch, a build file)",
+    "config": "configuration for a tool, a build, a deployment or a service (a Dockerfile, a unit file, an nginx example, a manifest)",
+    "data": "structured data or a data file with no prose (a column header, a path list, a source map, an export)",
+    "template": "a fill-in template or a blank form (an issue template, a letter template, a page template with placeholders)",
+    "generated": "machine-generated or build output kept in the repository (a minified file, a source map, a lock file)",
+    "empty": "an empty or placeholder file with no content (a .gitkeep, a one-line note)"
+  }
+}

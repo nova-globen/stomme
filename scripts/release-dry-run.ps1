@@ -52,6 +52,10 @@ try {
     foreach ($slim in 'Stomme.Server.Sdk', 'Stomme.Client.Sdk', 'Stomme.Sdk.Slim') {
         Step $slim { dotnet pack "examples/Stomme.Sdk.Slim/$slim/$slim.csproj" -c Release --output examples/local-feed -nologo }
     }
+    # The import engine: two packages outside Stomme.Server's closure, published together (Cartographer depends on Conductor).
+    foreach ($engine in 'Stomme.Conductor', 'Stomme.Cartographer') {
+        Step $engine { dotnet pack "src/$engine/$engine.csproj" -c Release --output examples/local-feed -nologo }
+    }
 
     if (Test-Path $push) { Remove-Item -Recurse -Force $push }
     New-Item -ItemType Directory -Force $push | Out-Null
@@ -122,7 +126,10 @@ foreach ($p in $packages) {
 $infraAddress = '192.168.10.20'
 $forbidden = @(
     @{ Name = 'an old product name'; Pattern = 'd[i]da[ ._-]?(core|bit|deck|bin)' }
-    @{ Name = 'a forge or registry host'; Pattern = 'forgejo|(git|store)\.d[i]da|dl-internal' }
+    # One exemption, exact: the import engine survey's catalogue entry for the public Forgejo Actions product - its name
+    # 'Forgejo/Gitea Actions' and its folder '.forgejo/workflows/*.yml' (playbooks/survey-repository/data/files.json,
+    # embedded in Stomme.Cartographer).
+    @{ Name = 'a forge or registry host'; Pattern = 'forgejo(?!/workflows/\*\.yml|/gitea actions)|(git|store)\.d[i]da|dl-internal' }
     @{ Name = 'an infrastructure host'; Pattern = '(runner|docker|store)0\d|ros[t]am|' + [regex]::Escape($infraAddress) }
     @{ Name = 'a broker command'; Pattern = '(^|[^a-z0-9])ng (exec|api|run|ops|actions|put-profile) ' }
 )
@@ -220,6 +227,14 @@ foreach ($advisory in $advisories) {
 
 ''
 $packages | ForEach-Object { "  $($_.Name)" }
+# ---- Guard - the version follows the scheme, and what the pilot finds is read --------------------------------
+if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'check-version.ps1')) {
+    $versionGate = @(& pwsh -NoProfile -File (Join-Path $PSScriptRoot 'check-version.ps1'))
+    $versionGate | Out-Host
+    if ($LASTEXITCODE) { $failures.Add("version: $($versionGate -join '; ')") }
+    & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'package-validation-pilot.ps1') | Out-Host
+}
+
 if ($failures.Count) {
     ''
     $failures | ForEach-Object { "FAILED $_" }

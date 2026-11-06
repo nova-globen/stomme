@@ -122,6 +122,23 @@ namespace Stomme.Tests
             Assert.True(undefined.Count == 0, "Theme tokens read but defined nowhere:\n" + string.Join("\n", undefined));
         }
 
+        // A variant's buttons carry both classes (db-btn db-btn-neutral), and .db-btn:hover, being more specific than the
+        // variant's own colour, makes the text the accent's unless the variant's hover sets it back: found on the sign-in
+        // page's Cancel, white on a light grey.
+        [Theory]
+        [InlineData("neutral", "text", "src", "Stomme.Server", "wwwroot", "css", "app.css")]
+        [InlineData("danger", "bad", "src", "Stomme.Server", "wwwroot", "css", "app.css")]
+        [InlineData("warn", "warn", "src", "Stomme.Server", "wwwroot", "css", "app.css")]
+        [InlineData("neutral", "text", "src", "Stomme.Maui", "wwwroot", "css", "app.css")]
+        [InlineData("danger", "bad", "src", "Stomme.Maui", "wwwroot", "css", "app.css")]
+        [InlineData("warn", "warn", "src", "Stomme.Maui", "wwwroot", "css", "app.css")]
+        public void A_button_variant_keeps_its_text_colour_on_hover(string variant, string token, params string[] path)
+        {
+            var css = File.ReadAllText(Path.Combine(RepositoryRoot(), Path.Combine(path)));
+
+            Assert.Matches($@"\.db-btn-{variant}:hover\s*\{{[^}}]*\bcolor:\s*var\(--db-{token}\)", css);
+        }
+
         [Fact]
         public void The_scan_catches_a_fallback_colour_and_passes_a_bare_token()
         {

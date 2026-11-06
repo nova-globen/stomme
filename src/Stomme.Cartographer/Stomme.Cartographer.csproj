@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    The repository survey (ADR 0018 in docs/import-engine/adr): the first use of the engine. It reads a repository of any
+    shape and writes the bundle a tracker and a wiki ingest. The survey playbook (playbooks/survey-repository) is
+    embedded (ADR 0022), so a consumer of the package needs no folder. Version, licence and authorship come from the
+    root Directory.Build.props; the build settings below are the ones the engine was written under.
+  -->
+  <PropertyGroup>
+    <RootNamespace>Stomme.Cartographer</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <LangVersion>latest</LangVersion>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <IsPackable>true</IsPackable>
+    <PackageId>Stomme.Cartographer</PackageId>
+    <Description>Surveys a software repository of any shape and writes what a tracker and a wiki should hold: work items, documents, decisions and the graph that links them, with a log of every decision made and why. The survey playbook is embedded.</Description>
+    <PackageTags>repository;survey;tracker;wiki;import</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Markdig" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Stomme.Conductor\Stomme.Conductor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\playbooks\survey-repository\**\*" LogicalName="playbook/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Stomme.Cartographer.Tests" />
+  </ItemGroup>
+</Project>

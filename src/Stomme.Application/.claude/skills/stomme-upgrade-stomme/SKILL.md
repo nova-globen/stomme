@@ -18,7 +18,8 @@ database upgraded at the first start, and the app driven to prove it. How instal
    dotnet package search Stomme.Server --exact-match --source https://api.nuget.org/v3/index.json
    ```
    It lists the versions oldest first (`--format json` for a machine-readable list). The template package,
-   `Stomme.Application.Template`, is published at the same versions. Pick the target version. Read its release notes
+   `Stomme.Application.Template`, is published at the same versions. Pick the target version: what the numbers mean is in
+   [Install, run and upgrade](../../../docs/operations/install-run-upgrade.md). Read its release notes
    if the owner keeps them; note any switch or setting they mention.
 2. **Back up.** Commit or stash the app's work so the upgrade is one reviewable change. Back up the installation you
    will start on the new version: the database(s), `Server/Data` (override file, SQLite files, backups) and the

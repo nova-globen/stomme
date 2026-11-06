@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": "docs/backlog-done.md",
+      "kind": "one of the kinds listed in the task",
+      "title": "the title as written, or null",
+      "language": "en",
+      "confidence": 0.0,
+      "evidence": { "line": 3, "quote": "a short quote from the text shown" },
+      "reasoning": "one or two sentences naming what you saw",
+      "alternatives": ["other kinds you considered"]
+    }
+  ]
+}

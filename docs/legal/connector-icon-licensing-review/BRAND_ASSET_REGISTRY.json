@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewedAt": "2026-07-12",
   "reviewDue": "2027-01-12",
-  "globalNotice": "the predecessor platform and Nova Globen are not affiliated with, sponsored by, endorsed by, or approved by the third-party vendors identified in this application. Product names, service names, trademarks, and registered trademarks are the property of their respective owners. References are used solely to identify the external products and services with which the predecessor platform interoperates.",
+  "globalNotice": "Nova Globen Stomme and Nova Globen are not affiliated with, sponsored by, endorsed by, or approved by the third-party vendors identified in this application. Product names, service names, trademarks, and registered trademarks are the property of their respective owners. References are used solely to identify the external products and services with which Stomme interoperates.",
   "products": [
     {
       "id": "active-directory",

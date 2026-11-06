@@ -9,27 +9,27 @@
        Components.WebAssembly.Server, GHSA-g27p-qf6j-c96c) and CVE-2026-70179 (elevation of privilege,
        Authentication.Negotiate, GHSA-vrrp-6v32-2p8g), both HIGH, both in 10.0.0 to 10.0.12 - the family moves together. -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.14" />
     <!-- The MCP SDK. Apache-2.0, net10.0. Pinned AND referenced directly in
          Stomme.Server.csproj, because central TRANSITIVE pinning is off in this repository. -->
     <PackageVersion Include="ModelContextProtocol" Version="1.4.0" />
     <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.4.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.14" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.9" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Localization" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.13" />
-    <PackageVersion Include="System.Net.Http.Json" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Localization" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.14" />
+    <PackageVersion Include="System.Net.Http.Json" Version="10.0.14" />
   </ItemGroup>
 
   <!-- Transitive pin: Microsoft.OpenApi patched (CVE-2026-49451 / GHSA-v5pm-xwqc-g5wc, fixed in 2.7.5); 2.12.0 since
@@ -49,14 +49,14 @@
        was only transitive). The pin therefore pairs with a direct PackageReference in the affected
        project. 10.0.10 is the current patched stable in the 10.0.x line (dotnet/runtime, MIT). -->
   <ItemGroup>
-    <PackageVersion Include="System.Drawing.Common" Version="10.0.13" />
+    <PackageVersion Include="System.Drawing.Common" Version="10.0.14" />
   </ItemGroup>
 
   <!-- Transitive pin (a PackageVersion paired with a direct PackageReference in each affected project):
        System.Security.Cryptography.Pkcs. The 10.0.0 that flows in transitively carries CVE-2026-84008 (denial of
        service, HIGH, GHSA-846f-f764-76mx, 10.0.0 to 10.0.12), fixed in .NET's servicing of 2026-10-13. -->
   <ItemGroup>
-    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
   </ItemGroup>
 
   <!-- Correction to the System.Drawing.Common pin above, found by a consumer's restore of 10.74.1: the pin
@@ -87,7 +87,7 @@
     <PackageVersion Include="Npgsql" Version="10.0.3" />
     <!-- The FTP and Active Directory connectors' drivers (both MIT; the licence gate proves them from the packages). -->
     <PackageVersion Include="FluentFTP" Version="54.2.0" />
-    <PackageVersion Include="System.DirectoryServices.Protocols" Version="10.0.13" />
+    <PackageVersion Include="System.DirectoryServices.Protocols" Version="10.0.14" />
     <!-- The MySQL connector's driver - MySqlConnector, MIT (the licence gate keeps GPL drivers out; this one is MIT). -->
     <PackageVersion Include="MySqlConnector" Version="2.6.2" />
     <!-- The Redis connector's client (MIT) - the version the caching packages already resolve, referenced directly
@@ -117,7 +117,7 @@
     <PackageVersion Include="Grpc.Net.Client.Web" Version="2.80.0" />
     <PackageVersion Include="Grpc.Tools" Version="2.80.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.35.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.14" />
   </ItemGroup>
 
   <!-- FluentUI Blazor (MIT) — standard UI component system. Its icon package is NOT referenced: nothing in
@@ -163,7 +163,7 @@
     <!-- Pinned to clear GHSA-2p3q-h3hg-jcqq and GHSA-8prm-248r-h957 (both high, published against 10.0.9 and
          earlier), which surfaced as NU1903 warnings between two builds on one day. Direct reference in Stomme.Server,
          so the central version alone moves it (the pairing rule is for transitive-only arrivals). -->
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="10.0.14" />
   </ItemGroup>
 
   <!-- Third-party libraries -->
@@ -172,7 +172,7 @@
     <!-- Markdown for help topics. BSD-2-Clause, no dependencies on net10.0. Rendered server-side
          only and always through the AngleSharp allowlist; never UseAdvancedExtensions (it includes UseGenericAttributes,
          which survives DisableHtml). Paired with a direct PackageReference in Stomme.Server.csproj. -->
-    <PackageVersion Include="Markdig" Version="1.3.2" />
+    <PackageVersion Include="Markdig" Version="1.5.1" />
     <PackageVersion Include="MailKit" Version="4.17.0" />
     <!-- Liquid rendering for notification templates. MIT; pulls Parlot 1.5.2 (BSD-3-Clause)
          and TimeZoneConverter 7.2.0 (MIT) - both recorded in THIRD-PARTY-NOTICES.md. Paired with a DIRECT
@@ -185,8 +185,15 @@
     <!-- The assistant's model access - IChatClient over the OpenAI-compatible API. MIT; brings
          Microsoft.Extensions.AI.Abstractions and the official OpenAI SDK (MIT, recorded in THIRD-PARTY-NOTICES.md). -->
     <!-- The agents' tool-calling loop - ChatClientBuilder and FunctionInvokingChatClient. MIT. -->
-    <PackageVersion Include="Microsoft.Extensions.AI" Version="10.10.0" />
-    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.10.1" />
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="10.11.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.11.0" />
+    <!-- The import engine (Stomme.Conductor, Stomme.Cartographer) references these directly: the abstraction and the
+         OpenAI SDK it adapts, its run state's SQLite (Microsoft.Data.Sqlite at EF Core's version, its SQLite bundle
+         paired directly at the pinned 3.0.3), and the survey console's switches. MIT, recorded in THIRD-PARTY-NOTICES.md. -->
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.11.0" />
+    <PackageVersion Include="OpenAI" Version="2.14.0" />
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.9" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.14" />
     <!-- RavenDB's public serialization API (NewtonsoftJsonSerializationConventions) is Newtonsoft-based;
          the Stomme.Persistence.RavenDb value-object converters bind to it. MIT. -->
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
@@ -247,12 +254,12 @@
     <PackageVersion Include="IronCompress" Version="1.7.0" />
     <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
     <PackageVersion Include="LinqKit.Core" Version="1.2.9" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.14" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="Open.Linq.AsyncExtensions" Version="1.2.0" />
     <PackageVersion Include="Scrutor" Version="7.0.0" />

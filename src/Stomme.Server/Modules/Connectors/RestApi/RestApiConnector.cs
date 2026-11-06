@@ -218,7 +218,8 @@ namespace Stomme.Modules.Connectors.RestApi
         /// The path APPENDED to the endpoint's own, as its description says and n8n's base URL does: <c>https://api.example.com/v1</c>
         /// and <c>/devices</c> is <c>/v1/devices</c>. URI resolution dropped the endpoint's path - the request went to
         /// <c>/devices</c> (BL-240, driven: a 404 for a path the author had right). A path that already starts with the
-        /// endpoint's own (<c>/v1/devices</c>) is taken as it is, so a pipeline written for the old resolution sends where it did.
+        /// endpoint's own (<c>/v1/devices</c>) is taken as it is, so a pipeline that spelled the endpoint's path out sends where it
+        /// did; one that relied on replacing it does not. A scheme-relative <c>//host/x</c> is a path here, on the endpoint's host.
         /// </summary>
         internal static Uri Appended(Uri endpoint, string path)
         {

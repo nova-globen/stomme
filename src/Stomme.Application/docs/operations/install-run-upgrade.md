@@ -205,6 +205,19 @@ exits. In production a supervisor (systemd, a container restart policy, IIS) mus
 
 ### Upgrade Stomme
 
+**What the version says.** Stomme follows Semantic Versioning, `MAJOR.MINOR.PATCH`, with its major tied to .NET LTS:
+
+| Number | Goes up for | What you do |
+| --- | --- | --- |
+| Major | The next .NET LTS (10, then 12; there is no 11), and the only place for a breaking change | Plan the move; its notes say what changes for you |
+| Minor | New features; nothing breaks | Update when you want them |
+| Patch | Fixes, including security fixes | Update when you want them, and **right away for a security fix**, which its notes say |
+
+Nothing breaking means the public .NET API of the packages, module and theme contracts, CSS tokens and the theme template,
+REST routes, configuration keys, a schema change that blocks going back, and dependency types exposed through the API.
+Wording and visual changes, and anything not public or documented as a contract, may change in a minor, so a test of yours
+should not quote the admin's text. A breaking change before the next major ships opt-in and off by default.
+
 An app upgrades Stomme by package version, never through the **System Update** admin page (that page applies a
 framework zip package with a separate updater program, which an app built on the NuGet packages does not have).
 
