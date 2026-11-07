@@ -19,7 +19,7 @@ namespace Stomme.Tests.CloudUsage
               {
                 "date": "2026-07-01",
                 "service": "Infrastructure Hosts",
-                "resource": "predecessor-org",
+                "resource": "atlas-org",
                 "cost": 250.0,
                 "currency": "USD",
                 "tags": { "department": "Platform", "environment": "prod" }
@@ -48,7 +48,7 @@ namespace Stomme.Tests.CloudUsage
             Assert.Equal(CloudProvider.Datadog, entry.Provider);
             Assert.Equal(CloudServiceCategory.Monitoring, entry.ServiceCategory);
             Assert.Equal("Infrastructure Hosts", entry.Service);
-            Assert.Equal("predecessor-org", entry.Resource);
+            Assert.Equal("atlas-org", entry.Resource);
             Assert.Equal(250.0m, entry.Cost);
             Assert.Equal("USD", entry.Currency);
             Assert.Equal("Platform", entry.Department);

@@ -125,7 +125,7 @@ namespace Stomme.Tests.Portability
 
         /// <summary>A document exactly as format 1.0 wrote it: a Guid tenant, a Guid exporter, <c>exportedAt</c>, no names or dependencies.</summary>
         [Fact]
-        public void A_Predecessor_1_0_document_is_readable()
+        public void An_older_1_0_document_is_readable()
         {
             const string stommeBit = """
             {

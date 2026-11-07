@@ -15,8 +15,9 @@ public sealed class SurveyOptions
     public required ConductorOptions Conductor { get; init; }
 
     /// <summary>
-    /// Files the person leaves out (ADR 0028): exact paths, folders, or patterns with *, ** and ?. Such a file is listed
-    /// and never read; neither its text nor its name goes to a provider, and its text is not in the bundle.
+    /// Files the person leaves out (ADR 0028): exact paths, folders, or patterns with *, ** and ?. Such a file is never
+    /// read; neither its text nor its name goes to a provider, and its text is not in the bundle. Its path and the pattern
+    /// that left it out are written to plan.json and to the manifest's withheld record, so the person sees what was kept back.
     /// </summary>
     public IReadOnlyList<string> ExcludeFiles { get; init; } = [];
 

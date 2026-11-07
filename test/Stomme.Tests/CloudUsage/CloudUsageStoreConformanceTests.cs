@@ -70,7 +70,7 @@ namespace Stomme.Tests.CloudUsage
         }
 
         private static CloudCostRecordAggregate Row(int siteId, DateOnly date, decimal cost, CloudProvider provider = CloudProvider.Aws, string service = "AmazonS3") =>
-            CloudCostRecordAggregate.Record(Guid.NewGuid(), TenantId.Default, siteId, new CloudCostEntry(date, provider, CloudServiceCategory.Storage, service, "arn:aws:s3:::predecessor-exports", cost, "usd", "Finance", "predecessor", "prod"));
+            CloudCostRecordAggregate.Record(Guid.NewGuid(), TenantId.Default, siteId, new CloudCostEntry(date, provider, CloudServiceCategory.Storage, service, "arn:aws:s3:::atlas-exports", cost, "usd", "Finance", "atlas", "prod"));
 
         [Fact]
         public async Task Repository_RoundTripsCloudCostRecord()
@@ -84,9 +84,9 @@ namespace Stomme.Tests.CloudUsage
             Assert.Equal((record.Id, TenantId.Default, Site), (read.Id, read.TenantId, read.SiteId));
             Assert.Equal(new DateTime(2026, 6, 30, 0, 0, 0, DateTimeKind.Utc), read.DateUtc);
             Assert.Equal(DateTimeKind.Utc, read.DateUtc.Kind);
-            Assert.Equal((CloudProvider.Aws, CloudServiceCategory.Storage, "AmazonS3", "arn:aws:s3:::predecessor-exports"), (read.Provider, read.ServiceCategory, read.Service, read.Resource));
+            Assert.Equal((CloudProvider.Aws, CloudServiceCategory.Storage, "AmazonS3", "arn:aws:s3:::atlas-exports"), (read.Provider, read.ServiceCategory, read.Service, read.Resource));
             Assert.Equal(-4.20m, read.Cost);
-            Assert.Equal(("USD", "Finance", "predecessor", "prod"), (read.Currency, read.Department, read.Project, read.Environment));
+            Assert.Equal(("USD", "Finance", "atlas", "prod"), (read.Currency, read.Department, read.Project, read.Environment));
             Assert.Single(await InScopeAsync(sp => sp.GetRequiredService<ICloudCostRecordRepository>().ListForSiteAsync(Site)));
         }
 

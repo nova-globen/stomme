@@ -310,7 +310,7 @@ namespace Stomme.Tests.Connectivity
         }
 
         [Fact]
-        public void DuplicateConnectorType_IsRejectedOnBothSidesAndNamesBothOwners_PredecessorLetTheFirstWin()
+        public void DuplicateConnectorType_IsRejectedOnBothSidesAndNamesBothOwners_NotFirstComeFirstServed()
         {
             // BL-251 (H#5): rejected on every side, the host keeps working - it threw on first use and every call answered 500.
             var catalog = new ConnectorCatalog(new IConnector[] { new FixtureConnector("rest", "First"), new FixtureConnector("REST", "Second"), new FixtureConnector("postgresql", "PostgreSQL") });

@@ -73,7 +73,7 @@ public class ResultSink
 
 /// <summary>
 /// The module-authored step: a <see cref="CodeStep"/> whose ExecuteAsync pulls a service off the execution
-/// context and writes to it. This is the shape every predecessor-platform action had.
+/// context and writes to it. This is the shape a module's own step takes.
 /// </summary>
 [Step("Stomme", "Test", "Writes its text into the test sink.")]
 public class SinkStep(string text) : CodeStep

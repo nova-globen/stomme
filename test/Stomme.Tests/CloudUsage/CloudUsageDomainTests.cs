@@ -34,7 +34,7 @@ namespace Stomme.Tests.CloudUsage
         public void Record_StoresUnifiedCostSchemaFields()
         {
             var id = Guid.NewGuid();
-            var record = CloudCostRecordAggregate.Record(id, TenantId.Default, Site, CreateEntry(department: " Finance ", project: " predecessor ", environment: " prod "));
+            var record = CloudCostRecordAggregate.Record(id, TenantId.Default, Site, CreateEntry(department: " Finance ", project: " atlas ", environment: " prod "));
 
             Assert.Equal(id, record.Id);
             Assert.Equal(TenantId.Default, record.TenantId);
@@ -48,7 +48,7 @@ namespace Stomme.Tests.CloudUsage
             Assert.Equal(12.34m, record.Cost);
             Assert.Equal("USD", record.Currency);
             Assert.Equal("Finance", record.Department);
-            Assert.Equal("predecessor", record.Project);
+            Assert.Equal("atlas", record.Project);
             Assert.Equal("prod", record.Environment);
         }
 
@@ -62,10 +62,10 @@ namespace Stomme.Tests.CloudUsage
         public void Record_TrimsServiceAndResource_AndStoresBlankOptionalTagsAsNull()
         {
             var record = CloudCostRecordAggregate.Record(Guid.NewGuid(), TenantId.Default, Site, CreateEntry(
-                service: "  AmazonS3  ", resource: "  arn:aws:s3:::predecessor-exports  ", department: "   ", project: null, environment: ""));
+                service: "  AmazonS3  ", resource: "  arn:aws:s3:::atlas-exports  ", department: "   ", project: null, environment: ""));
 
             Assert.Equal("AmazonS3", record.Service);
-            Assert.Equal("arn:aws:s3:::predecessor-exports", record.Resource);
+            Assert.Equal("arn:aws:s3:::atlas-exports", record.Resource);
             Assert.Null(record.Department);
             Assert.Null(record.Project);
             Assert.Null(record.Environment);

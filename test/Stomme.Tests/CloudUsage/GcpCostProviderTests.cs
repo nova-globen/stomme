@@ -34,7 +34,7 @@ namespace Stomme.Tests.CloudUsage
                   "cost": "4.20",
                   "currency": "usd",
                   "usage_start_time": "2026-07-02T00:00:00Z",
-                  "project": { "id": "predecessor-analytics" },
+                  "project": { "id": "atlas-analytics" },
                   "labels": []
                 },
                 {
@@ -83,7 +83,7 @@ namespace Stomme.Tests.CloudUsage
             Assert.Equal(string.Empty, analytics.Resource);
             Assert.Equal(4.20m, analytics.Cost);
             Assert.Equal("USD", analytics.Currency);
-            Assert.Equal("predecessor-analytics", analytics.Project);
+            Assert.Equal("atlas-analytics", analytics.Project);
             Assert.Null(analytics.Department);
             Assert.Null(analytics.Environment);
         }

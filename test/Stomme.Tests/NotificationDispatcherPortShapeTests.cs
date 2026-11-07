@@ -32,7 +32,7 @@ namespace Stomme.Tests
         }
 
         [Fact]
-        public void The_mirror_enums_keep_Predecessors_wire_values()
+        public void The_mirror_enums_keep_their_original_wire_values()
         {
             Assert.Equal(new[] { 0, 1, 2, 3 }, Enum.GetValues<NotificationChannelKind>().Select(value => (int)value));
             Assert.Equal(new[] { "Email", "InApp", "Webhook", "Sms" }, Enum.GetNames<NotificationChannelKind>());

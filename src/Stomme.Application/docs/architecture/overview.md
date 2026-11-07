@@ -52,6 +52,13 @@ The app references three packages directly: `Stomme.Server` (in `Server`), `Stom
 
 You never edit these. You add your own code to the three projects of the app, and the host discovers it.
 
+Two more packages are released with the framework but are not part of it, and an app does not reference them:
+`Stomme.Conductor`, a general engine that runs a playbook with language models (units of work, a resumable run state,
+a reply cache, spending ceilings), and `Stomme.Cartographer`, built on it, which surveys a software repository and
+writes the work items, documents, decisions and links a tracker and a wiki ingest (its playbook is embedded). Neither
+depends on `Stomme.Server`, and neither runs inside a site: work a site orchestrates is a pipeline (see
+[Pipelines](../pipelines/overview.md)). Reference them only for a tool that surveys repositories outside a site.
+
 ### Tenants, sites and aliases
 
 One running app is one **installation**. An installation holds **tenants** (a tenant is a database, or a share of

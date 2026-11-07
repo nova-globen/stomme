@@ -39,8 +39,8 @@ SOFTWARE.
 ## Elsa Workflows (vendored pipeline engine — `src/Engine/` and `test/Engine/`, `Stomme.Engine.*`)
 
 The pipeline execution engine under `src/Engine/`, and the test-side projects under `test/Engine/`, are a
-vendored, renamed and modified copy of the `elsa-core` projects at tag `3.7.1` that the predecessor platform's pipeline runtime
-depended on: the twelve-package transitive closure of the `Elsa` meta-package minus `Elsa.Api.Common` (dropped
+vendored, renamed and modified copy of the `elsa-core` projects at tag `3.7.1`
+(the version the pipeline runtime was first built against): the twelve-package transitive closure of the `Elsa` meta-package minus `Elsa.Api.Common` (dropped
 whole), plus `Elsa.Testing.Shared` and seven upstream unit-test projects. The exact upstream commit
 (`c7a97c64129ee5dd502f88240e51b4ffcbf9efc3`) and the full project-by-project mapping and drop list are recorded
 in `src/Engine/UPSTREAM.md` (D98). The affected files carry no per-file header; this notice covers them.

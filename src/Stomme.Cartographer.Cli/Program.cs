@@ -33,7 +33,7 @@ var fresh = new Option<bool>("--fresh") { Description = "Start over: keep the ol
 var forceSurvey = new Option<bool>("--force-code-survey") { Description = "Run the code survey even when documents are not thin (ADR 0010)." };
 var addDocuments = new Option<string[]>("--add-documents") { Description = "A folder outside the input whose documents are read as part of it (ADR 0010).", AllowMultipleArgumentsPerToken = true };
 var verbose = new Option<bool>("--verbose", "-v") { Description = "Print progress lines." };
-var exclude = new Option<string[]>("--exclude") { Description = "Files to leave out: a path, a folder, or a pattern with *, ** and ?. They are listed and never read; nothing of them goes to a provider or into the output (ADR 0028).", AllowMultipleArgumentsPerToken = true };
+var exclude = new Option<string[]>("--exclude") { Description = "Files to leave out: a path, a folder, or a pattern with *, ** and ?. They are never read, and nothing of them goes to a provider; the output carries only each one's path and the pattern that left it out, in plan.json and manifest.json, so you can see what was kept back (ADR 0028).", AllowMultipleArgumentsPerToken = true };
 var allowFile = new Option<string[]>("--allow-file") { Description = "A file the secret scan withheld that may be read after all, by its path (ADR 0028).", AllowMultipleArgumentsPerToken = true };
 var planOnly = new Option<bool>("--plan") { Description = "Show what a run would send and to whom, with an estimate of the cost, write it to plan.json in the output folder, and stop: no provider is called (ADR 0028)." };
 var spendFile = new Option<string?>("--spend-file") { Description = "The spend file the ceilings apply to (default: spend.json in the output folder)." };
